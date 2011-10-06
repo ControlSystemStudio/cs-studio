@@ -48,7 +48,7 @@ public class ArchiveEnginePreferencesService {
         public static final ArchiveEnginePreference<Integer> HEARTBEAT_PERIOD_IN_S =
             new ArchiveEnginePreference<Integer>("heartBeatPeriodInS", Integer.valueOf(1));
         public static final ArchiveEnginePreference<String> VERSION =
-            new ArchiveEnginePreference<String>("version", "0.0.1");
+            new ArchiveEnginePreference<String>("version", "0.0.1-beta");
 
         /**
          * Constructor.

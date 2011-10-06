@@ -28,6 +28,7 @@ public final class Messages {
     public static final String HTTP_COLUMN_RECEIVEDVALUES = "Received Values";
     public static final String HTTP_CURRENT_VALUE = "Current Value";
     public static final String HTTP_DESCRIPTION = "Description";
+    public static final String HTTP_DISABLE_CHANNEL = "Disable permanently";
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
     public static final String HTTP_HOST = "HTTP Server";
     public static final String HTTP_INTERNAL_STATE = "Internal EngineState";

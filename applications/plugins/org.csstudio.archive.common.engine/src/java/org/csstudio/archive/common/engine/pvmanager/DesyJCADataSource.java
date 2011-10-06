@@ -21,10 +21,15 @@
  */
 package org.csstudio.archive.common.engine.pvmanager;
 
+import java.util.Map;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.jca.JCADataSource;
+
+import com.google.common.collect.MapMaker;
 
 
 /**
@@ -35,13 +40,24 @@ import org.epics.pvmanager.jca.JCADataSource;
  */
 public class DesyJCADataSource extends JCADataSource {
 
+    private final Map<String, DesyJCAChannelHandler> _handlerMap;
+
     public DesyJCADataSource(@Nonnull final String className,
                              final int monitorMask) {
         super(className, monitorMask);
+
+        _handlerMap = new MapMaker().concurrencyLevel(5).weakKeys().weakValues().makeMap();
     }
     @Override
     @Nonnull
     protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+        _handlerMap.put(channelName, handler);
+        return handler;
+    }
+
+    @CheckForNull
+    public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
+        return _handlerMap.get(channelName);
     }
 }

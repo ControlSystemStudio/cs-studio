@@ -52,6 +52,9 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.epics.pvmanager.jca.TypeFactory;
@@ -140,7 +143,9 @@ public final class DesyTypeFactoryProvider {
                             @Override
                             @CheckForNull
                             protected EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
-                                return null;
+                                return EpicsMetaData.create(new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
+                                                                           EpicsAlarmStatus.valueOf(eMeta.getStatus())),
+                                                            null, null, null);
                             }
                         });
         // DBR_TIME_Enum -> EpicsSystemVariable<EpicsEnum>

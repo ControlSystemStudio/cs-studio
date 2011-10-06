@@ -25,7 +25,10 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.dbr.DBR;
+import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.STS;
+import gov.aps.jca.event.GetEvent;
+import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 
 import javax.annotation.Nonnull;
@@ -45,6 +48,8 @@ import org.epics.pvmanager.jca.JCAChannelHandler;
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
     private EpicsMetaData _desyMeta;
+    // TODO (bknerr) : make this one protected in super type
+    private final int _monitorMask;
 
     /**
      * Constructor.
@@ -53,30 +58,35 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
+        // TODO (bknerr) : make this one protected in super type
+        _monitorMask = monitorMask;
     }
 
     @Override
     protected synchronized void setup(@Nonnull final Channel channel) throws CAException {
-        // This method may be called twice, if the connection happens
-        // after the ConnectionListener is setup but before
-        // the connection state is polled.
+        vTypeFactory = DesyTypeFactoryProvider.matchFor(channel.getFieldType());
 
-        // The synchronization makes sure that, if that happens, the
-        // two calls are serial. Checking the monitor for null to
-        // make sure the second call does not create another monitor.
-        if (monitor == null) {
-            vTypeFactory = DesyTypeFactoryProvider.matchFor(channel.getFieldType());
-            if (vTypeFactory.getEpicsMetaType() != null) {
-                metadata = channel.get(vTypeFactory.getEpicsMetaType(), 1);
-            }
-            if (vTypeFactory.isArray()) {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
-            } else {
-                monitor = channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
-            }
-            channel.getContext().flushIO();
+        // If metadata is needed, get it
+        final DBRType epicsMetaType = vTypeFactory.getEpicsMetaType();
+        if (epicsMetaType != null) {
+            // Need to use callback for the listener instead of doing a synchronous get
+            // (which seemed to perform better) because JCA (JNI implementation)
+            // would return an empty list of labels for the Enum metadata
+            channel.get(epicsMetaType, 1, new GetListener() {
+                @Override
+                public void getCompleted(@Nonnull final GetEvent ev) {
+                    synchronized(DesyJCAChannelHandler.this) {
+                        metadata = ev.getDBR();
+                        // In case the metadata arrives after the monitor
+                        //dispatchValue();
+                    }
+                }
+            });
         }
 
+        channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), _monitorMask, monitorListener);
+        // Flush the entire context (it's the best we can do)
+        channel.getContext().flushIO();
     }
 
     @SuppressWarnings("rawtypes")

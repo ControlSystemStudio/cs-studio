@@ -18,6 +18,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
@@ -39,7 +40,6 @@ import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -55,11 +55,6 @@ import com.google.common.collect.MapMaker;
  */
 public final class EngineModel {
     private static final Logger LOG = LoggerFactory.getLogger(EngineModel.class);
-
-    private static final String[] ADDITIONAL_TYPE_PACKAGES =
-        new String[]{
-                     "org.csstudio.domain.desy.epics.types",
-                     };
 
     /** Name of this model */
     private final String _name;
@@ -84,6 +79,7 @@ public final class EngineModel {
 
     private final IServiceProvider _provider;
     private IArchiveEngine _engine;
+    private final DesyJCADataSource _dataSource;
 
     /**
      * Construct model that writes to archive
@@ -93,9 +89,11 @@ public final class EngineModel {
      * @throws UnknownHostException
      */
     public EngineModel(@Nonnull final String engineName,
-                       @Nonnull final IServiceProvider provider) throws EngineModelException {
+                       @Nonnull final IServiceProvider provider,
+                       @Nonnull final DesyJCADataSource dataSource) throws EngineModelException {
         _name = engineName;
         _provider = provider;
+        _dataSource = dataSource;
 
         _groupMap = new MapMaker().concurrencyLevel(2).makeMap();
         _channelMap = new MapMaker().concurrencyLevel(2).makeMap();
@@ -130,7 +128,7 @@ public final class EngineModel {
 
     /** @return Current model state */
     @Nonnull
-    public EngineState getState() {
+    public synchronized EngineState getState() {
         return _state;
     }
 
@@ -306,14 +304,14 @@ public final class EngineModel {
     /** Setting the model state to shutdown.
      *  @see #getState()
      */
-    public void requestStop() {
+    public synchronized void requestStop() {
         _state = EngineState.SHUTDOWN_REQUESTED;
     }
 
     /** Setting the model state to restart.
      *  @see #getState()
      */
-    public void requestRestart() {
+    public synchronized void requestRestart() {
         _state = EngineState.RESTART_REQUESTED;
     }
 
@@ -363,7 +361,7 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     @SuppressWarnings("nls")
-    public void readConfig() throws EngineModelException {
+    public void readConfigurationAndSetupGroupsAndChannels() throws EngineModelException {
         try {
             if (_state != EngineState.IDLE) {
                 LOG.error("Read configuration while state " + _state + ". Should be " + EngineState.IDLE);
@@ -381,7 +379,7 @@ public final class EngineModel {
                 service.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
-                configureGroup(_provider, groupCfg, _writeExecutor, _channelMap);
+                configureGroup(_provider, groupCfg, _writeExecutor, _channelMap, _dataSource);
             }
         } catch (final Exception e) {
             handleExceptions(e);
@@ -410,17 +408,17 @@ public final class EngineModel {
     private void configureGroup(@Nonnull final IServiceProvider provider,
                                 @Nonnull final IArchiveChannelGroup groupCfg,
                                 @Nonnull final WriteExecutor writeExecutor,
-                                @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<?, ?>> channelMap)
+                                @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<?, ?>> channelMap,
+                                @Nonnull final DesyJCADataSource dataSource)
                                 throws ArchiveServiceException,
-                                       OsgiServiceUnavailableException,
-                                       EngineModelException {
+                                       OsgiServiceUnavailableException {
         final ArchiveGroup group = addGroup(groupCfg);
 
         final Collection<IArchiveChannel> channelCfgs =
             provider.getEngineFacade().getChannelsByGroupId(groupCfg.getId());
 
         for (final IArchiveChannel channelCfg : channelCfgs) {
-            createAndAddArchiveChannelBuffer(provider, channelCfg, writeExecutor, channelMap, group);
+            createAndAddArchiveChannelBuffer(provider, channelCfg, writeExecutor, channelMap, group, dataSource);
         }
     }
 
@@ -430,9 +428,11 @@ public final class EngineModel {
                                      @Nonnull final IArchiveChannel channelCfg,
                                      @Nonnull final WriteExecutor writeExecutor,
                                      @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<?, ?>> channelMap,
-                                     @Nonnull final ArchiveGroup group) throws EngineModelException {
+                                     @Nonnull final ArchiveGroup group,
+                                     @Nonnull final DesyJCADataSource dataSource) {
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel =
-            createArchiveChannelBuffer(channelCfg, provider);
+            new ArchiveChannelBuffer(channelCfg, provider, dataSource);
 
         @SuppressWarnings("unchecked")
         final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> presentChannel =
@@ -448,42 +448,6 @@ public final class EngineModel {
         return channel;
     }
 
-    @SuppressWarnings( { "rawtypes", "unchecked" } )
-    @Nonnull
-    private ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
-    createArchiveChannelBuffer(@Nonnull final IArchiveChannel cfg,
-                               @Nonnull final IServiceProvider provider) throws EngineModelException {
-        final String dataType = cfg.getDataType();
-        try {
-            final Class<?> typeClass =
-                BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                        ADDITIONAL_TYPE_PACKAGES);
-
-            if (!Collection.class.isAssignableFrom(typeClass)) {
-                return new ArchiveChannelBuffer(cfg.getName(),
-                                                cfg.getId(),
-                                                cfg.getLatestTimestamp(),
-                                                cfg.isEnabled(),
-                                                typeClass,
-                                                provider);
-            }
-            final String elemType =
-                BaseTypeConversionSupport.parseForFirstNestedGenericType(dataType);
-            final Class<?> elemClass = BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
-                                                                                               ADDITIONAL_TYPE_PACKAGES);
-            return new ArchiveChannelBuffer(cfg.getName(),
-                                            cfg.getId(),
-                                            cfg.getLatestTimestamp(),
-                                            cfg.isEnabled(),
-                                            typeClass,
-                                            elemClass,
-                                            provider);
-
-        } catch (final TypeSupportException e) {
-            throw new EngineModelException("Datatype " + dataType + " of channel " + cfg.getName() +
-                                           " could not be transformed into Class object", e);
-        }
-    }
 
     private void handleExceptions(@Nonnull final Exception inE) throws EngineModelException {
         final String msg = "Failure during archive engine configuration retrieval: ";
@@ -561,21 +525,18 @@ public final class EngineModel {
                                                                   low,
                                                                   high);
 
-            IArchiveChannel cfg =_provider.getEngineFacade().createChannel(channel);
-            if (cfg != null) {
+            final IArchiveChannel failureCfg =_provider.getEngineFacade().createChannel(channel);
+            if (failureCfg!= null) {
                 throw new EngineModelException("Channel creation failed.", null);
             }
-            cfg = _provider.getEngineFacade().getChannelByName(epicsName.toString());
-
-            return createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group);
-
-        } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Channel creation failed.", e);
-        } catch (final TypeSupportException e) {
-            throw new EngineModelException("Channel creation failed.", e);
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Channel creation failed.", e);
+            final IArchiveChannel cfg = _provider.getEngineFacade().getChannelByName(epicsName.toString());
+            if (cfg != null) {
+                return createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group, _dataSource);
+            }
+        } catch (final Exception e) {
+            throw new EngineModelException("Channel creation failed: " + e.getMessage(), e);
         }
+        throw new EngineModelException("Channel creation failed.", null);
     }
 
     public void removeChannelFromConfiguration(@Nonnull final String name) throws EngineModelException{

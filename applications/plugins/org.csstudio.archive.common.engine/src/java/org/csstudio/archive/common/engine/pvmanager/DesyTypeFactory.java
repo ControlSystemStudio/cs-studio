@@ -178,8 +178,6 @@ public abstract class DesyTypeFactory<V,
                                  (W) ctrl.getUpperCtrlLimit());
 
         return EpicsMetaData.create(alarm, gr, cr, prec);
-
-
     }
 
     @Nonnull
@@ -192,11 +190,10 @@ public abstract class DesyTypeFactory<V,
     @SuppressWarnings("unchecked")
     @Nonnull
     private ArrayList toMultiScalarData(@Nonnull final DBR eVal, @Nonnull final EM eMeta) {
-        final DesyTypeFactory elementFactory = DesyTypeFactoryProvider.getMap().get(eVal);
         final int nelm = eVal.getCount();
         final ArrayList array = Lists.newArrayList(nelm);
         for (int i = 0; i < nelm; i++) {
-            array.add(elementFactory.toScalarData(eVal, eMeta, i));
+            array.add(toScalarData(eVal, eMeta, i));
         }
         return array;
     }

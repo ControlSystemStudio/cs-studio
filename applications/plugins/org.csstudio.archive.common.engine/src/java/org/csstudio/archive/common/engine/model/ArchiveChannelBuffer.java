@@ -9,25 +9,23 @@ package org.csstudio.archive.common.engine.model;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.util.TimeDuration.sec;
-import gov.aps.jca.JCALibrary;
-import gov.aps.jca.Monitor;
 
 import java.io.Serializable;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.pvmanager.DesyArchivePVManagerListener;
+import org.csstudio.archive.common.engine.pvmanager.DesyJCAChannelHandler;
 import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.utility.pv.PVListener;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.slf4j.Logger;
@@ -43,7 +41,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("nls")
 public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVariable<V>> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PVListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveChannelBuffer.class);
 
     /** Channel name.
      *  This is the name by which the channel was created,
@@ -53,10 +51,10 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     private final ArchiveChannelId _id;
 
+    private final DesyJCADataSource _dataSource;
+
     /** Control system PV */
     private final PVReader<Object> _pv;
-
-    private final DesyJCADataSource _dataSource;
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
@@ -91,56 +89,30 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     private final IServiceProvider _provider;
 
-    private final Class<V> _typeClazz;
-    private final Class<V> _collClazz;
-
     @SuppressWarnings("rawtypes")
     private final DesyArchivePVManagerListener _listener;
 
     private TimeInstant _timeOfLastSampleBeforeChannelStart;
 
     /**
-     * Constructor
-     * @throws EngineModelException on failure while creating PV
-     */
-    public ArchiveChannelBuffer(@Nonnull final String name,
-                                @Nonnull final ArchiveChannelId id,
-                                @Nullable final TimeInstant timeOfLastSample,
-                                final boolean isEnabled,
-                                @Nonnull final Class<V> typeClazz,
-                                @Nonnull final IServiceProvider provider) throws EngineModelException {
-        this(name, id, timeOfLastSample, isEnabled, null, typeClazz, provider);
-    }
-
-
-    /**
      * Constructor.
-     * @throws EngineModelException on failure while creating PV
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public ArchiveChannelBuffer(@Nonnull final String name,
-                                @Nonnull final ArchiveChannelId id,
-                                @Nullable final TimeInstant timeOfLastSample,
-                                final boolean isEnabled,
-                                @Nullable final Class<V> collClazz,
-                                @Nonnull final Class<V> typeClazz,
-                                @Nonnull final IServiceProvider provider) throws EngineModelException {
-        _name = name;
-        _id = id;
-        _timeOfLastSampleBeforeChannelStart = timeOfLastSample;
-        _isEnabled = isEnabled;
-        _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
-        _typeClazz = typeClazz;
-        _collClazz = collClazz;
-        _provider = provider;
+    public ArchiveChannelBuffer(@Nonnull final IArchiveChannel cfg,
+                                @Nonnull final IServiceProvider provider,
+                                @Nonnull final DesyJCADataSource dataSource) {
 
-        // Sets CAJ (pure java implementation) as the default data source,
-        // monitoring only archive changes
-        _dataSource = new DesyJCADataSource(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.LOG);
-        PVManager.setDefaultDataSource(_dataSource);
+        _name = cfg.getName();
+        _id = cfg.getId();
+        _timeOfLastSampleBeforeChannelStart = cfg.getLatestTimestamp();
+        _isEnabled = cfg.isEnabled();
+        _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(_name);
+        _provider = provider;
+        _dataSource = dataSource;
+
         _pv = PVManager.read(channel(_name)).every(sec(3));
 
-        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id, _collClazz, _typeClazz) {
+        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
             @SuppressWarnings("synthetic-access")
             @Override
             protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
@@ -150,6 +122,10 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                 }
                 return _buffer.add(sample);
 
+            }
+            @Override
+            public boolean isConnected() {
+                return ArchiveChannelBuffer.this.isConnected();
             }
         };
     }
@@ -169,8 +145,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
-        // FIXME (bknerr) : is this information available?
-        return _dataSource.isConnected();
+        final DesyJCAChannelHandler handler = _dataSource.getHandler(_name);
+        return handler != null && handler.isConnected();
     }
 
     /** @return <code>true</code> if connected */
@@ -208,8 +184,6 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
             enable();
 
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Service unavailable. Enabling of channel could not be persisted.", e);
         } catch (final Exception e) {
             LOG.error("PV " + _pv.getName() + " could not be started with state info " + getInternalState(), e);
             throw new EngineModelException("Something went wrong within Gabriele's PV stuff on channel/PV startup", e);
@@ -217,20 +191,24 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         return true;
     }
 
-    private void enable() throws OsgiServiceUnavailableException {
+    public void enable() throws EngineModelException {
         synchronized (this) {
             if (isEnabled()) {
                 return;
             }
             _isEnabled = true;
         }
-        _provider.getEngineFacade().setEnableChannelFlag(_name, true);
+        try {
+            _provider.getEngineFacade().setEnableChannelFlag(_name, true);
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable. Disabling of channel could not be persisted.", e);
+        }
     }
 
     /**
      * Stop archiving this channel
      */
-    public void stop(@Nonnull final String info) throws EngineModelException {
+    public void stop(@Nonnull final String info) {
         synchronized (this) {
             if (!_isStarted) {
                 return;
@@ -239,22 +217,23 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         }
         _listener.setStopInfo(info);
         _pv.removePVReaderListener(_listener);
-
-        try {
-            disable();
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Service unavailable. Disabling of channel could not be persisted.", e);
-        }
     }
 
-    private void disable() throws OsgiServiceUnavailableException {
+    public void disable() throws EngineModelException {
+
+        stop("PERMAMENT DISABLE");
+
         synchronized (this) {
             if (!isEnabled()) {
                 return;
             }
             _isEnabled = false;
         }
-        _provider.getEngineFacade().setEnableChannelFlag(_name, false);
+        try {
+            _provider.getEngineFacade().setEnableChannelFlag(_name, false);
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable. Disabling of channel could not be persisted.", e);
+        }
     }
 
     @Nonnull
@@ -288,16 +267,12 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         return "Channel " + getName() + ", " + getMechanism();
     }
 
-    public boolean isMultiScalar() {
-        return _collClazz != null;
-    }
-
     @Nonnull
     public ArchiveChannelId getId() {
         return _id;
     }
 
-    boolean isEnabled() {
+    public boolean isEnabled() {
         return _isEnabled;
     }
 }

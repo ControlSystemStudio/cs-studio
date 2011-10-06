@@ -12,8 +12,7 @@ import java.io.PrintWriter;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
@@ -63,7 +62,7 @@ public class HTMLWriter {
         text("<a href=\"/version.html\">-Version-</a> ");
 
         text("<address>");
-        text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));
+        text(TimeInstantBuilder.fromNow().formatted());
         text("   <i>(Use web browser's Reload to refresh this page)</i>");
         text("</address>");
 

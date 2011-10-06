@@ -92,6 +92,15 @@ class ShowChannelResponse extends AbstractChannelResponse {
                                          Messages.HTTP_STOP_CHANNEL,
                                          StopChannelResponse.linkTo(channel.getName()),
                                          });
+        } else if (channel.isEnabled()) {
+            html.tableLine(new String[] {
+                    Messages.HTTP_START_CHANNEL,
+                    StartChannelResponse.linkTo(channel.getName()),
+            });
+            html.tableLine(new String[] {
+                    Messages.HTTP_DISABLE_CHANNEL,
+                    PermanentDisableChannelResponse.linkTo(channel.getName()),
+            });
         } else {
             html.tableLine(new String[] {
                     Messages.HTTP_START_CHANNEL,
