@@ -68,6 +68,7 @@
      </topic> 
      <topic href="html/widgets/WebBrowser.html" label="Web Brower"></topic>
      <topic href="html/widgets/GridLayout.html" label="Grid Layout"></topic>
+     <anchor id="thirdPartyWidgets"/>
      
   </topic>
   <topic label="Color and Font" href="html/ColorFont.html"></topic>

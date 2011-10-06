@@ -100,6 +100,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="onlineHelpHtml" type="string">
+            <annotation>
+               <documentation>
+                  The online help html file for this widget.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
          <attribute name="description" type="string">
             <annotation>
                <documentation>

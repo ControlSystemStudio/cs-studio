@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 
 public final class SchemaService {
 
@@ -53,7 +54,7 @@ public final class SchemaService {
 							schemaOPI, false);
 					DisplayModel displayModel = new DisplayModel();
 					XMLUtil.fillDisplayModelFromInputStream(inputStream,
-							displayModel);
+							displayModel, Display.getDefault());
 					for (AbstractWidgetModel model : displayModel.getChildren()) {
 						schemaWidgetsMap.put(model.getTypeID(), model);
 					}
