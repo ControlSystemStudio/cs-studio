@@ -19,6 +19,13 @@
             name="Waterfall"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            id="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            name="Channel Tree by Property"
+            restorable="true">
+      </view>
       <category
             id="org.csstudio.channel.application.category"
             name="Channel Applications">
@@ -47,6 +54,15 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.channel.views.WaterfallView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="Channel Tree by Property"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.ChannelTreeByPropertyView">
             </parameter>
          </command>
       </menuContribution>
