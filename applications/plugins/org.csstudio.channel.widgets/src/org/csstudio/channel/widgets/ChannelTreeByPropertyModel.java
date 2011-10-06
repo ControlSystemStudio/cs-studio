@@ -77,8 +77,6 @@ class ChannelTreeByPropertyModel {
 				childrenNames = null;
 			}
 			
-			System.out.println(nodeChannels);
-			System.out.println(childrenNames);
 		}
 		
 		/**

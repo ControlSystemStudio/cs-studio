@@ -45,42 +45,11 @@ import org.epics.pvmanager.data.VTableColumn;
 
 public class ChannelTreeByPropertyWidget extends Composite {
 	
-	private static final int MAX_COLUMNS = 200;
-	private static final int MAX_CELLS = 50000;
-	
-	private String channelQuery = "Tags=aphla.sys.SR";;
+	private String channelQuery;
 	
 	private Tree tree;
 	private ErrorBar errorBar;
 	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
-	
-	{
-		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.addChannelQueryListener(new ChannelQueryListener() {
-			
-			@Override
-			public void getQueryResult() {
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						Exception e = query.getLastException();
-						if (e == null) {
-							model = new ChannelTreeByPropertyModel(query.getResult(), Arrays.asList("cell", "girder", "devName", "elemName", "elemField", "handle"));
-							setChannels(query.getResult());
-						} else {
-							errorBar.setException(e);
-						}
-						tree.setItemCount(0);
-						tree.clearAll(true);
-						tree.setItemCount(model.getRoot().getChildrenNames().size());
-					}
-				});
-				
-			}
-		});
-		query.execute();
-	}
 	
 	private ChannelTreeByPropertyModel model;
 
@@ -116,21 +85,7 @@ public class ChannelTreeByPropertyWidget extends Composite {
 					} else {
 						item.setItemCount(node.getChildrenNames().size());
 					}
-					System.out.println("Actual data: " + item.getItemCount() + " " + item.getText());
 				}
-			}
-		});
-		tree.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				System.out.println("Selected " + ((TreeItem) e.item).getData());
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
 		tree.setItemCount(0);
@@ -223,6 +178,8 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	
 	private void queryChannels() {
 		setChannels(null);
+		tree.setItemCount(0);
+		tree.clearAll(true);
 		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
 		query.addChannelQueryListener(new ChannelQueryListener() {
 			
@@ -235,9 +192,11 @@ public class ChannelTreeByPropertyWidget extends Composite {
 						Exception e = query.getLastException();
 						if (e == null) {
 							setChannels(query.getResult());
+							model = new ChannelTreeByPropertyModel(getChannels(), Arrays.asList("cell", "girder", "devName", "elemName", "elemField", "handle"));
 						} else {
 							errorBar.setException(e);
 						}
+						tree.setItemCount(model.getRoot().getChildrenNames().size());
 					}
 				});
 				
