@@ -133,7 +133,8 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 	@Override
 	protected IPath iRcpGetPathFromWorkspaceFileDialog(IPath startPath,
 			String[] extensions) {
-		ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(null, "Choose File", extensions);
+		ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(
+				Display.getCurrent().getActiveShell(), "Choose File", extensions);
 		if(startPath != null)
 			rsDialog.setSelectedResource(startPath);	
 		
