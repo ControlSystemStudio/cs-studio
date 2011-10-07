@@ -18,6 +18,10 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.TextUtilities;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
@@ -28,6 +32,38 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public class AbstractBoolFigure extends Figure implements Introspectable{
+	
+	public enum BoolLabelPosition{
+		
+		DEFAULT("Default"),				
+		TOP("Top"),	
+		LEFT("Left"),
+		CENTER("Center"),
+		RIGHT("Right"),
+		BOTTOM("Bottom"),
+		TOP_LEFT("Top Left"),
+		TOP_RIGHT("Top Right"),	
+		BOTTOM_LEFT("Bottom Left"),
+		BOTTOM_RIGHT("Bottom Right");
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i=0;
+			for(BoolLabelPosition h : values()){
+				result[i++] = h.toString();
+			}
+			return result;
+		}
+		String descripion;
+		BoolLabelPosition(String description){
+			this.descripion = description;
+		}
+		
+		@Override
+		public String toString() {
+			return descripion;
+		}
+	}
 
 	protected Label boolLabel;
 
@@ -42,6 +78,8 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	protected String onLabel = "ON";
 
 	protected String offLabel = "OFF";
+	
+	protected BoolLabelPosition boolLabelPosition = BoolLabelPosition.DEFAULT;
 
 	protected Color onColor = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GREEN);
@@ -49,12 +87,69 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	protected Color offColor = CustomMediaFactory.getInstance().getColor(
 			new RGB(0,128,0));
 
+	private Point labelLocation;
+
 
 	protected AbstractBoolFigure() {
-		boolLabel = new Label(offLabel);
+		boolLabel = new Label(offLabel){
+			@Override
+			public boolean containsPoint(int x, int y) {
+				return false;
+			}
+		};
 		boolLabel.setVisible(showBooleanLabel);
 	}
 
+	protected void calculateLabelLocation(Point defaultLocation) {
+		if(boolLabelPosition == BoolLabelPosition.DEFAULT){
+			labelLocation =  defaultLocation;
+			return;
+		}
+		Rectangle textArea = getClientArea();		
+		Dimension textSize = TextUtilities.INSTANCE.getTextExtents(
+				boolLabel.getText(), getFont());
+			int x=0;
+			if(textArea.width > textSize.width){				
+				switch (boolLabelPosition) {
+				case CENTER:
+				case TOP:
+				case BOTTOM:
+					x = (textArea.width - textSize.width)/2;
+					break;
+				case RIGHT:
+				case TOP_RIGHT:
+				case BOTTOM_RIGHT:
+					x = textArea.width - textSize.width;
+					break;
+				default:					
+					break;
+				}
+			}
+			
+			int y=0;
+			if(textArea.height > textSize.height){
+				switch (boolLabelPosition) {
+				case CENTER:
+				case LEFT:
+				case RIGHT:
+					y = (textArea.height - textSize.height)/2;
+					break;
+				case BOTTOM:
+				case BOTTOM_LEFT:
+				case BOTTOM_RIGHT:
+					y =textArea.height - textSize.height;
+					break;
+				default:
+					break;
+				}
+			}
+			if(useLocalCoordinates())
+				labelLocation = new Point(x, y);
+			else
+				labelLocation = new Point(x + textArea.x, y + textArea.y);
+	}
+
+	
 	/**
 	 * @return the bit
 	 */
@@ -67,6 +162,24 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	 */
 	public boolean getBooleanValue() {
 		return booleanValue;
+	}
+	
+	protected Point getLabelLocation(final int x, final int y){
+		return getLabelLocation(new Point(x, y));
+	}
+	
+	/**
+	 * @param defaultLocation The default location.
+	 * @return the location of the boolean label
+	 */
+	protected Point getLabelLocation(Point defaultLocation){
+		if(labelLocation == null)
+			calculateLabelLocation(defaultLocation);
+		return labelLocation;
+	}
+	
+	public BoolLabelPosition getBoolLabelPosition() {
+		return boolLabelPosition;
 	}
 
 	/**
@@ -107,6 +220,12 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	}
 
 	@Override
+	public void invalidate() {
+		labelLocation = null;
+		super.invalidate();
+	}
+	
+	@Override
 	public boolean isOpaque() {
 		return false;
 	}
@@ -146,6 +265,14 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 	public void setFont(Font f) {
 		super.setFont(f);
 		boolLabel.setFont(f);
+		revalidate();
+	}
+	
+	public void setBoolLabelPosition(BoolLabelPosition labelPosition) {
+		this.boolLabelPosition = labelPosition;
+		labelPosition = null;
+		revalidate();
+		repaint();
 	}
 
 	/**
@@ -167,6 +294,7 @@ public class AbstractBoolFigure extends Figure implements Introspectable{
 		this.offLabel = offLabel;
 		if(!booleanValue)
 			boolLabel.setText(offLabel);
+		
 	}
 
 	/**

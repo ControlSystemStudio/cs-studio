@@ -19,7 +19,6 @@ import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
@@ -38,8 +37,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
 	private boolean stretch;
 
-	private Cursor cursor;
-
 	private IPath onImagePath;
 
 	private IPath offImagePath;
@@ -47,7 +44,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	private volatile boolean loadingImage;
 
 	public ImageBoolButtonFigure() {
-		cursor = Cursors.HAND;
 		addMouseListener(buttonPresser);
 		add(boolLabel);
 	}
@@ -106,10 +102,10 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		Rectangle clientArea = getClientArea().getCopy();
 		if (boolLabel.isVisible()) {
 			Dimension labelSize = boolLabel.getPreferredSize();
-			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width
+			boolLabel.setBounds(new Rectangle(getLabelLocation(clientArea.x + clientArea.width
 					/ 2 - labelSize.width / 2, clientArea.y + clientArea.height
-					/ 2 - labelSize.height / 2, labelSize.width,
-					labelSize.height));
+					/ 2 - labelSize.height / 2), new Dimension(labelSize.width,
+					labelSize.height)));
 		}
 		super.layout();
 	}
@@ -160,15 +156,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (runMode) {
-			if (value) {
-				if (cursor == null || cursor.isDisposed())
-					cursor = Cursors.HAND;
-			} else {
-				cursor = null;
-			}
-		}
-		setCursor(runMode ? cursor : null);
+		if (runMode && value) 			
+			setCursor(Cursors.HAND);	
 	}
 
 	public synchronized void setOffImagePath(IPath offImagePath) {
@@ -218,7 +207,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setRunMode(boolean runMode) {
 		super.setRunMode(runMode);
-		setCursor(runMode ? cursor : null);
+		setCursor(runMode ? Cursors.HAND : null);
 	}
 
 	public void setStretch(boolean strech) {

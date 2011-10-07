@@ -64,6 +64,7 @@ public class BoolButtonModel extends AbstractBoolControlModel {
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		//setPropertyDescription(PROP_PVNAME, "Readback PV");
+		setPropertyVisible(PROP_BOOL_LABEL_POS, false);
 	}
 	/**
 	 * The ID of this widget model.

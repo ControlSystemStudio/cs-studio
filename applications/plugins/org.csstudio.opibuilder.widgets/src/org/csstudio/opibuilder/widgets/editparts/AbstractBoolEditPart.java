@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 
@@ -55,6 +56,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		figure.setOffColor(model.getOffColor());
 		figure.setFont(CustomMediaFactory.getInstance().getFont(
 				model.getFont().getFontData()));
+		figure.setBoolLabelPosition(model.getBoolLabelPosition());
 
 	}
 
@@ -147,6 +149,17 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_SHOW_BOOL_LABEL, handler);
 
+		//  bool label position
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
+				figure.setBoolLabelPosition(BoolLabelPosition.values()[(Integer)newValue]);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractBoolWidgetModel.PROP_BOOL_LABEL_POS, handler);
+	
 		// on label
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
