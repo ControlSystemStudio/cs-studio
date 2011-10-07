@@ -73,7 +73,7 @@ public class DisplayModel extends AbstractContainerModel {
 	public DisplayModel() {
 		super();
 		setLocation(-1, -1);
-		setSize(800, 600);
+		setSize(800, 600);		
 	}
 
 	@Override
