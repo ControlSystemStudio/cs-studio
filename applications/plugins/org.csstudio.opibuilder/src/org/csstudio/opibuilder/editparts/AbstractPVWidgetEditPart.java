@@ -89,8 +89,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 						public void run() {
 							if(figure.getCursor() != Cursors.NO)
 								savedCursor = figure.getCursor();
-							figure.setCursor(Cursors.NO);
 							figure.setEnabled(false);
+							figure.setCursor(Cursors.NO);							
 							writeAccessMarked = true;
 						}
 					});
