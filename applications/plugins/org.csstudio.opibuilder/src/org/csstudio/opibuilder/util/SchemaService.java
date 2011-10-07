@@ -55,6 +55,7 @@ public final class SchemaService {
 					DisplayModel displayModel = new DisplayModel();
 					XMLUtil.fillDisplayModelFromInputStream(inputStream,
 							displayModel, Display.getDefault());
+					schemaWidgetsMap.put(displayModel.getTypeID(), displayModel);
 					for (AbstractWidgetModel model : displayModel.getChildren()) {
 						schemaWidgetsMap.put(model.getTypeID(), model);
 					}

@@ -250,9 +250,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			/**
 			 * {@inheritDoc}
 			 */
-			@SuppressWarnings("unchecked")
 			@Override
-			public Object getAdapter(final Class key) {
+			public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
 				if (key == AutoexposeHelper.class) {
 					return new ViewportAutoexposeHelper(this);
 				}
@@ -623,7 +622,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	}
 
 	@Override
-	public Object getAdapter(Class type) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
 		if(type == IPropertySheetPage.class)
 			return getPropertySheetPage();
 		else if (type == ZoomManager.class)
