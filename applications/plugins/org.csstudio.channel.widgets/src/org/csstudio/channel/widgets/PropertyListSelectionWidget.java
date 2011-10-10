@@ -45,10 +45,12 @@ public class PropertyListSelectionWidget extends Composite {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				List<String> newSelection = new ArrayList<String>(selectedProperties);
-				newSelection.addAll(Arrays.asList(unselected.getSelection()));
-				setSelectedProperties(newSelection);
-				selected.setSelection(selectedProperties.size() - 1);
+				if (unselected.getSelectionCount() != 0) {
+					List<String> newSelection = new ArrayList<String>(selectedProperties);
+					newSelection.addAll(Arrays.asList(unselected.getSelection()));
+					setSelectedProperties(newSelection);
+					selected.setSelection(selectedProperties.size() - 1);
+				}
 			}
 		});
 		
@@ -58,13 +60,15 @@ public class PropertyListSelectionWidget extends Composite {
 		upButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				int oldIndex = selected.getSelectionIndex();
-				if (oldIndex != 0) {
-					List<String> newSelection = new ArrayList<String>(selectedProperties);
-					newSelection.set(oldIndex - 1, selectedProperties.get(oldIndex));
-					newSelection.set(oldIndex, selectedProperties.get(oldIndex - 1));
-					setSelectedProperties(newSelection);
-					selected.setSelection(oldIndex - 1);
+				if (selected.getSelectionCount() != 0) {
+					int oldIndex = selected.getSelectionIndex();
+					if (oldIndex != 0) {
+						List<String> newSelection = new ArrayList<String>(selectedProperties);
+						newSelection.set(oldIndex - 1, selectedProperties.get(oldIndex));
+						newSelection.set(oldIndex, selectedProperties.get(oldIndex - 1));
+						setSelectedProperties(newSelection);
+						selected.setSelection(oldIndex - 1);
+					}
 				}
 			}
 		});
@@ -75,13 +79,15 @@ public class PropertyListSelectionWidget extends Composite {
 		downButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				int oldIndex = selected.getSelectionIndex();
-				if (oldIndex != selectedProperties.size() - 1) {
-					List<String> newSelection = new ArrayList<String>(selectedProperties);
-					newSelection.set(oldIndex + 1, selectedProperties.get(oldIndex));
-					newSelection.set(oldIndex, selectedProperties.get(oldIndex + 1));
-					setSelectedProperties(newSelection);
-					selected.setSelection(oldIndex + 1);
+				if (selected.getSelectionCount() != 0) {
+					int oldIndex = selected.getSelectionIndex();
+					if (oldIndex != selectedProperties.size() - 1) {
+						List<String> newSelection = new ArrayList<String>(selectedProperties);
+						newSelection.set(oldIndex + 1, selectedProperties.get(oldIndex));
+						newSelection.set(oldIndex, selectedProperties.get(oldIndex + 1));
+						setSelectedProperties(newSelection);
+						selected.setSelection(oldIndex + 1);
+					}
 				}
 			}
 		});
@@ -92,9 +98,11 @@ public class PropertyListSelectionWidget extends Composite {
 		unselectButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				List<String> newSelection = new ArrayList<String>(selectedProperties);
-				newSelection.removeAll(Arrays.asList(selected.getSelection()));
-				setSelectedProperties(newSelection);
+				if (selected.getSelectionCount() != 0) {
+					List<String> newSelection = new ArrayList<String>(selectedProperties);
+					newSelection.removeAll(Arrays.asList(selected.getSelection()));
+					setSelectedProperties(newSelection);
+				}
 			}
 		});
 		
