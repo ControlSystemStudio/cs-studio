@@ -280,4 +280,52 @@ public class EquidistantTimeBinsIteratorUnitTest {
         iter.next();
     }
 
+    /**
+     * Setup with original data from channel WK:K:16d:2:TDL_Desy_ai.VAL
+     * Range (1317027377 sec. to 1317082937 sec.).
+     *
+     * @throws Exception
+     */
+    @SuppressWarnings("rawtypes")
+    @Test(expected = NoSuchElementException.class)
+    public void testFilledIteratorWithRealSamples() throws Exception {
+
+        final String channelName = TestUtils.CHANNEL_NAME_3;
+        final TimeInstant start = TimeInstantBuilder.fromMillis(100000L);
+        final TimeInstant end = TimeInstantBuilder.fromMillis(55100000L);
+        final Collection expectedResult = TestUtils.CHANNEL_3_SAMPLES;
+        final IArchiveChannel expectedChannel = TestUtils.CHANNEL_3;
+        final Limits expLimits = Limits.<Double> create(0.0, 60.0);
+        final IArchiveSample expLastSampleBefore = TestUtils
+                .createArchiveMinMaxDoubleSample(TestUtils.CHANNEL_NAME_3,
+                                                 TimeInstantBuilder.fromMillis(0L),
+                                                 19.07651);
+
+        final IArchiveServiceProvider provider = TestUtils
+                .createCustomizedMockedServiceProvider(channelName,
+                                                       start,
+                                                       end,
+                                                       expectedResult,
+                                                       expectedChannel,
+                                                       expLimits,
+                                                       expLastSampleBefore);
+
+        final EquidistantTimeBinsIterator<Double> iter = new EquidistantTimeBinsIterator<Double>(provider,
+                                                                                                 channelName,
+                                                                                                 start,
+                                                                                                 end,
+                                                                                                 null,
+                                                                                                 15);
+
+        while (iter.hasNext()) {
+            final IMinMaxDoubleValue iValue = (IMinMaxDoubleValue) iter.next();
+            System.out.println("---- value: " + iValue.getValue() + " max: " + iValue.getMaximum()
+                               + " min: " + iValue.getMinimum() + " time: " +
+                               BaseTypeConversionSupport.toTimeInstant(iValue.getTime()).toString());
+        }
+
+
+        Assert.assertFalse(iter.hasNext());
+        iter.next();
+    }
 }
