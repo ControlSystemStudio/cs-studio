@@ -177,6 +177,11 @@ public class ChannelTreeByPropertyWidget extends Composite {
 						Exception e = query.getLastException();
 						if (e == null) {
 							setChannels(query.getResult());
+							List<String> newProperties = new ArrayList<String>(getProperties());
+							newProperties.retainAll(ChannelUtil.getPropertyNames(channels));
+							if (newProperties.size() != getProperties().size()) {
+								setProperties(newProperties);
+							}
 							computeTree();
 						} else {
 							errorBar.setException(e);
