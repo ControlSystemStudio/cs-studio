@@ -16,11 +16,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -141,7 +143,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PropertyListDialog dialog = new PropertyListDialog(treeWidget);
-				dialog.open();
+				dialog.open(e);
 			}
 		});
 		name_helper.loadSettings();

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -49,19 +50,23 @@ public class PropertyListDialog extends Dialog {
 		super(shell, style);
 		setText(title);
 	}
+	
+	public void open(SelectionEvent evt) {
+		System.out.println(evt.getSource() + " " +new Point(evt.x, evt.y) );
+		Point point = evt.display.map((Control) evt.getSource(), null, new Point(evt.x, evt.y));
+		open(point.x, point.y);
+	}
 
 	/**
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public void open() {
+	public void open(int x, int y) {
 		createContents();
-		Point position = new Point(control.getBounds().x, control.getBounds().y);
-		position = control.getDisplay().map(control, null, position);
 		shell.open();
 		shell.layout();
-		shell.setBounds(Math.min(position.x, shell.getDisplay().getClientArea().width - shell.getBounds().width),
-				Math.min(position.y, shell.getDisplay().getClientArea().height - shell.getBounds().height),
+		shell.setBounds(Math.min(x, shell.getDisplay().getClientArea().width - shell.getBounds().width),
+				Math.min(y, shell.getDisplay().getClientArea().height - shell.getBounds().height),
 				shell.getBounds().width, shell.getBounds().height);
 	}
 	
