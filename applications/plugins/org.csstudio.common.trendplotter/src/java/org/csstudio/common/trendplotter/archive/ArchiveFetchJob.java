@@ -139,7 +139,6 @@ public class ArchiveFetchJob extends Job
                     }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-                    final int index = 0;
                     while (value_iter.hasNext()) {
                         final IValue next = value_iter.next();
                         result.add(next);
