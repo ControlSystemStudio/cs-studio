@@ -30,38 +30,38 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 /**
- * Create SlaveCfgData's from a set of parameter 
- * 
+ * Create SlaveCfgData's from a set of parameter
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 05.07.2011
  */
 public class SlaveCfgDataBuilder {
- 
-    private final List<SlaveCfgData> _slaveCfgDataList = new ArrayList<SlaveCfgData>(); 
-    
+
+    private final List<SlaveCfgData> _slaveCfgDataList = new ArrayList<SlaveCfgData>();
+
     /**
      * Constructor.
      */
     public SlaveCfgDataBuilder(@Nonnull final List<Integer> slaveCfgData) {
        final Iterator<Integer> iterator = slaveCfgData.iterator();
         while (iterator.hasNext()) {
-            final Integer parameter = (Integer) iterator.next();
+            final Integer parameter = iterator.next();
             // Test Simple oder Special Header
             if( parameter != 0 && (parameter & 0x30) == 0) {
                 int parameter1;
                 if(iterator.hasNext()) {
-                    parameter1 = (Integer) iterator.next();
+                    parameter1 = iterator.next();
                     _slaveCfgDataList.add(new SlaveCfgData(parameter, parameter1));
-                    
+
                 }
             } else {
                 _slaveCfgDataList.add(new SlaveCfgData(parameter));
             }
         }
     }
-    
+
     @Nonnull
     public List<SlaveCfgData> getSlaveCfgDataList() {
         return _slaveCfgDataList;

@@ -75,10 +75,10 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.master";
     private static final Logger LOG = LoggerFactory.getLogger(MasterEditor.class);
-    
+
     /*
      * Data.
      */
@@ -90,7 +90,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
      * The Selected GSD FFile for the Master.
      */
     private GSDFileDBO _gsdFile;
-    
+
     /*
      * GUI Elements.
      */
@@ -130,7 +130,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
      * The description field for the Master User Data.
      */
     private Text _masterUserDataText;
-    
+
     /**
      * Selection of the Memory Address Type.
      */
@@ -150,9 +150,9 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
     private ComboViewer _indexCombo;
     private Button _redundentButton;
     private Collection<Short> _freeStationAddress;
-    
+
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -189,7 +189,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -208,7 +208,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         }
         selecttTabFolder(0);
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
@@ -217,14 +217,14 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
     public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         final Date now = new Date();
-        
+
         // Name
         _master.setName(getNameWidget().getText());
         getNameWidget().setData(getNameWidget().getText());
-        
+
         final Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
         .getFirstElement();
-        
+
         try {
             _master.setSortIndexNonHibernate(stationAddress);
             if(_redundentButton.getSelection()) {
@@ -235,7 +235,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                 _master.setRedundant((short) -1);
             }
             _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
-            
+
             // Information
             _master.setVendorName(_vendorText.getText());
             _master.setProfibusdpmasterBez(_pbBoardText.getText());
@@ -252,15 +252,15 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             // Document
             final Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
             _master.setDocuments(docs);
-            
+
             // update header
             getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
             final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
             getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
-            
+
             // GSD File
             _master.setGSDFile(_gsdFile);
-            
+
             // FMB Set
             _master.setMaxNrSlave(Integer.parseInt(_maxNrSlaveText.getText()));
             _master.setMaxSlaveOutputLen(Integer.parseInt(_maxSlaveOutputLenText.getText()));
@@ -269,7 +269,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             _master.setMaxSlaveDiagLen(Integer.parseInt(_maxSlaveDiagLenText.getText()));
             _master.setMaxBusParaLen(Integer.parseInt(_maxBusParaLenText.getText()));
             _master.setMaxSlaveParaLen(Integer.parseInt(_maxSlaveParaLenText.getText()));
-            
+
             fillStationAddressCombo();
             save();
         } catch (final PersistenceException e) {
@@ -277,7 +277,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             DeviceDatabaseErrorDialog.open(null, "Can't save Master! Database error.", e);
         }
     }
-    
+
     /** {@inheritDoc}  */
     @Override
     public final void fill(@CheckForNull final GSDFileDBO gsdFile) throws PersistenceException {
@@ -286,7 +286,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         }
         ParsedGsdFileModel parsedGsdFileModel;
         parsedGsdFileModel = gsdFile.getParsedGsdFileModel();
-        
+
         // setGSDData
         getHeaderField(HeaderFields.VERSION).setText(parsedGsdFileModel.getRevision());
         _vendorText.setText(parsedGsdFileModel.getVendorName());
@@ -299,7 +299,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         _stationTypText.setText(parsedGsdFileModel.getIntProperty("Station_Type").toString());
         _gsdFile = gsdFile;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     @CheckForNull
@@ -309,12 +309,12 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         }
         return null;
     }
-    
+
     @Override
     public final void setGsdFile(@Nullable final GSDFileDBO gsdFile) {
         _master.setGSDFile(gsdFile);
     }
-    
+
     private void fillStationAddressCombo() throws PersistenceException {
         _freeStationAddress = _master.getFreeMStationAddress(_redundentButton.getSelection());
         final Short sortIndex = _master.getSortIndex();
@@ -331,7 +331,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                     .getSelection()).getFirstElement());
         }
     }
-    
+
     /**
      * @throws PersistenceException
      *
@@ -341,7 +341,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
         _indexCombo.getCombo().addModifyListener(getMLSB());
         _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 final short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
@@ -360,12 +360,12 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             }
         });
     }
-    
+
     @SuppressWarnings("unused")
     private void makeFmbSetGroup(@Nonnull final Composite parent) throws PersistenceException {
         final int limit = 13000;
         final ModifyListener listener = new ModifyListener() {
-            
+
             @Override
             public void modifyText(@Nonnull final ModifyEvent e) {
                 String text = _maxSlaveInputLenText.getText();
@@ -385,22 +385,22 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                    value,
                                                    limit,
                                                    value < limit));
-                
+
             }
-            
+
         };
-        
+
         final Group gName = new Group(parent, SWT.NONE);
         gName.setText("FMB Set");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 4));
         gName.setLayout(new GridLayout(2, false));
-        
+
         final Label maxNrSlaveLabel = new Label(gName, SWT.NONE);
         maxNrSlaveLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxNrSlaveLabel.setText("Max Number Slaves:");
-        
+
         int min = 0;
-        
+
         final TreeMap<Short, ? extends AbstractNodeDBO> map = (TreeMap<Short, ? extends AbstractNodeDBO>) _master
         .getChildrenAsMap();
         if(map.size() > 0) {
@@ -422,11 +422,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                       ProfibusHelper.VL_TYP_U16);
         _maxNrSlaveText.addModifyListener(getMLSB());
         _maxNrSlaveText.addModifyListener(listener);
-        
+
         final Label maxSlaveOutputLenLabel = new Label(gName, SWT.NONE);
         maxSlaveOutputLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveOutputLenLabel.setText("Max Slave Output Len:");
-        
+
         int slaveOutputLen = 160;
         if(_master.getMaxSlaveOutputLen() >= 0) {
             slaveOutputLen = _master.getMaxSlaveOutputLen();
@@ -438,11 +438,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                              ProfibusHelper.VL_TYP_U16);
         _maxSlaveOutputLenText.addModifyListener(getMLSB());
         _maxSlaveOutputLenText.addModifyListener(listener);
-        
+
         final Label maxSlaveInputLenLabel = new Label(gName, SWT.NONE);
         maxSlaveInputLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveInputLenLabel.setText("Max Slave Input Len:");
-        
+
         int slaveInputLen = 160;
         if(_master.getMaxSlaveInputLen() >= 0) {
             slaveInputLen = _master.getMaxSlaveInputLen();
@@ -454,23 +454,23 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                             ProfibusHelper.VL_TYP_U16);
         _maxSlaveInputLenText.addModifyListener(getMLSB());
         _maxSlaveInputLenText.addModifyListener(listener);
-        
+
         final Label maxCalc = new Label(gName, SWT.NONE);
         maxCalc.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         maxCalc.setText("(Output Len + Input Len) * Max Nr Slaves < 13000");
         int value = (slaveInputLen + slaveOutputLen) * maxNrSlave;
-        
+
         new Label(gName, SWT.NONE);
         _maxCalcText = ProfibusHelper.getTextField(gName, String.format("%1$d < %2$d = %3$b",
                                                                         value,
                                                                         limit,
                                                                         value < limit));
-        
+
         final Label maxSlaveDiagEntriesLabel = new Label(gName, SWT.NONE);
         maxSlaveDiagEntriesLabel
         .setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveDiagEntriesLabel.setText("Max Slave Diag Entries:");
-        
+
         value = 126;
         if(_master.getMaxSlaveDiagEntries() >= 0) {
             value = _master.getMaxSlaveDiagEntries();
@@ -481,11 +481,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                                Ranges.getRangeValue(0, 9999, 126),
                                                                ProfibusHelper.VL_TYP_U16);
         _maxSlaveDiagEntriesText.addModifyListener(getMLSB());
-        
+
         final Label maxSlaveDiagLenLabel = new Label(gName, SWT.NONE);
         maxSlaveDiagLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveDiagLenLabel.setText("Max Slave Diag Len:");
-        
+
         value = 32;
         if(_master.getMaxSlaveDiagLen() >= 0) {
             value = _master.getMaxSlaveDiagLen();
@@ -496,11 +496,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                            Ranges.getRangeValue(0, 9999, 32),
                                                            ProfibusHelper.VL_TYP_U16);
         _maxSlaveDiagLenText.addModifyListener(getMLSB());
-        
+
         final Label maxBusParaLenLabel = new Label(gName, SWT.NONE);
         maxBusParaLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxBusParaLenLabel.setText("Max Bus Para Len:");
-        
+
         value = 128;
         if(_master.getMaxBusParaLen() >= 0) {
             value = _master.getMaxBusParaLen();
@@ -511,11 +511,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                          Ranges.getRangeValue(0, 9999, 128),
                                                          ProfibusHelper.VL_TYP_U16);
         _maxBusParaLenText.addModifyListener(getMLSB());
-        
+
         final Label maxSlaveParaLenLabel = new Label(gName, SWT.NONE);
         maxSlaveParaLenLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         maxSlaveParaLenLabel.setText("Max Slave Para Len:");
-        
+
         value = 244;
         if(_master.getMaxSlaveParaLen() >= 0) {
             value = _master.getMaxSlaveParaLen();
@@ -526,40 +526,40 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                            Ranges.getRangeValue(0, 9999, 244),
                                                            ProfibusHelper.VL_TYP_U16);
         _maxSlaveParaLenText.addModifyListener(getMLSB());
-        
+
     }
-    
+
     private void makeInformationGroup(@Nonnull final Composite comp, final int column) {
         final Group gInformation = new Group(comp, SWT.NONE);
         gInformation.setText("Information:");
         gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, column, 1));
         gInformation.setLayout(new GridLayout(4, false));
         gInformation.setTabList(new Control[0]);
-        
+
         final Label vendorLabel = new Label(gInformation, SWT.NONE);
         vendorLabel.setText("Vendor: ");
         _vendorText = new Text(gInformation, SWT.NONE);
         _vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         _vendorText.setEditable(false);
-        
+
         final Label idNoLabel = new Label(gInformation, SWT.NONE);
         idNoLabel.setText("Ident. No.: ");
         _idNoText = new Text(gInformation, SWT.NONE);
         _idNoText.setEditable(false);
-        
+
         final Label pbBoardLabel = new Label(gInformation, SWT.NONE);
         pbBoardLabel.setText("Profibusboard: ");
         _pbBoardText = new Text(gInformation, SWT.NONE);
         _pbBoardText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         _pbBoardText.setEditable(false);
-        
+
         final Label stationTypLabel = new Label(gInformation, SWT.NONE);
         stationTypLabel.setText("Station Typ: ");
         _stationTypText = new Text(gInformation, SWT.NONE);
         _stationTypText.setEditable(false);
-        
+
     }
-    
+
     private void makeMasterUserData(@Nonnull final Composite comp, final int column) {
         final Group masterUserData = new Group(comp, SWT.NONE);
         masterUserData.setText("Master User Data:");
@@ -569,7 +569,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         _masterUserDataText = new Text(masterUserData, SWT.NONE);
         _masterUserDataText.setEditable(false);
         _masterUserDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
-        
+
         // is a Default Value. Is not a part of the Master GSD File.
         if( _master != null && _master.getMasterUserData() != null
                 && _master.getMasterUserData().length() > 0) {
@@ -579,11 +579,11 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
             .setText("0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0");
         }
     }
-    
+
     private void makeMemoryAddressingGroup(@Nonnull final Composite comp) {
         _memAddressType = _master.getProfibusPnoId();
         _oldMemAddressType = _memAddressType;
-        
+
         final SelectionListener selectionListener = new SelectionAdapter() {
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
@@ -592,12 +592,12 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                      !_oldMemAddressType.equals(_memAddressType));
             }
         };
-        
+
         final Group gMemoryAddressing = new Group(comp, SWT.NONE);
         gMemoryAddressing.setText("Memory Address Mode:");
         gMemoryAddressing.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
         gMemoryAddressing.setLayout(new GridLayout(2, false));
-        
+
         final Button direct = new Button(gMemoryAddressing, SWT.RADIO);
         direct.setText("Array");
         direct.setData(0);
@@ -616,36 +616,36 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                 break;
         }
     }
-    
+
     private void makeNameGroup(@Nonnull final Composite comp, final int column) {
         final Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, column, 1));
         gName.setLayout(new GridLayout(3, false));
-        
+
         final Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _master.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        
+
         // Label
         final Label slotIndexLabel = new Label(gName, SWT.NONE);
         slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
         slotIndexLabel.setText("Station Adress:");
-        
+
         // Sort Index Combo
         _indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
         _indexCombo.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
         _indexCombo.setContentProvider(new ArrayContentProvider());
         _indexCombo.setLabelProvider(new LabelProvider());
     }
-    
+
     private void makeParametersGroup(@Nonnull final Composite comp) {
         final Group gParameters = new Group(comp, SWT.NONE);
         gParameters.setText("Parameters:");
         gParameters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3));
         gParameters.setLayout(new GridLayout(3, false));
-        
+
         // min. Slave Interval
         new Label(gParameters, SWT.NONE);// .setText("[micros]");
         new Label(gParameters, SWT.NONE).setText("min. Slave Interval: ");
@@ -656,7 +656,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                                              Ranges.getRangeValue(0, 10000, 6),
                                                                              ProfibusHelper.VL_TYP_U16);
         _minSlaveIntervalText.addModifyListener(getMLSB());
-        
+
         // Poll Timeout
         new Label(gParameters, SWT.NONE).setText("[tBit]");
         new Label(gParameters, SWT.NONE).setText("Poll Timeout: ");
@@ -666,7 +666,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                        Ranges.getRangeValue(0, 100000, 1000),
                                                        ProfibusHelper.VL_TYP_U16);
         _pollTimeOutText.addModifyListener(getMLSB());
-        
+
         // Data Control Time
         new Label(gParameters, SWT.NONE).setText("[tBit]");
         new Label(gParameters, SWT.NONE).setText("Data Control Time: ");
@@ -677,45 +677,45 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
                                                                             Ranges.getRangeValue(0, 10000, 100),
                                                                             ProfibusHelper.VL_TYP_U16);
         _dataControlTimeText.addModifyListener(getMLSB());
-        
+
         // Autoclear
         new Label(gParameters, SWT.NONE).setText("[tBit]");
         new Label(gParameters, SWT.NONE).setText("Autoclear: ");
         _autoclearButton = new Button(gParameters, SWT.CHECK | SWT.LEFT);
         _autoclearButton.setText("");
-        
+
         if(_master != null) {
             _autoclearButton.setSelection(_master.isAutoclear());
         }
         _autoclearButton.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 saveButtonEnb();
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 saveButtonEnb();
             }
-            
+
             private void saveButtonEnb() {
                 setSavebuttonEnabled("MasterAutoclear", _autoclearButton.getSelection());
-                
+
             }
         });
     }
-    
+
     private void makeRedundencyMasterGroup(@Nonnull final Composite comp, final int column) throws PersistenceException {
         final Group gRedundencyMaster = new Group(comp, SWT.NONE);
         gRedundencyMaster.setText("Redundency Master:");
         gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, column, 1));
         gRedundencyMaster.setLayout(new GridLayout(3, false));
-        
+
         _redundentButton = new Button(gRedundencyMaster, SWT.CHECK);
         _redundentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         _redundentButton.setText("Redunden IOC: ");
-        
+
         if( _master.getRedundant() < 0
                 && !_master.getFreeStationAddress().contains((short) (_master.getSortIndex() + 1))) {
             _redundentButton.setEnabled(false);
@@ -724,45 +724,40 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         }
         _redundentButton.setSelection(_master.getRedundant() >= 0);
         _redundentButton.setData(_master.getRedundant() >= 0);
-        
+
         _redundentButton.addSelectionListener(new SelectionListener() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 select();
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 select();
             }
-            
+
             private void select() {
                 setSavebuttonEnabled("MasterRedundent",
                                      _redundentButton.getSelection() != (Boolean) _redundentButton
                                      .getData());
                 final Short sortIndex = (Short) ((StructuredSelection) _indexCombo.getSelection())
                 .getFirstElement();
-                try {
-                    _freeStationAddress = _master.getFreeMStationAddress(_redundentButton
-                                                                         .getSelection());
-                    _indexCombo.setInput(_freeStationAddress);
-                    _indexCombo.setSelection(new StructuredSelection(sortIndex));
-                } catch (final PersistenceException e) {
-                    LOG.error("Database error!", e);
-                    DeviceDatabaseErrorDialog.open(null, "Database error!", e);
-                }
+                _freeStationAddress = _master.getFreeMStationAddress(_redundentButton
+                        .getSelection());
+                _indexCombo.setInput(_freeStationAddress);
+                _indexCombo.setSelection(new StructuredSelection(sortIndex));
             }
         });
     }
-    
+
     /**
      * @param head
      *            is TabHead Text
      * @throws PersistenceException
      */
     private void master(@Nonnull final String head) throws PersistenceException {
-        
+
         final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 4, 350, 240);
         // Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 6,
         // 650, 440);
@@ -777,7 +772,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         makeMasterUserData(comp, 2);
         makeDescGroup(comp, 3);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -787,7 +782,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -797,7 +792,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -807,13 +802,13 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     void setPrmUserData(@Nullable final Integer index, @Nullable final Integer value) {
         // TODO Auto-generated method stub
-        
+
     }
 }

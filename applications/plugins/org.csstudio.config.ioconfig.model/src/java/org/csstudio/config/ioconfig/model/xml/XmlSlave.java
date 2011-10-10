@@ -24,14 +24,12 @@
  */
 package org.csstudio.config.ioconfig.model.xml;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveCfgData;
@@ -48,7 +46,7 @@ import org.jdom.Element;
  * @since 14.05.2008
  */
 public class XmlSlave {
-    
+
     /**
      * The Slave root {@link Element}.
      */
@@ -57,46 +55,41 @@ public class XmlSlave {
      * Set of Profibus Modules.
      */
     private final TreeSet<ModuleDBO> _modules;
-    
+
     /**
      * Generate a GSD Configfile XML-Tag for a Profibus Slave.
      *
      * @param slave
      *            The Profibus slave.
-     * @throws PersistenceException
      */
-    public XmlSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
+    public XmlSlave(@Nonnull final SlaveDBO slave) {
         _slaveElement = new Element("SLAVE");
         _slaveElement.setAttribute("fdl_add", Integer.toString(slave.getFdlAddress()));
         final Comparator<ModuleDBO> comparator = new Comparator<ModuleDBO>() {
-            
+
             @Override
             public int compare(@Nonnull final ModuleDBO o1, @Nonnull final ModuleDBO o2) {
                 return o1.getSortIndex() - o2.getSortIndex();
             }
-            
+
         };
         _modules = new TreeSet<ModuleDBO>(comparator);
         _modules.addAll(slave.getChildren());
         Element e2;
-        try {
-            e2 = setSlavePrmData(slave);
-            final Element e3 = setSlaveCfgData();
-            final Element e4 = setSlaveAatData();
-            final Element e5 = setSlaveUserData();
-            final int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
-            final int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
-            final Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
-            _slaveElement.addContent(e1);
-            _slaveElement.addContent(e2);
-            _slaveElement.addContent(e3);
-            _slaveElement.addContent(e4);
-            _slaveElement.addContent(e5);
-        } catch (final IOException e) {
-            throw new PersistenceException(e);
-        }
+        e2 = setSlavePrmData(slave);
+        final Element e3 = setSlaveCfgData();
+        final Element e4 = setSlaveAatData();
+        final Element e5 = setSlaveUserData();
+        final int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
+        final int cfgLen = Integer.parseInt(e3.getAttributeValue("cfg_data_len"));
+        final Element e1 = setSlaveParaSet(slave, prmLen, cfgLen, 2, 2);
+        _slaveElement.addContent(e1);
+        _slaveElement.addContent(e2);
+        _slaveElement.addContent(e3);
+        _slaveElement.addContent(e4);
+        _slaveElement.addContent(e5);
     }
-    
+
     /**
      * @param prmDataSB
      */
@@ -122,7 +115,7 @@ public class XmlSlave {
             }
         }
     }
-    
+
     /**
      *
      * @return the Slave {@link Element}
@@ -131,17 +124,16 @@ public class XmlSlave {
     public final Element getSlave() {
         return _slaveElement;
     }
-    
+
     /**
      * Set all SlaveAatData parameter.
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave aat Data Element.
-     * @throws IOException
      */
     @Nonnull
-    private Element setSlaveAatData() throws IOException {
+    private Element setSlaveAatData() {
         final Element slaveAatData = new Element("SLAVE_AAT_DATA");
         String aat = "0,8";
         int offset = 0;
@@ -156,7 +148,7 @@ public class XmlSlave {
                         leng = slaveCfgData.getByteLength();
                         aat = aat.concat(Integer.toString(leng));
                     }
-                    
+
                     // TODO (hrickens) [05.07.2011]: Das ist dochz ziemlich sicher falsch! Sollte eins nicht Output sein?
                     if(slaveCfgData.isInput()) {
                         leng += slaveCfgData.getByteLength();
@@ -172,17 +164,16 @@ public class XmlSlave {
         slaveAatData.setText("");
         return slaveAatData;
     }
-    
+
     /**
      * Set all slave_cfg_data parameter.
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Cfg Data Element.
-     * @throws IOException
      */
     @Nonnull
-    private Element setSlaveCfgData() throws IOException {
+    private Element setSlaveCfgData() {
         final Element slaveCfgData = new Element("SLAVE_CFG_DATA");
         String cfgData = "";
         for (final ModuleDBO module : _modules) {
@@ -199,7 +190,7 @@ public class XmlSlave {
         slaveCfgData.setText(cfgData);
         return slaveCfgData;
     }
-    
+
     /**
      * Set all XML slave_para_set parameter.
      *
@@ -229,17 +220,16 @@ public class XmlSlave {
         slaveParaSet.setAttribute("reserved", "0,0,0,0,0,0,0,0,0,0,0,0");
         return slaveParaSet;
     }
-    
+
     /**
      * Set all slave_prm_data parameter.
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Prm Data Element.
-     * @throws IOException
      */
     @Nonnull
-    private Element setSlavePrmData(@Nonnull final SlaveDBO slave) throws IOException {
+    private Element setSlavePrmData(@Nonnull final SlaveDBO slave) {
         final Element slavePrmData = new Element("SLAVE_PRM_DATA");
         final GSDFileDBO gsdFile = slave.getGSDFile();
         if(gsdFile != null) {
@@ -273,7 +263,7 @@ public class XmlSlave {
         }
         return slavePrmData;
     }
-    
+
     /**
      * Set all slave_user_data parameter.
      *
@@ -290,5 +280,5 @@ public class XmlSlave {
         slaveUserData.setText("");
         return slaveUserData;
     }
-    
+
 }

@@ -32,10 +32,8 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
-import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -55,16 +53,16 @@ import org.slf4j.LoggerFactory;
 
  */
 public class CreateWinModAction extends Action {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(CreateWinModAction.class);
-    
+
     private final ProfiBusTreeView _pbtv;
-    
+
     public CreateWinModAction(@Nullable final String text, @Nonnull final ProfiBusTreeView pbtv) {
         super(text);
         _pbtv = pbtv;
     }
-    
+
     @Override
     public void run() {
         final String filterPathKey = "FilterPath";
@@ -87,27 +85,18 @@ public class CreateWinModAction extends Action {
             }
         }
     }
-    
+
     private void makeFiles(@Nonnull final File path, @Nonnull final ProfibusSubnetDBO subnet) {
         String name = subnet.getName();
-        name = name==null?"":name;
-        final ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(name);
-        try {
-            cfg.setSubnet(subnet);
-            final File xmlFile = new File(path, name + ".cfg");
-            final File txtFile = new File(path, name + ".txt");
-            makeXMLFile(cfg, xmlFile);
-            makeTxtFile(cfg, txtFile);
-        } catch (final PersistenceException e) {
-            LOG.error("Database Error! Files not created!", e);
-            DeviceDatabaseErrorDialog.open(null, "Can't create WinMod conifg files! Database error.", e);
-        }
+        name = name == null ? "" : name;
+        final ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator();
+        cfg.setSubnet(subnet);
+        final File xmlFile = new File(path, name + ".cfg");
+        final File txtFile = new File(path, name + ".txt");
+        makeXMLFile(cfg, xmlFile);
+        makeTxtFile(cfg, txtFile);
     }
-    
-    /**
-     * @param cfg
-     * @param txtFile
-     */
+
     private void makeTxtFile(@Nonnull final ProfibusConfigWinModGenerator cfg, @Nonnull final File txtFile) {
         if (txtFile.exists()) {
             final MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
@@ -130,7 +119,7 @@ public class CreateWinModAction extends Action {
             }
         }
     }
-    
+
     /**
      * @param cfg
      * @param xmlFile
@@ -157,7 +146,7 @@ public class CreateWinModAction extends Action {
             }
         }
     }
-    
+
     /**
      * @param name
      */
@@ -167,7 +156,7 @@ public class CreateWinModAction extends Action {
         abortBox.setMessage("The file " + fileName + " can not created!");
         abortBox.open();
     }
-    
+
     private void runFacility(@Nonnull final File path, @Nonnull final Object selectedNode) {
         final FacilityDBO facility = (FacilityDBO) selectedNode;
         LOG.info("Create XML for Facility: {}", facility);
@@ -177,7 +166,7 @@ public class CreateWinModAction extends Action {
             }
         }
     }
-    
+
     private void runIoc(@Nonnull final File path, @Nonnull final Object selectedNode) {
         final IocDBO ioc = (IocDBO) selectedNode;
         LOG.info("Create XML for Ioc: {}", ioc);
@@ -185,11 +174,11 @@ public class CreateWinModAction extends Action {
             makeFiles(path, subnet);
         }
     }
-    
+
     private void runProfibusSubnet(@Nonnull final File path, @Nonnull final Object selectedNode) {
         final ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
         LOG.info("Create XML for Subnet: {}", subnet);
         makeFiles(path, subnet);
     }
-    
+
 }

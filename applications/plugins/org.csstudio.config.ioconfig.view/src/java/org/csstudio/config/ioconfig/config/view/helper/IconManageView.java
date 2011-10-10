@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
@@ -63,11 +64,11 @@ import org.eclipse.swt.widgets.Label;
  */
 public class IconManageView extends Composite {
     //    public class IconManageView extends ScrolledComposite {
-    
+
     private final Composite _mainComposite;
     private final List<NodeImageDBO> _nodeImages;
     private NodeImageDBO _selectedImage;
-    
+
     /**
      * @param parent
      * @param style
@@ -82,14 +83,14 @@ public class IconManageView extends Composite {
         GridDataFactory.fillDefaults().grab(false, true).span(1, 2).applyTo(tableComposite);
         tableComposite.setLayout(tableColumnLayout);
         tableComposite.setBackground(new Color(null,125,125,0));
-        
+
         final TableViewer iconOverview = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
                                                          | SWT.MULTI | SWT.FULL_SELECTION);
         iconOverview.getTable().setHeaderVisible(true);
         iconOverview.setContentProvider(new ArrayContentProvider());
         iconOverview.getTable().setLinesVisible(true);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(iconOverview.getTable());
-        
+
         // Column Icon
         TableViewerColumn column = new TableViewerColumn(iconOverview, SWT.NONE);
         column.getColumn().setText("Icon");
@@ -101,7 +102,7 @@ public class IconManageView extends Composite {
             }
         });
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(2, 100, true));
-        
+
         // Column File Name
         column = new TableViewerColumn(iconOverview, SWT.NONE);
         column.getColumn().setText("File Name");
@@ -115,7 +116,7 @@ public class IconManageView extends Composite {
         //        _nodeImages = Repository.load(NodeImage.class);
         _nodeImages = new ArrayList<NodeImageDBO>();
         iconOverview.setInput(_nodeImages);
-        
+
         final Label iconSelectX = new Label(_mainComposite,SWT.BORDER|SWT.CENTER);
         final GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, true, 1,1);
         layoutData.minimumHeight=100;
@@ -123,22 +124,22 @@ public class IconManageView extends Composite {
         iconSelectX.setLayoutData(layoutData);
         iconSelectX.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
         iconSelectX.setText("testX");
-        
+
         final Button fileChooserButton = new Button(_mainComposite,SWT.PUSH);
         fileChooserButton.setText("Add Icon");
-        
+
         fileChooserButton.addSelectionListener(new SelectionAdapter() {
-            
+
             @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 fileChooserAction();
             }
-            
+
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 fileChooserAction();
             }
-            
+
             private void fileChooserAction() {
                 final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
                 dialog.setFilterExtensions(new String[]{"*.jpg; *.jpeg; *.gif; *.png; *.bmp","*.*"});
@@ -160,11 +161,12 @@ public class IconManageView extends Composite {
                 }
             }
         });
-        
+
     }
-    
+
+    @CheckForNull
     public NodeImageDBO getSelectedImage() {
         return _selectedImage;
     }
-    
+
 }

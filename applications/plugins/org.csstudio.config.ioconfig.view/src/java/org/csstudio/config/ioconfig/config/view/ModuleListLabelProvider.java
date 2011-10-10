@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Table;
 
 /**
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
@@ -53,7 +53,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      * The color for a existing Module Prototype.
      */
     private static final Color YELLOW = CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW);
-    
+
     /**
      * The Table font height.
      */
@@ -62,10 +62,10 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
      * The Table Font name.
      */
     private static String _NAME;
-    
+
     /**
      * Default Constructor.
-     * 
+     *
      * @param table
      *            the Table how use this LabelProvider.
      * @param file
@@ -81,7 +81,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             _ITALIC = CustomMediaFactory.getInstance().getFont(_NAME, _HEIGHT, SWT.ITALIC);
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -89,7 +89,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
     public final void dispose() {
         super.dispose();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -107,7 +107,7 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -131,11 +131,10 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             } else {
                 return _ITALIC;
             }
-        } else {
-            return _NORMAL;
         }
+        return _NORMAL;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -154,14 +153,12 @@ public class ModuleListLabelProvider extends LabelProvider implements IFontProvi
             }
             if (!input && !output) {
                 return _GRAY;
-            } else {
-                return BLACK;
             }
-        } else {
             return BLACK;
         }
+        return BLACK;
     }
-    
+
     /**
      * {@inheritDoc}
      */

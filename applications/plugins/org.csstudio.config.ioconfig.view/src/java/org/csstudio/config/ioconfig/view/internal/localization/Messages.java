@@ -32,6 +32,8 @@ import org.eclipse.osgi.util.NLS;
  * @since 21.07.2011
  */
 public final class Messages extends NLS {
+    // CHECKSTYLE OFF:Name
+    // CHECKSTYLE OFF:V
     public static String ChannelConfigDialog_Count;
     public static String ChannelConfigDialog_AD;
     public static String ChannelConfigDialog_Add;
@@ -51,12 +53,15 @@ public final class Messages extends NLS {
     public static String ChannelConfigDialog_Remove;
     public static String NodeEditor_Msg;
     public static String NodeEditor_Title;
+    // CHECKSTYLE ON: V
+    // CHECKSTYLE ON: Name
     private static final String BUNDLE_NAME = "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
-    
+
     private Messages() {
+        // Hidden Constructor
     }
 }

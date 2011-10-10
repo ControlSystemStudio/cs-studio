@@ -30,7 +30,6 @@ import java.io.StringWriter;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 
@@ -42,28 +41,22 @@ import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
  * @since  20.07.2011
  */
 public final class GetProfibusXmlAsBufferReader {
-    
+
     /**
      * Constructor.
      */
     private GetProfibusXmlAsBufferReader() {
         // Constructor.
     }
-    
-    /**
-     * @param parameterObject TODO
-     * @throws PersistenceException
-     * @throws IOException
-     */
+
     @Nonnull
-    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull final ProfibusSubnetDBO profibusSubnetDBO) throws PersistenceException,
-    IOException {
+    public static BufferedReader getProfibusXmlAsBufferReader(@Nonnull final ProfibusSubnetDBO profibusSubnetDBO) throws IOException {
         final StringWriter sw = new StringWriter();
         final ProfibusConfigXMLGenerator generator = new ProfibusConfigXMLGenerator();
         generator.setSubnet(profibusSubnetDBO);
-        
+
         generator.getXmlFile(sw);
-        
+
         return new BufferedReader(new StringReader(sw.toString()));
     }
 }
