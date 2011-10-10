@@ -45,19 +45,19 @@ import org.slf4j.LoggerFactory;
  * @since 18.07.2008
  */
 public final class GsdFileParser {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(GsdFileParser.class);
     private static List<String> _WARNING_LIST = new ArrayList<String>();
-    
+
     private Integer _moduleNo = 0;
-    
+
     /**
      * Default Constructor.
      */
     public GsdFileParser() {
         // Constructor
     }
-    
+
     private void buildExtUserPrmData(@Nonnull final String line,
                                      @Nonnull final LineCounter lineCounter,
                                      @Nonnull final ParsedGsdFileModel parsedGsdFileModel,
@@ -66,7 +66,7 @@ public final class GsdFileParser {
         assert lineParts.length > 1;
         final Integer index = GsdFileParser.gsdValue2Int(lineParts[0].split("=")[1]);
         final String text = lineParts[1].split(";")[0].trim();
-        
+
         final ExtUserPrmData extUserPrmData = new ExtUserPrmData(parsedGsdFileModel, index, text);
         String tmpLine = br.readLine();
         while (!isLineParameter(tmpLine, "EndExtUserPrmData")) {
@@ -90,7 +90,7 @@ public final class GsdFileParser {
         final KeyValuePair keyValuePair = extractKeyValue(line, lineCounter, br);
         parsedGsdFileModel.setExtUserPrmDataConst(keyValuePair);
     }
-    
+
     private void buildExtUserPrmDataRef(@Nonnull final String line,
                                         @Nonnull final LineCounter lineCounter,
                                         @Nonnull final ParsedGsdFileModel parsedGsdFileModel,
@@ -104,7 +104,7 @@ public final class GsdFileParser {
             abstractGsdPropertyModel.setExtUserPrmDataRef(keyValuePair);
         }
     }
-    
+
     private void buildExtUserPrmDataRef(@Nonnull final String line,
                                         @Nonnull final LineCounter lineCounter,
                                         @Nonnull final ParsedGsdFileModel parsedGsdFileModel,
@@ -146,7 +146,7 @@ public final class GsdFileParser {
         gsdModuleModel.setModuleNumber(moduleNo);
         parsedGsdFileModel.setModule(gsdModuleModel);
     }
-    
+
     private void buildPrmText(@Nonnull final String line,
                               @Nonnull final LineCounter lineCounter,
                               @Nonnull final ParsedGsdFileModel parsedGsdFileModel,
@@ -164,10 +164,9 @@ public final class GsdFileParser {
         }
         parsedGsdFileModel.putPrmText(prmText);
     }
-    
+
     private void buildSlotDefinition(@Nonnull final String line,
                                      @Nonnull final LineCounter lineCounter,
-                                     @Nonnull final AbstractGsdPropertyModel parsedGsdFileModel,
                                      @Nonnull final BufferedReader br) throws IOException {
         // (hrickens) [28.03.2011]:  buildSlotDefinition. If this information can be ignored.
         String tmpLine = line;
@@ -177,10 +176,9 @@ public final class GsdFileParser {
             tmpLine = br.readLine();
         }
     }
-    
+
     private void buildUnitDiagArea(@Nonnull final String line,
                                    @Nonnull final LineCounter lineCounter,
-                                   @Nonnull final AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull final BufferedReader br) throws IOException {
         // (hrickens) [28.03.2011]: buildUnitDiagArea. This information can be ignored.
         String tmpLine = line;
@@ -189,12 +187,11 @@ public final class GsdFileParser {
             tmpLine = tmpLine.trim();
             tmpLine = br.readLine();
         }
-        
+
     }
-    
+
     private void buildUnitDiagType(@Nonnull final String line,
                                    @Nonnull final LineCounter lineCounter,
-                                   @Nonnull final AbstractGsdPropertyModel parsedGsdFileModel,
                                    @Nonnull final BufferedReader br) throws IOException {
         // (hrickens) [28.03.2011]: buildUnitDiagType. This information can be ignored.
         String tmpLine = line;
@@ -204,7 +201,7 @@ public final class GsdFileParser {
             tmpLine = br.readLine();
         }
     }
-    
+
     /**
      * @param lineCounter
      * @param br
@@ -223,7 +220,7 @@ public final class GsdFileParser {
         final GsdModuleModel2 gsdModuleModel = new GsdModuleModel2(name, valueList);
         return gsdModuleModel;
     }
-    
+
     /**
      * @param lineCounter
      * @param parsedGsdFileModel
@@ -245,7 +242,7 @@ public final class GsdFileParser {
         }
         return null;
     }
-    
+
     /**
      * @param lineCounter
      * @param parsedGsdFileModel
@@ -294,11 +291,11 @@ public final class GsdFileParser {
         return moduleNo;
     }
     // CHECKSTYLE ON: CyclomaticComplexity
-    
+
     private boolean isLineParameter(@CheckForNull final String line, @Nonnull final String parameter) {
         return line != null && line.toLowerCase().startsWith(parameter.toLowerCase());
     }
-    
+
     /**
      * @param br
      * @param parsedGsdFileModel
@@ -335,13 +332,13 @@ public final class GsdFileParser {
             } else if (isLineParameter(line, "Module")) {
                 buildModule(line, lineCounter, parsedGsdFileModel, br);
             } else if (isLineParameter(line, "UnitDiagType")) {
-                buildUnitDiagType(line, lineCounter, parsedGsdFileModel, br);
+                buildUnitDiagType(line, lineCounter, br);
             } else if (isLineParameter(line, "SlotDefinition")) {
-                buildSlotDefinition(line, lineCounter, parsedGsdFileModel, br);
+                buildSlotDefinition(line, lineCounter, br);
             } else if (isLineParameter(line, "Unit_Diag_Area")) {
-                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
+                buildUnitDiagArea(line, lineCounter, br);
             } else if (isLineParameter(line, "X_Unit_Diag_Area")) {
-                buildUnitDiagArea(line, lineCounter, parsedGsdFileModel, br);
+                buildUnitDiagArea(line, lineCounter, br);
             } else if (isLineParameter(line, "Slave_Family")) {
                 // TODO (hrickens) [28.03.2011]: Hier könnte man den Text noch als zweite variante setzen. (Das was nach dem @ kommt)
                 setProperty(line.split("@")[0], lineCounter, parsedGsdFileModel, br);
@@ -354,7 +351,7 @@ public final class GsdFileParser {
         return parsedGsdFileModel;
     }
     // CHECKSTYLE ON: CyclomaticComplexity
-    
+
     @Nonnull
     public ParsedGsdFileModel parse(@Nonnull final GSDFileDBO gsdFileDBO) throws IOException {
         StringReader sr = new StringReader(gsdFileDBO.getGSDFile());
@@ -363,30 +360,26 @@ public final class GsdFileParser {
             final ParsedGsdFileModel parsedGsdFileModel = new ParsedGsdFileModel(gsdFileDBO);
             return parse(br, parsedGsdFileModel);
         } finally {
-            if (br != null) {
-                br.close();
-                br = null;
-            }
-            if (sr != null) {
-                sr.close();
-                sr = null;
-            }
+            br.close();
+            br = null;
+            sr.close();
+            sr = null;
         }
     }
-    
+
     public static void addValues2IntList(@Nonnull final String value, @Nonnull final List<Integer> valueList) {
         final String[] values = value.split(",");
         for (final String val : values) {
             valueList.add(GsdFileParser.gsdValue2Int(val));
         }
     }
-    
+
     private static void addWarning(@Nonnull final String message, @Nonnull final Object... parameter) {
         final String warning = String.format(message, parameter);
         LOG.warn(warning);
         _WARNING_LIST.add(warning);
     }
-    
+
     @Nonnull
     private static KeyValuePair extractKeyValue(@Nonnull final String line,
                                                 @Nonnull final LineCounter lineCounter,
@@ -403,14 +396,14 @@ public final class GsdFileParser {
             throw e;
         }
     }
-    
+
     @Nonnull
     public static List<String> getAndClearWarnings() {
         final ArrayList<String> arrayList = new ArrayList<String>(_WARNING_LIST);
         _WARNING_LIST.clear();
         return arrayList;
     }
-    
+
     @Nonnull
     private static String getValue(@Nonnull final String startValue,
                                    @Nonnull final LineCounter lineCounter,
@@ -427,7 +420,7 @@ public final class GsdFileParser {
         }
         return value;
     }
-    
+
     @Nonnull
     public static Integer gsdValue2Int(@Nonnull final String value) {
         String tmpValue = value.toLowerCase().trim();
@@ -443,7 +436,7 @@ public final class GsdFileParser {
         val = Integer.parseInt(tmpValue, radix);
         return val;
     }
-    
+
     @Nonnull
     public static String intList2HexString(@Nonnull final List<Integer> intList) {
         final StringBuilder sb = new StringBuilder();
@@ -455,7 +448,7 @@ public final class GsdFileParser {
         }
         return sb.toString();
     }
-    
+
     @Nonnull
     private static String removeComment(@Nonnull final String value) {
         String tmpValue = value;
@@ -472,7 +465,7 @@ public final class GsdFileParser {
         }
         return tmpValue;
     }
-    
+
     private static void setProperty(@Nonnull final String line,
                                     @Nonnull final LineCounter lineCounter,
                                     @Nonnull final ParsedGsdFileModel parsedGsdFileModel,
@@ -491,6 +484,6 @@ public final class GsdFileParser {
                        lineCounter,
                        line);
         }
-        
+
     }
 }

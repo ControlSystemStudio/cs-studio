@@ -190,11 +190,13 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
 
         @Override
+        @CheckForNull
         public Image getColumnImage(@Nullable final Object element, @Nullable final int columnIndex) {
             return null;
         }
 
         @Override
+        @CheckForNull
         public String getColumnText(@Nullable final Object element, final int columnIndex) {
             if (element instanceof SlaveDBO) {
                 return onSlave((SlaveDBO) element, columnIndex);
@@ -509,6 +511,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
 
     /** {@inheritDoc} */
     @Override
+    @CheckForNull
     public final GSDFileDBO getGsdFile() {
         return _slave.getGSDFile();
     }
@@ -586,7 +589,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      * @param comp
      * @throws PersistenceException
      */
-    private void makeBasicsIO(@Nonnull final Composite comp) throws PersistenceException {
+    private void makeBasicsIO(@Nonnull final Composite comp) {
         final Group ioGroup = new Group(comp, SWT.NONE);
         ioGroup.setText("Inputs / Outputs");
         ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));

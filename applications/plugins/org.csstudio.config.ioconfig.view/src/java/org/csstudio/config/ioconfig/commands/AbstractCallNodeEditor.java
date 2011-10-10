@@ -73,7 +73,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
                     LOG.error("Can't open editor!",e1); //$NON-NLS-1$
                 } catch (final PersistenceException e2) {
                     LOG.error("Can't open editor!",e2); //$NON-NLS-1$
-                    DeviceDatabaseErrorDialog.open(null, IOConfigMessages.AbstractCallNodeEditor_DialogErrorMsg, e2);
+                    DeviceDatabaseErrorDialog.open(null, IOConfigMessages.ABSTRACT_CALLNODE_EDITOR_DIALOG_ERROR_MSG, e2);
                 }
             }
         }

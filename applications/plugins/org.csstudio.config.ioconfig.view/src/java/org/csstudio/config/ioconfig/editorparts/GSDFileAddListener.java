@@ -53,14 +53,14 @@ import org.slf4j.LoggerFactory;
  * @since 14.06.2010
  */
 public class GSDFileAddListener implements SelectionListener {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(GSDFileAddListener.class);
-    
+
     private final TabFolder _tabFolder;
     private final TableViewer _tableViewer;
     private final Composite _comp;
     private final AbstractNodeEditor<?> _abstractNodeEditor;
-    
+
     /**
      * Constructor.
      * @param abstractNodeEditor
@@ -76,17 +76,17 @@ public class GSDFileAddListener implements SelectionListener {
         _tableViewer = tableViewer;
         _comp = comp;
     }
-    
+
     @Override
     public void widgetDefaultSelected(@Nullable final SelectionEvent e) {
         doFileAdd();
     }
-    
+
     @Override
     public void widgetSelected(@Nullable final SelectionEvent e) {
         doFileAdd();
     }
-    
+
     private void doFileAdd() {
         final FileDialog fd = new FileDialog(_comp.getShell(), SWT.MULTI);
         fd.setFilterExtensions(new String[] {"*.gsd;*.gsg", "*.gs?" });
@@ -118,16 +118,14 @@ public class GSDFileAddListener implements SelectionListener {
             }
         }
     }
-    
+
     private boolean fileNotContain(@Nullable final String fileName) {
         boolean add = true;
         final List<GSDFileDBO> gsdFiles = _abstractNodeEditor.getGsdFiles();
-        if ( gsdFiles != null && !gsdFiles.isEmpty()) {
-            for (final GSDFileDBO file : gsdFiles) {
-                add = !file.getName().equals(fileName);
-                if (!add) {
-                    break;
-                }
+        for (final GSDFileDBO file : gsdFiles) {
+            add = !file.getName().equals(fileName);
+            if (!add) {
+                break;
             }
         }
         return add;

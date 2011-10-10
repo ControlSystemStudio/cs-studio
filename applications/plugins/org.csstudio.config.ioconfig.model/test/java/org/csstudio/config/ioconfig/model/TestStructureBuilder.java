@@ -23,12 +23,13 @@
  */
 package org.csstudio.config.ioconfig.model;
 
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.pbmodel.DataType;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -135,7 +136,7 @@ public final class TestStructureBuilder {
     }
 
     @Nonnull
-    public static ModuleDBO addNewModule(@Nonnull final SlaveDBO pk2, final int moduleNumber, final int sortIndex) throws PersistenceException, IOException {
+    public static ModuleDBO addNewModule(@Nonnull final SlaveDBO pk2, final int moduleNumber, final int sortIndex) throws PersistenceException {
         final ModuleDBO mo = new ModuleDBO(pk2);
         mo.setSortIndex(sortIndex);
         mo.setModuleNumber(moduleNumber);
@@ -146,4 +147,14 @@ public final class TestStructureBuilder {
         return mo;
     }
 
+    public static void buildModuleChannelPrototype(final int offset, @Nonnull final String name, @Nonnull final DataType dataType, final boolean structure, final boolean input, @Nonnull final GSDModuleDBO gsdModuleDBO) {
+        ModuleChannelPrototypeDBO moduleChannelPrototype;
+        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
+        moduleChannelPrototype.setOffset(offset);
+        moduleChannelPrototype.setName(name);
+        moduleChannelPrototype.setType(dataType);
+        moduleChannelPrototype.setStructure(structure);
+        moduleChannelPrototype.setInput(input);
+        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
+    }
 }

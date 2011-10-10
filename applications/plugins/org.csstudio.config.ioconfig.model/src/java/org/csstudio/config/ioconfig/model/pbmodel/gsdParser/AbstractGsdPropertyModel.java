@@ -35,20 +35,20 @@ import javax.annotation.Nonnull;
 
 /**
  * ModelClass that use GSD Files Properties.
- * 
+ *
  * @author hrickens
  * @author $Author: bknerr $
  * @version $Revision: 1.7 $
  * @since 30.03.2011
  */
 public abstract class AbstractGsdPropertyModel {
-    
+
     private final SortedMap<Integer, Integer> _gsdExtUserPrmDataConstMap;
     private final SortedMap<Integer, KeyValuePair> _gsdExtUserPrmDataRefMap;
     private final Map<String, List<Integer>> _intArrayValueMap;
     private final Map<String, Integer> _intergerValueMap;
     private final Map<String, String> _stringValueMap;
-    
+
     /**
      * Constructor.
      */
@@ -59,20 +59,20 @@ public abstract class AbstractGsdPropertyModel {
         _gsdExtUserPrmDataConstMap = new TreeMap<Integer, Integer>();
         _gsdExtUserPrmDataRefMap = new TreeMap<Integer, KeyValuePair>();
     }
-    
+
     /**
      * @param intValue
      * @return
      */
     @CheckForNull
     public abstract ExtUserPrmData getExtUserPrmData(@Nonnull Integer intValue);
-    
+
     @Nonnull
     public List<Integer> getExtUserPrmDataConst() {
         final List<Integer> valueList = new ArrayList<Integer>();
         if (!_gsdExtUserPrmDataConstMap.isEmpty()) {
             for (int i = 0; i <= _gsdExtUserPrmDataConstMap.lastKey(); i++) {
-                Integer value = _gsdExtUserPrmDataConstMap.get(i);
+                final Integer value = _gsdExtUserPrmDataConstMap.get(i);
                 if (value != null) {
                     valueList.add(value);
                 }
@@ -80,12 +80,12 @@ public abstract class AbstractGsdPropertyModel {
         }
         return valueList;
     }
-    
+
     @Nonnull
     public SortedMap<Integer, KeyValuePair> getExtUserPrmDataRefMap() {
         return _gsdExtUserPrmDataRefMap;
     }
-    
+
     @Nonnull
     public Integer getGsdRevision() {
         Integer gsdRevision = getIntProperty("GSD_Revision");
@@ -94,27 +94,27 @@ public abstract class AbstractGsdPropertyModel {
         }
         return gsdRevision;
     }
-    
+
     @CheckForNull
     public List<Integer> getIntArrayProperty(@Nonnull final String key) {
         return _intArrayValueMap.get(key);
     }
-    
+
     @CheckForNull
     protected List<Integer> getIntListValue(@Nonnull final String propertty) {
         return _intArrayValueMap.get(propertty);
     }
-    
+
     @CheckForNull
     public Integer getIntProperty(@Nonnull final String key) {
         return _intergerValueMap.get(key);
     }
-    
+
     @CheckForNull
     protected Integer getIntValue(@Nonnull final String propertty) {
         return _intergerValueMap.get(propertty);
     }
-    
+
     @Nonnull
     public String getModelName() {
         String modelName = getStringProperty("Model_Name");
@@ -123,7 +123,7 @@ public abstract class AbstractGsdPropertyModel {
         }
         return modelName;
     }
-    
+
     @Nonnull
     public String getRevision() {
         String revision = getStringProperty("Revision");
@@ -132,17 +132,17 @@ public abstract class AbstractGsdPropertyModel {
         }
         return revision;
     }
-    
+
     @CheckForNull
     public String getStringProperty(@Nonnull final String key) {
         return _stringValueMap.get(key);
     }
-    
+
     @CheckForNull
     protected String getStringValue(@Nonnull final String propertty) {
         return _stringValueMap.get(propertty);
     }
-    
+
     @Nonnull
     public String getVendorName() {
         String vendorName = getStringProperty("Vendor_Name");
@@ -151,7 +151,7 @@ public abstract class AbstractGsdPropertyModel {
         }
         return vendorName;
     }
-    
+
     public void setExtUserPrmDataConst(@Nonnull final KeyValuePair extUserPrmDataConst) {
         final String stringValue = extUserPrmDataConst.getValue();
         Integer index = extUserPrmDataConst.getIndex();
@@ -166,15 +166,15 @@ public abstract class AbstractGsdPropertyModel {
             _gsdExtUserPrmDataConstMap.put(index, extUserPrmDataConst.getIntValue());
         }
     }
-    
+
     public void setExtUserPrmDataDefault(@Nonnull final ExtUserPrmData extUserPrmData, final int bytePos) {
         setExtUserPrmDataValue(extUserPrmData, bytePos, extUserPrmData.getDefault());
     }
-    
+
     public void setExtUserPrmDataRef(@Nonnull final KeyValuePair extUserPrmDataRef) {
         _gsdExtUserPrmDataRefMap.put(extUserPrmDataRef.getIntValue(), extUserPrmDataRef);
     }
-    
+
     private void setExtUserPrmDataValue(@Nonnull final ExtUserPrmData extUserPrmData,
                                         final int byteIndex,
                                         final int bitValue) {
@@ -182,10 +182,10 @@ public abstract class AbstractGsdPropertyModel {
         int val = bitValue;
         final int minBit = extUserPrmData.getMinBit();
         final int maxBit = extUserPrmData.getMaxBit();
-        
-        
-        
-        
+
+
+
+
         final int mask = ~((int) Math.pow(2, maxBit + 1) - (int) Math.pow(2, minBit));
         if (maxBit > 7 && maxBit < 16) {
             int modifyByteHigh = 0;
@@ -196,7 +196,7 @@ public abstract class AbstractGsdPropertyModel {
             if (_gsdExtUserPrmDataConstMap.containsKey(byteIndex + 1)) {
                 modifyByteLow = _gsdExtUserPrmDataConstMap.get(byteIndex + 1);
             }
-            
+
             final int parseInt = modifyByteHigh * 256 + modifyByteLow;
             val = val << minBit;
             final int result = parseInt & mask | val;
@@ -214,18 +214,18 @@ public abstract class AbstractGsdPropertyModel {
             _gsdExtUserPrmDataConstMap.put(byteIndex, result);
         }
     }
-    
+
     private void setIntArrayValue(@Nonnull final KeyValuePair keyValuePair) {
         final List<Integer> valueList = new ArrayList<Integer>();
         GsdFileParser.addValues2IntList(keyValuePair.getValue(), valueList);
         _intArrayValueMap.put(keyValuePair.getKey(), valueList);
     }
-    
+
     private void setIntegerValue(@Nonnull final KeyValuePair keyValuePair) {
         final Integer inValue = GsdFileParser.gsdValue2Int(keyValuePair.getValue());
         _intergerValueMap.put(keyValuePair.getKey(), inValue);
     }
-    
+
     /**
      * Sets the property according to their type. (type-safe)
      */
@@ -239,10 +239,10 @@ public abstract class AbstractGsdPropertyModel {
             setIntegerValue(keyValuePair);
         }
     }
-    
+
     private void setStringValue(@Nonnull final KeyValuePair keyValuePair) {
         _stringValueMap.put(keyValuePair.getKey(), keyValuePair.getValue());
     }
-    
-    
+
+
 }

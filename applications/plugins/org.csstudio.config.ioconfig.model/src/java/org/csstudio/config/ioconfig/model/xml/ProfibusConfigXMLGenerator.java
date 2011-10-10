@@ -36,7 +36,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
@@ -54,43 +53,43 @@ import org.slf4j.LoggerFactory;
  * @since 14.05.2008
  */
 public class ProfibusConfigXMLGenerator {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ProfibusConfigXMLGenerator.class);
-    
+
     /**
      * The Profibus Config XML {@link Document}.
      */
     private final Document _document;
-    
+
     /**
      * The Element for the BUSPARAMETER.
      */
     private final Element _busparameter;
-    
+
     /**
      * The Element for the SLAVE_CONFIGURATION.
      */
     private final Element _slaveConfig;
-    
+
     /**
      * The XML Root Element (PROFIBUS-DP_PARAMETERSET).
      */
     private final Element _root;
-    
+
     /**
      * The XML Master Element.
      */
     private final Element _master;
-    
+
     /**
      * List of all Slave Field Address.
      */
     private final ArrayList<Integer> _slaveFldAdrs;
-    
+
     private final ArrayList<XmlSlave> _slaveList;
-    
+
     private final Element _fmbSet;
-    
+
     public ProfibusConfigXMLGenerator() {
         _slaveFldAdrs = new ArrayList<Integer>();
         _slaveList = new ArrayList<XmlSlave>();
@@ -100,16 +99,14 @@ public class ProfibusConfigXMLGenerator {
         _master = new Element("MASTER");
         _fmbSet = new Element("FMB_SET");
         _slaveConfig = new Element("SLAVE_CONFIGURATION");
-        
+
     }
-    
+
     /**
-     *
      * @param slave
      *            The Profibus Slave.
-     * @throws PersistenceException
      */
-    private void addSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
+    private void addSlave(@Nonnull final SlaveDBO slave) {
         /*
          * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
          * a configuration on the IOC.
@@ -120,7 +117,7 @@ public class ProfibusConfigXMLGenerator {
             _slaveFldAdrs.add(slave.getFdlAddress());
         }
     }
-    
+
     /**
      *
      * @param path
@@ -132,7 +129,7 @@ public class ProfibusConfigXMLGenerator {
         LOG.info("Write File: {}", path.getAbsolutePath());
         getXmlFile(writer);
     }
-    
+
     public final void getXmlFile(@Nonnull final Writer writer) throws IOException {
         _root.addContent(_busparameter);
         _slaveConfig.addContent(slaveTable());
@@ -146,7 +143,7 @@ public class ProfibusConfigXMLGenerator {
         out.output(_document, writer);
         writer.close();
     }
-    
+
     private void makeFMB(@Nonnull final MasterDBO master) {
         final String[] fmbKeys = new String[] {
                                                "max_number_slaves",
@@ -171,7 +168,7 @@ public class ProfibusConfigXMLGenerator {
             _fmbSet.setAttribute(fmbKeys[i], fmbValues[i]);
         }
     }
-    
+
     private void makeMaster(@Nonnull final ProfibusSubnetDBO subnet, @Nonnull final MasterDBO master) {
         final String[] masterKeys = new String[] {"bus_para_len", "fdl_add", "baud_rate", "tslot",
                                                   "min_tsdr", "max_tsdr", "tqui", "tset", "ttr", "gap", "hsa", "max_retry_limit",
@@ -220,34 +217,33 @@ public class ProfibusConfigXMLGenerator {
             _master.setAttribute(masterKeys[i], masterValues[i]);
         }
     }
-    
+
     /**
      *
      * @param subnet
      *            The Profibus Subnet.
-     * @throws PersistenceException
      */
-    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) {
         final Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
         if (masterTree == null || masterTree.size() < 1) {
             return;
         }
-        
+
         final MasterDBO master = masterTree.iterator().next();
-        
+
         makeMaster(subnet, master);
         makeFMB(master);
-        
+
         _busparameter.addContent(_master);
         _busparameter.addContent(_fmbSet);
-        
+
         final Map<Short, SlaveDBO> childrenAsMap = master.getChildrenAsMap();
         final Iterator<SlaveDBO> iterator = childrenAsMap.values().iterator();
         while (iterator.hasNext()) {
             addSlave(iterator.next());
         }
     }
-    
+
     /**
      *
      * @return The Slave Table XML element.
@@ -260,7 +256,7 @@ public class ProfibusConfigXMLGenerator {
         }
         return slaveTable;
     }
-    
+
     /**
      * Return the integer value of a String.
      * The String can dec or hex.

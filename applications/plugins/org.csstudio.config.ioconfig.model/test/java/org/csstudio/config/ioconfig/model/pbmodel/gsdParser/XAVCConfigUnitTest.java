@@ -23,9 +23,11 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import static org.csstudio.config.ioconfig.model.TestStructureBuilder.buildFacility;
+import static org.csstudio.config.ioconfig.model.TestStructureBuilder.buildModuleChannelPrototype;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -36,7 +38,6 @@ import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.TestStructureBuilder;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
@@ -66,20 +67,20 @@ public class XAVCConfigUnitTest {
     private static BufferedReader _EXPECTED_CONFIG;
     private static BufferedReader _EXPECTED_INPUT_ADDRESS;
     private static BufferedReader _EXPECTED_OUTPUT_ADDRESS;
-    private static int _lineNo;
-    private static String _eLine;
-    private static String _outLine;
-    private static BufferedReader _out;
-    private static GSDFileDBO _b756P33;
-    private static GSDFileDBO _bIMF5861;
-    private static GSDFileDBO _siPart;
-    private static boolean _debugPrint = true;
-    private static ProfibusSubnetDBO _xavcSubnet;
+    private static int _LINE_NO;
+    private static String _E_LINE;
+    private static String _OUT_LINE;
+    private static BufferedReader _OUT;
+    private static GSDFileDBO _B756P33;
+    private static GSDFileDBO _BIMF5861;
+    private static GSDFileDBO _SIPART;
+    private static boolean _DEBUG_PRINT = true;
+    private static ProfibusSubnetDBO _XAVC_SUBNET;
     private static ArrayList<ChannelDBO> _INPUT_CHANNELS;
     private static ArrayList<ChannelDBO> _OUTPUT_CHANNELS;
     private static int _MODULE_COUNT;
 
-    private static void addNewModule(@Nonnull final SlaveDBO pk2, final int moduleNumber, final int sortIndex) throws PersistenceException, IOException {
+    private static void addNewModule(@Nonnull final SlaveDBO pk2, final int moduleNumber, final int sortIndex) throws PersistenceException {
         final ModuleDBO mo = new ModuleDBO(pk2);
         mo.setSortIndex(sortIndex);
         mo.setModuleNumber(moduleNumber);
@@ -101,11 +102,6 @@ public class XAVCConfigUnitTest {
         }
     }
 
-    /**
-     * @param xavcFacility
-     * @return
-     * @throws PersistenceException
-     */
     @Nonnull
     public static IocDBO buildIoc(@Nonnull final FacilityDBO xavcFacility) throws PersistenceException {
         final IocDBO xavcIoc = new IocDBO(xavcFacility);
@@ -115,11 +111,6 @@ public class XAVCConfigUnitTest {
         return xavcIoc;
     }
 
-    /**
-     * @param xavcSubnet
-     * @return
-     * @throws PersistenceException
-     */
     @Nonnull
     public static MasterDBO buildMaster(@Nonnull final ProfibusSubnetDBO xavcSubnet) throws PersistenceException {
         final MasterDBO xavcMaster = new MasterDBO(xavcSubnet);
@@ -143,10 +134,10 @@ public class XAVCConfigUnitTest {
         return xavcMaster;
     }
 
-    private static void buildSlave05(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave05(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 5);
 
-        pk2.setGSDFile(_b756P33);
+        pk2.setGSDFile(_B756P33);
 
         addNewModule(pk2, 8330, 0);
         for (int i = 0; i < 7; i++) {
@@ -158,105 +149,80 @@ public class XAVCConfigUnitTest {
         //        }
     }
 
-    private static void buildSlave10(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave10(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 10);
         setBIMF5861Settings(pk2);
         addNewModule(pk2, 1,0);
     }
 
-    private static void buildSlave11(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave11(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 11);
-
         setBIMF5861Settings(pk2);
-
         addNewModule(pk2, 1,0);
     }
 
-    private static void buildSlave12(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave12(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 12);
-
         setBIMF5861Settings(pk2);
-
         addNewModule(pk2, 1,0);
     }
 
-    private static void buildSlave13(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave13(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 13);
-
         setBIMF5861Settings(pk2);
-
         addNewModule(pk2, 1,0);
     }
 
-    private static void buildSlave20(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave20(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 20);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave21(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave21(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 21);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave22(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave22(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 22);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave23(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave23(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 23);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave24(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave24(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 24);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave25(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave25(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 25);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    private static void buildSlave26(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    private static void buildSlave26(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         final SlaveDBO pk2 = getNewSlave(xavcMaster, 26);
         pk2.setMinTsdr(200);
-
-        pk2.setGSDFile(_siPart);
-
+        pk2.setGSDFile(_SIPART);
         addNewModule(pk2, 3,0);
     }
 
-    /**
-     * @param xavcMaster
-     * @throws PersistenceException
-     * @throws IOException
-     */
-    public static void buildSlaves(@Nonnull final MasterDBO xavcMaster) throws PersistenceException, IOException {
+    public static void buildSlaves(@Nonnull final MasterDBO xavcMaster) throws PersistenceException {
         buildSlave05(xavcMaster);
         buildSlave10(xavcMaster);
         buildSlave11(xavcMaster);
@@ -271,11 +237,6 @@ public class XAVCConfigUnitTest {
         buildSlave26(xavcMaster);
     }
 
-    /**
-     * @param xavcIoc
-     * @return
-     * @throws PersistenceException
-     */
     @Nonnull
     public static ProfibusSubnetDBO buildSubnet(@Nonnull final IocDBO xavcIoc) throws PersistenceException {
         final ProfibusSubnetDBO xavcSubnet = new ProfibusSubnetDBO(xavcIoc);
@@ -298,9 +259,9 @@ public class XAVCConfigUnitTest {
     }
 
     public static void debugComparePrint() {
-        if(_debugPrint) {
-            System.out.println("E: " + _lineNo + _eLine);
-            System.out.println("C: " + _lineNo + _outLine);
+        if(_DEBUG_PRINT) {
+            System.out.println("E: " + _LINE_NO + _E_LINE);
+            System.out.println("C: " + _LINE_NO + _OUT_LINE);
         }
     }
 
@@ -318,19 +279,12 @@ public class XAVCConfigUnitTest {
         return slave;
     }
 
-    /**
-     * @param pk2
-     * @throws IOException
-     */
-    private static void setBIMF5861Settings(@Nonnull final SlaveDBO pk2) throws IOException {
-        pk2.setGSDFile(_bIMF5861);
+    private static void setBIMF5861Settings(@Nonnull final SlaveDBO pk2) {
+        pk2.setGSDFile(_BIMF5861);
         pk2.setPrmUserDataByte(8, 16);
         pk2.setPrmUserDataByte(10, 17);
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Repository.injectIRepository(new DummyRepository());
@@ -350,140 +304,85 @@ public class XAVCConfigUnitTest {
         _EXPECTED_CONFIG = new BufferedReader(new FileReader(resFilePath));
         _EXPECTED_INPUT_ADDRESS = new BufferedReader(new FileReader(inputAdrFilePath));
         _EXPECTED_OUTPUT_ADDRESS = new BufferedReader(new FileReader(outputAdrFilePath));
-        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        _bIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
-        _siPart = GSDTestFiles.SiPart.getFileAsGSDFileDBO();
+        _B756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
+        _BIMF5861 = GSDTestFiles.BIMF5861.getFileAsGSDFileDBO();
+        _SIPART = GSDTestFiles.SiPart.getFileAsGSDFileDBO();
         _INPUT_CHANNELS = new ArrayList<ChannelDBO>();
         _OUTPUT_CHANNELS = new ArrayList<ChannelDBO>();
 
         buildPrototypes();
 
-        final FacilityDBO xavcFacility = TestStructureBuilder.buildFacility("AMTF_XAVC", 10);
+        final FacilityDBO xavcFacility = buildFacility("AMTF_XAVC", 10);
         final IocDBO xavcIoc = buildIoc(xavcFacility);
-        _xavcSubnet = buildSubnet(xavcIoc);
-        final MasterDBO xavcMaster = buildMaster(_xavcSubnet);
+        _XAVC_SUBNET = buildSubnet(xavcIoc);
+        final MasterDBO xavcMaster = buildMaster(_XAVC_SUBNET);
         buildSlaves(xavcMaster);
+    }
+
+    private static void buildPrototypes() {
+        buildPrototypeForB756P33();
+        buildPrototypeForBIMF5861();
+        buildPrototypeForSiPart();
+    }
+
+    private static void buildPrototypeForSiPart() {
+        GSDModuleDBO gsdModuleDBO;
+        gsdModuleDBO = new GSDModuleDBO("_siPart 3");
+        gsdModuleDBO.setGSDFile(_SIPART);
+        gsdModuleDBO.setModuleId(3);
+
+        buildModuleChannelPrototype(0, "Readback", DataType.DS33, false, true, gsdModuleDBO);
+        buildModuleChannelPrototype(5, "Diskrete Position", DataType.DS33_1, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(7, "Checkback 0", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(8, "Checkback 1", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(9, "Checkback 2", DataType.UINT8, true, true, gsdModuleDBO);
+
+        _SIPART.addGSDModule(gsdModuleDBO);
     }
 
     /**
      *
      */
-    private static void buildPrototypes() {
-        // Prototypes for _b756P33
+    private static void buildPrototypeForBIMF5861() {
+        GSDModuleDBO gsdModuleDBO;
+        gsdModuleDBO = new GSDModuleDBO("_bIMF5861 3");
+        gsdModuleDBO.setGSDFile(_BIMF5861);
+        gsdModuleDBO.setModuleId(1);
 
+        buildModuleChannelPrototype(0, "flow", DataType.FLOAT, false, true, gsdModuleDBO);
+        buildModuleChannelPrototype(4, "temperature", DataType.FLOAT, false, true,gsdModuleDBO);
+        buildModuleChannelPrototype(8, "totalizer", DataType.FLOAT, false, true, gsdModuleDBO);
+        buildModuleChannelPrototype(12, "CMDin", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(0, "CMDout", DataType.UINT8, true, false, gsdModuleDBO);
+
+        _BIMF5861.addGSDModule(gsdModuleDBO);
+    }
+
+    /**
+     *
+     */
+    private static void buildPrototypeForB756P33() {
         GSDModuleDBO gsdModuleDBO = new GSDModuleDBO("_b756P33 4360");
-        gsdModuleDBO.setGSDFile(_b756P33);
+        gsdModuleDBO.setGSDFile(_B756P33);
         gsdModuleDBO.setModuleId(4360);
 
-        ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
+        final ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
         moduleChannelPrototype.setOffset(0);
         moduleChannelPrototype.setName("DI");
         moduleChannelPrototype.setType(DataType.UINT8);
         moduleChannelPrototype.setStructure(true);
         moduleChannelPrototype.setInput(true);
         gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        _b756P33.addGSDModule(gsdModuleDBO);
+        _B756P33.addGSDModule(gsdModuleDBO);
 
         gsdModuleDBO = new GSDModuleDBO("_b756P33 8330");
-        gsdModuleDBO.setGSDFile(_b756P33);
+        gsdModuleDBO.setGSDFile(_B756P33);
         gsdModuleDBO.setModuleId(8330);
-        _b756P33.addGSDModule(gsdModuleDBO);
-
-        // Prototypes for _bIMF5861
-        gsdModuleDBO = new GSDModuleDBO("_bIMF5861 3");
-        gsdModuleDBO.setGSDFile(_bIMF5861);
-        gsdModuleDBO.setModuleId(1);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setInput(true);
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("flow");
-        moduleChannelPrototype.setType(DataType.FLOAT);
-        moduleChannelPrototype.setStructure(false);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setInput(true);
-        moduleChannelPrototype.setOffset(4);
-        moduleChannelPrototype.setName("temperature");
-        moduleChannelPrototype.setType(DataType.FLOAT);
-        moduleChannelPrototype.setStructure(false);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setInput(true);
-        moduleChannelPrototype.setOffset(8);
-        moduleChannelPrototype.setName("totalizer");
-        moduleChannelPrototype.setType(DataType.FLOAT);
-        moduleChannelPrototype.setStructure(false);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setInput(true);
-        moduleChannelPrototype.setOffset(12);
-        moduleChannelPrototype.setName("CMDin");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setInput(false);
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("CMDout");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        _bIMF5861.addGSDModule(gsdModuleDBO);
-
-        // Prototypes for _siPart
-        gsdModuleDBO = new GSDModuleDBO("_siPart 3");
-        gsdModuleDBO.setGSDFile(_siPart);
-        gsdModuleDBO.setModuleId(3);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Readback");
-        moduleChannelPrototype.setType(DataType.DS33);
-        moduleChannelPrototype.setStructure(false);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(5);
-        moduleChannelPrototype.setName("Diskrete Position");
-        moduleChannelPrototype.setType(DataType.DS33_1);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(7);
-        moduleChannelPrototype.setName("Checkback 0");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(8);
-        moduleChannelPrototype.setName("Checkback 1");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(9);
-        moduleChannelPrototype.setName("Checkback 2");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        moduleChannelPrototype.setInput(true);
-        _siPart.addGSDModule(gsdModuleDBO);
+        _B756P33.addGSDModule(gsdModuleDBO);
     }
 
     public static final void sysoutDebug(@Nonnull final String msg) {
-        if(_debugPrint) {
+        if(_DEBUG_PRINT) {
             System.out.println(msg);
         }
     }
@@ -491,19 +390,19 @@ public class XAVCConfigUnitTest {
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         sysoutDebug("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
-        while (_eLine != null && _outLine != null) {
-            _eLine = _EXPECTED_CONFIG.readLine();
-            _outLine = _out.readLine();
-            _lineNo++;
+        while (_E_LINE != null && _OUT_LINE != null) {
+            _E_LINE = _EXPECTED_CONFIG.readLine();
+            _OUT_LINE = _OUT.readLine();
+            _LINE_NO++;
             debugComparePrint();
         }
         sysoutDebug("      ---------- --------- -------- ------ ----- ---- --- -- -  -   -    -     -      -       -        -");
-        while (_eLine != null) {
-            _eLine = _EXPECTED_CONFIG.readLine();
-            _lineNo++;
-            sysoutDebug(_lineNo + _eLine);
+        while (_E_LINE != null) {
+            _E_LINE = _EXPECTED_CONFIG.readLine();
+            _LINE_NO++;
+            sysoutDebug(_LINE_NO + _E_LINE);
         }
-        _out.close();
+        _OUT.close();
         _EXPECTED_CONFIG.close();
         _EXPECTED_INPUT_ADDRESS.close();
         _EXPECTED_OUTPUT_ADDRESS.close();
@@ -512,30 +411,30 @@ public class XAVCConfigUnitTest {
     @Test
     public void testXAVCConfig() throws Exception {
 
-        _out = GetProfibusXmlAsBufferReader.getProfibusXmlAsBufferReader(_xavcSubnet);
-        _lineNo = 1;
-        _eLine = _EXPECTED_CONFIG.readLine();
-        _outLine = _out.readLine();
-        while (_eLine != null && _outLine != null) {
+        _OUT = GetProfibusXmlAsBufferReader.getProfibusXmlAsBufferReader(_XAVC_SUBNET);
+        _LINE_NO = 1;
+        _E_LINE = _EXPECTED_CONFIG.readLine();
+        _OUT_LINE = _OUT.readLine();
+        while (_E_LINE != null && _OUT_LINE != null) {
             debugComparePrint();
-            _eLine = _eLine.replaceAll(", 0", ",0");
+            _E_LINE = _E_LINE.replaceAll(", 0", ",0");
 
-            Assert.assertEquals("@Line "+_lineNo, _eLine.toLowerCase(), _outLine.toLowerCase());
-            _eLine = _EXPECTED_CONFIG.readLine();
-            _outLine = _out.readLine();
-            _lineNo++;
+            Assert.assertEquals("@Line "+_LINE_NO, _E_LINE.toLowerCase(), _OUT_LINE.toLowerCase());
+            _E_LINE = _EXPECTED_CONFIG.readLine();
+            _OUT_LINE = _OUT.readLine();
+            _LINE_NO++;
         }
 
-        if (_eLine != null || _outLine != null) {
-            Assert.fail("Config files have not the same size! Stop at line "+_lineNo);
+        if (_E_LINE != null || _OUT_LINE != null) {
+            Assert.fail("Config files have not the same size! Stop at line "+_LINE_NO);
         }
     }
 
     @Test
     public void testEPICSInputAddress() throws Exception {
         int channelCounter = 0;
-        final ArrayList<ChannelDBO> _INPUT_CHANNELS2 = _INPUT_CHANNELS;
-        for (final ChannelDBO channelDBO : _INPUT_CHANNELS2) {
+        final ArrayList<ChannelDBO> inputChannels2 = _INPUT_CHANNELS;
+        for (final ChannelDBO channelDBO : inputChannels2) {
             final String epicsAddressString = channelDBO.getEpicsAddressString().trim();
             String readLine = _EXPECTED_INPUT_ADDRESS.readLine();
             if(readLine!=null) {
