@@ -137,9 +137,8 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
     }
 
     protected void persistChannelStatusInfo(@Nonnull final ArchiveChannelId id,
-                                           final boolean connected,
-                                           @Nonnull final String info)
-                                           throws EngineModelException {
+                                            final boolean connected,
+                                            @Nonnull final String info) throws EngineModelException {
         try {
             final IArchiveEngineFacade service = _provider.getEngineFacade();
             service.writeChannelStatusInfo(id, connected, info, TimeInstantBuilder.fromNow());

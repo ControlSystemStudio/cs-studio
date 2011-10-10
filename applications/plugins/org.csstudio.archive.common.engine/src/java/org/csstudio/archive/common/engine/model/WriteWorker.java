@@ -114,7 +114,9 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     }
 
 
-    private long collectSampleFromBuffersAndWriteToService(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels) throws ArchiveServiceException {
+    private long collectSampleFromBuffersAndWriteToService(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels)
+    throws ArchiveServiceException {
+
         long written = 0;
 
         final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =

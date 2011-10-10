@@ -19,39 +19,63 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.name;
+package org.csstudio.archive.common.engine.pvmanager;
+
+import gov.aps.jca.dbr.DBR;
+import gov.aps.jca.dbr.TIME;
+import gov.aps.jca.dbr.TimeStamp;
 
 import javax.annotation.Nonnull;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Predicate;
+
 /**
- * Enums of the record field identifiers for Epics as of EPICS Record Reference Manual of R3.12.
- * Not complete!
+ * Predicate for {@link DBR} types for being of type {@link TIME} and having a timestamp greater
+ * than 1ms since epoch.
  *
  * @author bknerr
- * @since 24.06.2011
+ * @since 07.10.2011
  */
-public enum RecordField implements IRecordField {
-    VAL,
-    ADEL,
-    MDEL,
-    NELM,
-    FTVL;
+public class DesyDbrTimeValidator implements Predicate<DBR> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DesyDbrTimeValidator.class);
+
+    private final Predicate<DBR> _validator;
 
     /**
      * Constructor.
      */
-    private RecordField() {
-        if (!getFieldName().matches(EpicsChannelName.FIELD_REGEX)) {
-            throw new IllegalArgumentException("Name does not match " + EpicsChannelName.FIELD_REGEX);
-        }
+    public DesyDbrTimeValidator() {
+        _validator = null;
     }
 
     /**
-     * {@inheritDoc}
+     * Constructor.
+     * For decorator pattern.
      */
+    public DesyDbrTimeValidator(@Nonnull final Predicate<DBR> validator) {
+        _validator = validator;
+    }
+
     @Override
-    @Nonnull
-    public String getFieldName() {
-        return name();
+    public boolean apply(@Nonnull final DBR rawDBR) {
+        if (_validator != null && !_validator.apply(rawDBR)) {
+            return false;
+        }
+
+        return applyForTime(rawDBR);
+    }
+
+    private boolean applyForTime(@Nonnull final DBR rawDBR) {
+        if (!(rawDBR instanceof TIME)) {
+            LOG.debug("DBR is not of type {}. Not valid for creation.",
+                      TIME.class.getSimpleName());
+            return false;
+        }
+        final TimeStamp ts = ((TIME) rawDBR).getTimeStamp();
+        return ts.secPastEpoch() != 0L || ts.nsec() >= 1000000L;
     }
 }

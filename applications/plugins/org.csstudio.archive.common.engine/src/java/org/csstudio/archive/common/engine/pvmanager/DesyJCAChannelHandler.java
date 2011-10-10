@@ -39,6 +39,8 @@ import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.jca.JCAChannelHandler;
 
+import com.google.common.base.Predicate;
+
 /**
  * TODO (bknerr) :
  *
@@ -47,7 +49,9 @@ import org.epics.pvmanager.jca.JCAChannelHandler;
  */
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
+    private final Predicate<DBR> _validator;
     private EpicsMetaData _desyMeta;
+
     // TODO (bknerr) : make this one protected in super type
     private final int _monitorMask;
 
@@ -58,13 +62,14 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
+        _validator = new DesyDbrTimeValidator();
         // TODO (bknerr) : make this one protected in super type
         _monitorMask = monitorMask;
     }
 
     @Override
     protected synchronized void setup(@Nonnull final Channel channel) throws CAException {
-        vTypeFactory = DesyTypeFactoryProvider.matchFor(channel.getFieldType());
+        vTypeFactory = DesyTypeFactoryProvider.matchFor(channel);
 
         // If metadata is needed, get it
         final DBRType epicsMetaType = vTypeFactory.getEpicsMetaType();
@@ -93,15 +98,19 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     @Override
     public boolean updateCache(@Nonnull final MonitorEvent event,
                                @Nonnull final ValueCache<?> cache) {
-        final DBR rawvalue = event.getDBR();
+        final DBR rawDBR = event.getDBR();
 
         if (_desyMeta == null && metadata != null) {
             _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
         }
 
+        if (!_validator.apply(rawDBR)) {
+            return false;
+        }
+
         @SuppressWarnings("unchecked")
         final EpicsSystemVariable newValue = ((DesyTypeFactory) vTypeFactory).createValue(getChannelName(),
-                                                                                          rawvalue,
+                                                                                          rawDBR,
                                                                                           metadata,
                                                                                           _desyMeta);
         cache.setValue(newValue);

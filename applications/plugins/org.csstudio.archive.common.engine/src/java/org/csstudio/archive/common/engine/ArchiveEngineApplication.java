@@ -235,7 +235,6 @@ public class ArchiveEngineApplication implements IApplication {
                                              @Nonnull final IServiceProvider provider) {
         EngineHttpServer httpServer = null;
         try {
-            // Setup takes some time, but engine server should already respond.
             httpServer = new EngineHttpServer(model, provider);
         } catch (final EngineHttpServerException e) {
             LOG.error("Cannot start HTTP server on port {}: {}", provider, e.getMessage());

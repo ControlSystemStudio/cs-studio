@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.engine.pvmanager;
 
+import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_Byte;
@@ -81,7 +82,7 @@ public final class DesyTypeFactoryProvider {
                                                                                    DBR_CTRL_Float.TYPE){
                             @Override
                             @Nonnull
-                            public Float toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_CTRL_Float eMeta, final int index) {
+                            public Float toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Float eMeta, final int index) {
                                 return Float.valueOf(((DBR_TIME_Float) eVal).getFloatValue()[index]);
                             }
                         });
@@ -92,7 +93,7 @@ public final class DesyTypeFactoryProvider {
                                                                                       DBR_CTRL_Double.TYPE){
                             @Override
                             @Nonnull
-                            public Double toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_CTRL_Double eMeta, final int index) {
+                            public Double toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Double eMeta, final int index) {
                                 return Double.valueOf(((DBR_TIME_Double) eVal).getDoubleValue()[index]);
                             }
                         });
@@ -103,7 +104,7 @@ public final class DesyTypeFactoryProvider {
                                                                                 DBR_CTRL_Byte.TYPE){
                             @Override
                             @Nonnull
-                            public Byte toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_CTRL_Byte eMeta, final int index) {
+                            public Byte toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Byte eMeta, final int index) {
                                 return Byte.valueOf(((DBR_TIME_Byte) eVal).getByteValue()[index]);
                             }
                         });
@@ -114,7 +115,7 @@ public final class DesyTypeFactoryProvider {
                                                                                    DBR_CTRL_Short.TYPE){
                             @Override
                             @Nonnull
-                            public Short toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_CTRL_Short eMeta, final int index) {
+                            public Short toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Short eMeta, final int index) {
                                 return Short.valueOf(((DBR_TIME_Short) eVal).getShortValue()[index]);
                             }
                         });
@@ -125,7 +126,7 @@ public final class DesyTypeFactoryProvider {
                                                                                  DBR_CTRL_Int.TYPE){
                             @Override
                             @Nonnull
-                            public Integer toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_CTRL_Int eMeta, final int index) {
+                            public Integer toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Int eMeta, final int index) {
                                 return Integer.valueOf(((DBR_TIME_Int) eVal).getIntValue()[index]);
                             }
                         });
@@ -136,7 +137,7 @@ public final class DesyTypeFactoryProvider {
                                                                                      DBR_STS_String.TYPE){
                             @Override
                             @Nonnull
-                            public String toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_STS_String eMeta, final int index) {
+                            public String toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_STS_String eMeta, final int index) {
                                 return ((DBR_TIME_String) eVal).getStringValue()[index];
                             }
 
@@ -155,9 +156,9 @@ public final class DesyTypeFactoryProvider {
                                                                                        DBR_LABELS_Enum.TYPE){
                             @Override
                             @Nonnull
-                            public EpicsEnum toScalarData(@Nonnull final DBR eVal, @Nonnull final DBR_LABELS_Enum eMeta, final int index) {
+                            public EpicsEnum toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_LABELS_Enum eMeta, final int index) {
                                 final short i = ((DBR_TIME_Enum) eVal).getEnumValue()[index];
-                                final String[] labels = eMeta.getLabels();
+                                final String[] labels = eMeta!= null ? eMeta.getLabels() : null;
                                 if (labels != null && i >=0 && i < labels.length && !Strings.isNullOrEmpty(labels[i])) {
                                     return EpicsEnum.createFromState(labels[i], (int) i);
                                 }
@@ -180,13 +181,28 @@ public final class DesyTypeFactoryProvider {
 
     @SuppressWarnings("rawtypes")
     @Nonnull
-    public static TypeFactory matchFor(@Nonnull final DBRType fieldType) {
-        final TypeFactory fac = FACTORY_MAP.get(fieldType);
+    public static TypeFactory matchFor(@Nonnull final Channel channel) {
+        final DesyTypeFactory fac = FACTORY_MAP.get(channel.getFieldType());
         if (fac == null) {
-            throw new IllegalArgumentException("The dbrType type is not supported: " + fieldType, null);
+            throw new IllegalArgumentException("The dbrType type is not supported: " + channel, null);
         }
+        //fac.setIsArray(isChannelMultiScalar(channel));
         return fac;
     }
+
+//    private static boolean isChannelMultiScalar(@Nonnull final Channel channel) {
+//        final String baseName = EpicsNameSupport.parseBaseName(channel.getName());
+//        final EpicsChannelName ftvlChannelName = new EpicsChannelName(baseName, RecordField.FTVL);
+//        final PVReader r = PVManager.read(channel(ftvlChannelName.toString())).timeout(TimeDuration.ms(20)).every(TimeDuration.ms(10));
+//        r.addPVReaderListener(new PVReaderListener() {
+//            @Override
+//            public void pvChanged() {
+//
+//
+//            }
+//        });
+//        return false;
+//    }
 
     @SuppressWarnings("rawtypes")
     @Nonnull
