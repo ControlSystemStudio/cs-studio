@@ -446,15 +446,17 @@ public class PVItem extends ModelItem implements PVListener
     /** Add data retrieved from an archive to the 'historic' section
      *  @param reader Archive server that provided these samples
      *  @param result Historic data
+     * @param currentRequestType
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedSamples(final ArchiveReader reader,
-                                                  final List<IValue> result)
+                                                  final List<IValue> result,
+                                                  final RequestType requestType)
                                                   throws OsgiServiceUnavailableException,
                                                          ArchiveServiceException
     {
-        samples.mergeArchivedData(getName(), reader, result);
+        samples.mergeArchivedData(getName(), reader, requestType, result);
     }
 
     /** Write XML formatted PV configuration
