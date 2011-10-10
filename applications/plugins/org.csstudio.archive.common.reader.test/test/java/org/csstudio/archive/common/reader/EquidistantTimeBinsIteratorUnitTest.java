@@ -21,6 +21,10 @@
  */
 package org.csstudio.archive.common.reader;
 
+import static org.csstudio.archive.common.reader.testdata.TestUtils.CHANNEL_3;
+import static org.csstudio.archive.common.reader.testdata.TestUtils.CHANNEL_3_SAMPLES;
+import static org.csstudio.archive.common.reader.testdata.TestUtils.CHANNEL_NAME_3;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -280,4 +284,59 @@ public class EquidistantTimeBinsIteratorUnitTest {
         iter.next();
     }
 
+    /**
+     * Setup with original data from channel WK:K:16d:2:TDL_Desy_ai.VAL
+     * Range (1317027377 sec. to 1317082937 sec.).
+     *
+     * @throws Exception
+     */
+    @SuppressWarnings("rawtypes")
+    @Test(expected = NoSuchElementException.class)
+    public void testFilledIteratorWithRealSamples() throws Exception {
+
+        final int bins = 15;
+        final long startL = 2L;
+        final long endL = 55099997L;
+        final long binLength = (endL - startL)/bins;
+        final TimeInstant start = TimeInstantBuilder.fromMillis(startL);
+        final TimeInstant end = TimeInstantBuilder.fromMillis(endL);
+
+        final Limits expLimits = Limits.<Double> create(0.0, 60.0);
+        final IArchiveSample expLastSampleBefore =
+            TestUtils.createArchiveMinMaxDoubleSample(TestUtils.CHANNEL_NAME_3,
+                                                      TimeInstantBuilder.fromMillis(1L),
+                                                      19.07651);
+
+        final IArchiveServiceProvider provider =
+            TestUtils .createCustomizedMockedServiceProvider(CHANNEL_NAME_3,
+                                                             start,
+                                                             end,
+                                                             CHANNEL_3_SAMPLES,
+                                                             CHANNEL_3,
+                                                             expLimits,
+                                                             expLastSampleBefore);
+
+        final EquidistantTimeBinsIterator<Double> iter =
+            new EquidistantTimeBinsIterator<Double>(provider,
+                                                    CHANNEL_NAME_3,
+                                                    start,
+                                                    end,
+                                                    null,
+                                                    15);
+        Assert.assertTrue(iter.hasNext());
+        assertSample(iter, 19.451659999999997, 19.82543, 19.07651, 3673335L);
+        int i = 1;
+        while (i++ < 4) {
+            iter.next();
+        }
+        assertSample(iter, 21.85247, 22.01544, 21.68767, binLength*5 + 2);
+
+        i = 1;
+        while (i++ < 11) {
+            iter.next();
+        }
+
+        Assert.assertFalse(iter.hasNext());
+        iter.next();
+    }
 }

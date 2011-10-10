@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Syslog2JmsProduct" id="org.csstudio.syslog2jms.Syslog2JmsProduct" application="org.csstudio.syslog2jms.Syslog2JmsApplication" useFeatures="false" includeLaunchers="true">
+<product name="Syslog2JmsProduct" id="org.csstudio.alarm.syslog2jms.Syslog2JmsProduct" application="org.csstudio.alarm.syslog2jms.Syslog2JmsApplication" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -25,6 +25,7 @@
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
+      <plugin id="org.csstudio.alarm.syslog2jms"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.platform"/>
@@ -32,7 +33,6 @@
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.syslog2jms"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
