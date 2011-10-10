@@ -255,7 +255,7 @@ public final class EngineModel {
                                               throws ArchiveServiceException {
 
         @SuppressWarnings("rawtypes")
-        final Collection<IArchiveChannelStatus> status =
+        final Collection<IArchiveChannelStatus> statuus =
             facade.getLatestChannelsStatusBy(Collections2.transform(channels,
                                                               new Function<ArchiveChannelBuffer, ArchiveChannelId>() {
                                                                   @Override
@@ -265,9 +265,9 @@ public final class EngineModel {
                                                                   }
                                                               }));
 
-        for (final IArchiveChannelStatus statuus : status) {
-            if (statuus != null && statuus.isConnected()) { // still connected?
-                facade.writeChannelStatusInfo(statuus.getChannelId(),
+        for (final IArchiveChannelStatus status : statuus) {
+            if (status != null && status.isConnected()) { // still connected?
+                facade.writeChannelStatusInfo(status.getChannelId(),
                                               false,
                                               "Ungraceful engine shutdown",
                                               engine.getLastAliveTime());
@@ -463,6 +463,7 @@ public final class EngineModel {
                 return new ArchiveChannelBuffer(cfg.getName(),
                                                 cfg.getId(),
                                                 cfg.getLatestTimestamp(),
+                                                cfg.isEnabled(),
                                                 typeClass,
                                                 provider);
             }
@@ -473,6 +474,7 @@ public final class EngineModel {
             return new ArchiveChannelBuffer(cfg.getName(),
                                             cfg.getId(),
                                             cfg.getLatestTimestamp(),
+                                            cfg.isEnabled(),
                                             typeClass,
                                             elemClass,
                                             provider);
@@ -555,16 +557,16 @@ public final class EngineModel {
                                                                   group.getId(),
                                                                   null,
                                                                   cs,
+                                                                  true,
                                                                   low,
                                                                   high);
 
-            _provider.getEngineFacade().createChannel(channel);
-
-            final IArchiveChannel cfg =
-                _provider.getEngineFacade().getChannelByName(epicsName.toString());
-            if (cfg == null) {
+            IArchiveChannel cfg =_provider.getEngineFacade().createChannel(channel);
+            if (cfg != null) {
                 throw new EngineModelException("Channel creation failed.", null);
             }
+            cfg = _provider.getEngineFacade().getChannelByName(epicsName.toString());
+
             return createAndAddArchiveChannelBuffer(_provider, cfg, _writeExecutor, _channelMap, group);
 
         } catch (final ArchiveServiceException e) {
@@ -585,7 +587,15 @@ public final class EngineModel {
             throw new EngineModelException("Removal of channel '" + name.toString() + "' not possible!" +
                                            "\nThere are archived samples for this channel. Do you just like to stop archiving the channel?", null);
         }
+
         buffer.stop("STOP FOR REMOVAL");
+        _channelMap.remove(name);
+        for (final ArchiveGroup group : getGroups()) {
+            if (group.findChannel(name) != null) {
+                group.remove(name);
+                break;
+            }
+        }
 
         try {
             _provider.getEngineFacade().removeChannel(name);

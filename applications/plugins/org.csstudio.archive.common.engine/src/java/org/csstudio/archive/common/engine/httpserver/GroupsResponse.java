@@ -23,6 +23,9 @@ import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
  */
 @SuppressWarnings("nls")
 class GroupsResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/groups";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +47,7 @@ class GroupsResponse extends AbstractResponse {
     private void openTableWithHeader(@Nonnull final HTMLWriter html) {
         html.openTable(1, new String[] {Messages.HTTP_COLUMN_GROUP,
                                         numOf(Messages.HTTP_COLUMN_CHANNELS),
-                                        numOf(Messages.HTTP_COLUMN_CONNECTED),
+                                        numOf(Messages.HTTP_CONNECTED),
                                         numOf(Messages.HTTP_COLUMN_RECEIVEDVALUES),
                                         Messages.HTTP_COLUMN_QUEUEAVG,
                                         Messages.HTTP_COLUMN_QUEUEMAX,
@@ -85,7 +88,8 @@ class GroupsResponse extends AbstractResponse {
             totalNumOfConnectedChannels += numOfConnectedChannels;
             totalNumOfReceivedSamples += numOfReceivedSamples;
 
-            html.tableLine(new String[] {HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+            html.tableLine(new String[] {
+                                         ShowGroupResponse.linkTo(group.getName()),
                                          Integer.toString(numOfChannels),
                                          createChannelConnectedTableEntry(numOfConnectedChannels, numOfChannels),
                                          Long.toString(numOfReceivedSamples),
@@ -124,4 +128,8 @@ class GroupsResponse extends AbstractResponse {
         html.closeTable();
     }
 
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
 }

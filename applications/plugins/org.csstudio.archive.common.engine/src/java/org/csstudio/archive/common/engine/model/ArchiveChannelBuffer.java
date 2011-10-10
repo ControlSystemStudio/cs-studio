@@ -17,6 +17,7 @@ import javax.annotation.concurrent.GuardedBy;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.utility.pv.PV;
@@ -60,7 +61,10 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
      *  the 'running' state.
      */
     @GuardedBy("this")
-    private volatile boolean _isStarted;
+    private boolean _isStarted;
+
+    @GuardedBy("this")
+    private boolean _isEnabled;
 
     /** Most recent value of the PV.
      *  <p>
@@ -88,31 +92,34 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     /**
      * Constructor
-     * @param timeInstant
      * @throws EngineModelException on failure while creating PV
      */
     public ArchiveChannelBuffer(@Nonnull final String name,
                                 @Nonnull final ArchiveChannelId id,
                                 @Nullable final TimeInstant timeOfLastSample,
+                                final boolean isEnabled,
                                 @Nonnull final Class<V> typeClazz,
                                 @Nonnull final IServiceProvider provider) throws EngineModelException {
-        this(name, id, timeOfLastSample, null, typeClazz, provider);
+        this(name, id, timeOfLastSample, isEnabled, null, typeClazz, provider);
     }
 
 
     /**
      * Constructor.
+     * @throws EngineModelException on failure while creating PV
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public ArchiveChannelBuffer(@Nonnull final String name,
                                 @Nonnull final ArchiveChannelId id,
                                 @Nullable final TimeInstant timeOfLastSample,
+                                final boolean isEnabled,
                                 @Nullable final Class<V> collClazz,
                                 @Nonnull final Class<V> typeClazz,
                                 @Nonnull final IServiceProvider provider) throws EngineModelException {
         _name = name;
         _id = id;
         _timeOfLastSampleBeforeChannelStart = timeOfLastSample;
+        _isEnabled = isEnabled;
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(name);
         _typeClazz = typeClazz;
         _collClazz = collClazz;
@@ -173,31 +180,46 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     }
 
     /**
-     * Start archiving this channel.
+     * Checks whether this channel is enabled for archiving and if so it is started.
+     * @return true if the channel could be started, false otherwise
      * @throws EngineModelException
      */
-    public void start(@Nonnull final String info) throws EngineModelException {
+    public boolean start(@Nonnull final String info) throws EngineModelException {
         try {
             synchronized (this) {
                 if (_isStarted) {
-                    return;
+                    return true;
                 }
                 _isStarted = true;
             }
             _listener.setStartInfo(info);
             _pv.start();
+
+            enable();
+
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable. Enabling of channel could not be persisted.", e);
         } catch (final Exception e) {
             LOG.error("PV " + _pv.getName() + " could not be started with state info " + _pv.getStateInfo(), e);
             throw new EngineModelException("Something went wrong within Kasemir's PV stuff on channel/PV startup", e);
         }
-
+        return true;
     }
 
+    private void enable() throws OsgiServiceUnavailableException {
+        synchronized (this) {
+            if (isEnabled()) {
+                return;
+            }
+            _isEnabled = true;
+        }
+        _provider.getEngineFacade().setEnableChannelFlag(_name, true);
+    }
 
     /**
      * Stop archiving this channel
      */
-    public void stop(@Nonnull final String info) {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
             if (!_isStarted) {
                 return;
@@ -206,6 +228,22 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         }
         _listener.setStopInfo(info);
         _pv.stop();
+
+        try {
+            disable();
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable. Disabling of channel could not be persisted.", e);
+        }
+    }
+
+    private void disable() throws OsgiServiceUnavailableException {
+        synchronized (this) {
+            if (!isEnabled()) {
+                return;
+            }
+            _isEnabled = false;
+        }
+        _provider.getEngineFacade().setEnableChannelFlag(_name, false);
     }
 
     @Nonnull
@@ -246,5 +284,9 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     @Nonnull
     public ArchiveChannelId getId() {
         return _id;
+    }
+
+    boolean isEnabled() {
+        return _isEnabled;
     }
 }

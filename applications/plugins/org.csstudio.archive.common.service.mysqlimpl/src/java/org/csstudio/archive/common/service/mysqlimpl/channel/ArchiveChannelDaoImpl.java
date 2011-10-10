@@ -56,6 +56,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -99,7 +100,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     private final String _selectChannelPrefix =
         "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
-                    TAB + ".display_high, " + TAB + ".display_low, " +
+                    TAB + ".enabled, " + TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
                 "FROM " + getDatabaseName() + "." + TAB + ", " + getDatabaseName() + "." + CS_TAB;
     private final String _selectChannelSuffix = " AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
@@ -114,11 +115,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDatabaseName() + "." + TAB;
 
     private final String _createChannelsStmt = "INSERT INTO " + getDatabaseName() + "." + TAB +
-                                               " (name, datatype, group_id, control_system_id, display_high, display_low)" +
-                                               " VALUES (?, ?, ?, ?, ?, ?)";
+                                               " (name, datatype, group_id, control_system_id, enabled, display_high, display_low)" +
+                                               " VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private final String _deleteChannelStmt= "DELETE FROM " + getDatabaseName() + "." + TAB +
                                              " WHERE name=?";
+    private final String _updateChannelEnabledStmt = "UPDATE " + getDatabaseName() + "." + TAB +
+                                                     " SET enabled=? WHERE name=?";
+
     /**
      * Constructor.
      * @throws ArchiveDaoException
@@ -148,6 +152,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final TimeInstant time = lastSampleTime > 0L ?
                                  TimeInstantBuilder.fromNanos(lastSampleTime) :
                                  null;
+        final boolean isEnabled = result.getBoolean(TAB + ".enabled");
 
         String dispHi = result.getString(TAB + ".display_high");
         dispHi = Strings.isNullOrEmpty(dispHi) ? null : dispHi;
@@ -168,6 +173,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                                   new ArchiveChannelGroupId(groupId),
                                                                   time,
                                                                   cs,
+                                                                  isEnabled,
                                                                   dispLo,
                                                                   dispHi);
 
@@ -490,9 +496,10 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 stmt.setString(2, chan.getDataType());
                 stmt.setInt(3, chan.getGroupId().intValue());
                 stmt.setInt(4, chan.getControlSystem().getId().intValue());
+                stmt.setBoolean(5, chan.isEnabled());
                 final Limits<?> limits = chan.getDisplayLimits();
-                stmt.setString(5, limits != null ? String.valueOf(limits.getHigh()) : null);
-                stmt.setString(6, limits != null ? String.valueOf(limits.getLow()) : null);
+                stmt.setString(6, limits != null ? String.valueOf(limits.getHigh()) : null);
+                stmt.setString(7, limits != null ? String.valueOf(limits.getLow()) : null);
 
                 stmt.addBatch();
             }
@@ -542,7 +549,32 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         } finally {
             closeSqlResources(null, stmt, _deleteChannelStmt);
         }
-        return DeleteResult.failed("Channel '" + name + "' does not exist.");
+        return DeleteResult.failed("Deletion of channel failed. Number of updated rows != 1.");
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public UpdateResult updateChannelEnabledFlag(@Nonnull final String name, final boolean isEnabled) {
+        PreparedStatement stmt = null;
+        try {
+            final Connection conn = getThreadLocalConnection();
+            stmt = conn.prepareStatement(_updateChannelEnabledStmt);
+            stmt.setBoolean(1, isEnabled);
+            stmt.setString(2, name);
+            final int updated = stmt.executeUpdate();
+            if (updated == 1) {
+                return UpdateResult.succeeded("Update of enabled flag for channel '" + name + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return UpdateResult.failed("Update of enabled flag for channel '" + name + "' failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, _deleteChannelStmt);
+        }
+        return UpdateResult.failed("Channel '" + name + "' has not been updated, doesn't it exist?");
     }
 
 }

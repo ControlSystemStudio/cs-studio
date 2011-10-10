@@ -76,7 +76,8 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 		Rectangle figureBounds = getClientArea();
 		if (!transparent) {
 				graphics.pushState();
-				graphics.setBackgroundColor(getBackgroundColor());
+				if(isEnabled())
+					graphics.setBackgroundColor(getBackgroundColor());
 				graphics.fillOval(figureBounds);
 				graphics.popState();
 		}
@@ -96,7 +97,8 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 			graphics.pushState();
 			
 			graphics.setClip(fillRectangle);
-			graphics.setBackgroundColor(getForegroundColor());
+			if(isEnabled())
+				graphics.setBackgroundColor(getForegroundColor());
 			
 			graphics.fillOval(figureBounds);
 			graphics.popState();
@@ -164,7 +166,8 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
 		graphics.pushState();
-		graphics.setForegroundColor(lineColor);
+		if(isEnabled())
+			graphics.setForegroundColor(lineColor);
 		graphics.drawOval(r);
 		graphics.popState();
 	}

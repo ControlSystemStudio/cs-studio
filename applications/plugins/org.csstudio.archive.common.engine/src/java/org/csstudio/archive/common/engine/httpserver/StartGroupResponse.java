@@ -39,11 +39,11 @@ import com.google.common.base.Strings;
  */
 public class StartGroupResponse extends AbstractGroupResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_START_GROUP_ACTION;
-    private static String URL_START_GROUP_PAGE;
     static {
         URL_START_GROUP_ACTION = "start";
-        URL_START_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_START_GROUP_ACTION;
+        URL_BASE_PAGE = URL_GROUP_PAGE + "/" + URL_START_GROUP_ACTION;
     }
 
     private static final long serialVersionUID = -340450994970831280L;
@@ -57,7 +57,6 @@ public class StartGroupResponse extends AbstractGroupResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
@@ -80,7 +79,7 @@ public class StartGroupResponse extends AbstractGroupResponse {
 
             group.start("MANUAL GROUP START");
 
-            resp.sendRedirect(ShowGroupResponse.getUrl() + "?" + ShowGroupResponse.PARAM_NAME + "=" + name);
+            resp.sendRedirect(ShowGroupResponse.urlTo(name));
 
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Group " + name + " could not be started:\n" + e.getMessage());
@@ -88,7 +87,15 @@ public class StartGroupResponse extends AbstractGroupResponse {
     }
 
     @Nonnull
-    public static String getUrl() {
-        return URL_START_GROUP_PAGE;
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

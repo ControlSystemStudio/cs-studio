@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure.BoolLabelPosition;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -42,6 +43,9 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	
 	/** True if the boolean label should be visible. */
 	public static final String PROP_SHOW_BOOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
+	
+	public static final String PROP_BOOL_LABEL_POS = "boolean_label_position"; //$NON-NLS-1$
+	
 	
 	/**Data type to be operated by this widget, could be Bit or Enum. If it is Bit, the widget
 	 * will write 0/1 to the corresponding bit of the PV. If it is ENUM, it will write On State/Off State 
@@ -88,6 +92,8 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, ""));
 		addProperty(new StringProperty(PROP_OFF_STATE, "Off State",
 				WidgetPropertyCategory.Behavior, ""));
+		addProperty(new ComboProperty(PROP_BOOL_LABEL_POS, "Boolean Label Position", 
+				WidgetPropertyCategory.Display, BoolLabelPosition.stringValues(), 0));
 		
 	}
 	
@@ -145,6 +151,11 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	
 	public String getOffState(){
 		return (String)getPropertyValue(PROP_OFF_STATE);
+	}
+	
+	public BoolLabelPosition getBoolLabelPosition(){
+		return BoolLabelPosition.values()
+				[(Integer)getPropertyValue(PROP_BOOL_LABEL_POS)];
 	}
 	
 	

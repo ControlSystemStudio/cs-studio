@@ -66,7 +66,6 @@ public class AddChannelResponse extends AbstractChannelResponse {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("static-access")
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
@@ -92,14 +91,22 @@ public class AddChannelResponse extends AbstractChannelResponse {
 
         try {
             getModel().configureNewChannel(name, group, type, lopr, hopr);
-            resp.sendRedirect(ShowChannelResponse.getUrl() + "?" + ShowChannelResponse.PARAM_NAME + "="+name);
+            resp.sendRedirect(ShowChannelResponse.urlTo(name.toString()));
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Channel could not be configured:\n" + e.getMessage());
         }
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_ADD_CHANNEL_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

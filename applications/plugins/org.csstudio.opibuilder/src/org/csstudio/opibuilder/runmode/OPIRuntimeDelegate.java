@@ -127,6 +127,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			viewer.getControl().removeControlListener(zoomListener);
 		}
 		displayModel = new DisplayModel();
+		displayModel.setOpiFilePath(getOPIFilePath());
 		displayModel.setDisplayID(displayID);
 		displayModelFilled = false;
 		InputStream inputStream = null;
@@ -161,7 +162,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			throw new PartInitException("Failed to run OPI file: " + input, e);
 		}
 		
-		displayModel.setOpiFilePath(getOPIFilePath());
+		
 
 		
 		// if it was an opened editor

@@ -8,9 +8,6 @@
 package org.csstudio.swt.widgets.figures;
 
 
-import java.util.logging.Level;
-
-import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -232,6 +229,9 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			/** Used as a constraint for the shadow */
 			public static final String SHADOW = "shadow";      //$NON-NLS-1$
 			
+			/** Used as a constraint for the boolean label */
+			public static final String BOOL_LABEL = "boolLabel";      //$NON-NLS-1$
+			
 			private Pedestal pedestal;
 			private Bar bar;
 			private Shadow shadow;
@@ -297,11 +297,11 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 								H - smallBounds.y));
 				}
 				if(boolLabel != null && boolLabel.isVisible()){
-					Dimension labelSize = boolLabel.getPreferredSize();	
-					boolLabel.setBounds(new Rectangle(
+					Dimension labelSize = boolLabel.getPreferredSize();						
+					boolLabel.setBounds(new Rectangle(getLabelLocation(
 							pedBounds.x + pedBounds.width/2 - labelSize.width/2,
-							pedBounds.y + pedBounds.height/2 - labelSize.height/2,
-							labelSize.width, labelSize.height));
+							pedBounds.y + pedBounds.height/2 - labelSize.height/2),
+							new Dimension(labelSize.width, labelSize.height)));
 				}	
 				
 			}
@@ -386,10 +386,10 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				}
 				if(boolLabel != null && boolLabel.isVisible()){
 					Dimension labelSize = boolLabel.getPreferredSize();	
-					boolLabel.setBounds(new Rectangle(
+					boolLabel.setBounds(new Rectangle(getLabelLocation(
 							pedBounds.x + pedBounds.width/2 - labelSize.width/2,
-							pedBounds.y + pedBounds.height/2 - labelSize.height/2,
-							labelSize.width, labelSize.height));
+							pedBounds.y + pedBounds.height/2 - labelSize.height/2),
+							new Dimension(labelSize.width, labelSize.height)));
 				}
 			}
 		
@@ -657,7 +657,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 		add(pedestal, BoolSwitchLayout.PEDESTAL);	
 		add(shadow, BoolSwitchLayout.SHADOW);
 		add(bar, BoolSwitchLayout.BAR);	
-		bar.add(boolLabel);
+		add(boolLabel, BoolSwitchLayout.BOOL_LABEL);
 		cursor = Cursors.HAND;		
 		
 	}

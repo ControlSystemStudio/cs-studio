@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.model;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.VersionProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.GraphicalViewer;
+import org.osgi.framework.Version;
 
 /**
  * The root model for an OPI Display.
@@ -52,7 +55,9 @@ public class DisplayModel extends AbstractContainerModel {
 	 * If the tab close button should be hidden. 
 	 */
 	public static final String PROP_SHOW_CLOSE_BUTTON = "show_close_button"; //$NON-NLS-1$
-		
+	
+	public static final String PROP_BOY_VERSION = "boy_version"; //$NON-NLS-1$
+	
 	/**
 	 * Auto scale all the widgets as the window resizes. If this is set to true,
 	 * zoom operation will not work.
@@ -68,7 +73,7 @@ public class DisplayModel extends AbstractContainerModel {
 	public DisplayModel() {
 		super();
 		setLocation(-1, -1);
-		setSize(800, 600);
+		setSize(800, 600);		
 	}
 
 	@Override
@@ -87,6 +92,10 @@ public class DisplayModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, false));
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON, "Show Close Button", 
 				WidgetPropertyCategory.Display, true));		
+		Version version = OPIBuilderPlugin.getDefault().getBundle().getVersion();
+		addProperty(new VersionProperty(
+				PROP_BOY_VERSION, "BOY Version", WidgetPropertyCategory.Basic, 
+				version.toString()));
 		
 		setPropertyVisible(PROP_BORDER_COLOR, false);
 		setPropertyVisible(PROP_BORDER_STYLE, false);
@@ -96,6 +105,7 @@ public class DisplayModel extends AbstractContainerModel {
 		setPropertyVisible(PROP_TOOLTIP, false);
 		setPropertyVisible(PROP_ACTIONS, false);
 		setPropertyVisible(PROP_FONT, false);
+		setPropertyVisible(PROP_BOY_VERSION, false);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
@@ -175,6 +185,9 @@ public class DisplayModel extends AbstractContainerModel {
 		return displayID;
 	}
 	
+	public Version getBOYVersion(){
+		return new Version((String) getPropertyValue(PROP_BOY_VERSION));
+	}
 	
 	
 

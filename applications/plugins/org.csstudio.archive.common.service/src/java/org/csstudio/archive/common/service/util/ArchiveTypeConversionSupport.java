@@ -319,6 +319,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                          @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
                                          @Nullable final TimeInstant time,
                                          @Nonnull final IArchiveControlSystem cs,
+                                         final boolean enabled,
                                          @CheckForNull final String low,
                                          @CheckForNull final String high) throws TypeSupportException {
         // CHECKSTYLE ON : ParameterNumber
@@ -328,7 +329,8 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                       datatype,
                                       archiveChannelGroupId,
                                       time,
-                                      cs);
+                                      cs,
+                                      enabled);
         }
 
         final Class<Object> typeClass =
@@ -341,13 +343,14 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                       datatype,
                                       archiveChannelGroupId,
                                       time,
-                                      cs);
+                                      cs,
+                                      enabled);
         }
 
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                            typeClass);
-        return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs,
+        return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs, enabled,
                                      (T) fromArchiveString(datatype, low),
                                      (T) fromArchiveString(datatype, high));
     }
@@ -485,6 +488,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                             @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @SuppressWarnings("unused") @Nonnull final T low,
                                             @SuppressWarnings("unused") @Nonnull final T high) {
         // CHECKSTYLE ON : ParameterNumber
@@ -493,6 +497,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                   datatype,
                                   archiveChannelGroupId,
                                   time,
-                                  cs);
+                                  cs,
+                                  enabled);
     }
 }

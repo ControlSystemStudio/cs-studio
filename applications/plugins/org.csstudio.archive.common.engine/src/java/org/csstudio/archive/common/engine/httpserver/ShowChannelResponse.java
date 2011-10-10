@@ -53,18 +53,17 @@ class ShowChannelResponse extends AbstractChannelResponse {
         // HTML table similar to group's list of channels
         final HTMLWriter html = new HTMLWriter(resp, "Archive Engine Channel");
 
-        createChannelTable(name, channel, html);
+        createChannelTable(channel, html);
 
         html.close();
     }
 
 
-    private void createChannelTable(@Nonnull final EpicsChannelName channelName,
-                                    @Nonnull final ArchiveChannelBuffer<?, ?> channel,
+    private void createChannelTable(@Nonnull final ArchiveChannelBuffer<?, ?> channel,
                                     @Nonnull final HTMLWriter html) {
         html.openTable(2, new String[] {Messages.HTTP_CHANNEL_INFO});
 
-        html.tableLine(new String[] {Messages.HTTP_CHANNEL, channelName.toString()});
+        html.tableLine(new String[] {Messages.HTTP_CHANNEL, channel.getName()});
 
         html.tableLine(new String[] {
                            Messages.HTTP_STARTED,
@@ -74,7 +73,7 @@ class ShowChannelResponse extends AbstractChannelResponse {
         final String connected = channel.isConnected()
                         ? Messages.HTTP_YES
                         : HTMLWriter.makeRedText(Messages.HTTP_NO);
-        html.tableLine(new String[] {Messages.HTTP_COLUMN_CONNECTED, connected});
+        html.tableLine(new String[] {Messages.HTTP_CONNECTED, connected});
 
         html.tableLine(new String[] {Messages.HTTP_INTERNAL_STATE, channel.getInternalState()});
 
@@ -88,11 +87,31 @@ class ShowChannelResponse extends AbstractChannelResponse {
 
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});
 
+        if (channel.isStarted()) {
+            html.tableLine(new String[] {
+                                         Messages.HTTP_STOP_CHANNEL,
+                                         StopChannelResponse.linkTo(channel.getName()),
+                                         });
+        } else {
+            html.tableLine(new String[] {
+                    Messages.HTTP_START_CHANNEL,
+                    StartChannelResponse.linkTo(channel.getName()),
+            });
+        }
+
         html.closeTable();
     }
 
     @Nonnull
-    public static String getUrl() {
+    public static String baseUrl() {
         return URL_SHOW_CHANNEL_PAGE;
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+    }
+    @Nonnull
+    public static String urlTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).url();
     }
 }

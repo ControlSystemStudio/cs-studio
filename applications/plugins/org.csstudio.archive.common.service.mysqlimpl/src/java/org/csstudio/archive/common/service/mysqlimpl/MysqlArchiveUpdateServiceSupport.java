@@ -31,6 +31,7 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.engine.IArchiveEngineDao;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.inject.Inject;
@@ -80,5 +81,10 @@ public class MysqlArchiveUpdateServiceSupport {
             throw new ArchiveServiceException("Channel info for " + id +
                                               " could not be updated.", e);
         }
+    }
+
+    @Nonnull
+    public UpdateResult updateChannelIsEnabledFlag(@Nonnull final String name, final boolean isEnabled) {
+        return _channelDao.updateChannelEnabledFlag(name, isEnabled);
     }
 }

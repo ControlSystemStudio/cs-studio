@@ -311,10 +311,15 @@ category name, but this is not recommended.</p></li>
 <li>icon<p>The icon of the widget.</p></li>
 <li>model_class<p>The model of the widget.</p></li>
 <li>editpart_class<p>The editpart class of the widget.</p></li>
+<li>onlineHelpHtml <p>The online help html file.</p></li>
 <li>description<p>The description of the widget, which will be displayed as the tooltip.</p></li>
 </ul>
 
-<h4>3.7 Integrate the widget into CSS</h4>
+<h4>3.7 Hook widget help with BOY online help</h4>
+<p>You can hook up the widget's help page with BOY online help from toc anchor
+<code>../org.csstudio.opibuilder/toc.xml#thirdPartyWidgets</code>.</p>
+
+<h4>3.8 Integrate the widget into CSS</h4>
 <p>If you are a CSS developer, now your have finished the plugin project. 
 You can integrate it into CSS by including this plugin into your CSS build.</p>
 <p>Here we will discuss how to add this widget to an existing CSS.</p>
@@ -332,7 +337,7 @@ Simple Bar Graph widget in you CSS BOY palette! You can test it by setting
 <p>*This project zip file can be found at BOY Examples->Miscellaneous->CustomizedWidgetExample.zip. You can import it into your Eclipse
  workspace by selecting <code>File->Import...->Existing Project into workspace</code>.</p>
 
-<h4>3.8 Resources</h4>
+<h4>3.9 Resources</h4>
 <p>There are lots of exist resources come with BOY, such as <code>linear scale</code>, 
 <code>round scale</code>, <code>AbstractBoolFigure</code>, <code>AbstractScaledWidgetFigure</code> and so on.
 They are included in the plugins of <code>org.csstudio.swt.widgets</code> and <code>org.csstudio.swt.xygraph</code>. 
@@ -390,10 +395,9 @@ Here is the result of this example:
 <img alt = "Popup Menu Example" src = "img/PopupMenuExample.PNG">
 </p>
 
-<h4>4.2 How to migrate an SWT widget to BOY </h4>
+<h4>4.2 Create BOY widget based on native SWT widget</h4>
 <p>To use SWT widgets in BOY, you need to subclass <code>org.csstudio.opibuilder.widgets.AbstractSWTWidgetFigure</code> for
-the figure. The model and editpart are same as regular BOY widgets. For an SWT widget, we have some known
-issues that are hard to fix:</p> <ul>
+the figure. The model and editpart are same as regular BOY widgets. For an SWT widget, there are few drawbacks:</p> <ul>
 <li>You cannot change its order. Its order is always on top.</li>
 <li>You cannot hide part of the widget in grouping container.
 </li></ul>

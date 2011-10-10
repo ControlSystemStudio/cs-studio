@@ -23,7 +23,9 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -100,22 +102,56 @@ public class XMLUtil {
 		return XMLElementToWidget(element, null);
 	}
 
-	/**fill the DisplayModel from an OPI file inputstream
+	/**Fill the DisplayModel from an OPI file inputstream
+	 * @param inputStream the inputstream will be closed in this method before return.
+	 * @param displayModel
+	 * @param display the display in UI Thread.
+	 * @throws Exception
+	 */
+	public static void fillDisplayModelFromInputStream(
+			final InputStream inputStream, final DisplayModel displayModel, Display display) throws Exception{
+		SAXBuilder saxBuilder = new SAXBuilder();
+		Document doc = saxBuilder.build(inputStream);
+		Element root = doc.getRootElement();
+		if(root != null){
+			 XMLElementToWidget(root, displayModel);
+			 if(displayModel.getBOYVersion().compareTo(
+					 OPIBuilderPlugin.getDefault().getBundle().getVersion()) > 0){				
+				final String message = displayModel.getOpiFilePath() == null ? "This OPI"
+						: displayModel.getOpiFilePath().lastSegment()
+								+ " was created in a newer version of BOY ("
+								+ displayModel.getBOYVersion().toString()
+								+ "). It may not function properly! "
+								+ "Please update your " + 
+								(OPIBuilderPlugin.isRAP()? "WebOPI":"BOY") 
+								+ " (" + OPIBuilderPlugin.getDefault().getBundle().getVersion() +
+								") to the latest version.";
+				if(display == null){
+					display = Display.getDefault();
+				}
+				if (display != null)
+					display.asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							MessageDialog.openWarning(null, "Warning", message);
+							ConsoleService.getInstance().writeWarning(message);
+						}
+					});			
+			 }	 
+			 
+		}
+		inputStream.close();
+	}
+
+	/**Fill the DisplayModel from an OPI file inputstream. In RAP, it must be called in UI Thread.
 	 * @param inputStream the inputstream will be closed in this method before return.
 	 * @param displayModel
 	 * @throws Exception
 	 */
 	public static void fillDisplayModelFromInputStream(
-			InputStream inputStream, DisplayModel displayModel) throws Exception{
-		SAXBuilder saxBuilder = new SAXBuilder();
-		Document doc = saxBuilder.build(inputStream);
-		Element root = doc.getRootElement();
-		if(root != null)
-			 XMLElementToWidget(root, displayModel);
-		inputStream.close();
+			final InputStream inputStream, final DisplayModel displayModel) throws Exception {
+		fillDisplayModelFromInputStream(inputStream, displayModel, null);
 	}
-
-
 
 
 	/**

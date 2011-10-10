@@ -82,9 +82,10 @@ public class LongArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
                                             @Nonnull final ArchiveChannelGroupId grpId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,
+                                            final boolean enabled,
                                             @Nonnull final Long low,
                                             @Nonnull final Long high) {
         // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Long>(id, name, datatype, grpId, time, cs, low, high);
+        return new ArchiveLimitsChannel<Long>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }

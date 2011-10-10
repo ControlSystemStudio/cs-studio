@@ -34,6 +34,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.types.Limits;
 
 /**
@@ -100,4 +101,7 @@ public interface IArchiveChannelDao {
      */
     @Nonnull
     DeleteResult deleteChannel(@Nonnull final String name);
+
+    @Nonnull
+    UpdateResult updateChannelEnabledFlag(@Nonnull final String name, final boolean isEnabled);
 }
