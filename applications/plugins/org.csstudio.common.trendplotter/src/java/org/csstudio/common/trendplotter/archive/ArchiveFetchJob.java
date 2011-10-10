@@ -130,7 +130,8 @@ public class ArchiveFetchJob extends Job
                     }
 
                     final ValueIterator value_iter;
-                    if (item.getRequestType() == RequestType.RAW) {
+                    final RequestType currentRequestType = item.getRequestType();
+                    if (currentRequestType == RequestType.RAW) {
                         value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
                     }
                     else {
@@ -138,12 +139,12 @@ public class ArchiveFetchJob extends Job
                     }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-
                     while (value_iter.hasNext()) {
-                        result.add(value_iter.next());
+                        final IValue next = value_iter.next();
+                        result.add(next);
                     }
 
-                    item.mergeArchivedSamples(reader, result);
+                    item.mergeArchivedSamples(reader, result, currentRequestType);
                     if (cancelled) {
                         break;
                     }

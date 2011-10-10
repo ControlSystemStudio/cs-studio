@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -18,15 +21,19 @@ import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.model.EngineState;
+import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
-import org.csstudio.domain.desy.epics.typesupport.EpicsIMetaDataTypeSupport;
-import org.csstudio.domain.desy.epics.typesupport.EpicsIValueTypeSupport;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.epics.pvmanager.Notification;
+import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.TypeSupport;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,19 +103,19 @@ public class ArchiveEngineApplication implements IApplication {
     public final Object start(@Nonnull final IApplicationContext context) {
 
         final IServiceProvider provider = new ServiceProvider();
+        LOG.info("DESY Archive Engine Version {} - START.", provider.getPreferencesService().getVersion());
 
         final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
         }
-        EpicsIMetaDataTypeSupport.install();
-        EpicsIValueTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version {}.", provider.getPreferencesService().getVersion());
+        final DesyJCADataSource dataSource = configureJCADataSources();
+
         EngineHttpServer httpServer = null;
         try {
             _run = true;
-            _model = new EngineModel(_engineName, provider);
+            _model = new EngineModel(_engineName, provider, dataSource);
 
             httpServer = startHttpServer(_model, provider);
             if (httpServer == null) {
@@ -123,8 +130,34 @@ public class ArchiveEngineApplication implements IApplication {
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
         return killEngineAndHttpServer(_model, httpServer);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    private DesyJCADataSource configureJCADataSources() {
+        LOG.info("Configure JCA Datasource and setup PVManager.");
+        final DesyJCADataSource dataSource =
+            new DesyJCADataSource(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.LOG);
+        PVManager.setDefaultDataSource(dataSource);
+
+        TypeSupport.addTypeSupport(new NotificationSupport<EpicsSystemVariable>(EpicsSystemVariable.class) {
+            @Override
+            @Nonnull
+            public Notification<EpicsSystemVariable> prepareNotification(@CheckForNull final EpicsSystemVariable oldValue,
+                                                                         @CheckForNull final EpicsSystemVariable newValue) {
+                if (oldValue != null && newValue != null) {
+                    if (!oldValue.getData().equals(newValue.getData())) {
+                        return new Notification<EpicsSystemVariable>(true, newValue);
+                    }
+                    return new Notification<EpicsSystemVariable>(false, newValue);
+                } else if (oldValue == null && newValue == null) {
+                    return new Notification<EpicsSystemVariable>(false, null);
+                }
+                return new Notification<EpicsSystemVariable>(true, newValue);
+            }
+        });
+        return dataSource;
     }
 
     private void stopEngineAndClearConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
@@ -152,6 +185,7 @@ public class ArchiveEngineApplication implements IApplication {
     /**
      * Run until model gets stopped via HTTPD or #stop()
      * @param model
+     * @param dataSource
      *
      * @throws EngineModelException
      * @throws InterruptedException
@@ -179,7 +213,7 @@ public class ArchiveEngineApplication implements IApplication {
     private void readEngineConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
         LOG.info("Reading configuration for engine '{}'.", model.getName());
         final RunningStopWatch watch = StopWatch.start();
-        model.readConfig();
+        model.readConfigurationAndSetupGroupsAndChannels();
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: {} channels in {}.",
                  model.getChannels().size(),
@@ -201,7 +235,6 @@ public class ArchiveEngineApplication implements IApplication {
                                              @Nonnull final IServiceProvider provider) {
         EngineHttpServer httpServer = null;
         try {
-            // Setup takes some time, but engine server should already respond.
             httpServer = new EngineHttpServer(model, provider);
         } catch (final EngineHttpServerException e) {
             LOG.error("Cannot start HTTP server on port {}: {}", provider, e.getMessage());

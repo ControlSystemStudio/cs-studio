@@ -19,39 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.epics.name;
+package org.csstudio.archive.common.engine.pvmanager;
 
+import java.util.Map;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.epics.pvmanager.ChannelHandler;
+import org.epics.pvmanager.jca.JCADataSource;
+
+import com.google.common.collect.MapMaker;
+
+
 /**
- * Enums of the record field identifiers for Epics as of EPICS Record Reference Manual of R3.12.
- * Not complete!
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 24.06.2011
+ * @since 30.08.2011
  */
-public enum RecordField implements IRecordField {
-    VAL,
-    ADEL,
-    MDEL,
-    NELM,
-    FTVL;
+public class DesyJCADataSource extends JCADataSource {
 
-    /**
-     * Constructor.
-     */
-    private RecordField() {
-        if (!getFieldName().matches(EpicsChannelName.FIELD_REGEX)) {
-            throw new IllegalArgumentException("Name does not match " + EpicsChannelName.FIELD_REGEX);
-        }
+    private final Map<String, DesyJCAChannelHandler> _handlerMap;
+
+    public DesyJCADataSource(@Nonnull final String className,
+                             final int monitorMask) {
+        super(className, monitorMask);
+
+        _handlerMap = new MapMaker().concurrencyLevel(5).weakKeys().weakValues().makeMap();
     }
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Nonnull
-    public String getFieldName() {
-        return name();
+    protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
+        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+        _handlerMap.put(channelName, handler);
+        return handler;
+    }
+
+    @CheckForNull
+    public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
+        return _handlerMap.get(channelName);
     }
 }

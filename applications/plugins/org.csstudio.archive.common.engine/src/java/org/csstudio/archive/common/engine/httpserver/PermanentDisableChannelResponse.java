@@ -34,23 +34,21 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 29.09.2011
+ * @since 06.10.2011
  */
-public class StartChannelResponse extends AbstractChannelResponse {
+public class PermanentDisableChannelResponse extends AbstractChannelResponse {
 
     private static String URL_BASE_PAGE;
-    private static String URL_START_CHANNEL_ACTION;
+    private static String URL_PERM_DISABLE_CHANNEL_ACTION;
     static {
-        URL_START_CHANNEL_ACTION = "start";
-        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_START_CHANNEL_ACTION;
+        URL_PERM_DISABLE_CHANNEL_ACTION = "disable";
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_PERM_DISABLE_CHANNEL_ACTION;
     }
-
-    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.
      */
-    public StartChannelResponse(@Nonnull final EngineModel model) {
+    public PermanentDisableChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -60,32 +58,31 @@ public class StartChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
+
         final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
         if (epicsName == null) {
             return;
         }
 
         try {
-            final String name = epicsName.toString();
-            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(name);
+            final ArchiveChannelBuffer<?, ?> buffer = getModel().getChannel(epicsName.toString());
             if (buffer == null) {
-                redirectToErrorPage(resp, "Channel '" + name + "' is unknown!");
+                redirectToErrorPage(resp, "Channel '" + epicsName.toString() + "' is unknown!");
                 return;
             }
-            if (buffer.isStarted()) {
-                redirectToWarnPage(resp, "Channel '" + name + "' has already been started!");
+            if (!buffer.isEnabled()) {
+                redirectToWarnPage(resp, "Channel '" + epicsName.toString() + "' has already been disabled!");
                 return;
             }
 
-            buffer.start("MANUAL START");
+            buffer.disable();
 
-            resp.sendRedirect(ShowChannelResponse.urlTo(name));
+            resp.sendRedirect(ShowChannelResponse.urlTo(epicsName.toString()));
 
-        } catch (final IllegalArgumentException e) {
-            redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
         } catch (final EngineModelException e) {
             redirectToErrorPage(resp, "Channel could not be started:\n" + e.getMessage());
         }
+
     }
 
     @Nonnull
@@ -94,7 +91,7 @@ public class StartChannelResponse extends AbstractChannelResponse {
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_START);
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_DISABLE_CHANNEL);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {

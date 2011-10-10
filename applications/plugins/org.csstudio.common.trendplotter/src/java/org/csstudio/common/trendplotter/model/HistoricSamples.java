@@ -139,12 +139,14 @@ public class HistoricSamples extends PlotSamples
     /** Merge newly received archive data into historic orgSamples
      * @param channel_name
      *  @param source Info about data source
+     * @param requestType
      *  @param result Samples to add/merge
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedData(final String channel_name,
                                                final ArchiveReader source,
+                                               final RequestType requestType,
                                                final List<IValue> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
@@ -163,11 +165,13 @@ public class HistoricSamples extends PlotSamples
         }
 
         // Merge with existing samples
-        final PlotSample[] ext_samples = sample_map.get(request_type);
+        final PlotSample[] ext_samples = sample_map.get(requestType);
+
         final PlotSample[] merged_result = PlotSampleMerger.merge(ext_samples, new_samples);
 
+        sample_map.put(requestType, merged_result);
         computeVisibleSize(merged_result);
-        sample_map.put(request_type, merged_result);
+        updateRequestType(requestType);
 
         have_new_samples = true;
         adel_info_complete = false;

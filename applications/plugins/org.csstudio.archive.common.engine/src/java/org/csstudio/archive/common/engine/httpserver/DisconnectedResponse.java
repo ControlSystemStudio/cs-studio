@@ -69,4 +69,9 @@ class DisconnectedResponse extends AbstractResponse {
     public static String baseUrl() {
         return URL_BASE_PAGE;
     }
+
+    @Nonnull
+    public static String linkTo(@Nonnull final String linkText) {
+        return new Url(baseUrl()).link(linkText);
+    }
 }
