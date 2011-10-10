@@ -94,13 +94,6 @@ public class PropertyListDialog extends Dialog {
 		shell.setLayout(new FormLayout());
 		
 		propertyListSelectionWidget = new PropertyListSelectionWidget(shell, SWT.NONE);
-		propertyListSelectionWidget.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				onPropertyChange(evt);
-			}
-		});
 		FormData fd_propertyListSelectionWidget = new FormData();
 		fd_propertyListSelectionWidget.left = new FormAttachment(0);
 		fd_propertyListSelectionWidget.right = new FormAttachment(0, 544);
@@ -136,6 +129,13 @@ public class PropertyListDialog extends Dialog {
 		});
 		
 		populateInitialValues();
+		propertyListSelectionWidget.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				onPropertyChange(evt);
+			}
+		});
 	}
 	
 	public PropertyListSelectionWidget getWidget() {

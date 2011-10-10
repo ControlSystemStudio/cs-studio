@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -40,32 +41,62 @@ public class PropertyListSelectionWidget extends Composite {
 		selectButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		selectButton.setSize(34, 30);
 		selectButton.setText("-->");
-		selectButton.addSelectionListener(new SelectionListener() {
+		selectButton.addSelectionListener(new SelectionAdapter() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				List<String> newSelection = new ArrayList<String>(selectedProperties);
 				newSelection.addAll(Arrays.asList(unselected.getSelection()));
 				setSelectedProperties(newSelection);
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
+				selected.setSelection(selectedProperties.size() - 1);
 			}
 		});
 		
 		Button upButton = new Button(composite, SWT.NONE);
 		upButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		upButton.setText("Move Up");
+		upButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int oldIndex = selected.getSelectionIndex();
+				if (oldIndex != 0) {
+					List<String> newSelection = new ArrayList<String>(selectedProperties);
+					newSelection.set(oldIndex - 1, selectedProperties.get(oldIndex));
+					newSelection.set(oldIndex, selectedProperties.get(oldIndex - 1));
+					setSelectedProperties(newSelection);
+					selected.setSelection(oldIndex - 1);
+				}
+			}
+		});
 		
 		Button downButton = new Button(composite, SWT.NONE);
 		downButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		downButton.setText("Move Down");
+		downButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int oldIndex = selected.getSelectionIndex();
+				if (oldIndex != selectedProperties.size() - 1) {
+					List<String> newSelection = new ArrayList<String>(selectedProperties);
+					newSelection.set(oldIndex + 1, selectedProperties.get(oldIndex));
+					newSelection.set(oldIndex, selectedProperties.get(oldIndex + 1));
+					setSelectedProperties(newSelection);
+					selected.setSelection(oldIndex + 1);
+				}
+			}
+		});
 		
 		Button unselectButton = new Button(composite, SWT.NONE);
 		unselectButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		unselectButton.setText("<--");
+		unselectButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				List<String> newSelection = new ArrayList<String>(selectedProperties);
+				newSelection.removeAll(Arrays.asList(selected.getSelection()));
+				setSelectedProperties(newSelection);
+			}
+		});
 		
 		selected = new org.eclipse.swt.widgets.List(this, SWT.BORDER);
 		selected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));

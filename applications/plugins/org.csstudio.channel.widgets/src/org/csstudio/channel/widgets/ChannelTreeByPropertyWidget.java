@@ -142,7 +142,7 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	}
 	
 	private Collection<Channel> channels = new ArrayList<Channel>();
-	private List<String> properties = Arrays.asList("cell", "girder", "devName", "elemName", "elemField", "handle");
+	private List<String> properties = new ArrayList<String>();
 	
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
