@@ -9,9 +9,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
+import org.csstudio.channel.widgets.PropertyListDialog;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -24,6 +26,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.swt.widgets.Button;
 
 /**
  * View that allows to create a tree view out of the results of a channel query.
@@ -77,9 +80,8 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	
 	private Combo combo;
 	private ChannelTreeByPropertyWidget treeWidget;
-	private Combo columnProperty;
-	private Combo rowProperty;
 	private Composite parent;
+	private Button btnProperties;
 	
 	private void changeQuery(String text) {
 		treeWidget.setChannelQuery(text);
@@ -92,22 +94,22 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
-		fd_lblPvName.top = new FormAttachment(0, 13);
 		fd_lblPvName.left = new FormAttachment(0, 10);
+		fd_lblPvName.top = new FormAttachment(0, 18);
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
 		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
 		combo = comboViewer.getCombo();
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 10);
+		fd_combo.top = new FormAttachment(0, 15);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		combo.setLayoutData(fd_combo);
 		
 		treeWidget = new ChannelTreeByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.top = new FormAttachment(combo, 6);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		treeWidget.setLayoutData(fd_waterfallComposite);
@@ -115,29 +117,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				if ("channels".equals(evt.getPropertyName())) {
-					if (treeWidget.getChannels() != null) {
-						List<String> propertyNames = new ArrayList<String>(ChannelUtil.getPropertyNames(treeWidget.getChannels()));
-						Collections.sort(propertyNames);
-						
-						// Save old selection
-						String oldRow = null;
-						if (rowProperty.getSelectionIndex() != -1)
-							oldRow = rowProperty.getItem(rowProperty.getSelectionIndex());
-						String oldColumn = null;
-						if (columnProperty.getSelectionIndex() != -1)
-							oldColumn = columnProperty.getItem(columnProperty.getSelectionIndex());
-						
-						// Change properties to select
-						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-						columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-						
-						// Try to keep old selection
-						rowProperty.select(propertyNames.indexOf(oldRow));
-						columnProperty.select(propertyNames.indexOf(oldColumn));
-					}
-					ChannelTreeByPropertyView.this.parent.layout();
-				}
+				btnProperties.setEnabled(treeWidget.getChannels() != null && !treeWidget.getChannels().isEmpty());
 			}
 		});
 		
@@ -150,58 +130,18 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			}
 		};
 		
-		Label lblRow = new Label(parent, SWT.NONE);
-		fd_combo.right = new FormAttachment(lblRow, -6);
-		FormData fd_lblRow = new FormData();
-		fd_lblRow.top = new FormAttachment(lblPvName, 0, SWT.TOP);
-		lblRow.setLayoutData(fd_lblRow);
-		lblRow.setText("Row:");
-		
-		rowProperty = new Combo(parent, SWT.NONE);
-		fd_lblRow.right = new FormAttachment(rowProperty, -6);
-		FormData fd_rowProperty = new FormData();
-		fd_rowProperty.top = new FormAttachment(lblPvName, -3, SWT.TOP);
-		rowProperty.setLayoutData(fd_rowProperty);
-		rowProperty.addSelectionListener(new SelectionListener() {
-			
+		btnProperties = new Button(parent, SWT.NONE);
+		fd_combo.right = new FormAttachment(btnProperties, -6);
+		FormData fd_btnProperties = new FormData();
+		fd_btnProperties.top = new FormAttachment(0, 13);
+		fd_btnProperties.right = new FormAttachment(100, -10);
+		btnProperties.setLayoutData(fd_btnProperties);
+		btnProperties.setText("Properties");
+		btnProperties.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				treeWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				treeWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
-				
-			}
-		});
-		
-		Label lblColumn = new Label(parent, SWT.NONE);
-		fd_rowProperty.right = new FormAttachment(lblColumn, -6);
-		FormData fd_lblColumn = new FormData();
-		fd_lblColumn.top = new FormAttachment(lblPvName, 0, SWT.TOP);
-		lblColumn.setLayoutData(fd_lblColumn);
-		lblColumn.setText("Column:");
-		
-		columnProperty = new Combo(parent, SWT.NONE);
-		fd_lblColumn.right = new FormAttachment(columnProperty, -6);
-		FormData fd_columnProperty = new FormData();
-		fd_columnProperty.bottom = new FormAttachment(treeWidget, -6);
-		fd_columnProperty.right = new FormAttachment(100, -10);
-		columnProperty.setLayoutData(fd_columnProperty);
-		columnProperty.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				treeWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				treeWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
-				
+				PropertyListDialog dialog = new PropertyListDialog(treeWidget);
+				dialog.open();
 			}
 		});
 		name_helper.loadSettings();
