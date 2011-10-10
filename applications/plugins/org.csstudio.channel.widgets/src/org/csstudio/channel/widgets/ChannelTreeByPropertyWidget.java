@@ -119,13 +119,6 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		errorBar.setException(ex);
 	}
 	
-	private String rowProperty;
-	private String columnProperty;
-	
-	private List<List<String>> cellPvs;
-	private List<String> columnNames;
-	private List<String> rowNames;
-	
     public void addPropertyChangeListener( PropertyChangeListener listener ) {
         changeSupport.addPropertyChangeListener( listener );
     }
@@ -144,31 +137,12 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
 	}
 	
-	public String getRowProperty() {
-		return rowProperty;
-	}
-	
-	public void setRowProperty(String rowProperty) {
-		String oldValue = this.rowProperty;
-		this.rowProperty = rowProperty;
-		changeSupport.firePropertyChange("rowProperty", oldValue, rowProperty);
-	}
-	
-	public String getColumnProperty() {
-		return columnProperty;
-	}
-	
-	public void setColumnProperty(String columnProperty) {
-		String oldValue = this.columnProperty;
-		this.columnProperty = columnProperty;
-		changeSupport.firePropertyChange("columnProperty", oldValue, columnProperty);
-	}
-	
 	public Collection<Channel> getChannels() {
 		return channels;
 	}
 	
-	private Collection<Channel> channels;
+	private Collection<Channel> channels = new ArrayList<Channel>();
+	private List<String> properties = Arrays.asList("cell", "girder", "devName", "elemName", "elemField", "handle");
 	
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
@@ -176,8 +150,19 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 	
+	public List<String> getProperties() {
+		return properties;
+	}
+	
+	public void setProperties(List<String> properties) {
+		List<String> oldProperties = this.properties;
+		this.properties = properties;
+		computeTree();
+		changeSupport.firePropertyChange("properties", oldProperties, properties);
+	}
+	
 	private void queryChannels() {
-		setChannels(null);
+		setChannels(new ArrayList<Channel>());
 		tree.setItemCount(0);
 		tree.clearAll(true);
 		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
@@ -192,11 +177,10 @@ public class ChannelTreeByPropertyWidget extends Composite {
 						Exception e = query.getLastException();
 						if (e == null) {
 							setChannels(query.getResult());
-							model = new ChannelTreeByPropertyModel(getChannels(), Arrays.asList("cell", "girder", "devName", "elemName", "elemField", "handle"));
+							computeTree();
 						} else {
 							errorBar.setException(e);
 						}
-						tree.setItemCount(model.getRoot().getChildrenNames().size());
 					}
 				});
 				
@@ -206,5 +190,9 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	}
 	
 	private void computeTree() {
+		tree.setItemCount(0);
+		tree.clearAll(true);
+		model = new ChannelTreeByPropertyModel(getChannels(), getProperties());
+		tree.setItemCount(model.getRoot().getChildrenNames().size());
 	}
 }
