@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Level;
 
@@ -36,6 +37,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	private Image onImage, offImage;
 
 	private boolean stretch;
+	
+	private boolean indicatorMode = false;
 
 	private IPath onImagePath;
 
@@ -43,8 +46,17 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	
 	private volatile boolean loadingImage;
 
-	public ImageBoolButtonFigure() {
-		addMouseListener(buttonPresser);
+	public ImageBoolButtonFigure(){
+		this(false);
+	}
+	
+	/**
+	 * @param indicatorMode 
+	 */
+	public ImageBoolButtonFigure(boolean indicatorMode) {
+		this.indicatorMode = indicatorMode;
+		if(!indicatorMode)
+			addMouseListener(buttonPresser);
 		add(boolLabel);
 	}
 
@@ -145,7 +157,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 						clientArea);
 			else
 				graphics.drawImage(temp, clientArea.getLocation());
-		if (!isEnabled()) {
+		if (!isEnabled() && !indicatorMode) {
 			graphics.setAlpha(DISABLED_ALPHA);
 			graphics.setBackgroundColor(DISABLE_COLOR);
 			graphics.fillRectangle(bounds);
@@ -156,7 +168,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (runMode && value) 			
+		if (!indicatorMode && runMode && value) 			
 			setCursor(Cursors.HAND);	
 	}
 
@@ -172,7 +184,14 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
 			@Override
 			public void runWithInputStream(InputStream inputStream) {
-				offImage = new Image(Display.getDefault(), inputStream);
+				try {
+					offImage = new Image(Display.getDefault(), inputStream);
+				} finally {
+					try {
+						inputStream.close();
+					} catch (IOException e) {						
+					}
+				}
 				loadingImage = false;
 				revalidate();
 				repaint();				
@@ -194,7 +213,14 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 
 			@Override
 			public void runWithInputStream(InputStream inputStream) {
-				onImage = new Image(Display.getDefault(), inputStream);
+				try {
+					onImage = new Image(Display.getDefault(), inputStream);
+				} finally {
+					try {
+						inputStream.close();
+					} catch (IOException e) {						
+					}
+				}
 				loadingImage = false;
 				revalidate();
 				repaint();
@@ -207,11 +233,13 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	@Override
 	public void setRunMode(boolean runMode) {
 		super.setRunMode(runMode);
-		setCursor(runMode ? Cursors.HAND : null);
+		
+		setCursor((runMode && !indicatorMode) ? Cursors.HAND : null);
 	}
 
 	public void setStretch(boolean strech) {
 		this.stretch = strech;
+		repaint();
 	}
 
 	@Override

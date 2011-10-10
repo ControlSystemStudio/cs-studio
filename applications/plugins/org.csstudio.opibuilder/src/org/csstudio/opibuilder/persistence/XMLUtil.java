@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -154,9 +155,9 @@ public class XMLUtil {
 	}
 
 
-	/**
+	/**Convert XML Element to a widget model.
 	 * @param element
-	 * @param displayModel
+	 * @param displayModel use this display model as root model instead of creating a new one. Can be null.
 	 * @return
 	 * @throws Exception
 	 */
@@ -177,7 +178,7 @@ public class XMLUtil {
 			if(rootWidgetModel == null){
 				String errorMessage = NLS.bind("Fail to load the widget: {0}\n " +
 					"The widget may not exist, as a consequnce, the widget will be ignored.", typeId);
-				ConsoleService.getInstance().writeError(errorMessage);
+				ErrorHandlerUtil.handleError(errorMessage, new Exception("Widget does not exist."));
 				return null;
 			}
 		}else {

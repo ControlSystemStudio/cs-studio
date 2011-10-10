@@ -8,13 +8,12 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
+import org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
-import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
@@ -27,7 +26,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  * 
  */
-public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
+public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
 	
 
 	private int maxAttempts;
@@ -37,8 +36,8 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	 * 
 	 * @return the casted {@link ImageModel}
 	 */
-	public ImageBoolButtonModel getWidgetModel() {
-		return (ImageBoolButtonModel) getModel();
+	public ImageBoolIndicatorModel getWidgetModel() {
+		return (ImageBoolIndicatorModel) getModel();
 	}
 
 	/**
@@ -46,17 +45,10 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		ImageBoolButtonModel model = getWidgetModel();
+		ImageBoolIndicatorModel model = getWidgetModel();
 		// create AND initialize the view properly
-		final ImageBoolButtonFigure figure = new ImageBoolButtonFigure();	
+		final ImageBoolButtonFigure figure = new ImageBoolButtonFigure(true);	
 		initializeCommonFigureProperties(figure, model);			
-		figure.addManualValueChangeListener(new IManualValueChangeListener() {
-			
-			public void manualValueChanged(double newValue) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					autoSizeWidget(figure);				
-			}
-		});		
 		figure.setOnImagePath(model.getOnImagePath());
 		figure.setOffImagePath(model.getOffImagePath());
 		figure.setStretch(model.isStretch());
@@ -70,7 +62,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
 		
-		//Save CPU usage
+		//Don't autosize to save CPU usage
 		//removeAllPropertyChangeHandlers(AbstractPVWidgetModel.PROP_PVVALUE);
 		// value
 //		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
@@ -80,8 +72,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 //				if(newValue == null)
 //					return false;
 //				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
-//				//figure.setValue(ValueUtil.getDouble((IValue)newValue));
-//				autoSizeWidget(figure);
+////				autoSizeWidget(figure);
 //				return true;
 //			}
 //		};
@@ -196,7 +187,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 					Display.getDefault().timerExec(100, this);
 					return;
 				}
-				ImageBoolButtonModel model = getWidgetModel();
+				ImageBoolIndicatorModel model = getWidgetModel();
 				Dimension d = imageFigure.getAutoSizedDimension();
 				if(model.isAutoSize() && !model.isStretch() && d != null) 
 					model.setSize(d.width, d.height);
