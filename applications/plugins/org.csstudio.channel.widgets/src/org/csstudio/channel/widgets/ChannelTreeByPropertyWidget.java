@@ -25,6 +25,7 @@ import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -53,6 +54,10 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	
 	private ChannelTreeByPropertyModel model;
 
+	public Tree getTree() {
+		return tree;
+	}
+	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
 		
