@@ -70,6 +70,13 @@ public class ContainerTreeEditpart extends WidgetTreeEditpart {
 
 	}
 	
+	@Override
+	public void deactivate() {
+		super.deactivate();
+		getWidgetModel().getChildrenProperty().
+			removePropertyChangeListener(childrenPropertyChangeListener);
+	}
+	
 	
 	public AbstractContainerModel getWidgetModel(){
 		return (AbstractContainerModel)getModel();
