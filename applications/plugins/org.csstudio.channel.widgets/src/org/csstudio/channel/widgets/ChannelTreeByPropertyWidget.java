@@ -67,14 +67,14 @@ public class ChannelTreeByPropertyWidget extends Composite {
 				if (model != null) {
 					TreeItem item = (TreeItem)event.item;
 					TreeItem parentItem = item.getParentItem();
-					Node parentNode;
-					Node node;
+					ChannelTreeByPropertyNode parentNode;
+					ChannelTreeByPropertyNode node;
 					int index;
 					if (parentItem == null) {
 						parentNode = model.getRoot();
 						index = tree.indexOf(item);
 					} else {
-						parentNode = (Node) parentItem.getData();
+						parentNode = (ChannelTreeByPropertyNode) parentItem.getData();
 						index = parentItem.indexOf(item);
 					}
 					node = parentNode.getChild(index);

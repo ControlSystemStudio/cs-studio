@@ -11,19 +11,19 @@ import java.util.List;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyModel.Node;
 
 class ChannelTreeByPropertyModel {
-	private List<Channel> allChannels;
-	private List<String> properties;
-	private Node root; 
+	List<Channel> allChannels;
+	List<String> properties;
+	private ChannelTreeByPropertyNode root; 
 	
 	public ChannelTreeByPropertyModel(Collection<Channel> allChannels, List<String> properties) {
 		// Filter the channels that would not show up as leaf because they don't
 		// have a value for all properties
 		this.allChannels = new ArrayList<Channel>(ChannelUtil.filterbyProperties(allChannels, properties));
 		this.properties = properties;
-		this.root = new Node(null, "");
+		this.root = new ChannelTreeByPropertyNode(this, null, "");
 	}
 	
-	public Node getRoot() {
+	public ChannelTreeByPropertyNode getRoot() {
 		return root;
 	}
 	
