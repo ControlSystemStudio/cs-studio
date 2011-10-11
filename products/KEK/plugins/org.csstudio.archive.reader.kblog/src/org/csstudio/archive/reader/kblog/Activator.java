@@ -3,8 +3,17 @@ package org.csstudio.archive.reader.kblog;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Plugin activator
+ * 
+ * @author Takashi Nakamoto
+  */
 public class Activator implements BundleActivator {
-
+	
+	/** Plugin ID defined in MANIFEST.MF */
+	final public static String ID = "org.csstudio.archive.reader.kblog";
+	
+	private static Activator instance;
 	private static BundleContext context;
 
 	static BundleContext getContext() {
@@ -17,6 +26,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		Activator.instance = this;
 	}
 
 	/*
@@ -27,4 +37,11 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 	}
 
+	/**
+	 * @return Singleton instance
+	 */
+	public static Activator getInstance()
+	{
+		return Activator.instance;
+	}
 }
