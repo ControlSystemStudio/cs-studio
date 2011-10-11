@@ -54,8 +54,9 @@ import com.google.common.collect.ImmutableSet;
  * @author bknerr
  * @since 22.12.2010
  */
-// CHECKSTYLE:OFF Due to misleading 'Class X must be declared as 'abstract' warning'.
-//                Seems to be a CS 5.3 problem
+// CHECKSTYLE:OFF
+// Due to misleading 'Class X must be declared as 'abstract' warning'.
+// Seems to be a CS 5.3 problem
 public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 // CHECKSTYLE:ON
 
@@ -120,9 +121,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
             return new ArchiveInfo[] {
-                                      new ArchiveInfo("Desy Kryo Archive",
-                                      "MySQL Cluster",
-                                      5),
+                                      new ArchiveInfo("Desy Kryo Archive", "MySQL Cluster", 5),
                                       };
         }
 
