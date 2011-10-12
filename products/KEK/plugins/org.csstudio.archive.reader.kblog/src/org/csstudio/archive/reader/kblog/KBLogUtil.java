@@ -1,6 +1,9 @@
 package org.csstudio.archive.reader.kblog;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,11 +30,10 @@ public class KBLogUtil {
 	public static String[] getSubArchives(String root) {
 		String kblogRoot = root;
 		File kblogRootFile = new File(kblogRoot);
-		String[] dummy = {};
 		
 		if (!kblogRootFile.isDirectory()) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, kblogRoot + " is not a directory.");
-			return dummy;
+			return new String[]{};
 		}
 		
 		if (!kblogRoot.endsWith("/")) {
@@ -41,7 +43,7 @@ public class KBLogUtil {
 		ArrayList<String> subArchives = new ArrayList<String>();
 		findSubArchivesRecursively(new File(kblogRoot), kblogRoot, subArchives);
 		
-		return subArchives.toArray(dummy);
+		return subArchives.toArray(new String[]{});
 	}
 	
 	/**
@@ -98,6 +100,48 @@ public class KBLogUtil {
 	 */
 	private static boolean isLCFFile(File f) {
 		Pattern lcfPattern = getLCFPattern();
-		return f.isFile() && lcfPattern.matcher(f.getName()).find();
+		return f.isFile() && lcfPattern.matcher(f.getName()).matches();
+	}
+	
+	public static String[] getProcessVariableNames(String root, String subArchive, String regExp) {
+		ArrayList<String> matchedNames = new ArrayList<String>();
+		Pattern namePattern = Pattern.compile(regExp);
+		
+		// Open LCF file.
+		File lcfFile = new File(root, subArchive + "." + lcfSuffix);
+		if (!lcfFile.isFile()) {
+			Logger.getLogger(Activator.ID).log(Level.WARNING, lcfFile.getAbsolutePath() + " is not a file.");
+			return new String[]{};
+		}
+		
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(lcfFile));
+			
+			String line;
+			String name;
+			while ((line = br.readLine()) != null) {
+				// Extract PV name from each line
+				int spaceIndex = line.indexOf(" ");
+				if (spaceIndex != -1) {
+					name = line.substring(0, spaceIndex);
+				} else {
+					name = line;
+				}
+				
+				if (regExp.isEmpty()) {
+					matchedNames.add(name);
+				} else {
+					// Pattern matching
+					if (namePattern.matcher(name).matches()) {
+						matchedNames.add(name);
+					}
+				}
+			}
+		} catch (IOException ex) {
+			Logger.getLogger(Activator.ID).log(Level.WARNING, "Error while reading " + lcfFile.getAbsolutePath() + ".", ex);
+			return matchedNames.toArray(new String[]{});
+		}
+		
+		return matchedNames.toArray(new String[]{});
 	}
 }

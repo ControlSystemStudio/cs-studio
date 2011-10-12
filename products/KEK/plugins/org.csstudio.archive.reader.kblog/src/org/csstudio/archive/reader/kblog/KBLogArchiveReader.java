@@ -3,6 +3,7 @@ package org.csstudio.archive.reader.kblog;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
@@ -75,14 +76,16 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public String[] getNamesByPattern(int key, String glob_pattern)
 			throws Exception {
-		// TODO invoke kblog commands to search PV names
-		return new String[]{"PV1", "PV2", "PV3"};
+		String reg_exp = RegExHelper.fullRegexFromGlob(glob_pattern);
+		System.err.println(reg_exp);
+		
+		return getNamesByRegExp(key, reg_exp);
 	}
 
 	@Override
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
-		// TODO invoke kblog commands or grep to serach PV names
-		return new String[]{"PV4", "PV5", "PV6"};
+		ArchiveInfo info = archiveInfos[key-1];
+		return KBLogUtil.getProcessVariableNames(kblogRoot, info.getName(), reg_exp);
 	}
 
 	@Override
