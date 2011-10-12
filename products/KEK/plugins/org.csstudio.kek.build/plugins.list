@@ -16,6 +16,7 @@ org.csstudio.archive.engine/**
 org.csstudio.archive.rdb/**
 org.csstudio.archive.reader.channelarchiver/**
 org.csstudio.archive.reader/**
+org.csstudio.archive.reader.kblog/**
 org.csstudio.archive.reader.rdb/**
 org.csstudio.archive.reader.rdb.jparc/**
 org.csstudio.archive.writer/**
