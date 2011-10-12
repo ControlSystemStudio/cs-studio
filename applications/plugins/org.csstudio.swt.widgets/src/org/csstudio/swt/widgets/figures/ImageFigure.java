@@ -257,11 +257,14 @@ public final class ImageFigure extends Figure implements Introspectable {
 						temp = new Image(null, stream);
 						originalStaticImageData = temp.getImageData();
 						imgWidth = originalStaticImageData.width;
-						imgHeight = originalStaticImageData.height;
-						stream.close();
-					} catch (IOException e) {
+						imgHeight = originalStaticImageData.height;						
+					} finally {
 						if (temp != null && !temp.isDisposed())
 							temp.dispose();
+						try {
+							stream.close();
+						} catch (IOException e) {						
+						}
 					}
 				}
 			}

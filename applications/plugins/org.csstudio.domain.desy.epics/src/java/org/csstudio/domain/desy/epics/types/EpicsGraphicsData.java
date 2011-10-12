@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.epics.types;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.IAlarmLimits;
-import org.csstudio.domain.desy.types.IOperatingRangeLimits;
 import org.csstudio.domain.desy.types.Limits;
 
 /**

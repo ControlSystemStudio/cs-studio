@@ -46,7 +46,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
 import org.csstudio.archive.common.service.sample.ArchiveMinMaxSample;
-import org.csstudio.archive.common.service.sample.IArchiveMinMaxSample;
+import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.sample.SampleMinMaxAggregator;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
@@ -432,11 +432,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @SuppressWarnings("unchecked")
     @Nonnull
     private <V extends Serializable, T extends ISystemVariable<V>>
-    IArchiveMinMaxSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
-                                                           @Nonnull final IArchiveChannel channel,
-                                                           @Nonnull final ResultSet result) throws SQLException,
-                                                                                                   ArchiveDaoException,
-                                                                                                   TypeSupportException {
+    IArchiveSample<V, T> createSampleFromQueryResult(@Nonnull final DesyArchiveRequestType type,
+                                                     @Nonnull final IArchiveChannel channel,
+                                                     @Nonnull final ResultSet result) throws SQLException,
+                                                                                             ArchiveDaoException,
+                                                                                             TypeSupportException {
         final String dataType = channel.getDataType();
         V value = null;
         V min = null;
@@ -461,16 +461,16 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 throw new ArchiveDaoException("Archive request type unknown. Sample could not be created from query", null);
         }
         final long time = result.getLong(COLUMN_TIME);
-
         final TimeInstant timeInstant = TimeInstantBuilder.fromNanos(time);
         final IArchiveControlSystem cs = channel.getControlSystem();
         final ISystemVariable<V> sysVar = SystemVariableSupport.create(channel.getName(),
                                                                        value,
                                                                        ControlSystem.valueOf(cs.getName(), cs.getType()),
                                                                        timeInstant);
-        final ArchiveMinMaxSample<V, T> sample =
-            new ArchiveMinMaxSample<V, T>(channel.getId(), (T) sysVar, null, min, max);
-        return sample;
+        if (min == null || max == null) {
+            return new ArchiveSample<V, T>(channel.getId(), (T) sysVar, null);
+        }
+        return new ArchiveMinMaxSample<V, T>(channel.getId(), (T) sysVar, null, min, max);
     }
 
     /**

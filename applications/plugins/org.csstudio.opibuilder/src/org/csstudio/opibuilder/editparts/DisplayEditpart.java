@@ -66,8 +66,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {		
 				figure.setBackgroundColor(((OPIColor)newValue).getSWTColor());
-//				getViewer().getControl().setForeground(
-//						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
+				getViewer().getControl().setBackground(
+						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				return false;
 			}
 		};		

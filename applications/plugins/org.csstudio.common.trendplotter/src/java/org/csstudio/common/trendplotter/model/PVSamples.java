@@ -38,10 +38,10 @@ public class PVSamples extends PlotSamples
     private static final Logger LOG = LoggerFactory.getLogger(PVSamples.class);
 
     /** Historic samples */
-    final private HistoricSamples history;
+    final private HistoricSamples historicSamples;
 
     /** Live samples. Should start after end of historic samples */
-    final private LiveSamples live;
+    final private LiveSamples liveSamples;
 
     boolean show_deadband = false;
 
@@ -51,27 +51,27 @@ public class PVSamples extends PlotSamples
     public PVSamples(@Nonnull final RequestType request_type)
     {
         updateRequestType(request_type);
-        history = new HistoricSamples(request_type);
-        live = new LiveSamples();
+        historicSamples = new HistoricSamples(request_type);
+        liveSamples = new LiveSamples();
     }
 
-    /** @return Maximum number of live samples in ring buffer */
+    /** @return Maximum number of liveSamples samples in ring buffer */
     public int getLiveCapacity()
     {
-        return live.getCapacity();
+        return liveSamples.getCapacity();
     }
 
-    /** Set new capacity for live sample ring buffer
+    /** Set new capacity for liveSamples sample ring buffer
      *  <p>
      *  @param new_capacity New sample count capacity
      *  @throws Exception on out-of-memory error
      */
     public void setLiveCapacity(final int new_capacity) throws Exception
     {
-        live.setCapacity(new_capacity);
+        liveSamples.setCapacity(new_capacity);
     }
 
-    /** @return Combined count of historic and live samples */
+    /** @return Combined count of historic and liveSamples samples */
     @Override
     synchronized public int getSize()
     {
@@ -87,16 +87,16 @@ public class PVSamples extends PlotSamples
         return raw+1;
     }
 
-    /** @return Size of the actual historic and live samples
+    /** @return Size of the actual historic and liveSamples samples
      *          without the continuation to 'now'
      */
     private int getRawSize()
     {
-        return history.getSize() + live.getSize();
+        return historicSamples.getSize() + liveSamples.getSize();
     }
 
     /** @param index 0... getSize()-1
-     *  @return Sample from historic or live sample subsection
+     *  @return Sample from historic or liveSamples sample subsection
      */
     @Override
     synchronized public PlotSample getSample(final int index)
@@ -112,23 +112,23 @@ public class PVSamples extends PlotSamples
 
     /** Get 'raw' sample, no continuation until 'now'
      *  @param index 0... getRawSize()-1
-     *  @return Sample from historic or live sample subsection
+     *  @return Sample from historic or liveSamples sample subsection
      */
     private PlotSample getRawSample(final int index)
     {
-        final int num_old = history.getSize();
+        final int num_old = historicSamples.getSize();
         if (index < num_old) {
-            return history.getSample(index);
+            return historicSamples.getSample(index);
         }
-        return live.getSample(index - num_old);
+        return liveSamples.getSample(index - num_old);
     }
 
-    /** @return Overall time (x axis) range of historic and live samples */
+    /** @return Overall time (x axis) range of historic and liveSamples samples */
     @Override
     synchronized public Range getXDataMinMax()
     {
-        final Range old_range = history.getXDataMinMax();
-        final Range new_range = live.getXDataMinMax();
+        final Range old_range = historicSamples.getXDataMinMax();
+        final Range new_range = liveSamples.getXDataMinMax();
         if (old_range == null) {
             return new_range;
         }
@@ -139,12 +139,12 @@ public class PVSamples extends PlotSamples
         return new Range(old_range.getLower(), new_range.getUpper());
     }
 
-    /** @return Overall value (y axis) range of historic and live samples */
+    /** @return Overall value (y axis) range of historic and liveSamples samples */
     @Override
     synchronized public Range getYDataMinMax()
     {
-        final Range old_range = history.getYDataMinMax();
-        final Range new_range = live.getYDataMinMax();
+        final Range old_range = historicSamples.getYDataMinMax();
+        final Range new_range = liveSamples.getYDataMinMax();
         if (old_range == null) {
             return new_range;
         }
@@ -164,7 +164,7 @@ public class PVSamples extends PlotSamples
     @Override
     synchronized public boolean hasNewSamples()
     {
-        return history.hasNewSamples() || live.hasNewSamples();
+        return historicSamples.hasNewSamples() || liveSamples.hasNewSamples();
     }
 
     /** Test if samples changed since the last time this method was called.
@@ -174,14 +174,15 @@ public class PVSamples extends PlotSamples
     synchronized public boolean testAndClearNewSamplesFlag()
     {
         // Must check & __clear__ both subsections!
-        // return hist.test() | live.test() would skip
-        // the live.test if hist.test() was already true!
-        final boolean hist_change = history.testAndClearNewSamplesFlag();
-        final boolean live_change = live.testAndClearNewSamplesFlag();
+        // return hist.test() | liveSamples.test() would skip
+        // the liveSamples.test if hist.test() was already true!
+        final boolean hist_change = historicSamples.testAndClearNewSamplesFlag();
+        final boolean live_change = liveSamples.testAndClearNewSamplesFlag();
         return hist_change || live_change;
     }
 
     /** Add data retrieved from an archive to the 'historic' section
+     * @param requestType
      *  @param source Source of the samples
      * @param server_name
      *  @param result Historic data
@@ -190,14 +191,15 @@ public class PVSamples extends PlotSamples
      */
     synchronized public void mergeArchivedData(final String channel_name,
                                                final ArchiveReader reader,
+                                               final RequestType requestType,
                                                final List<IValue> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
     {
-        history.mergeArchivedData(channel_name, reader, result);
+        historicSamples.mergeArchivedData(channel_name, reader, requestType, result);
     }
 
-    /** Add another 'live' sample
+    /** Add another 'liveSamples' sample
      *  @param value 'Live' sample
      */
     synchronized public void addLiveSample(IValue value)
@@ -208,23 +210,23 @@ public class PVSamples extends PlotSamples
         addLiveSample(new PlotSample(Messages.LiveData, value));
     }
 
-    /** Add another 'live' sample
+    /** Add another 'liveSamples' sample
      *  @param value 'Live' sample
      */
     synchronized public void addLiveSample(final PlotSample sample)
     {
-        live.add(sample);
-        // History ends before the start of 'live' samples.
-        // Adding a live sample might have moved the ring buffer,
-        // so need to update whenever live data is extended.
-        history.setBorderTime(live.getSample(0).getTime());
+        liveSamples.add(sample);
+        // History ends before the start of 'liveSamples' samples.
+        // Adding a liveSamples sample might have moved the ring buffer,
+        // so need to update whenever liveSamples data is extended.
+        historicSamples.setBorderTime(liveSamples.getSample(0).getTime());
     }
 
     /** Delete all samples */
     synchronized public void clear()
     {
-        history.clear();
-        live.clear();
+        historicSamples.clear();
+        liveSamples.clear();
     }
 
     /** @return (Long) string representation for debugging */
@@ -234,9 +236,9 @@ public class PVSamples extends PlotSamples
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("PV Samples\nHistory: ");
-        buf.append(history.toString());
+        buf.append(historicSamples.toString());
         buf.append("\nLive Buffer: ");
-        buf.append(live.toString());
+        buf.append(liveSamples.toString());
 
         final int count = getSize();
         if (count != getRawSize())
@@ -248,9 +250,9 @@ public class PVSamples extends PlotSamples
     }
 
     synchronized public void setLiveSamplesDeadband(final Number deadband) {
-        live.setDeadband(deadband);
+        liveSamples.setDeadband(deadband);
     }
     synchronized public void setHistorySamplesDeadband(final Number deadband) {
-        history.setDeadband(deadband);
+        historicSamples.setDeadband(deadband);
     }
 }

@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.sample;
 
 import java.io.Serializable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -59,28 +58,18 @@ public class ArchiveMinMaxSample<V extends Serializable,
     public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
                                @Nonnull final T data,
                                @Nullable final IAlarm alarm,
-                               @Nullable final V min,
-                               @Nullable final V max) {
+                               @Nonnull final V min,
+                               @Nonnull final V max) {
         super(channelId, data, alarm);
         _minimum = min;
         _maximum = max;
-    }
-    /**
-     * Constructor.
-     */
-    public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
-                               @Nonnull final T data,
-                               @Nonnull final IAlarm alarm) {
-        super(channelId, data, alarm);
-        _minimum = null;
-        _maximum = null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public V getMinimum() {
         return _minimum;
     }
@@ -89,7 +78,7 @@ public class ArchiveMinMaxSample<V extends Serializable,
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public V getMaximum() {
         return _maximum;
     }

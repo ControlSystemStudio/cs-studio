@@ -38,11 +38,11 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
  */
 public class StopChannelResponse extends AbstractChannelResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_STOP_CHANNEL_ACTION;
-    private static String URL_STOP_CHANNEL_PAGE;
     static {
         URL_STOP_CHANNEL_ACTION = "stop";
-        URL_STOP_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_STOP_CHANNEL_ACTION;
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_STOP_CHANNEL_ACTION;
     }
 
     private static final long serialVersionUID = -4160346378797501956L;
@@ -87,7 +87,7 @@ public class StopChannelResponse extends AbstractChannelResponse {
 
     @Nonnull
     public static String baseUrl() {
-        return URL_STOP_CHANNEL_PAGE;
+        return URL_BASE_PAGE;
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {

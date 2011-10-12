@@ -148,15 +148,18 @@ public class EquidistantTimeBinsIterator<V extends Serializable> extends Abstrac
             _agg.reset();
         }
         if (sample != null) {
-            final IArchiveMinMaxSample<V, ISystemVariable<V>> mmSample = (IArchiveMinMaxSample<V, ISystemVariable<V>>) sample;
-            final V minimum = mmSample.getMinimum();
-            final V maximum = mmSample.getMaximum();
+            final Double value = BaseTypeConversionSupport.toDouble(sample.getValue());
+            Double minimum = null;
+            Double maximum = null;
+            if (sample instanceof IArchiveMinMaxSample) {
+                minimum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMinimum());
+                maximum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMaximum());
+            } else {
+                minimum = value;
+                maximum = value;
+            }
 
-            final Double value = BaseTypeConversionSupport.toDouble(mmSample.getValue());
-            _agg.aggregate(value,
-                           minimum == null ? value : BaseTypeConversionSupport.toDouble(minimum),
-                           maximum == null ? value : BaseTypeConversionSupport.toDouble(maximum),
-                           mmSample.getSystemVariable().getTimestamp());
+            _agg.aggregate(value, minimum, maximum, sample.getSystemVariable().getTimestamp());
         }
     }
 

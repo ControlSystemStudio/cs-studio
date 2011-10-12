@@ -23,7 +23,6 @@ package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,15 +60,12 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
-    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _scalarChannels =
-        Lists.newLinkedList();
-    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _multiScalarChannels =
-        Lists.newLinkedList();
-
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _channels;
 
     private final long _periodInMS;
     /** Average number of values per write run */
-    private final AverageWithExponentialDecayCache _avgWriteCount = new AverageWithExponentialDecayCache(0.1);
+    private final AverageWithExponentialDecayCache _avgWriteCount =
+        new AverageWithExponentialDecayCache(0.1);
 
 
     private final IServiceProvider _provider;
@@ -85,13 +81,8 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
                        final long periodInMS) {
         _provider = provider;
         _name = name;
-        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
-            if (channel.isMultiScalar()) {
-                _multiScalarChannels.add(channel);
-            } else {
-                _scalarChannels.add(channel);
-            }
-        }
+
+        _channels = channels;
 
         _periodInMS = periodInMS;
 
@@ -106,16 +97,8 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         try {
             WORKER_LOG.info("WRITER RUN: {}", _name);
 
-            List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples = Collections.emptyList();
+            final long written = collectSampleFromBuffersAndWriteToService(_channels);
 
-            // TODO (bknerr) : To make this distinction here is clearly a break of encapsulation and separation of concern
-            // The split of the archive samples into scalar and multiscalar samples (of the same supertype) should only be
-            // done in the service... take care of it when the frontend is replaced by pvmanager!
-            samples = collectSamplesFromBuffers(_scalarChannels);
-            long written = writeSamples(_provider,  samples);
-
-            samples = collectSamplesFromBuffers(_multiScalarChannels);
-            written += writeSamples(_provider,  samples);
             WORKER_LOG.info("WRITER WRITTEN: {}", written);
 
             _lastWriteTime = TimeInstantBuilder.fromNow();
@@ -128,6 +111,34 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
             t.printStackTrace();
             EMAIL_LOG.info("Unknown throwable in thread {}. See event.log for more info.", _name);
         }
+    }
+
+
+    private long collectSampleFromBuffersAndWriteToService(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels)
+    throws ArchiveServiceException {
+
+        long written = 0;
+
+        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
+            Lists.newLinkedList();
+
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
+
+            final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
+                channel.getSampleBuffer();
+
+            if (buffer.isEmpty()) {
+                continue;
+            }
+            buffer.updateStats();
+
+            buffer.drainTo(allSamples);
+
+            written += writeSamples(_provider,  allSamples);
+
+            allSamples.clear();
+        }
+        return written;
     }
 
     private long writeSamples(@Nonnull final IServiceProvider provider,
@@ -146,30 +157,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         return samples.size();
     }
 
-
-    @Nonnull
-    private LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels) {
-
-        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
-            Lists.newLinkedList();
-
-        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
-
-            final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
-                channel.getSampleBuffer();
-
-            buffer.updateStats();
-            buffer.drainTo(allSamples);
-        }
-        return allSamples;
-    }
-
     public long getPeriodInMS() {
         return _periodInMS;
     }
 
-    @Nonnull
+    @CheckForNull
     protected Double getAvgWriteCount() {
         return _avgWriteCount.getValue();
     }

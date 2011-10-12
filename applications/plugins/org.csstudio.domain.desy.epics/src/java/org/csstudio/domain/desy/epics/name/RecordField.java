@@ -33,7 +33,9 @@ import javax.annotation.Nonnull;
 public enum RecordField implements IRecordField {
     VAL,
     ADEL,
-    MDEL;
+    MDEL,
+    NELM,
+    FTVL;
 
     /**
      * Constructor.

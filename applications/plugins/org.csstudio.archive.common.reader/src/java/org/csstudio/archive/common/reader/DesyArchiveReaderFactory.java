@@ -102,7 +102,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getURL() {
-            return "Secret URL";
+            return "desy:";
         }
 
         @Override

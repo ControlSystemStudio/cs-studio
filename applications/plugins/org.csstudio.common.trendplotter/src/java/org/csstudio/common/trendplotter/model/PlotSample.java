@@ -38,9 +38,9 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-    
+
     private Number deadband = null;
-    
+
     boolean show_deadband = false;
 
 
@@ -50,6 +50,9 @@ public class PlotSample implements ISample
      */
     public PlotSample(final String source, final IValue value)
     {
+        if (value == null) {
+            throw new IllegalArgumentException("Value is null for PlotSample");
+        }
         this.value = value;
         this.source = source;
         info = null;
@@ -109,8 +112,9 @@ public class PlotSample implements ISample
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue())
+        if (value.getSeverity().hasValue()) {
             return ValueUtil.getDouble(value);
+        }
         // No numeric value. Plot shows NaN as marker.
         return Double.NaN;
     }
@@ -121,8 +125,9 @@ public class PlotSample implements ISample
     @Override
     public String getInfo()
     {
-        if (info == null)
+        if (info == null) {
             return toString();
+        }
         return info;
     }
 
@@ -144,8 +149,9 @@ public class PlotSample implements ISample
     @Override
     public double getYMinusError()
     {
-        if (!(value instanceof IMinMaxDoubleValue))
+        if (!(value instanceof IMinMaxDoubleValue)) {
             return 0;
+        }
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         if (show_deadband) {
             return getDeadband().doubleValue();
@@ -157,8 +163,9 @@ public class PlotSample implements ISample
     @Override
     public double getYPlusError()
     {
-        if (!(value instanceof IMinMaxDoubleValue))
+        if (!(value instanceof IMinMaxDoubleValue)) {
             return 0;
+        }
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         if (show_deadband) {
             return getDeadband().doubleValue();
@@ -170,18 +177,18 @@ public class PlotSample implements ISample
     public String toString()
     {
         if (hasDeadband()) {
-            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source, value.getQuality().toString() });
+            return NLS.bind(Messages.PlotSampleFmtWithDeadband, new Object[] { value, getDeadband(), source });
         }
-        return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source, value.getQuality().toString() });
+        return NLS.bind(Messages.PlotSampleFmt, new Object[] { value, source });
     }
-    
-    public void setDeadband(Number db) {
+
+    public void setDeadband(final Number db) {
         deadband = db;
     }
     public Number getDeadband() {
         return deadband;
     }
-    public void setShowDeadband(boolean b) {
+    public void setShowDeadband(final boolean b) {
         show_deadband = b;
     }
     public boolean getShowDeadband() {
@@ -190,5 +197,5 @@ public class PlotSample implements ISample
     public boolean hasDeadband() {
         return deadband != null;
     }
-    
+
 }

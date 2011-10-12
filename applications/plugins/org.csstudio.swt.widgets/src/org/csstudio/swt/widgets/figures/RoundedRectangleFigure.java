@@ -77,7 +77,8 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 		Rectangle figureBounds = getClientArea();
 		if (!transparent) {
 			graphics.pushState();
-			graphics.setBackgroundColor(getBackgroundColor());
+			if(isEnabled())
+				graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
 			graphics.popState();
 		}
@@ -98,7 +99,8 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 			graphics.pushState();
 			
 			graphics.setClip(fillRectangle);
-			graphics.setBackgroundColor(getForegroundColor());		
+			if(isEnabled())
+				graphics.setBackgroundColor(getForegroundColor());		
 			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
 			graphics.popState();
 		}
@@ -177,7 +179,8 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
 	    graphics.pushState();
-		graphics.setForegroundColor(lineColor);
+	    if(isEnabled())
+	    	graphics.setForegroundColor(lineColor);
 		graphics.drawRoundRectangle(r, Math.max(0, corner.width - (int)lineInset), Math.max(0, corner.height - (int)lineInset));
 		graphics.popState();
 	}
@@ -191,10 +194,12 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 	
 	public void setCornerHeight(int value){	
 		setCornerDimensions(new Dimension(corner.width, value));
+		repaint();
 	}
 
 	public void setCornerWidth(int value){
 		setCornerDimensions(new Dimension(value, corner.height));
+		repaint();
 	}
 	
 	/**
@@ -205,6 +210,7 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 	 */
 	public void setFill(final double fill) {
 		this.fill = fill;
+		repaint();
 	}
 	
 
@@ -216,11 +222,13 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 	 */
 	public void setHorizontalFill(final boolean horizontal) {
 		this.horizontalFill = horizontal;
+		repaint();
 	}
 
 
 	public void setLineColor(Color lineColor) {
 		this.lineColor = lineColor;
+		repaint();
 	}
 
 
@@ -232,6 +240,7 @@ public final class RoundedRectangleFigure extends RoundedRectangle implements In
 	 */
 	public void setTransparent(final boolean transparent) {
 		this.transparent = transparent;
+		repaint();
 	}
 
 

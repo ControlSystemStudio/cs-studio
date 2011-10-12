@@ -9,7 +9,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -71,21 +70,22 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
 		
+		//Save CPU usage
 		//removeAllPropertyChangeHandlers(AbstractPVWidgetModel.PROP_PVVALUE);
 		// value
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				if(newValue == null)
-					return false;
-				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
-				//figure.setValue(ValueUtil.getDouble((IValue)newValue));
-				autoSizeWidget(figure);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
+//		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+//			public boolean handleChange(final Object oldValue,
+//					final Object newValue,
+//					final IFigure refreshableFigure) {
+//				if(newValue == null)
+//					return false;
+//				ImageBoolButtonFigure figure = (ImageBoolButtonFigure) refreshableFigure;
+//				//figure.setValue(ValueUtil.getDouble((IValue)newValue));
+//				autoSizeWidget(figure);
+//				return true;
+//			}
+//		};
+//		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
 		
 		
 		
@@ -187,6 +187,8 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 	}
 	
 	private void autoSizeWidget(final ImageBoolButtonFigure imageFigure) {		
+		if(!getWidgetModel().isAutoSize())
+			return;
 		maxAttempts = 10;
 		Runnable task = new Runnable() {			
 			public void run() {

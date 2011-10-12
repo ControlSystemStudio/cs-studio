@@ -193,6 +193,21 @@ public class RapButtonModel extends ButtonModel{
 		while (iter.hasNext())
 			((ButtonStateTransitionListener) iter.next()).released();
 	}
+	
+	/**
+	 * Notifies any listening ButtonStateTransitionListener that this button has
+	 * been cancelled.
+	 * 
+	 * @since 2.0
+	 */
+	protected void fireCanceled() {
+		super.fireCanceled();
+		Iterator iter = eventListeners
+				.getListeners(ButtonStateTransitionListener.class);
+		while (iter.hasNext())
+			((ButtonStateTransitionListener) iter.next()).canceled();
+	}
+	
 //
 //	/**
 //	 * Notifies any listening ButtonStateTransitionListeners that this button

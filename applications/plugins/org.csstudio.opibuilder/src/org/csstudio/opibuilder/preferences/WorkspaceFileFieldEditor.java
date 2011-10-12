@@ -69,7 +69,7 @@ public class WorkspaceFileFieldEditor extends StringButtonFieldEditor {
 		if(path != null)
 			return path.toPortableString();
 		else
-			return ""; //$NON-NLS-1$
+			return null; 
 
 	}
 	

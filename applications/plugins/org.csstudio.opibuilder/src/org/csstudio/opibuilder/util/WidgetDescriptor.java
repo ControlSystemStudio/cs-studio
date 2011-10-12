@@ -59,6 +59,8 @@ public class WidgetDescriptor {
 	 */
 	private String pluginId;
 
+	private String onlineHelpHtml;
+
 	/**
 	 * @param element The configurationElement which hold the
 	 * @param typeID The typeID of the widget.
@@ -68,7 +70,8 @@ public class WidgetDescriptor {
 	 * @param pluginId The pluginID where the widget belongs to.
 	 */
 	public WidgetDescriptor(IConfigurationElement element, String typeID,
-			String name, String description, String iconPath, String category, String pluginId) {
+			String name, String description, String iconPath, String category, String pluginId,
+			String onlineHelpHtml) {
 		this.element = element;
 		this.typeID = typeID;
 		this.name = name;
@@ -76,6 +79,7 @@ public class WidgetDescriptor {
 		this.iconPath = iconPath;
 		this.category = category;
 		this.pluginId = pluginId;
+		this.onlineHelpHtml = onlineHelpHtml;
 	}
 
 	/**
@@ -84,7 +88,7 @@ public class WidgetDescriptor {
 	@SuppressWarnings("nls")
     public final AbstractWidgetModel getWidgetModel(){
 		try {
-			return (AbstractWidgetModel) element.createExecutableExtension("model_class");
+			return (AbstractWidgetModel) element.createExecutableExtension("model_class"); //$NON-NLS-1$
 		} catch (CoreException e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Cannot create widget model", e);
 		}
@@ -97,7 +101,7 @@ public class WidgetDescriptor {
     @SuppressWarnings("nls")
 	public final AbstractBaseEditPart getWidgetEditpart(){
 		try {
-			return (AbstractBaseEditPart) element.createExecutableExtension("editpart_class");
+			return (AbstractBaseEditPart) element.createExecutableExtension("editpart_class"); //$NON-NLS-1$
 		} catch (CoreException e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Cannot create edit part", e);
 		}
@@ -143,6 +147,10 @@ public class WidgetDescriptor {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public String getOnlineHelpHtml() {
+		return onlineHelpHtml;
 	}
 
 

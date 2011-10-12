@@ -30,7 +30,7 @@ public class ResourceUtil {
 	
 	
 	
-	/**Get inputstream from path. Run in a Job.
+	/**Get inputstream from path. Run in a Job. The uiTask is responsible for closing the inputstream
 	 * @param path the path to load
 	 * @param uiTask the task to be executed in UI thread after path is loaded.
 	 * @param jobName name of the job
@@ -63,7 +63,7 @@ public class ResourceUtil {
 
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
-	 * specified path.
+	 * specified path. The caller is responsible for closing inputstream.
 	 *
 	 * @param path
 	 *            The {@link IPath} to the file in the workspace, the local

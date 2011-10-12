@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.epics.types;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -40,13 +41,10 @@ public class EpicsSystemVariable<T> extends AbstractAlarmSystemVariable<T, Epics
 
     private static final long serialVersionUID = -65443362121378192L;
 
+    private final EpicsMetaData _meta;
+
     /**
      * Constructor.
-     * @param name
-     * @param data
-     * @param origin the control system from which this variable originates
-     * @param timestamp
-     * @param alarm
      */
     public EpicsSystemVariable(@Nonnull final String name,
                                @Nonnull final T data,
@@ -54,6 +52,18 @@ public class EpicsSystemVariable<T> extends AbstractAlarmSystemVariable<T, Epics
                                @Nonnull final TimeInstant timestamp,
                                @Nonnull final EpicsAlarm alarm) {
         super(name, data, origin, timestamp, alarm);
+        _meta = null;
+    }
+    /**
+     * Constructor.
+     */
+    public EpicsSystemVariable(@Nonnull final String name,
+                               @Nonnull final T data,
+                               @Nonnull final ControlSystem origin,
+                               @Nonnull final TimeInstant timestamp,
+                               @Nonnull final EpicsMetaData meta) {
+        super(name, data, origin, timestamp, meta.getAlarm());
+        _meta = meta;
     }
 
     /**
@@ -63,5 +73,10 @@ public class EpicsSystemVariable<T> extends AbstractAlarmSystemVariable<T, Epics
     @Nonnull
     public EpicsAlarm getAlarm() {
         return super.getAlarm();
+    }
+
+    @CheckForNull
+    public EpicsMetaData getMetaData() {
+        return _meta;
     }
 }

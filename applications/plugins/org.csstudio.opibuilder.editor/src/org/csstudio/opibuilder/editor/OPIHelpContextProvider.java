@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.help.HelpSystem;
@@ -92,13 +93,22 @@ public class OPIHelpContextProvider implements IContextProvider{
 		}
 
 		public String getHref() {
-			String modelClassName = widgetModel.getClass().getSimpleName();
-			StringBuilder sb = new StringBuilder("/"); //$NON-NLS-1$
-			sb.append(OPIBuilderPlugin.PLUGIN_ID);
-			sb.append("/html/widgets/"); //$NON-NLS-1$
-			sb.append(modelClassName.substring(0, modelClassName.length()-5));
-			sb.append(".html");
-			return  sb.toString();
+			WidgetDescriptor widgetDescriptor = 
+					WidgetsService.getInstance().getWidgetDescriptor(widgetModel.getTypeID());
+			String onlineHelpHtml = widgetDescriptor.getOnlineHelpHtml();
+			if( onlineHelpHtml != null && !onlineHelpHtml.trim().isEmpty()){
+				return widgetDescriptor.getPluginId() + "/" + widgetDescriptor.getOnlineHelpHtml(); //$NON-NLS-1$
+			}
+			if(widgetDescriptor.getPluginId().trim().equals("org.csstudio.opibuilder.widgets")){ //$NON-NLS-1$
+				String modelClassName = widgetModel.getClass().getSimpleName();
+				StringBuilder sb = new StringBuilder("/"); //$NON-NLS-1$
+				sb.append(OPIBuilderPlugin.PLUGIN_ID);
+				sb.append("/html/widgets/"); //$NON-NLS-1$
+				sb.append(modelClassName.substring(0, modelClassName.length()-5));
+				sb.append(".html");
+				return  sb.toString();
+			}
+			return OPIBuilderPlugin.PLUGIN_ID + "/html/widgets/WidgetHelpNotFound.html"; //$NON-NLS-1$
 		}
 
 		public String getLabel() {
