@@ -22,5 +22,4 @@ public class KBLogArchiveReaderFactory implements ArchiveReaderFactory {
 			return new KBLogArchiveReader(url);
 		}
 	}
-
 }

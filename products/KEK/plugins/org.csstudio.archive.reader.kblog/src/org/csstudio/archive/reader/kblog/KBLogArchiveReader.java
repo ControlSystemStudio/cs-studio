@@ -1,5 +1,8 @@
 package org.csstudio.archive.reader.kblog;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
@@ -12,10 +15,36 @@ import org.csstudio.data.values.ITimestamp;
  * @author Takashi Nakamoto
  */
 public class KBLogArchiveReader implements ArchiveReader {
-
-	public KBLogArchiveReader(final String url) throws Exception
+	private final static String scheme = "kblog://";
+	private String kblogRoot; 
+	private ArchiveInfo[] archiveInfos;
+	
+	/**
+	 * Constructor of KBLogArchiveReader.
+	 * 
+	 * @param url URL must start with "kblog://".
+	 */
+	public KBLogArchiveReader(final String url)
 	{
 		// TODO do whatever need to be done during initialization.
+		
+		// Parse URL
+		if (!url.startsWith(scheme)) {
+			Logger.getLogger(Activator.ID).log(Level.WARNING, "Wrong URL for KBLogArchiveReader: " + url);
+		}
+		kblogRoot = url.substring(scheme.length());
+		
+		// Obtain sub archive names
+		String[] subArchives = KBLogUtil.getSubArchives(kblogRoot);
+		if (subArchives.length == 0) {
+			Logger.getLogger(Activator.ID).log(Level.WARNING, "Failed to find archives in " + kblogRoot);
+		}
+		
+		archiveInfos = new ArchiveInfo[subArchives.length];
+		for (int i=0; i<subArchives.length; i++) { 
+			int key = i + 1;
+			archiveInfos[i] = new ArchiveInfo(subArchives[i], "dummy", key);
+		}
 	}
 	
 	@Override
@@ -25,7 +54,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public String getURL() {
-		return "kblog://localhost";
+		return scheme + kblogRoot;
 	}
 
 	@Override
@@ -40,10 +69,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public ArchiveInfo[] getArchiveInfos() {
-		return new ArchiveInfo[]
-        {
-			new ArchiveInfo("kglog", "localhost", 1)
-        };
+		return archiveInfos;
 	}
 
 	@Override
