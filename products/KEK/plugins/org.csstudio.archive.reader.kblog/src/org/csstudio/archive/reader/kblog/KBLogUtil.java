@@ -137,6 +137,8 @@ public class KBLogUtil {
 					}
 				}
 			}
+			
+			br.close();
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, "Error while reading " + lcfFile.getAbsolutePath() + ".", ex);
 			return matchedNames.toArray(new String[]{});
