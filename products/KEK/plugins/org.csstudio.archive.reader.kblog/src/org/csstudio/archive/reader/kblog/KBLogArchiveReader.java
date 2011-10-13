@@ -104,7 +104,8 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
-		System.err.println("getRawValues from kblogrd.");
+		// TODO delete this debug message.
+		System.err.println("getRawValues of " + name + " from kblogrd.");
 		
 		String subArchiveName = archiveInfos[key-1].getName();
 		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
@@ -112,7 +113,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 		
 		// TODO Make a new preference to set the path to kblogrd.
 		String strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
-		System.err.println("Command: " + strCommand);
+		Logger.getLogger(Activator.ID).log(Level.INFO, "Command execution: " + strCommand);
 		
 		Process proc = Runtime.getRuntime().exec(strCommand);
 		ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name);
@@ -127,14 +128,42 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public ValueIterator getOptimizedValues(int key, String name,
 			ITimestamp start, ITimestamp end, int count)
 			throws UnknownChannelException, Exception {
-		System.err.println("getOptimizedValues from kblogrd.");
+
+		if (count <= 0)
+            throw new Exception("Count must be positive");
 		
+		// TODO delete this debug message.
+		System.err.println("getOptimizedValues of " + name + " from kblogrd (count " + count + ").");
+
+		String subArchiveName = archiveInfos[key-1].getName();
+		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
+		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
+		
+		double diff = end.toDouble() - start.toDouble();
+		if (diff <= 0)
+			throw new Exception("Difference of start time and end time must be greater than 0 second.");
+
+		// At least, two points are required to draw a chart.
+		if (count == 1)
+			count = 2;
+		
+		int stepSecond = (int)Math.floor(diff / (count-1));
+		if (stepSecond <= 0) {
+			// No need to thin out values.
+			return getRawValues(key, name, start, end);
+		}
+		
+		// TODO Make a new preference to set the path to kblogrd.
+		String strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
+		Logger.getLogger(Activator.ID).log(Level.INFO, "Command execution: " + strCommand);
+		
+		Process proc = Runtime.getRuntime().exec(strCommand);
+		ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name);
+
 		// TODO handle standard error
 		// TODO handle return value
 		
-		// TODO return optimized values, not the raw ones.
-
-		return getRawValues(key, name, start, end);
+		return iter;
 	}
 
 	@Override
