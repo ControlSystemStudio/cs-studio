@@ -1,5 +1,9 @@
 package org.csstudio.archive.reader.kblog;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +23,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 	private final static String scheme = "kblog://";
 	private String kblogRoot; 
 	private ArchiveInfo[] archiveInfos;
+	
+	private static DateFormat kblogrdTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
+	private final static String kblogrdOutFormat = "free";
 	
 	/**
 	 * Constructor of KBLogArchiveReader.
@@ -76,6 +83,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public String[] getNamesByPattern(int key, String glob_pattern)
 			throws Exception {
+		// TODO make a new thread and do the following operations in it so that
+		//      name searching can be canceld on the way.
+		
 		String reg_exp = RegExHelper.fullRegexFromGlob(glob_pattern);
 		System.err.println(reg_exp);
 		
@@ -84,6 +94,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
+		// TODO make a new thread and do the following operations in it so that
+		//      name searching can be canceled on the way.
+
 		ArchiveInfo info = archiveInfos[key-1];
 		return KBLogUtil.getProcessVariableNames(kblogRoot, info.getName(), reg_exp);
 	}
@@ -91,18 +104,37 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
-		// TODO make a new thread and invoke kblog commands to obtain raw values
-		// TODO wait for the thread
-		return null;
+		System.err.println("getRawValues from kblogrd.");
+		
+		String subArchiveName = archiveInfos[key-1].getName();
+		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
+		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
+		
+		// TODO Make a new preference to set the path to kblogrd.
+		String strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
+		System.err.println("Command: " + strCommand);
+		
+		Process proc = Runtime.getRuntime().exec(strCommand);
+		ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name);
+		
+		// TODO handle standard error
+		// TODO handle return value
+
+		return iter;
 	}
 
 	@Override
 	public ValueIterator getOptimizedValues(int key, String name,
 			ITimestamp start, ITimestamp end, int count)
 			throws UnknownChannelException, Exception {
-		// TODO make a new thread and invoke kblog commands to obtain raw values
-		// TODO wait for the thread
-		return null;
+		System.err.println("getOptimizedValues from kblogrd.");
+		
+		// TODO handle standard error
+		// TODO handle return value
+		
+		// TODO return optimized values, not the raw ones.
+
+		return getRawValues(key, name, start, end);
 	}
 
 	@Override
