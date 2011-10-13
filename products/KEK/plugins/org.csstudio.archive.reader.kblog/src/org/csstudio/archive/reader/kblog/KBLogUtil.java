@@ -115,6 +115,8 @@ public class KBLogUtil {
 		}
 		
 		try {
+			Logger.getLogger(Activator.ID).log(Level.FINEST, "Start to read " + lcfFile.getAbsolutePath());
+			
 			BufferedReader br = new BufferedReader(new FileReader(lcfFile));
 			
 			String line;
@@ -139,6 +141,8 @@ public class KBLogUtil {
 			}
 			
 			br.close();
+			
+			Logger.getLogger(Activator.ID).log(Level.FINEST, "End of reading " + lcfFile.getAbsolutePath());
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, "Error while reading " + lcfFile.getAbsolutePath() + ".", ex);
 			return matchedNames.toArray(new String[]{});

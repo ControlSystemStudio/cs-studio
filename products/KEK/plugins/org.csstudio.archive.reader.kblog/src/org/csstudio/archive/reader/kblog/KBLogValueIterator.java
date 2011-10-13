@@ -32,6 +32,7 @@ public class KBLogValueIterator implements ValueIterator {
 	
 	private IValue nextValue = null;
 	private String pvName;
+	private int commandId;
 	
 	private BufferedReader stdoutReader;
 	
@@ -39,7 +40,10 @@ public class KBLogValueIterator implements ValueIterator {
 	 * 
 	 * @param kblogrdStdOut
 	 */
-	KBLogValueIterator(InputStream kblogrdStdOut, String name) {
+	KBLogValueIterator(InputStream kblogrdStdOut, String name, int commandId) {
+		Logger.getLogger(Activator.ID).log(Level.FINEST,
+				"Start to read the standard output of kblogrd (" + commandId + ").");
+		
 		try {
 			stdoutReader = new BufferedReader(new InputStreamReader(kblogrdStdOut, charset));
 		} catch (UnsupportedEncodingException ex) {
@@ -51,6 +55,7 @@ public class KBLogValueIterator implements ValueIterator {
 		
 		pvName = name;
 		nextValue = decodeNextValue();
+		this.commandId = commandId;
 	}
 	
 	/**
@@ -89,7 +94,7 @@ public class KBLogValueIterator implements ValueIterator {
 				int secondTab = line.indexOf("\t", firstTab+1);
 				if (firstTab == -1 || secondTab == -1) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid line in kblogrd output: " + line);
+							"Invalid line in kblogrd (" + commandId + ") output: " + line);
 					continue;
 				}
 
@@ -98,7 +103,7 @@ public class KBLogValueIterator implements ValueIterator {
 				String strValue = line.substring(secondTab+1);
 				if (strTime.isEmpty() || strName.isEmpty() || strValue.isEmpty()) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid line in kblogrd output: " + line);
+							"Invalid line in kblogrd (" + commandId + ") output: " + line);
 					continue;
 				}
 				
@@ -106,14 +111,14 @@ public class KBLogValueIterator implements ValueIterator {
 				ITimestamp time = parseTimestamp(strTime);
 				if (time == null) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid format of timestamp: " + strTime);
+							"Invalid timestamp in kblogrd (" + commandId + ") output: " + strTime);
 					continue;
 				}
 				
 				// Check the PV name just in case.
 				if (!pvName.equals(strName)) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "'.");
+							"Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "' via kblogrd (" + commandId +").");
 					continue;
 				}
 				
@@ -141,7 +146,7 @@ public class KBLogValueIterator implements ValueIterator {
 							new double[]{value});
 				} catch (NumberFormatException ex) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Failed to parse double value: " + strValue, ex);
+							"Failed to parse double value obtained from kblogrd (" + commandId + "): " + strValue, ex);
 					continue;
 				}
 				
@@ -152,7 +157,7 @@ public class KBLogValueIterator implements ValueIterator {
 			return null;
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING,
-					"Failed to read the output from kblogrd.", ex);
+					"Failed to read the output from kblogrd (" + commandId + ").", ex);
 			return null;
 		}
 	}
@@ -174,9 +179,12 @@ public class KBLogValueIterator implements ValueIterator {
 	public synchronized void close() {
 		try {
 			stdoutReader.close();
+			
+			Logger.getLogger(Activator.ID).log(Level.FINEST,
+					"End of reading the standard output of kblogrd (" + commandId + ").");
 		} catch (IOException ex) {
-			Logger.getLogger(Activator.ID).log(Level.WARNING, 
-					"An error occured while closing the pipe to stdout of kblogrd.", ex);
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, 
+					"An error occured while closing the pipe to stdout of kblogrd (" + commandId + ").", ex);
 		}
 	}
 }

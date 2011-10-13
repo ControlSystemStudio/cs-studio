@@ -1,5 +1,6 @@
 package org.csstudio.archive.reader.kblog;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,6 +27,19 @@ public class KBLogArchiveReader implements ArchiveReader {
 	
 	private static DateFormat kblogrdTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
 	private final static String kblogrdOutFormat = "free";
+	
+	// DO NOT READ OR WRITE THIS VALUE OUTSIDE getUniqueCommandID().
+	private static int uniqueCommandId = 0;
+	
+	/**
+	 * This must be called only once right before "kblogrd" command is called.
+	 * 
+	 * @return Command ID unique in this class.
+	 */
+	private synchronized int getUniqueCommandID() {
+		uniqueCommandId += 1;
+		return uniqueCommandId;
+	}
 	
 	/**
 	 * Constructor of KBLogArchiveReader.
@@ -104,24 +118,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
-		// TODO delete this debug message.
-		System.err.println("getRawValues of " + name + " from kblogrd.");
-		
-		String subArchiveName = archiveInfos[key-1].getName();
-		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
-		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
-		
-		// TODO Make a new preference to set the path to kblogrd.
-		String strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
-		Logger.getLogger(Activator.ID).log(Level.INFO, "Command execution: " + strCommand);
-		
-		Process proc = Runtime.getRuntime().exec(strCommand);
-		ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name);
-		
-		// TODO handle standard error
-		// TODO handle return value
-
-		return iter;
+		return getValuesFromKBLogRD(key, name, start, end, 0);
 	}
 
 	@Override
@@ -131,14 +128,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 		if (count <= 0)
             throw new Exception("Count must be positive");
-		
-		// TODO delete this debug message.
-		System.err.println("getOptimizedValues of " + name + " from kblogrd (count " + count + ").");
 
-		String subArchiveName = archiveInfos[key-1].getName();
-		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
-		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
-		
 		double diff = end.toDouble() - start.toDouble();
 		if (diff <= 0)
 			throw new Exception("Difference of start time and end time must be greater than 0 second.");
@@ -153,17 +143,39 @@ public class KBLogArchiveReader implements ArchiveReader {
 			return getRawValues(key, name, start, end);
 		}
 		
+		return getValuesFromKBLogRD(key, name, start, end, stepSecond);
+	}
+	
+	private ValueIterator getValuesFromKBLogRD(int key, String name, ITimestamp start, ITimestamp end, int stepSecond) {
+		String subArchiveName = archiveInfos[key-1].getName();
+		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
+		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
+	
 		// TODO Make a new preference to set the path to kblogrd.
-		String strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
-		Logger.getLogger(Activator.ID).log(Level.INFO, "Command execution: " + strCommand);
+		String strCommand;
+		if (stepSecond > 0)
+			strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
+		else
+			strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
+			
+		int commandId = getUniqueCommandID();
+		Logger.getLogger(Activator.ID).log(Level.INFO, "Command " + commandId + ": " + strCommand);
 		
-		Process proc = Runtime.getRuntime().exec(strCommand);
-		ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name);
+		Process proc;
+		try {
+			proc = Runtime.getRuntime().exec(strCommand);
+			ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name, commandId);
 
-		// TODO handle standard error
-		// TODO handle return value
+			// Handle the error messages in a separate thread.
+			Thread errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), commandId);
+			errHandler.start();
+			
+			return iter;
+		} catch (IOException e) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run kblogrd (" + commandId + ").");
+		}
 		
-		return iter;
+		return null;
 	}
 
 	@Override
