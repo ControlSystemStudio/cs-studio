@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.archive.reader.ValueIterator;
+import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
@@ -115,15 +116,26 @@ public class KBLogValueIterator implements ValueIterator {
 							"Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "'.");
 					continue;
 				}
-
+				
 				// Parse double value.
 				try {
-					double value = Double.parseDouble(strValue);
+					double value = 0;
+					String status = "";
+					ISeverity severity = ValueFactory.createOKSeverity();
 					
-					// TODO need to be reconsidered the arguments of this value (e.g. Severity, Status, Metadata).
+					if (strValue.equals("Connected")) {
+						value = 0;
+						status = "Connected";
+						severity = ValueFactory.createOKSeverity();
+					} else {
+						value = Double.parseDouble(strValue);
+						status = "Normal";
+						severity = ValueFactory.createOKSeverity();
+					}
+					
 					return ValueFactory.createDoubleValue(time,
-							ValueFactory.createOKSeverity(),
-							"OK",
+							severity,
+							status,
 							null,
 							Quality.Original,
 							new double[]{value});
