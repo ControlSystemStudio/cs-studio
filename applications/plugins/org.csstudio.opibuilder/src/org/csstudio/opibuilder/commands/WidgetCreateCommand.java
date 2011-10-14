@@ -45,8 +45,8 @@ public class WidgetCreateCommand extends Command {
 	 * @param applySchema true if the new widget's properties are applied with schema.
 	 */
 	public WidgetCreateCommand(AbstractWidgetModel newWidget, AbstractContainerModel
-			container, Rectangle bounds, boolean append, boolean applySchema){
-		this(newWidget, container,bounds,append);
+			container, Rectangle bounds, boolean append, boolean applySchema){		
+		this(newWidget, container,bounds,append);		
 		if(applySchema){
 			SchemaService.getInstance().applySchema(this.newWidget);
 		}		
@@ -98,17 +98,27 @@ public class WidgetCreateCommand extends Command {
 				autoName = true;
 		}
 		if(autoName){
-			Map<String, Integer> typeIDMap = new HashMap<String, Integer>();
+			Map<String, Integer> nameMap = new HashMap<String, Integer>();
 			for(AbstractWidgetModel child : container.getChildren()){
-				if(typeIDMap.containsKey(child.getTypeID()))
-					typeIDMap.put(child.getTypeID(), typeIDMap.get(child.getTypeID())+1);
+				String key = child.getName();
+				int tailNo = 0;
+				if(key.matches(".*_\\d+")){ //$NON-NLS-1$
+					int i = key.lastIndexOf('_'); //$NON-NLS-1$
+					tailNo = Integer.parseInt(key.substring(i+1));
+					key = key.substring(0, i);					
+				}
+				if(nameMap.containsKey(key))
+					nameMap.put(key, Math.max(nameMap.get(key)+1, tailNo));
 				else
-					typeIDMap.put(child.getTypeID(), 0);
+					nameMap.put(key, 0);
 			}
-			
-			newWidget.setName(newWidget.getType() + "_" 	//$NON-NLS-1$
-					+ (typeIDMap.get(newWidget.getTypeID())==null?
-							0 : typeIDMap.get(newWidget.getTypeID()) + 1)); 
+			String nameHead = newWidget.getName();
+			if(nameHead.matches(".*_\\d+")){ //$NON-NLS-1$
+				nameHead = nameHead.substring(0, nameHead.lastIndexOf('_')); //$NON-NLS-1$
+			}
+			newWidget.setName(nameHead + "_" 	//$NON-NLS-1$
+					+ (nameMap.get(nameHead)==null?
+							0 : nameMap.get(nameHead) + 1)); 
 		}
 		container.addChild(index, newWidget);
 		container.selectWidget(newWidget, append);
