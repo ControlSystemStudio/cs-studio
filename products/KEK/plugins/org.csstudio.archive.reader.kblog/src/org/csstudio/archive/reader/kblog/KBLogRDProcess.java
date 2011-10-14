@@ -1,6 +1,7 @@
 package org.csstudio.archive.reader.kblog;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +26,7 @@ public class KBLogRDProcess {
 	private boolean started;
 	private Process proc;
 	private boolean canceled;
+	private int commandId;
 	
 	/**
 	 * Initialize the "kblogrd" command execution with given arguments.
@@ -51,6 +53,7 @@ public class KBLogRDProcess {
 		this.started = false;
 		this.proc = null;
 		this.canceled = false;
+		this.commandId = 0;
 	}
 	
 	/**
@@ -65,7 +68,7 @@ public class KBLogRDProcess {
 		if (started || canceled)
 			return null;
 		
-		int commandId = getUniqueCommandID();
+		commandId = getUniqueCommandID();
 		Logger.getLogger(Activator.ID).log(Level.INFO, "Command " + commandId + ": " + strCommand);
 		
 		try {
@@ -108,14 +111,29 @@ public class KBLogRDProcess {
 		if (isFinished())
 			return;
 		
+		// Close the standard output.
 		if (iter != null && !iter.isClosed())
 			iter.close();
 		
+		// Close the standard error.
 		if (errHandler != null && errHandler.isClosed())
 			errHandler.close();
 		
-		if (proc != null)
+		if (proc != null) {
+			// Close the standard input.
+			try{
+				OutputStream outStream = proc.getOutputStream();
+				if (outStream != null)
+					outStream.close();
+			} catch (IOException ex) {
+				String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
+				Logger.getLogger(Activator.ID).log(Level.SEVERE,
+						"Failed to close the standard input of " + kblogrdCommand + " (" + commandId + ").");
+			}
+			
+			// Destroy the running process.
 			proc.destroy();
+		}
 		
 		canceled = true;
 	}

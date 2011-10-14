@@ -130,6 +130,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 			return getRawValues(key, name, start, end);
 		}
 		
+		// TODO get average/min/max value iterator
 		String subArchiveName = archiveInfos[key-1].getName();
 		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond);
 		synchronized (kblogrdProcesses) {
