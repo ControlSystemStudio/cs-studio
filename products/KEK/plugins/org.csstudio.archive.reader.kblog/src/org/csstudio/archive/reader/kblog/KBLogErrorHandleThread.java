@@ -20,6 +20,8 @@ public class KBLogErrorHandleThread extends Thread {
 	private int commandId;
 	private int commandPath;
 	
+	private boolean closed;
+	
 	/**
 	 * Constructor of KBLogErrorHandleThread.
 	 * 
@@ -42,24 +44,44 @@ public class KBLogErrorHandleThread extends Thread {
 		}
 		
 		this.commandId = commandId;
+		this.closed = false;
 	}
 	
 	public void run() {
 		try {
 			String line;
 			
+			// Transfer the messages in the standard error to the CSS logging system.
 			while ((line = stderrReader.readLine()) != null) {
 				Logger.getLogger(Activator.ID).log(Level.WARNING,
 						"Error message from " + commandPath + " (" + commandId + "): " + line);
 			}
-			
-			stderrReader.close();
-			
-			Logger.getLogger(Activator.ID).log(Level.FINEST,
-					"End of reading the standard error of " + commandPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING,
 					"IOException while reading standard error of " + commandPath + " (" + commandId + ")", ex);
 		}
+		
+		// Close the standard error.
+		close();
+	}
+	
+	public synchronized void close() {
+		if (closed)
+			return;
+		
+		try{
+			stderrReader.close();
+			closed = true;
+			
+			Logger.getLogger(Activator.ID).log(Level.FINEST,
+					"End of reading the standard error of " + commandPath + " (" + commandId + ").");
+		} catch (IOException ex) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE,
+					"Faeild to close the standard error off " + commandPath + " (" + commandId + ")", ex);
+		}
+	}
+	
+	public synchronized boolean isClosed() {
+		return closed;
 	}
 }

@@ -1,10 +1,6 @@
 package org.csstudio.archive.reader.kblog;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,22 +20,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	private final static String scheme = "kblog://";
 	private String kblogRoot; 
 	private ArchiveInfo[] archiveInfos;
-	
-	private static DateFormat kblogrdTimeFormat = new SimpleDateFormat("yyyyMMddHHmmss", Locale.US);
-	private final static String kblogrdOutFormat = "free";
-	
-	// DO NOT READ OR WRITE THIS VALUE OUTSIDE getUniqueCommandID().
-	private static int uniqueCommandId = 0;
-	
-	/**
-	 * This must be called only once right before "kblogrd" command is called.
-	 * 
-	 * @return Command ID unique in this class.
-	 */
-	private synchronized int getUniqueCommandID() {
-		uniqueCommandId += 1;
-		return uniqueCommandId;
-	}
+	private ArrayList<KBLogRDProcess> kblogrdProcesses;
 	
 	/**
 	 * Constructor of KBLogArchiveReader.
@@ -67,6 +48,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 			int key = i + 1;
 			archiveInfos[i] = new ArchiveInfo(subArchives[i], "", key);
 		}
+		
+		// Container of kblogrd processes.
+		kblogrdProcesses = new ArrayList<KBLogRDProcess>();
 	}
 	
 	@Override
@@ -98,7 +82,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public String[] getNamesByPattern(int key, String glob_pattern)
 			throws Exception {
 		// TODO make a new thread and do the following operations in it so that
-		//      name searching can be canceld on the way.
+		//      name searching can be canceled on the way.
 		
 		String reg_exp = RegExHelper.fullRegexFromGlob(glob_pattern);
 		System.err.println(reg_exp);
@@ -118,7 +102,10 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
-		return getValuesFromKBLogRD(key, name, start, end, 0);
+		String subArchiveName = archiveInfos[key-1].getName();
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, 0);
+		
+		return kblogrdProcess.start();		
 	}
 
 	@Override
@@ -143,52 +130,35 @@ public class KBLogArchiveReader implements ArchiveReader {
 			return getRawValues(key, name, start, end);
 		}
 		
-		return getValuesFromKBLogRD(key, name, start, end, stepSecond);
-	}
-	
-	private ValueIterator getValuesFromKBLogRD(int key, String name, ITimestamp start, ITimestamp end, int stepSecond) {
-		String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
 		String subArchiveName = archiveInfos[key-1].getName();
-		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
-		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
-	
-		// TODO Make a new preference to set the path to kblogrd.
-		String strCommand;
-		if (stepSecond > 0)
-			strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
-		else
-			strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
-			
-		int commandId = getUniqueCommandID();
-		Logger.getLogger(Activator.ID).log(Level.INFO, "Command " + commandId + ": " + strCommand);
-		
-		Process proc;
-		try {
-			proc = Runtime.getRuntime().exec(strCommand);
-			ValueIterator iter = new KBLogValueIterator(proc.getInputStream(), name, commandId);
-
-			// Handle the error messages in a separate thread.
-			Thread errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), commandId);
-			errHandler.start();
-			
-			return iter;
-		} catch (IOException e) {
-			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdCommand + " (" + commandId + ").");
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond);
+		synchronized (kblogrdProcesses) {
+			kblogrdProcesses.add(kblogrdProcess);
 		}
 		
-		// TODO try to see what happens when the process is forcibly shut down here.
-		//      If it works well, store "proc" in an instance field and kill it when cancel() method is called.
-		
-		return null;
+		return kblogrdProcess.start();
 	}
 
 	@Override
 	public void cancel() {
-		// TODO kill running value-obtaining threads.
+		synchronized (kblogrdProcesses) {
+			KBLogRDProcess[] procs = kblogrdProcesses.toArray(new KBLogRDProcess[0]);
+			for (KBLogRDProcess proc : procs) {
+				if (!proc.isFinished()) {
+					proc.cancel();
+				}
+				
+				kblogrdProcesses.remove(proc);
+			}
+		}
+		
+		System.err.println("Cancel is requested.");
 	}
 
 	@Override
 	public void close() {
+		System.err.println("KBLogArchiveReader.close() is requested.");
+		
 		cancel();
 		
 		// TODO do whatever need to be done during finalization.

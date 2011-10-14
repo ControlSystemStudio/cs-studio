@@ -36,6 +36,7 @@ public class KBLogValueIterator implements ValueIterator {
 	private String commandPath;
 	
 	private BufferedReader stdoutReader;
+	private boolean closed;
 	
 	/**
 	 * Constructor of KBLogValueIterator.
@@ -45,7 +46,7 @@ public class KBLogValueIterator implements ValueIterator {
 	 * @param commandId Unique ID of executed "kblogrd" command.
 	 */
 	KBLogValueIterator(InputStream kblogrdStdOut, String name, int commandId) {
-		String commandPath = KBLogPreferences.getPathToKBLogRD();
+		this.commandPath = KBLogPreferences.getPathToKBLogRD();
 		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
 				"Start to read the standard output of " + commandPath + " (" + commandId + ").");
@@ -62,6 +63,7 @@ public class KBLogValueIterator implements ValueIterator {
 		pvName = name;
 		nextValue = decodeNextValue();
 		this.commandId = commandId;
+		this.closed = false;
 	}
 	
 	/**
@@ -162,7 +164,7 @@ public class KBLogValueIterator implements ValueIterator {
 			// No more value.
 			return null;
 		} catch (IOException ex) {
-			Logger.getLogger(Activator.ID).log(Level.WARNING,
+			Logger.getLogger(Activator.ID).log(Level.SEVERE,
 					"Failed to read the output from " + commandPath + " (" + commandId + ").", ex);
 			return null;
 		}
@@ -183,8 +185,10 @@ public class KBLogValueIterator implements ValueIterator {
 
 	@Override
 	public synchronized void close() {
+		System.err.println("KBLogValueIterator.close() is requested.");
 		try {
 			stdoutReader.close();
+			closed = true;
 			
 			Logger.getLogger(Activator.ID).log(Level.FINEST,
 					"End of reading the standard output of " + commandPath + " (" + commandId + ").");
@@ -192,5 +196,9 @@ public class KBLogValueIterator implements ValueIterator {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE, 
 					"An error occured while closing the pipe to stdout of " + commandPath + " (" + commandId + ").", ex);
 		}
+	}
+	
+	public synchronized boolean isClosed() {
+		return closed;
 	}
 }
