@@ -20,9 +20,9 @@ public class KBLogPreferencePage extends FieldEditorPreferencePage implements IW
 	
 	@Override
 	protected void createFieldEditors() {
-		setMessage("KBLog");
+		setMessage(KBLogMessages.PreferenceTitle);
 		final Composite parent = getFieldEditorParent();
-		addField(new StringFieldEditor(KBLogPreferences.PATH_TO_KBLOGRD, "Path to kblogrd: ", parent));
+		addField(new StringFieldEditor(KBLogPreferences.PATH_TO_KBLOGRD, KBLogMessages.PathToKBLogRD, parent));
 	}
 
 	@Override
