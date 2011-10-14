@@ -1,7 +1,6 @@
 package org.csstudio.archive.reader.kblog;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.IPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
@@ -21,9 +20,9 @@ public class KBLogPreferencePage extends FieldEditorPreferencePage implements IW
 	
 	@Override
 	protected void createFieldEditors() {
-		setMessage("ABC");
+		setMessage("KBLog");
 		final Composite parent = getFieldEditorParent();
-		addField(new StringFieldEditor("path_to_kblogrd", "Path to kblogrd", parent));
+		addField(new StringFieldEditor(KBLogPreferences.PATH_TO_KBLOGRD, "Path to kblogrd: ", parent));
 	}
 
 	@Override

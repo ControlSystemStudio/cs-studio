@@ -18,6 +18,7 @@ public class KBLogErrorHandleThread extends Thread {
 	
 	private BufferedReader stderrReader;
 	private int commandId;
+	private int commandPath;
 	
 	/**
 	 * Constructor of KBLogErrorHandleThread.
@@ -26,8 +27,10 @@ public class KBLogErrorHandleThread extends Thread {
 	 * @param commandId Command ID of kblogrd.
 	 */
 	KBLogErrorHandleThread(InputStream kblogrdStdErr, int commandId) {
+		String commandPath = KBLogPreferences.getPathToKBLogRD();
+		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
-				"Start to read the standard error of kblogrd (" + commandId + ").");
+				"Start to read the standard error of " + commandPath + " (" + commandId + ").");
 
 		try {
 			stderrReader = new BufferedReader(new InputStreamReader(kblogrdStdErr, charset));
@@ -47,16 +50,16 @@ public class KBLogErrorHandleThread extends Thread {
 			
 			while ((line = stderrReader.readLine()) != null) {
 				Logger.getLogger(Activator.ID).log(Level.WARNING,
-						"Error message from kblogrd (" + commandId + "): " + line);
+						"Error message from " + commandPath + " (" + commandId + "): " + line);
 			}
 			
 			stderrReader.close();
 			
 			Logger.getLogger(Activator.ID).log(Level.FINEST,
-					"End of reading the standard error of kblogrd (" + commandId + ").");
+					"End of reading the standard error of " + commandPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING,
-					"IOException while reading standard error of kblogrd (" + commandId + ")", ex);
+					"IOException while reading standard error of " + commandPath + " (" + commandId + ")", ex);
 		}
 	}
 }

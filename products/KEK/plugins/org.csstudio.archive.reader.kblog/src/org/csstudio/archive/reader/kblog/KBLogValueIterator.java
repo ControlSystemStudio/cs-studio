@@ -22,7 +22,7 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 
 /**
- * ValueIterator that read data from kblogrd via the standard output.
+ * ValueIterator that reads data from kblogrd via the standard output.
  * 
  * @author Takashi Nakamoto
  */
@@ -33,16 +33,22 @@ public class KBLogValueIterator implements ValueIterator {
 	private IValue nextValue = null;
 	private String pvName;
 	private int commandId;
+	private String commandPath;
 	
 	private BufferedReader stdoutReader;
 	
 	/**
+	 * Constructor of KBLogValueIterator.
 	 * 
-	 * @param kblogrdStdOut
+	 * @param kblogrdStdOut InputStream obtained from the standard output of "kblogrd".
+	 * @param name PVName
+	 * @param commandId Unique ID of executed "kblogrd" command.
 	 */
 	KBLogValueIterator(InputStream kblogrdStdOut, String name, int commandId) {
+		String commandPath = KBLogPreferences.getPathToKBLogRD();
+		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
-				"Start to read the standard output of kblogrd (" + commandId + ").");
+				"Start to read the standard output of " + commandPath + " (" + commandId + ").");
 		
 		try {
 			stdoutReader = new BufferedReader(new InputStreamReader(kblogrdStdOut, charset));
@@ -94,7 +100,7 @@ public class KBLogValueIterator implements ValueIterator {
 				int secondTab = line.indexOf("\t", firstTab+1);
 				if (firstTab == -1 || secondTab == -1) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid line in kblogrd (" + commandId + ") output: " + line);
+							"Invalid line in " + commandPath + " (" + commandId + ") output: " + line);
 					continue;
 				}
 
@@ -103,7 +109,7 @@ public class KBLogValueIterator implements ValueIterator {
 				String strValue = line.substring(secondTab+1);
 				if (strTime.isEmpty() || strName.isEmpty() || strValue.isEmpty()) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid line in kblogrd (" + commandId + ") output: " + line);
+							"Invalid line in " + commandPath + " (" + commandId + ") output: " + line);
 					continue;
 				}
 				
@@ -111,14 +117,14 @@ public class KBLogValueIterator implements ValueIterator {
 				ITimestamp time = parseTimestamp(strTime);
 				if (time == null) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Invalid timestamp in kblogrd (" + commandId + ") output: " + strTime);
+							"Invalid timestamp in " + commandPath + " (" + commandId + ") output: " + strTime);
 					continue;
 				}
 				
 				// Check the PV name just in case.
 				if (!pvName.equals(strName)) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "' via kblogrd (" + commandId +").");
+							"Unexpected values of '" + strName + "' were obtained while reading values of '" + pvName + "' via " + commandPath + " (" + commandId +").");
 					continue;
 				}
 				
@@ -146,7 +152,7 @@ public class KBLogValueIterator implements ValueIterator {
 							new double[]{value});
 				} catch (NumberFormatException ex) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Failed to parse double value obtained from kblogrd (" + commandId + "): " + strValue, ex);
+							"Failed to parse double value obtained from " + commandPath + " (" + commandId + "): " + strValue, ex);
 					continue;
 				}
 				
@@ -157,7 +163,7 @@ public class KBLogValueIterator implements ValueIterator {
 			return null;
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING,
-					"Failed to read the output from kblogrd (" + commandId + ").", ex);
+					"Failed to read the output from " + commandPath + " (" + commandId + ").", ex);
 			return null;
 		}
 	}
@@ -181,10 +187,10 @@ public class KBLogValueIterator implements ValueIterator {
 			stdoutReader.close();
 			
 			Logger.getLogger(Activator.ID).log(Level.FINEST,
-					"End of reading the standard output of kblogrd (" + commandId + ").");
+					"End of reading the standard output of " + commandPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE, 
-					"An error occured while closing the pipe to stdout of kblogrd (" + commandId + ").", ex);
+					"An error occured while closing the pipe to stdout of " + commandPath + " (" + commandId + ").", ex);
 		}
 	}
 }

@@ -65,7 +65,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 		archiveInfos = new ArchiveInfo[subArchives.length];
 		for (int i=0; i<subArchives.length; i++) { 
 			int key = i + 1;
-			archiveInfos[i] = new ArchiveInfo(subArchives[i], "dummy", key);
+			archiveInfos[i] = new ArchiveInfo(subArchives[i], "", key);
 		}
 	}
 	
@@ -147,6 +147,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	}
 	
 	private ValueIterator getValuesFromKBLogRD(int key, String name, ITimestamp start, ITimestamp end, int stepSecond) {
+		String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
 		String subArchiveName = archiveInfos[key-1].getName();
 		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
 		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
@@ -154,9 +155,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 		// TODO Make a new preference to set the path to kblogrd.
 		String strCommand;
 		if (stepSecond > 0)
-			strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
+			strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
 		else
-			strCommand = "kblogrd -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
+			strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
 			
 		int commandId = getUniqueCommandID();
 		Logger.getLogger(Activator.ID).log(Level.INFO, "Command " + commandId + ": " + strCommand);
@@ -172,8 +173,11 @@ public class KBLogArchiveReader implements ArchiveReader {
 			
 			return iter;
 		} catch (IOException e) {
-			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run kblogrd (" + commandId + ").");
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdCommand + " (" + commandId + ").");
 		}
+		
+		// TODO try to see what happens when the process is forcibly shut down here.
+		//      If it works well, store "proc" in an instance field and kill it when cancel() method is called.
 		
 		return null;
 	}
