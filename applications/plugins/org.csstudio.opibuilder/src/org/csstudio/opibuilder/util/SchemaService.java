@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
@@ -56,9 +57,7 @@ public final class SchemaService {
 					XMLUtil.fillDisplayModelFromInputStream(inputStream,
 							displayModel, Display.getDefault());
 					schemaWidgetsMap.put(displayModel.getTypeID(), displayModel);
-					for (AbstractWidgetModel model : displayModel.getChildren()) {
-						schemaWidgetsMap.put(model.getTypeID(), model);
-					}
+					loadModelFromContainer(displayModel);
 				} catch (Exception e) {
 					String message = "Failed to load schema file: " + schemaOPI;
 					OPIBuilderPlugin.getLogger().log(Level.WARNING,
@@ -67,6 +66,14 @@ public final class SchemaService {
 				}
 				monitor.done();
 				return Status.OK_STATUS;
+			}
+
+			private void loadModelFromContainer(AbstractContainerModel containerModel) {
+				for(AbstractWidgetModel model : containerModel.getChildren()){
+					schemaWidgetsMap.put(model.getTypeID(), model);
+					if(model instanceof AbstractContainerModel)
+							loadModelFromContainer((AbstractContainerModel) model);
+				}
 			}
 		};
 		job.schedule();
