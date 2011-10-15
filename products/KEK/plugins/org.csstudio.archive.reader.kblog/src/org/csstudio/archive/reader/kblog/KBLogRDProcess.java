@@ -92,10 +92,11 @@ public class KBLogRDProcess {
 		
 		try {
 			proc = Runtime.getRuntime().exec(strCommand);
-			if (stepSecond > 0 && useAverage)
-				iter = new KBLogAveragedValueIterator(proc.getInputStream(), name, commandId, startTime, stepSecond);
-			else
-				iter = new KBLogValueIterator(proc.getInputStream(), name, commandId);
+			if (stepSecond > 0 && useAverage) {
+				KBLogRawValueIterator baseIter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
+				iter = new KBLogAveragedValueIterator(baseIter, startTime, stepSecond);
+			} else
+				iter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
 
 			// Handle the error messages in a separate thread.
 			errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), commandId);

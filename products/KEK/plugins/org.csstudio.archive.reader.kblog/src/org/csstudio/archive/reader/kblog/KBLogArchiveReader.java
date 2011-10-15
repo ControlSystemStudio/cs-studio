@@ -130,9 +130,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 			return getRawValues(key, name, start, end);
 		}
 		
-		// TODO get average/min/max value iterator
+		// TODO Make a new preference to choose whether whether a user uses averaged values iterator or not.
 		String subArchiveName = archiveInfos[key-1].getName();
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, false);
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, true);
 		synchronized (kblogrdProcesses) {
 			kblogrdProcesses.add(kblogrdProcess);
 		}

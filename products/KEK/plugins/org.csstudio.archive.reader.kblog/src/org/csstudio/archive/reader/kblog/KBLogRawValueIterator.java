@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
@@ -26,7 +25,7 @@ import org.csstudio.data.values.ValueFactory;
  * 
  * @author Takashi Nakamoto
  */
-public class KBLogValueIterator implements ValueIterator {
+public class KBLogRawValueIterator implements KBLogValueIterator {
 	private static final String charset = "US-ASCII";
 	private static DateFormat timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.US);
 	
@@ -39,13 +38,13 @@ public class KBLogValueIterator implements ValueIterator {
 	private boolean closed;
 	
 	/**
-	 * Constructor of KBLogValueIterator.
+	 * Constructor of KBLogRawValueIterator.
 	 * 
 	 * @param kblogrdStdOut InputStream obtained from the standard output of "kblogrd".
 	 * @param name PVName
 	 * @param commandId Unique ID of executed "kblogrd" command.
 	 */
-	KBLogValueIterator(InputStream kblogrdStdOut, String name, int commandId) {
+	KBLogRawValueIterator(InputStream kblogrdStdOut, String name, int commandId) {
 		this.commandPath = KBLogPreferences.getPathToKBLogRD();
 		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
@@ -138,11 +137,11 @@ public class KBLogValueIterator implements ValueIterator {
 					
 					if (strValue.equals("Connected")) {
 						value = 0;
-						status = "Connected";
-						severity = ValueFactory.createOKSeverity();
+						status = KBLogMessages.StatusConnected;
+						severity = KBLogSeverityInstances.connected;
 					} else {
 						value = Double.parseDouble(strValue);
-						status = "Normal";
+						status = KBLogMessages.StatusNormal;
 						severity = ValueFactory.createOKSeverity();
 					}
 					
@@ -185,7 +184,7 @@ public class KBLogValueIterator implements ValueIterator {
 
 	@Override
 	public synchronized void close() {
-		System.err.println("KBLogValueIterator.close() is requested.");
+		System.err.println("KBLogRawValueIterator.close() is requested.");
 		try {
 			stdoutReader.close();
 			closed = true;
@@ -198,6 +197,7 @@ public class KBLogValueIterator implements ValueIterator {
 		}
 	}
 	
+	@Override
 	public synchronized boolean isClosed() {
 		return closed;
 	}
