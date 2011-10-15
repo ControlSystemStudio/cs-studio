@@ -103,7 +103,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
 		String subArchiveName = archiveInfos[key-1].getName();
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, 0);
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, 0, false);
 		
 		return kblogrdProcess.start();		
 	}
@@ -132,7 +132,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 		
 		// TODO get average/min/max value iterator
 		String subArchiveName = archiveInfos[key-1].getName();
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond);
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, false);
 		synchronized (kblogrdProcesses) {
 			kblogrdProcesses.add(kblogrdProcess);
 		}

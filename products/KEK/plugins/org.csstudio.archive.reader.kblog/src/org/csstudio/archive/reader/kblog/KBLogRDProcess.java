@@ -27,6 +27,9 @@ public class KBLogRDProcess {
 	private Process proc;
 	private boolean canceled;
 	private int commandId;
+	private boolean useAverage;
+	private int stepSecond;
+	private ITimestamp startTime;
 	
 	/**
 	 * Initialize the "kblogrd" command execution with given arguments.
@@ -35,15 +38,28 @@ public class KBLogRDProcess {
 	 * @param name PV name (e.g. BM_DCCT:HCUR)
 	 * @param start Start time of data sequence
 	 * @param end End time of data sequence
-	 * @param stepSecond Interval of each data. Set this to 0 if you want to obtain all raw data in the specified range.
+	 * @param stepSecond Interval of each data. Set this to 0 or less if you want to obtain all raw data in the specified range.
+	 * @param useAverage With this option, iterator for averaged values (and min/max values) will be returned when start() is called. (Note that this option will be ignored when stepSecond is 0 or less.)
 	 */
-	public KBLogRDProcess(String subArchiveName, String name, ITimestamp start, ITimestamp end, int stepSecond) {
+	public KBLogRDProcess(String subArchiveName, String name, ITimestamp start, ITimestamp end, int stepSecond, boolean useAverage) {
 		String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
 		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
 		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
 		this.name = name;
-	
-		if (stepSecond > 0)
+
+		// 1. If stepSecond is positive, and useAverage is false,
+		//     => Call "kblogrd" command with "d" option to suppress the amount of data that the command outputs.
+		//        (Sampled raw values, fastest)
+		//
+		// 2. If stepSecond is 0 or negative,
+		//     => Call "kblogrd" command without "d" option to obtain all data in the specified time range.
+		//        (Raw values, second slowest)
+		//
+		// 3. If stepSecond is positive, and useAverage is true,
+		//     => Call "kblogrd" command without "d" option to obtain all data in the specified time range,
+		//        and calculate average/min/max values later when next() method of iterator is called.
+		//        (Optimized for chart displaying, slowest)
+		if (stepSecond > 0 && !useAverage)
 			this.strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
 		else
 			this.strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
@@ -54,6 +70,9 @@ public class KBLogRDProcess {
 		this.proc = null;
 		this.canceled = false;
 		this.commandId = 0;
+		this.useAverage = useAverage;
+		this.stepSecond = stepSecond;
+		this.startTime = start;
 	}
 	
 	/**
@@ -73,7 +92,10 @@ public class KBLogRDProcess {
 		
 		try {
 			proc = Runtime.getRuntime().exec(strCommand);
-			iter = new KBLogValueIterator(proc.getInputStream(), name, commandId);
+			if (stepSecond > 0 && useAverage)
+				iter = new KBLogAveragedValueIterator(proc.getInputStream(), name, commandId, startTime, stepSecond);
+			else
+				iter = new KBLogValueIterator(proc.getInputStream(), name, commandId);
 
 			// Handle the error messages in a separate thread.
 			errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), commandId);
@@ -82,9 +104,6 @@ public class KBLogRDProcess {
 			String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
 			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdCommand + " (" + commandId + ").");
 		}
-		
-		// TODO try to see what happens when the process is forcibly shut down here.
-		//      If it works well, store "proc" in an instance field and kill it when cancel() method is called.
 		
 		if (iter != null)
 			started = true;
