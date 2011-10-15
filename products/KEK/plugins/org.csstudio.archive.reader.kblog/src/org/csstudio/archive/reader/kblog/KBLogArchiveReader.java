@@ -85,7 +85,6 @@ public class KBLogArchiveReader implements ArchiveReader {
 		//      name searching can be canceled on the way.
 		
 		String reg_exp = RegExHelper.fullRegexFromGlob(glob_pattern);
-		System.err.println(reg_exp);
 		
 		return getNamesByRegExp(key, reg_exp);
 	}
@@ -94,8 +93,11 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
 		// TODO make a new thread and do the following operations in it so that
 		//      name searching can be canceled on the way.
-
+		
 		ArchiveInfo info = archiveInfos[key-1];
+		
+		Logger.getLogger(Activator.ID).log(Level.FINEST, "Searching PV names in " + info.getName() + " with regular expression: " + reg_exp);
+		
 		return KBLogUtil.getProcessVariableNames(kblogRoot, info.getName(), reg_exp);
 	}
 
@@ -130,9 +132,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 			return getRawValues(key, name, start, end);
 		}
 		
-		// TODO Make a new preference to choose whether whether a user uses averaged values iterator or not.
 		String subArchiveName = archiveInfos[key-1].getName();
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, true);
+		boolean useAverage = !KBLogPreferences.getReduceData();;
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, useAverage);
 		synchronized (kblogrdProcesses) {
 			kblogrdProcesses.add(kblogrdProcess);
 		}
@@ -153,12 +155,12 @@ public class KBLogArchiveReader implements ArchiveReader {
 			}
 		}
 		
-		System.err.println("Cancel is requested.");
+		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.cancel() is requested.");
 	}
 
 	@Override
 	public void close() {
-		System.err.println("KBLogArchiveReader.close() is requested.");
+		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.close() is requested.");
 		
 		cancel();
 		

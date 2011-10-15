@@ -23,6 +23,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private ITimestamp currentTime;
 	private IValue nextBaseValue;
 	private IValue nextAverageValue;
+	private String commandPath;
 	
 	/**
 	 * Constructor of KBLogValueIterator.
@@ -32,6 +33,8 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param stepSecond Time step.
 	 */
 	public KBLogAveragedValueIterator(KBLogRawValueIterator base, ITimestamp startTime, int stepSecond) {
+		this.commandPath = KBLogPreferences.getPathToKBLogRD();
+
 		this.base = base;
 		this.currentTime = startTime;
 		if (stepSecond < 1)
@@ -58,73 +61,99 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		long count = 0;
 		double min = 0;
 		double max = 0;
+		boolean connected = false;
 		
 		ITimestamp nextTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
 
-		while (nextBaseValue != null) {
-			ITimestamp time = nextBaseValue.getTime();
-			
-			if (time.isLessThan(currentTime)) {
-				// TODO throw exception as the data is not ordered in time.
-			}
-			
-			if (time.isGreaterOrEqual(nextTime)) {
-				// The obtained value is the data in the next step, which will be processed
-				// when this method is called next time.
-				break;
-			}
-			
-			if (nextBaseValue.getSeverity().hasValue()) {
-				if (nextBaseValue instanceof IDoubleValue) {
-					double val = ((IDoubleValue) nextBaseValue).getValue();
+		try {
+			while (nextBaseValue != null) {
+				ITimestamp time = nextBaseValue.getTime();
+				
+				if (time.isLessThan(currentTime)) {
+					// A value archived earlier than this time step is found.
+					// Ignore this value and continue averaging.
+					Logger.getLogger(Activator.ID).log(Level.WARNING,
+							"The value transferred from + " + commandPath + " (" + base.getCommandID() + ") is not ordered in time.");
+
+					if (base.hasNext())
+						nextBaseValue = base.next();
+					else
+						nextBaseValue = null;
 					
-					if (count == 0) {
-						avg = val;
-						max = val;
-						min = val;
-						count = 1;
-					} else {
-						avg = (count * avg + val) / (count + 1.0);
-						if (val > max)
-							max = val;
-						if (val < min)
-							min = val;
-						
-						count++;
-					}
-				} else {
-					// TODO support other data types
+					continue;
 				}
-			} else {
-				// TODO debug here whether "Connected" entry is ignored.
-			}
-			
-			try {
+				
+				if (time.isGreaterOrEqual(nextTime)) {
+					// The obtained value is the data in the next step, which will be processed
+					// when this method is called next time.
+					break;
+				}
+				
+				if (nextBaseValue.getSeverity().hasValue()) {
+					if (nextBaseValue instanceof IDoubleValue) {
+						double val = ((IDoubleValue) nextBaseValue).getValue();
+						
+						if (count == 0) {
+							avg = val;
+							max = val;
+							min = val;
+							count = 1;
+						} else {
+							avg = (count * avg + val) / (count + 1.0);
+							if (val > max)
+								max = val;
+							if (val < min)
+								min = val;
+							
+							count++;
+						}
+					} else {
+						// TODO support other data types
+					}
+				}
+				
+				if (nextBaseValue.getStatus().equals(KBLogMessages.StatusConnected))
+					connected = true;
+				
 				if (base.hasNext())
 					nextBaseValue = base.next();
 				else
 					nextBaseValue = null;
-			} catch (Exception ex) {
-				Logger.getLogger(Activator.ID).log(Level.SEVERE,
-						"Fatal error while calculating average values.", ex);				
-				
-				nextBaseValue = null;
-				return null;
 			}
+		} catch (Exception ex) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE,
+					"Fatal error while calculating average values.", ex);				
+			
+			nextBaseValue = null;
+			return null;
 		}
+
+		// Middle time of this time step
+		ITimestamp midTime = TimestampFactory.fromDouble(currentTime.toDouble() + (double)stepSecond / 2.0);		
 		
 		// Next time step
 		currentTime = nextTime;
 		
 		if (count == 0) {
 			// No value in this time step
-			return null;			
+			if (connected) {
+				return ValueFactory.createMinMaxDoubleValue(midTime,
+						KBLogSeverityInstances.connected,
+						KBLogMessages.StatusConnected,
+						null,
+						IValue.Quality.Interpolated,
+						new double[] { 0.0 }, 0.0, 0.0);
+			} else {
+				return null;
+			}
 		} else {
-			ITimestamp midTime = TimestampFactory.fromDouble(currentTime.toDouble() + (double)stepSecond / 2.0);
-
+			String status = KBLogMessages.StatusNormal;
+			if (connected)
+				status = KBLogMessages.StatusConnected;
+			
 			return ValueFactory.createMinMaxDoubleValue(midTime,
 					ValueFactory.createOKSeverity(),
-					KBLogMessages.StatusNormal,
+					status,
 					null,
 					IValue.Quality.Interpolated,
 					new double[] { avg }, min, max);
@@ -140,7 +169,11 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	public synchronized IValue next() throws Exception {
 		IValue ret = nextAverageValue;
 		
+		// calculate the average value of the next time step
 		nextAverageValue = calculateNextValue();
+		
+		// If the next time step does not have any value, skip that time step and
+		// calculate the average value of next next time step.  
 		while (nextAverageValue == null && nextBaseValue != null)
 			nextAverageValue = calculateNextValue();
 		
@@ -149,7 +182,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 
 	@Override
 	public synchronized void close() {
-		System.err.println("KBLogAveragedValueIterator.close() is requested.");
 		base.close();
 	}
 	

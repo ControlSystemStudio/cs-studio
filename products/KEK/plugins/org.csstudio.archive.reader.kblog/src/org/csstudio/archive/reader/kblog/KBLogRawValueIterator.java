@@ -184,7 +184,6 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 
 	@Override
 	public synchronized void close() {
-		System.err.println("KBLogRawValueIterator.close() is requested.");
 		try {
 			stdoutReader.close();
 			closed = true;
@@ -200,5 +199,9 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	@Override
 	public synchronized boolean isClosed() {
 		return closed;
+	}
+	
+	public int getCommandID() {
+		return commandId;
 	}
 }
