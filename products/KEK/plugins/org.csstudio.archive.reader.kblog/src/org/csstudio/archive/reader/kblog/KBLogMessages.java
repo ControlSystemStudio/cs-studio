@@ -15,6 +15,8 @@ public class KBLogMessages extends NLS {
 	public static String SeverityConnected;
 	public static String StatusConnected;
 	public static String StatusNormal;
+	public static String ArchiveServerName;
+	public static String ArchiveServerDescription;
 	
 	static {
 		// initialize resource bundle

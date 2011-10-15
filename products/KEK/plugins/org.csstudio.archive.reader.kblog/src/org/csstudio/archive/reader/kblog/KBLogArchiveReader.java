@@ -55,7 +55,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	
 	@Override
 	public String getServerName() {
-		return "kblog";
+		return KBLogMessages.ArchiveServerName;
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public String getDescription() {
-		return "KBLog archive reader";
+		return KBLogMessages.ArchiveServerDescription;
 	}
 
 	@Override
