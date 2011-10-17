@@ -27,12 +27,13 @@ import org.csstudio.data.values.ValueFactory;
  */
 public class KBLogRawValueIterator implements KBLogValueIterator {
 	private static final String charset = "US-ASCII";
-	private static DateFormat timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.US);
 	
 	private IValue nextValue = null;
 	private String pvName;
 	private int commandId;
 	private String commandPath;
+	
+	private DateFormat timeFormat;
 	
 	private BufferedReader stdoutReader;
 	private boolean closed;
@@ -60,9 +61,11 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 		}
 		
 		pvName = name;
-		nextValue = decodeNextValue();
 		this.commandId = commandId;
 		this.closed = false;
+		this.timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.US);
+		
+		nextValue = decodeNextValue();
 	}
 	
 	/**
@@ -76,7 +79,10 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 		String strTime = str + "0";
 		
 		try {
-			Date date = timeFormat.parse(strTime);
+			Date date;
+			synchronized (timeFormat) {
+				date = timeFormat.parse(strTime);
+			}
 			long msFromEpoch = date.getTime();
 			long secFromEpoch = (long) Math.floor((double)msFromEpoch / 1000.0);
 			long msInSecond = msFromEpoch - secFromEpoch * 1000;
@@ -88,6 +94,9 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 
 	private synchronized IValue decodeNextValue() {
 		// TODO throw exception when time out
+		
+		if (closed)
+			return null;
 		
 		try{
 			String line;

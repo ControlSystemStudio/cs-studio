@@ -144,6 +144,10 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public void cancel() {
+		// TODO kill PV name searching process
+		
+		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.cancel() is requested.");
+		
 		synchronized (kblogrdProcesses) {
 			KBLogRDProcess[] procs = kblogrdProcesses.toArray(new KBLogRDProcess[0]);
 			for (KBLogRDProcess proc : procs) {
@@ -154,8 +158,6 @@ public class KBLogArchiveReader implements ArchiveReader {
 				kblogrdProcesses.remove(proc);
 			}
 		}
-		
-		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.cancel() is requested.");
 	}
 
 	@Override
@@ -163,7 +165,5 @@ public class KBLogArchiveReader implements ArchiveReader {
 		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.close() is requested.");
 		
 		cancel();
-		
-		// TODO do whatever need to be done during finalization.
 	}
 }

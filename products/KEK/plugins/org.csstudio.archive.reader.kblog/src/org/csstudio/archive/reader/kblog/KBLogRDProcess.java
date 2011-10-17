@@ -128,6 +128,8 @@ public class KBLogRDProcess {
 	 * So, it may take some time to complete this method.
 	 */
 	public synchronized void cancel() {
+		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogRDProcess.cancel() is requested + (" + commandId + ").");
+		
 		if (isFinished())
 			return;
 		
@@ -135,9 +137,13 @@ public class KBLogRDProcess {
 		if (iter != null && !iter.isClosed())
 			iter.close();
 		
+		System.err.println("Standard output is closed (" + commandId + ").");
+		
 		// Close the standard error.
 		if (errHandler != null && errHandler.isClosed())
 			errHandler.close();
+		
+		System.err.println("Standard error is closed (" + commandId + ").");
 		
 		if (proc != null) {
 			// Close the standard input.
@@ -151,8 +157,11 @@ public class KBLogRDProcess {
 						"Failed to close the standard input of " + kblogrdCommand + " (" + commandId + ").");
 			}
 			
+			System.err.println("Standard input is closed (" + commandId + ").");
+			
 			// Destroy the running process.
 			proc.destroy();
+			System.err.println("Process (" + commandId + ") is killed.");
 		}
 		
 		canceled = true;
