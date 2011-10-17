@@ -18,7 +18,7 @@ public class KBLogErrorHandleThread extends Thread {
 	
 	private BufferedReader stderrReader;
 	private int commandId;
-	private int commandPath;
+	private String commandPath;
 	
 	private boolean closed;
 	
@@ -29,7 +29,7 @@ public class KBLogErrorHandleThread extends Thread {
 	 * @param commandId Command ID of kblogrd.
 	 */
 	KBLogErrorHandleThread(InputStream kblogrdStdErr, int commandId) {
-		String commandPath = KBLogPreferences.getPathToKBLogRD();
+		commandPath = KBLogPreferences.getPathToKBLogRD();
 		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
 				"Start to read the standard error of " + commandPath + " (" + commandId + ").");
