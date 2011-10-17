@@ -10,10 +10,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class KBLogPreferences {
-	final public static String PATH_TO_KBLOGRD = "path_to_kblogrd";
-	final public static String PATH_TO_KBLOGRD_DEFAULT = "/usr/local/bin/kblogrd";
+	final public static String PATH_TO_KBLOGRD = "path_to_kblogrd"; //$NON-NLS-1$
+	final public static String PATH_TO_KBLOGRD_DEFAULT = "/usr/local/bin/kblogrd"; //$NON-NLS-1$
 
-	final public static String REDUCE_DATA = "reduce_data";
+	final public static String REDUCE_DATA = "reduce_data"; //$NON-NLS-1$
 	final public static boolean REDUCE_DATA_DEFAULT = false;
 	
 	public static String getPathToKBLogRD() {

@@ -21,14 +21,19 @@ public class KBLogArchiveReader implements ArchiveReader {
 	private String kblogRoot; 
 	private ArchiveInfo[] archiveInfos;
 	private ArrayList<KBLogRDProcess> kblogrdProcesses;
+	private String kblogrdPath;
+	private boolean reduceData; 
 	
 	/**
 	 * Constructor of KBLogArchiveReader.
 	 * 
 	 * @param url URL must start with "kblog://".
 	 */
-	public KBLogArchiveReader(final String url)
+	public KBLogArchiveReader(final String url, final String kblogrdPath, final boolean reduceData)
 	{
+		this.kblogrdPath = kblogrdPath;
+		this.reduceData = reduceData;
+		
 		// Parse URL
 		if (!url.startsWith(scheme)) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, "Wrong URL for KBLogArchiveReader: " + url);
@@ -94,7 +99,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public ValueIterator getRawValues(int key, String name, ITimestamp start,
 			ITimestamp end) throws UnknownChannelException, Exception {
 		String subArchiveName = archiveInfos[key-1].getName();
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, 0, false);
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(kblogrdPath, subArchiveName, name, start, end, 0, false);
 		
 		return kblogrdProcess.start();		
 	}
@@ -122,8 +127,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 		}
 		
 		String subArchiveName = archiveInfos[key-1].getName();
-		boolean useAverage = !KBLogPreferences.getReduceData();;
-		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(subArchiveName, name, start, end, stepSecond, useAverage);
+		KBLogRDProcess kblogrdProcess = new KBLogRDProcess(kblogrdPath, subArchiveName, name, start, end, stepSecond, !reduceData);
 		synchronized (kblogrdProcesses) {
 			kblogrdProcesses.add(kblogrdProcess);
 		}

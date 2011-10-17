@@ -17,8 +17,8 @@ public class KBLogErrorHandleThread extends Thread {
 	private static final String charset = "US-ASCII";
 	
 	private BufferedReader stderrReader;
+	private String kblogrdPath;
 	private int commandId;
-	private String commandPath;
 	
 	private boolean closed;
 	
@@ -26,13 +26,14 @@ public class KBLogErrorHandleThread extends Thread {
 	 * Constructor of KBLogErrorHandleThread.
 	 * 
 	 * @param kblogrdStdErr InputStream of standard error for kblogrd.
+	 * @param kblogrdPath Path to "kblogrd" command.
 	 * @param commandId Command ID of kblogrd.
 	 */
-	KBLogErrorHandleThread(InputStream kblogrdStdErr, int commandId) {
-		commandPath = KBLogPreferences.getPathToKBLogRD();
+	KBLogErrorHandleThread(InputStream kblogrdStdErr, String kblogrdPath, int commandId) {
+		this.kblogrdPath = kblogrdPath;
 		
 		Logger.getLogger(Activator.ID).log(Level.FINEST,
-				"Start to read the standard error of " + commandPath + " (" + commandId + ").");
+				"Start to read the standard error of " + kblogrdPath + " (" + commandId + ").");
 
 		try {
 			stderrReader = new BufferedReader(new InputStreamReader(kblogrdStdErr, charset));
@@ -54,11 +55,11 @@ public class KBLogErrorHandleThread extends Thread {
 			// Transfer the messages in the standard error to the CSS logging system.
 			while ((line = stderrReader.readLine()) != null) {
 				Logger.getLogger(Activator.ID).log(Level.WARNING,
-						"Error message from " + commandPath + " (" + commandId + "): " + line);
+						"Error message from " + kblogrdPath + " (" + commandId + "): " + line);
 			}
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING,
-					"IOException while reading standard error of " + commandPath + " (" + commandId + ")", ex);
+					"IOException while reading standard error of " + kblogrdPath + " (" + commandId + ")", ex);
 		}
 		
 		// Close the standard error.
@@ -74,10 +75,10 @@ public class KBLogErrorHandleThread extends Thread {
 			closed = true;
 			
 			Logger.getLogger(Activator.ID).log(Level.FINEST,
-					"End of reading the standard error of " + commandPath + " (" + commandId + ").");
+					"End of reading the standard error of " + kblogrdPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE,
-					"Faeild to close the standard error off " + commandPath + " (" + commandId + ")", ex);
+					"Faeild to close the standard error off " + kblogrdPath + " (" + commandId + ")", ex);
 		}
 	}
 	

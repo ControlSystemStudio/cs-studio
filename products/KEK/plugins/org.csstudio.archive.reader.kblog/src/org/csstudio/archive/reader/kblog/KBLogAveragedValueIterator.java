@@ -24,7 +24,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private ITimestamp endTime;
 	private IValue nextBaseValue;
 	private IValue nextAverageValue;
-	private String commandPath;
 	
 	/**
 	 * Constructor of KBLogValueIterator.
@@ -34,8 +33,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param stepSecond Time step.
 	 */
 	public KBLogAveragedValueIterator(KBLogRawValueIterator base, ITimestamp startTime, ITimestamp endTime, int stepSecond) {
-		this.commandPath = KBLogPreferences.getPathToKBLogRD();
-
 		this.base = base;
 		this.currentTime = startTime;
 		this.endTime = endTime;
@@ -81,7 +78,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					// A value archived earlier than this time step is found.
 					// Ignore this value and continue averaging.
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"The value transferred from " + commandPath + " (" + base.getCommandID() + ") is not ordered in time.");
+							"The value transferred from " + base.getPathToKBLogRD() + " (" + base.getCommandID() + ") is not ordered in time.");
 
 					if (base.hasNext())
 						nextBaseValue = base.next();

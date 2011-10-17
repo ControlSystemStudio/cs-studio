@@ -31,10 +31,12 @@ public class KBLogRDProcess {
 	private int stepSecond;
 	private ITimestamp startTime;
 	private ITimestamp endTime;
+	private String kblogrdPath;
 	
 	/**
 	 * Initialize the "kblogrd" command execution with given arguments.
 	 * 
+	 * @param kblogrdPath Path to "kblogrd" command.
 	 * @param subArchiveName Sub archive name (e.g. BM/DCCT)
 	 * @param name PV name (e.g. BM_DCCT:HCUR)
 	 * @param start Start time of data sequence
@@ -42,8 +44,8 @@ public class KBLogRDProcess {
 	 * @param stepSecond Interval of each data. Set this to 0 or less if you want to obtain all raw data in the specified range.
 	 * @param useAverage With this option, iterator for averaged values (and min/max values) will be returned when start() is called. (Note that this option will be ignored when stepSecond is 0 or less.)
 	 */
-	public KBLogRDProcess(String subArchiveName, String name, ITimestamp start, ITimestamp end, int stepSecond, boolean useAverage) {
-		String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
+	public KBLogRDProcess(String kblogrdPath, String subArchiveName, String name, ITimestamp start, ITimestamp end, int stepSecond, boolean useAverage) {
+		this.kblogrdPath = kblogrdPath;
 		String strStart = kblogrdTimeFormat.format(new Date(start.seconds() * 1000));
 		String strEnd = kblogrdTimeFormat.format(new Date(end.seconds() * 1000));
 		this.name = name;
@@ -61,9 +63,9 @@ public class KBLogRDProcess {
 		//        and calculate average/min/max values later when next() method of iterator is called.
 		//        (Optimized for chart displaying, slowest)
 		if (stepSecond > 0 && !useAverage)
-			this.strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
+			this.strCommand = kblogrdPath + " -r " + name + " -t " + strStart + "-" + strEnd + "d" + stepSecond + " -f " + kblogrdOutFormat + " " + subArchiveName;
 		else
-			this.strCommand = kblogrdCommand + " -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
+			this.strCommand = kblogrdPath + " -r " + name + " -t " + strStart + "-" + strEnd + " -f " + kblogrdOutFormat + " " + subArchiveName;
 
 		this.iter = null;
 		this.errHandler = null;
@@ -95,17 +97,16 @@ public class KBLogRDProcess {
 		try {
 			proc = Runtime.getRuntime().exec(strCommand);
 			if (stepSecond > 0 && useAverage) {
-				KBLogRawValueIterator baseIter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
+				KBLogRawValueIterator baseIter = new KBLogRawValueIterator(proc.getInputStream(), name, kblogrdPath, commandId);
 				iter = new KBLogAveragedValueIterator(baseIter, startTime, endTime, stepSecond);
 			} else
-				iter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
+				iter = new KBLogRawValueIterator(proc.getInputStream(), name, kblogrdPath, commandId);
 
 			// Handle the error messages in a separate thread.
-			errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), commandId);
+			errHandler = new KBLogErrorHandleThread(proc.getErrorStream(), kblogrdPath, commandId);
 			errHandler.start();
 		} catch (IOException e) {
-			String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
-			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdCommand + " (" + commandId + ").");
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Failed to run " + kblogrdPath + " (" + commandId + ").");
 		}
 		
 		if (iter != null)
@@ -150,9 +151,8 @@ public class KBLogRDProcess {
 				if (outStream != null)
 					outStream.close();
 			} catch (IOException ex) {
-				String kblogrdCommand = KBLogPreferences.getPathToKBLogRD();
 				Logger.getLogger(Activator.ID).log(Level.SEVERE,
-						"Failed to close the standard input of " + kblogrdCommand + " (" + commandId + ").");
+						"Failed to close the standard input of " + kblogrdPath + " (" + commandId + ").");
 			}
 			
 			// Destroy the running process.
