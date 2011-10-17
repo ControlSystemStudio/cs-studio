@@ -30,6 +30,7 @@ public class KBLogRDProcess {
 	private boolean useAverage;
 	private int stepSecond;
 	private ITimestamp startTime;
+	private ITimestamp endTime;
 	
 	/**
 	 * Initialize the "kblogrd" command execution with given arguments.
@@ -73,6 +74,7 @@ public class KBLogRDProcess {
 		this.useAverage = useAverage;
 		this.stepSecond = stepSecond;
 		this.startTime = start;
+		this.endTime = end;
 	}
 	
 	/**
@@ -94,7 +96,7 @@ public class KBLogRDProcess {
 			proc = Runtime.getRuntime().exec(strCommand);
 			if (stepSecond > 0 && useAverage) {
 				KBLogRawValueIterator baseIter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
-				iter = new KBLogAveragedValueIterator(baseIter, startTime, stepSecond);
+				iter = new KBLogAveragedValueIterator(baseIter, startTime, endTime, stepSecond);
 			} else
 				iter = new KBLogRawValueIterator(proc.getInputStream(), name, commandId);
 
@@ -168,7 +170,7 @@ public class KBLogRDProcess {
 	}
 
 	/**
-	 * This must be called only once right before "kblogrd" command is called.
+	 * This must be called every time "kblogrd" command is called.
 	 * 
 	 * @return Command ID unique in this class.
 	 */

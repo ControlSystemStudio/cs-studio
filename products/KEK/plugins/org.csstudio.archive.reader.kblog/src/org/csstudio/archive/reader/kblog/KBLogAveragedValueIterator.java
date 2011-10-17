@@ -21,6 +21,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private KBLogRawValueIterator base;
 	private int stepSecond;
 	private ITimestamp currentTime;
+	private ITimestamp endTime;
 	private IValue nextBaseValue;
 	private IValue nextAverageValue;
 	private String commandPath;
@@ -32,11 +33,13 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * @param startTime The beginning time of the time range.
 	 * @param stepSecond Time step.
 	 */
-	public KBLogAveragedValueIterator(KBLogRawValueIterator base, ITimestamp startTime, int stepSecond) {
+	public KBLogAveragedValueIterator(KBLogRawValueIterator base, ITimestamp startTime, ITimestamp endTime, int stepSecond) {
 		this.commandPath = KBLogPreferences.getPathToKBLogRD();
 
 		this.base = base;
 		this.currentTime = startTime;
+		this.endTime = endTime;
+		
 		if (stepSecond < 1)
 			this.stepSecond = 1;
 		else
@@ -56,6 +59,11 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private synchronized IValue calculateNextValue() {
 		if (nextBaseValue == null)
 			return null;
+		
+		if (currentTime.isGreaterOrEqual(endTime)) {
+			nextBaseValue = null;
+			return null;
+		}
 		
 		double avg = 0.0;
 		long count = 0;
