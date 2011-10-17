@@ -138,14 +138,10 @@ public class KBLogRDProcess {
 		// Close the standard output.
 		if (iter != null && !iter.isClosed())
 			iter.close();
-		
-		System.err.println("Standard output is closed (" + commandId + ").");
-		
+
 		// Close the standard error.
 		if (errHandler != null && errHandler.isClosed())
 			errHandler.close();
-		
-		System.err.println("Standard error is closed (" + commandId + ").");
 		
 		if (proc != null) {
 			// Close the standard input.
@@ -159,11 +155,8 @@ public class KBLogRDProcess {
 						"Failed to close the standard input of " + kblogrdCommand + " (" + commandId + ").");
 			}
 			
-			System.err.println("Standard input is closed (" + commandId + ").");
-			
 			// Destroy the running process.
 			proc.destroy();
-			System.err.println("Process (" + commandId + ") is killed.");
 		}
 		
 		canceled = true;
