@@ -93,8 +93,6 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	}
 
 	private synchronized IValue decodeNextValue() {
-		// TODO throw exception when time out
-		
 		if (closed)
 			return null;
 		
@@ -194,6 +192,8 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	@Override
 	public synchronized void close() {
 		try {
+			// The standard output will be forcibly closed so that next call of the next() method
+			// will return null and quits the data acquisition.
 			stdoutReader.close();
 			closed = true;
 			
