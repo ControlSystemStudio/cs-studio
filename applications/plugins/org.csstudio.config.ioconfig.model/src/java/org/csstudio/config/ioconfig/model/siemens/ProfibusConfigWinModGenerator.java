@@ -33,7 +33,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -54,30 +53,30 @@ import org.slf4j.LoggerFactory;
  * @since 19.08.2010
  */
 public class ProfibusConfigWinModGenerator {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ProfibusConfigWinModGenerator.class);
-    
+
     private static final String LINE_END = "\r\n";
-    
+
     private final StringBuilder _winModConfig;
     private final StringBuilder _winModSlaveAdr;
     private int _slot;
     private int _id;
     private int _module;
     private int _lineNr;
-    
-    
-    
+
+
+
     /**
      * Constructor.
      */
-    public ProfibusConfigWinModGenerator(@Nonnull final String fileName) {
+    public ProfibusConfigWinModGenerator() {
         _winModConfig = new StringBuilder(200);
         _winModSlaveAdr = new StringBuilder(200);
         _slot = 1;
         _lineNr = 0;
     }
-    
+
     /**
      * @param winModSlaveAdr
      * @param id
@@ -99,7 +98,7 @@ public class ProfibusConfigWinModGenerator {
         }
         winModSlaveAdr.append("'");
     }
-    
+
     public void addSymbol(final int lineNr,
                           @Nonnull final ChannelDBO channelDBO,
                           @Nonnull final WinModChannel winModChannel,
@@ -119,11 +118,11 @@ public class ProfibusConfigWinModGenerator {
             _winModSlaveAdr.append("'");
         }
     }
-    
+
     private void appendAddLine(final int lineNr, @Nonnull final ChannelDBO channelDBO, @Nonnull final WinModChannel winModChannel, @Nonnull final String channelType) {
         appendLine(lineNr, channelDBO, winModChannel, channelType, true);
     }
-    
+
     /**
      * @param fileInput
      * @param length
@@ -135,7 +134,7 @@ public class ProfibusConfigWinModGenerator {
         // higher Bytes of size
         .append(hexSize.substring(0, 2));
     }
-    
+
     /**
      * @param normslaveParamDataSize
      * @param configurationData
@@ -150,11 +149,11 @@ public class ProfibusConfigWinModGenerator {
         }
         return size;
     }
-    
+
     private void appendLine(final int lineNr, @Nonnull final ChannelDBO channelDBO, @Nonnull final WinModChannel winModChannel, @Nonnull final String channelType) {
         appendLine(lineNr, channelDBO, winModChannel, channelType, false);
     }
-    
+
     private void appendLine(final int lineNr, @Nonnull final ChannelDBO channelDBO, @Nonnull final WinModChannel winModChannel, @Nonnull final String channelType, final boolean add) {
         _winModSlaveAdr.append(_lineNr++).append(",");
         // Treibersignal
@@ -171,9 +170,9 @@ public class ProfibusConfigWinModGenerator {
             _winModSlaveAdr.append("'").append(winModChannel.getDesc()).append("'");
         }
         _winModSlaveAdr.append(LINE_END);
-        
+
     }
-    
+
     /**
      * @param slave
      * @param fdlAddress
@@ -191,7 +190,7 @@ public class ProfibusConfigWinModGenerator {
         .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
         .append("\"").append(LINE_END);
     }
-    
+
     /**
      * @param string2Clean
      * @return
@@ -203,18 +202,17 @@ public class ProfibusConfigWinModGenerator {
         .replaceAll(",", " ").replaceAll("  ", " ").trim();
         return cleanString;
     }
-    
+
     /**
      * @param channelStructureDBO
-     * @throws PersistenceException
      */
-    private void createChannel(@Nonnull final ChannelStructureDBO channelStructureDBO) throws PersistenceException {
+    private void createChannel(@Nonnull final ChannelStructureDBO channelStructureDBO) {
         final Map<Short, ChannelDBO> channelsAsMap = channelStructureDBO.getChildrenAsMap();
         final Set<Entry<Short, ChannelDBO>> entrySet = channelsAsMap.entrySet();
         for (final Entry<Short, ChannelDBO> entry : entrySet) {
             final ChannelDBO channelDBO = entry.getValue();
             final WinModChannel winModChannel = new WinModChannel(channelDBO);
-            
+
             if(!winModChannel.single()) {
                 appendLine(0, channelDBO, winModChannel, winModChannel.getConvertedChannelType());
                 winModChannel.setDef("0");
@@ -227,12 +225,11 @@ public class ProfibusConfigWinModGenerator {
             }
         }
     }
-    
+
     /**
      * @param module
-     * @throws PersistenceException
      */
-    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) throws PersistenceException {
+    private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) {
         _module = module.getSortIndex()+1;
         List<Integer> slaveCfgData;
         final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
@@ -260,12 +257,8 @@ public class ProfibusConfigWinModGenerator {
             createChannel(entry.getValue());
         }
     }
-    
-    /**
-     * @throws PersistenceException
-     *
-     */
-    private void createSlave(@Nonnull final SlaveDBO slave) throws PersistenceException {
+
+    private void createSlave(@Nonnull final SlaveDBO slave) {
         _id = slave.getSortIndex();
         _slot = 1;
         int normslaveParamDataSize = 0;
@@ -313,9 +306,9 @@ public class ProfibusConfigWinModGenerator {
         final GSDFileDBO gsdFile = slave.getGSDFile();
         return gsdFile==null?"no GSD File available":gsdFile.getName();
     }
-    
+
     /**
-     * 
+     *
      * @param path
      *            The target File Path.
      * @throws IOException
@@ -326,9 +319,9 @@ public class ProfibusConfigWinModGenerator {
         LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
     }
-    
+
     /**
-     * 
+     *
      * @param path
      *            The target File Path.
      * @throws IOException
@@ -339,28 +332,27 @@ public class ProfibusConfigWinModGenerator {
         LOG.info("Write File: {}", path.getAbsolutePath());
         writer.close();
     }
-    
+
     /**
      *
      * @param subnet
      *            The Profibus Subnet.
-     * @throws PersistenceException
      */
-    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) throws PersistenceException {
+    public final void setSubnet(@Nonnull final ProfibusSubnetDBO subnet) {
         _winModSlaveAdr.append(",'Treibersignal','Adresse','Symbol','Typ','Default Wert','Kommentar'").append(LINE_END);
         _lineNr++;
         final Set<MasterDBO> masterTree = subnet.getProfibusDPMaster();
         if ( masterTree == null || masterTree.size() < 1) {
             return;
         }
-        
+
         for (final MasterDBO master : masterTree) {
             final Map<Short, SlaveDBO> slaves = master.getChildrenAsMap();
             for (final short key : slaves.keySet()) {
                 final SlaveDBO slave = slaves.get(key);
                 createSlave(slave);
             }
-            
+
         }
     }
 }

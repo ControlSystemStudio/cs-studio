@@ -119,7 +119,7 @@ public class NamedDBClass extends DBClass {
         final int prime = 31;
         int result = 1;
         result = prime * result + getId();
-        result = prime * result + ( (_sortIndex == null) ? 0 : _sortIndex.hashCode());
+        result = prime * result + ( _sortIndex == null ? 0 : _sortIndex.hashCode());
         return result;
     }
 
@@ -143,8 +143,7 @@ public class NamedDBClass extends DBClass {
         }
         if(_sortIndex == null) {
             return other._sortIndex == null;
-        } else { 
-            return _sortIndex.equals(other._sortIndex);
         }
+        return _sortIndex.equals(other._sortIndex);
     }
 }

@@ -11,13 +11,10 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -26,8 +23,6 @@ import org.slf4j.LoggerFactory;
  * @since 19.06.2007
  */
 class ProfibusTreeContentProvider implements ITreeContentProvider {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ProfibusTreeContentProvider.class);
 
     /** The Tree Root Node. */
     private List<FacilityDBO> _facilities;
@@ -53,24 +48,16 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
     @Override
     @Nonnull
     public Object[] getChildren(@Nullable final Object parent) {
-        try {
-            if (parent instanceof ModuleDBO) {
-                final ModuleDBO module = (ModuleDBO) parent;
-                return handleModule(module);
-            } else if (parent instanceof ChannelStructureDBO) {
-                final ChannelStructureDBO cs = (ChannelStructureDBO) parent;
-                return handleChannelStructure(cs);
-            } else if (parent instanceof AbstractNodeDBO) {
-                return ((AbstractNodeDBO<?, ?>) parent).getChildrenAsMap().values()
-                        .toArray(new AbstractNodeDBO[0]);
-            }
-        } catch (final PersistenceException e) {
-            LOG.error("Can't load children from Database! Database Error.", e);
-            DeviceDatabaseErrorDialog.open(null,
-                                           "Can't load children from Database! Database Error.",
-                                           e);
+        if (parent instanceof ModuleDBO) {
+            final ModuleDBO module = (ModuleDBO) parent;
+            return handleModule(module);
+        } else if (parent instanceof ChannelStructureDBO) {
+            final ChannelStructureDBO cs = (ChannelStructureDBO) parent;
+            return handleChannelStructure(cs);
+        } else if (parent instanceof AbstractNodeDBO) {
+            return ((AbstractNodeDBO<?, ?>) parent).getChildrenAsMap().values()
+                    .toArray(new AbstractNodeDBO[0]);
         }
-
         return new NamedDBClass[0];
     }
 
@@ -122,7 +109,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
     }
 
     @Nonnull
-    private Object[] handleChannelStructure(@Nonnull final ChannelStructureDBO cs) throws PersistenceException {
+    private Object[] handleChannelStructure(@Nonnull final ChannelStructureDBO cs) {
         if (cs.isSimple()) {
             return cs.getChildrenAsMap().values().toArray(new AbstractNodeDBO[0]);
         }
@@ -134,7 +121,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
     }
 
     @Nonnull
-    private Object[] handleModule(@Nonnull final ModuleDBO module) throws PersistenceException {
+    private Object[] handleModule(@Nonnull final ModuleDBO module) {
         final Collection<ChannelStructureDBO> values = module.getChildrenAsMap().values();
         final List<AbstractNodeDBO<?, ?>> list = new ArrayList<AbstractNodeDBO<?, ?>>(values.size());
         for (final ChannelStructureDBO channelStructure : values) {

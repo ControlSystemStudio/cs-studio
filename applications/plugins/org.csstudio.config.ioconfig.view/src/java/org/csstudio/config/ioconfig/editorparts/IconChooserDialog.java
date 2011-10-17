@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.IconManageView;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -44,24 +43,22 @@ import org.eclipse.swt.widgets.Shell;
  * @since 21.05.2010
  */
 public class IconChooserDialog extends Dialog {
-    
-    private final AbstractNodeDBO<?,?> _node;
+
     private IconManageView _iconManageView;
-    
-    protected IconChooserDialog(@Nullable final Shell parentShell, @Nonnull final AbstractNodeDBO<?,?> node) {
+
+    protected IconChooserDialog(@Nullable final Shell parentShell) {
         super(parentShell);
         this.setShellStyle(SWT.RESIZE | SWT.BORDER | SWT.CLOSE | SWT.MIN | SWT.MAX | SWT.TITLE
                            | SWT.ON_TOP | // SWT.TOOL| SWT.SHEET|
                            SWT.PRIMARY_MODAL);
-        _node = node;
     }
-    
+
     @CheckForNull
     // TODO: prüfen ob hier wirklich null kommen kann.
     public NodeImageDBO getImage() {
         return _iconManageView.getSelectedImage();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,14 +68,14 @@ public class IconChooserDialog extends Dialog {
         shell.setText("Icon chooser");
         shell.setMaximized(true);
     }
-    
+
     @Override
     @Nonnull
     protected Control createDialogArea(@Nonnull final Composite parent) {
         final Composite createDialogArea = (Composite) super.createDialogArea(parent);
         createDialogArea.setLayout(GridLayoutFactory.fillDefaults().create());
-        _iconManageView = new IconManageView(createDialogArea, SWT.NONE, _node);
+        _iconManageView = new IconManageView(createDialogArea, SWT.NONE);
         return _iconManageView;
     }
-    
+
 }

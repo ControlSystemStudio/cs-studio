@@ -69,11 +69,11 @@ import org.slf4j.LoggerFactory;
  * @since 21.05.2010
  */
 public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.subnet";
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(SubnetEditor.class);
-    
+
     /**
      * An array with all kinds of Baudrates.
      */
@@ -82,22 +82,22 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                                                      Baudrates.DP_KBAUD_187_5, Baudrates.DP_KBAUD_500, Baudrates.DP_KBAUD_750,
                                                                      Baudrates.DP_MBAUD_1_5, Baudrates.DP_MBAUD_3, Baudrates.DP_MBAUD_6,
                                                                      Baudrates.DP_MBAUD_12, };
-    
+
     /**
      * The Profibus Subnet Object.
      */
     private ProfibusSubnetDBO _subnet;
-    
+
     /**
      * A Combo field with the Highest Profibus address.
      */
     private Combo _hSAddress;
-    
+
     /**
      * A List viewer to show and select all kinds of Baudrate.
      */
     private ComboViewer _baudList;
-    
+
     /**
      * Text field for the Tslot Init value.
      */
@@ -158,28 +158,28 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
      * Combo to select the facility of subnet.
      */
     private ComboViewer _facilityViewer;
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public final void cancel() {
         super.cancel();
-        
+
         // Cancel General
-        
+
         getNameWidget().setText((String) getNameWidget().getData());
         resetSelection(_facilityViewer.getCombo());
-        
+
         getIndexSpinner().setSelection(((Short) getIndexSpinner().getData()));
-        
-        
+
+
         // Net Setting
         _subnet.setHsa(Short.valueOf(_hSAddress.getItem(_hSAddress.getSelectionIndex())));
         _hSAddress.setText( ((Integer) _hSAddress.getData()).toString());
-        
+
         _baudList.getCombo().select((Integer) _baudList.getCombo().getData());
-        
+
         // -- Busparameter
         resetString(_maxTsdr);
         resetString(_tslotInit);
@@ -187,18 +187,18 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         resetString(_tset);
         resetString(_tqui);
         resetSelection(_gapCombo);
-        
+
         _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
                                                                         .getSelectionIndex()))); // repeater Number ???
-        
+
         resetSelection(_retrayCombo);
         resetString(_ttr);
         resetString(_watchdog);
-        
+
         // Document
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -219,7 +219,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         selecttTabFolder(0);
         getTabFolder().pack();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -228,27 +228,27 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         super.doSave(monitor);
         final Date now = new Date();
         boolean updateChildrens = false;
-        
+
         // Store General
-        
+
         if(!getNameWidget().getText().equals(_subnet.getName())) {
             _subnet.setName(getNameWidget().getText());
             updateChildrens = true;
         }
         getNameWidget().setData(getNameWidget().getText());
-        
+
         getIndexSpinner().setData(_subnet.getSortIndex());
         _subnet.setUpdatedOn(new Date());
-        
+
         _subnet.setUpdatedBy(ConfigHelper.getUserName());
-        
+
         _subnet.setUpdatedOn(now);
-        
+
         final String facility = (String) ((StructuredSelection) _facilityViewer.getSelection())
         .getFirstElement();
         _subnet.setProfil(facility);
         _facilityViewer.getCombo().setData(_facilityViewer.getCombo().getSelectionIndex());
-        
+
         // Net Setting
         int index = _hSAddress.getSelectionIndex();
         if (index < 0) {
@@ -256,7 +256,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         }
         _subnet.setHsa(Short.valueOf(_hSAddress.getItem(index)));
         _hSAddress.setData(_hSAddress.getSelectionIndex());
-        
+
         _subnet.setBaudRate( ((Baudrates) _baudList.getElementAt(_baudList.getCombo()
                                                                  .getSelectionIndex())).getVal()
                                                                  + "");
@@ -264,42 +264,42 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         // -- Busparameter
         _subnet.setSlotTime(Integer.parseInt(_tslotInit.getText()));
         _tslotInit.setData(_tslotInit.getText());
-        
+
         _subnet.setMaxTsdr(Integer.parseInt(_maxTsdr.getText()));
         _maxTsdr.setData(_maxTsdr.getText());
-        
+
         _subnet.setMinTsdr(Integer.parseInt(_minTsdr.getText()));
         _minTsdr.setData(_minTsdr.getText());
-        
+
         _subnet.setTset(Short.parseShort(_tset.getText()));
         _tset.setData(_tset.getText());
-        
+
         _subnet.setTqui(Short.parseShort(_tqui.getText()));
         _tqui.setData(_tqui.getText());
-        
+
         _subnet.setGap(Short.parseShort(_gapCombo.getItem(_gapCombo.getSelectionIndex())));
         _gapCombo.setData(_gapCombo.getItem(_gapCombo.getSelectionIndex()));
-        
+
         _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
                                                                         .getSelectionIndex()))); // repeater Number ???
         _retrayCombo.setData(_retrayCombo.getItem(_retrayCombo.getSelectionIndex()));
-        
+
         _subnet.setTtr(Long.parseLong(_ttr.getText()));
         _ttr.setData(_ttr.getText());
-        
+
         _subnet.setWatchdog(Integer.parseInt(_watchdog.getText()));
         _watchdog.setData(_watchdog.getText());
-        
+
         // update header
         getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
         final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
-        
+
         // Document
         final Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
         _subnet.setDocuments(docs);
-        
-        
+
+
         try {
             if (updateChildrens) {
                 _subnet.update();
@@ -310,19 +310,19 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
             DeviceDatabaseErrorDialog.open(null, "Can't save Subnet! Database error.", e);
         }
     }
-    
+
     /**
      * @param parent
      *            The Parent Composite.
      */
     private void bottom(@Nonnull final Composite parent) {
         final GridDataFactory gdf = GridDataFactory.fillDefaults();
-        
+
         final Group bottomGroup = new Group(parent, SWT.NONE);
         bottomGroup.setLayout(new GridLayout(3, false));
         bottomGroup.setLayoutData(gdf.create());
         bottomGroup.setText("Busparameter");
-        
+
         // Left side
         final Composite left = new Composite(bottomGroup, SWT.NONE);
         left.setLayoutData(gdf.create());
@@ -338,9 +338,9 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         rigth.setLayoutData(gdf.create());
         rigth.setLayout(new GridLayout(3, true));
         rigth(rigth);
-        
+
     }
-    
+
     /**
      * @param head
      *            is TabHead Text
@@ -348,20 +348,20 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
     private void general(@Nonnull final String head) {
         final InstanceScope instanceScope = new InstanceScope();
         final IEclipsePreferences prefNode = instanceScope.getNode(IOConfigActivator.PLUGIN_ID);
-        
+
         final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
         comp.setLayout(new GridLayout(4, false));
-        
+
         final Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
         gName.setLayout(new GridLayout(4, false));
-        
+
         final Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _subnet.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
-        
+
         _facilityViewer = new ComboViewer(gName);
         _facilityViewer.setContentProvider(new ArrayContentProvider());
         final String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
@@ -374,16 +374,16 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
             _facilityViewer.getCombo().setData(_facilityViewer.getCombo().getSelectionIndex());
         }
         _facilityViewer.getCombo().addModifyListener(getMLSB());
-        
+
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
                                                      _subnet,
                                                      getMLSB(),
                                                      "Index",
                                                      getProfiBusTreeView()));
-        
+
         makeDescGroup(comp, 3);
     }
-    
+
     /**
      * @param left
      *            The Parent Composite.
@@ -400,7 +400,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         } else {
             val = _subnet.getSlotTime() + "";
         }
-        
+
         _tslotInit = ProfibusHelper.getTextField(left,
                                                  true,
                                                  val,
@@ -408,7 +408,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                                  ProfibusHelper.VL_TYP_U16);
         _tslotInit.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
-        
+
         // Max Tsdr
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -421,7 +421,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _maxTsdr = ProfibusHelper.getTextField(left, true, val, Ranges.MAX_TSDR, ProfibusHelper.VL_TYP_U16);
         _maxTsdr.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
-        
+
         // Min Tsdr
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -431,7 +431,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         } else {
             val = _subnet.getMinTsdr() + "";
         }
-        
+
         _minTsdr = ProfibusHelper.getTextField(left,
                                                true,
                                                val,
@@ -439,7 +439,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                                ProfibusHelper.VL_TYP_U16);
         _minTsdr.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
-        
+
         // tset
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -449,11 +449,11 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         } else {
             val = _subnet.getTset() + "";
         }
-        
+
         _tset = ProfibusHelper.getTextField(left, true, val, Ranges.TSET, ProfibusHelper.VL_TYP_U08);
         _tset.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
-        
+
         // tqui
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -470,7 +470,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                             ProfibusHelper.VL_TYP_U08);
         _tqui.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
-        
+
         // Gap
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -489,9 +489,9 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _gapCombo.setData(_gapCombo.getSelectionIndex());
         _gapCombo.addModifyListener(getMLSB());
         _gapCombo.addTraverseListener(ProfibusHelper.getNETL());
-        
+
         front = new Label(left, SWT.NONE);
-        
+
         // Retry limit
         front = new Label(left, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -509,27 +509,27 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         }
         _retrayCombo.setData(_retrayCombo.getSelectionIndex());
         _retrayCombo.addModifyListener(getMLSB());
-        
+
         new Label(left, SWT.NONE).setText("");
-        
+
         for (final Control children : left.getChildren()) {
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
             }
         }
-        
+
     }
-    
+
     /**
      * @param headline is TabHead Text
      */
     private void netSetting(@Nonnull final String headline) {
         final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 1, 470, 350);
-        
+
         final Group topGroup = new Group(comp, SWT.NONE);
         topGroup.setLayout(new GridLayout(1, false));
         topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        
+
         bottom(comp);
         final GridLayoutFactory glf = GridLayoutFactory.fillDefaults();
         glf.numColumns(2);
@@ -540,20 +540,20 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         final Composite buttonComp2 = new Composite(topGroup, SWT.NONE);
         buttonComp2.setLayout(glf.create());
         buttonComp2.setLayoutData(gdf.create());
-        
+
         final Label adressLabel = new Label(buttonComp, SWT.NONE);
         adressLabel.setText("Highest Profibus Station:");
-        
+
         _hSAddress = new Combo(buttonComp, SWT.SINGLE | SWT.RIGHT);
         _hSAddress.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
         for (int i = 1; i <= 126; i++) {
             _hSAddress.add("" + i);
         }
         setCombo(_hSAddress, Short.toString(_subnet.getHsa()));
-        
+
         final Label baudLabel = new Label(buttonComp2, SWT.NONE);
         baudLabel.setText("Baudrate: ");
-        
+
         //--- DP BAUDRATES ----
         _baudList = new ComboViewer(buttonComp2, SWT.SINGLE | SWT.V_SCROLL | SWT.RIGHT);
         _baudList.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
@@ -577,14 +577,14 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
             }
         });
     }
-    
+
     /**
      * @param rigth
      *            The Parent Group.
      */
     private void rigth(@Nonnull final Composite rigth) {
         final Control[] control = new Control[2];
-        
+
         // tslot
         Label front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -593,7 +593,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _tslot.setEditable(false);
         _tslot.setText(_subnet.getSlotTime() + "");
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // tid2
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -602,7 +602,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _tid2.setEditable(false);
         _tid2.setText(_subnet.getMaxTsdr() + "");
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // Trdy
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -611,7 +611,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _trdy.setEditable(false);
         _trdy.setText(_subnet.getMinTsdr() + "");
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // tid1
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -620,7 +620,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _tid1.setEditable(false);
         _tid1.setText(_subnet.getTset() + "");
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // ttr
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -632,22 +632,24 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                            ProfibusHelper.VL_TYP_U32);
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
         control[0] = _ttr;
-        
+
         // ttr in ms
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
         front.setText("=");
-        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000)
+        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000f)
                                                       + "");
+//        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000)
+//                                                      + "");
         new Label(rigth, SWT.NONE).setText("ms");
-        
+
         // ttr Typisch
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
         front.setText("Ttr Typisch: ");
         ProfibusHelper.getTextField(rigth, _subnet.getMinTsdr() + "");
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // Watchdog
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -659,7 +661,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                                 ProfibusHelper.VL_TYP_U16);
         control[1] = _watchdog;
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        
+
         // ttr in ms
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
@@ -669,17 +671,17 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
         _watchdog2.setEditable(false);
         _watchdog2.setText(Integer.toString(Integer.parseInt(_watchdog.getText()) / 10));
         new Label(rigth, SWT.NONE).setText("ms");
-        
+
         _ttr.addModifyListener(getMLSB());
         _ttr.addModifyListener(new ModifyListener() {
-            
+
             @Override
             public void modifyText(@Nullable final ModifyEvent e) {
                 ttr2.setText(Float.toString(Integer.parseInt(_ttr.getText()) / 1000f));
             }
-            
+
         });
-        
+
         _watchdog.addModifyListener(getMLSB());
         _watchdog.addModifyListener(new ModifyListener() {
             @Override
@@ -687,7 +689,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                 _watchdog2.setText(Float.toString(Integer.parseInt(_watchdog.getText()) / 10f));
             }
         });
-        
+
         for (final Control children : rigth.getChildren()) {
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));

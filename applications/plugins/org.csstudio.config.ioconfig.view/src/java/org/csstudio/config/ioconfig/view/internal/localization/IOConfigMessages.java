@@ -34,7 +34,7 @@ import org.eclipse.osgi.util.NLS;
  * @since 21.07.2011
  */
 public final class IOConfigMessages extends NLS {
-    public static String AbstractCallNodeEditor_DialogErrorMsg;
+    public static String ABSTRACT_CALLNODE_EDITOR_DIALOG_ERROR_MSG;
     private static final String BUNDLE_NAME = "org.csstudio.config.ioconfig.view.internal.localization.messages"; //$NON-NLS-1$
     static {
         // initialize resource bundle

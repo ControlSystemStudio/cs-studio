@@ -27,7 +27,6 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
@@ -38,12 +37,12 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
  * @since 18.01.2011
  */
 public class ModuleStatistcCounter {
-    
+
     private Integer _moduleCount = 0;
     private Integer _totalChannelsCount = 0;
     private Integer _usedChannelsCount = 0;
-    
-    
+
+
     /**
      * Constructor.
      * @param gsdModule
@@ -51,12 +50,11 @@ public class ModuleStatistcCounter {
     public ModuleStatistcCounter() {
         // constructor
     }
-    
+
     /**
      * @param module
-     * @throws PersistenceException
      */
-    public void addModule(@Nonnull final ModuleDBO module) throws PersistenceException {
+    public void addModule(@Nonnull final ModuleDBO module) {
         _moduleCount++;
         final Collection<ChannelStructureDBO> channelStructs = module.getChildrenAsMap().values();
         for (final ChannelStructureDBO channelStructure : channelStructs) {
@@ -70,27 +68,27 @@ public class ModuleStatistcCounter {
             }
         }
     }
-    
+
     @Nonnull
     public Integer getModuleCount() {
         return _moduleCount;
     }
-    
+
     @Nonnull
     public Integer getTotalChannelsCount() {
         return _totalChannelsCount;
     }
-    
+
     @Nonnull
     public Integer getUnusedChannelsCount() {
         return _totalChannelsCount-_usedChannelsCount;
     }
-    
+
     @Nonnull
     public Integer getUsedChannelsCount() {
         return _usedChannelsCount;
     }
-    
-    
-    
+
+
+
 }

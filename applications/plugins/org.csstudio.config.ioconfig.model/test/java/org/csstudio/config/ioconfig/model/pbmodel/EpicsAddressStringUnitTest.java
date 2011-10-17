@@ -23,36 +23,37 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import static org.csstudio.config.ioconfig.model.TestStructureBuilder.buildModuleChannelPrototype;
 
-import java.io.IOException;
 import java.util.Collection;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.DummyRepository;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.TestStructureBuilder;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSDTestFiles;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 29.08.2011
  */
 public class EpicsAddressStringUnitTest {
-    
+
     private static ProfibusSubnetDBO _BUILD_SUBNET;
-    private static GSDFileDBO _b756P33;
-    private static GSDFileDBO _siem80d1;
+    private static GSDFileDBO _B756P33;
+    private static GSDFileDBO _SIEM80D1;
     private static SlaveDBO _BUILD_SLAVE1;
     private static SlaveDBO _BUILD_SLAVE2;
     private static MasterDBO _BUILD_MASTER;
@@ -63,206 +64,88 @@ public class EpicsAddressStringUnitTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         Repository.injectIRepository(new DummyRepository());
-        
-        _b756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
-        _siem80d1 = GSDTestFiles.siem80d1.getFileAsGSDFileDBO();
-        
+
+        _B756P33 = GSDTestFiles.B756_P33.getFileAsGSDFileDBO();
+        _SIEM80D1 = GSDTestFiles.siem80d1.getFileAsGSDFileDBO();
+
         buildPrototypes4b756P33();
         buildPrototypes4siem80d1();
-        
-        final FacilityDBO buildFacility = TestStructureBuilder.buildFacility("FullChannelNumber Test", 1);
-        final IocDBO buildIoc = TestStructureBuilder.buildIoc(buildFacility, "FullChannelNumber Test");
+
+        final FacilityDBO buildFacility = TestStructureBuilder
+                .buildFacility("FullChannelNumber Test", 1);
+        final IocDBO buildIoc = TestStructureBuilder.buildIoc(buildFacility,
+                                                              "FullChannelNumber Test");
         _BUILD_SUBNET = TestStructureBuilder.buildSubnet(buildIoc, "FCNTest");
         _BUILD_MASTER = TestStructureBuilder.buildMaster(_BUILD_SUBNET);
-        _BUILD_SLAVE1 = TestStructureBuilder.buildSlave(_BUILD_MASTER, 2, _b756P33);
-        _BUILD_SLAVE2 = TestStructureBuilder.buildSlave(_BUILD_MASTER, 56, _siem80d1);
+        _BUILD_SLAVE1 = TestStructureBuilder.buildSlave(_BUILD_MASTER, 2, _B756P33);
+        _BUILD_SLAVE2 = TestStructureBuilder.buildSlave(_BUILD_MASTER, 56, _SIEM80D1);
     }
 
-    /**
-     * 
-     */
     private static void buildPrototypes4siem80d1() {
         GSDModuleDBO gsdModuleDBO;
 
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 0");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(0);
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 1");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(1);
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 2");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(2);
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 15");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(15);
-        
-        ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Test 1.0 DI0.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(1);
-        moduleChannelPrototype.setName("Test 1.0 DI1.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(2);
-        moduleChannelPrototype.setName("Test 1.0 DI2.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(3);
-        moduleChannelPrototype.setName("Test 1.0 DI3.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(4);
-        moduleChannelPrototype.setName("Test 1.0 DI4.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(5);
-        moduleChannelPrototype.setName("Test 1.0 DI5.");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 15");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(22);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Test 1.0 AI");
-        moduleChannelPrototype.setType(DataType.FLOAT);
-        moduleChannelPrototype.setStructure(false);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 15");
-        gsdModuleDBO.setGSDFile(_siem80d1);
-        gsdModuleDBO.setModuleId(51);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Test 1.0 AI");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(false);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(1);
-        moduleChannelPrototype.setName("Test 1.0 AI");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(false);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        
-        _siem80d1.addGSDModule(gsdModuleDBO);
-        
+        gsdModuleDBO = buildModule("FullChannelNumber Test 0", _SIEM80D1, 0);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 1", _SIEM80D1, 1);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 2", _SIEM80D1, 2);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 15", _SIEM80D1, 15);
+        buildModuleChannelPrototype(0, "Test 1.0 DI0.", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(1, "Test 1.0 DI1.", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(2, "Test 1.0 DI2.", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(3, "Test 1.0 DI3.", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(4, "Test 1.0 DI4.", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(5, "Test 1.0 DI5.", DataType.UINT8, true, true, gsdModuleDBO);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 15", _SIEM80D1, 22);
+        buildModuleChannelPrototype(0, "Test 1.0 AI.", DataType.FLOAT, false, true, gsdModuleDBO);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 15", _SIEM80D1, 51);
+        buildModuleChannelPrototype(0, "Test 1.0 AI.", DataType.UINT8, true, false, gsdModuleDBO);
+        buildModuleChannelPrototype(1, "Test 1.0 AI.", DataType.UINT8, true, false, gsdModuleDBO);
+        _SIEM80D1.addGSDModule(gsdModuleDBO);
+
     }
 
-    /**
-     * @throws IOException
-     */
-    private static void buildPrototypes4b756P33() throws IOException {
+    private static void buildPrototypes4b756P33() {
         GSDModuleDBO gsdModuleDBO;
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 8330");
-        gsdModuleDBO.setGSDFile(_b756P33);
-        gsdModuleDBO.setModuleId(8330);
-        _b756P33.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 1");
-        gsdModuleDBO.setGSDFile(_b756P33);
-        gsdModuleDBO.setModuleId(4000);
-        
-        ModuleChannelPrototypeDBO moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Test 1.0 DI");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        _b756P33.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("FullChannelNumber Test 2");
-        gsdModuleDBO.setGSDFile(_b756P33);
-        gsdModuleDBO.setModuleId(4001);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("Test 2.0 DI");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
+        gsdModuleDBO = buildModule("FullChannelNumber Test 8330", _B756P33, 8330);
+        _B756P33.addGSDModule(gsdModuleDBO);
 
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(1);
-        moduleChannelPrototype.setName("Test 2.1 DI");
-        moduleChannelPrototype.setType(DataType.UINT8);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        _b756P33.addGSDModule(gsdModuleDBO);
-        
-        gsdModuleDBO = new GSDModuleDBO("_b756P33 4360");
-        gsdModuleDBO.setGSDFile(_b756P33);
-        gsdModuleDBO.setModuleId(4360);
-        
-        moduleChannelPrototype = new ModuleChannelPrototypeDBO();
-        moduleChannelPrototype.setOffset(0);
-        moduleChannelPrototype.setName("DI");
-        moduleChannelPrototype.setType(DataType.UINT16);
-        moduleChannelPrototype.setStructure(true);
-        moduleChannelPrototype.setInput(true);
-        gsdModuleDBO.addModuleChannelPrototype(moduleChannelPrototype);
-        _b756P33.addGSDModule(gsdModuleDBO);
+        gsdModuleDBO = buildModule("FullChannelNumber Test 1", _B756P33, 4000);
+
+        buildModuleChannelPrototype(0, "Test 1.0 DI", DataType.UINT8, true, true, gsdModuleDBO);
+        _B756P33.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("FullChannelNumber Test 2", _B756P33, 4001);
+
+        buildModuleChannelPrototype(0, "Test 2.0 DI", DataType.UINT8, true, true, gsdModuleDBO);
+        buildModuleChannelPrototype(1, "Test 2.1 DI", DataType.UINT8, true, true, gsdModuleDBO);
+        _B756P33.addGSDModule(gsdModuleDBO);
+
+        gsdModuleDBO = buildModule("_b756P33 4360", _B756P33, 4360);
+
+        buildModuleChannelPrototype(0, "DI", DataType.UINT16, true, true, gsdModuleDBO);
+        _B756P33.addGSDModule(gsdModuleDBO);
     }
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+
+    @Nonnull
+    private static GSDModuleDBO buildModule(@Nonnull final String moduleName,
+                                            @Nonnull final GSDFileDBO gsdFile,
+                                            final int moduleId) {
+        GSDModuleDBO gsdModuleDBO;
+        gsdModuleDBO = new GSDModuleDBO(moduleName);
+        gsdModuleDBO.setGSDFile(gsdFile);
+        gsdModuleDBO.setModuleId(moduleId);
+        return gsdModuleDBO;
     }
-    
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-    
+
     /**
      * @throws java.lang.Exception
      */
@@ -271,27 +154,30 @@ public class EpicsAddressStringUnitTest {
         _BUILD_SLAVE1.removeAllChild();
         _BUILD_SLAVE2.removeAllChild();
     }
-    
+
     @Test
     public void subnetAddressTest() throws Exception {
         final String epicsAddressString = _BUILD_SUBNET.getEpicsAddressString();
         Assert.assertEquals("@FCNTest", epicsAddressString);
     }
+
     @Test
     public void masterAddressTest() throws Exception {
         final String epicsAddressString = _BUILD_MASTER.getEpicsAdressString();
         Assert.assertEquals("@FCNTest", epicsAddressString);
     }
+
     @Test
     public void slaveAddressTest() throws Exception {
         final String epicsAddressString = _BUILD_SLAVE1.getEpicsAdressString();
         Assert.assertEquals("@FCNTest:2", epicsAddressString);
     }
+
     @Test
     public void moduleAddressTest() throws Exception {
         final Collection<ModuleDBO> values = _BUILD_SLAVE1.getChildrenAsMap().values();
         int offset = 0;
-        for (ModuleDBO moduleDBO : values) {
+        for (final ModuleDBO moduleDBO : values) {
             final String epicsAddressString = moduleDBO.getEpicsAddressString();
             Assert.assertEquals("@FCNTest:2", epicsAddressString);
             final int inputOffset = moduleDBO.getInputOffset();
@@ -305,7 +191,7 @@ public class EpicsAddressStringUnitTest {
             offset++;
         }
     }
-    
+
     @Test
     public void channelAddressTestWith2xModuleA1xUNIT8() throws Exception {
         System.out.println("channelAddressTestWith2xModuleA1xUNIT8");
@@ -316,15 +202,19 @@ public class EpicsAddressStringUnitTest {
         int channelCounter = 0;
         int offset = 0;
         int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                for (ChannelDBO channel: channels) {
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                for (final ChannelDBO channel : channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
                     System.out.println(epicsAddressString);
-                    Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
-                    bit = (bit+1)%8;
+                    Assert.assertEquals("At channel " + channelCounter++,
+                                        String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit),
+                                        epicsAddressString);
+                    bit = (bit + 1) % 8;
                 }
                 offset++;
             }
@@ -341,22 +231,26 @@ public class EpicsAddressStringUnitTest {
         int channelCounter = 0;
         int offset = 0;
         int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                for (ChannelDBO channel: channels) {
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                for (final ChannelDBO channel : channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
                     System.out.println(epicsAddressString);
-                    Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
-                    bit = (bit+1)%8;
+                    Assert.assertEquals("At channel " + channelCounter++,
+                                        String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit),
+                                        epicsAddressString);
+                    bit = (bit + 1) % 8;
                 }
                 offset++;
             }
         }
         Assert.assertEquals(16, channelCounter);
     }
-    
+
     @Test
     public void channelAddressTestWith8xModuleA1xUNIT16() throws Exception {
         System.out.println("channelAddressTestWith8xModuleA1xUNIT16");
@@ -373,22 +267,28 @@ public class EpicsAddressStringUnitTest {
         int channelCounter = 0;
         int offset = 0;
         int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                for (ChannelDBO channel: channels) {
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                for (final ChannelDBO channel : channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
                     System.out.println(epicsAddressString);
-                    Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN16,B=%s'", offset, bit), epicsAddressString);
-                    bit = (bit+1)%16;
+                    Assert.assertEquals("At channel " + channelCounter++,
+                                        String.format("@FCNTest:2/%s 'T=UNSIGN16,B=%s'",
+                                                      offset,
+                                                      bit),
+                                        epicsAddressString);
+                    bit = (bit + 1) % 16;
                 }
-                offset+=2;
+                offset += 2;
             }
         }
-        Assert.assertEquals( 8*16, channelCounter);
+        Assert.assertEquals(8 * 16, channelCounter);
     }
-    
+
     @Test
     public void testOnWagoGsd1() throws Exception {
         System.out.println("testname");
@@ -398,22 +298,26 @@ public class EpicsAddressStringUnitTest {
         int channelCounter = 0;
         int offset = 0;
         int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                for (ChannelDBO channel: channels) {
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                for (final ChannelDBO channel : channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
-                    System.out.println("testname :"+epicsAddressString);
-                    Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
-                    bit = (bit+1)%8;
+                    System.out.println("testname :" + epicsAddressString);
+                    Assert.assertEquals("At channel " + channelCounter++,
+                                        String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit),
+                                        epicsAddressString);
+                    bit = (bit + 1) % 8;
                 }
-                offset+=1;
+                offset += 1;
             }
         }
         Assert.assertEquals(16, channelCounter);
     }
-    
+
     @Test
     public void testOnWagoGsd2() throws Exception {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE1, 4001, 3);
@@ -422,23 +326,77 @@ public class EpicsAddressStringUnitTest {
         int channelCounter = 0;
         int offset = 0;
         int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                for (ChannelDBO channel: channels) {
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                for (final ChannelDBO channel : channels) {
                     final String epicsAddressString = channel.getEpicsAddressString();
-                    Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
-                    bit = (bit+1)%8;
+                    Assert.assertEquals("At channel " + channelCounter++,
+                                        String.format("@FCNTest:2/%s 'T=UNSIGN8,B=%s'", offset, bit),
+                                        epicsAddressString);
+                    bit = (bit + 1) % 8;
                 }
-                offset+=1;
+                offset += 1;
             }
         }
         Assert.assertEquals(32, channelCounter);
     }
-    
+
     @Test
     public void testOnSiemensGsd1() throws Exception {
+        addNewModules();
+        final Collection<ModuleDBO> modules = _BUILD_SLAVE2.getChildrenAsMap().values();
+        int channelCounter = 0;
+        int outputOffset = 0;
+        int inputOffset = 0;
+        int offset = 0;
+        int bit = 0;
+        for (final ModuleDBO moduleDBO : modules) {
+            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap()
+                    .values();
+            for (final ChannelStructureDBO channelStructure : channelStrutures) {
+                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap()
+                        .values();
+                boolean input = false;
+                for (final ChannelDBO channel : channels) {
+                    final String epicsAddressString = channel.getEpicsAddressString();
+                    input = channel.isInput();
+                    offset = input ? inputOffset : outputOffset;
+                    if (channelCounter < 6 * 8 || channelCounter > 50) {
+                        Assert.assertEquals("At channel " + channelCounter++,
+                                            String.format("@FCNTest:56/%s 'T=UNSIGN8,B=%s'",
+                                                          offset,
+                                                          bit),
+                                            epicsAddressString);
+                        bit = (bit + 1) % 8;
+                    } else {
+                        Assert.assertEquals("At channel " + channelCounter++,
+                                            String.format("@FCNTest:56/%s 'T=FLOAT'", offset),
+                                            epicsAddressString);
+                        if (input) {
+                            inputOffset += 3;
+                        } else {
+                            outputOffset += 3;
+                        }
+                    }
+                }
+                if (input) {
+                    inputOffset += 1;
+                } else {
+                    outputOffset += 1;
+                }
+            }
+        }
+        Assert.assertEquals(67, channelCounter);
+    }
+
+    /**
+     * @throws PersistenceException
+     */
+    private void addNewModules() throws PersistenceException {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 0, 2);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 1, 3);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 2, 4);
@@ -447,46 +405,6 @@ public class EpicsAddressStringUnitTest {
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 22, 7);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 22, 8);
         TestStructureBuilder.addNewModule(_BUILD_SLAVE2, 51, 9);
-        final Collection<ModuleDBO> modules = _BUILD_SLAVE2.getChildrenAsMap().values();
-        int channelCounter = 0;
-        int outputOffset = 0;
-        int inputOffset = 0;
-        int offset = 0;
-        int bit = 0;
-        for (ModuleDBO moduleDBO : modules) {
-            final Collection<ChannelStructureDBO> channelStrutures = moduleDBO.getChildrenAsMap().values();
-            for (ChannelStructureDBO channelStructure : channelStrutures) {
-                final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-                boolean input = false;
-                for (ChannelDBO channel: channels) {
-                    final String epicsAddressString = channel.getEpicsAddressString();
-                    input = channel.isInput();
-                    if(input) {
-                        offset = inputOffset;
-                    } else {
-                        offset = outputOffset;
-                    }
-                    if(channelCounter<6*8||channelCounter>50) {
-                        Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:56/%s 'T=UNSIGN8,B=%s'", offset, bit), epicsAddressString);
-                        bit = (bit+1)%8;
-                    } else {
-                        Assert.assertEquals("At channel "+channelCounter++, String.format("@FCNTest:56/%s 'T=FLOAT'", offset), epicsAddressString);
-                        if(input) {
-                            inputOffset+=3;
-                        } else {
-                            outputOffset+=3;
-                        }
-                            
-                    }
-                }
-                if(input) {
-                    inputOffset+=1;
-                } else {
-                    outputOffset+=1;
-                }
-            }
-        }
-        Assert.assertEquals(67, channelCounter);
     }
-    
+
 }

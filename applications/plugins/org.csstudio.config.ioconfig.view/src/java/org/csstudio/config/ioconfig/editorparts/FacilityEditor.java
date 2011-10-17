@@ -69,12 +69,10 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
     }
     
     /**
-     * @param parent
-     *            The Parent Composite.
      * @param facility
      *            to Configure. Is NULL create a new one.
      */
-    public FacilityEditor(@Nonnull final Composite parent, @Nonnull final FacilityDBO facility) {
+    public FacilityEditor(@Nonnull final FacilityDBO facility) {
         super(facility == null);
         _facility = facility;
         buildGui();
@@ -84,7 +82,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
     /**
      * Constructor.
      */
-    public FacilityEditor(@Nonnull final Composite parent, final short sortIndex) {
+    public FacilityEditor(final short sortIndex) {
         super(true);
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();

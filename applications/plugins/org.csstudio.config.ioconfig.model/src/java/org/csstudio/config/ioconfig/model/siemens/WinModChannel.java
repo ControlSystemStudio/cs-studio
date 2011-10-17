@@ -25,20 +25,19 @@ package org.csstudio.config.ioconfig.model.siemens;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.DataType;
 
 /**
  * TODO (hrickens) :
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 20.07.2011
  */
 public class WinModChannel {
-    
+
     private final char[] _convertedChannelType = new char[2];
     private int _lines;
     private String _desc;
@@ -48,19 +47,18 @@ public class WinModChannel {
     private String _io2;
     private Short _bit;
     private int _bytee;
-    
+
     /**
      * Constructor.
      * @param channelDBO
-     * @throws PersistenceException
      */
-    public WinModChannel(@Nonnull final ChannelDBO channelDBO) throws PersistenceException {
+    public WinModChannel(@Nonnull final ChannelDBO channelDBO) {
         setIsInput(channelDBO.isInput());
         setIsDigital(channelDBO);
         addDescription(channelDBO);
         setByteNo(channelDBO);
     }
-    
+
     /**
      * @param channelDBO
      */
@@ -70,26 +68,26 @@ public class WinModChannel {
             _desc += description.replaceAll("[\r\n]", " ");
         }
     }
-    
+
     /**
      * @return
      */
     public short getBit() {
         return _bit;
     }
-    
+
     /**
      * @return
      */
     public int getByteNo() {
         return _bytee;
     }
-    
+
     @Nonnull
     public String getConvertedChannelType() {
         return String.valueOf(_convertedChannelType);
     }
-    
+
     /**
      * @return
      */
@@ -97,7 +95,7 @@ public class WinModChannel {
     public String getDef() {
         return _def;
     }
-    
+
     /**
      * @return
      */
@@ -105,7 +103,7 @@ public class WinModChannel {
     public String getDesc() {
         return _desc;
     }
-    
+
     /**
      * @return
      */
@@ -113,14 +111,14 @@ public class WinModChannel {
     public String getIO() {
         return _io1+_io2;
     }
-    
+
     /**
      * @return
      */
     public int getLineSize() {
         return _lines;
     }
-    
+
     /**
      * @return
      */
@@ -128,21 +126,20 @@ public class WinModChannel {
     public String getMbbChannelType() {
         return _mbbChannelType;
     }
-    
+
     /**
      * @param channelDBO
-     * @throws PersistenceException
      */
-    public void setByteNo(@Nonnull final ChannelDBO channelDBO) throws PersistenceException {
+    public void setByteNo(@Nonnull final ChannelDBO channelDBO) {
         if(channelDBO.isDigital()) {
             _bit = channelDBO.getSortIndex();
             //          bytee = bit / 8;
             //          if(bytee>0) {
             //              bit = (short) (bit - (8*bytee));
             //          }
-            
+
             //          bytee = channelDBO.getFullChannelNumber();
-            
+
             _bytee = channelDBO.getChannelNumber();
         } else {
             _bit = 0;
@@ -185,21 +182,21 @@ public class WinModChannel {
         }
     }
     // CHECKSTYLE ON: CyclomaticComplexity
-    
+
     /**
      * @param string
      */
     public void setDef(@Nonnull final String def) {
         _def = def;
     }
-    
+
     /**
      * @param c
      */
     public void setIO2(@Nonnull final String io2) {
         _io2 = io2;
     }
-    
+
     /**
      * @param channelDBO
      */
@@ -228,7 +225,7 @@ public class WinModChannel {
             }
         }
     }
-    
+
     /**
      * @param isInput
      */
@@ -243,14 +240,14 @@ public class WinModChannel {
             _mbbChannelType = "DO";
         }
     }
-    
+
     /**
      * @return
      */
     public boolean single() {
         return _lines>1;
     }
-    
-    
-    
+
+
+
 }
