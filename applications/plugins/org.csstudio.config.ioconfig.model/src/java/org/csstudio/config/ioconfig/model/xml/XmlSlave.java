@@ -77,7 +77,7 @@ public class XmlSlave {
         _modules.addAll(slave.getChildren());
         Element e2;
         e2 = setSlavePrmData(slave);
-        final Element e3 = setSlaveCfgData();
+        final Element e3 = setSlaveCfgData(slave);
         final Element e4 = setSlaveAatData();
         final Element e5 = setSlaveUserData();
         final int prmLen = Integer.parseInt(e2.getAttributeValue("prm_data_len"));
@@ -90,9 +90,6 @@ public class XmlSlave {
         _slaveElement.addContent(e5);
     }
 
-    /**
-     * @param prmDataSB
-     */
     private void addSlavePrmDataFromModules(@Nonnull final StringBuilder prmDataSB) {
         for (final ModuleDBO module : _modules) {
             List<Integer> modiExtUserPrmDataConstDef = null;
@@ -110,7 +107,9 @@ public class XmlSlave {
                 prmDataSB.append(',');
                 prmDataSB.append(modiExtUserPrmDataConst);
             } else {
-                prmDataSB.append(',');
+                if(prmDataSB.length()>0) {
+                    prmDataSB.append(',');
+                }
                 prmDataSB.append(modiExtUserPrmDataConst);
             }
         }
@@ -167,24 +166,16 @@ public class XmlSlave {
 
     /**
      * Set all slave_cfg_data parameter.
+     * @param slave
      *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Cfg Data Element.
      */
     @Nonnull
-    private Element setSlaveCfgData() {
+    private Element setSlaveCfgData(@Nonnull final SlaveDBO slave) {
         final Element slaveCfgData = new Element("SLAVE_CFG_DATA");
-        String cfgData = "";
-        for (final ModuleDBO module : _modules) {
-            final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
-            if(gsdModuleModel2 != null) {
-                cfgData = cfgData.concat(gsdModuleModel2.getValueAsString() + ",").trim();
-            }
-        }
-        if(cfgData.endsWith(",")) {
-            cfgData = cfgData.substring(0, cfgData.length() - 1);
-        }
+        final String cfgData = slave.getSlaveCfgDataString();
         final int cfgDataLen = cfgData.split(",").length + 2;
         slaveCfgData.setAttribute("cfg_data_len", Integer.toString(cfgDataLen));
         slaveCfgData.setText(cfgData);

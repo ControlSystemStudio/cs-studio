@@ -41,14 +41,14 @@ import org.slf4j.LoggerFactory;
  * @since 21.07.2008
  */
 public class ExtUserPrmData {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ExtUserPrmData.class);
-    
+
     /**
      * The Parent GSD Slave Model.
      */
     private final ParsedGsdFileModel _gsdFileModel;
-    
+
     /**
      * The ref index of this ext user prm data.
      */
@@ -79,9 +79,9 @@ public class ExtUserPrmData {
      */
     private Integer _prmTextRef;
     private SortedSet<Integer> _values;
-    
+
     private boolean _range;
-    
+
     /**
      * @param gsdSlaveModel
      *            The Parent GSD Slave Model.
@@ -97,12 +97,13 @@ public class ExtUserPrmData {
         _index = index;
         setText(text);
     }
-    
+
     /**
      * @param tmpLine
      */
     public void buildDataTypeParameter(@Nonnull final String dataTypeParameter) {
-        final String[] dataTypeParameterParts = dataTypeParameter.split(";")[0].split("[ ]");
+        final String replaceDataTypeParameter = dataTypeParameter.replaceAll("  ", " ");
+        final String[] dataTypeParameterParts = replaceDataTypeParameter.split(";")[0].split("[ ]");
         if (dataTypeParameterParts.length == 3) {
             setDataType(dataTypeParameterParts[0]);
             setDefault(dataTypeParameterParts[1]);
@@ -117,9 +118,9 @@ public class ExtUserPrmData {
         } else {
             LOG.error("Unkown DataType!");
         }
-        
+
     }
-    
+
     /**
      * The dataType of this ext user prm data as plain text.<br>
      * (e.G. Bit(1), BitArea(4-7), UnsignedX)
@@ -133,7 +134,7 @@ public class ExtUserPrmData {
         }
         return _dataType;
     }
-    
+
     /**
      *
      * @return the default value.
@@ -141,7 +142,7 @@ public class ExtUserPrmData {
     public final int getDefault() {
         return _default;
     }
-    
+
     /**
      *
      * @return The ref index of this ext user prm data.
@@ -150,7 +151,7 @@ public class ExtUserPrmData {
     public final Integer getIndex() {
         return _index;
     }
-    
+
     /**
      *
      * @return The highest bit to manipulate.
@@ -158,7 +159,7 @@ public class ExtUserPrmData {
     public final int getMaxBit() {
         return _maxBit;
     }
-    
+
     /**
      * @return maximum Value;
      */
@@ -168,9 +169,9 @@ public class ExtUserPrmData {
             max = _values.last();
         }
         return max;
-        
+
     }
-    
+
     /**
      *
      * @return The lowest bit to manipulate.
@@ -178,7 +179,7 @@ public class ExtUserPrmData {
     public final int getMinBit() {
         return _minBit;
     }
-    
+
     /**
      * @return minimum Value;
      */
@@ -189,7 +190,7 @@ public class ExtUserPrmData {
         }
         return min;
     }
-    
+
     /**
      *
      * @return The Parameter Text Map.
@@ -203,7 +204,7 @@ public class ExtUserPrmData {
         }
         return prmText;
     }
-    
+
     /**
      * @return The Parameter Text Reference.
      */
@@ -211,7 +212,7 @@ public class ExtUserPrmData {
     public final Integer getPrmTextRef() {
         return _prmTextRef;
     }
-    
+
     /**
      *
      * @return The Name/Desc of this ext user prm data.
@@ -220,7 +221,7 @@ public class ExtUserPrmData {
     public final String getText() {
         return _text;
     }
-    
+
     @Nonnull
     public SortedSet<Integer> getValues() {
         TreeSet<Integer> values;
@@ -234,11 +235,11 @@ public class ExtUserPrmData {
         }
         return values;
     }
-    
+
     public boolean isValuesRanged() {
         return _range;
     }
-    
+
     /**
      *
      * @param dataType
@@ -257,7 +258,7 @@ public class ExtUserPrmData {
                 setMinBit(split[1]);
                 setMaxBit(split[1]);
             }
-            
+
         } else if (split[0].endsWith("8")) {
             setMinBit("0");
             setMaxBit("7");
@@ -267,10 +268,10 @@ public class ExtUserPrmData {
         } else {
             LOG.error("Unkown DataType: {}", dataType);
         }
-        
+
         _dataType = dataType;
     }
-    
+
     /**
      * Set a numeric int value, given as string.
      *
@@ -284,7 +285,7 @@ public class ExtUserPrmData {
             _default = 0;
         }
     }
-    
+
     /**
      *
      * @param maxBit
@@ -297,7 +298,7 @@ public class ExtUserPrmData {
             _maxBit = 0;
         }
     }
-    
+
     /**
      *
      * @param minBit
@@ -310,7 +311,7 @@ public class ExtUserPrmData {
             _minBit = 0;
         }
     }
-    
+
     /**
      *
      * @param integer
@@ -319,7 +320,7 @@ public class ExtUserPrmData {
     public final void setPrmTextRef(@Nonnull final Integer prmTextRef) {
         _prmTextRef = prmTextRef;
     }
-    
+
     /**
      *
      * @param text
@@ -332,7 +333,7 @@ public class ExtUserPrmData {
             _text = "";
         }
     }
-    
+
     /**
      * @param minValue
      *            Set the minimum Value.
@@ -353,7 +354,7 @@ public class ExtUserPrmData {
             _values.add(0);
         }
     }
-    
+
     public void setValues(@Nullable final String[] values) {
         if (values != null) {
             _range = false;
@@ -363,7 +364,7 @@ public class ExtUserPrmData {
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -372,5 +373,5 @@ public class ExtUserPrmData {
     public final String toString() {
         return getIndex() + " : " + getText() + "(" + getDataType() + ")";
     }
-    
+
 }

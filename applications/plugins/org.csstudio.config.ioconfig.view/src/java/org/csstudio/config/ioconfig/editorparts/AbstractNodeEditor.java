@@ -759,8 +759,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
             @Override
             public void mouseUp(@Nullable final MouseEvent e) {
                 final IconChooserDialog chooseIconDialog = new IconChooserDialog(AbstractNodeEditor.this
-                                                                                 .getShell(),
-                                                                                 node);
+                                                                                 .getShell());
 
                 chooseIconDialog.setBlockOnOpen(true);
                 if (chooseIconDialog.open() == 0) {

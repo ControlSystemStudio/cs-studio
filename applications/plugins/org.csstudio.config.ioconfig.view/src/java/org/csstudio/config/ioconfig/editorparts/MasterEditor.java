@@ -23,6 +23,7 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -160,7 +161,10 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         super.cancel();
         if(_indexCombo != null) {
             _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
-            getNameWidget().setText((String) getNameWidget().getData());
+            final Text nameWidget = getNameWidget();
+            if(nameWidget!=null) {
+                nameWidget.setText((String) nameWidget.getData());
+            }
             final Boolean selected = (Boolean) _redundentButton.getData();
             _redundentButton.setSelection(selected);
             if(_master != null) {
@@ -706,7 +710,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
         });
     }
 
-    private void makeRedundencyMasterGroup(@Nonnull final Composite comp, final int column) throws PersistenceException {
+    private void makeRedundencyMasterGroup(@Nonnull final Composite comp, final int column) {
         final Group gRedundencyMaster = new Group(comp, SWT.NONE);
         gRedundencyMaster.setText("Redundency Master:");
         gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, column, 1));
@@ -797,10 +801,9 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     List<Integer> getPrmUserDataList() {
-        // TODO Auto-generated method stub
-        return null;
+        return new ArrayList<Integer>();
     }
 
     /**

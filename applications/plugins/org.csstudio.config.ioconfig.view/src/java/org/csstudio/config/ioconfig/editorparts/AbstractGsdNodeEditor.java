@@ -172,6 +172,8 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
      */
     private final class GSDFileRemoveListener implements SelectionListener {
         private final TableViewer _tableViewer;
+        private final Logger _log = LoggerFactory
+                .getLogger(AbstractGsdNodeEditor.GSDFileRemoveListener.class);
 
         /**
          * Constructor.
@@ -205,7 +207,7 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
                     } catch (final PersistenceException pE) {
                         DeviceDatabaseErrorDialog
                         .open(null, "Can't remove file from Database!", pE);
-                        LOG.error("Can't remove file from Database!", pE);
+                        _log.error("Can't remove file from Database!", pE);
                     }
                 }
             }
@@ -221,6 +223,8 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
     private final class GSDFileSelectionListener implements SelectionListener {
         private final TableViewer _tableViewer;
         private final Text _tSelected;
+        private final Logger _log = LoggerFactory
+                .getLogger(AbstractGsdNodeEditor.GSDFileSelectionListener.class);
 
         /**
          * Constructor.
@@ -245,7 +249,7 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
                     setSavebuttonEnabled("GSDFile", true);
                 }
             } catch (final PersistenceException e) {
-                LOG.error("Can't read GSDFile! Database error.", e);
+                _log.error("Can't read GSDFile! Database error.", e);
                 DeviceDatabaseErrorDialog.open(null, "Can't read GSDFile! Database error.", e);
             }
         }
@@ -394,7 +398,7 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
         }
     }
 
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractGsdNodeEditor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractGsdNodeEditor.class);
     private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
 
     /**
@@ -546,12 +550,12 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
         final List<Integer> prmUserDataList = getPrmUserDataList();
         final List<Integer> values = new ArrayList<Integer>();
         final Integer index = extUserPrmDataRef.getIndex();
-        if(index < prmUserDataList.size()) {
+        if(index != null && index < prmUserDataList.size()) {
             final Integer integer = prmUserDataList.get(index);
             values.add(integer);
             final int maxBit = extUserPrmData.getMaxBit();
             if( maxBit > 7 && maxBit < 16) {
-                values.add(prmUserDataList.get(extUserPrmDataRef.getIndex() + 1));
+                values.add(prmUserDataList.get(index + 1));
             }
         }
         final int val = getValueFromBitMask(extUserPrmData, values);
@@ -633,6 +637,13 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
         final ComboViewer prmTextCV = new ComboViewer(parent);
         final RowData data = new RowData();
         data.exclude = false;
+        final Formatter f = new Formatter();
+        f.format("Byte: %d, min Byte: %d, may Byte: %d",
+                 extUserPrmData.getIndex(),
+                 extUserPrmData.getMinBit(),
+                 extUserPrmData.getMaxBit());
+
+        prmTextCV.getCombo().setToolTipText(f.toString());
         prmTextCV.getCombo().setLayoutData(data);
         prmTextCV.setLabelProvider(new PrmTextComboLabelProvider(extUserPrmData));
         prmTextCV.setContentProvider(new ExtUserPrmDataContentProvider());
@@ -722,7 +733,10 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
         Integer localValue = value;
         final Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER | SWT.SINGLE | SWT.RIGHT);
         final Formatter f = new Formatter();
-        f.format("Min: %d, Min: %d Default: %d",
+        f.format("Byte: %d, min Byte: %d, may Byte: %d \r\nMin: %d, Min: %d Default: %d",
+                 extUserPrmData.getIndex(),
+                 extUserPrmData.getMinBit(),
+                 extUserPrmData.getMaxBit(),
                  extUserPrmData.getMinValue(),
                  extUserPrmData.getMaxValue(),
                  extUserPrmData.getDefault());
@@ -764,12 +778,15 @@ public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> ext
                 int i = 0;
                 for (final KeyValuePair ref : extUserPrmDataRefMap) {
                     final Object prmTextObject = _prmTextCV.get(i);
-                    if(prmTextObject instanceof ComboViewer) {
-                        final ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-                        handleComboViewer(prmTextCV, ref.getIndex());
-                    } else if(prmTextObject instanceof Text) {
-                        final Text prmText = (Text) prmTextObject;
-                        handleText(prmText, ref.getIndex());
+                    final Integer index = ref.getIndex();
+                    if(index!= null) {
+                        if (prmTextObject instanceof ComboViewer) {
+                            final ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+                            handleComboViewer(prmTextCV, index);
+                        } else if (prmTextObject instanceof Text) {
+                            final Text prmText = (Text) prmTextObject;
+                            handleText(prmText, index);
+                        }
                     }
                     i++;
                 }

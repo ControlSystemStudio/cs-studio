@@ -489,4 +489,21 @@ INodeWithPrototype {
     public void update() throws PersistenceException {
         super.update();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assembleEpicsAddressString() throws PersistenceException {
+        final List<Integer> configurationDataList = getConfigurationDataList();
+        final GsdModuleModel2 module2 = getGsdModuleModel2();
+        if(module2!=null) {
+            final List<Integer> extUserPrmDataConst = module2.getExtUserPrmDataConst();
+            if(!(configurationDataList!=null&&extUserPrmDataConst!=null&&configurationDataList.size()==extUserPrmDataConst.size())) {
+                setConfigurationData(extUserPrmDataConst);
+            }
+        }
+        super.assembleEpicsAddressString();
+    }
+
 }
