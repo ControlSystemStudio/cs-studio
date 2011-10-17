@@ -29,8 +29,6 @@ public class KBLogArchiveReader implements ArchiveReader {
 	 */
 	public KBLogArchiveReader(final String url)
 	{
-		// TODO do whatever need to be done during initialization.
-		
 		// Parse URL
 		if (!url.startsWith(scheme)) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, "Wrong URL for KBLogArchiveReader: " + url);
@@ -81,23 +79,14 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public String[] getNamesByPattern(int key, String glob_pattern)
 			throws Exception {
-		// TODO make a new thread and do the following operations in it so that
-		//      name searching can be canceled on the way.
-		
 		String reg_exp = RegExHelper.fullRegexFromGlob(glob_pattern);
-		
 		return getNamesByRegExp(key, reg_exp);
 	}
 
 	@Override
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
-		// TODO make a new thread and do the following operations in it so that
-		//      name searching can be canceled on the way.
-		
 		ArchiveInfo info = archiveInfos[key-1];
-		
 		Logger.getLogger(Activator.ID).log(Level.FINEST, "Searching PV names in " + info.getName() + " with regular expression: " + reg_exp);
-		
 		return KBLogUtil.getProcessVariableNames(kblogRoot, info.getName(), reg_exp);
 	}
 
@@ -144,7 +133,13 @@ public class KBLogArchiveReader implements ArchiveReader {
 
 	@Override
 	public void cancel() {
-		// TODO kill PV name searching process
+		// Note that this method does not cancel PV name searching because
+		// this method is not called when users request the cancellation
+		// of searching.
+		//
+		// See the implementation of 
+		// org.csstudio.trends.databrowser2.archive.SearchJob
+		// for more details.
 		
 		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.cancel() is requested.");
 		
@@ -163,7 +158,6 @@ public class KBLogArchiveReader implements ArchiveReader {
 	@Override
 	public void close() {
 		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogArchiveReader.close() is requested.");
-		
 		cancel();
 	}
 }
