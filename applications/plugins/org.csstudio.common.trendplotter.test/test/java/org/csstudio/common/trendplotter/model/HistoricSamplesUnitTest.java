@@ -34,7 +34,8 @@ public class HistoricSamplesUnitTest
         final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
         Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
 
-        final HistoricSamples history = new HistoricSamples(RequestType.RAW);
+        final RequestType reqType = RequestType.RAW;
+        final HistoricSamples history = new HistoricSamples(reqType);
         final int N = 10;
         // Initial data, time 10..19
         final ArrayList<IValue> samples = new ArrayList<IValue>();
@@ -42,7 +43,7 @@ public class HistoricSamplesUnitTest
             samples.add(TestSampleBuilder.makeValue(N+i));
         }
 
-        history.mergeArchivedData("TestChannel", readerMock, samples);
+        history.mergeArchivedData("TestChannel", readerMock, reqType, samples);
         //System.out.println(history);
 
         assertEquals(N, history.getSize());
@@ -66,7 +67,7 @@ public class HistoricSamplesUnitTest
         for (int i=0; i<N; ++i) {
             samples.set(i, TestSampleBuilder.makeValue(i));
         }
-        history.mergeArchivedData("TestChannel", readerMock, samples);
+        history.mergeArchivedData("TestChannel", readerMock, reqType, samples);
         assertEquals(2*N, history.getSize());
         //System.out.println(history);
         range = history.getYDataMinMax();
