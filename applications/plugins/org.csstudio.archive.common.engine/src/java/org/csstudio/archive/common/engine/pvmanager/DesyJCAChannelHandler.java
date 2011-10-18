@@ -102,6 +102,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
 
         if (_desyMeta == null && metadata != null) {
             _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
+            ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
         }
 
         if (!_validator.apply(rawDBR)) {

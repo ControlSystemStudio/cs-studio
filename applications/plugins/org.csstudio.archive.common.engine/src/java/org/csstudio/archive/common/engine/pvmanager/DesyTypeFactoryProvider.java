@@ -186,23 +186,8 @@ public final class DesyTypeFactoryProvider {
         if (fac == null) {
             throw new IllegalArgumentException("The dbrType type is not supported: " + channel, null);
         }
-        //fac.setIsArray(isChannelMultiScalar(channel));
         return fac;
     }
-
-//    private static boolean isChannelMultiScalar(@Nonnull final Channel channel) {
-//        final String baseName = EpicsNameSupport.parseBaseName(channel.getName());
-//        final EpicsChannelName ftvlChannelName = new EpicsChannelName(baseName, RecordField.FTVL);
-//        final PVReader r = PVManager.read(channel(ftvlChannelName.toString())).timeout(TimeDuration.ms(20)).every(TimeDuration.ms(10));
-//        r.addPVReaderListener(new PVReaderListener() {
-//            @Override
-//            public void pvChanged() {
-//
-//
-//            }
-//        });
-//        return false;
-//    }
 
     @SuppressWarnings("rawtypes")
     @Nonnull

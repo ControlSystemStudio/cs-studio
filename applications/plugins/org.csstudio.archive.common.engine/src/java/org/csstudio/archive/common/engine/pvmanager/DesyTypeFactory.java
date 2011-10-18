@@ -148,8 +148,6 @@ public abstract class DesyTypeFactory<V,
 
     }
 
-
-    @SuppressWarnings("unchecked")
     @CheckForNull
     protected <W extends Comparable<? super W>>
     EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
@@ -159,17 +157,30 @@ public abstract class DesyTypeFactory<V,
         if (PRECISION.class.isAssignableFrom(eMeta.getClass())) {
             prec = Short.valueOf(((PRECISION) eMeta).getPrecision());
         }
-        final CTRL ctrl = (CTRL) eMeta;
-
-        final EpicsGraphicsData gr =
-            new EpicsGraphicsData(Limits.create((W) ctrl.getLowerAlarmLimit(), (W) ctrl.getUpperAlarmLimit()),
-                                  Limits.create((W) ctrl.getLowerWarningLimit(), (W) ctrl.getUpperWarningLimit()),
-                                  Limits.create((W) ctrl.getLowerDispLimit(), (W) ctrl.getUpperDispLimit()));
-        final IControlLimits<W> cr =
-            new ControlLimits<W>((W) ctrl.getLowerCtrlLimit(),
-                                 (W) ctrl.getUpperCtrlLimit());
-
+        EpicsGraphicsData<W> gr = null;
+        IControlLimits<W> cr = null;
+        if (CTRL.class.isAssignableFrom(eMeta.getClass())) {
+            final CTRL ctrl = (CTRL) eMeta;
+            gr = createGraphics(ctrl);
+            cr = createControlLimits(ctrl);
+        }
         return EpicsMetaData.create(alarm, gr, cr, prec);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    protected <W extends Comparable<? super W>>
+    EpicsGraphicsData<W> createGraphics(@Nonnull final CTRL ctrl) {
+        final Limits<W> aLimits = Limits.create((W) ctrl.getLowerAlarmLimit(), (W) ctrl.getUpperAlarmLimit());
+        final Limits<W> wLimits = Limits.create((W) ctrl.getLowerWarningLimit(), (W) ctrl.getUpperWarningLimit());
+        final Limits<W> oLimits = Limits.create((W) ctrl.getLowerDispLimit(), (W) ctrl.getUpperDispLimit());
+        return new EpicsGraphicsData<W>(aLimits, wLimits, oLimits);
+    }
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    protected <W extends Comparable<? super W>>
+    IControlLimits<W> createControlLimits(@Nonnull final CTRL ctrl) {
+        return new ControlLimits<W>((W) ctrl.getLowerCtrlLimit(), (W) ctrl.getUpperCtrlLimit());
     }
 
     @Nonnull
@@ -193,7 +204,8 @@ public abstract class DesyTypeFactory<V,
         return array;
     }
 
-    void setIsArray(final boolean isArray) {
-        _isArray = isArray;
+    public void setIsArray(final boolean b) {
+        _isArray = b;
+
     }
 }
