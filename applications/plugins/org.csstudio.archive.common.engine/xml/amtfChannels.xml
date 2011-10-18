@@ -27,6 +27,16 @@
         <property name="recordField">RVAL</property>
     </channel>
 
+    <channel controlSystem="EPICS_V3"
+             name="special_dl">
+        <mode>
+	        <monitor/>
+        </mode>
+        <!-- specific record field properties only permitted for EPICS channels -->
+        <property name="recordField">TOFF</property>
+        <property name="recordField">NPTD</property>
+    </channel>
+
     <!-- ... --> 
 
 </channels>
