@@ -54,7 +54,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final DesyJCADataSource _dataSource;
 
     /** Control system PV */
-    private final PVReader<Object> _pv;
+    private PVReader<Object> _pv;
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
@@ -90,9 +90,9 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final IServiceProvider _provider;
 
     @SuppressWarnings("rawtypes")
-    private final DesyArchivePVManagerListener _listener;
+    private DesyArchivePVManagerListener _listener;
 
-    private TimeInstant _timeOfLastSampleBeforeChannelStart;
+    private final TimeInstant _timeOfLastSampleBeforeChannelStart;
 
     /**
      * Constructor.
@@ -109,25 +109,6 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(_name);
         _provider = provider;
         _dataSource = dataSource;
-
-        _pv = PVManager.read(channel(_name)).every(sec(3));
-
-        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
-            @SuppressWarnings("synthetic-access")
-            @Override
-            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
-                synchronized (this) {
-                    _receivedSampleCount++;
-                    _mostRecentSysVar = (T) sample.getSystemVariable();
-                }
-                return _buffer.add(sample);
-
-            }
-            @Override
-            public boolean isConnected() {
-                return ArchiveChannelBuffer.this.isConnected();
-            }
-        };
     }
 
 
@@ -177,8 +158,10 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                 if (_isStarted) {
                     return true;
                 }
+                initPvAndListener();
                 _isStarted = true;
             }
+
             _listener.setStartInfo(info);
             _pv.addPVReaderListener(_listener);
 
@@ -189,6 +172,28 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
             throw new EngineModelException("Something went wrong within Gabriele's PV stuff on channel/PV startup", e);
         }
         return true;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private void initPvAndListener() {
+        _pv = PVManager.read(channel(_name)).every(sec(3));
+
+        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
+                synchronized (this) {
+                    _receivedSampleCount++;
+                    _mostRecentSysVar = (T) sample.getSystemVariable();
+                }
+                return _buffer.add(sample);
+
+            }
+            @Override
+            public boolean isConnected() {
+                return ArchiveChannelBuffer.this.isConnected();
+            }
+        };
     }
 
     public void enable() throws EngineModelException {

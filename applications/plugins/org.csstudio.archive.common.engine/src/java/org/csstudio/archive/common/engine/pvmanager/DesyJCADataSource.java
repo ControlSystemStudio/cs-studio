@@ -46,7 +46,7 @@ public class DesyJCADataSource extends JCADataSource {
                              final int monitorMask) {
         super(className, monitorMask);
 
-        _handlerMap = new MapMaker().concurrencyLevel(5).weakKeys().weakValues().makeMap();
+        _handlerMap = new MapMaker().concurrencyLevel(5).softValues().makeMap();
     }
     @Override
     @Nonnull
