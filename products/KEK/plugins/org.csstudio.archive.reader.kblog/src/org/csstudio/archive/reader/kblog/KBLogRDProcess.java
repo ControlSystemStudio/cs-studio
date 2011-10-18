@@ -12,6 +12,11 @@ import java.util.logging.Logger;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 
+/**
+ * An instance of this class represents one "kblogrd" process
+ * 
+ * @author Takashi Nakamoto
+ */
 public class KBLogRDProcess {
 	// DO NOT READ OR WRITE THIS VALUE OUTSIDE getUniqueCommandID().
 	private static int uniqueCommandId = 0;	

@@ -2,6 +2,11 @@ package org.csstudio.archive.reader.kblog;
 
 import org.csstudio.data.values.ISeverity;
 
+/**
+ * Severity instances for the data specific to kblog.
+ * 
+ * @author Takashi Nakamoto
+ */
 public class KBLogSeverityInstances {
     /** Implementation of an 'CONNECTED' ISeverity. */
     public static final ISeverity connected = new ISeverity()
