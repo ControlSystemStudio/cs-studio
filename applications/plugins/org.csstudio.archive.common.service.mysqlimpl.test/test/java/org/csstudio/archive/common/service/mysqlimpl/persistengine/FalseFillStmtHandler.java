@@ -57,7 +57,7 @@ final class FalseFillStmtHandler extends
     protected void fillStatement(@Nonnull final PreparedStatement stmt,
                                  @Nonnull final IArchiveSample element)
     throws ArchiveDaoException, SQLException {
-        stmt.setInt(-1, -1); // wrong statement
+        stmt.setInt(-1, -1); // that will cause an error
     }
 
     @Nonnull

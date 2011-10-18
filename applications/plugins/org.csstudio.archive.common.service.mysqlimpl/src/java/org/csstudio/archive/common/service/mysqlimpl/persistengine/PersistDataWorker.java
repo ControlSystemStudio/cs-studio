@@ -64,9 +64,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("StatementRescueLogger");
     private static final Logger LOG =
             LoggerFactory.getLogger(PersistDataWorker.class);
-    /**
-     * See configuration of this logger - if log4j is used - see log4j.properties
-     */
     private static final Logger EMAIL_LOG =
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
