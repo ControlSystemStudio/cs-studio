@@ -8,9 +8,11 @@
 package org.csstudio.archive.common.engine.model;
 
 import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.util.TimeDuration.sec;
+import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -27,6 +29,7 @@ import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
+import org.epics.pvmanager.util.TimeDuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +45,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveChannelBuffer.class);
 
+    private static final TimeDuration RATE = ms(2000);
+
     /** Channel name.
      *  This is the name by which the channel was created,
      *  not the PV name that might include decorations.
@@ -53,7 +58,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final DesyJCAChannelHandler _channelHandler;
 
     /** Control system PV */
-    private PVReader<Object> _pv;
+    private PVReader<List<Object>> _pv;
 
     /** Buffer of received samples, periodically written */
     private final SampleBuffer<V, T, IArchiveSample<V, T>> _buffer;
@@ -173,7 +178,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private void initPvAndListener() {
-        _pv = PVManager.read(channel(_name)).every(sec(3));
+        _pv = PVManager.read(newValuesOf(channel(_name))).every(RATE);
 
         _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
             @SuppressWarnings("synthetic-access")

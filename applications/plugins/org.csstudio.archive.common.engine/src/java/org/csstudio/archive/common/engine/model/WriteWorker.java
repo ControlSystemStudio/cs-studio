@@ -65,7 +65,7 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     private final long _periodInMS;
     /** Average number of values per write run */
     private final AverageWithExponentialDecayCache _avgWriteCount =
-        new AverageWithExponentialDecayCache(0.1);
+        new AverageWithExponentialDecayCache(0.9);
 
 
     private final IServiceProvider _provider;

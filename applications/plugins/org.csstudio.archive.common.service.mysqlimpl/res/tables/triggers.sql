@@ -6,3 +6,14 @@ CREATE TRIGGER updateLastSampleTime
             BEGIN 
                 UPDATE channel set last_sample_time=NEW.time where id=NEW.channel_id;
             END//
+
+DROP TRIGGER IF EXISTS updateLastSampleTime//
+            
+CREATE TRIGGER updateLastSampleBlobTime 
+        BEFORE INSERT ON sample_blob 
+        FOR EACH ROW 
+            BEGIN 
+                UPDATE channel set last_sample_time=NEW.time where id=NEW.channel_id;
+            END//
+            
+            

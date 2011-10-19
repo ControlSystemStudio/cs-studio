@@ -24,6 +24,7 @@ package org.csstudio.archive.common.engine.pvmanager;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -94,14 +95,16 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
         try {
             // TODO (bknerr) : ask Gabriele whether it is a good choice to separate the value
             // update callback from the calling/value providing instance
+
             @SuppressWarnings("rawtypes")
-            final EpicsSystemVariable sysVar = (EpicsSystemVariable) _reader.getValue();
-            if (_firstConnection) {
-                handleOnConnectionInformation(sysVar, _channelId, isConnected(), _startInfo);
+            final List<EpicsSystemVariable> sysVars = (List<EpicsSystemVariable>) _reader.getValue();
+            if (_firstConnection && !sysVars.isEmpty()) {
+                handleOnConnectionInformation(sysVars.get(0), _channelId, isConnected(), _startInfo);
                 _firstConnection = false;
             }
-            handleValueUpdateInformation(sysVar);
-
+            for (final EpicsSystemVariable sysVar : sysVars) {
+                handleValueUpdateInformation(sysVar);
+            }
         } catch (final Throwable t) {
             LOG.error("Unexpected exception in PVListener for: {}:\n{}", _channelName, t.getMessage());
         }
