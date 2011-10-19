@@ -47,6 +47,11 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 				this.nextBaseValue = base.next();
 			
 			this.nextAverageValue = calculateNextValue();
+			
+			// If the next time step does not have any value, skip that time step and
+			// calculate the average value of next next time step.  
+			while (nextAverageValue == null && nextBaseValue != null)
+				nextAverageValue = calculateNextValue();
 		} catch (Exception ex) {
 			this.nextBaseValue = null;
 			this.nextAverageValue = null;
