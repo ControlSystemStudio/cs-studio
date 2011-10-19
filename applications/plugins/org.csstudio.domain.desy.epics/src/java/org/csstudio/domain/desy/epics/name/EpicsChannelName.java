@@ -53,7 +53,7 @@ public class EpicsChannelName {
     /**
      * Regex specifying the permitted structure of an EPICS channel record field name.
      */
-    public static final String FIELD_REGEX = "[A-Z]{1," + MAX_FIELD_LENGTH + "}";
+    public static final String FIELD_REGEX = "[A-Z0-9]{1," + MAX_FIELD_LENGTH + "}";
     public static final String FIELD_SEP_REGEX = Matcher.quoteReplacement(FIELD_SEP);
     public static final String FULLNAME_REGEX = BASENAME_REGEX +
                                                 "(" + FIELD_SEP_REGEX +
