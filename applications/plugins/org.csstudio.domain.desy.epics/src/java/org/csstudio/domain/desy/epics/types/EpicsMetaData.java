@@ -46,7 +46,7 @@ public final class EpicsMetaData {
      * Null object/flyweight pattern (there are a lot of channels in which states array is empty for
      * enum types or display ranges, or alarms are not present.
      */
-    private static final EpicsMetaData EMPTY_DATA =
+    public static final EpicsMetaData EMPTY_DATA =
         new EpicsMetaData(EpicsAlarm.UNKNOWN, null, null, null);
 
     private final EpicsGraphicsData<? extends Comparable<?>> _graphicsData;

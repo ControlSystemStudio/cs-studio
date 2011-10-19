@@ -132,7 +132,7 @@ public abstract class DesyTypeFactory<V,
     public EpicsSystemVariable<V> createValue(@Nonnull final String channelName,
                                               @Nonnull final EV eVal,
                                               @Nonnull final EM eMeta,
-                                              @CheckForNull final EpicsMetaData dMeta) {
+                                              @Nonnull final EpicsMetaData dMeta) {
 
         final TimeStamp ts = eVal.getTimeStamp();
         final TimeInstant timestamp =
@@ -145,10 +145,9 @@ public abstract class DesyTypeFactory<V,
             data = toScalarData(eVal, eMeta);
         }
         return new EpicsSystemVariable(channelName, data, ControlSystem.EPICS_DEFAULT, timestamp, dMeta);
-
     }
 
-    @CheckForNull
+    @Nonnull
     protected <W extends Comparable<? super W>>
     EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
         final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),

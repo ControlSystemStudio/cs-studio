@@ -172,12 +172,13 @@ class MainResponse extends AbstractResponse {
 
     private void createMemoryStatsRow(@Nonnull final HTMLWriter html) {
         final Runtime runtime = Runtime.getRuntime();
-        final double usedMem = runtime.totalMemory() / MB;
         final double maxMem = runtime.maxMemory() / MB;
-        final double percMem = maxMem > 0 ? usedMem / maxMem * 100.0 : 0.0;
-        html.tableLine(new String[] {"Memory",
-                                     String.format("%.1f MB of %.1f MB used (%.1f %%)",
-                                                   usedMem, maxMem, percMem),
+        final double totalMem = runtime.totalMemory() / MB;
+        final double freeMem = runtime.freeMemory() / MB;
+        final double percMem = maxMem > 0 ? totalMem / maxMem * 100.0 : 0.0;
+        html.tableLine(new String[] {"Memory (used|total|max)",
+                                     String.format("%.1f MB | %.1f MB | %.1f MB (%.1f %%)",
+                                                   totalMem-freeMem, totalMem, maxMem, percMem),
                                                    });
     }
 

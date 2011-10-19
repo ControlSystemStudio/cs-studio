@@ -61,7 +61,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     private Class<Object> _dataType;
     private EpicsMetaData _desyMeta;
 
-    // TODO (bknerr) : make this one protected in super type
+    // FIXME (bknerr) : make this one protected in super type - or refactor completely
     private final int _monitorMask;
 
     /**
@@ -82,11 +82,11 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
             try {
                 _dataType = BaseTypeConversionSupport.createBaseTypeClassFromString(dataType, "org.csstudio.domain.desy.epics.types");
             } catch (final TypeSupportException e) {
-                LOG.error("Datatype for channel {} is not convertible to type class!:\n{}", channelName, e.getMessage());
+                LOG.error("Datatype for channel {} is not convertible to java type class!:\n{}", channelName, e.getMessage());
             }
         }
 
-        // TODO (bknerr) : make this one protected in super type
+        // FIXME (bknerr) : make this one protected in super type
         _monitorMask = monitorMask;
     }
 
@@ -124,14 +124,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                @Nonnull final ValueCache<?> cache) {
         final DBR rawDBR = event.getDBR();
 
-        if (_desyMeta == null && metadata != null) {
-            _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
-            if (_dataType != null) {
-                ((DesyTypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
-            } else {
-                ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
-            }
-        }
+        handleFirstCacheUpdate(rawDBR);
 
         if (!_validator.apply(rawDBR)) {
             return false;
@@ -144,5 +137,20 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                                                                           _desyMeta);
         cache.setValue(newValue);
         return true;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void handleFirstCacheUpdate(@Nonnull final DBR rawDBR) {
+        if (_desyMeta == null) {
+            _desyMeta = EpicsMetaData.EMPTY_DATA;
+            if (metadata != null) {
+                _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
+            }
+            if (_dataType != null) {
+                ((DesyTypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
+            } else {
+                ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
+            }
+        }
     }
 }
