@@ -51,13 +51,21 @@ public class DesyJCADataSource extends JCADataSource {
     @Override
     @Nonnull
     protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
-        _handlerMap.put(channelName, handler);
-        return handler;
+        if(_handlerMap.containsKey(channelName)) {
+            return _handlerMap.get(channelName);
+        }
+        return createHandlerFor(channelName, null);
     }
 
     @CheckForNull
     public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
         return _handlerMap.get(channelName);
+    }
+
+    @Nonnull
+    public DesyJCAChannelHandler createHandlerFor(@Nonnull final String name, @Nonnull final String dataType) {
+        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(name, dataType, getContext(), getMonitorMask());
+        _handlerMap.put(name, handler);
+        return handler;
     }
 }

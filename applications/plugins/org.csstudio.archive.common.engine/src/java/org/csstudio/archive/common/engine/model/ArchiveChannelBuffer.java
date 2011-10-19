@@ -18,7 +18,6 @@ import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.pvmanager.DesyArchivePVManagerListener;
 import org.csstudio.archive.common.engine.pvmanager.DesyJCAChannelHandler;
-import org.csstudio.archive.common.engine.pvmanager.DesyJCADataSource;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -51,7 +50,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     private final ArchiveChannelId _id;
 
-    private final DesyJCADataSource _dataSource;
+    private final DesyJCAChannelHandler _channelHandler;
 
     /** Control system PV */
     private PVReader<Object> _pv;
@@ -97,10 +96,9 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     /**
      * Constructor.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public ArchiveChannelBuffer(@Nonnull final IArchiveChannel cfg,
                                 @Nonnull final IServiceProvider provider,
-                                @Nonnull final DesyJCADataSource dataSource) {
+                                @Nonnull final DesyJCAChannelHandler handler) {
 
         _name = cfg.getName();
         _id = cfg.getId();
@@ -108,7 +106,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         _isEnabled = cfg.isEnabled();
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(_name);
         _provider = provider;
-        _dataSource = dataSource;
+        _channelHandler = handler;
     }
 
 
@@ -126,8 +124,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
-        final DesyJCAChannelHandler handler = _dataSource.getHandler(_name);
-        return handler != null && handler.isConnected();
+        return _channelHandler != null && _channelHandler.isConnected();
     }
 
     /** @return <code>true</code> if connected */

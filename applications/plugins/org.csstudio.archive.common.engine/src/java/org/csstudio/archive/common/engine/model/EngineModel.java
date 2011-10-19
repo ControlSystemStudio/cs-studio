@@ -379,7 +379,8 @@ public final class EngineModel {
                 service.getGroupsForEngine(_engine.getId());
 
             for (final IArchiveChannelGroup groupCfg : groups) {
-                configureGroup(_provider, groupCfg, _channelMap, _dataSource);
+                final ArchiveGroup group = addGroup(groupCfg);
+                EngineModelConfigurator.configureGroup(_provider, group, _channelMap, _dataSource);
             }
         } catch (final Exception e) {
             handleExceptions(e);
@@ -403,45 +404,6 @@ public final class EngineModel {
             throw new EngineModelException("Unknown engine '" + name + "'.", null);
         }
         return engine;
-    }
-
-    private void configureGroup(@Nonnull final IServiceProvider provider,
-                                @Nonnull final IArchiveChannelGroup groupCfg,
-                                @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channelMap,
-                                @Nonnull final DesyJCADataSource dataSource)
-                                throws ArchiveServiceException,
-                                       OsgiServiceUnavailableException {
-        LOG.info("Configure group '{}'.", groupCfg.getName());
-        final ArchiveGroup group = addGroup(groupCfg);
-
-        final Collection<IArchiveChannel> channelCfgs =
-            provider.getEngineFacade().getChannelsByGroupId(groupCfg.getId());
-        LOG.info("with {} channels", channelCfgs.size());
-
-        for (final IArchiveChannel channelCfg : channelCfgs) {
-            createAndAddArchiveChannelBuffer(provider, channelCfg, channelMap, group, dataSource);
-        }
-    }
-
-    @Nonnull
-    private ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
-    createAndAddArchiveChannelBuffer(@Nonnull final IServiceProvider provider,
-                                     @Nonnull final IArchiveChannel channelCfg,
-                                     @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channelMap,
-                                     @Nonnull final ArchiveGroup group,
-                                     @Nonnull final DesyJCADataSource dataSource) {
-        @SuppressWarnings({ "rawtypes", "unchecked" })
-        final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel =
-            new ArchiveChannelBuffer(channelCfg, provider, dataSource);
-
-        ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> presentChannel =
-            channelMap.putIfAbsent(channel.getName(), channel);
-
-        if (presentChannel == null) {
-            presentChannel = channel; // channel was put into channelMap
-        }
-        group.add(presentChannel);
-        return presentChannel;
     }
 
 
@@ -485,6 +447,7 @@ public final class EngineModel {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     @Nonnull
     public ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
     configureNewChannel(@Nonnull final EpicsChannelName epicsName,
@@ -498,7 +461,7 @@ public final class EngineModel {
             final IArchiveControlSystem cs =
                 _provider.getEngineFacade().getControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
 
-            final ArchiveChannelBuffer<?, ?> channelBuffer = getChannel(epicsName.toString());
+            ArchiveChannelBuffer<?, ?> channelBuffer = getChannel(epicsName.toString());
             if (channelBuffer != null) {
                 throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
             }
@@ -522,12 +485,14 @@ public final class EngineModel {
                                                                   high);
 
             final IArchiveChannel failureCfg =_provider.getEngineFacade().createChannel(channel);
-            if (failureCfg!= null) {
+            if (failureCfg != null) {
                 throw new EngineModelException("Channel creation failed.", null);
             }
             final IArchiveChannel cfg = _provider.getEngineFacade().getChannelByName(epicsName.toString());
             if (cfg != null) {
-                return createAndAddArchiveChannelBuffer(_provider, cfg, _channelMap, group, _dataSource);
+                channelBuffer = EngineModelConfigurator.createAndAddArchiveChannelBuffer(_provider, cfg, _channelMap, _dataSource);
+                group.add(channelBuffer);
+                return (ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>) channelBuffer;
             }
         } catch (final Exception e) {
             throw new EngineModelException("Channel creation failed: " + e.getMessage(), e);
@@ -579,5 +544,6 @@ public final class EngineModel {
         } catch (final OsgiServiceUnavailableException e) {
             throw new EngineModelException("Creation of group failed, archive service unavailable.", e);
         }
+        addGroup(archGroup);
     }
 }

@@ -137,6 +137,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                               @Nonnull final PreparedStatement stmt,
                                               @Nonnull final List<T> rescueDataList) {
         final Queue<T> queue = handler.getQueue();
+
         T element;
         try {
             while (true) {

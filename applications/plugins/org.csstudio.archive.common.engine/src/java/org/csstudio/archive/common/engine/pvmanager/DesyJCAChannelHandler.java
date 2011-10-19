@@ -31,13 +31,20 @@ import gov.aps.jca.event.GetEvent;
 import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 
+import java.util.Collection;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
+import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.jca.JCAChannelHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 
@@ -49,7 +56,9 @@ import com.google.common.base.Predicate;
  */
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DesyJCAChannelHandler.class);
     private final Predicate<DBR> _validator;
+    private Class<Object> _dataType;
     private EpicsMetaData _desyMeta;
 
     // TODO (bknerr) : make this one protected in super type
@@ -57,12 +66,26 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
 
     /**
      * Constructor.
+     * @param dataType
+     * @throws TypeSupportException
      */
     public DesyJCAChannelHandler(@Nonnull final String channelName,
+                                 @CheckForNull final String dataType,
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
         _validator = new DesyDbrTimeValidator();
+
+        if (dataType == null) {
+            _dataType = null;
+        } else {
+            try {
+                _dataType = BaseTypeConversionSupport.createBaseTypeClassFromString(dataType, "org.csstudio.domain.desy.epics.types");
+            } catch (final TypeSupportException e) {
+                LOG.error("Datatype for channel {} is not convertible to type class!:\n{}", channelName, e.getMessage());
+            }
+        }
+
         // TODO (bknerr) : make this one protected in super type
         _monitorMask = monitorMask;
     }
@@ -83,6 +106,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                     synchronized(DesyJCAChannelHandler.this) {
                         metadata = ev.getDBR();
                         // In case the metadata arrives after the monitor
+                        // FIXME (bknerr) : couldn't extract this method as well... is it important?
                         //dispatchValue();
                     }
                 }
@@ -102,7 +126,11 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
 
         if (_desyMeta == null && metadata != null) {
             _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
-            ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
+            if (_dataType != null) {
+                ((DesyTypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
+            } else {
+                ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
+            }
         }
 
         if (!_validator.apply(rawDBR)) {
