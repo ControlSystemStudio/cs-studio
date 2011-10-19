@@ -24,91 +24,45 @@ public class KBLogUtil {
 	/**
 	 * Returns the names of sub archives.
 	 * 
-	 * @param root Root directory of KBLog (e.g. /vdata2/KEKBLog)
+	 * @param root Root directory of KBLog (e.g. /KEKBLog)
 	 * @return Names of sub archives.
 	 */
 	public static String[] getSubArchives(String root) {
-		String kblogRoot = root;
-		File kblogRootFile = new File(kblogRoot);
-		
-		if (!kblogRootFile.isDirectory()) {
-			Logger.getLogger(Activator.ID).log(Level.WARNING, kblogRoot + " is not a directory.");
-			return new String[]{};
-		}
-		
-		if (!kblogRoot.endsWith("/")) {
-			kblogRoot = root + "/";
-		}
-		
+		// TODO make this path configurable.
+		File kblogArchiveListFile = new File(root, "SYS/KEKBLog.list");
 		ArrayList<String> subArchives = new ArrayList<String>();
-		findSubArchivesRecursively(new File(kblogRoot), kblogRoot, subArchives);
 		
-		return subArchives.toArray(new String[]{});
-	}
-	
-	/**
-	 * Find LCF files recursively in the specified directory, and append their names (sub
-	 * archive names) to the list.
-	 * 
-	 * @param dir Search directory.
-	 * @param kblogRoot Root directory of KBLog (e.g. /vdata2/KEKBLog/). It must end with "/".
-	 * @param list List of sub archive names.
-	 */
-	private static void findSubArchivesRecursively(File dir, String kblogRoot, ArrayList<String> list) {
-		File[] fs = dir.listFiles();
+		if (!(kblogArchiveListFile.isFile() && kblogArchiveListFile.canRead()))
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, kblogArchiveListFile.getAbsolutePath() + " does not exist, or cannot be open in read mode. This file is required to obtain sub archive names.");
 		
-		for (File f : fs) {
-			if (f.isDirectory()) {
-				findSubArchivesRecursively(f, kblogRoot, list);
-			} else if (isLCFFile(f)) {
-				String absPath = f.getAbsolutePath();
-				if (absPath.startsWith(kblogRoot) && absPath.endsWith("." + lcfSuffix)) {
-					// Sub archive name is the path to LCF file with the following things removed. 
-					//  * the path to the root directory of KEKBLog 
-					//  * suffix ".lcf"
-					String subArchiveName = 
-						absPath.substring(kblogRoot.length(),
-										  absPath.length() - lcfSuffix.length() - 1);
-					list.add(subArchiveName);
-				}
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(kblogArchiveListFile));
+			String line;
+			
+			while ((line = br.readLine()) != null) {
+				if (line.isEmpty())
+					continue;
+				
+				String subArchiveName = line.replace(' ', '/');
+				subArchives.add(subArchiveName);
 			}
+		} catch (IOException ex) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, "Error while reading " + kblogArchiveListFile.getAbsolutePath() + ".", ex);
 		}
-	}
-	
-	/**
-	 * Return the regular expression pattern that matches active LCF file.
-	 * The returned pattern excludes old LCF file.
-	 * 
-	 * Here we assumes that active LCF file only contains alphabetical letters (A-Z, a-z) with
-	 * suffix ".lcf" in its file name while old LCF file contains other characters (_, 0-9).  
-	 * 
-	 * @return regular expression that matches file name of active LCF.
-	 */
-	private static synchronized Pattern getLCFPattern() {
-		// precompile the regular expression
-		if (lcfPattern == null) {
-			lcfPattern = Pattern.compile("^[A-Za-z][A-Za-z]*\\." + lcfSuffix + "$");
-		}
-		return lcfPattern;
-	}
 
-	/**
-	 * Returns whether the specified file is LCF file or not.
-	 * 
-	 * @param f File object
-	 * @return whether the specified file is LCF file or not.
-	 */
-	private static boolean isLCFFile(File f) {
-		Pattern lcfPattern = getLCFPattern();
-		return f.isFile() && lcfPattern.matcher(f.getName()).matches();
+		return subArchives.toArray(new String[]{});
 	}
 	
 	public static String[] getProcessVariableNames(String root, String subArchive, String regExp) {
 		ArrayList<String> matchedNames = new ArrayList<String>();
 		Pattern namePattern = Pattern.compile(regExp);
+
+		// Locate LCF file.
+		int lastSlashIndex = subArchive.lastIndexOf('/');
+		String lcfFileName = subArchive.substring(lastSlashIndex + 1);
 		
 		// Open LCF file.
-		File lcfFile = new File(root, subArchive + "." + lcfSuffix);
+		File lcfFile = new File(root, "SYS/LCF/" + lcfFileName + "." + lcfSuffix); // TODO make the path "SYS/LCF/" configurable
 		if (!lcfFile.isFile()) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, lcfFile.getAbsolutePath() + " is not a file.");
 			return new String[]{};
