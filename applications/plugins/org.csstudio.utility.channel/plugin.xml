@@ -40,6 +40,7 @@
                id="org.csstudio.ui.menu.popup.channel"
                label="Channel">
             <visibleWhen>
+            <or>
                <with
                      variable="activeMenuSelection">
                   <iterate>
@@ -51,10 +52,41 @@
                      <count value="+"/>
                   </and>
                </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lgov.bnl.channelfinder.api.Channel;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
             </visibleWhen>
             <separator name="main"/>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.channel">
+         <command
+               commandId="org.csstudio.utility.channel.actions.Info"
+               icon="icons/channel_info.png"
+               label="Show Channel Info (command)"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.InfoCommandHandler"
+            description="Show details for the selected channels"
+            id="org.csstudio.utility.channel.actions.Info"
+            name="Show Channel Info">
+      </command>
    </extension>
 
 </plugin>
