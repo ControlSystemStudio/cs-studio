@@ -65,9 +65,15 @@
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.channel">
          <command
-               commandId="org.csstudio.utility.channel.actions.Info"
+               commandId="org.csstudio.utility.channel.info"
                icon="icons/channel_info.png"
                label="Show Channel Info"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.utility.channel.addTag"
+               icon="icons/add_tag.png"
+               label="Add Tag"
                style="push">
          </command>
       </menuContribution>
@@ -77,8 +83,14 @@
       <command
             defaultHandler="org.csstudio.utility.channel.actions.InfoCommandHandler"
             description="Show details for the selected channels"
-            id="org.csstudio.utility.channel.actions.Info"
+            id="org.csstudio.utility.channel.info"
             name="Show Channel Info">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.AddTagCommandHandler"
+            description="Tag the selected channels"
+            id="org.csstudio.utility.channel.addTag"
+            name="Add Tag">
       </command>
    </extension>
 
