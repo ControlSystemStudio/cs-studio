@@ -93,6 +93,7 @@ public class AddTagCommandHandler extends ChannelCommandHandler {
 			this.listeners.add(listener);
 		}
 
+		@SuppressWarnings("unused")
 		public void removeExceptionListener(ExceptionListener listener) {
 			this.listeners.remove(listener);
 		}

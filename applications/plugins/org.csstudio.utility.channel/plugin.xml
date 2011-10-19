@@ -15,13 +15,6 @@
                label="Remove Tag"
                menubarPath="org.csstudio.ui.menu.popup.channel/main">
          </action>
-         <action
-               class="org.csstudio.utility.channel.actions.AddTagAction"
-               icon="icons/add_tag.png"
-               id="org.csstudio.utility.channel.addTag"
-               label="Add Tag"
-               menubarPath="org.csstudio.ui.menu.popup.channel/main">
-         </action>
       </objectContribution>
    </extension>
    <extension
