@@ -27,13 +27,12 @@ public class KBLogUtil {
 	 * @param root Root directory of KBLog (e.g. /KEKBLog)
 	 * @return Names of sub archives.
 	 */
-	public static String[] getSubArchives(String root) {
-		// TODO make this path configurable.
-		File kblogArchiveListFile = new File(root, "SYS/KEKBLog.list");
+	public static String[] getSubArchives(String root, String relPathToSubarchiveList) {
+		File kblogArchiveListFile = new File(root, relPathToSubarchiveList);
 		ArrayList<String> subArchives = new ArrayList<String>();
 		
 		if (!(kblogArchiveListFile.isFile() && kblogArchiveListFile.canRead()))
-			Logger.getLogger(Activator.ID).log(Level.SEVERE, kblogArchiveListFile.getAbsolutePath() + " does not exist, or cannot be open in read mode. This file is required to obtain sub archive names.");
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, kblogArchiveListFile.getAbsolutePath() + " does not exist, or cannot be opened in read mode. This file is required to obtain sub archive names.");
 		
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(kblogArchiveListFile));
@@ -53,7 +52,7 @@ public class KBLogUtil {
 		return subArchives.toArray(new String[]{});
 	}
 	
-	public static String[] getProcessVariableNames(String root, String subArchive, String regExp) {
+	public static String[] getProcessVariableNames(String root, String relPathToLCFDir, String subArchive, String regExp) {
 		ArrayList<String> matchedNames = new ArrayList<String>();
 		Pattern namePattern = Pattern.compile(regExp);
 
@@ -62,9 +61,9 @@ public class KBLogUtil {
 		String lcfFileName = subArchive.substring(lastSlashIndex + 1);
 		
 		// Open LCF file.
-		File lcfFile = new File(root, "SYS/LCF/" + lcfFileName + "." + lcfSuffix); // TODO make the path "SYS/LCF/" configurable
-		if (!lcfFile.isFile()) {
-			Logger.getLogger(Activator.ID).log(Level.WARNING, lcfFile.getAbsolutePath() + " is not a file.");
+		File lcfFile = new File(root, relPathToLCFDir + "/" + lcfFileName + "." + lcfSuffix);
+		if (!(lcfFile.isFile() && lcfFile.canRead())) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE, lcfFile.getAbsolutePath() + " does not exist, or cannot be opened in read mode.");
 			return new String[]{};
 		}
 		

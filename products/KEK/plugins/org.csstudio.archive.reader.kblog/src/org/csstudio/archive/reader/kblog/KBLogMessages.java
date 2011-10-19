@@ -11,6 +11,8 @@ public class KBLogMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.csstudio.archive.reader.kblog.messages"; //$NON-NLS-1$
 	public static String PreferenceTitle;
 	public static String PathToKBLogRD;
+	public static String RelPathToSubarchiveList;
+	public static String RelPathToLCFDir;
 	public static String ReduceData;
 	public static String SeverityConnected;
 	public static String StatusConnected;

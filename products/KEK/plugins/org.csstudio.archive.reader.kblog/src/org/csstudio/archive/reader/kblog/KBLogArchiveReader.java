@@ -21,7 +21,9 @@ public class KBLogArchiveReader implements ArchiveReader {
 	private String kblogRoot; 
 	private ArchiveInfo[] archiveInfos;
 	private ArrayList<KBLogRDProcess> kblogrdProcesses;
+	
 	private String kblogrdPath;
+	private String relPathToLCFDir;
 	private boolean reduceData; 
 	
 	/**
@@ -29,9 +31,10 @@ public class KBLogArchiveReader implements ArchiveReader {
 	 * 
 	 * @param url URL must start with "kblog://".
 	 */
-	public KBLogArchiveReader(final String url, final String kblogrdPath, final boolean reduceData)
+	public KBLogArchiveReader(final String url, final String kblogrdPath, String relPathToSubarchiveList, String relPathToLCFDir, final boolean reduceData)
 	{
 		this.kblogrdPath = kblogrdPath;
+		this.relPathToLCFDir = relPathToLCFDir;
 		this.reduceData = reduceData;
 		
 		// Parse URL
@@ -41,7 +44,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 		kblogRoot = url.substring(scheme.length());
 		
 		// Obtain sub archive names
-		String[] subArchives = KBLogUtil.getSubArchives(kblogRoot);
+		String[] subArchives = KBLogUtil.getSubArchives(kblogRoot, relPathToSubarchiveList);
 		if (subArchives.length == 0) {
 			Logger.getLogger(Activator.ID).log(Level.WARNING, "Failed to find archives in " + kblogRoot);
 		}
@@ -92,7 +95,7 @@ public class KBLogArchiveReader implements ArchiveReader {
 	public String[] getNamesByRegExp(int key, String reg_exp) throws Exception {
 		ArchiveInfo info = archiveInfos[key-1];
 		Logger.getLogger(Activator.ID).log(Level.FINEST, "Searching PV names in " + info.getName() + " with regular expression: " + reg_exp);
-		return KBLogUtil.getProcessVariableNames(kblogRoot, info.getName(), reg_exp);
+		return KBLogUtil.getProcessVariableNames(kblogRoot, relPathToLCFDir, info.getName(), reg_exp);
 	}
 
 	@Override

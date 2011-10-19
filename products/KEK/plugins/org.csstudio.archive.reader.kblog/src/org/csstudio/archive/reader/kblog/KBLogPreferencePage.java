@@ -24,6 +24,8 @@ public class KBLogPreferencePage extends FieldEditorPreferencePage implements IW
 		setMessage(KBLogMessages.PreferenceTitle);
 		final Composite parent = getFieldEditorParent();
 		addField(new StringFieldEditor(KBLogPreferences.PATH_TO_KBLOGRD, KBLogMessages.PathToKBLogRD, parent));
+		addField(new StringFieldEditor(KBLogPreferences.REL_PATH_TO_SUBARCHIVE_LIST, KBLogMessages.RelPathToSubarchiveList, parent));
+		addField(new StringFieldEditor(KBLogPreferences.REL_PATH_TO_LCF_DIR, KBLogMessages.RelPathToLCFDir, parent));
 		addField(new BooleanFieldEditor(KBLogPreferences.REDUCE_DATA, KBLogMessages.ReduceData, parent));
 	}
 

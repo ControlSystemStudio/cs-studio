@@ -23,8 +23,10 @@ public class KBLogArchiveReaderFactory implements ArchiveReaderFactory {
 		synchronized (instance)
 		{
 			final String kblogrdPath = KBLogPreferences.getPathToKBLogRD();
+			final String relPathToSubarchiveList = KBLogPreferences.getRelPathToSubarchiveList();
+			final String relPathToLCFDir = KBLogPreferences.getRelPathToLCFDir();
 			final boolean reduceData = KBLogPreferences.getReduceData();
-			return new KBLogArchiveReader(url, kblogrdPath, reduceData);
+			return new KBLogArchiveReader(url, kblogrdPath, relPathToSubarchiveList, relPathToLCFDir, reduceData);
 		}
 	}
 }
