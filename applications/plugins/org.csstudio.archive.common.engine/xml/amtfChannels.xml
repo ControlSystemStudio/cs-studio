@@ -33,7 +33,7 @@
 	        <monitor/>
         </mode>
         <!-- specific record field properties only permitted for EPICS channels -->
-        <property name="recordField">TOFF</property>
+        <property name="recordField">FREQ</property>
         <property name="recordField">NPTD</property>
     </channel>
 

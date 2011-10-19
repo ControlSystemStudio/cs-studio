@@ -4,12 +4,16 @@
 	xmlns:xi="http://www.w3.org/2001/XInclude"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\xml\archiveEngineCfg.xsd">
+	
+	
 	<!-- Intended to include all existing channels with their corresponding properties/associated channels -->
 	<system>
 		<xi:include href="amtfChannels.xml" />
 		<xi:include href="cmtbChannels.xml" />
 		<xi:include href="xfelChannels.xml" />
 	</system>
+	
+	
 	<!-- Grouping of channels - groups represent perspectives of a subset of channels, the grouping is arbitrary and non exclusive -->
 	<groups>
 		<group name="CMTB.prod">
