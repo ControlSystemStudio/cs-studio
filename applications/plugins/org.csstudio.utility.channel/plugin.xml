@@ -69,6 +69,12 @@
                label="Add Tag"
                style="push">
          </command>
+         <command
+               commandId="org.csstudio.utility.channel.removeTag"
+               icon="icons/remove_tag.png"
+               label="Remove Tag"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -84,6 +90,12 @@
             description="Tag the selected channels"
             id="org.csstudio.utility.channel.addTag"
             name="Add Tag">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.RemoveTagCommandHandler"
+            description="Tag the selected channels"
+            id="org.csstudio.utility.channel.removeTag"
+            name="Remove Tag">
       </command>
    </extension>
 
