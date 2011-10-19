@@ -157,7 +157,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 				status = KBLogMessages.StatusConnected;
 			
 			return ValueFactory.createMinMaxDoubleValue(midTime,
-					ValueFactory.createOKSeverity(),
+					KBLogSeverityInstances.normal,
 					status,
 					null,
 					IValue.Quality.Interpolated,

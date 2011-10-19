@@ -37,4 +37,33 @@ public class KBLogSeverityInstances {
         public String toString()
         {   return KBLogMessages.SeverityConnected; }
     };
+    
+    public static final ISeverity normal = new ISeverity()
+    {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public boolean hasValue()
+        {   return true;  }
+
+        @Override
+        public boolean isInvalid()
+        {   return false;   }
+
+        @Override
+        public boolean isMajor()
+        {   return false;  }
+
+        @Override
+        public boolean isMinor()
+        {   return false;  }
+
+        @Override
+        public boolean isOK()
+        {   return true;  }
+
+        @Override
+        public String toString()
+        {   return KBLogMessages.SeverityNormal; }
+    };
 }

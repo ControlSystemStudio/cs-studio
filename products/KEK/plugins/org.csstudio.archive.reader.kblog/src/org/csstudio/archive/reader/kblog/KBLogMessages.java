@@ -15,6 +15,7 @@ public class KBLogMessages extends NLS {
 	public static String RelPathToLCFDir;
 	public static String ReduceData;
 	public static String SeverityConnected;
+	public static String SeverityNormal;
 	public static String StatusConnected;
 	public static String StatusNormal;
 	public static String ArchiveServerName;

@@ -149,7 +149,7 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 					} else {
 						value = Double.parseDouble(strValue);
 						status = KBLogMessages.StatusNormal;
-						severity = ValueFactory.createOKSeverity();
+						severity = KBLogSeverityInstances.normal;
 					}
 					
 					return ValueFactory.createDoubleValue(time,
