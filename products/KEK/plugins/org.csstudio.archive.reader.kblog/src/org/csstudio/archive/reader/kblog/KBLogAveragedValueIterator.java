@@ -4,6 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.data.values.IDoubleValue;
+import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
@@ -72,6 +73,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		double min = 0;
 		double max = 0;
 		boolean connected = false;
+		IValue currentBaseValue = null;
 		
 		ITimestamp nextTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
 
@@ -85,6 +87,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
 							"The value transferred from " + base.getPathToKBLogRD() + " (" + base.getCommandID() + ") is not ordered in time.");
 
+					currentBaseValue = nextBaseValue;
 					if (base.hasNext())
 						nextBaseValue = base.next();
 					else
@@ -100,31 +103,43 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 				}
 				
 				if (nextBaseValue.getSeverity().hasValue()) {
-					if (nextBaseValue instanceof IDoubleValue) {
-						double val = ((IDoubleValue) nextBaseValue).getValue();
+					if (nextBaseValue instanceof IDoubleValue || nextBaseValue instanceof ILongValue) {
+						double val = Double.NaN;
 						
-						if (count == 0) {
-							avg = val;
-							max = val;
-							min = val;
-							count = 1;
+						if (nextBaseValue instanceof IDoubleValue)
+							val = ((IDoubleValue) nextBaseValue).getValue();
+						else if (nextBaseValue instanceof ILongValue)
+							val = (double)((ILongValue) nextBaseValue).getValue();
+						
+						if (val == Double.POSITIVE_INFINITY) {
+							max = Double.POSITIVE_INFINITY;
+						} else if (val == Double.NEGATIVE_INFINITY) {
+							min = Double.NEGATIVE_INFINITY;
+						} else if (val == Double.NaN) {
+							// Do nothing, just ignore NaN
 						} else {
-							avg = (count * avg + val) / (count + 1.0);
-							if (val > max)
+							if (count == 0) {
+								avg = val;
 								max = val;
-							if (val < min)
 								min = val;
-							
-							count++;
+								count = 1;
+							} else {
+								avg = (count * avg + val) / (count + 1.0);
+								if (val > max)
+									max = val;
+								if (val < min)
+									min = val;
+								
+								count++;
+							}
 						}
-					} else {
-						// TODO support other data types
 					}
 				}
 				
 				if (nextBaseValue.getStatus().equals(KBLogMessages.StatusConnected))
 					connected = true;
 				
+				currentBaseValue = nextBaseValue;
 				if (base.hasNext())
 					nextBaseValue = base.next();
 				else
@@ -156,6 +171,9 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			} else {
 				return null;
 			}
+		} else if (count == 1) {
+			// Return the original value
+			return currentBaseValue;
 		} else {
 			String status = KBLogMessages.StatusNormal;
 			if (connected)
