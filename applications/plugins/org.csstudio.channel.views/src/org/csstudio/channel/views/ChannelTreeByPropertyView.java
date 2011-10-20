@@ -162,13 +162,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		
 		MenuManager menuMgr = new MenuManager();
 		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		menuMgr.addMenuListener(new IMenuListener() {
-			
-			@Override
-			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-			}
-		});
 		Menu menu = menuMgr.createContextMenu(treeWidget.getTree());
 		treeWidget.getTree().setMenu(menu);
 		final Tree tree = treeWidget.getTree();
