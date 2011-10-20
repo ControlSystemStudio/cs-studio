@@ -41,7 +41,7 @@ import com.google.common.base.Predicate;
  */
 public class DesyDbrTimeValidator implements Predicate<DBR> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DesyDbrTimeValidator.class);
+    private static final Logger LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private final Predicate<DBR> _validator;
 
@@ -71,7 +71,7 @@ public class DesyDbrTimeValidator implements Predicate<DBR> {
 
     private boolean applyForTime(@Nonnull final DBR rawDBR) {
         if (!(rawDBR instanceof TIME)) {
-            LOG.debug("DBR is not of type {}. Not valid for creation.",
+            LOG.info("DBR is not of type {}. Not valid for creation.",
                       TIME.class.getSimpleName());
             return false;
         }

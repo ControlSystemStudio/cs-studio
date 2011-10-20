@@ -57,6 +57,8 @@ import com.google.common.base.Predicate;
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(DesyJCAChannelHandler.class);
+    private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
+
     private final Predicate<DBR> _validator;
     private Class<Object> _dataType;
     private EpicsMetaData _desyMeta;
@@ -127,6 +129,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
         handleFirstCacheUpdate(rawDBR);
 
         if (!_validator.apply(rawDBR)) {
+            STRANGE_LOG.info("{} has invalid timestamp.", getChannelName());
             return false;
         }
 
