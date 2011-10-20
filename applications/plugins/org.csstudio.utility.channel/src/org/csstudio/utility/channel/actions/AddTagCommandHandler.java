@@ -7,8 +7,6 @@ import gov.bnl.channelfinder.api.Tag;
 
 import java.beans.ExceptionListener;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,49 +14,23 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.csstudio.utility.channel.ChannelCommandHandler;
 import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
+import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IActionDelegate;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-public class AddTagAction implements IObjectActionDelegate {
-
-	private Shell shell;
-	private Collection<Channel> channels;
-
-	/**
-	 * Constructor for AddTagAction.
-	 * 
-	 * @wbp.parser.entryPoint
-	 */
-	public AddTagAction() {
-		super();
-		this.channels = new HashSet<Channel>();
-	}
-
-	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 * @wbp.parser.entryPoint
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
-	}
-
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 * @wbp.parser.entryPoint
-	 */
-	public void run(IAction action) {
+public class AddTagCommandHandler extends ChannelCommandHandler {
+	
+	@Override
+	protected void execute(List<Channel> channels, ExecutionEvent event) {
+		final Shell shell = HandlerUtil.getActiveShell(event);
 		Collection<String> existingTagNames = null;
 		GetAllTags getAllTags = new GetAllTags();
 		getAllTags.addExceptionListener(new ExceptionListener() {
@@ -114,22 +86,6 @@ public class AddTagAction implements IObjectActionDelegate {
 		}
 	}
 
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 * @wbp.parser.entryPoint
-	 */
-	@SuppressWarnings("unchecked")
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection != null & selection instanceof IStructuredSelection) {
-			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			channels.clear();
-			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
-					.hasNext();) {
-				channels.add(iterator.next());
-			}
-		}
-	}
-
 	private class GetAllTags implements Callable<Collection<String>> {
 		private List<ExceptionListener> listeners = new CopyOnWriteArrayList<ExceptionListener>();
 
@@ -137,6 +93,7 @@ public class AddTagAction implements IObjectActionDelegate {
 			this.listeners.add(listener);
 		}
 
+		@SuppressWarnings("unused")
 		public void removeExceptionListener(ExceptionListener listener) {
 			this.listeners.remove(listener);
 		}
