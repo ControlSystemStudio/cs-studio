@@ -23,20 +23,14 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroup;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.ArchiveEngineStatus;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
-import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -59,7 +53,7 @@ public final class EngineModel {
     /** Name of this model */
     private final String _name;
 
-    /** Thread that writes to the <code>archive</code> */
+    /** Executor that handles thread with WriteWorker */
     private WriteExecutor _writeExecutor;
 
     /**  All channels */
@@ -82,11 +76,7 @@ public final class EngineModel {
     private final DesyJCADataSource _dataSource;
 
     /**
-     * Construct model that writes to archive
-     * @param engineName
-     * @param provider provider for services
-     * @throws EngineModelException
-     * @throws UnknownHostException
+     * Constructor
      */
     public EngineModel(@Nonnull final String engineName,
                        @Nonnull final IServiceProvider provider,
@@ -101,18 +91,19 @@ public final class EngineModel {
         _writePeriodInMS = 1000*provider.getPreferencesService().getWritePeriodInS();
         _heartBeatPeriodInMS = 1000*provider.getPreferencesService().getHeartBeatPeriodInS();
 
-        _engine = findEngineConfByName(_name, _provider);
-        logHttpHostAndPort();
+        _engine = EngineModelConfigurator.findEngineConfByName(_name, _provider);
+
+        logHttpHostAndPort(_engine);
     }
 
-    private void logHttpHostAndPort() {
+    private void logHttpHostAndPort(@Nonnull final IArchiveEngine engine) {
         String hostName = null;
         try {
             hostName = InetAddress.getLocalHost().getCanonicalHostName();
         } catch (final UnknownHostException e) {
             hostName = "localhost";
         }
-        LOG.info("Http server on host {} and port: {}", hostName, _engine.getUrl().getPort());
+        LOG.info("Http server on host {} and port: {}", hostName, engine.getUrl().getPort());
     }
 
     /** @return Engine name (descriptive) */
@@ -369,14 +360,13 @@ public final class EngineModel {
                 LOG.error("Read configuration while state " + _state + ". Should be " + EngineState.IDLE);
                 return;
             }
+
             if (_engine == null) { // has been stopped before, then to be reconfigured
-                _engine = findEngineConfByName(_name, _provider);
+                _engine = EngineModelConfigurator.findEngineConfByName(_name, _provider);
             }
 
-            final IArchiveEngineFacade service = _provider.getEngineFacade();
-
             final Collection<IArchiveChannelGroup> groups =
-                service.getGroupsForEngine(_engine.getId());
+                EngineModelConfigurator.findGroupsForEngine(_engine.getId(), _provider);
 
             for (final IArchiveChannelGroup groupCfg : groups) {
                 final ArchiveGroup group = addGroup(groupCfg);
@@ -386,24 +376,6 @@ public final class EngineModel {
             handleExceptions(e);
         }
         _state = EngineState.CONFIGURED;
-    }
-
-    @Nonnull
-    private IArchiveEngine findEngineConfByName(@Nonnull final String name,
-                                                @Nonnull final IServiceProvider provider)
-                                                throws EngineModelException {
-        IArchiveEngine engine = null;
-        try {
-            engine = provider.getEngineFacade().findEngine(name);
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Engine could not be retrieved. OSGi service unavailable.", e);
-        } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Engine could not be retrieved. Internal archive service exception.", e);
-        }
-        if (engine == null) {
-            throw new EngineModelException("Unknown engine '" + name + "'.", null);
-        }
-        return engine;
     }
 
 
@@ -456,48 +428,23 @@ public final class EngineModel {
                         @Nullable final String low,
                         @Nullable final String high) throws EngineModelException {
 
-        try {
-            // For now we use only one control system - for later this can be configured via HTTP server
-            final IArchiveControlSystem cs =
-                _provider.getEngineFacade().getControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
-
-            ArchiveChannelBuffer<?, ?> channelBuffer = getChannel(epicsName.toString());
-            if (channelBuffer != null) {
-                throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
-            }
-            // TODO (bknerr) : check whether channel is already covered by other engine!
-            // only possible after db schema refactoring
-
-            final ArchiveGroup group = getGroup(groupName);
-            if (group == null) {
-                throw new EngineModelException("Group with name: '" + groupName + "' does not yet exist for this engine.", null);
-            }
-
-            final IArchiveChannel channel =
-                ArchiveTypeConversionSupport.createArchiveChannel(ArchiveChannelId.NONE,
-                                                                  epicsName.toString(),
-                                                                  type,
-                                                                  group.getId(),
-                                                                  null,
-                                                                  cs,
-                                                                  true,
-                                                                  low,
-                                                                  high);
-
-            final IArchiveChannel failureCfg =_provider.getEngineFacade().createChannel(channel);
-            if (failureCfg != null) {
-                throw new EngineModelException("Channel creation failed.", null);
-            }
-            final IArchiveChannel cfg = _provider.getEngineFacade().getChannelByName(epicsName.toString());
-            if (cfg != null) {
-                channelBuffer = EngineModelConfigurator.createAndAddArchiveChannelBuffer(_provider, cfg, _channelMap, _dataSource);
-                group.add(channelBuffer);
-                return (ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>) channelBuffer;
-            }
-        } catch (final Exception e) {
-            throw new EngineModelException("Channel creation failed: " + e.getMessage(), e);
+        ArchiveChannelBuffer<?, ?> channelBuffer = getChannel(epicsName.toString());
+        if (channelBuffer != null) {
+            throw new EngineModelException("Channel with name: '" + epicsName.toString() + "' does already exist for this engine.", null);
         }
-        throw new EngineModelException("Channel creation failed.", null);
+        final ArchiveGroup group = getGroup(groupName);
+        if (group == null) {
+            throw new EngineModelException("Group with name: '" + groupName + "' does not yet exist for this engine.", null);
+        }
+        channelBuffer = EngineModelConfigurator.configureNewChannel(epicsName,
+                                                                    type,
+                                                                    low,
+                                                                    high,
+                                                                    group,
+                                                                    _channelMap,
+                                                                    _dataSource,
+                                                                    _provider);
+        return (ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>) channelBuffer;
     }
 
     public void removeChannelFromConfiguration(@Nonnull final String name) throws EngineModelException{
@@ -509,23 +456,8 @@ public final class EngineModel {
             throw new EngineModelException("Removal of channel '" + name.toString() + "' not possible!" +
                                            "\nThere are archived samples for this channel. Do you just like to stop archiving the channel?", null);
         }
-
         buffer.stop("STOP FOR REMOVAL");
-        _channelMap.remove(name);
-        for (final ArchiveGroup group : getGroups()) {
-            if (group.findChannel(name) != null) {
-                group.remove(name);
-                break;
-            }
-        }
-
-        try {
-            _provider.getEngineFacade().removeChannel(name);
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Channel deletion failed.", e);
-        } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Channel deletion failed.", e);
-        }
+        EngineModelConfigurator.removeChannel(name, _channelMap, _groupMap.values(), _provider);
     }
 
     public void configureNewGroup(@Nonnull final String name,
@@ -534,16 +466,8 @@ public final class EngineModel {
         if (group != null) {
             throw new EngineModelException("Group '" + name + "' does already exist!", null);
         }
-
         final IArchiveChannelGroup archGroup =
-            new ArchiveChannelGroup(ArchiveChannelGroupId.NONE, name, _engine.getId(), desc);
-        try {
-            _provider.getEngineFacade().createGroup(archGroup);
-        } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Creation of group failed in archive service.", e);
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Creation of group failed, archive service unavailable.", e);
-        }
+            EngineModelConfigurator.configureNewGroup(name, _engine.getId(), desc, _provider);
         addGroup(archGroup);
     }
 }
