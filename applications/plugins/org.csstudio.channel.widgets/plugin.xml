@@ -14,7 +14,7 @@
             adaptableType="org.csstudio.channel.widgets.ChannelTreeByPropertyNode"
             class="org.csstudio.channel.widgets.ChannelTreeByPropertyNodeAdapterFactory">
          <adapter
-               type="gov.bnl.channelfinder.api.Channel">
+               type="[Lgov.bnl.channelfinder.api.Channel;">
          </adapter>
       </factory>
    </extension>
