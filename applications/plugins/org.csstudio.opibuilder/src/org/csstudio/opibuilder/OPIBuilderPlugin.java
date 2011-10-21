@@ -100,7 +100,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 						MediaService.getInstance().reloadFontFile();
 					else if (event.getProperty().equals(
 							PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
-						GUIRefreshThread.getInstance().reSchedule();
+						GUIRefreshThread.getInstance(true).reLoadGUIRefreshCycle();
 					else if (event.getProperty().equals(
 							PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)) {
 						System.setProperty(

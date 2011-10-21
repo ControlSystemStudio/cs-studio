@@ -13,9 +13,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 
 
 
@@ -30,10 +28,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class GUIRefreshThread implements Runnable {
 	/**
-	 * The singleton instance.
+	 * The singleton instance for Runtime, whose GUI refresh cycle is from preference.
 	 */
-	private static GUIRefreshThread instance;
+	private static GUIRefreshThread runTimeInstance;
 
+	/**
+	 * The singleton instance for Editing, whose GUI refresh cycle is fixed 100 ms.
+	 */
+	private static GUIRefreshThread editingInstance;
+	
 	/**
 	 * A LinkedHashset, which contains {@link WidgetIgnorableUITask}.
 	 * It will be processed by this thread periodically. Use hashset
@@ -51,11 +54,19 @@ public final class GUIRefreshThread implements Runnable {
 
 	private Runnable resetAsyncEmpty;
 
+	private Display rcpDisplay;
+	
+	private boolean isRuntime;
+
 	/**
 	 * Standard constructor.
 	 */
-	private GUIRefreshThread() {
+	private GUIRefreshThread(boolean isRuntime) {
+		this.isRuntime = isRuntime;
 		//tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
+		if(!OPIBuilderPlugin.isRAP()){
+			rcpDisplay = DisplayUtils.getDisplay();			
+		}
 		tasksQueue = new LinkedHashSet<WidgetIgnorableUITask>();
 		resetAsyncEmpty = new Runnable() {
 
@@ -63,7 +74,7 @@ public final class GUIRefreshThread implements Runnable {
 				asyncEmpty = true;
 			}
 		};
-		reSchedule();
+		reLoadGUIRefreshCycle();
 		thread = new Thread(this, "OPI GUI Refresh Thread"); //$NON-NLS-1$
 		thread.start();
 	}
@@ -73,19 +84,36 @@ public final class GUIRefreshThread implements Runnable {
 	 *
 	 * @return the singleton instance
 	 */
-	public static synchronized GUIRefreshThread getInstance() {
-		if (instance == null) {
-			instance = new GUIRefreshThread();
-		}
-
-		return instance;
+	public static synchronized GUIRefreshThread getInstance(boolean isRuntime) {
+		if (isRuntime){
+			if(runTimeInstance == null)
+				runTimeInstance = new GUIRefreshThread(isRuntime);
+			return runTimeInstance;	
+		}else {
+			if(editingInstance == null) 
+				editingInstance = new GUIRefreshThread(isRuntime);			
+			return editingInstance;
+		}	
 	}
 
 	/**
 	 * Reschedule this task upon the new GUI refresh cycle.
 	 */
-	public void reSchedule(){
-		guiRefreshCycle = PreferencesHelper.getGUIRefreshCycle();
+	public void reLoadGUIRefreshCycle(){
+		if(isRuntime)
+			guiRefreshCycle = PreferencesHelper.getGUIRefreshCycle();
+	}
+	
+	/**Set GUI Refresh Cycle. This should be temporarily used only. It must be 
+	 * reset by calling {@link #reLoadGUIRefreshCycle()} to ensure consistency.
+	 * @param guiRefreshCycle
+	 */
+	public void setGUIRefreshCycle(int guiRefreshCycle) {
+		this.guiRefreshCycle = guiRefreshCycle;
+	}	
+	
+	public int getGUIRefreshCycle() {
+		return guiRefreshCycle;
 	}
 
 	/**
@@ -99,7 +127,7 @@ public final class GUIRefreshThread implements Runnable {
 			}
 			if(!isEmpty){
 					start = System.currentTimeMillis();
-					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+					if(OPIBuilderPlugin.isRAP())
 						rapProcessQueue();
 					else
 						rcpProcessQueue();
@@ -128,24 +156,25 @@ public final class GUIRefreshThread implements Runnable {
 		//avoid add too many stuff to Display async queue.		
 		if(!asyncEmpty)
 			return;
-		asyncEmpty = false;
-		Display display = PlatformUI.getWorkbench().getDisplay();
+		asyncEmpty = false;		
 		Object[] tasksArray;
 		//copy the tasks queue.
 		synchronized (this) {
 			tasksArray = tasksQueue.toArray();
 			tasksQueue.clear();
 		}
-		for(Object o : tasksArray){
-				if(display!=null && !display.isDisposed())
-					try {
-						display.asyncExec(((WidgetIgnorableUITask) o).getRunnableTask());
-					} catch (Exception e) {
-					    OPIBuilderPlugin.getLogger().log(Level.WARNING, "GUI refresh error", e); //$NON-NLS-1$
-					}
+		if (rcpDisplay == null || rcpDisplay.isDisposed())
+			return;
+		for (Object o : tasksArray) {
+			try {
+				rcpDisplay.asyncExec(((WidgetIgnorableUITask) o)
+						.getRunnableTask());
+			} catch (Exception e) {
+				OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						"Display has been disposed.", e); //$NON-NLS-1$
+			}
 		}
-		if(display!=null && !display.isDisposed())
-			display.asyncExec(resetAsyncEmpty);
+		rcpDisplay.asyncExec(resetAsyncEmpty);
 	}
 	
 	/**
