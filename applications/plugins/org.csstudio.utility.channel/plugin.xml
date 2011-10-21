@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.csstudio.utility.channel.contribution1"
-            objectClass="gov.bnl.channelfinder.api.Channel">
-         <action
-               class="org.csstudio.utility.channel.actions.RemoveTagAction"
-               icon="icons/remove_tag.png"
-               id="org.csstudio.utility.channel.removeTag"
-               label="Remove Tag"
-               menubarPath="org.csstudio.ui.menu.popup.channel/main">
-         </action>
-         <action
-               class="org.csstudio.utility.channel.actions.AddTagAction"
-               icon="icons/add_tag.png"
-               id="org.csstudio.utility.channel.addTag"
-               label="Add Tag"
-               menubarPath="org.csstudio.ui.menu.popup.channel/main">
-         </action>
-         <action
-               class="org.csstudio.utility.channel.actions.InfoAction"
-               icon="icons/channel_info.png"
-               id="org.csstudio.utility.channel.info"
-               label="Show Channel Info"
-               menubarPath="org.csstudio.ui.menu.popup.channel/main">
-         </action>
-      </objectContribution>
-   </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -40,6 +10,7 @@
                id="org.csstudio.ui.menu.popup.channel"
                label="Channel">
             <visibleWhen>
+            <or>
                <with
                      variable="activeMenuSelection">
                   <iterate>
@@ -51,10 +22,65 @@
                      <count value="+"/>
                   </and>
                </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lgov.bnl.channelfinder.api.Channel;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
             </visibleWhen>
             <separator name="main"/>
          </menu>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.channel">
+         <command
+               commandId="org.csstudio.utility.channel.info"
+               icon="icons/channel_info.png"
+               label="Show Channel Info"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.utility.channel.addTag"
+               icon="icons/add_tag.png"
+               label="Add Tag"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.utility.channel.removeTag"
+               icon="icons/remove_tag.png"
+               label="Remove Tag"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.InfoCommandHandler"
+            description="Show details for the selected channels"
+            id="org.csstudio.utility.channel.info"
+            name="Show Channel Info">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.AddTagCommandHandler"
+            description="Tag the selected channels"
+            id="org.csstudio.utility.channel.addTag"
+            name="Add Tag">
+      </command>
+      <command
+            defaultHandler="org.csstudio.utility.channel.actions.RemoveTagCommandHandler"
+            description="Tag the selected channels"
+            id="org.csstudio.utility.channel.removeTag"
+            name="Remove Tag">
+      </command>
    </extension>
 
 </plugin>

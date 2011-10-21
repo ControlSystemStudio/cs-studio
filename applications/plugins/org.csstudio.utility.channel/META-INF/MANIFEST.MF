@@ -16,3 +16,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.channel,
  org.csstudio.utility.channel.actions
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
+Import-Package: org.csstudio.ui.util
