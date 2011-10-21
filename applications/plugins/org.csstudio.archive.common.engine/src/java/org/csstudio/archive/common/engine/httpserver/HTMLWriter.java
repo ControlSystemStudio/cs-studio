@@ -21,7 +21,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 public class HTMLWriter {
     public static final int MAX_TABLE_ENTRY_WIDTH = 70;
 
-    protected static final String BACKGROUND = "images/blueback.jpg"; //$NON-NLS-1$
+    protected static final String BACKGROUND = "/images/blueback.jpg"; //$NON-NLS-1$
     protected static final String RED_FONT = "<font color='#ff0000'>"; //$NON-NLS-1$
     protected static final String CLOSE_FONT = "</font>"; //$NON-NLS-1$
 
@@ -44,27 +44,36 @@ public class HTMLWriter {
         text("<head>");
         text("<title>" + title + "</title>");
         text("<script type=\"text/javascript\" src=\"/sorttable.js\"></script>\n");
+        text("<link rel=\"stylesheet\" type=\"text/css\" href=\"/archiver.css\"></link>");
         text("</head>");
         text("<body background='" + BACKGROUND + "'>");
-        text("<blockquote>");
-        text(MainResponse.linkTo());
         h1(title);
 
+        text("<div id=\"navigation\">");
+        createNavigationBar(MainResponse.linkTo(),
+                            GroupsResponse.linkTo(),
+                            DisconnectedResponse.linkTo());
+        text("</div>");
+
+        text("<div id=\"content\">");
+    }
+
+    private void createNavigationBar(@Nonnull final String...navPoints) {
+        for (final String nav : navPoints) {
+            text("<li>" + nav + "</li>");
+        }
     }
 
     /** Add end of HTML page. */
     public void close() {
-        text("<p>");
-        text("<hr width='50%' align='left'>");
 
-        text(MainResponse.linkTo());
-        text(GroupsResponse.linkTo());
-        text(DisconnectedResponse.linkTo());
-
-        text("<address>");
+        text("</div>");
+        text("<hr width='100%' align='left'>");
+        text("<div id=\"timeAndHint\">");
         text(TimeInstantBuilder.fromNow().formatted());
-        text("   <i>(Use web browser's Reload to refresh this page)</i>");
-        text("</address>");
+        text("(Use web browser's Reload to refresh this page)");
+        text("</div>");
+
 
         text("</blockquote>");
         text("</body>");

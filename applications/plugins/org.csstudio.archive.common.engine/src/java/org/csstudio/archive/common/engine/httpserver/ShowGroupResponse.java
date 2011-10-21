@@ -63,7 +63,6 @@ class ShowGroupResponse extends AbstractGroupResponse {
 
         createBasicInfoTable(group, html);
 
-        html.h2(Messages.HTTP_CHANNELS + " (Last write time: " + getModel().getLastWriteTime()  + ")");
 
         createChannelsTable(group, html);
 
@@ -79,6 +78,10 @@ class ShowGroupResponse extends AbstractGroupResponse {
         html.tableLine(new String[] {
             Messages.HTTP_STARTED,
             group.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
+        });
+        html.tableLine(new String[] {
+                Messages.HTTP_LAST_WRITETIME,
+                getModel().getLastWriteTime().formatted(),
         });
         html.closeTable();
     }
