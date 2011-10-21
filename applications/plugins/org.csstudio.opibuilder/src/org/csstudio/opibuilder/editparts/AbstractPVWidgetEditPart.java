@@ -73,14 +73,13 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 			if(controlPVPropId != null &&
 					controlPVPropId.equals(pvPropID) &&
 					!writeAccessMarked){
+				writeAccessMarked = true;
 				if(pv.isWriteAllowed()){
 					UIBundlingThread.getInstance().addRunnable(
 							getViewer().getControl().getDisplay(),new Runnable(){
 						public void run() {
 							figure.setCursor(savedCursor);
-							figure.setEnabled(widgetModel.isEnabled());
-							writeAccessMarked = true;
-
+							figure.setEnabled(widgetModel.isEnabled());	
 						}
 					});
 				}else{
@@ -91,7 +90,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 								savedCursor = figure.getCursor();
 							figure.setEnabled(false);
 							figure.setCursor(Cursors.NO);							
-							writeAccessMarked = true;
 						}
 					});
 				}
