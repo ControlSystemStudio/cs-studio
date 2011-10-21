@@ -27,7 +27,6 @@ import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.STS;
 import gov.aps.jca.dbr.TIME;
-import gov.aps.jca.dbr.TimeStamp;
 
 import java.util.ArrayList;
 
@@ -42,9 +41,9 @@ import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.epics.types.IControlLimits;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.epics.pvmanager.jca.TypeFactory;
 
@@ -64,9 +63,9 @@ import com.google.common.collect.Lists;
  */
 // CHECKSTYLE OFF : AbstractClassName
 @SuppressWarnings("rawtypes")
-public abstract class DesyTypeFactory<V,
-                                      EV extends DBR & TIME,
-                                      EM extends DBR & STS>
+public abstract class DesyJCATypeFactory<V,
+                                         EV extends DBR & TIME,
+                                         EM extends DBR & STS>
     implements TypeFactory<EpicsSystemVariable<V>, EV, EM> {
 // CHECKSTYLE ON : AbstractClassName
 
@@ -75,9 +74,9 @@ public abstract class DesyTypeFactory<V,
     private final DBRType _epicsMetaType;
     private boolean _isArray;
 
-    public DesyTypeFactory(@Nonnull final Class<V> valueType,
-                           @Nonnull final DBRType epicsValueType,
-                           @Nonnull final DBRType epicsMetaType) {
+    public DesyJCATypeFactory(@Nonnull final Class<V> valueType,
+                              @Nonnull final DBRType epicsValueType,
+                              @Nonnull final DBRType epicsMetaType) {
 
         _valueType = valueType;
         _epicsValueType = epicsValueType;
@@ -127,6 +126,14 @@ public abstract class DesyTypeFactory<V,
         throw new UnsupportedOperationException("DESY type factory does not support variable creation without channel name.");
     }
 
+    /**
+     * Creates DESY specific system variable from JCA layer,
+     * @param channelName
+     * @param eVal
+     * @param eMeta
+     * @param dMeta
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @Nonnull
     public EpicsSystemVariable<V> createValue(@Nonnull final String channelName,
@@ -134,9 +141,7 @@ public abstract class DesyTypeFactory<V,
                                               @Nonnull final EM eMeta,
                                               @Nonnull final EpicsMetaData dMeta) {
 
-        final TimeStamp ts = eVal.getTimeStamp();
-        final TimeInstant timestamp =
-            TimeInstantBuilder.fromNanos((long) (1e9*ts.secPastEpoch() + ts.nsec()));
+        final TimeInstant timestamp = EpicsSystemVariableSupport.toTimeInstant(eVal);
 
         final Object data;
         if (isArray()) {

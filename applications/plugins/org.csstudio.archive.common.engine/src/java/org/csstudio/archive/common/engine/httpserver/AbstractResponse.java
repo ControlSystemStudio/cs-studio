@@ -151,9 +151,9 @@ abstract class AbstractResponse extends HttpServlet {
         @Nonnull
         public String link(@CheckForNull final String text) {
             if (Strings.isNullOrEmpty(text)) {
-                return HTMLWriter.makeLink(_url, _url);
+                return "<a href=\"" + _url + "\">" + _url + "</a>";
             }
-            return HTMLWriter.makeLink(_url, text);
+            return "<a href=\"" + _url + "\">" + text + "</a>";
         }
         @Nonnull
         public String url() {

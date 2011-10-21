@@ -134,7 +134,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
         }
 
         @SuppressWarnings("unchecked")
-        final EpicsSystemVariable newValue = ((DesyTypeFactory) vTypeFactory).createValue(getChannelName(),
+        final EpicsSystemVariable newValue = ((DesyJCATypeFactory) vTypeFactory).createValue(getChannelName(),
                                                                                           rawDBR,
                                                                                           metadata,
                                                                                           _desyMeta);
@@ -147,12 +147,12 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
         if (_desyMeta == null) {
             _desyMeta = EpicsMetaData.EMPTY_DATA;
             if (metadata != null) {
-                _desyMeta = ((DesyTypeFactory) vTypeFactory).createMetaData((STS) metadata);
+                _desyMeta = ((DesyJCATypeFactory) vTypeFactory).createMetaData((STS) metadata);
             }
             if (_dataType != null) {
-                ((DesyTypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
+                ((DesyJCATypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
             } else {
-                ((DesyTypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
+                ((DesyJCATypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
             }
         }
     }

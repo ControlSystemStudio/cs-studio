@@ -57,11 +57,12 @@ import org.slf4j.LoggerFactory;
  * @param <V> the basic element type of the variable's value collection
  * @param <T> the generic system variable type
  */
+// CHECKSTYLE OFF: AbstractClassName
 public abstract class DesyArchivePVManagerListener<V extends Serializable,
                                                    T extends ISystemVariable<V>> implements PVReaderListener {
+// CHECKSTYLE ON: AbstractClassName
 
     private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVManagerListener.class);
-    private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private IServiceProvider _provider;
     private final String _channelName;
@@ -90,13 +91,13 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public void pvChanged() {
         try {
             // TODO (bknerr) : ask Gabriele whether it is a good choice to separate the value
             // update callback from the calling/value providing instance
 
-            @SuppressWarnings("rawtypes")
             final List<EpicsSystemVariable> sysVars = (List<EpicsSystemVariable>) _reader.getValue();
             if (_firstConnection && !sysVars.isEmpty()) {
                 handleOnConnectionInformation(sysVars.get(0), _channelId, isConnected(), _startInfo);

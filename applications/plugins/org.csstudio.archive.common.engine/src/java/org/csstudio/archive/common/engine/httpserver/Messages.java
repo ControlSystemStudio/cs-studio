@@ -39,6 +39,7 @@ public final class Messages {
     public static final String HTTP_NO = "No";
     public static final String HTTP_NOT_CONNECTED = "Not conn.";
     public static final String HTTP_OK = "Ok";
+    public static final String HTTP_PARAMETERS = "Parameter(s)";
     public static final String HTTP_QUEUELEN = "Queue Len.";
     public static final String HTTP_ROW_TOTAL = "Total";
     public static final String HTTP_START = "Start";
@@ -53,6 +54,8 @@ public final class Messages {
     public static final String HTTP_SUMMARY = "Summary";
     public static final String HTTP_TIMESTAMP = "TimeStamp";
     public static final String HTTP_UPTIME = "Uptime";
+    public static final String HTTP_URL = "URL";
+    public static final String HTTP_URL_COMMANDS = "URL Commands";
     public static final String HTTP_VERSION = "Version";
     public static final String HTTP_WORKSPACE = "Workspace";
     public static final String HTTP_WRITE_DURATION = "Average Write Duration";

@@ -97,8 +97,8 @@ public class EngineHttpServer {
                                                                             NamespaceException {
         httpService.registerServlet(EnvironmentResponse.baseUrl(),
                                     new EnvironmentResponse(model), null, httpContext);
-        httpService.registerServlet(DebugResponse.baseUrl(),
-                                    new DebugResponse(model), null, httpContext);
+        httpService.registerServlet(HelpResponse.baseUrl(),
+                                    new HelpResponse(model), null, httpContext);
     }
 
 

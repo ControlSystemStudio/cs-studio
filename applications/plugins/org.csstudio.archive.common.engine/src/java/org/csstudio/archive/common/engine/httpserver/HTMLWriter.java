@@ -148,17 +148,6 @@ public class HTMLWriter {
         text("</table>");
     }
 
-    /** Create HTML for a link
-     *  @param url Linked URL
-     *  @param text Text to display
-     *  @return HTML for the link
-     */
-    @Nonnull
-    public static String makeLink(@Nonnull final String url,
-                                  @Nonnull final String text) {
-        return "<a href=\"" + url + "\">" + text + "</a>";
-    }
-
     /** @return HTML for red text */
     @Nonnull
     public static String makeRedText(@Nonnull final String text) {

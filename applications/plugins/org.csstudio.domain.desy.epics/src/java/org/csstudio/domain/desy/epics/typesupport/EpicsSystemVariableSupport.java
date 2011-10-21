@@ -21,6 +21,9 @@
  */
 package org.csstudio.domain.desy.epics.typesupport;
 
+import gov.aps.jca.dbr.TIME;
+import gov.aps.jca.dbr.TimeStamp;
+
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
@@ -37,6 +40,7 @@ import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.system.SystemVariableSupport;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.TypeSupport;
@@ -170,6 +174,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
                                                         @Nonnull final TimeInstant timestamp) throws TypeSupportException;
 
 
+
     /**
      * {@inheritDoc}
      */
@@ -177,5 +182,18 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     @Nonnull
     protected ControlSystemType getControlSystemType() {
         return ControlSystemType.EPICS_V3;
+    }
+
+    /**
+     * Transforms a timestamp originating from EPICS (epoch start 1990) to a time instant with epoch
+     * start 1970-01-01. Difference in seconds is 631152000L.
+     * @param time the original EPICS time stamp object
+     * @return the immutable time instant with nanos since epoch 1970-01-01
+     */
+    @Nonnull
+    public static TimeInstant toTimeInstant(@Nonnull final TIME time) {
+        final TimeStamp ts = time.getTimeStamp();
+        return TimeInstantBuilder.fromNanos((long) (1e9*ts.secPastEpoch() + 631152000L + ts.nsec()));
+
     }
 }

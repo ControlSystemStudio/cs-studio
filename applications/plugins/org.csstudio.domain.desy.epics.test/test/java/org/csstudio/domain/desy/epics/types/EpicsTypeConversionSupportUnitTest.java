@@ -27,8 +27,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Test for epics specific part of {@link BaseTypeConversionSupport}.
+ *
  * @author bknerr
  * @since 19.04.2011
  */

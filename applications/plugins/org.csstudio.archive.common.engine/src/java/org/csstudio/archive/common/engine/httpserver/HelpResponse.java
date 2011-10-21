@@ -19,55 +19,63 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.pvmanager;
+package org.csstudio.archive.common.engine.httpserver;
 
-import java.util.Map;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.jca.JCADataSource;
-
-import com.google.common.collect.MapMaker;
-
+import org.csstudio.archive.common.engine.model.EngineModel;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 30.08.2011
+ * @since 21.10.2011
  */
-public class DesyJCADataSource extends JCADataSource {
+public class HelpResponse extends AbstractResponse {
 
-    private final Map<String, DesyJCAChannelHandler> _handlerMap;
+    private static final String URL_BASE_PAGE = "/help";
 
-    public DesyJCADataSource(@Nonnull final String className,
-                             final int monitorMask) {
-        super(className, monitorMask);
-
-        _handlerMap = new MapMaker().concurrencyLevel(5).softValues().makeMap();
+    /**
+     * Constructor.
+     */
+    public HelpResponse(@Nonnull final EngineModel model) {
+        super(model);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    @Nonnull
-    protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        if(_handlerMap.containsKey(channelName)) {
-            return _handlerMap.get(channelName);
-        }
-        return createHandlerFor(channelName, null);
+    protected void fillResponse(@Nonnull final HttpServletRequest req,
+                                @Nonnull final HttpServletResponse resp) throws Exception {
+        final HTMLWriter html =
+            new HTMLWriter(resp, "Archive Engine Help");
+
+        createCommandsTable(html);
+
+        html.close();
+
     }
 
-    @CheckForNull
-    public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
-        return _handlerMap.get(channelName);
+    private void createCommandsTable(@Nonnull final HTMLWriter html) {
+        html.openTable(3, new String[] {Messages.HTTP_URL_COMMANDS});
+        html.tableLine(new String[] {
+                Messages.HTTP_URL,
+                Messages.HTTP_PARAMETERS,
+                Messages.HTTP_DESCRIPTION,
+        });
+//        html.tableLine(new String[] {
+//                AddChannelResponse.baseUrl(),
+//                AddChannelResponse.PARAM_NAME,
+//                Messages.HTTP_DESCRIPTION,
+//        });
+        html.closeTable();
     }
 
     @Nonnull
-    public DesyJCAChannelHandler createHandlerFor(@Nonnull final String name, @Nullable final String dataType) {
-        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(name, dataType, getContext(), getMonitorMask());
-        _handlerMap.put(name, handler);
-        return handler;
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

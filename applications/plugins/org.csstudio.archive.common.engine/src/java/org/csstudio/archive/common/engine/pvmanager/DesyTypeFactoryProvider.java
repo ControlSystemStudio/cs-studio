@@ -72,12 +72,12 @@ import com.google.common.collect.Maps;
 public final class DesyTypeFactoryProvider {
 
     @SuppressWarnings("rawtypes")
-    private static Map<DBRType, DesyTypeFactory> FACTORY_MAP = Maps.newConcurrentMap();
+    private static Map<DBRType, DesyJCATypeFactory> FACTORY_MAP = Maps.newConcurrentMap();
     static {
         // Add all SCALARs
         // DBR_TIME_Float -> EpicsSystemVariable<Float>
         FACTORY_MAP.put(DBR_Float.TYPE,
-                        new DesyTypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
+                        new DesyJCATypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
                                                                                    DBR_TIME_Float.TYPE,
                                                                                    DBR_CTRL_Float.TYPE){
                             @Override
@@ -88,7 +88,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_CTRL_Double -> EpicsSystemVariable<Double>
         FACTORY_MAP.put(DBR_Double.TYPE,
-                        new DesyTypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
+                        new DesyJCATypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
                                                                                       DBR_TIME_Double.TYPE,
                                                                                       DBR_CTRL_Double.TYPE){
                             @Override
@@ -99,7 +99,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_CTRL_Byte -> EpicsSystemVariable<Byte>
         FACTORY_MAP.put(DBR_Byte.TYPE,
-                        new DesyTypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
+                        new DesyJCATypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
                                                                                 DBR_TIME_Byte.TYPE,
                                                                                 DBR_CTRL_Byte.TYPE){
                             @Override
@@ -110,7 +110,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_CTRL_Short -> EpicsSystemVariable<Short>
         FACTORY_MAP.put(DBR_Short.TYPE,
-                        new DesyTypeFactory<Short, DBR_TIME_Short, DBR_CTRL_Short>(Short.class,
+                        new DesyJCATypeFactory<Short, DBR_TIME_Short, DBR_CTRL_Short>(Short.class,
                                                                                    DBR_TIME_Short.TYPE,
                                                                                    DBR_CTRL_Short.TYPE){
                             @Override
@@ -121,7 +121,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_CTRL_Int -> EpicsSystemVariable<Integer>
         FACTORY_MAP.put(DBR_Int.TYPE,
-                        new DesyTypeFactory<Integer, DBR_TIME_Int, DBR_CTRL_Int>(Integer.class,
+                        new DesyJCATypeFactory<Integer, DBR_TIME_Int, DBR_CTRL_Int>(Integer.class,
                                                                                  DBR_TIME_Int.TYPE,
                                                                                  DBR_CTRL_Int.TYPE){
                             @Override
@@ -132,7 +132,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_TIME_String -> EpicsSystemVariable<String>
         FACTORY_MAP.put(DBR_String.TYPE,
-                        new DesyTypeFactory<String, DBR_TIME_String, DBR_STS_String>(String.class,
+                        new DesyJCATypeFactory<String, DBR_TIME_String, DBR_STS_String>(String.class,
                                                                                      DBR_TIME_String.TYPE,
                                                                                      DBR_STS_String.TYPE){
                             @Override
@@ -151,7 +151,7 @@ public final class DesyTypeFactoryProvider {
                         });
         // DBR_TIME_Enum -> EpicsSystemVariable<EpicsEnum>
         FACTORY_MAP.put(DBR_Enum.TYPE,
-                        new DesyTypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
+                        new DesyJCATypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
                                                                                        DBR_TIME_Enum.TYPE,
                                                                                        DBR_LABELS_Enum.TYPE){
                             @Override
@@ -182,7 +182,7 @@ public final class DesyTypeFactoryProvider {
     @SuppressWarnings("rawtypes")
     @Nonnull
     public static TypeFactory matchFor(@Nonnull final Channel channel) {
-        final DesyTypeFactory fac = FACTORY_MAP.get(channel.getFieldType());
+        final DesyJCATypeFactory fac = FACTORY_MAP.get(channel.getFieldType());
         if (fac == null) {
             throw new IllegalArgumentException("The dbrType type is not supported: " + channel, null);
         }
@@ -191,7 +191,7 @@ public final class DesyTypeFactoryProvider {
 
     @SuppressWarnings("rawtypes")
     @Nonnull
-    static Map<DBRType, DesyTypeFactory> getMap() {
+    static Map<DBRType, DesyJCATypeFactory> getMap() {
         return FACTORY_MAP;
     }
 }
