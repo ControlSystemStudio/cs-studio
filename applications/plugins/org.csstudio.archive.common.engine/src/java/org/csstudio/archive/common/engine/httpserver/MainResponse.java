@@ -34,9 +34,12 @@ import com.google.common.base.Strings;
  */
 class MainResponse extends AbstractResponse {
 
+    private static final String URL_BASE_DESC = Messages.HTTP_MAIN;
+
     private static final Logger LOG = LoggerFactory.getLogger(MainResponse.class);
 
     private static final String URL_BASE_PAGE = "/main";
+
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -189,5 +192,9 @@ class MainResponse extends AbstractResponse {
     @Nonnull
     public static String linkTo(@CheckForNull final String linkText) {
         return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return new Url(baseUrl()).link(URL_BASE_DESC);
     }
 }

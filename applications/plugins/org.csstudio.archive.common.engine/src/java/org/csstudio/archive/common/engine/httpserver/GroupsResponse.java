@@ -25,6 +25,7 @@ import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 class GroupsResponse extends AbstractResponse {
 
     private static final String URL_BASE_PAGE = "/groups";
+    private static final String URL_BASE_DESC = Messages.HTTP_GROUPS;
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -136,5 +137,9 @@ class GroupsResponse extends AbstractResponse {
     @Nonnull
     public static String linkTo(@Nonnull final String linkText) {
         return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return new Url(baseUrl()).link(URL_BASE_DESC);
     }
 }

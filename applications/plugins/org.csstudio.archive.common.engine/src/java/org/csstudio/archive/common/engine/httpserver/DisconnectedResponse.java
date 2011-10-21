@@ -22,6 +22,7 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 class DisconnectedResponse extends AbstractResponse {
 
     private static final String URL_BASE_PAGE = "/disconnected";
+    private static final String URL_BASE_DESC = Messages.HTTP_DISCONNECTED;
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -73,5 +74,9 @@ class DisconnectedResponse extends AbstractResponse {
     @Nonnull
     public static String linkTo(@Nonnull final String linkText) {
         return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return new Url(baseUrl()).link(URL_BASE_DESC);
     }
 }

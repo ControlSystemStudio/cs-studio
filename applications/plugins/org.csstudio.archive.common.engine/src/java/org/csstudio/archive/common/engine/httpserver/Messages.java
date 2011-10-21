@@ -29,11 +29,14 @@ public final class Messages {
     public static final String HTTP_CURRENT_VALUE = "Current Value";
     public static final String HTTP_DESCRIPTION = "Description";
     public static final String HTTP_DISABLE_CHANNEL = "Disable permanently";
+    public static final String HTTP_DISCONNECTED = "Disconnected";
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
+    public static final String HTTP_GROUPS = "Groups";
     public static final String HTTP_HOST = "HTTP Server";
     public static final String HTTP_INTERNAL_STATE = "Internal EngineState";
     public static final String HTTP_LAST_ARCHIVED_VALUE = "Last Archived Value";
     public static final String HTTP_LAST_WRITETIME = "Last Written";
+    public static final String HTTP_MAIN = "Main";
     public static final String HTTP_MAIN_TITLE = "Archive Engine";
     public static final String HTTP_NEVER = "never";
     public static final String HTTP_NO = "No";

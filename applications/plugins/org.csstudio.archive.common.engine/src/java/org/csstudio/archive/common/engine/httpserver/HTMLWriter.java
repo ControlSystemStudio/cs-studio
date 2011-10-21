@@ -47,7 +47,7 @@ public class HTMLWriter {
         text("</head>");
         text("<body background='" + BACKGROUND + "'>");
         text("<blockquote>");
-        text(MainResponse.linkTo("--Back to Main--"));
+        text(MainResponse.linkTo());
         h1(title);
 
     }
@@ -57,10 +57,9 @@ public class HTMLWriter {
         text("<p>");
         text("<hr width='50%' align='left'>");
 
-        text(MainResponse.linkTo("--Back to Main--"));
-        text(GroupsResponse.linkTo("-Groups-"));
-        text(DisconnectedResponse.linkTo("-Disconnected-"));
-        text("<a href=\"/version.html\">-Version-</a> ");
+        text(MainResponse.linkTo());
+        text(GroupsResponse.linkTo());
+        text(DisconnectedResponse.linkTo());
 
         text("<address>");
         text(TimeInstantBuilder.fromNow().formatted());

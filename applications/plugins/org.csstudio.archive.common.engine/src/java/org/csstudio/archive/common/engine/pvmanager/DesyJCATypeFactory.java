@@ -127,7 +127,8 @@ public abstract class DesyJCATypeFactory<V,
     }
 
     /**
-     * Creates DESY specific system variable from JCA layer,
+     * Creates DESY specific system variable from JCA layer, incl. time stamp conversion from
+     * epoch 1990-01-01 to 1970-01-01.
      * @param channelName
      * @param eVal
      * @param eMeta

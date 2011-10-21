@@ -105,21 +105,21 @@ abstract class AbstractResponse extends HttpServlet {
                                        @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request error");
         html.text("Error on processing request:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
     protected void redirectToWarnPage(@Nonnull final HttpServletResponse resp,
                                       @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request warning");
         html.text("Warning on processing request:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
     protected void redirectToSuccessPage(@Nonnull final HttpServletResponse resp,
                                          @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request success");
         html.text("Request successful:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
 
