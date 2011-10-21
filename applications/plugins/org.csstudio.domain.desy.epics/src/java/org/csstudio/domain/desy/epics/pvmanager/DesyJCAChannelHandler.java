@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.pvmanager;
+package org.csstudio.domain.desy.epics.pvmanager;
 
 import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
@@ -76,7 +76,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
-        _validator = new DesyDbrTimeValidator();
+        _validator = new org.csstudio.domain.desy.epics.time.DesyDbrTimeValidator();
 
         if (dataType == null) {
             _dataType = null;

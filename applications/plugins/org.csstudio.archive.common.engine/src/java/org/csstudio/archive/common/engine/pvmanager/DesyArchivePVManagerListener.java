@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (bknerr) :
+ * Listener for creating archive samples per value update.
  *
  * @author bknerr
  * @since 30.08.2011

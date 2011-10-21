@@ -31,7 +31,7 @@ import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 /**
- * TODO (bknerr) :
+ * Servlet to permit permanent disabling of a channel.
  *
  * @author bknerr
  * @since 06.10.2011
@@ -44,6 +44,7 @@ public class PermanentDisableChannelResponse extends AbstractChannelResponse {
         URL_PERM_DISABLE_CHANNEL_ACTION = "disable";
         URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_PERM_DISABLE_CHANNEL_ACTION;
     }
+    private static final long serialVersionUID = 7180751852276558410L;
 
     /**
      * Constructor.

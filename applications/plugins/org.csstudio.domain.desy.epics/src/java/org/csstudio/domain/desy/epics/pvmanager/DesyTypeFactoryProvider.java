@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.pvmanager;
+package org.csstudio.domain.desy.epics.pvmanager;
 
 import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBR;
@@ -143,7 +143,7 @@ public final class DesyTypeFactoryProvider {
 
                             @Override
                             @CheckForNull
-                            protected EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
+                            public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
                                 return EpicsMetaData.create(new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
                                                                            EpicsAlarmStatus.valueOf(eMeta.getStatus())),
                                                             null, null, null);
@@ -166,7 +166,7 @@ public final class DesyTypeFactoryProvider {
                             }
                             @Override
                             @Nonnull
-                            protected EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
+                            public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
                                 return EpicsMetaData.create(((LABELS) eMeta).getLabels());
                             }
                         });

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.pvmanager;
+package org.csstudio.domain.desy.epics.pvmanager;
 
 import gov.aps.jca.dbr.CTRL;
 import gov.aps.jca.dbr.DBR;
@@ -154,7 +154,7 @@ public abstract class DesyJCATypeFactory<V,
     }
 
     @Nonnull
-    protected <W extends Comparable<? super W>>
+    public <W extends Comparable<? super W>>
     EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
         final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
                                                 EpicsAlarmStatus.valueOf(eMeta.getStatus()));

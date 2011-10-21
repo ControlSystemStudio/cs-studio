@@ -19,11 +19,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.pvmanager.DesyArchivePVManagerListener;
-import org.csstudio.archive.common.engine.pvmanager.DesyJCAChannelHandler;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.epics.pvmanager.DesyJCAChannelHandler;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;

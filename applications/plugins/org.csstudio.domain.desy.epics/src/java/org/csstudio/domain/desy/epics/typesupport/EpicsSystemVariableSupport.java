@@ -193,7 +193,7 @@ public abstract class EpicsSystemVariableSupport<T> extends SystemVariableSuppor
     @Nonnull
     public static TimeInstant toTimeInstant(@Nonnull final TIME time) {
         final TimeStamp ts = time.getTimeStamp();
-        return TimeInstantBuilder.fromNanos((long) (1e9*ts.secPastEpoch() + 631152000L + ts.nsec()));
+        return TimeInstantBuilder.fromNanos((long) (1e9*(ts.secPastEpoch() + 631152000L) + ts.nsec()));
 
     }
 }

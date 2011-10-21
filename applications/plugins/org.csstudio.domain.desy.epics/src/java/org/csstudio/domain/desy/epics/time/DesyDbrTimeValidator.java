@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.engine.pvmanager;
+package org.csstudio.domain.desy.epics.time;
 
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.TIME;
