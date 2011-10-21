@@ -9,13 +9,49 @@
 <body>
 
 <h2>WebOPI Developer Manual</h2>
+
+<p><b>Note: </b>This guide is based on Eclipse 3.7.1, RAP 1.4.1. Equal or higher versions
+are required, but you may experience unpredicted 
+problems with other versions.</p>
+
 <h3>Install RAP platform</h3>
 <p>WebOPI is developed on RAP, so you must have RAP installed in your Eclipse. You can simple download 
 <code>Eclipse for RCP and RAP developers</code> from 
 <a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>.
 </p>
 
-<p>Before getting your foot wet on WebOPI, please take few minutes to familiar with RAP development:<br>
+ <p>
+      RAP applications need to be compiled against the RAP runtime.
+      To do so, the runtime needs to be set as the target platform in Eclipse.     
+      <ol>
+        <li>Open <b>Window &gt; Preferences</b> and go to the <b>Plug-in
+          Development &gt; Target Platform</b> preference page.</li>
+        <li>Add a new target definition and initialize it with "nothing".</li>
+        <li>On the next page, click <b>Add</b> and choose <b>Software Site</b>
+          from the Add Content wizard.</li>
+        <li>On the following page, enter the URL to the RAP software repository
+          in the <b>Work with</b> field and press enter. 
+          <ul>
+            <li><b>RAP 1.4</b>: http://download.eclipse.org/rt/rap/1.4/runtime</li>
+          </ul>
+          </li>
+        <li>Select the target to install from the list below.</li>
+        <li>Make sure the checkbox <b>Include required software</b> is <b>not
+          checked</b>.</li>
+        <li>Click <b>Finish</b>. After the download is completed, click <b>Finish</b>
+          again to save the new target definition.</li>
+        <li>Activate the new target on the target platform preference page.</li>
+      </ol>
+ 
+    <p>
+      Note: if doing this with a workspace that already contains projects that
+      depend on the target, you may get compile errors. Restarting Eclipse and/or
+      doing a clean build will help.
+    </p>
+
+
+<p>If you got any unpredicted problem, you can resort to following resources: <br>
+<br><code>Eclipse Online Help->Rap Developor Guide</code><br>
 <a href="http://www.eclipse.org/rap/">http://www.eclipse.org/rap/</a><br>
 <a href="http://www.vogella.de/articles/EclipseRAP/article.html">
 http://www.vogella.de/articles/EclipseRAP/article.html</a>
@@ -23,39 +59,43 @@ http://www.vogella.de/articles/EclipseRAP/article.html</a>
 
 <h3>Get WebOPI source code</h3>
 <p>
-In CSS sourceforge repository, you need to import these plugins to your workspace:
+Read this article to get CSS source code: 
+<a href="http://sourceforge.net/apps/trac/cs-studio/wiki/SourceRepository">
+http://sourceforge.net/apps/trac/cs-studio/wiki/SourceRepository</a>.
+After you got the source code, you need to import these plugins to your workspace:
 <ul>
-<li>org.csstudio.apputil</li>
-<li>org.csstudio.csdata</li>
-<li>org.csstudio.data</li>
-<li>org.csstudio.java</li>
-<li>org.csstudio.openfile</li>
-<li>org.csstudio.opibuilder</li>
-<li>org.csstudio.opibuilder.rap</li>
-<li>org.csstudio.opibuilder.widgets</li>
-<li>org.csstudio.opibuilder.widgets.rap</li>
-<li>org.csstudio.platform.libs.epics</li>
-<li>org.csstudio.rap.core</li>
-<li>org.csstudio.rap.ui.util</li>
-<li>org.csstudio.swt.widgets</li>
-<li>org.csstudio.swt.xygraph</li>
-<li>org.csstudio.swt.xygraph.rap</li>
-<li>org.csstudio.utility.pv</li>
-<li>org.csstudio.utility.pv.epics</li>
-<li>org.csstudio.utility.pv.simu</li>
-<li>org.jdom</li>
+
+<li>core\plugins\org.csstudio.csdata</li>
+<li>core\plugins\org.csstudio.data</li>
+<li>core\plugins\org.csstudio.java</li>
+<li>core\plugins\org.csstudio.openfile</li>
+<li>core\plugins\org.csstudio.rap.core</li>
+<li>core\plugins\org.csstudio.rap.ui.util</li>
+<li>core\plugins\org.csstudio.platform.libs.epics</li>
+<li>core\plugins\org.csstudio.utility.pv</li>
+<li>core\plugins\org.csstudio.utility.pv.epics</li>
+<li>core\plugins\org.csstudio.utility.pv.simu</li>
+<li>applications\plugins\org.csstudio.apputil</li>
+<li>applications\plugins\org.csstudio.opibuilder</li>
+<li>applications\plugins\org.csstudio.opibuilder.rap</li>
+<li>applications\plugins\org.csstudio.opibuilder.widgets</li>
+<li>applications\plugins\org.csstudio.opibuilder.widgets.rap</li>
+<li>applications\plugins\org.csstudio.swt.widgets</li>
+<li>applications\plugins\org.csstudio.swt.xygraph</li>
+<li>applications\plugins\org.csstudio.swt.xygraph.rap</li>
+<li>applications\plugins\org.jdom</li>
 </ul>
-</p>
+
 
 <h3>Add GEF/Draw2D to RAP target platform</h3>
 <p>
-WebOPI also based on the RAP GEF which is an incubating project under RAP.
+WebOPI also based on the RAP GEF project which is an incubating project under RAP.
 The code has been built to JAR files which are under <code>org.csstudio.rap.core/third_party_plugins</code>.
 So you need to add these plugins to your RAP target platform:
 <ol>
 <li>Go to <code>Eclipse Preferences Window->Plug-in Development->Target Platform</code> page</li>
 <li>Click on RAP Target platform and select <code>Edit...</code></li>
-<li>Select <code>Add...</code> button to add the directory that points to
+<li>Select <code>Add...</code> button to add the directory that points to the physical location of
 <code>org.csstudio.rap.core/third_party_plugins</code>
 </li>
 <li>Finish.</li>
@@ -65,19 +105,43 @@ So you need to add these plugins to your RAP target platform:
 
 <h3>Launch WebOPI from Eclipse</h3>
 <ol>
-<li>Since there is no $CATALINA_HOME is set for debugging mode,
-it will use the settings in <code>preferences.ini</code> under <code>org.csstudio.opibuilder</code> and 
-<code>org.csstudio.platform.libs.epics</code> plugin.
-Make corresponding changes for your environment.</li>
-<li>Open <code>plugin.xml</code> in <code>org.csstudio.opibuilder.rap</code> plugin and click 
-<code>Launch a RAP application</code>.</li>
+<li>Make corresponding changes to <code>preferences.ini</code> under <code>org.csstudio.opibuilder</code> and 
+<code>org.csstudio.platform.libs.epics</code> plugin. Alternatively, you can create your own
+<code>css_rap.ini</code> under installation directory of Eclipse.</li>
+<li>Open <code>fragment.xml</code> in <code>org.csstudio.opibuilder.rap</code> plugin and click 
+<code>Launch a RAP application</code>. /li>
 </ol>
-
-
+<p>
+If you get errors to open the web page, try following steps:
+<ul>
+<li>Stop and refresh the webpage.</li>
+<li>Terminate WebOPI from Console view. Go to <code>
+Run Configuration->RAP Application->WebOPI->Bundles</code>. 
+Click <code>Add Required Bundles</code> and then click <code>Validate Bundles</code>.</li>
+<li>Run again.</li>
+</ul>
+</p>
 <h3>Build WAR file</h3>
-<p>Open <code>webopi.warproduct</code> and click on <code>Eclipse WAR product export wizard</code>
-to export the WAR file. To allow multiple sessions in a same browser, you need to disable cookies. Copy the folder
-<code>META-INF</code> under <code>html</code> foder to the same directory of webopi.war.
+<p>First, install the WAR Products tooling from this p2 repository 
+<a href="http://download.eclipse.org/releases/indigo">http://download.eclipse.org/releases/indigo</a> into your IDE.
+This tooling is part of Libra and not part of RAP. 
+Anyway it can be used to deploy RAP applications in a very comfortable way.
+</p>
+<p>Open <code>webopi.warproduct</code> and click on <code>Validate</code> to see
+if any required bundles are missing. If you see any missing required bundles, go to
+Configuration page, click <code>Add...</code> to add the required bundles only. 
+<b>Note: </b> Do not click <code>Add Required Plug-ins</code>, which may add unnecessary
+plugins and result in the deployment fail. </p>
+
+<p>After fix all problems from <code>Validate</code>, click 
+<code>Eclipse WAR product export wizard</code>
+to export the WAR file. </p>
+
+<p>
+After successfully exported the WAR file, here is the last mile: 
+to allow multiple sessions in same browser, you need to disable cookies:
+copy the folder
+<code>META-INF</code> under <code>org.csstudio.opibuilder.rap/html</code> folder to the same directory of webopi.war.
 Then execute the command <code>jar uf webopi.war META-INF/</code> to add this folder to webopi.war.
 Now, you can deploy the WAR file on a tomcat server. See
 <a href="WebOPI.html">WebOPI user manual</a>.
