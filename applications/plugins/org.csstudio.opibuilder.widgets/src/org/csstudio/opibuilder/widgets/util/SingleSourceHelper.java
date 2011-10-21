@@ -1,22 +1,17 @@
 package org.csstudio.opibuilder.widgets.util;
 
-import java.io.InputStream;
-
-import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.figures.AbstractWebBrowserFigure;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
-import org.csstudio.swt.widgets.figures.TextInputFigure;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Transform;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 public abstract class SingleSourceHelper {
@@ -49,16 +44,14 @@ public abstract class SingleSourceHelper {
 			WidgetPropertyCategory category, ColorMap defaultValue);
 	
 	
-	public static AbstractWebBrowserFigure createWebBrowserFigure(Composite composite, AbstractContainerModel parentModel, 
-			boolean runmode, boolean showToolbar){
-		return IMPL.internalCreateWebBrowserFigure(composite, parentModel, 
-				runmode, showToolbar);
+	public static AbstractWebBrowserFigure createWebBrowserFigure(
+			AbstractBaseEditPart editPart, boolean showToolbar){
+		return IMPL.internalCreateWebBrowserFigure(editPart, showToolbar);
 	}
 	
 
 	protected abstract AbstractWebBrowserFigure internalCreateWebBrowserFigure(
-			Composite composite, AbstractContainerModel parentModel,
-			boolean runmode, boolean showToolbar);
+			AbstractBaseEditPart editPart,  boolean showToolbar);
 
 	public static Cursor createCursor(
 			Display display, ImageData imageData, int width, int height, int backUpSWTCursorStyle){
@@ -78,6 +71,16 @@ public abstract class SingleSourceHelper {
 	}
 
 	protected abstract void internalSetGCTransform(GC gc, Transform transform);
+	
+	public static void swtWidgetAddMouseTrackListener(
+			Control control, MouseTrackListener listener){
+		if(IMPL == null)
+			return;
+		IMPL.internalSwtWidgetAddMouseTrackListener(control, listener);
+	}
+
+	protected abstract void internalSwtWidgetAddMouseTrackListener(Control control,
+			MouseTrackListener listener);
 	
 	
 }

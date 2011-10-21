@@ -8,13 +8,9 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
-import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.ui.util.thread.UIBundlingThread;
-import org.eclipse.draw2d.Graphics;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.internal.browser.BrowserViewer;
 
@@ -25,75 +21,28 @@ import org.eclipse.ui.internal.browser.BrowserViewer;
 @SuppressWarnings("restriction")
 public class WebBrowserFigure extends AbstractWebBrowserFigure {
 
-	
-	private final static Color WHITE_COLOR = 
-		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE);
-	
+
 	private BrowserViewer browserViewer;
 	private Browser browser;
-	
-	
-	public WebBrowserFigure(Composite composite, AbstractContainerModel parentModel, boolean runmode) {
-		this(composite, parentModel, runmode, true);
+		
+	public WebBrowserFigure(AbstractBaseEditPart editPart, boolean showToolbar) {
+		super(editPart);
+		browserViewer = new BrowserViewer(getParentComposite(),
+				showToolbar ? BrowserViewer.BUTTON_BAR
+						| BrowserViewer.LOCATION_BAR : SWT.None);
+		browserViewer.setLayoutData(null);
+		browser = browserViewer.getBrowser();
 	}
 	
-	public WebBrowserFigure(Composite composite, AbstractContainerModel parentModel, 
-			boolean runmode, boolean showToolbar) {
-		super(composite, parentModel);
-		this.runmode = runmode;
-		if(runmode){
-			browserViewer = new BrowserViewer(
-					composite, showToolbar? BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR :SWT.None){
-				@Override
-				public void setBounds(int x, int y, int width,
-						int height) {
-					super.setBounds(x, y, width, height);
-					layout();
-				}
-			};
-			browser = browserViewer.getBrowser();
-		}
-	}
-
 	public void setUrl(String url){
 		if(runmode && url.trim().length() > 0)
 			browserViewer.setURL(url);
-	}
-
-	@Override
-	protected void paintClientArea(Graphics graphics) {			
-		//draw this so that it can be seen in the outline view
-		if(!runmode){
-			graphics.setBackgroundColor(WHITE_COLOR);
-			graphics.fillRectangle(getClientArea());
-		}
-		super.paintClientArea(graphics);	
-	}
-	
-	@Override
-	public Composite getSWTWidget() {
-		return browserViewer;
 	}	
 	
 	@Override
-	public void dispose() {
-		if(runmode){
-			super.dispose();	
-			//the browser must be disposed in the queue of UI thread, 
-			//so that multiple browsers can be properly disposed.
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {			
-				public void run() {				
-					if(!browserViewer.isDisposed()){
-						browserViewer.dispose();
-						browserViewer = null;
-						browser = null;
-					}
-					
-				}
-			});
-		}
-		
-	}
+	public Composite getSWTWidget() {		
+		return browserViewer;
+	}		
 
 	public Browser getBrowser() {
 		return browser;
