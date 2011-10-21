@@ -15,8 +15,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
-import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.util.ResourceUtilSSHelper;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -26,12 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.SWTGraphics;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.LayerConstants;
-import org.eclipse.gef.editparts.LayerManager;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -39,6 +32,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PlatformUI;
@@ -219,19 +213,11 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 	 * @return the screenshot image
 	 */
 	public static Image getScreenshotImage(GraphicalViewer viewer){
-		LayerManager lm = (LayerManager)viewer.getEditPartRegistry().get(LayerManager.ID);
-		IFigure f = lm.getLayer(LayerConstants.PRIMARY_LAYER);
-
-		Rectangle bounds = f.getBounds();
-		Image image = new Image(null, bounds.width + 6, bounds.height + 6);
-		GC gc = new GC(image);
-		SWTGraphics graphics = new SWTGraphics(gc);
-		graphics.translate(-bounds.x + 3, -bounds.y + 3);
-		graphics.setBackgroundColor(viewer.getControl().getBackground());
-		graphics.fillRectangle(bounds);
-		f.paint(graphics);
+		GC gc = new GC(viewer.getControl());
+		final Image image = new Image(Display.getDefault(), viewer.getControl()
+				.getSize().x, viewer.getControl().getSize().y);
+		gc.copyArea(image, 0, 0);
 		gc.dispose();
-
 		return image;
 	}
 
