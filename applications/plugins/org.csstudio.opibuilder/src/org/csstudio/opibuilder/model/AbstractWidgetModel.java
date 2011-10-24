@@ -572,7 +572,28 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		propertyMap.get(id).setPropertyValue(value, forceFire);
 	}
 	
-	public void setPropertyVisible(final String prop_id, final boolean visible){
+	/**Set if property should be visible in property sheet. 
+	 * Note: this method will also make the invisible property not savable to xml file.
+	 * If the invisible property still needs to be saved, please use 
+	 * {@link #setPropertyVisibleAndSavable(String, boolean, boolean)}.
+	 * @param prop_id id of the property.
+	 * @param visible true if visible in 
+	 */
+	public void setPropertyVisible(final String prop_id, 
+			final boolean visible){
+		if(visible)
+			setPropertyVisibleAndSavable(prop_id, visible, true);
+		else
+			setPropertyVisibleAndSavable(prop_id, visible, false);
+	}
+	
+	/**Set if property should be visible in property sheet and if savable to xml file. 
+	 * @param prop_id id of the property
+	 * @param visible true if visible in property sheet.
+	 * @param isSavable true if this property should be saved to xml file.
+	 */
+	public void setPropertyVisibleAndSavable(final String prop_id, 
+			final boolean visible, final boolean isSavable){
 		checkPropertyExist(prop_id);
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		if(property.setVisibleInPropSheet(visible)){
@@ -580,7 +601,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				propertyDescriptors.put(prop_id, property.getPropertyDescriptor());
 			else
 				propertyDescriptors.remove(prop_id);
-		}			
+		}		
+		property.setSavable(isSavable);
 	}
 	
 	public void setSize(Dimension dimension){

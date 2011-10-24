@@ -58,7 +58,7 @@ public class XMLUtil {
 		result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
 		result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion());
 		for(String propId : widgetModel.getAllPropertyIDs()){
-			if(widgetModel.getProperty(propId).isVisibleInPropSheet()){
+			if(widgetModel.getProperty(propId).isSavable()){
 				Element propElement = new Element(propId);
 				widgetModel.getProperty(propId).writeToXML(propElement);
 				result.addContent(propElement);
