@@ -26,12 +26,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
@@ -211,46 +207,14 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 	/**Get screenshot image from GraphicalViewer
 	 * @param viewer the GraphicalViewer
 	 * @return the screenshot image
-	 */
-	public static Image getScreenshotImage(GraphicalViewer viewer){
+	 */	
+	@Override
+	public Image getScreenShotImage(GraphicalViewer viewer){
 		GC gc = new GC(viewer.getControl());
 		final Image image = new Image(Display.getDefault(), viewer.getControl()
 				.getSize().x, viewer.getControl().getSize().y);
 		gc.copyArea(image, 0, 0);
 		gc.dispose();
 		return image;
-	}
-
-	@SuppressWarnings("nls")
-    public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
-		File file;
-		 // Get name for snapshot file
-        try
-        {
-            file = File.createTempFile("opi", ".png"); //$NON-NLS-1$ //$NON-NLS-2$
-            file.deleteOnExit();
-        }
-        catch (Exception ex)
-        {
-            throw new Exception("Cannot create tmp. file:\n" + ex.getMessage());
-        }
-
-        // Create snapshot file
-        try
-        {
-            final ImageLoader loader = new ImageLoader();
-
-            final Image image = getScreenshotImage(viewer);
-            loader.data = new ImageData[]{image.getImageData()};
-            image.dispose();
-            loader.save(file.getAbsolutePath(), SWT.IMAGE_PNG);
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(
-                    NLS.bind("Cannot create snapshot in {0}:\n{1}",
-                            file.getAbsolutePath(), ex.getMessage()));
-        }
-        return file.getAbsolutePath();
-    }
+	}	
 }
