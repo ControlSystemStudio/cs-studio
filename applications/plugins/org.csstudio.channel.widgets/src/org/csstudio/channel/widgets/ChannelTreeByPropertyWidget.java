@@ -1,11 +1,6 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channels;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.column;
-import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
-import static org.epics.pvmanager.util.TimeDuration.ms;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
@@ -15,22 +10,15 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.channel.widgets.ChannelTreeByPropertyModel.Node;
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.csstudio.utility.channelfinder.ChannelQuery;
 import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
-import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -39,10 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VTable;
-import org.epics.pvmanager.data.VTableColumn;
+import org.epics.pvmanager.PVWriter;
 
 public class ChannelTreeByPropertyWidget extends Composite {
 	
@@ -95,6 +80,19 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		});
 		tree.setItemCount(0);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tree.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (selectionWriter != null && tree.getSelectionCount() > 0) {
+					selectionWriter.write(tree.getSelection()[0].getText());
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -148,6 +146,8 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	
 	private Collection<Channel> channels = new ArrayList<Channel>();
 	private List<String> properties = new ArrayList<String>();
+	private String selectionPv = null;
+	private PVWriter<Object> selectionWriter = null;
 	
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
@@ -204,5 +204,21 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		tree.clearAll(true);
 		model = new ChannelTreeByPropertyModel(getChannels(), getProperties());
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
+	}
+	
+	public String getSelectionPv() {
+		return selectionPv;
+	}
+	
+	public void setSelectionPv(String selectionPv) {
+		this.selectionPv = selectionPv;
+		if (selectionPv == null || selectionPv.trim().isEmpty()) {
+			if (selectionWriter != null) {
+				selectionWriter.close();
+			}
+			selectionWriter = null;
+		} else {
+			selectionWriter = PVManager.write(channel(selectionPv)).async();
+		}
 	}
 }
