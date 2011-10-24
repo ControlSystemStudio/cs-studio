@@ -128,9 +128,9 @@ public class InfoServlet extends HttpServlet {
 
     private void appendHeadline(final StringBuilder page) {
         page.append("<tr>\n");
-        page.append("<td>Servlets</td>\n");
-        page.append("<td>Linkart</td>\n");
-        page.append("<td>Beschreibung</td>\n");
+        page.append("<th class=\"info\">Servlets</th>\n");
+        page.append("<th class=\"info\">Linkart</th>\n");
+        page.append("<th class=\"info\">Beschreibung</th>\n");
         page.append("</tr>\n");
     }
 
