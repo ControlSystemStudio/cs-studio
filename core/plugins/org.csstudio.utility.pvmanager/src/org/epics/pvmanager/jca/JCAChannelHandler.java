@@ -58,6 +58,18 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         }
         super.addMonitor(collector, cache, handler);
     }
+    
+    /**
+     * Return the TypeFactory to use to get data from the given channel and 
+     * convert it to the given type
+     * 
+     * @param cacheType final type for the value update
+     * @param channel channel access channel from which to get the data
+     * @return the TypeFactory to use
+     */
+    protected TypeFactory matchFactoryFor(Class<?> cacheType, Channel channel) {
+        return VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
+    }
 
     @Override
     public void connect(ExceptionHandler handler) {
@@ -72,7 +84,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
     // protected (not private) to allow different type factory
     protected void setup(Channel channel) throws CAException {
-        vTypeFactory = VTypeFactory.matchFor(cacheType, channel.getFieldType(), channel.getElementCount());
+        vTypeFactory = matchFactoryFor(cacheType, channel);
 
         // If metadata is needed, get it
         if (vTypeFactory.getEpicsMetaType() != null) {
