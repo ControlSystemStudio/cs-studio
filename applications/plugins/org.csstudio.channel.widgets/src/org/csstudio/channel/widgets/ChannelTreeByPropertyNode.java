@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.text.AbstractDocument.LeafElement;
-
 public class ChannelTreeByPropertyNode {
 	
 	// The model that contains the node

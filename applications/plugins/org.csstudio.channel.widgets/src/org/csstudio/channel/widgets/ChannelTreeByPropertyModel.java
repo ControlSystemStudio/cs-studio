@@ -8,8 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.channel.widgets.ChannelTreeByPropertyModel.Node;
-
 class ChannelTreeByPropertyModel {
 	List<Channel> allChannels;
 	List<String> properties;
