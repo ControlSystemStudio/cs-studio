@@ -39,8 +39,10 @@ public class ChannelTreeByPropertyEditPart extends AbstractWidgetEditPart {
 	}
 	
 	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
-		if (runMode)
+		if (runMode) {
 			widget.setChannelQuery(model.getChannelQuery());
+			widget.setSelectionPv(model.getSelectionPvName());
+		}
 		widget.setProperties(model.getTreeProperties());
 	}
 
@@ -57,7 +59,7 @@ public class ChannelTreeByPropertyEditPart extends AbstractWidgetEditPart {
 		};
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.TREE_PROPERTIES, reconfigure);
-		setPropertyChangeHandler(ChannelTreeByPropertyModel.PV_FOR_SELECTION, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV_NAME, reconfigure);
 	}
 	
 }

@@ -13,13 +13,13 @@ public class ChannelTreeByPropertyModel extends AbstractWidgetModel {
 	
 	public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$	
 	public static final String TREE_PROPERTIES = "tree_properties"; //$NON-NLS-1$	
-	public static final String PV_FOR_SELECTION = "pv_for_selection"; //$NON-NLS-1$	
+	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(CHANNEL_QUERY, "Channel query", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(PV_FOR_SELECTION, "PV for selection", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(SELECTION_PV_NAME, "Selection PV Name", WidgetPropertyCategory.Basic, ""));
 	}
 
 	@Override
@@ -41,8 +41,8 @@ public class ChannelTreeByPropertyModel extends AbstractWidgetModel {
 		return properties;
 	}
 	
-	public String getPvForSelection() {
-		return getCastedPropertyValue(PV_FOR_SELECTION);
+	public String getSelectionPvName() {
+		return getCastedPropertyValue(SELECTION_PV_NAME);
 	}
 
 }
