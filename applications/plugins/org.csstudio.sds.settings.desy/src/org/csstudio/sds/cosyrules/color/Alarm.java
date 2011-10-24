@@ -21,18 +21,16 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
-import org.csstudio.sds.model.IRule;
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
 
 /**
  * Color rule Alarm, translated from an ADL file.
- * 
+ *
  * @author jbercic, jhatje
- * 
+ *
  */
-public final class Alarm implements IRule {
+public final class Alarm extends AbstractAlarmRule  {
 	/**
 	 * The ID for this rule.
 	 */
@@ -59,7 +57,7 @@ public final class Alarm implements IRule {
 	 * Black.
 	 */
 	public static final String ERROR = ColorAndFontUtil.toHex(255, 255, 255);
-	
+
 	/**
 	 * Standard constructor.
 	 */
@@ -67,126 +65,51 @@ public final class Alarm implements IRule {
 		// Nothing to do.
 	}
 
-	/**
-	 * Map the severity of a pv value to a color. For DAL severities
-	 * (pv_name[severity]) the parameter 'arguments' is of type
-	 * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
-	 * a number.
-	 * 
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		DynamicValueState dvc = null;
-		// Wrong State violet
-		String color = UNKNOW;
-		if ((arguments != null) && (arguments.length > 0)) {
-			for (int i = 0; i < arguments.length; i++) {
-				DynamicValueState dvcTemp = null;
-				if (arguments[i] instanceof Double) {
-					dvcTemp = getDynamicValueCondition((Double) arguments[i]);
-				} else if (arguments[i] instanceof Long) {
-					dvcTemp = getDynamicValueCondition((Long) arguments[i]);
-				} else if (arguments[i] instanceof String) {
-					dvcTemp = getDynamicValueCondition((String) arguments[i]);
-				} else if (arguments[i] instanceof DynamicValueCondition) {
-					dvcTemp = getDynamicValueCondition((DynamicValueCondition) arguments[i]);
-				}
-				if(dvc==null|| (dvcTemp!=null && dvc.ordinal()<dvcTemp.ordinal())){
-					dvc = dvcTemp;
-				}
-			}
-
-			if (dvc != null) {
-				switch (dvc) {
-				case ALARM:
-					// RED
-					color = ALARM;
-					break;
-				case NORMAL:
-					// Green
-					color = ColorAndFontUtil.toHex(0, 216, 0);
-					break;
-				case WARNING:
-					// Yellow
-					return ColorAndFontUtil.toHex(251, 243, 74);
-				case TIMELAG:
-				case LINK_NOT_AVAILABLE:
-				case TIMEOUT:
-				case ERROR:
-					// white
-					color = ColorAndFontUtil.toHex(255, 255, 255);
-				}
-			}
-		}
-
-		return color;
-	}
-
-	/**
-	 * @param dynamicValueCondition
-	 * @return
-	 */
-	private DynamicValueState getDynamicValueCondition(
-			final DynamicValueCondition dynamicValueCondition) {
-		if (dynamicValueCondition.containsAllStates(DynamicValueState.ALARM)) {
-			return DynamicValueState.ALARM;
-		} else if (dynamicValueCondition
-				.containsAllStates(DynamicValueState.WARNING)) {
-			return DynamicValueState.WARNING;
-		} else if (dynamicValueCondition
-				.containsAllStates(DynamicValueState.NORMAL)) {
-			return DynamicValueState.NORMAL;
-		}
-		return DynamicValueState.ERROR;
-	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	private DynamicValueState getDynamicValueCondition(final String alarmState) {
-		if (alarmState.equals("NO_ALARM")
-				|| alarmState.equals(DynamicValueState.NORMAL.toString())) {
-			return DynamicValueState.NORMAL;
-		} else if (alarmState.equals("MINOR")
-				|| alarmState.equals(DynamicValueState.WARNING.toString())) {
-			return DynamicValueState.WARNING;
-		} else if (alarmState.equals("MAJOR")
-				|| alarmState.equals(DynamicValueState.ALARM.toString())) {
-			return DynamicValueState.ALARM;
-		}
-		return DynamicValueState.ERROR;
-	}
-
-	/**
-	 * @param alarmState
-	 * @return
-	 */
-	private DynamicValueState getDynamicValueCondition(final Long alarmState) {
-		return getDynamicValueCondition(alarmState.doubleValue());
-	}
-
-	/**
-	 * @param double1
-	 * @return
-	 */
-	private DynamicValueState getDynamicValueCondition(final Double alarmState) {
-		if ((Math.abs(alarmState - 0.0) < 0.00001)) {
-			return DynamicValueState.NORMAL;
-		} else if ((Math.abs(alarmState - 1.0) < 0.00001)) {
-			return DynamicValueState.WARNING;
-		} else if ((Math.abs(alarmState - 2.0) < 0.00001)) {
-			return DynamicValueState.ALARM;
-		}
-		return DynamicValueState.ERROR;
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getDescription() {
-		String msg = "Kann fï¿½r ein oder mehrere Channels die Severity als Farbe zurï¿½ckgeben. Ist mehr als ein Channel angeben wird die hï¿½ste Severity zurï¿½ckgben.";
+		final String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angeben wird die höste Severity zurückgben.";
 		return msg;
 	}
+
+	/**
+	 * Map the severity of a pv value to a color. For DAL severities
+	 * (pv_name[severity]) the parameter 'arguments' is of type
+	 * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
+	 * a number.
+	 *
+	 * {@inheritDoc}
+	 */
+    @Override
+    protected Object evaluateWorker(final DynamicValueState dvc) {
+        String result = UNKNOW;
+        if (dvc != null) {
+            switch (dvc) {
+            case ALARM:
+                // RED
+                result = ALARM;
+                break;
+            case NORMAL:
+                // Green
+                result = ColorAndFontUtil.toHex(0, 216, 0);
+                break;
+            case WARNING:
+                // Yellow
+                return ColorAndFontUtil.toHex(251, 243, 74);
+            case TIMELAG:
+            case LINK_NOT_AVAILABLE:
+            case TIMEOUT:
+            case HAS_LIVE_DATA:
+            case HAS_METADATA:
+            case NO_VALUE:
+            case ERROR:
+                // white
+                result = ColorAndFontUtil.toHex(255, 255, 255);
+            }
+        }
+        return result;
+    }
 }
