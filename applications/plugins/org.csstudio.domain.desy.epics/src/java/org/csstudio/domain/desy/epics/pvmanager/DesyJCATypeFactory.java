@@ -159,12 +159,12 @@ public abstract class DesyJCATypeFactory<V,
         final EpicsAlarm alarm = new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
                                                 EpicsAlarmStatus.valueOf(eMeta.getStatus()));
         Short prec = null;
-        if (PRECISION.class.isAssignableFrom(eMeta.getClass())) {
+        if (eMeta instanceof PRECISION) {
             prec = Short.valueOf(((PRECISION) eMeta).getPrecision());
         }
         EpicsGraphicsData<W> gr = null;
         IControlLimits<W> cr = null;
-        if (CTRL.class.isAssignableFrom(eMeta.getClass())) {
+        if (eMeta instanceof CTRL) {
             final CTRL ctrl = (CTRL) eMeta;
             gr = createGraphics(ctrl);
             cr = createControlLimits(ctrl);

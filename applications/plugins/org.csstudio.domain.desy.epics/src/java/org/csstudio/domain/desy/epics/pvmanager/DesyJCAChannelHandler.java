@@ -21,14 +21,10 @@
  */
 package org.csstudio.domain.desy.epics.pvmanager;
 
-import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.dbr.DBR;
-import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.STS;
-import gov.aps.jca.event.GetEvent;
-import gov.aps.jca.event.GetListener;
 import gov.aps.jca.event.MonitorEvent;
 
 import java.util.Collection;
@@ -37,19 +33,22 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.domain.desy.epics.time.DesyDbrTimeValidator;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.jca.JCAChannelHandler;
+import org.epics.pvmanager.jca.TypeFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Predicate;
 
 /**
- * TODO (bknerr) :
+ * Dedicated DESY channel handler providing the DESY type factories and
+ * value update behaviour.
  *
  * @author bknerr
  * @since 30.08.2011
@@ -63,9 +62,6 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     private Class<Object> _dataType;
     private EpicsMetaData _desyMeta;
 
-    // FIXME (bknerr) : make this one protected in super type - or refactor completely
-    private final int _monitorMask;
-
     /**
      * Constructor.
      * @param dataType
@@ -76,7 +72,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
-        _validator = new org.csstudio.domain.desy.epics.time.DesyDbrTimeValidator();
+        _validator = new DesyDbrTimeValidator();
 
         if (dataType == null) {
             _dataType = null;
@@ -87,38 +83,19 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                 LOG.error("Datatype for channel {} is not convertible to java type class!:\n{}", channelName, e.getMessage());
             }
         }
-
-        // FIXME (bknerr) : make this one protected in super type
-        _monitorMask = monitorMask;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
     @Override
-    protected synchronized void setup(@Nonnull final Channel channel) throws CAException {
-        vTypeFactory = DesyTypeFactoryProvider.matchFor(channel);
-
-        // If metadata is needed, get it
-        final DBRType epicsMetaType = vTypeFactory.getEpicsMetaType();
-        if (epicsMetaType != null) {
-            // Need to use callback for the listener instead of doing a synchronous get
-            // (which seemed to perform better) because JCA (JNI implementation)
-            // would return an empty list of labels for the Enum metadata
-            channel.get(epicsMetaType, 1, new GetListener() {
-                @Override
-                public void getCompleted(@Nonnull final GetEvent ev) {
-                    synchronized(DesyJCAChannelHandler.this) {
-                        metadata = ev.getDBR();
-                        // In case the metadata arrives after the monitor
-                        // FIXME (bknerr) : couldn't extract this method as well... is it important?
-                        //dispatchValue();
-                    }
-                }
-            });
-        }
-
-        channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), _monitorMask, monitorListener);
-        // Flush the entire context (it's the best we can do)
-        channel.getContext().flushIO();
+    @Nonnull
+    protected TypeFactory matchFactoryFor(@Nonnull final Class<?> desiredType,
+                                          @Nonnull final Channel channel) {
+        return DesyTypeFactoryProvider.matchFor(channel);
     }
+
 
     @SuppressWarnings("rawtypes")
     @Override
@@ -134,10 +111,11 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
         }
 
         @SuppressWarnings("unchecked")
-        final EpicsSystemVariable newValue = ((DesyJCATypeFactory) vTypeFactory).createValue(getChannelName(),
-                                                                                          rawDBR,
-                                                                                          metadata,
-                                                                                          _desyMeta);
+        final EpicsSystemVariable newValue =
+            ((DesyJCATypeFactory) vTypeFactory).createValue(getChannelName(),
+                                                            rawDBR,
+                                                            metadata,
+                                                            _desyMeta);
         cache.setValue(newValue);
         return true;
     }
