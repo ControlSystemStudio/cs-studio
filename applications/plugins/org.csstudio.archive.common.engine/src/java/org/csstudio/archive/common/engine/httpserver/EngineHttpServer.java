@@ -114,8 +114,8 @@ public class EngineHttpServer {
                                     new RestartResponse(model), null, httpContext);
         httpService.registerServlet(ResetResponse.baseUrl(),
                                     new ResetResponse(model), null, httpContext);
-        httpService.registerServlet(StopEngineResponse.baseUrl(),
-                                    new StopEngineResponse(model), null, httpContext);
+        httpService.registerServlet(ShutdownResponse.baseUrl(),
+                                    new ShutdownResponse(model), null, httpContext);
     }
 
 

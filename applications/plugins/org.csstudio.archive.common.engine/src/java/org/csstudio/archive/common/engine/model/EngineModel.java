@@ -297,7 +297,7 @@ public final class EngineModel {
     /** Setting the model state to shutdown.
      *  @see #getState()
      */
-    public synchronized void requestStop() {
+    public synchronized void requestShutdown() {
         _state = EngineState.SHUTDOWN_REQUESTED;
     }
 

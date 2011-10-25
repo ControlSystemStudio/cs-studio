@@ -12,6 +12,7 @@ import gov.aps.jca.Monitor;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
@@ -52,7 +53,8 @@ public class ArchiveEngineApplication implements IApplication {
     /** Engine model */
     private EngineModel _model;
 
-    private volatile boolean _run = true;
+    @GuardedBy("this")
+    private boolean _run = true;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
@@ -114,14 +116,14 @@ public class ArchiveEngineApplication implements IApplication {
 
         EngineHttpServer httpServer = null;
         try {
-            _run = true;
+            setRun(true);
             _model = new EngineModel(_engineName, provider, dataSource);
 
             httpServer = startHttpServer(_model, provider);
             if (httpServer == null) {
                 return EXIT_OK;
             }
-            while (_run) {
+            while (getRun()) {
                 configureAndRunEngine(_model);
                 stopEngineAndClearConfiguration(_model);
             }
@@ -131,6 +133,10 @@ public class ArchiveEngineApplication implements IApplication {
             Thread.currentThread().interrupt();
         }
         return killEngineAndHttpServer(_model, httpServer);
+    }
+
+    private synchronized boolean getRun() {
+        return _run;
     }
 
     @SuppressWarnings("rawtypes")
@@ -201,13 +207,17 @@ public class ArchiveEngineApplication implements IApplication {
         while (true) {
             Thread.sleep(1000);
             if (model.getState() == EngineState.SHUTDOWN_REQUESTED) {
-                _run = false;
+                setRun(false);
                 break;
             }
             if (model.getState() == EngineState.RESTART_REQUESTED) {
                 break;
             }
         }
+    }
+
+    private synchronized void setRun(final boolean run) {
+        _run = run;
     }
 
     private void readEngineConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
@@ -226,7 +236,7 @@ public class ArchiveEngineApplication implements IApplication {
     @Override
     public void stop() {
         if (_model != null) {
-            _model.requestStop();
+            _model.requestShutdown();
         }
     }
 
