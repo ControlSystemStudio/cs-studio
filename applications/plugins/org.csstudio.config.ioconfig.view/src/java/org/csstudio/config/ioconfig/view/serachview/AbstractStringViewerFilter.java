@@ -23,7 +23,7 @@ abstract class AbstractStringViewerFilter extends ViewerFilter {
         // Default Constructor
     }
     
-    protected boolean checkSearchText(@CheckForNull final String searchText) {
+    protected boolean checkSearchText() {
         return _searchText != null && _searchText.trim().length() > 0;
     }
     

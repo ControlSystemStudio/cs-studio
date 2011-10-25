@@ -50,7 +50,7 @@ import org.hibernate.Hibernate;
 @Table(name = "MIME_FILES_LINK")
 //@Table(name = "MIME_FILES_LINK_TEST")
 public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
-    
+
     /**
      * MIME_FILES DB Key.
      */
@@ -59,12 +59,12 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * File Mime typ.
      */
     private String _mimeType;
-    
+
     /**
      * The Documentation File. The Name is historic conditional on Data Base.
      */
     private Blob _image;
-    
+
     /**
      * The date to fill the File into the Data Base.
      */
@@ -117,14 +117,14 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
      * Keywords for this Document.
      */
     private String _keywords;
-    
+
     /**
      * Default Constructor needed by Hibernate.
      */
     public DocumentDBO() {
         // Constructor
     }
-    
+
     /**
      * Constructor to generate document whit basic information.
      * @param subject set the Subject.
@@ -136,7 +136,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         setDesclong(desc);
         setKeywords(keywords);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -155,7 +155,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         }
         return id.compareTo(otherID);
     }
-    
+
     @Override
     public boolean equals(@CheckForNull final Object obj) {
         if (this == obj) {
@@ -177,49 +177,49 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         }
         return true;
     }
-    
+
     @Override
     @CheckForNull
     @Column(length = 30)
     public String getAccountname() {
         return _accountname;
     }
-    
+
     @Override
     @Column(name = "CREATED_DATE")
     @CheckForNull
     public Date getCreatedDate() {
         return _createdDate;
     }
-    
+
     @Override
     @Column(name = "DELETE_DATE")
     @CheckForNull
     public Date getDeleteDate() {
         return _deleteDate;
     }
-    
+
     @Override
     @Column(length = 4000)
     @Nonnull
     public String getDesclong() {
         return _desclong;
     }
-    
-    
+
+
     @Override
     @CheckForNull
     public Date getEntrydate() {
         return _entrydate;
     }
-    
+
     @Override
     @CheckForNull
     @Column(length = 30)
     public String getErroridentifyer() {
         return _erroridentifyer;
     }
-    
+
     @Override
     @Id
     @Column(length = 100)
@@ -227,7 +227,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     public String getId() {
         return _id;
     }
-    
+
     /**
      * The Documentation File. The Name is historic conditional on Data Base.
      * @return The Documentation File.
@@ -238,7 +238,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     public Blob getImage() {
         return _image;
     }
-    
+
     @Override
     @Transient
     @Nonnull
@@ -251,42 +251,42 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
             throw persistenceException;
         }
     }
-    
+
     @Override
     @Column(length = 200)
     @Nonnull
     public String getKeywords() {
         return _keywords;
     }
-    
+
     @Override
     @Column(name = "Link_Forward", length = 200)
     @Nonnull
     public String getLinkForward() {
         return _linkForward;
     }
-    
+
     @Override
     @Column(name = "LINK_ID", length = 100)
     @CheckForNull
     public String getLinkId() {
         return _linkId;
     }
-    
+
     @Override
     @Column(length = 30)
     @Nonnull
     public String getLocation() {
         return _location;
     }
-    
+
     @Override
     @CheckForNull
     @Column(length = 16)
     public String getLogseverity() {
         return _logseverity;
     }
-    
+
     /**
      * @return the File mime type
      */
@@ -296,21 +296,21 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     public String getMimeType() {
         return _mimeType;
     }
-    
+
     @Override
     @Column(length = 200)
     @CheckForNull
     public String getSubject() {
         return _subject;
     }
-    
+
     @Override
     @Column(name = "UPDATE_DATE")
     @Nonnull
     public Date getUpdateDate() {
         return _updateDate;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 73;
@@ -318,43 +318,43 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         result = prime * result + ( _id == null ? 0 : _id.hashCode());
         return result;
     }
-    
+
     public void setAccountname(@Nonnull final String accountname) {
         _accountname = accountname;
     }
-    
+
     /**
-     * 
+     *
      * @param createdDate set the create date of the document.
      */
     public void setCreatedDate(@Nonnull final Date createdDate) {
         _createdDate = createdDate;
     }
-    
+
     public void setDeleteDate(@Nonnull final Date deleteDate) {
         _deleteDate = deleteDate;
     }
-    
+
     public void setDesclong(@Nonnull final String desclong) {
         _desclong = desclong;
     }
-    
+
     public void setEntrydate(@Nonnull final Date entrydate) {
         _entrydate = entrydate;
     }
-    
+
     public void setErroridentifyer(@Nonnull final String erroridentifyer) {
         _erroridentifyer = erroridentifyer;
     }
-    
+
     /**
-     * 
+     *
      * @param id set the Document Id key.
      */
     public void setId(@Nonnull final String id) {
         _id = id;
     }
-    
+
     /**
      * The Documentation File. The Name is historic conditional on Data Base.
      * @param image Set the Documentation File.
@@ -362,53 +362,53 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     public void setImage(@Nonnull final Blob image) {
         _image = image;
     }
-    
+
     @SuppressWarnings("deprecation")
     @Transient
     public void setImage(@Nonnull final byte[] imageAsByteArray) {
         _image = Hibernate.createBlob(imageAsByteArray);
     }
-    
+
     public void setKeywords(@Nonnull final String keywords) {
         _keywords = keywords;
     }
-    
+
     public void setLinkForward(@Nonnull final String linkForward) {
         _linkForward = linkForward;
     }
-    
+
     public void setLinkId(@Nonnull final String linkId) {
         _linkId = linkId;
     }
-    
+
     public void setLocation(@Nonnull final String location) {
         _location = location;
     }
-    
+
     public void setLogseverity(@Nonnull final String logseverity) {
         _logseverity = logseverity;
     }
-    
+
     /**
-     * 
+     *
      * @param mimeType
      *            set the MIME type of this Document.
      */
     public void setMimeType(@Nonnull final String mimeType) {
         _mimeType = mimeType;
     }
-    
-    
-    
+
+
+
     public void setSubject(@Nonnull final String subject) {
         _subject = subject;
         Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
     }
-    
+
     public void setUpdateDate(@Nonnull final Date updateDate) {
         _updateDate = updateDate;
     }
-    
+
     /**
      * {@inheritDoc}
      */

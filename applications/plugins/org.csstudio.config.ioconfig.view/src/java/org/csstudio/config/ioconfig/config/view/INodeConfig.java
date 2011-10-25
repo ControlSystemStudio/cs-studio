@@ -38,6 +38,6 @@ public interface INodeConfig extends IHasDocumentableObject {
     * @return the documentable object.
     */
     @CheckForNull
-    AbstractNodeDBO getNode();
+    AbstractNodeDBO<?,?> getNode();
 
 }

@@ -36,8 +36,8 @@ import org.junit.Test;
  */
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: $
@@ -58,147 +58,147 @@ public class AlarmTest {
 
 	@Test
 	public void nullArgument(){
-		Object out = _alarm.evaluate(null);
+		final Object out = _alarm.evaluate(null);
 		assertEquals(Alarm.UNKNOW, out);
 	}
-	
+
 	@Test
 	public void longArument() {
-		
-		Long[] minusOne = new Long[]{-1l};
-		Long[] zero = new Long[]{0l};
-		Long[] one = new Long[]{1l};
-		Long[] two = new Long[]{2l};
-		Long[] three = new Long[]{3l};
-		
+
+		final Long[] minusOne = new Long[]{-1l};
+		final Long[] zero = new Long[]{0l};
+		final Long[] one = new Long[]{1l};
+		final Long[] two = new Long[]{2l};
+		final Long[] three = new Long[]{3l};
+
 		Object out = _alarm.evaluate(minusOne);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(zero);
 		assertEquals(Alarm.NORMAL, out);
-		
+
 		out = _alarm.evaluate(one);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		out = _alarm.evaluate(two);
 		assertEquals(Alarm.ALARM, out);
-		
+
 		out = _alarm.evaluate(three);
 		assertEquals(Alarm.ERROR, out);
-		
+
 	}
 
 	@Test
 	public void doubleArument() {
-		
-		Double[] minusOne = new Double[]{-1d};
-		Double[] zero = new Double[]{0.000000000000001d};
-		Double[] one = new Double[]{ 0.999999999999999d};
-		Double[] two = new Double[]{ 2.000000000000001d};
-		Double[] three = new Double[]{3d};
-		
+
+		final Double[] minusOne = new Double[]{-1d};
+		final Double[] zero = new Double[]{0.000000000000001d};
+		final Double[] one = new Double[]{ 0.999999999999999d};
+		final Double[] two = new Double[]{ 2.000000000000001d};
+		final Double[] three = new Double[]{3d};
+
 		Object out = _alarm.evaluate(minusOne);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(zero);
 		assertEquals(Alarm.NORMAL, out);
-		
+
 		out = _alarm.evaluate(one);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		out = _alarm.evaluate(two);
 		assertEquals(Alarm.ALARM, out);
-		
+
 		out = _alarm.evaluate(three);
 		assertEquals(Alarm.ERROR, out);
-		
+
 	}
-	
+
 	@Test
 	public void StringArument() {
-		String[] dirty = new String[]{"test123dirtyIncomming"};
-		String[] noAlarm = new String[]{"NO_ALARM"};
-		String[] minor = new String[]{"MINOR"};
-		String[] warning = new String[]{"WARNING"};
-		String[] major = new String[]{"MAJOR"};
-		String[] alarm = new String[]{"ALARM"};
-		
+		final String[] dirty = new String[]{"test123dirtyIncomming"};
+		final String[] noAlarm = new String[]{"NO_ALARM"};
+		final String[] minor = new String[]{"MINOR"};
+		final String[] warning = new String[]{"WARNING"};
+		final String[] major = new String[]{"MAJOR"};
+		final String[] alarm = new String[]{"ALARM"};
+
 		Object out = _alarm.evaluate(dirty);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(noAlarm);
 		assertEquals(Alarm.NORMAL, out);
-		
+
 		out = _alarm.evaluate(minor);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		out = _alarm.evaluate(warning);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		out = _alarm.evaluate(major);
 		assertEquals(Alarm.ALARM, out);
 
 		out = _alarm.evaluate(alarm);
 		assertEquals(Alarm.ALARM, out);
 	}
-	
+
 	@Test
 	public void DynamicValueStateArument() {
-		Timestamp timestamp = new Timestamp();
-		DynamicValueCondition[] noValue = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NO_VALUE), timestamp, "test")};
-		DynamicValueCondition[] normal = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL), timestamp, "test")};
-		DynamicValueCondition[] warning = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING), timestamp, "test")};
-		DynamicValueCondition[] alarm = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), timestamp, "test")};
-		DynamicValueCondition[] error = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR), timestamp, "test")};
-		DynamicValueCondition[] linkNotAvailable = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), timestamp, "test")};
-		DynamicValueCondition[] timelag = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.TIMELAG), timestamp, "test")};
-		DynamicValueCondition[] timeout = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.TIMEOUT), timestamp, "test")};
-		
+		final Timestamp timestamp = new Timestamp();
+		final DynamicValueCondition[] noValue = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NO_VALUE), timestamp, "test")};
+		final DynamicValueCondition[] normal = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL), timestamp, "test")};
+		final DynamicValueCondition[] warning = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING), timestamp, "test")};
+		final DynamicValueCondition[] alarm = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), timestamp, "test")};
+		final DynamicValueCondition[] error = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR), timestamp, "test")};
+		final DynamicValueCondition[] linkNotAvailable = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), timestamp, "test")};
+		final DynamicValueCondition[] timelag = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.TIMELAG), timestamp, "test")};
+		final DynamicValueCondition[] timeout = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.TIMEOUT), timestamp, "test")};
+
 		Object out;
-		
+
 		out = _alarm.evaluate(normal);
 		assertEquals(Alarm.NORMAL, out);
-		
+
 		out = _alarm.evaluate(warning);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		out = _alarm.evaluate(alarm);
 		assertEquals(Alarm.ALARM, out);
-		
+
 		out = _alarm.evaluate(error);
 		assertEquals(Alarm.ERROR, out);
 
 		out = _alarm.evaluate(linkNotAvailable);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(timelag);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(timeout);
-		assertEquals(Alarm.ERROR, out);
-		
+		assertEquals(Alarm.UNKNOW, out);
+
 		out = _alarm.evaluate(noValue);
-		assertEquals(Alarm.ERROR, out);
+		assertEquals(Alarm.UNKNOW, out);
 	}
-	
+
 	@Test
 	public void miscAruments(){
-		Timestamp timestamp = new Timestamp();
-		DynamicValueCondition[] noValue = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NO_VALUE), timestamp, "test")};
-		DynamicValueCondition[] normal = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL), timestamp, "test")};
-		DynamicValueCondition[] warning = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING), timestamp, "test")};
-		DynamicValueCondition[] alarm = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), timestamp, "test")};
-		
+		final Timestamp timestamp = new Timestamp();
+		final DynamicValueCondition[] noValue = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NO_VALUE), timestamp, "test")};
+		final DynamicValueCondition[] normal = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL), timestamp, "test")};
+		final DynamicValueCondition[] warning = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING), timestamp, "test")};
+		final DynamicValueCondition[] alarm = new DynamicValueCondition[]{new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM), timestamp, "test")};
+
 		Object[] misc;
-		
+
 		misc = new Object[]{new Long(0l),new Double(0.0d),"NO_ALARM", normal};
 		Object out = _alarm.evaluate(misc);
 		assertEquals(Alarm.NORMAL, out);
-		
+
 		misc = new Object[]{new Long(1l),new Double(1.0d),"MINOR", warning};
 		out = _alarm.evaluate(misc);
 		assertEquals(Alarm.WARNING, out);
-		
+
 		misc = new Object[]{new Long(2l),new Double(2.0d),"MAJOR", alarm};
 		out = _alarm.evaluate(misc);
 		assertEquals(Alarm.ALARM, out);
@@ -219,9 +219,79 @@ public class AlarmTest {
 		out = _alarm.evaluate(misc);
 		assertEquals(Alarm.ERROR, out);
 	}
-	
-	
-	
+
+	@Test
+    public void alarmOrderingTest() throws Exception {
+	    Object[] misc;
+	    // MINOR
+	    misc = new Object[]{new Long(0l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.WARNING)};
+	    Object out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.WARNING, out);
+
+	    misc = new Object[]{new Long(0l),new Double(0.0d),"MINOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.WARNING, out);
+
+	    misc = new Object[]{new Long(0l),new Double(1.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.WARNING, out);
+
+	    misc = new Object[]{new Long(1l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.WARNING, out);
+	    //MAJOR
+	    misc = new Object[]{new Long(0l),new Double(1.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.ALARM)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ALARM, out);
+
+	    misc = new Object[]{new Long(1l),new Double(0.0d),"MAJOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ALARM, out);
+
+	    misc = new Object[]{new Long(0l),new Double(2.0d),"MINOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ALARM, out);
+
+	    misc = new Object[]{new Long(2l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.WARNING)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ALARM, out);
+	    //INVALID
+	    misc = new Object[]{new Long(0l),new Double(1.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.ERROR)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ERROR, out);
+
+	    misc = new Object[]{new Long(1l),new Double(0.0d),"INVALID", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ERROR, out);
+
+	    misc = new Object[]{new Long(0l),new Double(3.0d),"MINOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ERROR, out);
+
+	    misc = new Object[]{new Long(3l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.WARNING)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.ERROR, out);
+	    //UNKWON
+	    misc = new Object[]{new Long(0l),new Double(1.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.HAS_METADATA)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.UNKNOW, out);
+
+	    misc = new Object[]{new Long(1l),new Double(0.0d),"BLABLUP", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.UNKNOW, out);
+
+	    misc = new Object[]{new Long(0l),new Double(-08.15d),"MINOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.UNKNOW, out);
+
+	    misc = new Object[]{new Long(4711l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.WARNING)};
+	    out = _alarm.evaluate(misc);
+	    assertEquals(Alarm.UNKNOW, out);
+
+    }
+
+
+
 	/**
 	 * @throws java.lang.Exception
 	 */

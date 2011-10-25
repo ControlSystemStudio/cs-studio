@@ -31,9 +31,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.statistic.ProfibusStatisticGenerator;
-import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -48,18 +46,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Create a Statistic from the selected Facility and put it on a File.
- * 
+ *
  * @author Rickens Helge
  * @author $Author: $
  * @since 14.01.2011
 
  */
 public class CreateStatisticAction extends Action {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(CreateStatisticAction.class);
-    
+
     private final ProfiBusTreeView _pbtv;
-    
+
     /**
      * Constructor.
      */
@@ -67,7 +65,7 @@ public class CreateStatisticAction extends Action {
         super(text);
         _pbtv = pbtv;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -92,24 +90,19 @@ public class CreateStatisticAction extends Action {
             }
         }
     }
-    
+
     private void makeFiles(@Nonnull final File path, @Nonnull final FacilityDBO facility) {
         final ProfibusStatisticGenerator cfg = new ProfibusStatisticGenerator();
-        try {
-            cfg.setFacility(facility);
-            final File txtFile = new File(path, facility.getName() + ".txt");
-            makeStatisticFile(cfg, txtFile);
-        } catch (final PersistenceException e) {
-            LOG.error("Database Error! Files not created!", e);
-            DeviceDatabaseErrorDialog.open(null, "Can't create statistic file! Database error.", e);
-        }
+        cfg.setFacility(facility);
+        final File txtFile = new File(path, facility.getName() + ".txt");
+        makeStatisticFile(cfg, txtFile);
     }
-    
+
     /**
      * @param cfg
      * @param statisticFile
      */
-    private void makeStatisticFile(@Nonnull final ProfibusStatisticGenerator cfg, @Nonnull final File statisticFile) throws PersistenceException {
+    private void makeStatisticFile(@Nonnull final ProfibusStatisticGenerator cfg, @Nonnull final File statisticFile) {
         if (statisticFile.exists()) {
             final MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
                                                   | SWT.YES | SWT.NO);
@@ -131,7 +124,7 @@ public class CreateStatisticAction extends Action {
             }
         }
     }
-    
+
     /**
      * @param name
      */

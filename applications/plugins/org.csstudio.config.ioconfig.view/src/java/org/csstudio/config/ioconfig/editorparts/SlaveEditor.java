@@ -44,6 +44,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -124,7 +125,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      * @author $Author: $
      * @since 13.01.2011
      */
-    private final class WatchdogTimeCalculaterOnModify implements ModifyListener {
+    private static final class WatchdogTimeCalculaterOnModify implements ModifyListener {
         private final Text _text1;
         private final Text _text2;
         private final Text _outputText;
@@ -190,11 +191,13 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         }
 
         @Override
+        @CheckForNull
         public Image getColumnImage(@Nullable final Object element, @Nullable final int columnIndex) {
             return null;
         }
 
         @Override
+        @CheckForNull
         public String getColumnText(@Nullable final Object element, final int columnIndex) {
             if (element instanceof SlaveDBO) {
                 return onSlave((SlaveDBO) element, columnIndex);
@@ -234,6 +237,14 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                     return module.getName();
                 case 2:
                     return module.getExtUserPrmDataConst();
+                case 3:
+                    final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+                    if(gsdModuleModel2 != null) {
+                        return gsdModuleModel2.getValueAsString();
+                    }
+                    break;
+                case 4:
+                    return module.getConfigurationData();
                 default:
                     break;
             }
@@ -340,23 +351,26 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
 
     private Text _watchDogTotal;
     private Text _slaveFlagText;
+    private Text _slaveCfgDataText;
+    private Text _slavePrmDataText;
 
     @Override
     public void cancel() {
         super.cancel();
-        // Text nameWidget = getNameWidget();
-        // if(nameWidget!=null) {
-        // nameWidget.setText((String) nameWidget.getData());
-        // }
-        // getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
         if (_indexCombo != null) {
             _indexCombo.getCombo().select((Integer) _indexCombo.getCombo().getData());
-            getNameWidget().setText((String) getNameWidget().getData());
+            final Text nameWidget = getNameWidget();
+            if(nameWidget!=null) {
+                nameWidget.setText((String) nameWidget.getData());
+            }
             getStationAddressActiveCButton()
             .setSelection((Boolean) getStationAddressActiveCButton().getData());
             _minStationDelayText.setText((String) _minStationDelayText.getData());
             _syncButton.setSelection((Boolean) _syncButton.getData());
-            getFailButton().setSelection((Boolean) getFailButton().getData());
+            final Button failButton = getFailButton();
+            if(failButton!=null) {
+                failButton.setSelection((Boolean) failButton.getData());
+            }
             _freezeButton.setSelection((Boolean) _freezeButton.getData());
             _watchDogButton.setSelection((Boolean) _watchDogButton.getData());
             _watchDogText1.setEnabled(_watchDogButton.getSelection());
@@ -364,6 +378,8 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             _watchDogText2.setEnabled(_watchDogButton.getSelection());
             _watchDogText2.setText((String) _watchDogText2.getData());
             _groupIdent = _groupIdentStored;
+            _slavePrmDataText.setText(_slave.getPrmUserData());
+            _slaveCfgDataText.setText(_slave.getSlaveCfgDataString());
             for (final Control control : _groupsRadioButtons.getChildren()) {
                 if (control instanceof Button) {
                     final Button button = (Button) control;
@@ -377,7 +393,6 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                     } else {
                         getHeaderField(HeaderFields.VERSION).setText("");
                         _vendorText.setText("");
-                        // getNameWidget().setText("");
                         _revisionsText.setText("");
                     }
                 } else {
@@ -414,10 +429,11 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
     @Override
     public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
-        // Name
-        _slave.setName(getNameWidget().getText());
-        getNameWidget().setData(getNameWidget().getText());
-
+        final Text nameWidget = getNameWidget();
+        if (nameWidget != null) {
+            _slave.setName(nameWidget.getText());
+            nameWidget.setData(nameWidget.getText());
+        }
         final Short stationAddress = (Short) ((StructuredSelection) _indexCombo.getSelection())
         .getFirstElement();
 
@@ -430,9 +446,9 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
                 minTsdr = Integer.parseInt(_minStationDelayText.getText());
                 final short wdFact1 = Short.parseShort(_watchDogText1.getText());
                 _watchDogText1.setData(_watchDogText1.getText());
+                _slave.setWdFact1(wdFact1);
                 final short wdFact2 = Short.parseShort(_watchDogText2.getText());
                 _watchDogText2.setData(_watchDogText2.getText());
-                _slave.setWdFact1(wdFact1);
                 _slave.setWdFact2(wdFact2);
             } catch (final NumberFormatException e) {
                 // don't change the old Value when the new value a invalid.
@@ -444,6 +460,9 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             _slaveFlagText.setText(_slave.getSlaveFlag()+"");
             _slave.setStationStatus(136); // Static Station status 136
             saveUserPrmData();
+
+            _slavePrmDataText.setText(_slave.getPrmUserData());
+            _slaveCfgDataText.setText(_slave.getSlaveCfgDataString());
 
             // GSD File
             _slave.setGSDFile(_gsdFile);
@@ -495,7 +514,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _maxSize = parsedGsdFileModel.getMaxModule();
         setSlots();
         // Settings - USER PRM MODE
-        final ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
+        final ArrayList<AbstractNodeDBO<?,?>> nodes = new ArrayList<AbstractNodeDBO<?,?>>();
         nodes.add(_slave);
         nodes.addAll(_slave.getChildrenAsMap().values());
         _userPrmDataList.setInput(nodes);
@@ -509,6 +528,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
 
     /** {@inheritDoc} */
     @Override
+    @CheckForNull
     public final GSDFileDBO getGsdFile() {
         return _slave.getGSDFile();
     }
@@ -523,7 +543,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      *            The Tab text.
      * @throws PersistenceException
      */
-    private void makeBasics(@Nonnull final String head) throws PersistenceException {
+    private void makeBasics(@Nonnull final String head) {
 
         final Composite comp = getNewTabItem(head, 2);
 
@@ -586,7 +606,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      * @param comp
      * @throws PersistenceException
      */
-    private void makeBasicsIO(@Nonnull final Composite comp) throws PersistenceException {
+    private void makeBasicsIO(@Nonnull final Composite comp) {
         final Group ioGroup = new Group(comp, SWT.NONE);
         ioGroup.setText("Inputs / Outputs");
         ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
@@ -623,7 +643,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
      * @param comp
      * @throws PersistenceException
      */
-    private void makeBasicsName(@Nonnull final Composite comp) throws PersistenceException {
+    private void makeBasicsName(@Nonnull final Composite comp) {
         final Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
@@ -868,7 +888,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         });
     }
 
-    private void makeOverview(@Nonnull final String headline) throws PersistenceException {
+    private void makeOverview(@Nonnull final String headline) {
         final Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
         final List<TableColumn> columns = new ArrayList<TableColumn>();
@@ -898,7 +918,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         });
 
-        final ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
+        final ArrayList<AbstractNodeDBO<?,?>> children = new ArrayList<AbstractNodeDBO<?,?>>();
         final Collection<ModuleDBO> modules = _slave.getChildrenAsMap().values();
         for (final ModuleDBO module : modules) {
             children.add(module);
@@ -925,10 +945,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(3, false));
 
-        final Text text = new Text(comp, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
-        text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1));
-        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
-        text.setText(_slave.getPrmUserData());
+        makeSlaveData(comp);
 
         makeOperationMode(comp);
 
@@ -938,6 +955,31 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
 
         makeSettingsGroups(comp);
 
+    }
+
+    /**
+     * @param comp
+     */
+    private void makeSlaveData(@Nonnull final Composite comp) {
+        final Group slaveDataGroup = new Group(comp, SWT.NONE);
+        slaveDataGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
+        slaveDataGroup.setLayout(new GridLayout(4, false));
+        slaveDataGroup.setText("Salve Data");
+        final Label slavePrmDataLabel = new Label(slaveDataGroup, SWT.NONE);
+        slavePrmDataLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        slavePrmDataLabel.setText("Slave Prm Data");
+        // TODO (hrickens) [02.05.2011]: Hier sollte bei jeder änderung der Werte Aktualisiert werden. (Momentan garnicht aber auch nciht nur beim Speichern)
+        _slavePrmDataText = new Text(slaveDataGroup, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+        _slavePrmDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        _slavePrmDataText.setText(_slave.getPrmUserData());
+
+        final Label slaveCfgDataLabel = new Label(slaveDataGroup, SWT.NONE);
+        slaveCfgDataLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+        slaveCfgDataLabel.setText("Slave Config Data");
+
+        _slaveCfgDataText = new Text(slaveDataGroup, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+        _slaveCfgDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+        _slaveCfgDataText.setText(_slave.getSlaveCfgDataString());
     }
 
     /**
@@ -1039,6 +1081,12 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         tc.setWidth(130);
         tc = new TableColumn(table, SWT.LEFT);
         tc.setText("Ext User Prm Data Const");
+        tc.setWidth(450);
+        tc = new TableColumn(table, SWT.LEFT);
+        tc.setText("SLAVE_CFG_DATA");
+        tc.setWidth(450);
+        tc = new TableColumn(table, SWT.LEFT);
+        tc.setText("Config Data");
         tc.setWidth(450);
     }
 

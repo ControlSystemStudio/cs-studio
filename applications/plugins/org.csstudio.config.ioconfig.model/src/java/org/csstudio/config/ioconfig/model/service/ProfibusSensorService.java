@@ -41,7 +41,7 @@ import org.csstudio.dct.ISensorIdService;
  * @since 06.07.2009
  */
 public class ProfibusSensorService implements ISensorIdService {
-    
+
     @Override
     @Nonnull
     public String getSensorId(@Nonnull final String ioName, @Nonnull final String selection) {
@@ -49,15 +49,15 @@ public class ProfibusSensorService implements ISensorIdService {
         try {
             loadSensors = Repository.loadSensor(ioName, selection);
         } catch (final PersistenceException e) {
-            return "$$$ Database not accessible $$$";
+            return "%%% Database not accessible %%%";
         }
         if(loadSensors==null) {
             //            return null;
-            return "$$$ NO Sensors ID found for IOName "+ioName+" $$$";
+            return "%%% NO Sensors ID found for IOName "+ioName+" %%%";
         }
         return loadSensors.getSensorID();
     }
-    
+
     @Nonnull
     public List<String> getSensorIds(@Nonnull final String ioName) {
         List<SensorsDBO> loadSensors;
@@ -68,10 +68,10 @@ public class ProfibusSensorService implements ISensorIdService {
                 sensorsIds.add(sensors.getSensorID());
             }
         } catch (final PersistenceException e) {
-            sensorsIds.add("$$$ Database not accessible $$$");
-            
+            sensorsIds.add("%%% Database not accessible %%%");
+
         }
         return sensorsIds;
     }
-    
+
 }

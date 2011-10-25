@@ -233,7 +233,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
     @Transient
     @CheckForNull
-    public SortedSet<Short> getFreeMStationAddress(final boolean redunant) throws PersistenceException{
+    public SortedSet<Short> getFreeMStationAddress(final boolean redunant) {
         final TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < getMaxStationAddress(); i++) {
             freeAddressList.add(i);
@@ -252,7 +252,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
 
     @Transient
     @Nonnull
-    public SortedSet<Short> getFreeStationAddress() throws PersistenceException{
+    public SortedSet<Short> getFreeStationAddress() {
         final TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < getMaxStationAddress(); i++) {
             freeAddressList.add(i);

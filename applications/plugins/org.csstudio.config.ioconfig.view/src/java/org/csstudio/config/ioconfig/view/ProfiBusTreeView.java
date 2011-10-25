@@ -279,7 +279,7 @@ public class ProfiBusTreeView extends Composite {
      * @author $Author: hrickens $
      * @since 20.06.2007
      */
-    class NameSorter extends ViewerSorter {
+    static class NameSorter extends ViewerSorter {
 
         @Override
         public int category(@Nullable final Object element) {
