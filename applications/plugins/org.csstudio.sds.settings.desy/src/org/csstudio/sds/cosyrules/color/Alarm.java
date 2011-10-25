@@ -105,6 +105,7 @@ public final class Alarm extends AbstractAlarmRule  {
             case HAS_LIVE_DATA:
             case HAS_METADATA:
             case NO_VALUE:
+                break;
             case ERROR:
                 // white
                 result = ColorAndFontUtil.toHex(255, 255, 255);

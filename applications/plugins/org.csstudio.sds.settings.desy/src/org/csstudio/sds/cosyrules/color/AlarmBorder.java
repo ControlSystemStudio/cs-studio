@@ -40,7 +40,7 @@ public class AlarmBorder extends AbstractAlarmRule {
      */
     @Override
     protected Object evaluateWorker(final DynamicValueState dvc) {
-        int style = 0;
+        int style = BorderStyleEnum.DOTTED.getIndex();
         if (dvc != null) {
             switch (dvc) {
                 case NORMAL:

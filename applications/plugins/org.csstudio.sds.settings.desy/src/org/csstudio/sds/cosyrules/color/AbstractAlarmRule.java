@@ -53,8 +53,10 @@ abstract class AbstractAlarmRule implements IRule {
     	} else if (dynamicValueCondition
     			.containsAllStates(DynamicValueState.NORMAL)) {
     		return DynamicValueState.NORMAL;
+    	} else if(dynamicValueCondition.containsAllStates(DynamicValueState.ERROR)) {
+    	    return DynamicValueState.ERROR;
     	}
-    	return DynamicValueState.ERROR;
+    	return DynamicValueState.NO_VALUE;
     }
 
     /**
@@ -62,17 +64,20 @@ abstract class AbstractAlarmRule implements IRule {
      * @return
      */
     protected DynamicValueState getDynamicValueCondition(final String alarmState) {
-    	if (alarmState.equals("NO_ALARM")
-    			|| alarmState.equals(DynamicValueState.NORMAL.toString())) {
-    		return DynamicValueState.NORMAL;
-    	} else if (alarmState.equals("MINOR")
-    			|| alarmState.equals(DynamicValueState.WARNING.toString())) {
-    		return DynamicValueState.WARNING;
-    	} else if (alarmState.equals("MAJOR")
-    			|| alarmState.equals(DynamicValueState.ALARM.toString())) {
-    		return DynamicValueState.ALARM;
-    	}
-    	return DynamicValueState.ERROR;
+        if (alarmState.compareToIgnoreCase("NO_ALARM") == 0
+                || alarmState.compareToIgnoreCase(DynamicValueState.NORMAL.toString()) == 0) {
+            return DynamicValueState.NORMAL;
+        } else if (alarmState.compareToIgnoreCase("MINOR") == 0
+                || alarmState.compareToIgnoreCase(DynamicValueState.WARNING.toString()) == 0) {
+            return DynamicValueState.WARNING;
+        } else if (alarmState.compareToIgnoreCase("MAJOR") == 0
+                || alarmState.compareToIgnoreCase(DynamicValueState.ALARM.toString()) == 0) {
+            return DynamicValueState.ALARM;
+        } else if (alarmState.compareToIgnoreCase("INVALID") == 0
+                || alarmState.compareToIgnoreCase(DynamicValueState.ERROR.toString()) == 0) {
+            return DynamicValueState.ERROR;
+        }
+        return DynamicValueState.NO_VALUE;
     }
 
     /**
@@ -88,14 +93,18 @@ abstract class AbstractAlarmRule implements IRule {
      * @return
      */
     protected DynamicValueState getDynamicValueCondition(final Double alarmState) {
-    	if (Math.abs(alarmState - 0.0) < 0.00001) {
-    		return DynamicValueState.NORMAL;
-    	} else if (Math.abs(alarmState - 1.0) < 0.00001) {
-    		return DynamicValueState.WARNING;
-    	} else if (Math.abs(alarmState - 2.0) < 0.00001) {
-    		return DynamicValueState.ALARM;
-    	}
-    	return DynamicValueState.ERROR;
+        if (alarmState > -0.00001) {
+            if (Math.abs(alarmState - 0.0) < 0.00001) {
+                return DynamicValueState.NORMAL;
+            } else if (Math.abs(alarmState - 1.0) < 0.00001) {
+                return DynamicValueState.WARNING;
+            } else if (Math.abs(alarmState - 2.0) < 0.00001) {
+                return DynamicValueState.ALARM;
+            } else if (Math.abs(alarmState - 3.0) < 0.00001) {
+                return DynamicValueState.ERROR;
+            }
+        }
+    	return DynamicValueState.NO_VALUE;
     }
 
     /**
@@ -104,7 +113,6 @@ abstract class AbstractAlarmRule implements IRule {
     @Override
     public Object evaluate(final Object[] arguments) {
         DynamicValueState dvc = null;
-        // Wrong State violet
 
         if (arguments != null && arguments.length > 0) {
             for (final Object argument : arguments) {
@@ -118,7 +126,7 @@ abstract class AbstractAlarmRule implements IRule {
                 } else if (argument instanceof DynamicValueCondition) {
                     dvcTemp = getDynamicValueCondition((DynamicValueCondition) argument);
                 }
-                if(dvc==null|| dvcTemp!=null && dvc.ordinal()<dvcTemp.ordinal()){
+                if (dvc == null || dvcTemp != null && dvc.ordinal()!=0 && (dvc.ordinal() < dvcTemp.ordinal() || dvcTemp.ordinal()==0)) {
                     dvc = dvcTemp;
                 }
             }

@@ -38,7 +38,7 @@ public class AlarmBorderWidth extends AbstractAlarmRule {
      */
     @Override
     protected Object evaluateWorker(final DynamicValueState dvc) {
-        int width = 0;
+        int width = 3;
         if (dvc != null) {
             switch (dvc) {
                 case NORMAL:
