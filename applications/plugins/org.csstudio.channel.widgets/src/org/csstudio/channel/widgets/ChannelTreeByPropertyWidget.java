@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.csstudio.utility.channelfinder.ChannelQuery;
 import org.csstudio.utility.channelfinder.ChannelQueryListener;
+import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.eclipse.swt.SWT;
@@ -26,6 +27,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVWriter;
 
@@ -147,7 +149,7 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	private Collection<Channel> channels = new ArrayList<Channel>();
 	private List<String> properties = new ArrayList<String>();
 	private String selectionPv = null;
-	private PVWriter<Object> selectionWriter = null;
+	private LocalUtilityPvManagerBridge selectionWriter = null;
 	
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
@@ -213,12 +215,14 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	public void setSelectionPv(String selectionPv) {
 		this.selectionPv = selectionPv;
 		if (selectionPv == null || selectionPv.trim().isEmpty()) {
+			// Close PVManager
 			if (selectionWriter != null) {
 				selectionWriter.close();
+				selectionWriter = null;
 			}
-			selectionWriter = null;
+			
 		} else {
-			selectionWriter = PVManager.write(channel(selectionPv)).async();
+			selectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
 	}
 }
