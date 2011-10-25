@@ -155,29 +155,27 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
      * @throws EngineModelException
      */
     public boolean start(@Nonnull final String info) throws EngineModelException {
-        try {
-            synchronized (this) {
-                if (_isStarted) {
-                    return true;
-                }
-                initPvAndListener();
-                _isStarted = true;
+        synchronized (this) {
+            if (_isStarted) {
+                return true;
             }
-
-            _listener.setStartInfo(info);
-            _pv.addPVReaderListener(_listener);
-
+            _isStarted = true;
+            initPvAndListener(info);
+        }
+        try {
             enable();
-
-        } catch (final Exception e) {
-            LOG.error("PV " + _pv.getName() + " could not be started with state info " + getInternalState(), e);
-            throw new EngineModelException("Something went wrong within Gabriele's PV stuff on channel/PV startup", e);
+        } catch (final EngineModelException e) {
+            LOG.error("PV " + _pv.getName() + " could not be enabled. Database access failed", e);
+            throw e;
         }
         return true;
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void initPvAndListener() {
+    private void initPvAndListener(@Nonnull final String info) {
+        if (_pv != null) {
+            _pv.close();
+        }
         _pv = PVManager.read(newValuesOf(channel(_name))).every(RATE);
 
         _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
@@ -196,6 +194,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                 return ArchiveChannelBuffer.this.isConnected();
             }
         };
+        _listener.setStartInfo(info);
+        _pv.addPVReaderListener(_listener);
     }
 
     public void enable() throws EngineModelException {
@@ -224,11 +224,12 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         }
         _listener.setStopInfo(info);
         _pv.removePVReaderListener(_listener);
+        _pv.close();
     }
 
     public void disable() throws EngineModelException {
 
-        stop("PERMAMENT DISABLE");
+        stop("PERMANENT DISABLE");
 
         synchronized (this) {
             if (!isEnabled()) {
