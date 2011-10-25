@@ -11,12 +11,15 @@ public class PVTableByPropertyModel extends AbstractWidgetModel {
 	public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$	
 	public static final String ROW_PROPERTY = "row_property"; //$NON-NLS-1$	
 	public static final String COLUMN_PROPERTY = "column_property"; //$NON-NLS-1$	
+	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
+	public static final String ROW_SELECTION_PV_NAME = "row_selection_pv_name"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
 		addProperty(new StringProperty(CHANNEL_QUERY, "Channel query", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(ROW_PROPERTY, "Row property", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(COLUMN_PROPERTY, "Column property", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(ROW_SELECTION_PV_NAME, "Row Selection PV Name", WidgetPropertyCategory.Basic, ""));
 	}
 
 	@Override
@@ -34,6 +37,10 @@ public class PVTableByPropertyModel extends AbstractWidgetModel {
 	
 	public String getColumnProperty() {
 		return getCastedPropertyValue(COLUMN_PROPERTY);
+	}
+	
+	public String getRowSelectionPvName() {
+		return getCastedPropertyValue(ROW_SELECTION_PV_NAME);
 	}
 
 }
