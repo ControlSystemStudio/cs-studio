@@ -20,6 +20,12 @@ import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
 
 /**Utility functions for resources.
@@ -169,4 +175,46 @@ public class ResourceUtil {
 		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
 		return connection.getInputStream();
 	}
+	
+	/**Get screenshot image from GraphicalViewer
+	 * @param viewer the GraphicalViewer
+	 * @return the screenshot image
+	 */
+	public static Image getScreenshotImage(GraphicalViewer viewer){		
+		return IMPL.getScreenShotImage(viewer);
+	}
+	
+	@SuppressWarnings("nls")
+    public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
+		File file;
+		 // Get name for snapshot file
+        try
+        {
+            file = File.createTempFile("opi", ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+            file.deleteOnExit();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Cannot create tmp. file:\n" + ex.getMessage());
+        }
+
+        // Create snapshot file
+        try
+        {
+            final ImageLoader loader = new ImageLoader();
+
+            final Image image = ResourceUtil.getScreenshotImage(viewer);
+            loader.data = new ImageData[]{image.getImageData()};
+            image.dispose();
+            loader.save(file.getAbsolutePath(), SWT.IMAGE_PNG);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                    NLS.bind("Cannot create snapshot in {0}:\n{1}",
+                            file.getAbsolutePath(), ex.getMessage()));
+        }
+        return file.getAbsolutePath();
+    }
+
 }

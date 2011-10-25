@@ -8,24 +8,19 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
-import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.widgets.Composite;
 
 /**Figure for a web browser widget.
  * @author Xihui Chen
  *
  */
-@SuppressWarnings("restriction")
 public abstract class AbstractWebBrowserFigure extends AbstractSWTWidgetFigure {	
 	
-
-
-	public AbstractWebBrowserFigure(Composite composite,
-			AbstractContainerModel parentModel) {
-		super(composite, parentModel);
+	public AbstractWebBrowserFigure(AbstractBaseEditPart editPart) {
+		super(editPart);
 	}
 
 	public abstract void setUrl(String url);

@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
@@ -171,9 +170,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
 			hookZoomListener();
-		}
+		}		
 		
-		getActionRegistry().registerAction(new PrintDisplayAction(opiRuntime));
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
 
 

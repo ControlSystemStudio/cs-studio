@@ -255,7 +255,7 @@ public class PreferencesHelper {
     }
      
     private static void putBoolean(String name, boolean value){
-    	IEclipsePreferences prefs = InstanceScope.INSTANCE.getNode(OPIBuilderPlugin.PLUGIN_ID);
+    	IEclipsePreferences prefs = new InstanceScope().getNode(OPIBuilderPlugin.PLUGIN_ID);
     	prefs.putBoolean(name, value);
     	try {
 			prefs.flush();

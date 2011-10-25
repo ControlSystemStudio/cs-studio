@@ -11,7 +11,7 @@ import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -41,7 +41,7 @@ public class SendToElogAction extends SendToElogActionHelper
         final String filename;
         try
         {
-            filename = ResourceUtilSSHelperImpl.getScreenshotFile(
+            filename = ResourceUtil.getScreenshotFile(
             		(GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)

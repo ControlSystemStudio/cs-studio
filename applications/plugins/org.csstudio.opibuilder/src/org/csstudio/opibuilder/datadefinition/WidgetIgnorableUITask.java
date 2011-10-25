@@ -12,9 +12,8 @@ import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.eclipse.swt.widgets.Display;
 
 /** The element in the {@link GUIRefreshThread}'s task queue. 
- *  It corresponds to a widget property change event. 
  *  An existing task in the queue should be ignored when a new task arrives
- *  that affects the same widget property.
+ *  that has the same identifyObject.
  *  For example, multiple tasks calling Gauge.setValue() are ignorable
  *  since the widget only needs to display the latest value.  
  *  @author Xihui Chen
@@ -25,18 +24,24 @@ public class WidgetIgnorableUITask {
 	/**
 	 * The widget property.
 	 */
-	final private AbstractWidgetProperty widgetProperty;
+	final private Object identifyObject;
 	
 	/**
-	 * The task which will be executed when widget property changed.
+	 * The task to be executed.
 	 */
 	final private Runnable runnableTask;
 	
 	final private Display display;
 
-	public WidgetIgnorableUITask(final AbstractWidgetProperty property, final Runnable runnableTask,
+	/**Constructor.
+	 * @param identifyObject the object that identifies this task. If the task associated
+	 * with the same identifyObject has not been executed, it will be ignored.
+	 * @param runnableTask the task to be executed.
+	 * @param display Associated Display.
+	 */
+	public WidgetIgnorableUITask(final Object identifyObject, final Runnable runnableTask,
 			final Display display){
-		this.widgetProperty = property;
+		this.identifyObject = identifyObject;
 		this.runnableTask = runnableTask;
 		this.display = display;
 	}
@@ -47,10 +52,10 @@ public class WidgetIgnorableUITask {
 	}
 
 		/**
-	 * @return the widgetProperty
+	 * @return the identify object
 	 */
-	public AbstractWidgetProperty getWidgetProperty() {
-		return widgetProperty;
+	public Object getIdentifyObject() {
+		return identifyObject;
 	}
 
 	/**
@@ -67,19 +72,19 @@ public class WidgetIgnorableUITask {
 	@Override
 	public boolean equals(final Object obj) {
 		if(obj instanceof WidgetIgnorableUITask)
-			return widgetProperty ==((WidgetIgnorableUITask)obj).getWidgetProperty();
+			return identifyObject ==((WidgetIgnorableUITask)obj).getIdentifyObject();
 		else 
 			return false;
 	}
 	
 	@Override
 	public String toString() {
-		return widgetProperty.toString();
+		return identifyObject.toString();
 	}
 	
 	@Override
 	public int hashCode() {
-		return widgetProperty.hashCode();
+		return identifyObject.hashCode();
 	}
 	
 }

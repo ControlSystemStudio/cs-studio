@@ -213,9 +213,11 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 					
 					if(!(Boolean)evt.getOldValue()){ //append
 						getViewer().deselectAll();
+					}					
+					for(EditPart editpart : widgetEditparts){
+						if(editpart.isSelectable())
+							getViewer().appendSelection(editpart);
 					}
-					for(EditPart editpart : widgetEditparts)
-						getViewer().appendSelection(editpart);
 				}
 			};
 			

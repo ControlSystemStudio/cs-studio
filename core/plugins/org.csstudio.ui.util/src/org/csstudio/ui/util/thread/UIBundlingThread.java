@@ -35,14 +35,24 @@ public final class UIBundlingThread implements Runnable {
 	 */
 	private Queue<Runnable> tasksQueue;
 
+	private Display display;
+
 	/**
 	 * Standard constructor.
 	 */
 	private UIBundlingThread() {
 		tasksQueue = new ConcurrentLinkedQueue<Runnable>();
-
+		display = Display.getCurrent();
+		if(display == null){
+			if(PlatformUI.getWorkbench() != null)
+				display = PlatformUI.getWorkbench().getDisplay();
+			else
+				display = Display.getDefault();
+		}
 		Executors.newScheduledThreadPool(1)
 				.scheduleAtFixedRate(this, 100, 20, TimeUnit.MILLISECONDS);
+		
+	
 	}
 
 	/**
@@ -52,7 +62,7 @@ public final class UIBundlingThread implements Runnable {
 	 */
 	public static synchronized UIBundlingThread getInstance() {
 		if (instance == null) {
-			instance = new UIBundlingThread();
+			instance = new UIBundlingThread();			
 		}
 
 		return instance;
@@ -69,12 +79,7 @@ public final class UIBundlingThread implements Runnable {
 	/**
 	 * Process the complete queue.
 	 */
-	private synchronized void processQueue() {
-		Display display;
-		if(PlatformUI.getWorkbench() != null)
-			display = PlatformUI.getWorkbench().getDisplay();
-		else
-			display = Display.getDefault();
+	private synchronized void processQueue() {		
 		Runnable r;
 		while( (r=tasksQueue.poll()) != null){	
 			display.asyncExec(r);
@@ -83,7 +88,7 @@ public final class UIBundlingThread implements Runnable {
 	}
 
 	/**
-	 * Adds the specified runnable to the queue.
+	 * Adds the specified runnable to the queue. Should not be used for RAP.
 	 * 
 	 * @param runnable
 	 *            the runnable

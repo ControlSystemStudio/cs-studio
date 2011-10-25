@@ -139,23 +139,24 @@ public class ConnectionHandler {
 	 */
 	protected void widgetConnectionRecovered(PV pv){		
 		
-		if(connected)
-			return;
-		
-		UIBundlingThread.getInstance().addRunnable(display, new Runnable(){
-			public void run() {
-				boolean allConnected = true;
-				refreshModelTooltip();
-				for(PV pv : pvMap.values()){
-					allConnected &= pv.isConnected();
-				}
-				if(allConnected){
+		if (connected)
+			return;		
+		boolean allConnected = true;
+		refreshModelTooltip();
+		for (PV pv2 : pvMap.values()) {
+			allConnected &= pv2.isConnected();
+		}
+		if (allConnected) {
+			connected = true;
+			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+				public void run() {
+
 					figure.setBorder(preBorder);
-					connected = true;
-				}				
-				figure.repaint();
-			}
-		});		
+
+					figure.repaint();
+				}
+			});
+		}
 	}
 
 	/**

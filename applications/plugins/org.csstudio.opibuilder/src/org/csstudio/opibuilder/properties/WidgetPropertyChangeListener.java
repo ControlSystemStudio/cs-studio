@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.widgets.Display;
@@ -58,7 +59,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 		Display display = editpart.getViewer().getControl().getDisplay();
 		WidgetIgnorableUITask task = new WidgetIgnorableUITask(widgetProperty, runnable, display);
 			
-		GUIRefreshThread.getInstance().addIgnorableTask(task);
+		GUIRefreshThread.getInstance(
+				editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
+				.addIgnorableTask(task);
 	}
 	
 	/**Add handler, which is informed when a property changed.

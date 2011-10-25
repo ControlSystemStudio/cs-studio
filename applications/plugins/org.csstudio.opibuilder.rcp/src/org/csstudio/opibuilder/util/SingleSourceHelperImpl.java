@@ -4,6 +4,7 @@ import java.util.logging.Level;
 
 import org.csstudio.email.EMailSender;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -36,6 +37,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.progress.UIJob;
 
@@ -110,7 +112,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 	@Override
 	protected void iRegisterRCPRuntimeActions(ActionRegistry actionRegistry,
 			IOPIRuntime opiRuntime) {
-
+		actionRegistry.registerAction(new PrintDisplayAction(opiRuntime));
 		if (SendToElogAction.isElogAvailable())
 			actionRegistry
 					.registerAction(new SendToElogAction(opiRuntime));
@@ -128,6 +130,9 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 		action = actionRegistry.getAction(SendEMailAction.ID);
 		if (action != null)
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+				actionRegistry.getAction(ActionFactory.PRINT.getId()));
+
 	}
 
 	@Override
