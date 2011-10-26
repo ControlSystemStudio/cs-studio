@@ -19,7 +19,9 @@ import java.net.URLConnection;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PlatformUI;
@@ -31,7 +33,8 @@ import org.eclipse.ui.PlatformUI;
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	private static InputStream inputStream;
 	private static Object lock = new Boolean(true);
-		
+	private static final String NOT_IMPLEMENTED = 
+			"This method has not been implemented yet for RAP";
 
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
@@ -168,6 +171,11 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	@Override
 	public IPath workspacePathToSysPath(IPath path) {
 		return null;
+	}
+
+	@Override
+	public Image getScreenShotImage(GraphicalViewer viewer) {
+		throw new RuntimeException(NOT_IMPLEMENTED);
 	}	
 
 	
