@@ -44,7 +44,6 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
-import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
@@ -56,6 +55,7 @@ import org.csstudio.utility.pv.PVFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LabeledBorder;
@@ -409,46 +409,18 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 		};
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_FONT, fontHandler);
 
-		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler() {
+		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				figure.setBorder(BorderFactory.createBorder(BorderStyle
-						.values()[(Integer) newValue], getWidgetModel()
-						.getBorderWidth(), getWidgetModel().getBorderColor(),
-						getWidgetModel().getName()));
+				setFigureBorder(calculateBorder());
 				return true;
 			}
 		};
 
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE,
-				borderStyleHandler);
-
-		IWidgetPropertyChangeHandler borderColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setBorder(BorderFactory.createBorder(getWidgetModel()
-						.getBorderStyle(), getWidgetModel().getBorderWidth(),
-						((OPIColor) newValue).getRGBValue(), getWidgetModel()
-								.getName()));
-				return true;
-			}
-		};
-
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,
-				borderColorHandler);
-
-		IWidgetPropertyChangeHandler borderWidthHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				figure.setBorder(BorderFactory.createBorder(getWidgetModel()
-						.getBorderStyle(), (Integer) newValue, getWidgetModel()
-						.getBorderColor(), getWidgetModel().getName()));
-				return true;
-			}
-		};
-
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH,
-				borderWidthHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE,	borderHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,	borderHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH,	borderHandler);
+		
 
 		IWidgetPropertyChangeHandler nameHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -758,5 +730,24 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 
 	public Runnable getDisplayDisposeListener() {
 		return displayDisposeListener;
-	}	
+	}
+	
+	/**Calculate the border for the widget with assume that the widget is connected.
+	 * @return the border.
+	 */
+	public Border calculateBorder(){		
+		return BorderFactory.createBorder(getWidgetModel().getBorderStyle(),
+				getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
+				getWidgetModel().getName());		
+	}
+	
+	/**Set border of the figure. It will consider the connection status.
+	 * @param border
+	 */
+	protected void setFigureBorder(Border border){
+		if(getConnectionHandler() != null && !getConnectionHandler().isConnected()){
+			return;
+		}
+		getFigure().setBorder(border);
+	}
 }

@@ -18,7 +18,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.PVValueProperty;
@@ -131,7 +130,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 
 	private boolean isBorderAlarmSensitive;
 	private boolean isForeColorAlarmSensitive;
-	private AlarmSeverity lastAlarmSeverity = new AlarmSeverity(){
+	private AlarmSeverity alarmSeverity = new AlarmSeverity(){
 
 		private static final long serialVersionUID = 1L;
 		
@@ -167,7 +166,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
 	private PropertyChangeListener[] pvValueListeners;
-	private Border saveBorder;
 
 	private Cursor savedCursor;
 
@@ -238,7 +236,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
 				new DropPVtoPVWidgetEditPolicy());
 	}
-
+	
 	@Override
 	public void deactivate() {
 		if(isActive()){
@@ -350,7 +348,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 
 		if(isBorderAlarmSensitive
 				&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
-			setAlarmBorder(BORDER_NO_ALARM);
+			setFigureBorder(BORDER_NO_ALARM);
 		}
 	}
 
@@ -386,36 +384,21 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 		controlPVValuePropId = pvValuePropId;
 		initUpdateSuppressTimer();
 	}
-
+	
 	@Override
 	protected void registerBasePropertyChangeHandlers() {
 		super.registerBasePropertyChangeHandlers();
-		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_BORDER_STYLE);
 		
-		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler(){
+		IWidgetPropertyChangeHandler borderHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				if(lastAlarmSeverity.isOK())
-					figure.setBorder(
-						BorderFactory.createBorder(BorderStyle.values()[(Integer)newValue],
-						getWidgetModel().getBorderWidth(), getWidgetModel().getBorderColor(),
-						getWidgetModel().getName()));
-				else if(isBorderAlarmSensitive){
-					Border alarmBorder;
-					if(lastAlarmSeverity.isMajor()){
-						alarmBorder = AlarmRepresentationScheme.getMajorBorder(getWidgetModel().getBorderStyle());
-					}else if(lastAlarmSeverity.isMinor()){
-						alarmBorder = AlarmRepresentationScheme.getMinorBorder(getWidgetModel().getBorderStyle());
-					}else{
-						alarmBorder = AlarmRepresentationScheme.getInvalidBorder(getWidgetModel().getBorderStyle());
-					}
-					figure.setBorder(alarmBorder);
-				}
+				setFigureBorder(calculateBorder());
 				return true;
 			}
 		};
 
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, borderStyleHandler);
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, borderHandler);
+	
 		
 		// value
 		IWidgetPropertyChangeHandler valueHandler = new IWidgetPropertyChangeHandler() {
@@ -426,36 +409,34 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 				if(!isBorderAlarmSensitive && !isBackColorrAlarmSensitive &&
 						!isForeColorAlarmSensitive)
 					return false;
-				ISeverity severity = ((IValue)newValue).getSeverity();
-				if(severity.isOK() && lastAlarmSeverity.isOK())
+				ISeverity newSeverity = ((IValue)newValue).getSeverity();
+				if(newSeverity.isOK() && alarmSeverity.isOK())
 					return false;
-				else if(severity.isOK() && !lastAlarmSeverity.isOK()){
-					lastAlarmSeverity.copy(severity);
+				else if(newSeverity.isOK() && !alarmSeverity.isOK()){
+					alarmSeverity.copy(newSeverity);
 					restoreFigureToOKStatus(figure);
 					return true;
 				}
-				if(severity.isMajor() && lastAlarmSeverity.isMajor())
+				if(newSeverity.isMajor() && alarmSeverity.isMajor())
 					return false;
-				if(severity.isMinor() && lastAlarmSeverity.isMinor())
+				if(newSeverity.isMinor() && alarmSeverity.isMinor())
 					return false;
-				if(severity.isInvalid() && lastAlarmSeverity.isInvalid())
+				if(newSeverity.isInvalid() && alarmSeverity.isInvalid())
 					return false;
-
+				
+				alarmSeverity.copy(newSeverity);
+				
 				RGB alarmColor;
-				Border alarmBorder;
-				if(severity.isMajor()){
+				if(newSeverity.isMajor()){
 					alarmColor = AlarmRepresentationScheme.getMajorColor();
-					alarmBorder = AlarmRepresentationScheme.getMajorBorder(getWidgetModel().getBorderStyle());
-				}else if(severity.isMinor()){
+				}else if(newSeverity.isMinor()){
 					alarmColor = AlarmRepresentationScheme.getMinorColor();
-					alarmBorder = AlarmRepresentationScheme.getMinorBorder(getWidgetModel().getBorderStyle());
 				}else{
 					alarmColor = AlarmRepresentationScheme.getInValidColor();
-					alarmBorder = AlarmRepresentationScheme.getInvalidBorder(getWidgetModel().getBorderStyle());
 				}
-
+				
 				if(isBorderAlarmSensitive){
-					setAlarmBorder(alarmBorder);
+					setFigureBorder(calculateBorder());
 				}
 				if(isBackColorrAlarmSensitive){
 					figure.setBackgroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
@@ -463,7 +444,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 				if(isForeColorAlarmSensitive){
 					figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(alarmColor));
 				}
-				lastAlarmSeverity.copy(severity);
+				
 				return true;
 			}
 
@@ -513,22 +494,22 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 					new PVNamePropertyChangeHandler(pvNameProperty.getPropertyID()));
 		}
 
-		//border alarm sensitive
-		IWidgetPropertyChangeHandler borderAlarmSentiveHandler = new IWidgetPropertyChangeHandler() {
-
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				isBorderAlarmSensitive = widgetModel.isBorderAlarmSensitve();
-				if(isBorderAlarmSensitive
-						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
-					setAlarmBorder(BORDER_NO_ALARM);
-				}else if (!isBorderAlarmSensitive
-						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE)
-					setAlarmBorder(null);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, borderAlarmSentiveHandler);
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_STYLE, borderAlarmSentiveHandler);
+//		//border alarm sensitive
+//		IWidgetPropertyChangeHandler borderAlarmSentiveHandler = new IWidgetPropertyChangeHandler() {
+//
+//			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+//				isBorderAlarmSensitive = widgetModel.isBorderAlarmSensitve();
+//				if(isBorderAlarmSensitive
+//						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE){
+//					setAlarmBorder(BORDER_NO_ALARM);
+//				}else if (!isBorderAlarmSensitive
+//						&& getWidgetModel().getBorderStyle()== BorderStyle.NONE)
+//					setAlarmBorder(null);
+//				return false;
+//			}
+//		};
+//		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, borderAlarmSentiveHandler);
+////		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_BORDER_STYLE, borderAlarmSentiveHandler);
 
 		IWidgetPropertyChangeHandler backColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
 
@@ -554,25 +535,19 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 
 	}
 
-	private void restoreFigureToOKStatus(IFigure figure) {
-		setAlarmBorder(saveBorder);
+	private void restoreFigureToOKStatus(IFigure figure) {		
+		setFigureBorder(calculateBorder());
 		figure.setBackgroundColor(saveBackColor);
 		figure.setForegroundColor(saveForeColor);
 	}
 
 	private void saveFigureOKStatus(IFigure figure) {
-		saveBorder = figure.getBorder();
 		saveForeColor = figure.getForegroundColor();
 		saveBackColor = figure.getBackgroundColor();
 	}
 
 
-	private void setAlarmBorder(Border alarmBorder){
-		if(getConnectionHandler() != null && !getConnectionHandler().isConnected()){
-			return;
-		}
-		getFigure().setBorder(alarmBorder);
-	}
+	
 
 
 	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
@@ -640,5 +615,32 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 			return new ProcessVariable(getName());
 		}
 		return super.getAdapter(key);
+	}
+	
+	@Override
+	public Border calculateBorder(){
+		isBorderAlarmSensitive = getWidgetModel().isBorderAlarmSensitve();
+		if(!isBorderAlarmSensitive)
+			return super.calculateBorder();
+		else {
+			Border alarmBorder;
+			if(alarmSeverity.isOK()){
+				if(getWidgetModel().getBorderStyle()== BorderStyle.NONE)
+					alarmBorder = BORDER_NO_ALARM;
+				else 
+					alarmBorder = BorderFactory.createBorder(
+							getWidgetModel().getBorderStyle(),
+							getWidgetModel().getBorderWidth(),
+							getWidgetModel().getBorderColor(),
+							getWidgetModel().getName());
+			}else if(alarmSeverity.isMajor()){
+				alarmBorder = AlarmRepresentationScheme.getMajorBorder(getWidgetModel().getBorderStyle());
+			}else if(alarmSeverity.isMinor()){
+				alarmBorder = AlarmRepresentationScheme.getMinorBorder(getWidgetModel().getBorderStyle());
+			}else{
+				alarmBorder = AlarmRepresentationScheme.getInvalidBorder(getWidgetModel().getBorderStyle());
+			}
+			return alarmBorder;
+		}
 	}
 }
