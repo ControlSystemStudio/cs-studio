@@ -83,10 +83,11 @@ import com.google.inject.Inject;
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
     public static final String TAB = "channel";
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+    private static final String LST_TAB = "last_sample";
 
     private static final String EXC_MSG = "Channel table access failed.";
 
-    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
 
     private static final String WHERE_SET_PLACEHOLDER = "<SET_CLAUSE>";
 
@@ -99,11 +100,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     private final String _selectChannelPrefix =
-        "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
+        "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + LST_TAB + ".time, " +
                     TAB + ".enabled, " + TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
-                "FROM " + getDatabaseName() + "." + TAB + ", " + getDatabaseName() + "." + CS_TAB;
-    private final String _selectChannelSuffix = " AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
+                "FROM " + getDatabaseName() + "." + TAB + ", " +
+                          getDatabaseName() + "." + CS_TAB + ", " +
+                          getDatabaseName() + "." + LST_TAB;
+    private final String _selectChannelSuffix = " AND " + TAB + ".control_system_id=" + CS_TAB + ".id" +
+                                                " AND " + TAB + ".id=" + LST_TAB + ".channel_id";
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
@@ -147,7 +151,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final String name = result.getString(TAB + ".name");
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
-        final long lastSampleTime = result.getLong(TAB + ".last_sample_time");
+        final long lastSampleTime = result.getLong(LST_TAB + ".time");
 
         final TimeInstant time = lastSampleTime > 0L ?
                                  TimeInstantBuilder.fromNanos(lastSampleTime) :

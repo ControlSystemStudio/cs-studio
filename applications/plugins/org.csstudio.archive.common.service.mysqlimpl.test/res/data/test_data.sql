@@ -29,12 +29,12 @@ INSERT INTO control_system (id, name, type)
 --
 -- Channels
 --        
-INSERT INTO channel (id, name, description, datatype, group_id, last_sample_time, control_system_id, enabled, display_high, display_low)
-       VALUES (1, 'doubleChannel1', 'test double channel 1', 'Double', 1, unix_timestamp('2011-01-01 00:00:01')*1000000000, 1, true, '20.0', '10.0'),
-              (2, 'doubleChannel2', 'test double channel 2', 'Double', 1, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, true, '25.0', '5.0'),
-              (3, 'byteChannel1', 'test byte channel 1', 'Byte', 2, unix_timestamp('2011-05-01 00:00:01')*1000000000, 1, false, '127', '-128'),
-              (4, 'enumChannel1', 'test enum channel 1', 'EpicsEnum', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, true, 1, NULL, NULL),
-              (5, 'compressChannel', 'test compress channel 1', 'ArrayList<Double>', 2, unix_timestamp('2010-01-01 01:02:03')*1000000000, 1, true, '-10', '500');
+INSERT INTO channel (id, name, description, datatype, group_id, control_system_id, enabled, display_high, display_low)
+       VALUES (1, 'doubleChannel1', 'test double channel 1',  'Double',            1, 1,    true,  '20.0', '10.0'),
+              (2, 'doubleChannel2', 'test double channel 2',  'Double',            1, 1,    true,  '25.0', '5.0'),
+              (3, 'byteChannel1',   'test byte channel 1',    'Byte',              2, 1,    false, '127',  '-128'),
+              (4, 'enumChannel1',   'test enum channel 1',    'EpicsEnum',         2, true, 1,     NULL,   NULL),
+              (5, 'compressChannel','test compress channel 1','ArrayList<Double>', 2, 1,    true,  '-10',  '500');
          
 --
 -- Channel status
@@ -53,5 +53,7 @@ INSERT INTO sample (channel_id, time, value)
 -- Samples Blob
 --        
 INSERT INTO sample_blob (channel_id, time, value) 
-       VALUES (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, x'ACED0005737200136A6176612E7574696C2E41727261794C6973747881D21D99C7619D03000149000473697A65787000000002770400000007737200106A6176612E6C616E672E446F75626C6580B3C24A296BFB0402000144000576616C7565787200106A6176612E6C616E672E4E756D62657286AC951D0B94E08B020000787040140000000000007371007E0002401000000000000078');  
+       VALUES (5, unix_timestamp('1970-01-01 00:00:02')*1000000000, x'ACED0005737200136A6176612E7574696C2E41727261794C6973747881D21D99C7619D03000149000473697A65787000000002770400000007737200106A6176612E6C616E672E446F75626C6580B3C24A296BFB0402000144000576616C7565787200106A6176612E6C616E672E4E756D62657286AC951D0B94E08B020000787040140000000000007371007E0002401000000000000078');
+       
+
                 

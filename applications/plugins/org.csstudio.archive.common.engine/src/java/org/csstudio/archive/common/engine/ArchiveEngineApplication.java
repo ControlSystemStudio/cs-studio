@@ -131,6 +131,8 @@ public class ArchiveEngineApplication implements IApplication {
             LOG.error("Archive engine model error - try to shutdown.", e);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (final Throwable e) {
+            LOG.error("Unexpected throwable in application's main loop.", e);
         }
         return killEngineAndHttpServer(_model, httpServer);
     }
