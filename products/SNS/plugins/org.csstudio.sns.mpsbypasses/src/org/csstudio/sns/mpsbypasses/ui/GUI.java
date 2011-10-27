@@ -33,12 +33,14 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -252,7 +254,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
     {
 		final Composite box = new Composite(parent, 0);
 		box.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-		box.setLayout(new GridLayout(6, false));
+		box.setLayout(new GridLayout(7, false));
 		
 		Label l = new Label(box, 0);
 		l.setText("Machine Mode:");
@@ -278,6 +280,19 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_requested.setLayoutData(new GridData());
 		cmb_requested.setItems(RequestState.getNames());
 		cmb_requested.select(0);
+		
+		final Button reload = new Button(box, SWT.PUSH);
+		reload.setText("Reload");
+		reload.setToolTipText("Re-load bypass information from Relational Database");
+		reload.setLayoutData(new GridData());
+		reload.addSelectionListener(new SelectionAdapter()
+		{
+			@Override
+			public void widgetSelected(SelectionEvent e)
+			{
+				selectMachineMode();
+			}
+		});
     }
 	
 	/** Create panel with counters
@@ -588,6 +603,8 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 			@Override
             public void run()
             {
+				if (table.isDisposed())
+					return;
 				bypass_table.setInput(model.getBypasses());
 				// Was there an error?
 				if (error != null)

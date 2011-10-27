@@ -62,6 +62,21 @@ public class Bypass implements PVListener
 		mask_pv = PVFactory.createPV(pv_basename + "_swmask");
 	}
 	
+	/** Create a pseudo-Bypass that is used to display
+	 *  messages in the bypass table
+	 *  @param message Message
+	 *  @param detail Detail that will show in ()
+	 */
+	public Bypass(final String message, final String detail)
+	{
+		name = message;
+		chain = detail;
+		request = null;
+		listener = null;
+		jumper_pv = null;
+		mask_pv = null;
+	}
+
 	/** @return Bypass name, for example "Ring_Vac:SGV_AB" */
 	public String getName()
 	{
@@ -96,6 +111,8 @@ public class Bypass implements PVListener
 	/** Connect to PVs */
 	public void start() throws Exception
 	{
+		if (jumper_pv == null)
+			return;
 		jumper_pv.addListener(this);
 		mask_pv.addListener(this);
 
@@ -106,14 +123,19 @@ public class Bypass implements PVListener
 	/** Disconnect PVs */
 	public void stop()
 	{
-		jumper_pv.stop();
-		mask_pv.stop();
-
+		if (jumper_pv == null)
+			return;
 		jumper_pv.removeListener(this);
 		mask_pv.removeListener(this);
+		jumper_pv.stop();
+		mask_pv.stop();
 		
 		state = BypassState.Disconnected;
-		listener.bypassChanged(this);
+		// Does NOT notify listener
+		// because the way this is used the listener
+		// will soon see a different list of bypasses
+		// or close down.
+		// Either way, no update needed.
 	}
 	
 	/** @see PVListener */
