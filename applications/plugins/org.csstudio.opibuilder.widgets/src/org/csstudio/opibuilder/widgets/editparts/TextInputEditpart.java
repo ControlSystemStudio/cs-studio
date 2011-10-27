@@ -341,7 +341,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				return parseHEX(text, true);
 			case STRING:
 				if (((IDoubleValue) pvValue).getValues().length > 1) {
-					return parseCharArray(text);
+					return parseCharArray(text, ((IDoubleValue) pvValue).getValues().length);
 				} else
 					return text;
 			case DECIAML:
@@ -365,7 +365,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				return parseHEX(text, true);
 			case STRING:
 				if (((ILongValue) pvValue).getValues().length > 1) {
-					return parseCharArray(text);
+					return parseCharArray(text,((ILongValue) pvValue).getValues().length );
 				} else
 					return text;
 			case DECIAML:
@@ -407,12 +407,15 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
 	}
 
-	private Integer[] parseCharArray(final String text) {
-		Integer[] iString = new Integer[text.length()];
+	private Integer[] parseCharArray(final String text, int currentLength) {
+		Integer[] iString = new Integer[currentLength];
 		char[] textChars = text.toCharArray();
 
 		for (int ii = 0; ii < text.length(); ii++) {
 			iString[ii] = Integer.valueOf(textChars[ii]);
+		}
+		for (int ii = text.length(); ii < currentLength; ii++) {
+			iString[ii] = (char)0;
 		}
 		return iString;
 	}
