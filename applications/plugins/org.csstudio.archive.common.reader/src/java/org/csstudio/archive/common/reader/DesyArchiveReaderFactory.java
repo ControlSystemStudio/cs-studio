@@ -33,6 +33,7 @@ import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveReaderFactory;
@@ -41,6 +42,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.regexp.SimplePattern;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 
@@ -59,6 +61,8 @@ import com.google.common.collect.ImmutableSet;
 // Seems to be a CS 5.3 problem
 public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 // CHECKSTYLE:ON
+
+    public static final String EXT_POINT_PREFIX = "mysql:";
 
     static final ValueIterator EMPTY_ITER = new ValueIterator() {
         @Override
@@ -103,7 +107,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getURL() {
-            return "desy:";
+            return EXT_POINT_PREFIX;
         }
 
         @Override
@@ -156,7 +160,12 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator<Serializable>(_provider, name, s, e, findRequestType("RAW"));
+
+            final IArchiveReaderFacade service = _provider.getReaderFacade();
+            final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
+                service.readSamples(name, s, e, findRequestType("RAW"));
+
+            return new DesyArchiveValueIterator<Serializable>(samples, name, s, e);
         }
 
 
@@ -179,9 +188,13 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
                 BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
                                                                         "java.lang",
                                                                         "org.csstudio.domain.desy.epics.types")) {
-                final EquidistantTimeBinsIterator<Serializable> iter =
-                    new EquidistantTimeBinsIterator<Serializable>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
-                return iter;
+                final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
+                    service.readSamples(channel.getName(), s, e, null);
+                if (samples.size() <= count) {
+                    return new DesyArchiveValueIterator<Serializable>(samples, name, s, e);
+                }
+
+                return new EquidistantTimeBinsIterator<Serializable>(_provider, samples, name, s, e, count);
             }
             return EMPTY_ITER;
         }

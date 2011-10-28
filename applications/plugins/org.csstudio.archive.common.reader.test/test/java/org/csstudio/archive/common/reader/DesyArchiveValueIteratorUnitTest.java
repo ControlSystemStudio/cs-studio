@@ -24,10 +24,11 @@ package org.csstudio.archive.common.reader;
 import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.reader.testdata.TestUtils;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
@@ -35,62 +36,56 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Test for {@link DesyArchiveValueIterator}. 
- * 
+ * Test for {@link DesyArchiveValueIterator}.
+ *
  * @author bknerr
  * @since 20.06.2011
  */
 public class DesyArchiveValueIteratorUnitTest {
-    
+
 
     @BeforeClass
     public static void setup() {
         EpicsSystemVariableSupport.install();
     }
-    
+
     @Test
     public void testFilledIterator() throws Exception {
         final TimeInstant start = TimeInstantBuilder.fromMillis(0L);
         final TimeInstant end = TimeInstantBuilder.fromMillis(50L);
-        
-        final IArchiveServiceProvider provider = 
-            TestUtils.createCustomizedMockedServiceProvider(TestUtils.CHANNEL_NAME_1, 
-                                                            start, 
-                                                            end, 
-                                                            TestUtils.CHANNEL_1_SAMPLES);
-        
-        
-        final DesyArchiveValueIterator<Double> iter = 
-            new DesyArchiveValueIterator<Double>(provider, TestUtils.CHANNEL_NAME_1, start, end, null);
-        
+
+
+        final DesyArchiveValueIterator<Double> iter =
+            new DesyArchiveValueIterator<Double>(TestUtils.CHANNEL_1_SAMPLES, TestUtils.CHANNEL_NAME_1, start, end);
+
+
         Assert.assertTrue(iter.hasNext());
         IMinMaxDoubleValue next = (IMinMaxDoubleValue) iter.next();
         Assert.assertTrue(next.getValue() == 10.0);
         Assert.assertTrue(next.getMinimum() == 9.0);
         Assert.assertTrue(next.getMaximum() == 11.0);
-        
+
         Assert.assertTrue(iter.hasNext());
         next = (IMinMaxDoubleValue) iter.next();
         Assert.assertTrue(next.getValue() == 20.0);
         Assert.assertTrue(next.getMinimum() == 19.0);
         Assert.assertTrue(next.getMaximum() == 21.0);
-        
+
         Assert.assertFalse(iter.hasNext());
     }
-    
+
 
     @Test(expected=NoSuchElementException.class)
     public void testEmptyIterator() throws Exception {
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
-        
-        final IArchiveServiceProvider provider = 
-            TestUtils.createCustomizedMockedServiceProvider("", instant, instant, Collections.emptyList());
-        
-        final DesyArchiveValueIterator<Double> iter = 
-            new DesyArchiveValueIterator<Double>(provider, "", instant, instant, null);
-        
+
+
+        final DesyArchiveValueIterator<Double> iter =
+            new DesyArchiveValueIterator<Double>(Collections.<IArchiveSample<Double, ISystemVariable<Double>>>emptyList(), "", instant, instant);
+
+
         Assert.assertFalse(iter.hasNext());
-        
+
         iter.next(); // expect NSEE
     }
 }

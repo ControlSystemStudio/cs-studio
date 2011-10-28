@@ -55,6 +55,7 @@ import org.mockito.Mockito;
  * @author bknerr
  * @since 20.06.2011
  */
+@SuppressWarnings("unchecked")
 public final class TestUtils {
 
     public static final String CHANNEL_NAME_1 = "TEST_CHANNEL_1";
@@ -84,17 +85,14 @@ public final class TestUtils {
                                                                        new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3),
                                                                        true);
 
-    @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveMinMaxSample> CHANNEL_1_SAMPLES =
-        new ArrayList<IArchiveMinMaxSample>();
+    public static final Collection<IArchiveSample<Double, ISystemVariable<Double>>> CHANNEL_1_SAMPLES =
+        new ArrayList<IArchiveSample<Double, ISystemVariable<Double>>>();
 
-    @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveMinMaxSample> CHANNEL_2_SAMPLES =
-        new ArrayList<IArchiveMinMaxSample>();
+    public static final Collection<IArchiveSample<Double, ISystemVariable<Double>>> CHANNEL_2_SAMPLES =
+        new ArrayList<IArchiveSample<Double, ISystemVariable<Double>>>();
 
-    @SuppressWarnings("rawtypes")
-    public static final Collection<IArchiveMinMaxSample> CHANNEL_3_SAMPLES =
-        new ArrayList<IArchiveMinMaxSample>();
+    public static final Collection<IArchiveSample<Double, ISystemVariable<Double>>> CHANNEL_3_SAMPLES =
+        new ArrayList<IArchiveSample<Double, ISystemVariable<Double>>>();
 
     static {
         int id = 0;
@@ -164,7 +162,6 @@ public final class TestUtils {
                                                                          @Nullable final IArchiveSample expLastSampleBefore) {
         final IArchiveServiceProvider provider =
             new IArchiveServiceProvider() {
-                @SuppressWarnings("unchecked")
                 @Override
                 @Nonnull
                 public IArchiveReaderFacade getReaderFacade() throws OsgiServiceUnavailableException {
