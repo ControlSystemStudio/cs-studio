@@ -43,7 +43,7 @@ public class PVSamples extends PlotSamples
     private final HistoricSamples historicSamples;
 
     /** Live samples. Should start after end of historic samples */
-    private final LiveSamples liveSamples;
+    private final CompressedLiveSamples liveSamples;
 
     boolean show_deadband = false;
 
