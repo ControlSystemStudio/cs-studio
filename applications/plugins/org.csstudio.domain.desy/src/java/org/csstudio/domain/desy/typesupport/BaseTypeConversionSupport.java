@@ -23,6 +23,7 @@ package org.csstudio.domain.desy.typesupport;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +39,7 @@ import org.epics.pvmanager.TypeSupport;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
@@ -52,11 +54,11 @@ import com.google.common.collect.Lists;
 public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-//    private static final Pattern COLLECTION_PATTERN =
-//        Pattern.compile("^(ArrayList|ArrayBlockingQueue|ArrayDeque|CopyOnWriteArrayList|HashSet|LinkedBlockingQueue|LinkedHashSet|LinkedList|TreeSet|Vector|Stack)<(.+)>$");
-
     private static final List<String> BASIC_TYPE_PACKAGES =
         Lists.newArrayList("java.lang", "java.util", "java.util.concurrent");
+
+    @SuppressWarnings("rawtypes")
+    private static Map<String, Class> CLASSNAME2TYPE = Maps.newConcurrentMap();
 
     private static boolean INSTALLED;
 
@@ -109,19 +111,12 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
                                                              @Nonnull final String... addPackages) throws TypeSupportException {
         final String baseType = datatype.trim().replaceFirst("\\s*<(.+)>$", "");
 
-        Class<T> typeClass = null;
         final Iterable<String> allPackages = Iterables.concat(Arrays.asList(addPackages),
                                                               BASIC_TYPE_PACKAGES);
 
-        for (final String pkg : allPackages) {
-            try {
-                typeClass = (Class<T>) Class.forName(pkg + "." + baseType);
-                break;
-                // CHECKSTYLE OFF: EmptyBlock
-            } catch (final ClassNotFoundException e) {
-                // Ignore
-                // CHECKSTYLE ON: EmptyBlock
-            }
+        Class<T> typeClass = getClassTypeFromCache(baseType, allPackages);
+        if (typeClass == null) {
+            typeClass = createClassTypeForNameAndUpdateCache(baseType, allPackages);
         }
         if (typeClass == null) {
             throw new TypeSupportException("Class object for base datatype of " + datatype +
@@ -129,6 +124,50 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
                                            Iterables.toString(allPackages), null);
         }
         return typeClass;
+    }
+
+    /**
+     * Checks whether for the given class name and packages a class type has already been created.
+     * @param baseType the simple class name as string
+     * @param allPackages the candidate packages to check for
+     * @return the class object for the class named after package.baseType or <code>null</code>
+     */
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    private static Class getClassTypeFromCache(@Nonnull final String baseType,
+                                               @Nonnull final Iterable<String> allPackages) {
+        for (final String pkg : allPackages) {
+            final String fullClassNameCandidate = pkg + "." + baseType;
+            if (CLASSNAME2TYPE.containsKey(fullClassNameCandidate)) {
+                return CLASSNAME2TYPE.get(fullClassNameCandidate);
+            }
+        }
+        return null;
+    }
+    /**
+     * Tries to create a class object from the simple (baseType) string and any of packages.
+     *
+     * @param <T>
+     * @param baseType the simple name of the class
+     * @param allPackages the candidate packages from which to load to class
+     * @return the class object
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> Class<T> createClassTypeForNameAndUpdateCache(@Nonnull final String baseType,
+                                                                     @Nonnull final Iterable<String> allPackages) {
+        for (final String pkg : allPackages) {
+            try {
+                final String fullClassName = pkg + "." + baseType;
+                final Class typeClass = Class.forName(fullClassName);
+                CLASSNAME2TYPE.put(fullClassName, typeClass);
+                return typeClass;
+                // CHECKSTYLE OFF: EmptyBlock
+            } catch (final ClassNotFoundException e) {
+                // Ignore
+                // CHECKSTYLE ON: EmptyBlock
+            }
+        }
+        return null;
     }
 
     /**
