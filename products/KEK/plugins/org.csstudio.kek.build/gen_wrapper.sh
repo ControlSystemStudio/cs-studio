@@ -21,7 +21,6 @@ source ${SCRIPTDIR}/acc_settings.sh
 valid=0
 ADDR_LIST=""
 ARCHIVE_URLS=()
-ARCHIVE_NAMES=()
 
 for a in ${VALID_ACCS}; do
     URLS=($(eval 'echo $'$a'_ARCHIVE_URLS'))
@@ -31,7 +30,7 @@ for a in ${VALID_ACCS}; do
 	for i in $(seq ${#URLS[@]}); do
 		j=$(expr $i - 1)
 		ARCHIVE_URLS=(${URLS[$j]} ${ARCHIVE_URLS[@]})
-		ARCHIVE_NAMES=(${NAMES[$j]} ${ARCHIVE_NAMES[@]})
+                DATABROWSER_ARCHIVES="${NAMES[$j]}|1|${URLS[$j]}*${DATABROWSER_ARCHIVES}"
 		
 		ADDR_LIST=$(eval 'echo $'$a'_ADDR_LIST')
 	done
@@ -40,7 +39,6 @@ for a in ${VALID_ACCS}; do
 	for i in $(seq ${#URLS[@]}); do
 		j=$(expr $i - 1)
 		ARCHIVE_URLS=(${ARCHIVE_URLS[@]} ${URLS[$j]})
-		ARCHIVE_NAMES=(${ARCHIVE_NAMES[@]} ${NAMES[$j]})
 	done
     fi
 done
@@ -58,7 +56,6 @@ fi
 for i in $(seq ${#ARCHIVE_URLS[@]}); do
     j=$(expr $i - 1)
     DATABROWSER_URLS="${DATABROWSER_URLS}*${ARCHIVE_URLS[$j]}"
-    DATABROWSER_ARCHIVES="${DATABROWSER_ARCHIVES}*${ARCHIVE_NAMES[$j]}|$i|${ARCHIVE_URLS[$j]}"
 done
 
 FIRST_CHAR=$(echo "${DATABROWSER_URLS}" | cut -c 1-1)
@@ -66,9 +63,9 @@ if [ "${FIRST_CHAR}" = "*" ]; then
     DATABROWSER_URLS=$(echo "${DATABROWSER_URLS}" | cut -c 2-)
 fi
 
-FIRST_CHAR=$(echo "${DATABROWSER_ARCHIVES}" | cut -c 1-1)
-if [ "${FIRST_CHAR}" = "*" ]; then
-    DATABROWSER_ARCHIVES=$(echo "${DATABROWSER_ARCHIVES}" | cut -c 2-)
+LAST_CHAR=$(echo "${DATABROWSER_ARCHIVES}" | rev | cut -c 1-1)
+if [ "${LAST_CHAR}" = "*" ]; then
+    DATABROWSER_ARCHIVES=$(echo "${DATABROWSER_ARCHIVES}" | rev | cut -c 2- | rev )
 fi
 
 if [ "${OS}" = "WIN" ]; then
