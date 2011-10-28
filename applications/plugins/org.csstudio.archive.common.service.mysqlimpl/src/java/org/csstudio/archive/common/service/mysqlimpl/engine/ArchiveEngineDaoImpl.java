@@ -91,7 +91,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectEngineByIdStmt);
             stmt.setInt(1, id.intValue());
 
@@ -99,7 +99,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectEngineByIdStmt);
+            closeSqlResources(null, stmt, conn, _selectEngineByIdStmt);
         }
         return null;
     }
@@ -114,14 +114,14 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectEngineByNameStmt);
             stmt.setString(1, name);
             return retrieveEngineByStmt(stmt);
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectEngineByNameStmt);
+            closeSqlResources(null, stmt, conn, _selectEngineByNameStmt);
         }
         return null;
     }
@@ -164,7 +164,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         Connection conn = null;
         PreparedStatement statement = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             statement = conn.prepareStatement(_updateEngineIsAliveStmt);
 
             final long nanosSinceEpoch = lastTimeAlive.getNanos();
@@ -176,7 +176,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, statement, _selectEngineByNameStmt);
+            closeSqlResources(null, statement, conn, _selectEngineByNameStmt);
         }
     }
 }
