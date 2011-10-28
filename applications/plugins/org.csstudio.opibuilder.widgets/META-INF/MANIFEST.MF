@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;bundle-version="1.4.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
  org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder.widgets.actions,
  org.csstudio.opibuilder.widgets.editparts,
