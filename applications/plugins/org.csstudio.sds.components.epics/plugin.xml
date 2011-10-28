@@ -134,8 +134,14 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
-            description="DESY Alarm+Con Ellipse"
+            description="DESY Alarm+Con+dlog Ellipse"
             id="behavior.desy.ellipse.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Ellipse">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseAlarmRotGruenBehavior"
+            description="DESY Alarm+Con+RtGr Ellipse"
+            id="behavior.desy.ellipse.alarmRotGruen"
             widgetTypeId="org.csstudio.sds.components.Ellipse">
       </behavior>
       <behavior

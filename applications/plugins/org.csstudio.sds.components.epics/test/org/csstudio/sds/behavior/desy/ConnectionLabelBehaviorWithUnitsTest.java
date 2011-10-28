@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,28 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.components.model;
+package org.csstudio.sds.behavior.desy;
+
+
 
 
 
 /**
- * A polygon widget model.
- *
- * @author Sven Wende, Alexander Will
- * @version $Revision: 1.2 $
- *
+ * @author hrickens
+ * @since 26.10.2011
  */
-public class PolygonModel extends AbstractPolyModel {
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Polygon"; //$NON-NLS-1$
+public class ConnectionLabelBehaviorWithUnitsTest extends
+        AbstractLabelBehaviorTest<LabeConnectionBehaviorWithUnits> {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected LabeConnectionBehaviorWithUnits createBehavior() {
+        return new LabeConnectionBehaviorWithUnits();
+    }
+
+
 }

@@ -23,7 +23,7 @@ import java.util.Set;
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.util.ColorAndFontUtil;
+import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
@@ -45,7 +45,6 @@ import org.epics.css.dal.simple.Severity;
 public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyBehavior<W> {
 
-    protected String _normalBackgroundColor;
     private final Set<String> _invisiblePropertyIds = new HashSet<String>();
 
     /**
@@ -82,7 +81,6 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
 
     @Override
     protected void doInitialize( final W widget) {
-        _normalBackgroundColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                                 determineBorderColor(ConnectionState.INITIAL));
     }
@@ -90,8 +88,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     @Override
     protected void doProcessConnectionStateChange( final W widget,
                                                   final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String backgroundColor = isConnected(anyDataChannel)?_normalBackgroundColor:determineBackgroundColor(connectionState);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String backgroundColor = isConnected(anyDataChannel)?widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND):determineBackgroundColor(connectionState);
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backgroundColor);
     }
 
@@ -99,16 +97,16 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      * @param connectionState
      * @return
      */
-    protected boolean isConnected(AnyDataChannel anyDataChannel) {
-        return anyDataChannel.isRunning();
-        //ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-//        return (connectionState != null) && (connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.OPERATIONAL);
+    protected boolean isConnected(final AnyDataChannel anyDataChannel) {
+//        return anyDataChannel.isRunning();
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        return connectionState != null && (connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.OPERATIONAL);
     }
 
     @Override
     protected void doProcessValueChange( final W model, final AnyData anyData) {
-        Severity severity = anyData.getSeverity();
-        if ( (severity != null) && severity.isInvalid()) {
+        final Severity severity = anyData.getSeverity();
+        if ( severity != null && severity.isInvalid()) {
             model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
         } else {
             model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
@@ -119,14 +117,14 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      * @param arguments
      * @return
      */
-    protected String getColorFromColorRule(final AnyData anyData) {
+    protected String getColorFromDigLogColorRule(final AnyData anyData) {
         int arguments = -1;
-        if( (anyData != null) && (anyData.numberValue() != null)) {
+        if( anyData != null && anyData.numberValue() != null) {
             arguments = anyData.numberValue().intValue();
         }
-        String color = ColorAndFontUtil.toHex(0, 0, 0);
-        if(arguments >= 15) {
-            color = "${Weiss}";
+        String color = "${Illegal}";
+        if(arguments >= 15||!hasValue(anyData)) {
+            color = "${Invalid}";
         } else if(arguments >= 3) {
             color = "${Minor}";
         } else if(arguments >= 2) {
@@ -137,6 +135,42 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
             color = "${Zu}";
         }
         return color;
+    }
+
+    protected String getColorFromAlarmColorRule(final AnyData anyData) {
+        int arguments = -1;
+        if( anyData != null && anyData.numberValue() != null) {
+            arguments = anyData.numberValue().intValue();
+        }
+        String color = "${Illegal}";
+        if(arguments >= 15||!hasValue(anyData)) {
+            color = "${Invalid}";
+        } else if(arguments >= 3) {
+            color = "${Minor}";
+        } else if(arguments >= 2) {
+            color = "${Offen}";//"ColorAndFontUtil.toHex(30,187,0);
+        } else if(arguments >= 1) {
+            color = "${Geregelt}";//ColorAndFontUtil.toHex(42,99,228);
+        } else if(arguments >= 0) {
+            color = "${Zu}";
+        }
+        return color;
+    }
+
+    /**
+     * @param anyData
+     * @return
+     */
+    private boolean hasValue(final AnyData anyData) {
+        return anyData.getParentProperty().getCondition().containsAnyOfStates(DynamicValueState.HAS_LIVE_DATA);
+    }
+
+    /**
+     * @param anyDataChannel
+     * @return
+     */
+    protected boolean hasValue(final AnyDataChannel anyDataChannel) {
+        return anyDataChannel.getProperty().getCondition().containsAllStates(DynamicValueState.HAS_LIVE_DATA);
     }
 
 }

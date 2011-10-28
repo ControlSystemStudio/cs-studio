@@ -36,9 +36,6 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
 
-    private String _defColor;
-
-
     /**
      * Constructor.
      */
@@ -58,7 +55,6 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
     protected void doInitialize(final AbstractWidgetModel widget) {
         super.doInitialize(widget);
         widget.setPropertyValue(EllipseModel.PROP_FILL, 100);
-        _defColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
 
     /**
@@ -67,20 +63,20 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
     @Override
     protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
-        _defColor = getColorFromColorRule(anyData); 
-        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _defColor);
-        
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromDigLogColorRule(anyData));
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(AbstractWidgetModel widget,
-                                                  AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String determineBackgroundColor = isConnected(anyDataChannel)?_defColor:determineBackgroundColor(connectionState);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? getColorFromDigLogColorRule(anyDataChannel
+                .getData()) : determineBackgroundColor(connectionState);
         widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
 
     }

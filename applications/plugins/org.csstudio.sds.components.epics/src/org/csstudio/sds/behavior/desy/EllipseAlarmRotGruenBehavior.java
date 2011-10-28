@@ -27,25 +27,25 @@ import org.epics.css.dal.simple.MetaData;
 
 /**
  *
- * Default DESY-Behavior for the {@link EllipseModel} widget with Connection state
+ * Default DESY-Behavior for the {@link EllipseModel} widget with Connection state and Alarms.
  *
  * @author hrickens
  * @author $Author: hrickens $
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 20.04.2010
  */
-public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<AbstractWidgetModel> {
+public class EllipseAlarmRotGruenBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
 
     /**
      * Constructor.
      */
-    public EllipseConnectionBehavior() {
-        // add Invisible Property Id here
+    public EllipseAlarmRotGruenBehavior() {
+        // add Invisible P0roperty Id here
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
-//        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
     }
 
     /**
@@ -61,30 +61,30 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
-                                                  final AnyDataChannel anyDataChannel) {
-        super.doProcessConnectionStateChange(widget, anyDataChannel);
-        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        final String determineBackgroundColor = isConnected(anyDataChannel) ? widget
-                .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND)
-                : determineBackgroundColor(connectionState);
-        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
+    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromDigLogColorRule(anyData));
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        // this is only to make the test easier!
-        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, model
-                        .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+    protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? getColorFromDigLogColorRule(anyDataChannel
+                .getData()) : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
 
     }
+
 
     @Override
     protected void doProcessMetaDataChange(final AbstractWidgetModel widget, final MetaData metaData) {
-        // do noting
+        // do nothing
     }
+
 }

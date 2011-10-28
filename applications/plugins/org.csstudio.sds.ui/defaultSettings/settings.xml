@@ -13,7 +13,8 @@
 		<color name="NoAlarm" description="No Alarm (Gruen)" value="#00D800"/>
 		<color name="Minor" description="Minor Alarm (Gelb)" value="#FBF34A"/>
 		<color name="Major" description="Major Alarm (Rot)" value="#FD0000"/>
-		<color name="Inintial" description="Inintial (Pink)" value="#FF09A3"/>
+		<color name="Invalid" description="Invalid Alarm (Weiss)" value="#FFFFFF"/>
+		<color name="Initial" description="Inintial (Pink)" value="#FF09A3"/>
 		<color name="VerbAbbr" description="Verbindung Verloren (Rosa)" value="#FFA8DE"/>
 		<color name="Offen" description="Offen (Gruen)" value="#00D800"/>
 		<color name="Zu" description="Inintial (Schwarz)" value="#707070"/>

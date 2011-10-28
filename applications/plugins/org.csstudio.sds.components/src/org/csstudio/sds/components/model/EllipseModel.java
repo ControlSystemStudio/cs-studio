@@ -31,7 +31,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @version $Revision: 1.17 $
  *
  */
-public final class EllipseModel extends AbstractWidgetModel {
+public class EllipseModel extends AbstractWidgetModel {
 	/**
 	 * The ID of the fill level property.
 	 */
@@ -104,7 +104,7 @@ public final class EllipseModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Value:\t");
 		buffer.append(createTooltipParameter(PROP_FILL));

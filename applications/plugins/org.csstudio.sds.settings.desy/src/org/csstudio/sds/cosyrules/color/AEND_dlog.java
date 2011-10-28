@@ -45,8 +45,9 @@ public final class AEND_dlog implements IRule {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
+	@Override
+    public Object evaluate(final Object[] arguments) {
+		if (arguments != null && arguments.length > 0) {
             double d = -10.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
@@ -56,7 +57,7 @@ public final class AEND_dlog implements IRule {
 
             if(d<=-10.) {
                 //illegal state
-                return "#8070FF";
+                return "${Illegal}";
             }
 			if (Math.abs(d-0.00)<0.00001) {
 //			    old Valve closed color Red
@@ -70,7 +71,7 @@ public final class AEND_dlog implements IRule {
 			if (Math.abs(d-2.00)<0.00001) {
 				return ColorAndFontUtil.toHex(30,187,0);
 			}
-			if ((d>=3.00) && (d<=15.00)) {
+			if (d>=3.00 && d<=15.00) {
 				return ColorAndFontUtil.toHex(249,218,60);
 			}
 			if (Math.abs(d-16.00)<0.00001) {
@@ -78,7 +79,7 @@ public final class AEND_dlog implements IRule {
 			}
 		}
 
-		return "#8070FF";
+		return "${Illegal}";
 	}
 
     /**

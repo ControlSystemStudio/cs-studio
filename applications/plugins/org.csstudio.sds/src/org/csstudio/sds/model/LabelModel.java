@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.FontData;
  * @author jbercic
  *
  */
-public final class LabelModel extends AbstractTextTypeWidgetModel {
+public class LabelModel extends AbstractTextTypeWidgetModel {
 	/**
 	 * Unique identifier.
 	 */
@@ -121,7 +121,7 @@ public final class LabelModel extends AbstractTextTypeWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Value:\t");
 		buffer.append(createTooltipParameter(PROP_TEXTVALUE));
