@@ -10,10 +10,12 @@ package org.csstudio.common.trendplotter.model;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.common.trendplotter.Messages;
+import org.csstudio.common.trendplotter.preferences.Preferences;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.swt.xygraph.linearscale.Range;
@@ -38,21 +40,27 @@ public class PVSamples extends PlotSamples
     private static final Logger LOG = LoggerFactory.getLogger(PVSamples.class);
 
     /** Historic samples */
-    final private HistoricSamples historicSamples;
+    private final HistoricSamples historicSamples;
 
     /** Live samples. Should start after end of historic samples */
-    final private LiveSamples liveSamples;
+    private final LiveSamples liveSamples;
 
     boolean show_deadband = false;
 
     /**
      * Constructor.
      */
-    public PVSamples(@Nonnull final RequestType request_type)
-    {
+    public PVSamples(@Nonnull final RequestType request_type,
+                     @Nullable final IIntervalProvider prov) {
+
         updateRequestType(request_type);
+
+        final int liveSampleBufferSize = Preferences.getLiveSampleBufferSize(); // 5000
+        liveSamples = new CompressedLiveSamples(new LiveSamplesCompressor(500),
+                                                liveSampleBufferSize,
+                                                prov);
+        liveSamples.setDynamicCompression(true);
         historicSamples = new HistoricSamples(request_type);
-        liveSamples = new LiveSamples();
     }
 
     /** @return Maximum number of liveSamples samples in ring buffer */
@@ -182,8 +190,7 @@ public class PVSamples extends PlotSamples
     }
 
     /** Add data retrieved from an archive to the 'historic' section
-     * @param requestType
-     *  @param source Source of the samples
+     *  @param source channel_name of the samples
      * @param server_name
      *  @param result Historic data
      * @throws ArchiveServiceException
@@ -254,5 +261,13 @@ public class PVSamples extends PlotSamples
     }
     synchronized public void setHistorySamplesDeadband(final Number deadband) {
         historicSamples.setDeadband(deadband);
+    }
+
+    /**
+     * @return sample size of liveSamples samples
+     */
+    @Nonnull
+    public int getLiveSampleSize() {
+        return liveSamples.getSize();
     }
 }
