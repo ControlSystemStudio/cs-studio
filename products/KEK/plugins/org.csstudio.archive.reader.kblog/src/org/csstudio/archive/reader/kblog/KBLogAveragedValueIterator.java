@@ -28,6 +28,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private ITimestamp endTime;
 	private IValue nextBaseValue;
 	private PriorityBlockingQueue<IValue> processedValues;
+	private boolean initialized;
 	
 	/**
 	 * Constructor of KBLogValueIterator.
@@ -40,6 +41,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		this.base = base;
 		this.currentTime = startTime;
 		this.endTime = endTime;
+		this.initialized = false;
 		
 		// make sure that the step second is equal to or greater than 1.
 		if (stepSecond < 1)
@@ -48,16 +50,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			this.stepSecond = stepSecond;
 		
 		processedValues = new PriorityBlockingQueue<IValue>(1, new ValueTimeComparator());
-		
-		try {
-			if (base.hasNext())
-				this.nextBaseValue = base.next();
-			else
-				this.nextBaseValue = null;
-		} catch (Exception ex) {
-			// If the base iterator returns no value, this iterator also returns no value. 
-			this.nextBaseValue = null;
-		}
 	}
 	
 	/**
@@ -193,14 +185,34 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			processedValues.add(averagedValue);
 		}
 	}
+	
+	private synchronized void init() {
+		try {
+			if (base.hasNext())
+				this.nextBaseValue = base.next();
+			else
+				this.nextBaseValue = null;
+		} catch (Exception ex) {
+			// If the base iterator returns no value, this iterator also returns no value. 
+			this.nextBaseValue = null;
+		}
+		
+		initialized = true;
+	}
 
 	@Override
 	public synchronized boolean hasNext() {
+		if (!initialized)
+			init();
+		
 		return (processedValues.size() > 0 || nextBaseValue != null);
 	}
 
 	@Override
 	public synchronized IValue next() throws Exception {
+		if (!initialized)
+			init();
+		
 		// If there is a processed value in the queue, return it.
 		if (processedValues.size() > 0)
 			return processedValues.poll();
@@ -228,12 +240,12 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	}
 
 	@Override
-	public synchronized void close() {
+	public void close() {
 		base.close();
 	}
 	
 	@Override
-	public synchronized boolean isClosed() {
+	public boolean isClosed() {
 		return base.isClosed();
 	}
 	

@@ -28,7 +28,9 @@ import org.csstudio.data.values.ValueFactory;
 public class KBLogRawValueIterator implements KBLogValueIterator {
 	private static final String charset = "US-ASCII";
 	
-	private IValue nextValue = null;
+	private IValue nextValue;
+	private Object nextValueMutex; 
+	
 	private String pvName;
 	private int commandId;
 	private String kblogrdPath;
@@ -37,6 +39,12 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	
 	private BufferedReader stdoutReader;
 	private boolean closed;
+	private Object closedMutex;
+	private boolean initialized;
+	private Object initializedMutex;
+	
+	private Thread waitUntilReadyThread;
+	private Object waitUntilReadyThreadMutex;
 	
 	/**
 	 * Constructor of KBLogRawValueIterator.
@@ -51,9 +59,17 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 		this.kblogrdPath = kblogrdPath;
 		this.commandId = commandId;
 		this.closed = false;
+		this.closedMutex = new Object();
+		this.initialized = false;
+		this.initializedMutex = new Object();
+		this.nextValue = null;
+		this.nextValueMutex = new Object();
 		this.timeFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS", Locale.US);
 		
-		Logger.getLogger(Activator.ID).log(Level.FINEST,
+		this.waitUntilReadyThread = null;
+		this.waitUntilReadyThreadMutex = new Object();
+		
+		Logger.getLogger(Activator.ID).log(Level.FINE,
 				"Start to read the standard output of " + kblogrdPath + " (" + commandId + ").");
 		
 		try {
@@ -64,8 +80,6 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 			
 			stdoutReader = new BufferedReader(new InputStreamReader(kblogrdStdOut));
 		}
-		
-		nextValue = decodeNextValue();
 	}
 	
 	/**
@@ -92,15 +106,37 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 		}
 	}
 
-	private synchronized IValue decodeNextValue() {
-		if (closed)
-			return null;
+	private IValue decodeNextValue() {
+		synchronized (closedMutex) {
+			if (closed)
+				return null;
+		}
 		
 		try{
 			String line;
 			
 			// Try to read lines until a valid value is obtained.
-			while ((line = stdoutReader.readLine()) != null) {
+			while (true) {
+				synchronized (waitUntilReadyThreadMutex) {
+					waitUntilReadyThread = new WaitUntilReadyThread(stdoutReader, kblogrdPath, commandId);
+				}
+				
+				waitUntilReadyThread.start();
+				waitUntilReadyThread.join();
+				
+				synchronized (waitUntilReadyThreadMutex) {
+					waitUntilReadyThread = null;
+				}
+				
+				if (!stdoutReader.ready())
+					break; // Interrupted
+				
+			    line = stdoutReader.readLine();
+			    if (line == null)
+			    	break; // EOF
+			    
+				Logger.getLogger(Activator.ID).log(Level.FINE, "decodeNextValue() 10");
+				
 				if (line.isEmpty())
 					continue;
 			
@@ -208,29 +244,62 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE,
 					"Failed to read the output from " + kblogrdPath + " (" + commandId + ").", ex);
 			return null;
+		} catch (InterruptedException ex) {
+			Logger.getLogger(Activator.ID).log(Level.SEVERE,
+					"Failed to read the output from " + kblogrdPath + " (" + commandId + ").", ex);
+			return null;
 		}
 	}
 
 	@Override
-	public synchronized boolean hasNext() {
-		return nextValue != null;
+	public boolean hasNext() {
+		synchronized (initializedMutex) {
+			if (!initialized) {
+				nextValue = decodeNextValue();
+				initialized = true;
+			}
+		}
+		
+		synchronized (nextValueMutex) {
+			return nextValue != null;
+		}
 	}
 
 	@Override
-	public synchronized IValue next() throws Exception {
-		IValue ret = nextValue;
-		nextValue = decodeNextValue();
-
-		return ret;
+	public IValue next() throws Exception {
+		synchronized (initializedMutex) {
+			if (!initialized) {
+				nextValue = decodeNextValue();
+				initialized = true;
+			}
+		}
+		
+		synchronized (nextValueMutex) {
+			IValue ret = nextValue;
+			nextValue = decodeNextValue();
+			
+			return ret;
+		}
 	}
 
 	@Override
-	public synchronized void close() {
+	public void close() {
 		try {
-			// The standard output will be forcibly closed so that next call of the next() method
-			// will return null and quits the data acquisition.
-			stdoutReader.close();
-			closed = true;
+			synchronized (closedMutex) {
+				if (closed)
+					return;
+				
+				synchronized (waitUntilReadyThreadMutex) {
+					if (waitUntilReadyThread != null) {
+						waitUntilReadyThread.interrupt();
+					}
+				}
+				
+				// The standard output will be forcibly closed so that next call of the next() method
+				// will return null and quits the data acquisition.
+				stdoutReader.close();
+				closed = true;
+			}
 			
 			Logger.getLogger(Activator.ID).log(Level.FINEST,
 					"End of reading the standard output of " + kblogrdPath + " (" + commandId + ").");
@@ -241,8 +310,10 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	}
 	
 	@Override
-	public synchronized boolean isClosed() {
-		return closed;
+	public boolean isClosed() {
+		synchronized (closedMutex) {
+			return closed;
+		}
 	}
 	
 	public int getCommandID() {
@@ -251,5 +322,33 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 	
 	public String getPathToKBLogRD() {
 		return kblogrdPath;
+	}
+	
+	private class WaitUntilReadyThread extends Thread {
+		private BufferedReader reader;
+		private String kblogrdPath;
+		private int commandId;
+		
+		public WaitUntilReadyThread(BufferedReader reader, String kblogrdPath, int commandId) {
+			this.reader = reader;
+			this.kblogrdPath = kblogrdPath;
+			this.commandId = commandId;
+		}
+		
+		public void run() {
+			try {
+				if (reader != null) {
+					while (!reader.ready()) {
+						Thread.sleep(100);
+					}
+				}
+			} catch (IOException ex) {
+				Logger.getLogger(Activator.ID).log(Level.SEVERE,
+						"Failed to read the output from " + kblogrdPath + " (" + commandId + ").", ex);
+			} catch (InterruptedException ex) {
+				Logger.getLogger(Activator.ID).log(Level.FINE,
+						"Interrupted while reading the output from " + kblogrdPath + " (" + commandId + ").", ex);
+			}
+		}
 	}
 }
