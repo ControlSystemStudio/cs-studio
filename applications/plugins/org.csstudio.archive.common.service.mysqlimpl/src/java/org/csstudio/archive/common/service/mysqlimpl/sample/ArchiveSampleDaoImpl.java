@@ -353,12 +353,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             DesyArchiveRequestType reqType = type != null ? // if null = determine automatically
                                              type :
                                              SampleRequestTypeUtil.determineRequestType(channel.getDataType(), start, end);
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             do {
                 stmt = createReadSamplesStatement(conn, channel, start, end, reqType);
                 result = stmt.executeQuery();
                 if (result.next()) {
-                    return createRetrievedSamplesContainer(channel, reqType, result);
+                    final Collection<IArchiveSample<V, T>> samples =
+                        createRetrievedSamplesContainer(channel, reqType, result);
+                    return samples;
                 } else if (type == null) { // type == null means use automatic lookup
                     reqType = reqType.getNextLowerOrderRequestType();
                 }
@@ -367,7 +369,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch (final Exception ex) {
             handleExceptions(RETRIEVAL_FAILED, ex);
         } finally {
-            closeSqlResources(result, stmt, "Samples retrieval for " + channel.getName());
+            closeSqlResources(result, stmt, conn, "Samples retrieval for " + channel.getName());
         }
         return Collections.emptyList();
     }
@@ -481,10 +483,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
+
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result  = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectLatestSampleBeforeTimeStmt);
             stmt.setInt(1, channel.getId().intValue());
             stmt.setLong(2, time.getNanos());
@@ -495,7 +499,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch(final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeSqlResources(result, stmt, _selectLatestSampleBeforeTimeStmt);
+            closeSqlResources(result, stmt, conn, _selectLatestSampleBeforeTimeStmt);
         }
         return null;
     }
@@ -513,11 +517,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     private boolean checkForSamplesInTable(@Nonnull final ArchiveChannelId id,
                                            @Nonnull final String table) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         final String stmtStr = _selectSampleExistsForChannel.replace(ARCH_TABLE_PLACEHOLDER, table);
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(stmtStr);
             stmt.setInt(1, id.intValue());
             rs = stmt.executeQuery();
@@ -527,7 +532,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         } catch(final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeSqlResources(rs, stmt, stmtStr);
+            closeSqlResources(rs, stmt, conn, stmtStr);
         }
         return false;
     }

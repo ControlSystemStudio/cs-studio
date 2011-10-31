@@ -19,35 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.common.service.mysqlimpl.sample;
-
-import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_M;
-
-import java.util.concurrent.LinkedBlockingQueue;
+package org.csstudio.common.trendplotter.model;
 
 import javax.annotation.Nonnull;
 
+import org.joda.time.Interval;
 
 /**
- * Batch queue handler for reduced data samples for minutes.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 20.07.2011
+ * @since 14.10.2011
  */
-public class MinuteReducedDataSampleBatchQueueHandler extends
-                                                     AbstractReducedDataSampleBatchQueueHandler<MinuteReducedDataSample> {
-
-    /**
-     * Constructor.
-     */
-    public MinuteReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
-        super(MinuteReducedDataSample.class,
-              createMinuteSqlStatementString(database),
-              new LinkedBlockingQueue<MinuteReducedDataSample>());
-    }
+public interface IIntervalProvider {
 
     @Nonnull
-    private static String createMinuteSqlStatementString(@Nonnull final String database) {
-        return createSqlStatementString(database, TAB_SAMPLE_M);
-    }
+    Interval getTimeInterval();
 }

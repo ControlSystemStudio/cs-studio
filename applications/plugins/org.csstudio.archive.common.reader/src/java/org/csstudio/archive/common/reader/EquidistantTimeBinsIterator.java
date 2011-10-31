@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.reader;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -30,7 +31,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
@@ -104,13 +104,13 @@ public class EquidistantTimeBinsIterator<V extends Serializable> extends Abstrac
      * @throws OsgiServiceUnavailableException
      */
     public EquidistantTimeBinsIterator(@Nonnull final IArchiveServiceProvider provider,
+                                       @Nonnull final Collection<IArchiveSample<V, ISystemVariable<V>>> samples,
                                        @Nonnull final String channelName,
                                        @Nonnull final TimeInstant start,
                                        @Nonnull final TimeInstant end,
-                                       @Nullable final IArchiveRequestType type,
                                        final int timeBins) throws OsgiServiceUnavailableException,
                                                                   ArchiveServiceException {
-        super(provider, channelName, start, end, type);
+        super(samples, channelName, start, end);
         _numOfWindows = timeBins;
 
         if (_numOfWindows <= 0) {
@@ -148,18 +148,7 @@ public class EquidistantTimeBinsIterator<V extends Serializable> extends Abstrac
             _agg.reset();
         }
         if (sample != null) {
-            final Double value = BaseTypeConversionSupport.toDouble(sample.getValue());
-            Double minimum = null;
-            Double maximum = null;
-            if (sample instanceof IArchiveMinMaxSample) {
-                minimum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMinimum());
-                maximum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMaximum());
-            } else {
-                minimum = value;
-                maximum = value;
-            }
-
-            _agg.aggregate(value, minimum, maximum, sample.getSystemVariable().getTimestamp());
+            aggregateSample(_agg, sample);
         }
     }
 
@@ -301,14 +290,14 @@ public class EquidistantTimeBinsIterator<V extends Serializable> extends Abstrac
 
         _lastSampleOfLastWindow = initSample; // store the last sample of the last window
 
-        aggregateMinMaxSample(aggregator, (IArchiveMinMaxSample<V, ISystemVariable<V>>) initSample);
+        aggregateSample(aggregator, initSample);
 
-        IArchiveMinMaxSample<V, ISystemVariable<V>> nextSample;
+        IArchiveSample<V, ISystemVariable<V>> nextSample;
         while (iter.hasNext()) {
-            nextSample =  (IArchiveMinMaxSample<V, ISystemVariable<V>>) iter.next();
+            nextSample = iter.next();
 
             if (belongsToCurrentWindow(nextSample, windowEnd)) {
-                aggregateMinMaxSample(aggregator, nextSample);
+                aggregateSample(aggregator, nextSample);
                 _lastSampleOfLastWindow = nextSample;
             } else {
                 return nextSample; // is the first 'real' sample in one of the next windows
@@ -323,12 +312,21 @@ public class EquidistantTimeBinsIterator<V extends Serializable> extends Abstrac
     }
 
 
-    private void aggregateMinMaxSample(@Nonnull final SampleMinMaxAggregator aggregator,
-                                       @Nonnull final IArchiveMinMaxSample<V, ISystemVariable<V>> sample) throws TypeSupportException {
-        final Double value = BaseTypeConversionSupport.toDouble(sample.getValue());
-        final V minimum = sample.getMinimum();
-        final V maximum = sample.getMaximum();
+    private void aggregateSample(@Nonnull final SampleMinMaxAggregator aggregator,
+                                 @Nonnull final IArchiveSample<V, ISystemVariable<V>> sample) throws TypeSupportException {
+
         final TimeInstant curSampleTime = sample.getSystemVariable().getTimestamp();
+
+        final Double value = BaseTypeConversionSupport.toDouble(sample.getValue());
+        Double minimum = null;
+        Double maximum = null;
+        if (sample instanceof IArchiveMinMaxSample) {
+            minimum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMinimum());
+            maximum = BaseTypeConversionSupport.toDouble(((IArchiveMinMaxSample<V, ISystemVariable<V>>) sample).getMaximum());
+        } else {
+            minimum = value;
+            maximum = value;
+        }
 
         aggregator.aggregate(value,
                              minimum == null ? value : BaseTypeConversionSupport.toDouble(minimum),

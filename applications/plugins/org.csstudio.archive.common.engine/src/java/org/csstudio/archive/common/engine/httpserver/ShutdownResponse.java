@@ -17,14 +17,14 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-class StopEngineResponse extends AbstractResponse {
+class ShutdownResponse extends AbstractResponse {
 
-    private static final String URL_BASE_PAGE = "/stop";
+    private static final String URL_BASE_PAGE = "/shutdown";
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    StopEngineResponse(@Nonnull final EngineModel model) {
+    ShutdownResponse(@Nonnull final EngineModel model) {
         super(model);
     }
 
@@ -35,7 +35,7 @@ class StopEngineResponse extends AbstractResponse {
             new HTMLWriter(resp, "Archive Engine Shutdown");
 
         html.text("Engine will shut down....");
-        getModel().requestStop();
+        getModel().requestShutdown();
 
         html.close();
     }

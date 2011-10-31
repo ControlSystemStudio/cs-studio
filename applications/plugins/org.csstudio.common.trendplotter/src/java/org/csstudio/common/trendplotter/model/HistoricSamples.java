@@ -69,13 +69,10 @@ public class HistoricSamples extends PlotSamples
      */
     private int visible_size = 0;
 
-    private boolean adel_info_complete = false;
-
-
     /**
      * Constructor.
      */
-    public HistoricSamples(final RequestType request_type)
+    public HistoricSamples(@Nonnull final RequestType request_type)
     {
         for (final RequestType type : RequestType.values()) {
             sample_map.put(type, new PlotSample[0]);
@@ -174,7 +171,6 @@ public class HistoricSamples extends PlotSamples
         updateRequestType(requestType);
 
         have_new_samples = true;
-        adel_info_complete = false;
     }
 
     /**
@@ -199,13 +195,6 @@ public class HistoricSamples extends PlotSamples
             sample_map.put(type, new PlotSample[0]);
         }
         have_new_samples = true;
-    }
-
-    public void setAdelInfoComplete(final boolean b) {
-        adel_info_complete = b;
-    }
-    public boolean adelInfoComplete() {
-        return adel_info_complete;
     }
 
     /**
@@ -291,14 +280,16 @@ public class HistoricSamples extends PlotSamples
             EpicsChannelName.FIELD_SEP +
             RecordField.ADEL.getFieldName();
 
-        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, s);
-
         final Collection samples =
             service.readSamples(adelChannelName,
                                 s,
                                 e);
         final LinkedList<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> allSamples = Lists.newLinkedList(samples);
-        allSamples.addFirst(lastBefore);
+
+        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, s);
+        if (lastBefore != null) {
+            allSamples.addFirst(lastBefore);
+        }
         return allSamples;
     }
 

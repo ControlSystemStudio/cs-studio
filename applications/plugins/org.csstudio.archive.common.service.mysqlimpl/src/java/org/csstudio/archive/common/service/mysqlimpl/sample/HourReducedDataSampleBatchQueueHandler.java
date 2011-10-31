@@ -23,7 +23,7 @@ package org.csstudio.archive.common.service.mysqlimpl.sample;
 
 import static org.csstudio.archive.common.service.mysqlimpl.sample.ArchiveSampleDaoImpl.TAB_SAMPLE_H;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -43,7 +43,7 @@ public class HourReducedDataSampleBatchQueueHandler extends
     public HourReducedDataSampleBatchQueueHandler(@Nonnull final String database) {
         super(HourReducedDataSample.class,
               createHourSqlStatementString(database),
-              new ConcurrentLinkedQueue<HourReducedDataSample>());
+              new LinkedBlockingQueue<HourReducedDataSample>());
     }
 
     @Nonnull

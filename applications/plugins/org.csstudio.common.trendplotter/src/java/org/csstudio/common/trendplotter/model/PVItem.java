@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.apputil.xml.DOMHelper;
@@ -29,10 +30,13 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 import org.csstudio.domain.desy.epics.name.EpicsNameSupport;
 import org.csstudio.domain.desy.epics.name.RecordField;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.swt.widgets.Display;
+import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -52,11 +56,10 @@ public class PVItem extends ModelItem implements PVListener
     private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
 
     /** Historic and 'live' samples for this PV */
-    final private PVSamples samples;
+    private final PVSamples samples;
 
     /** Where to get archived data for this item. */
-    final private ArrayList<ArchiveDataSource> archives
-        = new ArrayList<ArchiveDataSource>();
+    private final ArrayList<ArchiveDataSource> archives = new ArrayList<ArchiveDataSource>();
 
     /** Control system PV */
     private PV pv;
@@ -65,13 +68,13 @@ public class PVItem extends ModelItem implements PVListener
     /** Most recently received value */
     private volatile IValue current_value;
 
-    /** Scan period in seconds, &le;0 to 'monitor' */
-    private double period;
+    /** Scan _period in seconds, &le;0 to 'monitor' */
+    private double _period;
 
     /** Timer that was used to schedule the scanner */
     private Timer scan_timer = null;
 
-    /** For a period &gt;0, this timer task performs the scanning */
+    /** For a _period &gt;0, this timer task performs the scanning */
     private TimerTask scanner = null;
 
     /** Archive data request type */
@@ -82,23 +85,50 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Initialize
      *  @param name PV name
-     *  @param period Scan period in seconds, &le;0 to 'monitor'
+     *  @param _period Scan _period in seconds, &le;0 to 'monitor'
      *  @throws Exception on error
      */
-    public PVItem(final String name, final double period) throws Exception
+    public PVItem(@Nonnull final String name,
+                  final double period) throws Exception
     {
         super(name);
-        samples = new PVSamples(request_type);
+        samples = new PVSamples(request_type,
+                                new IIntervalProvider() {
+                                    @Override
+                                    @CheckForNull
+                                    public Interval getTimeInterval() {
+                                        final TimeInstant startTime = getModelStartTime();
+                                        final TimeInstant endTime = getModelEndTime();
+                                        if (startTime == null || endTime == null) {
+                                            return null;
+                                        }
+                                        return new Interval(startTime.getInstant(),
+                                                            endTime.getInstant());
+                                    }
+                                    private TimeInstant getModelStartTime() {
+                                        final Model m = getModel();
+                                        if (model != null) {
+                                            return BaseTypeConversionSupport.toTimeInstant(m.getStartTime());
+                                        }
+                                        return null;
+                                    }
+                                    private TimeInstant getModelEndTime() {
+                                        final Model m = getModel();
+                                        if (model != null) {
+                                            return BaseTypeConversionSupport.toTimeInstant(m.getEndTime());
+                                        }
+                                        return null;
+                                    }
+                                });
         pv = PVFactory.createPV(name);
-        this.period = period;
+        _period = period;
     }
 
     /** Set new item name, which changes the underlying PV name
      *  {@inheritDoc}
      */
     @Override
-    public boolean setName(final String new_name) throws Exception
-    {
+    public boolean setName(final String new_name) throws Exception {
         if (! super.setName(new_name)) {
             return false;
         }
@@ -116,20 +146,18 @@ public class PVItem extends ModelItem implements PVListener
         return true;
     }
 
-    /** @return Scan period in seconds, &le;0 to 'monitor' */
-    public double getScanPeriod()
-    {
-        return period;
+    /** @return Scan _period in seconds, &le;0 to 'monitor' */
+    public double getScanPeriod() {
+        return _period;
     }
 
-    /** Update scan period.
+    /** Update scan _period.
      *  <p>
      *  When called on a running item, this stops and re-starts the PV.
-     *  @param period New scan period in seconds, &le;0 to 'monitor'
+     *  @param _period New scan _period in seconds, &le;0 to 'monitor'
      *  @throws Exception On error re-starting a running PVItem
      */
-    public void setScanPeriod(double period) throws Exception
-    {
+    public void setScanPeriod(double period) throws Exception {
         // Don't 'scan' faster than 1 Hz. Instead switch to on-change.
         if (period < 0.1) {
             period = 0.0;
@@ -138,7 +166,7 @@ public class PVItem extends ModelItem implements PVListener
         if (running) {
             stop();
         }
-        this.period = period;
+        this._period = period;
         if (running) {
             start(scan_timer);
         }
@@ -146,8 +174,7 @@ public class PVItem extends ModelItem implements PVListener
     }
 
     /** @return Maximum number of live samples in ring buffer */
-    public int getLiveCapacity()
-    {
+    public int getLiveCapacity() {
         return samples.getLiveCapacity();
     }
 
@@ -314,7 +341,7 @@ public class PVItem extends ModelItem implements PVListener
         pv.addListener(this);
         pv.start();
         // Log every received value?
-        if (period <= 0.0) {
+        if (_period <= 0.0) {
             return;
         }
         // Start scanner for periodic log
@@ -327,7 +354,7 @@ public class PVItem extends ModelItem implements PVListener
                 logCurrentValue();
             }
         };
-        final long delay = (long) (period*1000);
+        final long delay = (long) (_period*1000);
         timer.schedule(scanner, delay, delay);
     }
 
@@ -353,8 +380,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** {@inheritDoc} */
     @Override
-    public PVSamples getSamples()
-    {
+    public PVSamples getSamples() {
         return samples;
     }
 
@@ -364,7 +390,7 @@ public class PVItem extends ModelItem implements PVListener
     {
         current_value = null;
         // In 'monitor' mode, mark in live sample buffer
-        if (period <= 0) {
+        if (_period <= 0) {
             logDisconnected();
         }
     }
@@ -402,7 +428,7 @@ public class PVItem extends ModelItem implements PVListener
         current_value = value;
 
         // In 'monitor' mode, add to live sample buffer
-        if (period <= 0)
+        if (_period <= 0)
         {
             LOG.debug("PV {0} update {1}", new Object[] { getName(), value });
             samples.addLiveSample(value);
@@ -526,36 +552,9 @@ public class PVItem extends ModelItem implements PVListener
         return item;
     }
 
-    /**
-     * Only returns true if the {@link RecordField#ADEL} channel has been registered AND
-     * the this{@link #show_deadband()} is set to true.
-     * @param samples2
-     */
-//    public Boolean getShowDeadband()
-//    {
-//        return has_deadband && show_deadband;
-//    }
-
-//    public Boolean hasDeadband()
-//    {
-//        return has_deadband;
-//    }
-
-//    public void toggleShowDeadband() throws Exception
-//    {
-//        show_deadband = !show_deadband;
-//        if (show_deadband && pv_deadband == null) {
-//            createAndStartMdelPV();
-//        }
-//
-//        samples.toggleShowDeadband(super.toString());
-//    }
-
-    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception
-    {
-        final String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString()) +
-                                 EpicsChannelName.FIELD_SEP +
-                                 RecordField.MDEL.getFieldName();
+    private PV createAndStartMdelPV(final PVSamples pv_samples) throws Exception {
+        final String mdelChannelName = EpicsNameSupport.parseBaseName(super.toString())
+                + EpicsChannelName.FIELD_SEP + RecordField.MDEL.getFieldName();
         final PV mdel_pv = PVFactory.createPV(mdelChannelName);
         mdel_pv.addListener(new PVListener() {
 
@@ -572,6 +571,7 @@ public class PVItem extends ModelItem implements PVListener
                 }
                 pv_samples.setLiveSamplesDeadband(mdel);
             }
+
             @Override
             public void pvDisconnected(final PV newPV) {
                 pv_samples.setLiveSamplesDeadband(null);

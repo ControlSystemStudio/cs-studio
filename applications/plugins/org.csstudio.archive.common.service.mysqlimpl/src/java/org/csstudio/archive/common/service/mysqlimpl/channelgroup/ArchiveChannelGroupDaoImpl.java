@@ -80,10 +80,11 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
         final List<IArchiveChannelGroup> groups = Lists.newArrayList();
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt =  conn.prepareStatement(_selectChannelGroupByEngineIdStmt);
             stmt.setInt(1, engId.intValue());
 
@@ -101,7 +102,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(result, stmt, _selectChannelGroupByEngineIdStmt);
+            closeSqlResources(result, stmt, conn, _selectChannelGroupByEngineIdStmt);
         }
         return groups;
     }
@@ -112,10 +113,11 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     @Override
     @Nonnull
     public Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         Collection<IArchiveChannelGroup> notAddedGroups = Collections.emptyList();
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_createChannelGroupStmt);
             for (final IArchiveChannelGroup group : groups) {
                 stmt.setString(1, group.getName());
@@ -130,7 +132,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG + ": Group creation failed in DAO impl.", e);
         } finally {
-            closeSqlResources(null, stmt, _createChannelGroupStmt);
+            closeSqlResources(null, stmt, conn, _createChannelGroupStmt);
         }
         return notAddedGroups;
     }

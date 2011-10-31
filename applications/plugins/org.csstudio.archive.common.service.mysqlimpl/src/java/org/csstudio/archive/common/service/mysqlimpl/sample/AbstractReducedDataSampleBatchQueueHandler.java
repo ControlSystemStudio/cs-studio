@@ -31,7 +31,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -57,7 +57,7 @@ public abstract class AbstractReducedDataSampleBatchQueueHandler<T extends Abstr
      */
     public AbstractReducedDataSampleBatchQueueHandler(@Nonnull final Class<T> typeClass,
                                                       @Nonnull final String sqlStmtString,
-                                                      @Nonnull final Queue<T> queue) {
+                                                      @Nonnull final BlockingQueue<T> queue) {
         super(typeClass, sqlStmtString, queue);
     }
 
