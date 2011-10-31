@@ -26,7 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -47,7 +47,7 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
     // CHECKSTYLE ON : AbstractClassName
 
     private String _sqlStmtString;
-    private final Queue<T> _queue;
+    private final BlockingQueue<T> _queue;
 
 
     /**
@@ -55,7 +55,7 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
      */
     public BatchQueueHandlerSupport(@Nonnull final Class<T> typeClass,
                                     @Nonnull final String sqlStmtString,
-                                    @Nonnull final Queue<T> queue) {
+                                    @Nonnull final BlockingQueue<T> queue) {
         super(typeClass, BatchQueueHandlerSupport.class);
 
         _sqlStmtString = sqlStmtString;
@@ -92,7 +92,7 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
         final Class<T> type = (Class<T>) newEntries.iterator().next().getClass();
         final BatchQueueHandlerSupport<T> support = (BatchQueueHandlerSupport<T>) findTypeSupportForOrThrowTSE(BatchQueueHandlerSupport.class, type);
 
-        final Queue<T> queue = support.getQueue();
+        final BlockingQueue<T> queue = support.getQueue();
         queue.addAll(newEntries);
     }
 
@@ -120,7 +120,7 @@ public abstract class BatchQueueHandlerSupport<T> extends AbstractTypeSupport<T>
     }
 
     @Nonnull
-    public Queue<T> getQueue() {
+    public BlockingQueue<T> getQueue() {
         return _queue;
     }
 

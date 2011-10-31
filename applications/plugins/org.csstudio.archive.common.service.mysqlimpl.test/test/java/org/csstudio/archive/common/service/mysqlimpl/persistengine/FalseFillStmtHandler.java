@@ -25,7 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -49,7 +49,7 @@ final class FalseFillStmtHandler extends
      */
     FalseFillStmtHandler(@Nonnull final Class<IArchiveSample> typeClass,
                          @Nonnull final String database,
-                         @Nonnull final Queue<IArchiveSample> queue) {
+                         @Nonnull final BlockingQueue<IArchiveSample> queue) {
         super(typeClass, createSqlStatementString(database), queue);
     }
 

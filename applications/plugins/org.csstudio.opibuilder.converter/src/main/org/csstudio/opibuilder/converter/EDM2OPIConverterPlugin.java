@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.ui.PreferencesHelper;
 import org.csstudio.opibuilder.converter.writer.OpiWriter;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -122,7 +121,7 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 
 
 	private void setEDMColorListFile() {
-		IFile colorsListfile = ResourceUtil.getIFileFromIPath(
+		IFile colorsListfile = getIFileFromIPath(
 				PreferencesHelper.getEDMColorListFilePath());
 		if(colorsListfile != null)
 			System.setProperty("edm2xml.colorsFile", colorsListfile.getLocation().toOSString());
@@ -132,5 +131,29 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 	public static Logger getLogger()
 	{
 	    return Logger.getLogger(PLUGIN_ID);
+	}
+	
+	/**Get the IFile from IPath.
+	 * @param path Path to file in workspace
+	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
+	 */
+	public static IFile getIFileFromIPath(final IPath path)
+	{
+	    try
+	    {
+    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+    				path, false);
+    		if (r!= null && r instanceof IFile)
+		    {
+    		    final IFile file = (IFile) r;
+    		    if (file.exists())
+    		        return file;
+		    }
+	    }
+	    catch (Exception ex)
+	    {
+	        // Ignored
+	    }
+	    return null;
 	}
 }

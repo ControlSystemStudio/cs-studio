@@ -37,6 +37,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
@@ -66,7 +67,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
 
         final String channelName = "";
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
-        final Collection expectedResult = Collections.emptyList();
+        final Collection<IArchiveSample<Double, ISystemVariable<Double>>> expectedResult = Collections.<IArchiveSample<Double, ISystemVariable<Double>>>emptyList();
         final IArchiveChannel expectedChannel = TestUtils.CHANNEL_1;
         final Limits expLimits = Limits.<Double>create(0.0, 10.0);
         final IArchiveSample expLastSampleBefore = null;
@@ -75,7 +76,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, instant, instant, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         final EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, instant, instant, null, 100);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, instant, instant, 100);
 
         Assert.assertFalse(iter.hasNext());
 
@@ -89,7 +90,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
         final String channelName = "";
         final TimeInstant start = TimeInstantBuilder.fromMillis(100L);
         final TimeInstant end = TimeInstantBuilder.fromMillis(300L);
-        final Collection expectedResult = Collections.emptyList();
+        final Collection<IArchiveSample<Double, ISystemVariable<Double>>> expectedResult = Collections.<IArchiveSample<Double, ISystemVariable<Double>>>emptyList();
         final IArchiveChannel expectedChannel = TestUtils.CHANNEL_1;
         final Limits expLimits = Limits.<Double>create(0.0, 10.0);
         final IArchiveSample expLastSampleBefore =
@@ -99,13 +100,13 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, start, null, 1);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, start, 1);
         Assert.assertTrue(iter.hasNext());
         IMinMaxDoubleValue iValue = (IMinMaxDoubleValue) iter.next();
         Assert.assertTrue(iValue.getValue() == 5.0);
 
         iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, start, null, 3);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, start, 3);
 
         Assert.assertTrue(iter.hasNext());
         iValue = (IMinMaxDoubleValue) iter.next();
@@ -153,7 +154,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         final EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, end, null, 5);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, end, 5);
 
         assertSample(iter, 10.0, 15.0, 5.0, 140L);
 
@@ -203,7 +204,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         final EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, end, null, 1);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, end, 1);
 
         assertSample(iter, 7.0, 15.0, 1.0, 200L);
 
@@ -236,7 +237,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         final EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, end, null, 1);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, end, 1);
 
         assertSample(iter, 4.0, 15.0, -5.0, 200L);
 
@@ -268,7 +269,7 @@ public class EquidistantTimeBinsIteratorUnitTest {
             TestUtils.createCustomizedMockedServiceProvider(channelName, start, end, expectedResult, expectedChannel, expLimits, expLastSampleBefore);
 
         final EquidistantTimeBinsIterator<Double> iter =
-            new EquidistantTimeBinsIterator<Double>(provider, channelName, start, end, null, 5);
+            new EquidistantTimeBinsIterator<Double>(provider, expectedResult, channelName, start, end, 5);
 
         assertSample(iter, -5.0, -5.0, -5.0, 120L);
 
@@ -318,10 +319,10 @@ public class EquidistantTimeBinsIteratorUnitTest {
 
         final EquidistantTimeBinsIterator<Double> iter =
             new EquidistantTimeBinsIterator<Double>(provider,
+                                                    CHANNEL_3_SAMPLES,
                                                     CHANNEL_NAME_3,
                                                     start,
                                                     end,
-                                                    null,
                                                     15);
         Assert.assertTrue(iter.hasNext());
         assertSample(iter, 19.451659999999997, 19.82543, 19.07651, 3673335L);

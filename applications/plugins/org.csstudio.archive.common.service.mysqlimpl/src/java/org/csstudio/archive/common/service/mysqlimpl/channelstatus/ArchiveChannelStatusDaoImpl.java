@@ -91,10 +91,11 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     public Collection<IArchiveChannelStatus>
     retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> ids)
     throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
 
             final List<IArchiveChannelStatus> resultList = Lists.newArrayListWithExpectedSize(ids.size());
@@ -111,7 +112,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
+            closeSqlResources(null, stmt, conn, _selectLatestChannelStatusStmt);
         }
         return Collections.emptyList();
     }
@@ -141,9 +142,10 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     @Override
     @Nonnull
     public DeleteResult deleteStatusForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_deleteFromChannelStatusStmt);
             stmt.setInt(1, id.intValue());
             final int updated = stmt.executeUpdate();
@@ -153,7 +155,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
+            closeSqlResources(null, stmt, conn, _selectLatestChannelStatusStmt);
         }
         return DeleteResult.failed("Channel status removal failed for id '" + id.intValue() + "'");
     }

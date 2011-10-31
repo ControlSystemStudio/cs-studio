@@ -29,7 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -67,7 +67,7 @@ public class CollectionDataSampleBatchQueueHandler extends BatchQueueHandlerSupp
     public CollectionDataSampleBatchQueueHandler(@Nonnull final String databaseName) {
         super(ArchiveMultiScalarSample.class,
               createSqlStatementString(databaseName),
-              new ConcurrentLinkedQueue<ArchiveMultiScalarSample>());
+              new LinkedBlockingQueue<ArchiveMultiScalarSample>());
     }
 
     @Nonnull

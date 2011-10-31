@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
-import java.util.Queue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -75,6 +74,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     private final IBatchQueueHandlerProvider _handlerProvider;
     private final List<Object> _rescueDataList = Lists.newLinkedList();
+    private final RunningStopWatch _watch;
 
 
     /**
@@ -87,8 +87,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         _connectionHandler = connectionHandler;
         _name = name;
         _periodInMS = periodInMS;
-
         _handlerProvider = provider;
+        _watch = StopWatch.start();
     }
 
     /**
@@ -112,65 +112,43 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T> void processBatchHandlers(@Nonnull final Connection connection,
                                           @Nonnull final IBatchQueueHandlerProvider handlerProvider,
                                           @Nonnull final List<T> rescueDataList) {
-        boolean allHandlersEmpty;
-        do {
-            allHandlersEmpty = true;
-
-            for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
-                allHandlersEmpty = processHandler(connection,
-                                                  rescueDataList,
-                                                  handler,
-                                                  allHandlersEmpty);
+        final Collection<T> elements = Lists.newLinkedList();
+        for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
+            ((BatchQueueHandlerSupport<T>) handler).getQueue().drainTo(elements);
+            if (!elements.isEmpty()) {
+                PreparedStatement stmt = null;
+                try {
+                    stmt = handler.createNewStatement(connection);
+                    processBatchForStatement((BatchQueueHandlerSupport<T>) handler, elements, stmt, rescueDataList);
+                } catch (final SQLException e) {
+                    LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
+                    // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+                } finally {
+                    closeStatement(stmt);
+                }
+                elements.clear();
             }
-
-        } while (!allHandlersEmpty);
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> boolean processHandler(@Nonnull final Connection connection,
-                                       @Nonnull final List<T> rescueDataList,
-                                       @Nonnull final BatchQueueHandlerSupport<?> handler,
-                                       final boolean allHandlersEmpty) {
-        PreparedStatement stmt = null;
-        boolean empty = true;
-        try {
-            if (!handler.getQueue().isEmpty()) {
-                LOG.debug("Start for {} in {}", handler.getHandlerType().getSimpleName(), _name);
-                stmt = handler.createNewStatement(connection);
-                empty = processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
-                LOG.debug("End for {}", handler.getHandlerType().getSimpleName());
-            }
-        } catch (final SQLException e) {
-            LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
-            // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
-        } finally {
-            closeStatement(stmt);
         }
-        return allHandlersEmpty && empty;
     }
 
-    private <T> boolean processBatchForStatement(@Nonnull final BatchQueueHandlerSupport<T> handler,
-                                                 @Nonnull final PreparedStatement stmt,
-                                                 @Nonnull final List<T> rescueDataList) {
-        final Queue<T> queue = handler.getQueue();
-
+    private <T> void processBatchForStatement(@Nonnull final BatchQueueHandlerSupport<T> handler,
+                                              @Nonnull final Collection<T> elements,
+                                              @Nonnull final PreparedStatement stmt,
+                                              @Nonnull final List<T> rescueDataList) {
         try {
-            int maxBatchSize = 1000;
-            T element;
-            while ((element = queue.poll()) != null && maxBatchSize-- > 0) {
+            for (final T element : elements) {
                 addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
             }
-            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList);
+            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
         } catch (final Throwable t) {
             handleThrowable(t, handler, rescueDataList);
         }
-        return queue.peek() == null;
     }
-
 
     private <T> void addElementToBatchAndRescueList(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                                     @Nonnull final PreparedStatement stmt,
@@ -180,20 +158,23 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
             handler.applyBatch(stmt, element);
     }
 
-
     @Nonnull
     private <T> boolean executeBatchAndClearListOnCondition(@Nonnull final BatchQueueHandlerSupport<T> handler,
                                                             @Nonnull final PreparedStatement stmt,
-                                                            @Nonnull final List<T> rescueDataList) throws SQLException {
+                                                            @Nonnull final List<T> rescueDataList,
+                                                            final int minBatchSize) throws SQLException {
         final int size = rescueDataList.size();
-        try {
-            final RunningStopWatch start = StopWatch.start();
-            stmt.executeBatch();
-            LOG.info("{}ms for {}x {}", new Object[] {start.getElapsedTimeInMillis(), size, handler.getHandlerType().getSimpleName()});
-        } finally {
-            rescueDataList.clear();
+        if (size >= minBatchSize) {
+            try {
+                _watch.restart();
+                stmt.executeBatch();
+                LOG.info("{}ms for {}x {}", new Object[] {_watch.getElapsedTimeInMillis(), size, handler.getHandlerType().getSimpleName()});
+            } finally {
+                rescueDataList.clear();
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
 

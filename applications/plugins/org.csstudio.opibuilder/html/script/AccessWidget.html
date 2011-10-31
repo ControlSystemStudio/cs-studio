@@ -33,6 +33,7 @@
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object, boolean)">setPropertyValue(prop_id, value, forceFire)</a></li>
     <li><a href = "#setExternalObject(java.lang.String, java.lang.Object)">setExternalObject(name, var)</a></li>
     <li><a href = "#getExternalObject(java.lang.String)">getExternalObject(name)</a></li>
+    <li><a href = "#getMacroValue(java.lang.String)">getMacroValue(macroName)</a></li>
     <li><a href = "#executeAction(int)">executeAction(index)</a></li>
     </ul>
  <a name="ContainerWidgets"></a>
@@ -174,6 +175,21 @@ if(ValueUtil.getDouble(pvs[0].getValue()) > 80){
 </DD>
 </DL>
 <HR>
+   <A NAME="getMacroValue(java.lang.String)"><!-- --></A><H3>getMacroValue</H3>
+<PRE>
+public java.lang.String <B>getMacroValue</B>(java.lang.String&nbsp;macroName)</PRE>
+<DL>
+<DD>Get macro value from the widget.
+
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>macroName</CODE> - The name of the macro.
+<DT><B>Returns:</B><DD>the value of the macro. null if no such macro exist.</DL>
+
+<b>Example:</b><br>
+	<pre class="example_code">var macroValue = widget.getMacroValue("m1"); //get the macro value of "m1"</pre>
+</DD>
+</DL>
+ <HR>
 
  <A NAME="executeAction(int)"><!-- --></A><H3>
 executeAction</H3>

@@ -22,15 +22,13 @@
 package org.csstudio.archive.common.reader;
 
 import java.io.Serializable;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
-import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
@@ -52,18 +50,12 @@ public class DesyArchiveValueIterator<V extends Serializable> extends AbstractVa
 
     /**
      * Constructor.
-     * @param provider
-     * @throws ArchiveServiceException
-     * @throws OsgiServiceUnavailableException
      */
-    DesyArchiveValueIterator(@Nonnull final IArchiveServiceProvider provider,
+    DesyArchiveValueIterator(@Nonnull final Collection<IArchiveSample<V, ISystemVariable<V>>> samples,
                              @Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
-                             @Nonnull final TimeInstant end,
-                             @Nullable final IArchiveRequestType type)
-                             throws ArchiveServiceException,
-                             OsgiServiceUnavailableException {
-        super(provider, channelName, start, end, type);
+                             @Nonnull final TimeInstant end) {
+        super(samples, channelName, start, end);
     }
 
     /**
