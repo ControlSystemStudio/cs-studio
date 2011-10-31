@@ -166,11 +166,17 @@ CREATE TABLE IF NOT EXISTS sample
    num_val INT NULL,
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
+   is_an_array boolean default false,
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE,
    FOREIGN KEY (severity_id) REFERENCES severity (severity_id) ON DELETE CASCADE,
    FOREIGN KEY (status_id) REFERENCES status (status_id) ON DELETE CASCADE
 );
 
+# After the fact:
+# ALTER TABLE sample
+#   ADD COLUMN is_an_array boolean default false
+#   AFTER str_val;
+  
 # Need index on channel_id and smpl_time?
 CREATE INDEX sample_id_time ON sample ( channel_id, smpl_time, nanosecs );
 
@@ -196,6 +202,29 @@ CREATE TABLE IF NOT EXISTS array_val
 );
 
 CREATE INDEX array_val_id_time ON array_val ( channel_id, smpl_time, nanosecs );
+
+------------------------
+-- See sample table: Array elements 1, 2, 3, ... beyond the element 0
+-- that's in the sample table
+DROP TABLE IF EXISTS array_val_blob;
+CREATE TABLE  array_val_blob
+(
+   channel_id BIGINT  NOT NULL,
+   smpl_time TIMESTAMP NOT NULL,
+   nanosecs BIGINT  NOT NULL,
+   datatype VARCHAR(20) NOT NULL,
+   nelm INT NOT NULL,
+   -- Values shall always be the last column
+   -- TINYBLOB: Up to 2^8 = 256 bytes, 1 byte overhead
+   -- BLOB: 2^16
+   -- MEDIUMBLOB: 2^24
+   -- LONGBLOB: 2^32, 4 byte overhead
+   -- --> LONGBLOB OK for all?
+   `values` LONGBLOB  NOT NULL,
+   FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
+);
+
+CREATE INDEX array_val_id_time ON array_val_blob ( channel_id, smpl_time, nanosecs );
 
 # ----------------------
 # Channel Meta data: Units etc. for numeric channels

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -45,21 +47,26 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 
     final protected RDBArchiveReader reader;
     final protected int channel_id;
-
+    
     protected IMetaData meta = null;
 
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
-
-    /** For performance reasons, we remember the fact that we
-     *  found (or didn't find) array samples.
-     *  <p>
-     *  Initially: Assume there are array samples.
-     *  Once a scalar is identified, we stick with scalars.
-     *  The obvious drawback: If only a few samples are array
-     *  samples, we're likely to ignore them.
+    
+    /** Before version 3.1.0, we would look for array
+     *  values in the array_val table until we are sure
+     *  that there are no array samples.
+     *  Than we stopped looking for array samples
+     *  to speed things up.
+     *  
+     *  Since version 3.1.0, there is the option of using a
+     *  BLOB and the sample table contains an is_array indicator,
+     *  so we know for sure right away.
+     *  
+     *  To remain compatible with old data, we still assume
+     *  there are array values until we know otherwise.
      */
-    private boolean data_is_scalar = false;
+    protected boolean is_an_array = true;
 
     /** @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -165,7 +172,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         final Timestamp stamp = result.getTimestamp(1);
         // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
         if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
-            stamp.setNanos(result.getInt(7));
+            stamp.setNanos(result.getInt(8));
         final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
 
         // Get severity/status
@@ -173,6 +180,15 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         final ISeverity severity = filterSeverity(reader.getSeverity(result.getInt(2)), status);
 
         // Determine the value type
+        if (result.getBoolean(7))
+        	is_an_array = true; // Explicitly marked as array sample
+        else
+        	if (reader.useArrayBlob())
+        		is_an_array = false;
+        // else: Not using blob, could look at old data that doesn't tell
+        //       us if there are array samples, so keep current assumption
+        //       for is_an_array
+
         // Try double
         final double dbl0 = result.getDouble(5);
         if (! result.wasNull())
@@ -185,7 +201,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                         (IEnumeratedMetaData) meta, IValue.Quality.Original,
                         new int [] { (int) dbl0 });
             // Double data. Get array elements - if any.
-            final double data[] = readArrayElements(stamp, dbl0, severity);
+            final double data[] = reader.useArrayBlob()
+        		? readBlobArrayElements(stamp, dbl0, severity)
+				: readArrayElements(stamp, dbl0, severity);
             if (meta instanceof INumericMetaData)
                 return ValueFactory.createDoubleValue(time, severity, status,
                         (INumericMetaData)meta, IValue.Quality.Original, data);
@@ -309,7 +327,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             final ISeverity severity) throws Exception
     {
         // For performance reasons, only look for array data until we hit a scalar sample.
-        if (data_is_scalar)
+        if (is_an_array==false)
             return new double [] { dbl0 };
 
         // See if there are more array elements
@@ -348,10 +366,75 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (N == 1  &&  !severity.isInvalid())
         {   // Found a perfect non-array sample:
             // Assume that the data is scalar, skip the array check from now on
-            data_is_scalar = true;
-            closeArraySampleSel();
+        	is_an_array = false;
         }
         return ret;
+    }
+
+    /** Given the time and first element of the  sample, see if there
+     *  are more array elements.
+     *  @param stamp Time stamp of the sample
+     *  @param dbl0 Value of the first (maybe only) array element
+     *  @param severity Severity of the sample
+     *  @return Array with given element and maybe more.
+     *  @throws Exception on error, including 'cancel'
+     */
+    private double[] readBlobArrayElements(final Timestamp stamp,
+            final double dbl0,
+            final ISeverity severity) throws Exception
+    {
+        // For performance reasons, only look for array data until we hit a scalar sample.
+        if (is_an_array==false)
+            return new double [] { dbl0 };
+
+        // See if there are more array elements
+        if (sel_array_samples == null)
+        {   // Lazy initialization
+            sel_array_samples = reader.getRDB().getConnection().prepareStatement(
+                    reader.getSQL().sample_sel_array_vals_withblob);
+        }
+        sel_array_samples.setInt(1, channel_id);
+        sel_array_samples.setTimestamp(2, stamp);
+        // MySQL keeps nanoseconds in designated column, not TIMESTAMP
+        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
+            sel_array_samples.setInt(3, stamp.getNanos());
+
+        // Decode array elements from BLOB
+        double[] waveformFetched = null;
+        reader.addForCancellation(sel_array_samples);
+        try
+        {
+            final ResultSet res = sel_array_samples.executeQuery();
+            if (res.next())
+            {
+            	final long nelm = res.getLong(2);
+            	final String datatype = res.getString(1);
+
+            	waveformFetched = new double[(int)nelm];
+            	if ("double".equals(datatype))
+            	{
+	            	final byte[] asBytesFetched = res.getBytes(3);
+	            	final ByteArrayInputStream bin = new ByteArrayInputStream(asBytesFetched);
+	            	final DataInputStream din = new DataInputStream(bin);
+	            	for (int i = 0; i < waveformFetched.length; i++)
+		    	        	waveformFetched[i] = din.readDouble();
+            	}
+            	else
+            	{
+            		throw new Exception("Arrays of type " + datatype + " are not decoded");
+            	}
+            }
+            else
+            {	// No array data found
+            	waveformFetched = new double [] { dbl0 };
+            }
+            res.close();
+        }
+        finally
+        {
+            reader.removeFromCancellation(sel_array_samples);
+        }
+        return waveformFetched;
     }
 
     /** @param result ResultSet positioned on row to dump to console
@@ -373,8 +456,11 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         System.out.println();
     }
 
-    /** Close the select statement for array samples. */
-    private void closeArraySampleSel()
+    /** Release all database resources.
+     *  OK to call more than once.
+     */
+    @Override
+    public void close()
     {
         if (sel_array_samples != null)
         {
@@ -388,14 +474,5 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             }
             sel_array_samples = null;
         }
-    }
-
-    /** Release all database resources.
-     *  OK to call more than once.
-     */
-    @Override
-    public void close()
-    {
-        closeArraySampleSel();
     }
 }
