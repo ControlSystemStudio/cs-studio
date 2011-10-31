@@ -1,5 +1,7 @@
 package org.csstudio.archive.reader.kblog;
 
+import java.util.Comparator;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +16,8 @@ import org.csstudio.data.values.ValueFactory;
  * Averaging sample iterator for KBLog.
  * 
  * This iterator reads values from "kblogrd" and calculate average/min/max values of each time step,
- * and return them.
+ * and return them as optimized values. Abnormal values ("connected", "disconnected", "N/A", etc.)
+ * will be returned as original values.
  *
  * @author Takashi Nakamoto
  */
@@ -24,7 +27,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private ITimestamp currentTime;
 	private ITimestamp endTime;
 	private IValue nextBaseValue;
-	private IValue nextAverageValue;
+	private PriorityBlockingQueue<IValue> processedValues;
 	
 	/**
 	 * Constructor of KBLogValueIterator.
@@ -38,48 +41,81 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		this.currentTime = startTime;
 		this.endTime = endTime;
 		
+		// make sure that the step second is equal to or greater than 1.
 		if (stepSecond < 1)
 			this.stepSecond = 1;
 		else
 			this.stepSecond = stepSecond;
 		
+		processedValues = new PriorityBlockingQueue<IValue>(1, new ValueTimeComparator());
+		
 		try {
 			if (base.hasNext())
 				this.nextBaseValue = base.next();
-			
-			this.nextAverageValue = calculateNextValue();
-			
-			// If the next time step does not have any value, skip that time step and
-			// calculate the average value of next next time step.  
-			while (nextAverageValue == null && nextBaseValue != null)
-				nextAverageValue = calculateNextValue();
+			else
+				this.nextBaseValue = null;
 		} catch (Exception ex) {
+			// If the base iterator returns no value, this iterator also returns no value. 
 			this.nextBaseValue = null;
-			this.nextAverageValue = null;
 		}
 	}
 	
-	private synchronized IValue calculateNextValue() {
-		if (nextBaseValue == null)
-			return null;
+	/**
+	 * This method judges whether the given value represents normal value.
+	 * Here, "normal value" is defined as a value which can be taken into account
+	 * to calculate average value of a given time step. Thus, only IDoubleValue
+	 * and ILongValue can be treated as normal values. Moreover, even if the given
+	 * value is an instance of IDoubleValue, it can be treated as an abnormal value if 
+	 * it represents NaN or infinity. Without condition, non-numeric values (enum, array,
+	 * etc.) are considered as an abnormal value.
+	 * 
+	 * @param value value
+	 * @return whether the given value represents normal value which can be processed while averaging. 
+	 */
+	private boolean isNormalValue(IValue value) {
+		if (!value.getSeverity().hasValue())
+			return false;
 		
-		if (currentTime.isGreaterOrEqual(endTime)) {
-			nextBaseValue = null;
-			return null;
+		// TODO return false if the given value represents an array.
+		if (value instanceof IDoubleValue) {
+			double val = ((IDoubleValue) value).getValue();
+			if (val == Double.NaN || val == Double.NEGATIVE_INFINITY || val == Double.POSITIVE_INFINITY)
+				return false;
+			
+			return true;
+		} else if (value instanceof ILongValue) {
+			return true;
+		} else {
+			return false;
 		}
+	}
+
+	/**
+	 * Examine values in the current time step and push the averaged value, abnormal values
+	 * to the processed value queue so that next() method can pop a value from the queue
+	 * and return to any CSS application (e.g. DataBrowser). 
+	 */
+	private synchronized void examineCurrentTimeStep() {
+		if (nextBaseValue == null)
+			return;
 		
 		double avg = 0.0;
-		long count = 0;
 		double min = 0;
 		double max = 0;
-		boolean connected = false;
-		IValue currentBaseValue = null;
+		long countOfNormalValue = 0;
+		IValue lastNormalValue = null;
 		
 		ITimestamp nextTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
-
-		try {
+		
+		try{
 			while (nextBaseValue != null) {
 				ITimestamp time = nextBaseValue.getTime();
+				
+				if (time.isGreaterOrEqual(nextTime)) {
+					// The obtained value is the data in the next step, which will be processed
+					// when this method is called next time.
+					break;
+				}
 				
 				if (time.isLessThan(currentTime)) {
 					// A value archived earlier than this time step is found.
@@ -87,7 +123,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
 							"The value transferred from " + base.getPathToKBLogRD() + " (" + base.getCommandID() + ") is not ordered in time.");
 
-					currentBaseValue = nextBaseValue;
 					if (base.hasNext())
 						nextBaseValue = base.next();
 					else
@@ -96,50 +131,38 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					continue;
 				}
 				
-				if (time.isGreaterOrEqual(nextTime)) {
-					// The obtained value is the data in the next step, which will be processed
-					// when this method is called next time.
-					break;
-				}
-				
-				if (nextBaseValue.getSeverity().hasValue()) {
-					if (nextBaseValue instanceof IDoubleValue || nextBaseValue instanceof ILongValue) {
-						double val = Double.NaN;
-						
-						if (nextBaseValue instanceof IDoubleValue)
-							val = ((IDoubleValue) nextBaseValue).getValue();
-						else if (nextBaseValue instanceof ILongValue)
-							val = (double)((ILongValue) nextBaseValue).getValue();
-						
-						if (val == Double.POSITIVE_INFINITY) {
-							max = Double.POSITIVE_INFINITY;
-						} else if (val == Double.NEGATIVE_INFINITY) {
-							min = Double.NEGATIVE_INFINITY;
-						} else if (val == Double.NaN) {
-							// Do nothing, just ignore NaN
-						} else {
-							if (count == 0) {
-								avg = val;
-								max = val;
-								min = val;
-								count = 1;
-							} else {
-								avg = (count * avg + val) / (count + 1.0);
-								if (val > max)
-									max = val;
-								if (val < min)
-									min = val;
-								
-								count++;
-							}
-						}
+				if (isNormalValue(nextBaseValue)) {
+					double val;
+					
+					if (nextBaseValue instanceof IDoubleValue) {
+						val = ((IDoubleValue) nextBaseValue).getValue();
+					} else if (nextBaseValue instanceof ILongValue) {
+						val = (double)((ILongValue) nextBaseValue).getValue();
+					} else {
+						// This part is not supposed to be reached.
+						throw new Exception("This thread reached the part which must not be reached.");
 					}
+					
+					if (countOfNormalValue == 0) {
+						avg = val;
+						max = val;
+						min = val;
+						countOfNormalValue = 1;
+					} else {
+						avg = (countOfNormalValue * avg + val) / (countOfNormalValue + 1.0);
+						if (val > max)
+							max = val;
+						if (val < min)
+							min = val;
+						
+						countOfNormalValue++;
+					}
+					lastNormalValue = nextBaseValue;
+				} else {
+					// Add this abnormal value to the processed value queue.
+					processedValues.add(nextBaseValue);
 				}
 				
-				if (nextBaseValue.getStatus().equals(KBLogMessages.StatusConnected))
-					connected = true;
-				
-				currentBaseValue = nextBaseValue;
 				if (base.hasNext())
 					nextBaseValue = base.next();
 				else
@@ -150,62 +173,58 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					"Fatal error while calculating average values.", ex);				
 			
 			nextBaseValue = null;
-			return null;
+			return;
 		}
-
-		// Middle time of this time step
-		ITimestamp midTime = TimestampFactory.fromDouble(currentTime.toDouble() + (double)stepSecond / 2.0);		
 		
-		// Next time step
-		currentTime = nextTime;
-		
-		if (count == 0) {
-			// No value in this time step
-			if (connected) {
-				return ValueFactory.createMinMaxDoubleValue(midTime,
-						KBLogSeverityInstances.connected,
-						KBLogMessages.StatusConnected,
-						null,
-						IValue.Quality.Interpolated,
-						new double[] { 0.0 }, 0.0, 0.0);
-			} else {
-				return null;
-			}
-		} else if (count == 1) {
-			// Return the original value
-			return currentBaseValue;
-		} else {
-			String status = KBLogMessages.StatusNormal;
-			if (connected)
-				status = KBLogMessages.StatusConnected;
+		if (countOfNormalValue == 1) {
+			// Add the only original value in this time step to the processed value queue.
+			processedValues.add(lastNormalValue);
+		} else if (countOfNormalValue > 1) {
+			// Middle time of this time step
+			ITimestamp midTime = TimestampFactory.fromDouble(currentTime.toDouble() + (double)stepSecond / 2.0);		
 			
-			return ValueFactory.createMinMaxDoubleValue(midTime,
+			// Add the averaged value in this time step to the processed value queue.
+			IValue averagedValue = ValueFactory.createMinMaxDoubleValue(midTime,
 					KBLogSeverityInstances.normal,
-					status,
+					KBLogMessages.StatusNormal,
 					null,
 					IValue.Quality.Interpolated,
 					new double[] { avg }, min, max);
+			processedValues.add(averagedValue);
 		}
 	}
 
 	@Override
 	public synchronized boolean hasNext() {
-		return !(nextAverageValue == null && nextBaseValue == null);
+		return (processedValues.size() > 0 || nextBaseValue != null);
 	}
 
 	@Override
 	public synchronized IValue next() throws Exception {
-		IValue ret = nextAverageValue;
+		// If there is a processed value in the queue, return it.
+		if (processedValues.size() > 0)
+			return processedValues.poll();
+
+		// If there is no processed in the queue, examine the next time step until
+		// a valid value is found and pushed to the queue.
+		while (processedValues.size() == 0) {
+			// Examine all values in the next time step.
+			examineCurrentTimeStep();
 		
-		// calculate the average value of the next time step
-		nextAverageValue = calculateNextValue();
+			// Go to the next time step.
+			currentTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
+			
+			if (currentTime.isGreaterOrEqual(endTime))
+				break;
+		}
 		
-		// If the next time step does not have any value, skip that time step and
-		// calculate the average value of next next time step.  
-		while (nextAverageValue == null && nextBaseValue != null)
-			nextAverageValue = calculateNextValue();
-		
-		return ret;
+		// A processed value(s) is found as a result of examining successive time steps,
+		// that value will be returned. Otherwise, this method returns null to indicate
+		// that there's no more value in this iterator.
+		if (processedValues.size() > 0)
+			return processedValues.poll();
+		else
+			return null;
 	}
 
 	@Override
@@ -216,5 +235,24 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	@Override
 	public synchronized boolean isClosed() {
 		return base.isClosed();
+	}
+	
+	/**
+	 * A class to compare two values and judge which value has the earlier time stamp.
+	 * 
+	 * @author Takashi Nakamoto
+	 */
+	private class ValueTimeComparator implements Comparator<IValue> {
+		@Override
+		public int compare(IValue arg0, IValue arg1) {
+			if (arg0.getTime().isLessOrEqual(arg1.getTime())){
+				if (arg0.getTime().isLessThan(arg1.getTime()))
+					return -1;
+				else
+					return 0;
+			} else {
+				return 1;
+			}
+		}
 	}
 }
