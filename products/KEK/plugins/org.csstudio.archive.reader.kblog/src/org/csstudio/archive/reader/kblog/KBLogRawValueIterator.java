@@ -138,33 +138,68 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 				
 				// Parse double value.
 				try {
-					double value = 0;
+					boolean integer = false;
+					double doubleValue = 0;
+					long longValue = 0;
 					String status = "";
 					ISeverity severity = ValueFactory.createOKSeverity();
 					
+					// TODO support array
+					
 					if (strValue.equals("Connected")) {
-						value = 0;
+						doubleValue = 0;
 						status = KBLogMessages.StatusConnected;
 						severity = KBLogSeverityInstances.connected;
+					} else if (strValue.equals("Disconnected")) {
+						doubleValue = 0;
+						status = KBLogMessages.StatusDisconnected;
+						severity = KBLogSeverityInstances.disconnected;
+					} else if (strValue.equals("INF")) {
+						// TODO this part is not tested
+						doubleValue = Double.POSITIVE_INFINITY;
+						status = KBLogMessages.StatusNormal;
+						severity = KBLogSeverityInstances.normal;
+					} else if (strValue.equals("-INF")) {
+						// TODO this part is not tested
+						doubleValue = Double.NEGATIVE_INFINITY;
+						status = KBLogMessages.StatusNormal;
+						severity = KBLogSeverityInstances.normal;
+					} else if (strValue.equals("NaN")) {
+						// TODO this part is not tested.
+						doubleValue = Double.NaN;
+						status = KBLogMessages.StatusNaN;
+						severity = KBLogSeverityInstances.nan;
+					} else if (strValue.indexOf('.') >= 0) {
+						doubleValue = Double.parseDouble(strValue);
+						status = KBLogMessages.StatusNormal;
+						severity = KBLogSeverityInstances.normal;
 					} else {
-						value = Double.parseDouble(strValue);
+						integer = true;
+						longValue = Long.parseLong(strValue);
 						status = KBLogMessages.StatusNormal;
 						severity = KBLogSeverityInstances.normal;
 					}
-					
-					return ValueFactory.createDoubleValue(time,
-							severity,
-							status,
-							null,
-							Quality.Original,
-							new double[]{value});
+
+					if (integer) {
+						return ValueFactory.createLongValue(time,
+								severity,
+								status,
+								null,
+								Quality.Original,
+								new long[]{longValue});
+					} else {
+						return ValueFactory.createDoubleValue(time,
+								severity,
+								status,
+								null,
+								Quality.Original,
+								new double[]{doubleValue});
+					}
 				} catch (NumberFormatException ex) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
 							"Failed to parse double value obtained from " + kblogrdPath + " (" + commandId + "): " + strValue, ex);
 					continue;
 				}
-				
-				// TODO Support String, Long and Enum.
 			}
 			
 			// No more value.
