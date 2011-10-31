@@ -38,6 +38,8 @@ public class RDBArchiveReader implements ArchiveReader
     /** Oracle error code "error occurred at recursive SQL level ...: */
     final private static String ORACLE_RECURSIVE_ERROR = "ORA-00604"; //$NON-NLS-1$
 
+    final private boolean use_array_blob;
+    
     final private String url;
     final private String user;
     final private int password;
@@ -49,7 +51,7 @@ public class RDBArchiveReader implements ArchiveReader
 
     final private RDBUtil rdb;
     final private SQL sql;
-
+    
     /** Map of status IDs to Status strings */
     final private HashMap<Integer, String> stati;
 
@@ -73,6 +75,23 @@ public class RDBArchiveReader implements ArchiveReader
             final String stored_procedure)
         throws Exception
     {
+    	this(url, user, password, schema, stored_procedure, RDBArchivePreferences.useArrayBlob());
+    }
+        
+    /** Initialize
+     *  @param url Database URL
+     *  @param user .. user
+     *  @param password .. password
+     *  @param schema .. schema (including ".") or ""
+     *  @param stored_procedure Stored procedure or "" for client-side optimization
+     *  @throws Exception on error
+     */
+    public RDBArchiveReader(final String url, final String user,
+            final String password, final String schema,
+            final String stored_procedure,
+            final boolean use_array_blob)
+        throws Exception
+    {
         this.url = url;
         this.user = user;
         this.password = (password == null) ? 0 : password.length();
@@ -89,12 +108,19 @@ public class RDBArchiveReader implements ArchiveReader
     	default:
             this.stored_procedure = stored_procedure;
         }
+        this.use_array_blob = use_array_blob;
         sql = new SQL(rdb.getDialect(), schema);
         stati = getStatusValues();
         severities = getSeverityValues();
     }
 
-    /** @return Map of all status ID/Text mappings
+    /** @return <code>true</code> if array samples are stored in BLOB */
+    public boolean useArrayBlob()
+    {
+		return use_array_blob;
+	}
+
+	/** @return Map of all status ID/Text mappings
      *  @throws Exception on error
      */
     private HashMap<Integer, String> getStatusValues() throws Exception

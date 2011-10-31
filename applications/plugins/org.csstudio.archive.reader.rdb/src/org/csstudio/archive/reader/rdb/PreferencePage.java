@@ -28,7 +28,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(GRID);
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
                 Activator.ID));
     }
 
