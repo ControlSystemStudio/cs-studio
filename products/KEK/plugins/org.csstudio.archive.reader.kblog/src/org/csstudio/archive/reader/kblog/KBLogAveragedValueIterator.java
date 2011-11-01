@@ -68,7 +68,6 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		if (!value.getSeverity().hasValue())
 			return false;
 		
-		// TODO return false if the given value represents an array.
 		if (value instanceof IDoubleValue) {
 			if (((IDoubleValue) value).getValues().length != 1)
 				return false; // array or no value
@@ -87,11 +86,33 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 			return false;
 		}
 	}
+	
+	/**
+	 * This method judges whether the given value represents array or not.
+	 * 
+	 * @param value value
+	 * @return whether the given value represents array or not
+	 */
+	private boolean isArray(IValue value) {
+		if (value instanceof IDoubleValue) {
+			if (((IDoubleValue) value).getValues().length >= 1)
+				return true;
+		} else if (value instanceof ILongValue) {
+			if (((ILongValue) value).getValues().length >= 1)
+				return true;
+		}
+		
+		return false;
+	}
 
 	/**
 	 * Examine values in the current time step and push the averaged value, abnormal values
 	 * to the processed value queue so that next() method can pop a value from the queue
 	 * and return to any CSS application (e.g. DataBrowser). 
+	 * 
+	 * Note that only one array in each time step is added to the queue. It prevents DataBrowser
+	 * and InspectSamples from showing too many arrays. Otherwise, CSS freezes when it tries to
+	 * show all the arrays.
 	 */
 	private synchronized void examineCurrentTimeStep() {
 		if (nextBaseValue == null)
@@ -102,6 +123,7 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		double max = 0;
 		long countOfNormalValue = 0;
 		IValue lastNormalValue = null;
+		boolean addedArray = false;
 		
 		ITimestamp nextTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
 		
@@ -157,8 +179,17 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					}
 					lastNormalValue = nextBaseValue;
 				} else {
-					// Add this abnormal value to the processed value queue.
-					processedValues.add(nextBaseValue);
+					if (isArray(nextBaseValue)) {
+						// If no array value in this time step is added to the queue,
+						// add this array value to the queue.
+						if (!addedArray) {
+							processedValues.add(nextBaseValue);
+							addedArray = true;
+						}
+					} else {
+						// Add this abnormal value to the processed value queue.
+						processedValues.add(nextBaseValue);
+					}
 				}
 				
 				if (base.hasNext())
