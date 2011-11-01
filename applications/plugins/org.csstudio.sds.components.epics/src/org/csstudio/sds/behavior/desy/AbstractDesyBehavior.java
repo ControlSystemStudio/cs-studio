@@ -38,10 +38,11 @@ import org.epics.css.dal.simple.Severity;
 public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extends
         AbstractBehavior<W> {
     private static final String YELLOW = "${Minor}";
+    private static final String ININTIAL = "${Initial}";
     private static final String GREEN = "${NoAlarm}";
     private static final String RED = "${Major}";
     private static final String PINK = "${VerbAbbr}";
-    private static final String WHITE = "${Weiss}";
+    private static final String INVALID = "${Invalid}";
 
     private final Map<ConnectionState, String> colorsByConnectionState = new HashMap<ConnectionState, String>();
     private final Map<ConnectionState, BorderStyleEnum> borderStyleByConnectionState = new HashMap<ConnectionState, BorderStyleEnum>();
@@ -65,7 +66,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     private void initConnectionState() {
-        for (ConnectionState cs : ConnectionState.values()) {
+        for (final ConnectionState cs : ConnectionState.values()) {
             switch (cs) {
                 case CONNECTED:
                     addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
@@ -74,10 +75,10 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                     addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
                     break;
                 case CONNECTING:
-                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, YELLOW, YELLOW);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case INITIAL:
-                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, YELLOW, YELLOW);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case CONNECTION_FAILED:
                     addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
@@ -95,10 +96,10 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                     addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case READY:
-                    addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, ININTIAL, ININTIAL);
                     break;
                 default:
-                    addConnectionStates(cs,0, BorderStyleEnum.NONE, WHITE, WHITE);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, INVALID, INVALID);
                     break;
             }
         }
@@ -107,7 +108,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
     /**
      * @param cs
      */
-    private void addConnectionStates(ConnectionState cs, Integer borderWidth, BorderStyleEnum borderStyle, String borderColor, String color) {
+    private void addConnectionStates(final ConnectionState cs, final Integer borderWidth, final BorderStyleEnum borderStyle, final String borderColor, final String color) {
         borderWidthByConnectionState.put(cs, borderWidth);
         borderStyleByConnectionState.put(cs, borderStyle);
         borderColorsByConnectionState.put(cs, borderColor);
@@ -178,9 +179,9 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @return the DESY default Border width for the given {@link Severity}
      */
     protected static int determineBorderWidthBySeverity(final Severity severity) {
-        return (severity.isOK()||severity.isInvalid())?0:3;
+        return severity.isOK()||severity.isInvalid()?0:3;
     }
-    
+
     /**
      * The new way? Give a DESY default Color for the given {@link Severity}
      *
@@ -206,7 +207,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 color = RED;
             } else {
                 // .. white
-                color = WHITE;
+                color = INVALID;
             }
         }
 

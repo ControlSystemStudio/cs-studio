@@ -22,7 +22,8 @@ public class RDBArchivePreferences
     public static final String USER = "user";
     public static final String PASSWORD = "password";
     public static final String SQL_TIMEOUT = "sql_timeout";
-
+    public static final String USE_ARRAY_BLOB = "use_array_blob";
+    
     /** @return URL of RDB archive server */
     public static String getURL()
     {
@@ -61,6 +62,15 @@ public class RDBArchivePreferences
         return prefs.getInt(Activator.ID, SQL_TIMEOUT, 0, null);
     }
 
+    /** @return <code>true</code> if a BLOB should be used for array samples */
+    public static boolean useArrayBlob()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return true;
+        return prefs.getBoolean(Activator.ID, USE_ARRAY_BLOB, true, null);
+    }
+    
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>

@@ -38,8 +38,6 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
-    private boolean _defTransparent;
-
     /**
      * Constructor.
      */
@@ -54,7 +52,6 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        _defTransparent = widget.getBooleanProperty(LabelModel.PROP_TRANSPARENT);
         if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
@@ -68,23 +65,24 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-
+        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(LabelModel widget, AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
-	@Override
-	protected void doProcessMetaDataChange(LabelModel widget, MetaData metaData) {
+    @Override
+	protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
