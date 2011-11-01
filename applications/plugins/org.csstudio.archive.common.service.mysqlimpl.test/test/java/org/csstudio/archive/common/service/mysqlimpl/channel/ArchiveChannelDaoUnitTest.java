@@ -234,6 +234,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertFalse(channels.isEmpty());
         assertChannelContent(channels.iterator().next(), "nolimits", "String", grpId, cs, null, false, null);
 
+        DAO.deleteChannel("nolimits");
     }
 
     @Test
@@ -266,6 +267,12 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         assertChannelContent(chan1, "nolimits", "String", grpId, cs, null, true, null);
         chan2 = DAO.retrieveChannelsByNames(Sets.newHashSet("withlimits")).iterator().next();
         assertChannelContent(chan2, "withLimits", "Double", grpId, cs, null, false, Limits.create(Double.valueOf(0.0), Double.valueOf(10.0)));
+
+        DAO.deleteChannel("nolimits");
+        DAO.deleteChannel("withlimits");
+
+        final Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("nolimits", "withLimits"));
+        Assert.assertTrue(channels.isEmpty());
     }
 
     @Test
@@ -303,12 +310,6 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
         final String msg = "Deletion of channel failed. Number of updated rows != 1.";
         Assert.assertTrue(msg.equals(result.getMessage()));
-    }
-
-    @Test
-    public void testDeleteExistingChannel() {
-        final DeleteResult result = DAO.deleteChannel("doubleChannel1");
-        Assert.assertTrue(result.succeeded());
     }
 
     @Test

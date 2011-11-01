@@ -83,7 +83,7 @@ public class CollectionDataBatchQueueHandlerUnitTest extends AbstractDaoTestSetu
         }
 
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW_MULTI_SCALAR,
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW,
                                        CHANNEL_ID_5TH,
                                        START.minusMillis(1L),
                                        START.plusMillis(1L));

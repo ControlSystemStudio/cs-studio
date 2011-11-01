@@ -28,7 +28,6 @@ import org.csstudio.archive.common.reader.testdata.TestUtils;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Assert;
@@ -41,6 +40,7 @@ import org.junit.Test;
  * @author bknerr
  * @since 20.06.2011
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class DesyArchiveValueIteratorUnitTest {
 
 
@@ -55,8 +55,8 @@ public class DesyArchiveValueIteratorUnitTest {
         final TimeInstant end = TimeInstantBuilder.fromMillis(50L);
 
 
-        final DesyArchiveValueIterator<Double> iter =
-            new DesyArchiveValueIterator<Double>(TestUtils.CHANNEL_1_SAMPLES, TestUtils.CHANNEL_NAME_1, start, end);
+        final DesyArchiveValueIterator iter =
+            new DesyArchiveValueIterator(TestUtils.CHANNEL_1_SAMPLES, TestUtils.CHANNEL_NAME_1, start, end);
 
 
         Assert.assertTrue(iter.hasNext());
@@ -80,8 +80,8 @@ public class DesyArchiveValueIteratorUnitTest {
         final TimeInstant instant = TimeInstantBuilder.fromMillis(1L);
 
 
-        final DesyArchiveValueIterator<Double> iter =
-            new DesyArchiveValueIterator<Double>(Collections.<IArchiveSample<Double, ISystemVariable<Double>>>emptyList(), "", instant, instant);
+        final DesyArchiveValueIterator iter =
+            new DesyArchiveValueIterator(Collections.<IArchiveSample>emptyList(), "", instant, instant);
 
 
         Assert.assertFalse(iter.hasNext());

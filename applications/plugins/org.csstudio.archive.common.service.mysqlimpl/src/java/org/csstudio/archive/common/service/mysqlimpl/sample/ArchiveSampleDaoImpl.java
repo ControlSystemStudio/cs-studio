@@ -398,8 +398,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e,
                                                          @Nonnull final DesyArchiveRequestType reqType)
-                                                         throws SQLException {
-        final PreparedStatement stmt = dispatchRequestTypeToStatement(conn, reqType);
+                                                         throws SQLException, TypeSupportException {
+        final PreparedStatement stmt = dispatchRequestTypeToStatement(conn, reqType, channel.getDataType());
         stmt.setInt(1, channel.getId().intValue());
         stmt.setLong(2, s.getNanos());
         stmt.setLong(3, e.getNanos());
@@ -408,16 +408,18 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     @Nonnull
     private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final Connection conn,
-                                                             @Nonnull final DesyArchiveRequestType type)
-                                                             throws SQLException {
+                                                             @Nonnull final DesyArchiveRequestType type,
+                                                             @Nonnull final String dataType)
+                                                             throws SQLException, TypeSupportException {
 
         PreparedStatement stmt = null;
         switch (type) {
             case RAW :
-                stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
-                break;
-            case RAW_MULTI_SCALAR :
-                stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_BLOB));
+                if (ArchiveTypeConversionSupport.isDataTypeSerializableCollection(dataType)) {
+                    stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_BLOB));
+                } else {
+                    stmt = conn.prepareStatement(_selectRawSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE));
+                }
                 break;
             case AVG_PER_MINUTE :
                 stmt = conn.prepareStatement(_selectOptSamplesStmt.replaceFirst(ARCH_TABLE_PLACEHOLDER, TAB_SAMPLE_M));
@@ -445,11 +447,11 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         V max = null;
         switch (type) {
             case RAW : { // (..., value)
-                value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
-                break;
-            }
-            case RAW_MULTI_SCALAR : { // (..., value)
-                value = ArchiveTypeConversionSupport.fromByteArray(result.getBytes(COLUMN_VALUE));
+                if (ArchiveTypeConversionSupport.isDataTypeSerializableCollection(dataType)) {
+                    value = ArchiveTypeConversionSupport.fromByteArray(result.getBytes(COLUMN_VALUE));
+                } else {
+                    value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
+                }
                 break;
             }
             case AVG_PER_MINUTE :

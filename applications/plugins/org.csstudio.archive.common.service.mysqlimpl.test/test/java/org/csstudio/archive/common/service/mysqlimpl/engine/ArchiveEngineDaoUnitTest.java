@@ -64,6 +64,8 @@ public class ArchiveEngineDaoUnitTest extends AbstractDaoTestSetup {
         engine = dao.retrieveEngineById(id);
         Assert.assertNotNull(engine);
         Assert.assertTrue(time.equals(engine.getLastAliveTime()));
+
+        dao.updateEngineAlive(id, TimeInstantBuilder.fromNanos(1309478401000000000L));
     }
 
     private void assertEngineLookup(@Nonnull final ArchiveEngineId id,

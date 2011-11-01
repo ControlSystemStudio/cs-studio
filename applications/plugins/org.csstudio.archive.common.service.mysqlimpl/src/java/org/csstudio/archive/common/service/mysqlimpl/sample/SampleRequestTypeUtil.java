@@ -64,14 +64,6 @@ public final class SampleRequestTypeUtil {
         if (ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {
             return computeReducedDataSetTable(start, end);
         }
-        return computeRawRequestType(dataType);
-    }
-
-    @Nonnull
-    private static DesyArchiveRequestType computeRawRequestType(@Nonnull final String dataType) throws TypeSupportException {
-        if (ArchiveTypeConversionSupport.isDataTypeSerializableCollection(dataType)) {
-            return DesyArchiveRequestType.RAW_MULTI_SCALAR;
-        }
         return DesyArchiveRequestType.RAW;
     }
 

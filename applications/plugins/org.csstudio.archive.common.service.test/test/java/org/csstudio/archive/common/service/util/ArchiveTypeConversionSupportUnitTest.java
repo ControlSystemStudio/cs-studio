@@ -34,6 +34,8 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Lists;
+
 /**
  * Test of scalar type conversion in {@link ArchiveTypeConversionSupport}.
  *
@@ -78,17 +80,22 @@ public class ArchiveTypeConversionSupportUnitTest {
         Serializable start = Double.valueOf(2.0);
         byte[] byteArray = ArchiveTypeConversionSupport.toByteArray(start);
         Serializable result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
-        Assert.assertEquals(result, start);
+        Assert.assertEquals(start, result);
 
         start = "hello";
         byteArray = ArchiveTypeConversionSupport.toByteArray(start);
         result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
-        Assert.assertEquals(result, start);
+        Assert.assertEquals(start, result);
 
         start = EpicsEnum.createFromRaw(1);
         byteArray = ArchiveTypeConversionSupport.toByteArray(start);
         result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
-        Assert.assertEquals(result, start);
+        Assert.assertEquals(start, result);
+
+        start = Lists.newArrayList(Double.valueOf(-1.0), Double.valueOf(2.0));
+        byteArray = ArchiveTypeConversionSupport.toByteArray(start);
+        result = ArchiveTypeConversionSupport.fromByteArray(byteArray);
+        Assert.assertEquals(start, result);
     }
 
     @Test

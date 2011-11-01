@@ -62,7 +62,6 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         DAO = new ArchiveChannelStatusDaoImpl(HANDLER, PERSIST_MGR);
     }
 
-
     @Test
     public void testCreateAndRetrieveStatus() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
         final TimeInstant fstTime = NOW.plusMillis(1000L);
@@ -103,7 +102,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testDeleteChannelStatus() throws ArchiveDaoException {
-        Iterable<IArchiveChannelStatus> status =
+        final Iterable<IArchiveChannelStatus> status =
             DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
         Assert.assertTrue(status.iterator().hasNext());
 
@@ -111,9 +110,11 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
             DAO.deleteStatusForChannelId(CHANNEL_ID_1ST);
         Assert.assertTrue(deleteResult.succeeded());
 
-        status =
+        final Iterable<IArchiveChannelStatus> statusResult =
             DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
-        Assert.assertFalse(status.iterator().hasNext());
+        Assert.assertFalse(statusResult.iterator().hasNext());
+
+        DAO.createChannelStatus(status.iterator().next());
     }
 
     @AfterClass

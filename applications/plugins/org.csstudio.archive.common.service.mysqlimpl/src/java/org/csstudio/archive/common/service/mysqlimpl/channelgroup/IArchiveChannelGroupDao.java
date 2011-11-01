@@ -22,6 +22,7 @@
 package org.csstudio.archive.common.service.mysqlimpl.channelgroup;
 
 import java.util.Collection;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -42,5 +43,7 @@ public interface IArchiveChannelGroupDao {
 
     @Nonnull
     Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveDaoException;
+
+    boolean deleteChannelGroups(@Nonnull final Set<String> names) throws ArchiveDaoException;
 
 }

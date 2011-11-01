@@ -39,7 +39,6 @@ import com.google.common.collect.ImmutableSet;
  */
 public enum DesyArchiveRequestType implements IArchiveRequestType {
     RAW("Raw values."),
-    RAW_MULTI_SCALAR("Raw multi scalar values"),
     AVG_PER_MINUTE("Averaged over the time period of one minute."),
     AVG_PER_HOUR("Averaged over the time period of one hour.");
 
