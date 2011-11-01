@@ -59,7 +59,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private final Predicate<DBR> _validator;
-    private Class<Object> _dataType;
+    private Class<?> _dataType;
     private EpicsMetaData _desyMeta;
 
     /**

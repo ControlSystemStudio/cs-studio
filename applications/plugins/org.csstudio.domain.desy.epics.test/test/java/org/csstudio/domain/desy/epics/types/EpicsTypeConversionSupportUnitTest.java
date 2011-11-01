@@ -36,7 +36,7 @@ public class EpicsTypeConversionSupportUnitTest {
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() throws TypeSupportException {
         Assert.assertNotNull(BaseTypeConversionSupport.createBaseTypeClassFromString(EpicsEnum.class.getSimpleName(),
-                                                                                 "org.csstudio.domain.desy.epics.types"));
+                                                                                     "org.csstudio.domain.desy.epics.types"));
     }
 }
 

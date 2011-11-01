@@ -22,8 +22,7 @@
 package org.csstudio.domain.desy.epics.name;
 
 import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_REGEX;
-import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_SEP_FOR_SPLIT;
-import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_SEP_REGEX;
+import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FIELD_SEP_FOR_REGEXP;
 import static org.csstudio.domain.desy.epics.name.EpicsChannelName.FULLNAME_REGEX;
 
 import javax.annotation.Nonnull;
@@ -47,7 +46,7 @@ public final class EpicsNameSupport {
     public static String parseBaseName(@Nonnull final String rawName) {
 
         if (rawName.matches("^" + FULLNAME_REGEX + "$")) {
-            return rawName.replaceAll(FIELD_SEP_REGEX + FIELD_REGEX + "$", "");
+            return rawName.replaceAll(FIELD_SEP_FOR_REGEXP + FIELD_REGEX + "$", "");
         }
         throw new IllegalArgumentException(rawName + " does match channel name regex: " + "^" + FULLNAME_REGEX + "$");
     }
@@ -61,7 +60,7 @@ public final class EpicsNameSupport {
     public static IRecordField parseField(@Nonnull final String rawName) {
         if (rawName.matches("^" + FULLNAME_REGEX + "$")) {
 
-            final String[] fields = rawName.split(FIELD_SEP_FOR_SPLIT);
+            final String[] fields = rawName.split(FIELD_SEP_FOR_REGEXP);
             if (fields.length == 1) {
                 return RecordField.VAL;
             }
