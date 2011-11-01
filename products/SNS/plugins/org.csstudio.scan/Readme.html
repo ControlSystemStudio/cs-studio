@@ -1,0 +1,96 @@
+<html>
+<body>
+
+<h1>Scan Support</h1>
+
+<h2>Idea</h2>
+
+<p>The org.csstudio.scan plugins provide a scan system
+inspired by the "ScanEngine" developed by the
+APS Software Services Group (SSG).
+</p>
+
+<p>A Scan Server can execute a sequence of scan commands.
+Several scan configurations can be submitted to the server.
+Ongoing scans can be monitored, paused, resumed, aborted.
+</p>
+
+<h2>Example Setup</h2>
+
+<h3>Prepare</h3>
+
+<ul>
+<li>Start with IDE that can run SNS CSS</li>
+<li>Add PyDev to the IDE</li>
+<li>Locate the org.csstudio.scan/examples folder</li>
+</ul>
+
+<h3>Run Demo IOC</h3>
+
+<ul>
+<li>Run EPICS softIoc for examples/simulation.db</li>
+</ul>
+
+<h3>Run Scan Server</h3>
+
+<p>Run or export the org.csstudio.scan.server/ScanServer.product.
+</p>
+
+<p>The ScanServer product can be run with command-line option
+<pre> 
+   -console
+</pre> 
+or
+<pre> 
+   -console 4884
+</pre> 
+for the (network) console. Type "help" in the console to see ScanServer commands.
+</p>
+
+<p>If the ScanServer is run on a different host, make sure that its ports are
+accessible via the firewall.
+Defaults are in ScanServer.java.
+Use /etc/sysconfig/iptables to enable port 4810, 4811.
+</p>
+
+<p>To access such a remote ScanServer, run clients with 
+<pre>
+  -DScanServerHost=...
+</pre>
+</p>
+
+<h3>Run CSS with GUI</h3>
+
+<p>Add the org.csstudio.scan.ui.feature to the CSS product,
+which includes the scan monitor as well as PyDev.
+</p>
+
+<p>Configure the product as follows after its initial start:
+</p>
+
+<ul>
+<li>In CSS, create "linked folder" for /examples so you can open the *.opi files.</li>
+<li>To enable full PyDev use, open Edit/Preferences, PyDev.</li>
+<li>Configure "Interpreter - Jython".
+    Ideally, point it to a jython.jar of a full jython setup,
+    i.e. one that includes a Lib/ subdirectory
+    with standard library sources.
+    As a minimal alternative, configure it to use the jython.jar
+    in org.csstudio.scan.client/lib</li>
+<li>Configure "Interpreter - Python" to your python binary, e.g. /usr/bin/python.
+    This seems to be necessary to support full PyDev source-level
+    debugging, even when only planning to use Jython.</li>
+</ul>
+
+<p>Things to try:
+</p>
+
+<ul>
+<li>Invoke menu CSS/Display/Scan Monitor/li>
+<li>Open the examples/*.opi files/li>
+<li>Open examples/custom_scan.py in the PyDev editor./li>
+<li>Use the context menu Run As, Jython... or Debug As, Jython /li>
+</ul>
+
+</body>
+</html>

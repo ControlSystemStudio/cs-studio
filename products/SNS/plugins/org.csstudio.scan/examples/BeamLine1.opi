@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>400</height>
+  <name />
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>800</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>6</grid_space>
+  <actions hook="false" />
+  <y>-1</y>
+  <x>-1</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>409</width>
+    <border_style>13</border_style>
+    <rules />
+    <lock_children>false</lock_children>
+    <scripts />
+    <height>115</height>
+    <border_width>1</border_width>
+    <name>Motors</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <show_scrollbar>true</show_scrollbar>
+    <y>282</y>
+    <actions hook="false" />
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>0</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <minimum>0.0</minimum>
+      <show_value_tip>true</show_value_tip>
+      <bar_length>0.2</bar_length>
+      <scripts />
+      <height>25</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Scrollbar</name>
+      <page_increment>1.0</page_increment>
+      <pv_name>motor_x</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Scrollbar</widget_type>
+      <enabled>true</enabled>
+      <step_increment>0.2</step_increment>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>241</width>
+      <border_style>0</border_style>
+      <rules />
+      <maximum>10.0</maximum>
+      <border_width>1</border_width>
+      <horizontal>true</horizontal>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" />
+      <y>8</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <minimum>0.0</minimum>
+      <show_value_tip>true</show_value_tip>
+      <bar_length>0.2</bar_length>
+      <scripts />
+      <height>23</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Scrollbar</name>
+      <page_increment>1.0</page_increment>
+      <pv_name>motor_y</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Scrollbar</widget_type>
+      <enabled>true</enabled>
+      <step_increment>0.2</step_increment>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>241</width>
+      <border_style>0</border_style>
+      <rules />
+      <maximum>10.0</maximum>
+      <border_width>1</border_width>
+      <horizontal>true</horizontal>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" />
+      <y>48</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>17</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>X</text>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>10</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <actions hook="false" />
+      <y>12</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>17</height>
+      <name>Label_1</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Y</text>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>9</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <actions hook="false" />
+      <y>51</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <minimum>0.0</minimum>
+      <vertical_alignment>1</vertical_alignment>
+      <scripts />
+      <height>25</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Spinner</name>
+      <page_increment>1.0</page_increment>
+      <precision_from_pv>false</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>motor_x</pv_name>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="235" green="251" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Spinner</widget_type>
+      <enabled>true</enabled>
+      <step_increment>0.1</step_increment>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>3</precision>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>91</width>
+      <border_style>3</border_style>
+      <format>0</format>
+      <rules />
+      <border_width>1</border_width>
+      <maximum>10.0</maximum>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <actions hook="false" />
+      <y>12</y>
+      <wrap_words>true</wrap_words>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>30</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <minimum>0.0</minimum>
+      <vertical_alignment>1</vertical_alignment>
+      <scripts />
+      <height>25</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Spinner_1</name>
+      <page_increment>1.0</page_increment>
+      <precision_from_pv>false</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>motor_y</pv_name>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="235" green="251" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Spinner</widget_type>
+      <enabled>true</enabled>
+      <step_increment>0.1</step_increment>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>3</precision>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>91</width>
+      <border_style>3</border_style>
+      <format>0</format>
+      <rules />
+      <border_width>1</border_width>
+      <maximum>10.0</maximum>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <actions hook="false" />
+      <y>47</y>
+      <wrap_words>true</wrap_words>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>30</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>223</width>
+    <border_style>13</border_style>
+    <rules />
+    <lock_children>false</lock_children>
+    <scripts />
+    <height>175</height>
+    <border_width>1</border_width>
+    <name>Device</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <show_scrollbar>true</show_scrollbar>
+    <y>0</y>
+    <actions hook="false" />
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>0</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
+      <level_lo>20.0</level_lo>
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <color_fillbackground>
+        <color red="200" green="200" blue="200" />
+      </color_fillbackground>
+      <color_hihi>
+        <color red="255" green="0" blue="0" />
+      </color_hihi>
+      <show_lo>false</show_lo>
+      <scripts />
+      <thumb_color>
+        <color red="172" green="172" blue="172" />
+      </thumb_color>
+      <height>79</height>
+      <major_tick_step_hint>50</major_tick_step_hint>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <page_increment>1.0</page_increment>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Scaled Slider</widget_type>
+      <show_minor_ticks>true</show_minor_ticks>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>181</width>
+      <show_lolo>false</show_lolo>
+      <border_style>0</border_style>
+      <effect_3d>true</effect_3d>
+      <show_markers>false</show_markers>
+      <show_hi>false</show_hi>
+      <maximum>10.0</maximum>
+      <border_width>1</border_width>
+      <horizontal>true</horizontal>
+      <log_scale>false</log_scale>
+      <minimum>0.0</minimum>
+      <show_hihi>false</show_hihi>
+      <scale_format />
+      <show_scale>true</show_scale>
+      <color_lo>
+        <color red="255" green="128" blue="0" />
+      </color_lo>
+      <name>Scaled Slider</name>
+      <color_hi>
+        <color red="255" green="128" blue="0" />
+      </color_hi>
+      <pv_name>setpoint</pv_name>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <step_increment>1.0</step_increment>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <level_hi>80.0</level_hi>
+      <scale_font>
+        <opifont.name>Default</opifont.name>
+      </scale_font>
+      <level_hihi>90.0</level_hihi>
+      <fill_color>
+        <color red="0" green="0" blue="255" />
+      </fill_color>
+      <color_lolo>
+        <color red="255" green="0" blue="0" />
+      </color_lolo>
+      <rules />
+      <value_label_format />
+      <transparent_background>true</transparent_background>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <level_lolo>10.0</level_lolo>
+      <y>6</y>
+      <actions hook="false" />
+      <x>0</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
+      <level_lo>20.0</level_lo>
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <color_fillbackground>
+        <color red="200" green="200" blue="200" />
+      </color_fillbackground>
+      <color_hihi>
+        <color red="255" green="0" blue="0" />
+      </color_hihi>
+      <show_lo>false</show_lo>
+      <scripts />
+      <height>43</height>
+      <major_tick_step_hint>50</major_tick_step_hint>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Progress Bar</widget_type>
+      <show_minor_ticks>false</show_minor_ticks>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>157</width>
+      <show_lolo>false</show_lolo>
+      <border_style>0</border_style>
+      <effect_3d>true</effect_3d>
+      <show_markers>false</show_markers>
+      <show_hi>false</show_hi>
+      <maximum>10.0</maximum>
+      <border_width>1</border_width>
+      <horizontal>true</horizontal>
+      <log_scale>false</log_scale>
+      <minimum>0.0</minimum>
+      <show_hihi>false</show_hihi>
+      <scale_format />
+      <show_scale>false</show_scale>
+      <color_lo>
+        <color red="255" green="128" blue="0" />
+      </color_lo>
+      <name>Progress Bar</name>
+      <color_hi>
+        <color red="255" green="128" blue="0" />
+      </color_hi>
+      <pv_name>readback</pv_name>
+      <origin_ignored>true</origin_ignored>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <show_label>false</show_label>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <level_hi>80.0</level_hi>
+      <scale_font>
+        <opifont.name>Default</opifont.name>
+      </scale_font>
+      <level_hihi>90.0</level_hihi>
+      <origin>0.0</origin>
+      <fill_color>
+        <color red="255" green="184" blue="85" />
+      </fill_color>
+      <color_lolo>
+        <color red="255" green="0" blue="0" />
+      </color_lolo>
+      <rules />
+      <value_label_format />
+      <transparent_background>true</transparent_background>
+      <limits_from_pv>false</limits_from_pv>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <level_lolo>10.0</level_lolo>
+      <y>96</y>
+      <actions hook="false" />
+      <x>12</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <indicator_mode>false</indicator_mode>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <crop_right>0</crop_right>
+    <crop_left>0</crop_left>
+    <visible>true</visible>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>383</height>
+    <stretch_to_fit>false</stretch_to_fit>
+    <name>Image</name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <widget_type>Image</widget_type>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>392</width>
+    <no_animation>false</no_animation>
+    <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules />
+    <crop_bottom>0</crop_bottom>
+    <border_width>1</border_width>
+    <image_file>sample.png</image_file>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>0</y>
+    <tooltip />
+    <x>222</x>
+  </widget>
+</display>

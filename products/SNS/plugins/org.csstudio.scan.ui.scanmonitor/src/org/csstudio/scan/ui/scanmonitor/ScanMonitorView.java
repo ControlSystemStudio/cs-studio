@@ -1,0 +1,81 @@
+/*******************************************************************************
+ * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * The scan engine idea is based on the "ScanEngine" developed
+ * by the Software Services Group (SSG),  Advanced Photon Source,
+ * Argonne National Laboratory,
+ * Copyright (c) 2011 , UChicago Argonne, LLC.
+ * 
+ * This implementation, however, contains no SSG "ScanEngine" source code
+ * and is not endorsed by the SSG authors.
+ ******************************************************************************/
+package org.csstudio.scan.ui.scanmonitor;
+
+import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
+import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
+import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.part.ViewPart;
+
+/** Eclipse View that displays the {@link GUI}
+ *  @author Kay Kasemir
+ */
+public class ScanMonitorView extends ViewPart
+{
+    private ScanInfoModel model;
+
+    @SuppressWarnings("unused")
+	private GUI gui;
+
+    /** {@inheritDoc} */
+    @Override
+    public void createPartControl(final Composite parent)
+    {
+        // Create and start Model
+        model = new ScanInfoModel();
+        try
+        {
+            model.start();
+        }
+        catch (Exception ex)
+        {
+            Label l = new Label(parent, 0);
+            l.setText("Error: " + ex.getClass().getName() + ", " + ex.getMessage());
+            return;
+        }
+
+        // Connect to view
+        gui = new GUI(parent, model);
+
+        // Stop model when view is closed
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                model.stop();
+            }
+        });
+
+        // Toolbar actions (duplicating context menu actions)
+        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        toolbar.add(new ResumeAction(model, null));
+        toolbar.add(new PauseAction(model, null));
+        toolbar.add(new RemoveCompletedAction(model));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFocus()
+    {
+        // NOP
+    }
+}

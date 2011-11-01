@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan API
+Bundle-SymbolicName: org.csstudio.scan
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.csstudio.scan,
+ org.csstudio.scan.command,
+ org.csstudio.scan.data,
+ org.csstudio.scan.server
+Require-Bundle: org.junit
