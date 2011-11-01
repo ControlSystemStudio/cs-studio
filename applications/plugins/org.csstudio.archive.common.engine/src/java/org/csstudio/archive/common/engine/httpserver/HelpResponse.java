@@ -35,6 +35,7 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  */
 public class HelpResponse extends AbstractResponse {
 
+    private static final long serialVersionUID = -154850528871142413L;
     private static final String URL_BASE_PAGE = "/help";
 
     /**

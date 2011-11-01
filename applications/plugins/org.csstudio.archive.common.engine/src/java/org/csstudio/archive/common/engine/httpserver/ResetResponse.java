@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 
 /**
  * Provide web page to reset engine statistics.
@@ -24,8 +25,9 @@ class ResetResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    ResetResponse(@Nonnull final EngineModel model) {
-        super(model);
+    ResetResponse(@Nonnull final EngineModel model,
+                  @Nonnull final IServiceProvider provider) {
+        super(model, provider);
     }
 
     @Override

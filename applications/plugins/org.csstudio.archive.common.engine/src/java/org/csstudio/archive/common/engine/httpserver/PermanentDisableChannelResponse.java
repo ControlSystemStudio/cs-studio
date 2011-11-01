@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 /**
@@ -49,8 +50,9 @@ public class PermanentDisableChannelResponse extends AbstractChannelResponse {
     /**
      * Constructor.
      */
-    public PermanentDisableChannelResponse(@Nonnull final EngineModel model) {
-        super(model);
+    public PermanentDisableChannelResponse(@Nonnull final EngineModel model,
+                                           @Nonnull final IServiceProvider provider) {
+        super(model, provider);
     }
 
     /**
@@ -59,6 +61,8 @@ public class PermanentDisableChannelResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
+
+        req.getParameter("adminKey");
 
         final EpicsChannelName epicsName = parseEpicsNameOrConfigureRedirectResponse(req, resp);
         if (epicsName == null) {

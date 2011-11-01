@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 import com.google.common.base.Strings;
@@ -51,6 +52,13 @@ abstract class AbstractChannelResponse extends AbstractResponse {
      */
     protected AbstractChannelResponse(@Nonnull final EngineModel model) {
         super(model);
+    }
+    /**
+     * Constructor.
+     */
+    protected AbstractChannelResponse(@Nonnull final EngineModel model,
+                                      @Nonnull final IServiceProvider provider) {
+        super(model, provider);
     }
 
     /**

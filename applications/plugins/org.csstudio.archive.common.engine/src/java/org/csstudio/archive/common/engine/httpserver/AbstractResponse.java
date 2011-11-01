@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.common.collection.CollectionsUtil;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.slf4j.Logger;
@@ -39,11 +40,26 @@ abstract class AbstractResponse extends HttpServlet {
     /** Model from which to serve info */
     private final EngineModel _model;
 
+    /** String to compare admin parameter against for pages secured for erroneous modification */
+    private final String _adminParamKey;
+    private final String _adminParamValue;
+
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+        _adminParamValue = null;
+        _adminParamKey = null;
+    }
+    /** Construct <code>HttpServlet</code>
+     *  @param title Page title
+     */
+    protected AbstractResponse(@Nonnull final EngineModel model,
+                               @Nonnull final IServiceProvider provider) {
+        _model = model;
+        _adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        _adminParamValue = provider.getPreferencesService().getHttpAdminValue();
     }
 
     @Nonnull
@@ -62,6 +78,14 @@ abstract class AbstractResponse extends HttpServlet {
                          @Nonnull final HttpServletResponse resp)
                          throws ServletException, IOException {
         try {
+            if (!Strings.isNullOrEmpty(_adminParamKey)) {
+                final String parameter = req.getParameter(_adminParamKey);
+                if (!_adminParamValue.equals(parameter)) {
+                    redirectToErrorPage(resp, "This command or URL is secured by an admin key=value pair for " + _adminParamKey + "=?" +
+                                              "\nPlease ensure to add the correct admin key=value pair.");
+                    return;
+                }
+            }
             fillResponse(req, resp);
         } catch (final Exception ex) {
             ex.printStackTrace();
