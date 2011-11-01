@@ -70,12 +70,18 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		
 		// TODO return false if the given value represents an array.
 		if (value instanceof IDoubleValue) {
+			if (((IDoubleValue) value).getValues().length != 1)
+				return false; // array or no value
+			
 			double val = ((IDoubleValue) value).getValue();
 			if (val == Double.NaN || val == Double.NEGATIVE_INFINITY || val == Double.POSITIVE_INFINITY)
 				return false;
 			
 			return true;
 		} else if (value instanceof ILongValue) {
+			if (((ILongValue) value).getValues().length != 1)
+				return false; // array or no value
+			
 			return true;
 		} else {
 			return false;

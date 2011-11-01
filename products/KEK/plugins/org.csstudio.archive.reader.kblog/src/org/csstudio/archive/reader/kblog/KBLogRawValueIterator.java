@@ -148,66 +148,105 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 				
 				// Parse double value.
 				try {
-					boolean integer = false;
-					double doubleValue = 0;
-					long longValue = 0;
-					String status = "";
-					ISeverity severity = ValueFactory.createOKSeverity();
-					
-					// TODO support array
-					
-					if (strValue.equals("Connected")) {
-						doubleValue = 0;
-						status = KBLogMessages.StatusConnected;
-						severity = KBLogSeverityInstances.connected;
-					} else if (strValue.equals("Disconnected")) {
-						doubleValue = 0;
-						status = KBLogMessages.StatusDisconnected;
-						severity = KBLogSeverityInstances.disconnected;
-					} else if (strValue.equals("INF")) {
-						// TODO this part is not tested
-						doubleValue = Double.POSITIVE_INFINITY;
-						status = KBLogMessages.StatusNormal;
-						severity = KBLogSeverityInstances.normal;
-					} else if (strValue.equals("-INF")) {
-						// TODO this part is not tested
-						doubleValue = Double.NEGATIVE_INFINITY;
-						status = KBLogMessages.StatusNormal;
-						severity = KBLogSeverityInstances.normal;
-					} else if (strValue.equals("NaN")) {
-						// TODO this part is not tested.
-						doubleValue = Double.NaN;
-						status = KBLogMessages.StatusNaN;
-						severity = KBLogSeverityInstances.nan;
-					} else if (strValue.indexOf('.') >= 0) {
-						doubleValue = Double.parseDouble(strValue);
-						status = KBLogMessages.StatusNormal;
-						severity = KBLogSeverityInstances.normal;
+					if (strValue.indexOf("\t") == -1) {
+						// scalar value
+						
+						boolean integer = false;
+						double doubleValue = 0;
+						long longValue = 0;
+						ISeverity severity = ValueFactory.createOKSeverity();
+						String status = "";
+						
+						if (strValue.equals("Connected")) {
+							doubleValue = 0;
+							status = KBLogMessages.StatusConnected;
+							severity = KBLogSeverityInstances.connected;
+						} else if (strValue.equals("Disconnected")) {
+							doubleValue = 0;
+							status = KBLogMessages.StatusDisconnected;
+							severity = KBLogSeverityInstances.disconnected;
+						} else if (strValue.equals("INF")) {
+							// TODO this part is not tested
+							doubleValue = Double.POSITIVE_INFINITY;
+							status = KBLogMessages.StatusNormal;
+							severity = KBLogSeverityInstances.normal;
+						} else if (strValue.equals("-INF")) {
+							// TODO this part is not tested
+							doubleValue = Double.NEGATIVE_INFINITY;
+							status = KBLogMessages.StatusNormal;
+							severity = KBLogSeverityInstances.normal;
+						} else if (strValue.equals("NaN")) {
+							// TODO this part is not tested.
+							doubleValue = Double.NaN;
+							status = KBLogMessages.StatusNaN;
+							severity = KBLogSeverityInstances.nan;
+						} else if (strValue.indexOf('.') >= 0) {
+							doubleValue = Double.parseDouble(strValue);
+							status = KBLogMessages.StatusNormal;
+							severity = KBLogSeverityInstances.normal;
+						} else {
+							integer = true;
+							longValue = Long.parseLong(strValue);
+							status = KBLogMessages.StatusNormal;
+							severity = KBLogSeverityInstances.normal;
+						}
+	
+						if (integer) {
+							return ValueFactory.createLongValue(time,
+									severity,
+									status,
+									null,
+									Quality.Original,
+									new long[]{longValue});
+						} else {
+							return ValueFactory.createDoubleValue(time,
+									severity,
+									status,
+									null,
+									Quality.Original,
+									new double[]{doubleValue});
+						}
 					} else {
-						integer = true;
-						longValue = Long.parseLong(strValue);
-						status = KBLogMessages.StatusNormal;
-						severity = KBLogSeverityInstances.normal;
-					}
-
-					if (integer) {
-						return ValueFactory.createLongValue(time,
-								severity,
-								status,
-								null,
-								Quality.Original,
-								new long[]{longValue});
-					} else {
-						return ValueFactory.createDoubleValue(time,
-								severity,
-								status,
-								null,
-								Quality.Original,
-								new double[]{doubleValue});
+						// array
+						boolean integer = true;
+						String[] strElements = strValue.split("\t");
+						
+						// if there is one double value in the array, the array will
+						// be a double array. Otherwise, it will be a long array.
+						for (String strElement : strElements) {
+							if (strElement.indexOf('.') >= 0) {
+								integer = false;
+								break;
+							}
+						}
+						
+						if (integer) {
+							long[] longArray = new long[strElements.length];
+							for (int i=0; i<strElements.length; i++) { 
+								longArray[i] = Long.parseLong(strElements[i]);
+							}
+							return ValueFactory.createLongValue(time,
+									ValueFactory.createOKSeverity(),
+									"",
+									null,
+									Quality.Original,
+									longArray);
+						} else {
+							double[] doubleArray = new double[strElements.length];
+							for (int i=0; i<strElements.length; i++) { 
+								doubleArray[i] = Double.parseDouble(strElements[i]);
+							}
+							return ValueFactory.createDoubleValue(time,
+									ValueFactory.createOKSeverity(),
+									"",
+									null,
+									Quality.Original,
+									doubleArray);
+						}
 					}
 				} catch (NumberFormatException ex) {
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
-							"Failed to parse double value obtained from " + kblogrdPath + " (" + commandId + "): " + strValue, ex);
+							"Failed to parse numeric value obtained from " + kblogrdPath + " (" + commandId + "): " + strValue, ex);
 					continue;
 				}
 			}
