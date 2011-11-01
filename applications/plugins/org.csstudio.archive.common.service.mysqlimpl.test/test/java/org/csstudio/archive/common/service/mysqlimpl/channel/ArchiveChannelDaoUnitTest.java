@@ -141,7 +141,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertFalse(channels.isEmpty());
 
         assertChannelContent(channels.iterator().next(), "enumChannel1", "EpicsEnum", new ArchiveChannelGroupId(2L),
-                             cs, TimeInstantBuilder.fromNanos(1262307723000000000L), true, null);
+                             cs, null, true, null);
 
         channels = DAO.retrieveChannelsByIds(Sets.newHashSet(new ArchiveChannelId(3L)));
         Assert.assertFalse(channels.isEmpty());

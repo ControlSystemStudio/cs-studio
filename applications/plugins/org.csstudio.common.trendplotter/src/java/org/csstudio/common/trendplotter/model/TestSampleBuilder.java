@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.common.trendplotter.model;
 
+import java.util.List;
+
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+
+import com.google.common.collect.Lists;
 
 /** Unit-test helper for creating samples
  *  @author Kay Kasemir
@@ -63,7 +67,7 @@ public class TestSampleBuilder
     /** @param i Numeric value as well as pseudo-timestamp
      *  @return IValue sample that has value and time based on input parameter
      */
-    public static PlotSample makePlotSample(int i)
+    public static PlotSample makePlotSample(final int i)
     {
         return new PlotSample("Test", makeValue(i));
     }
@@ -74,10 +78,23 @@ public class TestSampleBuilder
      */
     public static PlotSample[] makePlotSamples(final int start, final int end)
     {
-        int N = end - start;
+        final int N = end - start;
         final PlotSample result[] = new PlotSample[N];
-        for (int i=0; i<N; ++i)
+        for (int i=0; i<N; ++i) {
             result[i] = makePlotSample(start + i);
+        }
         return result;
     }
+
+    public static List<PlotSample> makePlotSamplesWithStep(final int number,
+                                                           final int offset,
+                                                           final int stepsize) {
+        final List<PlotSample> result = Lists.newArrayListWithCapacity(number);
+        for (int i = 0; i < number; ++i) {
+            result.add(makePlotSample(offset + i*stepsize));
+        }
+        return result;
+
+    }
+
 }

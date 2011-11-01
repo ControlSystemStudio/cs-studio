@@ -342,11 +342,13 @@ public class SearchView extends ViewPart
         final String pattern_txt = pattern.getText().trim();
 
         // Warn when searching ALL channels
-        if (pattern_txt.length() <= 0  &&
-            ! MessageDialog.openConfirm(pattern.getShell(),
+        if (pattern_txt.length() <= 0)
+    	{
+        	MessageDialog.openInformation(pattern.getShell(),
                     Messages.Search,
-                    Messages.SearchPatternConfirmMessage))
-                return;
+                    Messages.SearchPatternConfirmMessage);
+            return;
+    	}
 
         final ArchiveReader reader = archive_gui.getArchiveReader();
         new SearchJob(reader, archives, pattern_txt, !regex.getSelection())

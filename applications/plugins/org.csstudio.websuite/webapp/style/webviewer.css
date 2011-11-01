@@ -11,6 +11,15 @@ td.info {
 	white-space:pre-wrap;
 }
 
+th.info {
+    color:black;
+    font-family:monospace;
+    font-size:24px;
+    font-weight:bold;
+    vertical-align:bottom;
+    text-align:left;
+}
+
 table.howto {
 	width:100%;
 	border-width:medium;

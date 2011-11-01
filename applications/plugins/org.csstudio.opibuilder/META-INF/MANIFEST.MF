@@ -46,4 +46,4 @@ Export-Package: org.csstudio.opibuilder,
 Bundle-ClassPath: lib/rhino/js.jar,
  lib/jython/jython.jar,
  .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

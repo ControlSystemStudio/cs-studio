@@ -36,9 +36,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class RDBArchiveReaderTest
 {
-    final private static String WAVEFORM_NAME = "PPS_SM:SF:Emi_PM";
-    final private static String STORED_PROCEDURE = "chan_arch_sns.archive_reader_pkg";
-
     final private static double TIMERANGE_SECONDS = 60*60*24*14;
     final private static int BUCKETS = 50;
 
@@ -64,7 +61,10 @@ public class RDBArchiveReaderTest
 			reader = null;
 			return;
 		}
-		reader = new RDBArchiveReader(url, user, password, schema, "");
+		final boolean use_blob = true;
+		reader = new RDBArchiveReader(url, user, password, schema, "", use_blob);
+		
+		assertEquals(use_blob, reader.useArrayBlob());
     }
     
     @After
@@ -123,7 +123,7 @@ public class RDBArchiveReaderTest
     {
     	if (reader == null)
     		return;
-    	final String pattern = "." + name.substring(1, name.length()-3) + ".*";
+    	final String pattern = "." + name.replace("(", "\\(").substring(1, name.length()-3) + ".*";
     	System.out.println("Channels matching a regular expression: " + pattern);
     	final String[] names = reader.getNamesByRegExp(1, pattern);
         for (String name : names)
@@ -195,39 +195,37 @@ public class RDBArchiveReaderTest
         }
     }
 
-//    /** Get raw data for waveform */
-//    @Ignore
-//    @Test
-//    public void testRawWaveformData() throws Exception
-//    {
-//        final ArchiveReader archive = new RDBArchiveReader(
-//                URL, USER, PASSWORD, STORED_PROCEDURE);
-//        try
-//        {
-//            System.out.println("Raw samples for " + WAVEFORM_NAME + ":");
-//            final ITimestamp end = TimestampFactory.now();
-//            final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - 60*60*0.5); // 0.5 hours
-//
-//            // Waveform readout seems to take about 30 seconds, cancel in the middle
-//            scheduleCancellation(archive, 10.0);
-//            final ValueIterator values = archive.getRawValues(0, WAVEFORM_NAME, start, end);
-//            IMetaData meta = null;
-//            while (values.hasNext())
-//            {
-//                IValue value = values.next();
-//                System.out.println(value);
-//                if (meta == null)
-//                    meta = value.getMetaData();
-//            }
-//            values.close();
-//            System.out.println("Meta data: " + meta);
-//        }
-//        finally
-//        {
-//            archive.close();
-//        }
-//    }
-//
+    /** Get raw data for waveform */
+    @Test
+    public void testRawWaveformData() throws Exception
+    {
+    	if (reader == null)
+    		return;
+        System.out.println("Raw samples for waveform " + name + ":");
+        
+        if (reader.useArrayBlob())
+        	System.out.println(".. using BLOB");
+        else
+        	System.out.println(".. using non-BLOB array table");
+        
+        final ITimestamp end = TimestampFactory.now();
+        final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - TIMERANGE_SECONDS);
+
+        // Cancel after 10 secs
+        // scheduleCancellation(reader, 10.0);
+        final ValueIterator values = reader.getRawValues(0, name, start, end);
+        IMetaData meta = null;
+        while (values.hasNext())
+        {
+            final IValue value = values.next();
+            System.out.println(value);
+            if (meta == null)
+                meta = value.getMetaData();
+        }
+        values.close();
+        System.out.println("Meta data: " + meta);
+    }
+
     /** Get optimized data for scalar */
     @Test
     public void testJavaOptimizedScalarData() throws Exception

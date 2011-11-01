@@ -113,7 +113,7 @@ public class EmbeddedScriptEditDialog extends HelpTrayDialog {
 		}
 		nameText.setLayoutData(gd);
 		createLabel(dialogArea, "Script Type: ");
-		scriptTypeCombo = new Combo(dialogArea, SWT.DROP_DOWN);
+		scriptTypeCombo = new Combo(dialogArea, SWT.DROP_DOWN|SWT.READ_ONLY);
 		scriptTypeCombo.setItems(ScriptType.stringValues());
 		if(scriptData != null)
 			scriptTypeCombo.select(scriptData.getScriptType().ordinal());

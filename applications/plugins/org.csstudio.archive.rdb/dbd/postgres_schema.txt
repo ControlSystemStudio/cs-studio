@@ -72,6 +72,12 @@ CREATE DATABASE archive;
 -- Sample engine
 CREATE SEQUENCE smpl_eng_engid_seq;
 
+DROP TABLE IF EXISTS archive_schema;
+create table archive_schema(
+	id serial primary key,
+	version varchar(10)
+)
+
 DROP TABLE IF EXISTS smpl_eng;
 CREATE TABLE  smpl_eng
 (
@@ -195,6 +201,7 @@ CREATE TABLE sample
    num_val INT NULL,
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
+   is_an_array boolean default false,
    -- Note that these foreign keys are good for data consistency,
    -- but bad for performance.
    -- Writing to the table will be almost twice as fast without
@@ -217,6 +224,23 @@ INSERT INTO sample (channel_id, smpl_time,  nanosecs, severity_id, status_id, fl
 ------------------------
 -- See sample table: Array elements 1, 2, 3, ... beyond the element 0
 -- that's in the sample table
+DROP TABLE IF EXISTS array_val_blob;
+CREATE TABLE  array_val_blob
+(
+   channel_id BIGINT  NOT NULL,
+   smpl_time TIMESTAMP NOT NULL,
+   nanosecs BIGINT  NOT NULL,
+   datatype varchar(20) NOT NULL,
+   nelm int,
+   --shall always be the last column
+   values BYTEA  NOT NULL,
+   FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
+);
+CREATE INDEX array_val_blob_id_time ON array_val_blob ( channel_id, smpl_time, nanosecs );
+
+------------------------
+-- We need to keep it in case old clients wants to access.See sample table: Array elements 1, 2, 3, ... beyond the element 0
+-- that's in the sample table
 DROP TABLE IF EXISTS array_val;
 CREATE TABLE  array_val
 (
@@ -228,7 +252,10 @@ CREATE TABLE  array_val
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
 );
 
-CREATE INDEX array_val_id_time ON sample ( channel_id, smpl_time, nanosecs );
+
+CREATE INDEX array_val_id_time ON array_val ( channel_id, smpl_time, nanosecs );
+
+
 
 
 ------------------------

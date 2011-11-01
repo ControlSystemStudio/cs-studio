@@ -37,7 +37,7 @@ public class PVSamplesUnitTest
 
         final RequestType reqType = RequestType.RAW;
         // Start w/ empty PVSamples
-        final PVSamples samples = new PVSamples(reqType);
+        final PVSamples samples = new PVSamples(reqType, null);
         assertEquals(0, samples.getSize());
         assertNull(samples.getXDataMinMax());
         assertNull(samples.getYDataMinMax());
@@ -87,7 +87,7 @@ public class PVSamplesUnitTest
     public void testUndefinedLiveData()
     {
         // Start w/ empty samples
-        final PVSamples samples = new PVSamples(null);
+        final PVSamples samples = new PVSamples(null, null);
         assertEquals(0, samples.getSize());
 
         // Add sample w/ null time stamp, INVALID/UDF

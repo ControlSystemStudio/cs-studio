@@ -92,7 +92,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectCSByIdStmt);
             stmt.setLong(1, id.longValue());
             result = stmt.executeQuery();
@@ -104,7 +104,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeSqlResources(result, stmt, _selectCSByIdStmt);
+            closeSqlResources(result, stmt, conn, _selectCSByIdStmt);
         }
         return null;
     }
@@ -123,7 +123,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         PreparedStatement stmt = null;
         ResultSet result = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectCSByNameStmt);
             stmt.setString(1, name);
             result = stmt.executeQuery();
@@ -135,7 +135,7 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeSqlResources(result, stmt, _selectCSByNameStmt);
+            closeSqlResources(result, stmt, conn, _selectCSByNameStmt);
         }
         return null;
     }
