@@ -44,7 +44,6 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
-//        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
         addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
     }
 
@@ -77,9 +76,9 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
     @Override
     protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
-        // this is only to make the test easier!
-        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, model
-                        .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+//        // this is only to make the test easier!
+//        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, model
+//                        .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 
     }
 

@@ -30,7 +30,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @author Kai Meyer
  *
  */
-public final class BargraphModel extends AbstractWidgetModel {
+public class BargraphModel extends AbstractWidgetModel {
 
 	/**
 	 * The ID of the fill grade property.
@@ -198,7 +198,7 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
 		buffer.append(createTooltipParameter(PROP_MAX) + "\n");

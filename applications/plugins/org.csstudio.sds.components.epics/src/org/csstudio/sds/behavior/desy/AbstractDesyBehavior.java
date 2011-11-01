@@ -96,7 +96,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                     addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case READY:
-                    addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, ININTIAL, ININTIAL);
                     break;
                 default:
                     addConnectionStates(cs,0, BorderStyleEnum.NONE, INVALID, INVALID);

@@ -80,13 +80,14 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         when(_anyData.getParentProperty()).thenReturn(_dynamicValueProperty);
         when(_anyData.getParentChannel()).thenReturn(_anyDataChannel);
         setHasNoLiveData();
+        _behavior.doInitialize(_modelMock);
     }
 
     /**
      *
      */
     private void setHasLiveData() {
-        when(_dynamicValueProperty.getCondition()).thenReturn(new DynamicValueCondition(DynamicValueState.HAS_LIVE_DATA));
+        when(_dynamicValueProperty.getCondition()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.HAS_LIVE_DATA)));
     }
     private void setHasNoLiveData() {
         when(_dynamicValueProperty.getCondition()).thenReturn(new DynamicValueCondition(EnumSet.noneOf(DynamicValueState.class)));
@@ -94,19 +95,23 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
 
 
     protected abstract void verifyConnectionStateConnectedWithoutData();
+    protected abstract void verifyValueChangeConnectedWithoutData();
 
     @Test
     public void connectionStateConnectedWithoutDataTest() throws Exception {
         setHasNoLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithoutData();
     }
     protected abstract void verifyConnectionStateConnectedWithData();
+    protected abstract void verifyValueChangeConnectedWithData();
 
     @Test
     public void connectionStateConnectedWithDataTest() throws Exception {
         setHasLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithData();
@@ -195,10 +200,12 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
     }
 
     protected abstract void verifyConnectionStateOperational();
+    protected abstract void verifyValueChangeOperational();
 
     @Test
     public void connectionStateOperationalTest() throws Exception {
         setHasLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM)));
         when(_anyDataChannel.getProperty()).thenReturn(_dynamicValueProperty);
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.OPERATIONAL);
         when(_anyDataChannel.getData()).thenReturn(_anyData);
@@ -252,23 +259,26 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         verifyConnectionStateReady();
 
         setHasNoLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithoutData();
 
         setHasLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithData();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.OPERATIONAL);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateOperational();
 
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateOperational();
+        verifyValueChangeOperational();
 
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.DISCONNECTING);
         when(_anyDataChannel.isRunning()).thenReturn(false);
@@ -287,14 +297,16 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateReady();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithData();
 
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateConnectedWithData();
+        verifyValueChangeConnectedWithData();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.OPERATIONAL);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateOperational();
@@ -335,6 +347,7 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnecting();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
@@ -343,23 +356,25 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateConnectedWithoutData();
+        verifyValueChangeConnectedWithoutData();
 
         setHasLiveData();
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectedWithData();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.ALARM)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.OPERATIONAL);
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateOperational();
 
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateOperational();
+        verifyValueChangeOperational();
 
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateOperational();
+        verifyValueChangeOperational();
 
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTION_LOST);
         when(_anyDataChannel.isRunning()).thenReturn(true);
@@ -376,14 +391,14 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         _behavior.doProcessConnectionStateChange(_modelMock, _anyDataChannel);
         verifyConnectionStateConnectionLost();
 
+        when(_anyData.getSeverity()).thenReturn(new DynamicValueCondition(EnumSet.of(DynamicValueState.WARNING)));
         when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
         when(_anyDataChannel.isRunning()).thenReturn(true);
+        _behavior.doProcessValueChange(_modelMock, _anyData);
+        verifyValueChangeConnectedWithData();
 
         _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateConnectedWithData();
-
-        _behavior.doProcessValueChange(_modelMock, _anyData);
-        verifyConnectionStateConnectedWithData();
+        verifyValueChangeConnectedWithData();
     }
 
     private void setInOrder(final InOrder inOrder) {

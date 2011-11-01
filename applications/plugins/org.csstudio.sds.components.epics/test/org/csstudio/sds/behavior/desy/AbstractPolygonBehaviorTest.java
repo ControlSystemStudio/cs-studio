@@ -48,7 +48,19 @@ public abstract class AbstractPolygonBehaviorTest<B extends AbstractBehavior<Pol
     }
 
     @Override
+    protected void verifyValueChangeConnectedWithData() {
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+        "${Zu}");
+    }
+
+    @Override
     protected void verifyConnectionStateConnectedWithoutData() {
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+        "${Invalid}");
+    }
+
+    @Override
+    protected void verifyValueChangeConnectedWithoutData() {
         getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
         "${Invalid}");
     }
@@ -97,8 +109,13 @@ public abstract class AbstractPolygonBehaviorTest<B extends AbstractBehavior<Pol
     }
 
     @Override
+    protected void verifyValueChangeOperational() {
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
+    }
+
+    @Override
     protected void verifyConnectionStateReady() {
-        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${NoAlarm}");
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Initial}");
     }
 
 

@@ -25,42 +25,38 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 
 
 
+
 /**
  * @author hrickens
  * @since 26.10.2011
  */
-public class AlarmConnectionElipseBehaviorTest extends
-        AbstractElipseBehaviorTest<EllipseAlarmBehavior> {
+public class OperatingElipseBehaviorTest extends
+        AbstractElipseBehaviorTest<EllipseOperatingBehavior> {
 
     @Override
-    protected EllipseAlarmBehavior createBehavior() {
-        return new EllipseAlarmBehavior();
+    protected EllipseOperatingBehavior createBehavior() {
+        return new EllipseOperatingBehavior();
+    }
+
+    @Override
+    protected void verifyConnectionStateOperational() {
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${KeinBetrieb}");
+    }
+
+    @Override
+    protected void verifyValueChangeConnectedWithData() {
+        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${KeinBetrieb}");
     }
 
     @Override
     protected void verifyConnectionStateConnectedWithData() {
         getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-                                                      "${Minor}");
-    }
-
-    @Override
-    protected void verifyValueChangeConnectedWithData() {
-        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-        "${Minor}");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void verifyConnectionStateOperational() {
-        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-        "${Major}");
+                                                      "${KeinBetrieb}");
     }
 
     @Override
     protected void verifyValueChangeOperational() {
         getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-        "${Major}");
+        "${KeinBetrieb}");
     }
 }

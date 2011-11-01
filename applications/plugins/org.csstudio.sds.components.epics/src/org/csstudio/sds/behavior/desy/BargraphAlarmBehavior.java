@@ -93,7 +93,7 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
     @Override
     protected void doProcessConnectionStateChange(final BargraphModel widget,
             final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         // .. border
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                 determineBorderStyle(connectionState));
@@ -103,17 +103,23 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
                 determineBorderColor(connectionState));
 
         // .. background colors
-        String determineBackgroundColor = isConnected(anyDataChannel)?_defBackgroundColor:determineBackgroundColor(connectionState);
+        String determineBackgroundColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = _defBackgroundColor;
+            } else {
+                determineBackgroundColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+        }
+
         widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
                 determineBackgroundColor);
-
-//        widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
-//                determineBackgroundColor(connectionState));
-        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-                determineBackgroundColor(connectionState));
+        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,determineBackgroundColor);
 
         // .. transparency
-        Boolean transparent = _transparencyByConnectionState.get(connectionState);
+        final Boolean transparent = getTransperancyFromConnectionState(anyDataChannel);
 
         if (transparent != null) {
             widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);
@@ -131,6 +137,19 @@ public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphMod
             widget.setPropertyValue(BargraphModel.PROP_LOLO_LEVEL, meta.getAlarmLow());
             widget.setPropertyValue(BargraphModel.PROP_LO_LEVEL, meta.getWarnLow());
         }
+    }
+
+    /**
+     * @param anyDataChannel
+     * @return
+     */
+    private Boolean getTransperancyFromConnectionState(final AnyDataChannel anyDataChannel) {
+        Boolean isTranc = _transparencyByConnectionState.get(anyDataChannel.getProperty().getConnectionState());
+        if(isTranc==null) {
+            isTranc=false;
+        }
+        isTranc &= hasValue(anyDataChannel);
+        return isTranc;
     }
 
 }

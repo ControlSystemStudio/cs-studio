@@ -40,7 +40,6 @@ import org.epics.css.dal.simple.MetaData;
 public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<BargraphModel> {
 
     private final Map<ConnectionState, Boolean> _transparencyByConnectionState;
-    private String _defBackgroundColor;
 
     /**
      * Constructor.
@@ -69,7 +68,6 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
 
     @Override
     protected void doInitialize(final BargraphModel widget) {
-        _defBackgroundColor = widget.getColor(BargraphModel.PROP_FILLBACKGROUND_COLOR);
         // .. border
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                                 determineBorderStyle(ConnectionState.INITIAL));
@@ -84,12 +82,47 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
         super.doProcessValueChange(widget, anyData);
         // .. fill level (influenced by current value)
         widget.setPropertyValue(BargraphModel.PROP_FILL, anyData.doubleValue());
+
+
+
+//        // TODO (hrickens): Is only for a simple test environment. Bad style!
+//        final ConnectionState connectionState = anyData.getParentProperty().getConnectionState();
+//        // .. border
+//        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
+//                determineBorderStyle(connectionState));
+//        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH,
+//                determineBorderWidth(connectionState));
+//        widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
+//                determineBorderColor(connectionState));
+//        // .. background colors
+//        final String determineBackgroundColor;
+//        if(isConnected(anyData.getParentChannel())) {
+//            if(hasValue(anyData.getParentChannel())) {
+//                determineBackgroundColor = widget.getColor(BargraphModel.PROP_FILLBACKGROUND_COLOR);
+//            } else {
+//                determineBackgroundColor = "${Invalid}";
+//            }
+//        } else {
+//            determineBackgroundColor = determineBackgroundColor(connectionState);
+//        }
+//        widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
+//                determineBackgroundColor);
+//        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+//                determineBackgroundColor);
+//
+//        // .. transparency
+//        final Boolean transparent = getTransperancyFromConnectionState(anyData.getParentChannel());
+//
+//        if (transparent != null) {
+//            widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);
+//        }
+
     }
 
     @Override
     protected void doProcessConnectionStateChange(final BargraphModel widget,
             final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         // .. border
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                 determineBorderStyle(connectionState));
@@ -99,18 +132,40 @@ public class BargraphConnectionBehavior extends AbstractDesyConnectionBehavior<B
                 determineBorderColor(connectionState));
 
         // .. background colors
-        String determineBackgroundColor = isConnected(anyDataChannel)?_defBackgroundColor:determineBackgroundColor(connectionState);
+        final String determineBackgroundColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = widget.getColor(BargraphModel.PROP_FILLBACKGROUND_COLOR);
+            } else {
+                determineBackgroundColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+        }
         widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR,
                 determineBackgroundColor);
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                 determineBackgroundColor);
 
         // .. transparency
-        Boolean transparent = _transparencyByConnectionState.get(connectionState);
+        final Boolean transparent = getTransperancyFromConnectionState(anyDataChannel);
 
         if (transparent != null) {
             widget.setPropertyValue(BargraphModel.PROP_TRANSPARENT, transparent);
         }
+    }
+
+    /**
+     * @param anyDataChannel
+     * @return
+     */
+    private Boolean getTransperancyFromConnectionState(final AnyDataChannel anyDataChannel) {
+        Boolean isTranc = _transparencyByConnectionState.get(anyDataChannel.getProperty().getConnectionState());
+        if(isTranc==null) {
+            isTranc=false;
+        }
+        isTranc &= hasValue(anyDataChannel);
+        return isTranc;
     }
 
     @Override

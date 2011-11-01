@@ -34,12 +34,12 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision: 1.3 $
  * @since 20.04.2010
  */
-public class EllipseAlarmRotGruenBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
+public class EllipseOperatingBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
 
     /**
      * Constructor.
      */
-    public EllipseAlarmRotGruenBehavior() {
+    public EllipseOperatingBehavior() {
         // add Invisible P0roperty Id here
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
@@ -63,7 +63,7 @@ public class EllipseAlarmRotGruenBehavior extends AbstractDesyAlarmBehavior<Abst
     @Override
     protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
-        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromDigLogColorRule(anyData));
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromOperatingRule(anyData));
 
     }
 
@@ -75,7 +75,7 @@ public class EllipseAlarmRotGruenBehavior extends AbstractDesyAlarmBehavior<Abst
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
         final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        final String determineBackgroundColor = isConnected(anyDataChannel) ? getColorFromDigLogColorRule(anyDataChannel
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? getColorFromOperatingRule(anyDataChannel
                 .getData()) : determineBackgroundColor(connectionState);
         widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
 

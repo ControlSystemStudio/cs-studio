@@ -43,14 +43,28 @@ public class ConnectionElipseBehaviorTest extends
     }
 
     @Override
+    protected void verifyValueChangeOperational() {
+        // nothing changed
+    }
+
+    @Override
     protected void verifyConnectionStateConnectedWithoutData() {
         getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
         "UserDefinedColor");
     }
 
     @Override
+    protected void verifyValueChangeConnectedWithoutData() {
+        // nothing changed
+    }
+
+    @Override
     protected void verifyConnectionStateConnectedWithData() {
-        getInOrder().verify(getModelMock()).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-                                                      "UserDefinedColor");
+        // nothing changed
+    }
+
+    @Override
+    protected void verifyValueChangeConnectedWithData() {
+        // nothing changed
     }
 }

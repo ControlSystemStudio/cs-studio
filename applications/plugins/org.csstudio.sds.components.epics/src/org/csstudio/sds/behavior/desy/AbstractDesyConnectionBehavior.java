@@ -46,6 +46,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         AbstractDesyBehavior<W> {
 
     private final Set<String> _invisiblePropertyIds = new HashSet<String>();
+    private String _userSetColor;
 
     /**
      * Constructor.
@@ -81,6 +82,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
 
     @Override
     protected void doInitialize( final W widget) {
+        _userSetColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
                                 determineBorderColor(ConnectionState.INITIAL));
     }
@@ -89,7 +91,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     protected void doProcessConnectionStateChange( final W widget,
                                                   final AnyDataChannel anyDataChannel) {
         final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        final String backgroundColor = isConnected(anyDataChannel)?widget.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND):determineBackgroundColor(connectionState);
+        final String backgroundColor = isConnected(anyDataChannel)?_userSetColor:determineBackgroundColor(connectionState);
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backgroundColor);
     }
 
@@ -98,7 +100,6 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      * @return
      */
     protected boolean isConnected(final AnyDataChannel anyDataChannel) {
-//        return anyDataChannel.isRunning();
         final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
         return connectionState != null && (connectionState == ConnectionState.CONNECTED || connectionState == ConnectionState.OPERATIONAL);
     }
@@ -128,9 +129,9 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         } else if(arguments >= 3) {
             color = "${Minor}";
         } else if(arguments >= 2) {
-            color = "${Offen}";//"ColorAndFontUtil.toHex(30,187,0);
+            color = "${Offen}";
         } else if(arguments >= 1) {
-            color = "${Geregelt}";//ColorAndFontUtil.toHex(42,99,228);
+            color = "${Geregelt}";
         } else if(arguments >= 0) {
             color = "${Zu}";
         }
@@ -148,21 +149,42 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         } else if(arguments >= 3) {
             color = "${Minor}";
         } else if(arguments >= 2) {
-            color = "${Offen}";//"ColorAndFontUtil.toHex(30,187,0);
+            color = "${Offen}";
         } else if(arguments >= 1) {
-            color = "${Geregelt}";//ColorAndFontUtil.toHex(42,99,228);
+            color = "${Geregelt}";
         } else if(arguments >= 0) {
             color = "${Zu}";
         }
         return color;
     }
 
+    protected String getColorFromOperatingRule(final AnyData anyData) {
+        String color = "${Illegal}";
+        int arguments = -1;
+        if( anyData != null) {
+            final Number numberValue = anyData.numberValue();
+            if(numberValue!=null) {
+                arguments = numberValue.intValue();
+            }
+            if(!hasValue(anyData)) {
+                color = "${Invalid}";
+            } else if(arguments == 1) {
+                color = "${Betrieb}";
+            } else if(arguments == 0) {
+                color = "${KeinBetrieb}";
+            }
+        }
+        return color;
+    }
+
+
+
     /**
      * @param anyData
      * @return
      */
     private boolean hasValue(final AnyData anyData) {
-        return anyData.getParentProperty().getCondition().containsAnyOfStates(DynamicValueState.HAS_LIVE_DATA);
+        return hasValue(anyData.getParentChannel());
     }
 
     /**
