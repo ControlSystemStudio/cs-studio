@@ -95,10 +95,10 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 */
 	private boolean isArray(IValue value) {
 		if (value instanceof IDoubleValue) {
-			if (((IDoubleValue) value).getValues().length >= 1)
+			if (((IDoubleValue) value).getValues().length >= 2)
 				return true;
 		} else if (value instanceof ILongValue) {
-			if (((ILongValue) value).getValues().length >= 1)
+			if (((ILongValue) value).getValues().length >= 2)
 				return true;
 		}
 		
