@@ -38,6 +38,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.google.common.collect.Sets;
 import com.google.inject.internal.Lists;
 
 /**
@@ -113,6 +114,14 @@ public class ArchiveChannelGroupDaoUnitTest extends AbstractDaoTestSetup {
             }
         }
         Assert.assertTrue(i == 2);
+
+        DAO.deleteChannelGroups(Sets.newHashSet("Peaches", "Teaches"));
+        final Collection<IArchiveChannelGroup> groups = DAO.retrieveGroupsByEngineId(engineId);
+        for (final IArchiveChannelGroup group : groups) {
+            if ("Peaches".equals(group.getName()) || "Teaches".equals(group.getName())) {
+                Assert.fail("Group has not been deleted");
+            }
+        }
     }
 
     @Test

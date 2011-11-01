@@ -49,11 +49,11 @@ public class ArchiveEnginePreferencesService {
             new ArchiveEnginePreference<Integer>("heartBeatPeriodInS", Integer.valueOf(1));
         public static final ArchiveEnginePreference<String> VERSION =
             new ArchiveEnginePreference<String>("version", "0.0.1-beta");
+        public static final ArchiveEnginePreference<String> HTTP_ADMIN_VALUE =
+            new ArchiveEnginePreference<String>("httpAdmin", "");
 
         /**
          * Constructor.
-         * @param keyAsString
-         * @param defaultValue
          */
         protected ArchiveEnginePreference(@Nonnull final String keyAsString,
                                           @Nonnull final T defaultValue) {
@@ -99,6 +99,14 @@ public class ArchiveEnginePreferencesService {
     @Nonnull
     public Integer getHeartBeatPeriodInS() {
         return ArchiveEnginePreference.HEARTBEAT_PERIOD_IN_S.getValue();
+    }
+    @Nonnull
+    public String getHttpAdminValue() {
+        return ArchiveEnginePreference.HTTP_ADMIN_VALUE.getValue();
+    }
+    @Nonnull
+    public String getHttpAdminKey() {
+        return ArchiveEnginePreference.HTTP_ADMIN_VALUE.getKeyAsString();
     }
 }
 

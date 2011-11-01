@@ -83,9 +83,9 @@ public class EngineHttpServer {
 
         registerEngineAdministrationServlets(model, provider, httpService, httpContext);
 
-        registerGroupsServlets(model, httpService, httpContext);
+        registerGroupsServlets(model, provider, httpService, httpContext);
 
-        registerChannelServlets(model, httpService, httpContext);
+        registerChannelServlets(model, provider, httpService, httpContext);
 
         registerDebugAndInfoServlets(model, httpService, httpContext);
     }
@@ -107,36 +107,38 @@ public class EngineHttpServer {
                                                       @Nonnull final HttpService httpService,
                                                       @Nonnull final HttpContext httpContext) throws ServletException,
                                                                                     NamespaceException {
-        httpService.registerServlet(MainResponse.baseUrl(),
-                                    new MainResponse(model, provider.getPreferencesService().getVersion()),
+        final String version = provider.getPreferencesService().getVersion();
+        httpService.registerServlet(MainResponse.baseUrl(), new MainResponse(model, version),
                                     null, httpContext);
-        httpService.registerServlet(RestartResponse.baseUrl(),
-                                    new RestartResponse(model), null, httpContext);
-        httpService.registerServlet(ResetResponse.baseUrl(),
-                                    new ResetResponse(model), null, httpContext);
-        httpService.registerServlet(ShutdownResponse.baseUrl(),
-                                    new ShutdownResponse(model), null, httpContext);
+        httpService.registerServlet(RestartResponse.baseUrl(), new RestartResponse(model, provider),
+                                    null, httpContext);
+        httpService.registerServlet(ResetResponse.baseUrl(), new ResetResponse(model, provider),
+                                    null, httpContext);
+        httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, provider),
+                                    null, httpContext);
     }
 
 
     private void registerGroupsServlets(@Nonnull final EngineModel model,
+                                        @Nonnull final IServiceProvider provider,
                                         @Nonnull final HttpService httpService,
                                         @Nonnull final HttpContext httpContext) throws ServletException,
-                                                                      NamespaceException {
+                                                                                       NamespaceException {
         httpService.registerServlet(GroupsResponse.baseUrl(),
                                     new GroupsResponse(model), null, httpContext);
         httpService.registerServlet(ShowGroupResponse.baseUrl(),
                                     new ShowGroupResponse(model), null, httpContext);
         httpService.registerServlet(StartGroupResponse.baseUrl(),
                                     new StartGroupResponse(model), null, httpContext);
-        httpService.registerServlet(StopGroupResponse.baseUrl(),
-                                    new StopGroupResponse(model), null, httpContext);
+        httpService.registerServlet(StopGroupResponse.baseUrl(), new StopGroupResponse(model, provider),
+                                    null, httpContext);
         httpService.registerServlet(AddGroupResponse.baseUrl(),
                                     new AddGroupResponse(model), null, httpContext);
     }
 
 
     private void registerChannelServlets(@Nonnull final EngineModel model,
+                                         @Nonnull final IServiceProvider provider,
                                          @Nonnull final HttpService httpService,
                                          @Nonnull final HttpContext httpContext) throws ServletException,
                                                                        NamespaceException {
@@ -148,14 +150,14 @@ public class EngineHttpServer {
                                     new ShowChannelResponse(model), null, httpContext);
         httpService.registerServlet(StartChannelResponse.baseUrl(),
                                     new StartChannelResponse(model), null, httpContext);
-        httpService.registerServlet(StopChannelResponse.baseUrl(),
-                                    new StopChannelResponse(model), null, httpContext);
+        httpService.registerServlet(StopChannelResponse.baseUrl(), new StopChannelResponse(model, provider),
+                                    null, httpContext);
         httpService.registerServlet(AddChannelResponse.baseUrl(),
                                     new AddChannelResponse(model), null, httpContext);
-        httpService.registerServlet(RemoveChannelResponse.baseUrl(),
-                                    new RemoveChannelResponse(model), null, httpContext);
-        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(),
-                                    new PermanentDisableChannelResponse(model), null, httpContext);
+        httpService.registerServlet(RemoveChannelResponse.baseUrl(), new RemoveChannelResponse(model, provider),
+                                    null, httpContext);
+        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, provider),
+                                    null, httpContext);
     }
 
 

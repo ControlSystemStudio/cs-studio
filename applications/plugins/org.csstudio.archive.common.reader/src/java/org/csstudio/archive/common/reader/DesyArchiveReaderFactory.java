@@ -23,6 +23,7 @@ package org.csstudio.archive.common.reader;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
@@ -48,6 +49,7 @@ import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * The plugin.xml registers this factory for ArchiveReaders
@@ -86,6 +88,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      * @author bknerr
      * @since 03.02.2011
      */
+    @SuppressWarnings("rawtypes")
     private static final class DesyArchiveReader implements ArchiveReader {
 
         private final IArchiveServiceProvider _provider;
@@ -151,6 +154,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             return names.toArray(new String[]{});
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public ValueIterator getRawValues(final int key,
@@ -165,10 +169,11 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
                 service.readSamples(name, s, e, findRequestType("RAW"));
 
-            return new DesyArchiveValueIterator<Serializable>(samples, name, s, e);
+            return new DesyArchiveValueIterator(samples, name, s, e);
         }
 
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public ValueIterator getOptimizedValues(final int key,
@@ -186,15 +191,19 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             if (channel!= null &&
                 BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
-                                                                        "java.lang",
                                                                         "org.csstudio.domain.desy.epics.types")) {
-                final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
+
+                final IArchiveSample lastSampleBefore = service.readLastSampleBefore(name, s);
+
+                final Collection<IArchiveSample> samples = (Collection)
                     service.readSamples(channel.getName(), s, e, null);
+
                 if (samples.size() <= count) {
-                    return new DesyArchiveValueIterator<Serializable>(samples, name, s, e);
+                    return new DesyArchiveValueIterator(Iterables.concat(Collections.<IArchiveSample>singleton(lastSampleBefore), samples),
+                                                        name, s, e);
                 }
 
-                return new EquidistantTimeBinsIterator<Serializable>(_provider, samples, name, s, e, count);
+                return new EquidistantTimeBinsIterator(_provider, samples, name, s, e, count);
             }
             return EMPTY_ITER;
         }

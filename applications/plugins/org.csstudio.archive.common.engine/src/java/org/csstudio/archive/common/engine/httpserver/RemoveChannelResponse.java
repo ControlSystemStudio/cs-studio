@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
 
 /**
@@ -49,8 +50,9 @@ public class RemoveChannelResponse extends AbstractChannelResponse {
     /**
      * Constructor.
      */
-    public RemoveChannelResponse(@Nonnull final EngineModel model) {
-        super(model);
+    public RemoveChannelResponse(@Nonnull final EngineModel model,
+                                 @Nonnull final IServiceProvider provider) {
+        super(model, provider);
     }
 
     /**

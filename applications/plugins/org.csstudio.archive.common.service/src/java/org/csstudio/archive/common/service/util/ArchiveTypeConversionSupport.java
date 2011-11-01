@@ -178,18 +178,19 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     @Nonnull
     public static <T extends Serializable> T fromArchiveString(@Nonnull final String datatype,
                                                                @Nonnull final String value) throws TypeSupportException {
-            final Class<T> typeClass =
-                BaseTypeConversionSupport.createBaseTypeClassFromString(datatype,
-                                                                        ADDITIONAL_TYPE_PACKAGES);
-            if (!Collection.class.isAssignableFrom(typeClass)) {
-                return fromArchiveString(typeClass, value);
-            }
+        final Class<T> typeClass =
+            (Class<T>) BaseTypeConversionSupport.createBaseTypeClassFromString(datatype,
+                                                                               ADDITIONAL_TYPE_PACKAGES);
+        if (!Collection.class.isAssignableFrom(typeClass)) {
+            return fromArchiveString(typeClass, value);
+        }
 
-            final String elemType =
-                BaseTypeConversionSupport.parseForFirstNestedGenericType(datatype);
-            final Class<T> elemClass = BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
-                                                                                               ADDITIONAL_TYPE_PACKAGES);
-            return (T) fromArchiveString((Class) typeClass, (Class) elemClass, value);
+        final String elemType =
+            BaseTypeConversionSupport.parseForFirstNestedGenericType(datatype);
+        final Class<T> elemClass =
+            (Class<T>) BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
+                                                                               ADDITIONAL_TYPE_PACKAGES);
+        return (T) fromArchiveString((Class) typeClass, (Class) elemClass, value);
     }
 
 
@@ -250,7 +251,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                                         @Nonnull final Double value) throws TypeSupportException {
         final Class<?> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                ADDITIONAL_TYPE_PACKAGES);
+                                                                    ADDITIONAL_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
                                            " could not be loaded from packages " +
@@ -286,7 +287,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
         final Class<?> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                ADDITIONAL_TYPE_PACKAGES);
+                                                                    ADDITIONAL_TYPE_PACKAGES);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
                                            " could not be loaded from packages " +
@@ -333,7 +334,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                       enabled);
         }
 
-        final Class<Object> typeClass =
+        final Class<?> typeClass =
             BaseTypeConversionSupport.createBaseTypeClassFromString(datatype, ADDITIONAL_TYPE_PACKAGES);
 
         if (cs.getType() == ControlSystemType.EPICS_V3 && Collection.class.isAssignableFrom(typeClass)) {

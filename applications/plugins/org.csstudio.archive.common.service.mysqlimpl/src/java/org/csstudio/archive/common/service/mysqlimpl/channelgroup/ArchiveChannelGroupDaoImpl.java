@@ -29,6 +29,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -41,6 +42,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -55,6 +57,8 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     private static final String EXC_MSG = "Channel group retrieval from archive failed.";
     private static final String TAB = "channel_group";
 
+    private static final String NAME_SET = "<SET_CLAUSE>";
+
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     private final String _selectChannelGroupByEngineIdStmt =
         "SELECT id, name, engine_id, description FROM " +
@@ -62,6 +66,8 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     private final String _createChannelGroupStmt = "INSERT INTO " + getDatabaseName() + "." + TAB +
                                                    " (name, engine_id, description)" +
                                                    " VALUES (?, ?, ?)";
+    private final String _deleteChannelGroupStmt = "DELETE FROM " + getDatabaseName() + "." + TAB +
+                                                   " WHERE name in (" + NAME_SET + ")";
 
     /**
      * Constructor.
@@ -150,5 +156,31 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
             i++;
         }
         return notAddedGroups;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deleteChannelGroups(@Nonnull final Set<String> names) throws ArchiveDaoException {
+        if (names.isEmpty()) {
+            return false;
+        }
+        final String nameClause = "'" + Joiner.on("','").join(names) + "'";
+        final String stmtStr = _deleteChannelGroupStmt.replaceFirst(NAME_SET, nameClause);
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(stmtStr);
+            final int update = stmt.executeUpdate();
+            return update == names.size();
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG + ": Group deletion failed in DAO impl.", e);
+        } finally {
+            closeSqlResources(null, stmt, conn, stmtStr);
+        }
+        return false;
     }
 }

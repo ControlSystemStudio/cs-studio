@@ -22,13 +22,11 @@
 package org.csstudio.archive.common.reader;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.slf4j.Logger;
@@ -42,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 21.12.2010
  * @param <V> the base type of this channel
  */
-public class DesyArchiveValueIterator<V extends Serializable> extends AbstractValueIterator<V> {
+public class DesyArchiveValueIterator<V extends Serializable> extends AbstractValueIterator {
 
     @SuppressWarnings("unused")
     private static final Logger LOG =
@@ -51,11 +49,11 @@ public class DesyArchiveValueIterator<V extends Serializable> extends AbstractVa
     /**
      * Constructor.
      */
-    DesyArchiveValueIterator(@Nonnull final Collection<IArchiveSample<V, ISystemVariable<V>>> samples,
+    DesyArchiveValueIterator(@Nonnull final Iterable<IArchiveSample> iterable,
                              @Nonnull final String channelName,
                              @Nonnull final TimeInstant start,
                              @Nonnull final TimeInstant end) {
-        super(samples, channelName, start, end);
+        super(iterable, channelName, start, end);
     }
 
     /**

@@ -193,9 +193,9 @@ public class MysqlArchiveRetrievalServiceSupport {
     @Nonnull
     public <V extends Serializable, T extends ISystemVariable<V>>
     Collection<IArchiveSample<V, T>> retrieveSamples(@Nonnull final String channelName,
-                                                 @Nonnull final TimeInstant start,
-                                                 @Nonnull final TimeInstant end,
-                                                 @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
+                                                     @Nonnull final TimeInstant start,
+                                                     @Nonnull final TimeInstant end,
+                                                     @Nullable final IArchiveRequestType type) throws ArchiveServiceException {
         try {
             final DesyArchiveRequestType desyType = validateRequestType(type);
 

@@ -85,10 +85,10 @@ public class SampleRequestTypeUtilUnitTest {
 
         DesyArchiveRequestType type =
             SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusMillis(1L));
-        Assert.assertEquals(DesyArchiveRequestType.RAW_MULTI_SCALAR, type);
+        Assert.assertEquals(DesyArchiveRequestType.RAW, type);
         type = SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusDuration(Duration.standardDays(1)).plusMillis(1L));
-        Assert.assertEquals(DesyArchiveRequestType.RAW_MULTI_SCALAR, type);
+        Assert.assertEquals(DesyArchiveRequestType.RAW, type);
         type = SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusDuration(Duration.standardDays(45)).plusMillis(1L));
-        Assert.assertEquals(DesyArchiveRequestType.RAW_MULTI_SCALAR, type);
+        Assert.assertEquals(DesyArchiveRequestType.RAW, type);
     }
 }

@@ -21,8 +21,6 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
@@ -30,7 +28,6 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -38,9 +35,8 @@ import org.csstudio.domain.desy.time.TimeInstant;
  *
  * @author bknerr
  * @since 22.06.2011
- * @param <V> the basic type of the samples
  */
-public abstract class AbstractValueIterator<V extends Serializable> implements ValueIterator {
+public abstract class AbstractValueIterator implements ValueIterator {
 
     @SuppressWarnings("rawtypes")
     protected static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
@@ -51,14 +47,14 @@ public abstract class AbstractValueIterator<V extends Serializable> implements V
     private final TimeInstant _end;
 
 
-    private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
-    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
+    private final Iterable<IArchiveSample> _samples;
+    private final Iterator<IArchiveSample> _samplesIter;
 
 
     /**
      * Constructor.
      */
-    protected AbstractValueIterator(@Nonnull final Collection<IArchiveSample<V, ISystemVariable<V>>> samples,
+    protected AbstractValueIterator(@Nonnull final Iterable<IArchiveSample> samples,
                                     @Nonnull final String channelName,
                                     @Nonnull final TimeInstant start,
                                     @Nonnull final TimeInstant end) {
@@ -86,12 +82,7 @@ public abstract class AbstractValueIterator<V extends Serializable> implements V
     }
 
     @Nonnull
-    protected Collection<IArchiveSample<V, ISystemVariable<V>>> getSamples() {
-        return _samples;
-    }
-
-    @Nonnull
-    protected Iterator<IArchiveSample<V, ISystemVariable<V>>> getIterator() {
+    protected Iterator<IArchiveSample> getIterator() {
         return _samplesIter;
     }
 

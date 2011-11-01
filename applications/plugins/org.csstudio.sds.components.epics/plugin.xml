@@ -122,8 +122,14 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
-            description="DESY Alarm+Con Rectangel"
+            description="DESY Stoermeldung"
             id="behavior.desy.rectangel.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Rectangle">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseOperatingBehavior"
+            description="DESY Betriebsmeldung"
+            id="behavior.desy.rectangel.betreibsMeldung"
             widgetTypeId="org.csstudio.sds.components.Rectangle">
       </behavior>
       <behavior
@@ -133,15 +139,33 @@
             widgetTypeId="org.csstudio.sds.components.Rectangle">
       </behavior>
       <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseVentilBehavior"
+            description="DESY Ventil (dlog)"
+            id="behavior.desy.rectangel.vent"
+            widgetTypeId="org.csstudio.sds.components.Rectangle">
+      </behavior>
+      <behavior
             class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
-            description="DESY Alarm+Con Ellipse"
+            description="DESY Stoermeldung"
             id="behavior.desy.ellipse.alarmdefault"
+            widgetTypeId="org.csstudio.sds.components.Ellipse">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseOperatingBehavior"
+            description="DESY Betriebsmeldung"
+            id="behavior.desy.ellipse.betreibsMeldung"
             widgetTypeId="org.csstudio.sds.components.Ellipse">
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.EllipseConnectionBehavior"
             description="DESY Connection Ellipse"
             id="behavior.desy.ellipse.connectiondefault"
+            widgetTypeId="org.csstudio.sds.components.Ellipse">
+      </behavior>
+      <behavior
+            class="org.csstudio.sds.behavior.desy.EllipseVentilBehavior"
+            description="DESY Ventil (dlog)"
+            id="behavior.desy.ellipse.vent"
             widgetTypeId="org.csstudio.sds.components.Ellipse">
       </behavior>
       <behavior

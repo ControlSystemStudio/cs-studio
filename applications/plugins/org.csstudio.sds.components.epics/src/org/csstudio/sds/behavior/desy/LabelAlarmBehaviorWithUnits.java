@@ -42,7 +42,6 @@ import org.epics.css.dal.simple.MetaData;
 public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<LabelModel> {
 
 
-    private boolean _defTransparent;
 
     /**
      * Constructor.
@@ -59,7 +58,6 @@ public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        _defTransparent = widget.getBooleanProperty(LabelModel.PROP_TRANSPARENT);
         if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
@@ -73,15 +71,17 @@ public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<Label
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
+        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(LabelModel widget, AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 

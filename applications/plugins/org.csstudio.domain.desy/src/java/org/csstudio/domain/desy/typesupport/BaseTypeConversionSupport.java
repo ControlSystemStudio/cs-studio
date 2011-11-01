@@ -105,16 +105,15 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
      * @return a {@link Class} object or <code>null</code>.
      * @throws TypeSupportException if class object creation failed
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
-    public static <T> Class<T> createBaseTypeClassFromString(@Nonnull final String datatype,
-                                                             @Nonnull final String... addPackages) throws TypeSupportException {
+    public static Class<?> createBaseTypeClassFromString(@Nonnull final String datatype,
+                                                         @Nonnull final String... addPackages) throws TypeSupportException {
         final String baseType = datatype.trim().replaceFirst("\\s*<(.+)>$", "");
 
         final Iterable<String> allPackages = Iterables.concat(Arrays.asList(addPackages),
                                                               BASIC_TYPE_PACKAGES);
 
-        Class<T> typeClass = getClassTypeFromCache(baseType, allPackages);
+        Class<?> typeClass = getClassTypeFromCache(baseType, allPackages);
         if (typeClass == null) {
             typeClass = createClassTypeForNameAndUpdateCache(baseType, allPackages);
         }
@@ -152,13 +151,13 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
      * @param allPackages the candidate packages from which to load to class
      * @return the class object
      */
-    @SuppressWarnings("unchecked")
-    private static <T> Class<T> createClassTypeForNameAndUpdateCache(@Nonnull final String baseType,
-                                                                     @Nonnull final Iterable<String> allPackages) {
+    @CheckForNull
+    private static Class<?> createClassTypeForNameAndUpdateCache(@Nonnull final String baseType,
+                                                                 @Nonnull final Iterable<String> allPackages) {
         for (final String pkg : allPackages) {
             try {
                 final String fullClassName = pkg + "." + baseType;
-                final Class typeClass = Class.forName(fullClassName);
+                final Class<?> typeClass = Class.forName(fullClassName);
                 CLASSNAME2TYPE.put(fullClassName, typeClass);
                 return typeClass;
                 // CHECKSTYLE OFF: EmptyBlock
@@ -189,22 +188,28 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
     }
 
     /**
-     * Checks whether the given String parameter describes a data type for which a to Double conversion
-     * has been registered.
+     * Checks whether the given String parameter can be loaded as class object for which a toDouble
+     * conversion has been registered. Basic packages to load classes from are
+     * {@link BaseTypeConversionSupport#BASIC_TYPE_PACKAGES}. Additional packages can be provided.
+     *
      * @param <T> the type of the described datatype
      * @param dataType the describing string (a class name)
-     * @param scalarPackages the packages from which the class object shall be created
+     * @param additionalPackages the packages from which the class object shall be created.
      * @return true if this dataType is convertible to Double
      * @throws TypeSupportException
      */
-    public static <T> boolean isDataTypeConvertibleToDouble(@Nonnull final String dataType,
-                                                            @Nonnull final String... scalarPackages) throws TypeSupportException {
-        final Class<T> typeClass = createBaseTypeClassFromString(dataType, scalarPackages);
+    public static boolean isDataTypeConvertibleToDouble(@Nonnull final String dataType,
+                                                        @Nonnull final String... additionalPackages) throws TypeSupportException {
+        final Class<?> typeClass = createBaseTypeClassFromString(dataType, additionalPackages);
         if (typeClass == null) {
-            throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from package java.lang!", null);
+            throw new TypeSupportException("Type is not convertible to " + Double.class.getSimpleName() + "." +
+                                           dataType + " could not be loaded as class object from packages.", null);
         }
-        return isDataTypeConvertibleToDouble(typeClass);
+        try {
+            return isDataTypeConvertibleToDouble(typeClass);
+        } catch (final TypeSupportException e) {
+            throw new TypeSupportException("No type support registered for toDouble conversion of data type " + dataType, e);
+        }
     }
     /**
      * Checks whether the given parameter is a type for which a to Double conversion
