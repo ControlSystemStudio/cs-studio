@@ -136,21 +136,23 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 					// when this method is called next time.
 					break;
 				}
-				
+
 				if (time.isLessThan(currentTime)) {
 					// A value archived earlier than this time step is found.
 					// Ignore this value and continue averaging.
 					Logger.getLogger(Activator.ID).log(Level.WARNING,
 							"The value transferred from " + base.getPathToKBLogRD() + " (" + base.getCommandID() + ") is not ordered in time.");
 
-					if (base.hasNext())
+					if (!base.hasNext()) {
 						nextBaseValue = base.next();
-					else
+					} else {						
 						nextBaseValue = null;
+						break;
+					}
 					
 					continue;
 				}
-				
+
 				if (isNormalValue(nextBaseValue)) {
 					double val;
 					
@@ -194,8 +196,10 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 				
 				if (base.hasNext())
 					nextBaseValue = base.next();
-				else
+				else {
 					nextBaseValue = null;
+					break;
+				}
 			}
 		} catch (Exception ex) {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE,
@@ -226,23 +230,53 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	private synchronized void init() {
 		try {
 			if (base.hasNext())
-				this.nextBaseValue = base.next();
+				nextBaseValue = base.next();
 			else
-				this.nextBaseValue = null;
+				nextBaseValue = null;
 		} catch (Exception ex) {
 			// If the base iterator returns no value, this iterator also returns no value. 
-			this.nextBaseValue = null;
+			nextBaseValue = null;
 		}
 		
 		initialized = true;
+	}
+	
+	/**
+	 * Try to find values in the successive time steps until at least one value is found.
+	 * nextBaseValue must be set before this method is called.
+	 */
+	private synchronized void findNextValues() {
+		// If there is no processed value in the queue, examine successive time steps until
+		// a valid value is found and pushed to the queue.
+		while (processedValues.size() == 0) {
+			if (nextBaseValue == null)
+				return;	// no more value
+			
+			// Examine all values in the next time step.
+			examineCurrentTimeStep();
+		
+			// Go to the next time step.
+			currentTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
+			
+			if (currentTime.isGreaterOrEqual(endTime))
+				break;
+		}
 	}
 
 	@Override
 	public synchronized boolean hasNext() {
 		if (!initialized)
 			init();
+
+		// If there is a processed value in the queue, return true.
+		if (processedValues.size() > 0)
+			return true;
+
+		// If there is no vale in the queue, try to find next values.
+		findNextValues();
 		
-		return (processedValues.size() > 0 || nextBaseValue != null);
+		// If at lest one value is found, this method returns true. Otherwise, false.
+		return (processedValues.size() > 0);
 	}
 
 	@Override
@@ -253,19 +287,9 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 		// If there is a processed value in the queue, return it.
 		if (processedValues.size() > 0)
 			return processedValues.poll();
-
-		// If there is no processed in the queue, examine the next time step until
-		// a valid value is found and pushed to the queue.
-		while (processedValues.size() == 0) {
-			// Examine all values in the next time step.
-			examineCurrentTimeStep();
 		
-			// Go to the next time step.
-			currentTime = TimestampFactory.createTimestamp(currentTime.seconds() + stepSecond, currentTime.nanoseconds());
-			
-			if (currentTime.isGreaterOrEqual(endTime))
-				break;
-		}
+		// If there is no value in the queue, try to find next values.
+		findNextValues();
 		
 		// A processed value(s) is found as a result of examining successive time steps,
 		// that value will be returned. Otherwise, this method returns null to indicate
