@@ -18,7 +18,9 @@ package org.csstudio.scan;
 import static org.junit.Assert.assertEquals;
 
 import java.io.PrintStream;
+import java.util.List;
 
+import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
@@ -26,7 +28,6 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitForValueCommand;
 import org.junit.Test;
-
 
 /** JUnit test of the Command printout
  *  @author Kay Kasemir
@@ -65,7 +66,25 @@ public class CommandUnitTest
                         new LogCommand("inner", "readback")));
 
         final CountingPrintStream printer = new CountingPrintStream();
-        command.print(printer);
+        command.dump(printer);
         assertEquals(7, printer.lines);
+    }
+
+    @Test
+    public void testCommandSequence()
+    {
+    	final CommandSequence commands = new CommandSequence();
+    	// Add commands
+    	commands.add(new SetCommand("setpoint", 1));
+    	commands.add(new WaitForValueCommand("readback", 1.0, 0.1));
+    	// Add same commands via shortcut
+    	commands.set("setpoint", 1);
+    	commands.wait("readback", 1.0, 0.1);
+    	commands.dump();
+    	// Check the list
+    	final List<ScanCommand> list = commands.getCommands();
+        assertEquals(4, list.size());
+        assertEquals(list.get(0).getClass(), list.get(2).getClass());
+        assertEquals(list.get(1).getClass(), list.get(3).getClass());
     }
 }

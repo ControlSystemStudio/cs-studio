@@ -153,11 +153,13 @@ public class CommandSequence
         commands.add(new WaitForValueCommand(device_name, desired_value, tolerance));
     }
 
+    // Note: This was called 'print' which causes warnings in a PyDev python
+    //       editor because print is a reserved word in python
     /** Print current command sequence */
-    public void print()
+    public void dump()
     {
         for (ScanCommand command : commands)
-            command.print(System.out);
+            command.dump(System.out);
     }
 
     /** @return List of commands in the sequence */

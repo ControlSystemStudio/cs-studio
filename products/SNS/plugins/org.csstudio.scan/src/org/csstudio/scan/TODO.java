@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-
 public interface TODO
 {
     /**
@@ -41,9 +40,10 @@ public interface TODO
      *
      *  Done Run Scan Server as [headless] RCP Application
      *
-     *  TODO Include PyDev:
-     *       * Include the feature/plugins to get the editor, ..
-     *       * Configure it to be aware of yabes classes for completion in editor
+     *  Done Feature to include PyDev with the scan client and monitor
+     *  
+     *  Done Readme on how to configure pydev
+     *       to be aware of scan classes for completion in editor
      *
      *  TODO Jython shell/command view
      *
@@ -57,6 +57,9 @@ public interface TODO
      *  TODO fetch data data from ongoing or finished scans
      *
      *  TODO plot data from ongoing scan?
+     *  
+     *  TODO put callback? Maybe support Channel Access put-callback,
+     *       or add a wait-for-value to the set command?
      *
      *  TODO RMI timeout?
      *  System.setProperty("sun.rmi.transport.tcp.responseTimeout", "10000");

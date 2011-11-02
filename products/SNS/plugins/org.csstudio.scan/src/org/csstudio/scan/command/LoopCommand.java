@@ -109,7 +109,7 @@ public class LoopCommand extends BaseCommand
             if (b instanceof BaseCommand)
                 ((BaseCommand)b).printIndented(out, level + 1);
             else
-                b.print(out);
+                b.dump(out);
         }
     }
 

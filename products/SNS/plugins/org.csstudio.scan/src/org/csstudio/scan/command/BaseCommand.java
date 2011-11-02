@@ -30,7 +30,7 @@ public class BaseCommand implements ScanCommand
 
     /** {@inheritDoc} */
     @Override
-    public void print(final PrintStream out)
+    public void dump(final PrintStream out)
     {
         printIndented(out, 0);
     }

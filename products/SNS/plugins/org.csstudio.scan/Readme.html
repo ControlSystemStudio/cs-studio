@@ -20,9 +20,10 @@ Ongoing scans can be monitored, paused, resumed, aborted.
 <h3>Prepare</h3>
 
 <ul>
-<li>Start with IDE that can run SNS CSS</li>
-<li>Add PyDev to the IDE</li>
-<li>Locate the org.csstudio.scan/examples folder</li>
+<li>Start with IDE that can run SNS CSS.</li>
+<li>Add PyDev to the IDE.</li>
+<li>Locate the org.csstudio.scan/examples folder.</li>
+<li>In the scan_client.py file, edit the path setup section found at the start of the file.</li>
 </ul>
 
 <h3>Run Demo IOC</h3>
@@ -86,10 +87,29 @@ which includes the scan monitor as well as PyDev.
 </p>
 
 <ul>
-<li>Invoke menu CSS/Display/Scan Monitor/li>
-<li>Open the examples/*.opi files/li>
-<li>Open examples/custom_scan.py in the PyDev editor./li>
-<li>Use the context menu Run As, Jython... or Debug As, Jython /li>
+<li>Invoke menu CSS/Display/Scan Monitor</li>
+<li>Open the examples/*.opi files</li>
+<li>Open examples/custom_scan.py in the PyDev editor.</li>
+<li>Use the context menu Run As, Jython... or Debug As, Jython </li>
+</ul>
+
+<h3>PyDev Jython Console</h3>
+
+<ul>
+<li>Open eclipse console view</li>
+<li>From its toolbar, open new PyDev Console, selecting Jython when prompted.</li>
+<li>Type this:
+<pre>
+sys.path.append('/path/to/org.csstudio.scan/examples')
+from scan_client import *
+
+scan('Demo 1D', ('xpos', 0, 10, 0.1))
+
+scan('Demo 2D', ('xpos', 0, 10, 0.1), ('ypos', 0, 10, -0.5))
+
+scan.server.getScanInfos()
+</pre>
+</li>
 </ul>
 
 </body>

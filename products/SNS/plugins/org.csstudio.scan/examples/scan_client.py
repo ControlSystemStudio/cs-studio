@@ -11,7 +11,9 @@ Shortcuts for 1D, 2D scans.
 @author: Kay Kasemir
 """
 
+# -------------------------------------------------------
 # Path setup
+
 # For now this is hard coded in here to allow use
 # from BOY scripts
 import sys
@@ -19,6 +21,13 @@ import sys
 workspace="/Kram/MerurialRepos/cs-studio/products/SNS/plugins/"
 sys.path.append(workspace + "org.csstudio.scan/bin")
 sys.path.append(workspace + "org.csstudio.scan.client/bin")
+
+# Path to binaries, when running within exported product
+install="/Users/Fred/Desktop/CSS/plugins/"
+sys.path.append(install + "org.csstudio.scan")
+sys.path.append(install + "org.csstudio.scan.client")
+
+# -------------------------------------------------------
 
 import org.csstudio.scan.client.ScanServerConnector as ScanServerConnector
 from org.csstudio.scan.command import *
@@ -152,7 +161,7 @@ class ScanNd(ScanClient):
             
         self.submit(name, cmds)
         if __name__ == '__main__':
-            cmds.print()
+            cmds.dump()
             self.waitUntilDone()
 
 # Create 'scan' command
@@ -160,13 +169,13 @@ scan = ScanNd()
 
         
 if __name__ == '__main__':
-    print 'Welcome to YABES'
+    print 'Welcome to the scan system'
     # print 'Running in %s' % os.getcwd()
     print 'Connected to %s' % scan.server.getInfo()
     
     # 'Normal' loops
-    scan('Normal 2D', ('xpos', 1, 10), ('ypos', 1, 10, 0.5), 'readback')
+    #scan('Normal 2D', ('xpos', 1, 10), ('ypos', 1, 10, 0.5), 'readback')
 
     # 'Reversing' inner loop
-    scan('Reversing 2D', ('xpos', 1, 10), ('ypos', 1, 10, -0.5), 'readback')
+    #scan('Reversing 2D', ('xpos', 1, 10), ('ypos', 1, 10, -0.5), 'readback')
 

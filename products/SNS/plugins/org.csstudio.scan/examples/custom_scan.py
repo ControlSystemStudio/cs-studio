@@ -41,6 +41,6 @@ cmds = [
 
 # Schedule for execution on server
 seq = CommandSequence(cmds)
-seq.print()
+seq.dump()
 client.submit("My Scan 2", seq)
 client.waitUntilDone()
