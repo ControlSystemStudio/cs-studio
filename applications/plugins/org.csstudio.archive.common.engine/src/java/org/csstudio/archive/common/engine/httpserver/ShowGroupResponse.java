@@ -17,6 +17,7 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.common.base.Strings;
 
@@ -63,7 +64,6 @@ class ShowGroupResponse extends AbstractGroupResponse {
 
         createBasicInfoTable(group, html);
 
-
         createChannelsTable(group, html);
 
         html.close();
@@ -79,10 +79,17 @@ class ShowGroupResponse extends AbstractGroupResponse {
             Messages.HTTP_STARTED,
             group.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
         });
+        final TimeInstant lastWriteTime = getModel().getLastWriteTime();
         html.tableLine(new String[] {
                 Messages.HTTP_LAST_WRITETIME,
-                getModel().getLastWriteTime().formatted(),
+                lastWriteTime != null ? lastWriteTime.formatted() : Messages.HTTP_NOT_AVAILABLE,
         });
+        if (!group.isStarted()) {
+            html.tableLine(new String[] {
+                    Messages.HTTP_START_GROUP,
+                    StartGroupResponse.linkTo(group.getName(), Messages.HTTP_START),
+            });
+        }
         html.closeTable();
     }
 
@@ -141,7 +148,11 @@ class ShowGroupResponse extends AbstractGroupResponse {
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+        return linkTo(name, name);
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name, @Nonnull final String linkText) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(linkText);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {

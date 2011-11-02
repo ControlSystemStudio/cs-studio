@@ -40,6 +40,7 @@ public final class Messages {
     public static final String HTTP_MAIN_TITLE = "Archive Engine";
     public static final String HTTP_NEVER = "never";
     public static final String HTTP_NO = "No";
+    public static final String HTTP_NOT_AVAILABLE = "N/A";
     public static final String HTTP_NOT_CONNECTED = "Not conn.";
     public static final String HTTP_OK = "Ok";
     public static final String HTTP_PARAMETERS = "Parameter(s)";
@@ -48,6 +49,7 @@ public final class Messages {
     public static final String HTTP_START = "Start";
     public static final String HTTP_STARTED = "Started";
     public static final String HTTP_START_CHANNEL = "Start Channel";
+    public static final String HTTP_START_GROUP = "Start Group";
     public static final String HTTP_STARTTIME = "Start Time (UTC)";
     public static final String HTTP_STATE = "EngineState";
     public static final String HTTP_STATUS = "Status";

@@ -92,7 +92,12 @@ public class StartGroupResponse extends AbstractGroupResponse {
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+        return linkTo(name, name);
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name,
+                                @Nonnull final String linkText) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(linkText);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {
