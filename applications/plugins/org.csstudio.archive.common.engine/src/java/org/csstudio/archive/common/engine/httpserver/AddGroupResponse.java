@@ -38,6 +38,8 @@ import com.google.common.base.Strings;
  */
 public class AddGroupResponse extends AbstractGroupResponse {
 
+    static final String PARAM_DESC = "desc";
+
     private static String URL_ADD_GROUP_ACTION;
     private static String URL_ADD_GROUP_PAGE;
     static {
@@ -47,7 +49,6 @@ public class AddGroupResponse extends AbstractGroupResponse {
 
     private static final long serialVersionUID = 5010342398243858729L;
 
-    private static final String PARAM_DESC = "desc";
 
     /**
      * Constructor.

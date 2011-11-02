@@ -49,6 +49,7 @@ import gov.aps.jca.dbr.LABELS;
 import gov.aps.jca.dbr.STS;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -62,6 +63,7 @@ import org.epics.pvmanager.jca.TypeFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Factory provider class.
@@ -152,8 +154,8 @@ public final class DesyTypeFactoryProvider {
         // DBR_TIME_Enum -> EpicsSystemVariable<EpicsEnum>
         FACTORY_MAP.put(DBR_Enum.TYPE,
                         new DesyJCATypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
-                                                                                       DBR_TIME_Enum.TYPE,
-                                                                                       DBR_LABELS_Enum.TYPE){
+                                                                                          DBR_TIME_Enum.TYPE,
+                                                                                          DBR_LABELS_Enum.TYPE){
                             @Override
                             @Nonnull
                             public EpicsEnum toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_LABELS_Enum eMeta, final int index) {
@@ -193,5 +195,14 @@ public final class DesyTypeFactoryProvider {
     @Nonnull
     static Map<DBRType, DesyJCATypeFactory> getMap() {
         return FACTORY_MAP;
+    }
+
+    @Nonnull
+    public static Set<Class<?>> getInstalledTargetTypes() {
+        final Set<Class<?>> targetTypes = Sets.newHashSet();
+        for (@SuppressWarnings("rawtypes") final DesyJCATypeFactory fac : getMap().values()) {
+            targetTypes.add(fac.getValueType());
+        }
+        return targetTypes;
     }
 }

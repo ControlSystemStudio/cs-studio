@@ -87,18 +87,21 @@ public class EngineHttpServer {
 
         registerChannelServlets(model, provider, httpService, httpContext);
 
-        registerDebugAndInfoServlets(model, httpService, httpContext);
+        registerDebugAndInfoServlets(model, provider, httpService, httpContext);
     }
 
 
     private void registerDebugAndInfoServlets(@Nonnull final EngineModel model,
+                                              @Nonnull final IServiceProvider provider,
                                               @Nonnull final HttpService httpService,
-                                              @Nonnull final HttpContext httpContext) throws ServletException,
-                                                                            NamespaceException {
+                                              @Nonnull final HttpContext httpContext)
+                                              throws ServletException,
+                                                     NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
         httpService.registerServlet(EnvironmentResponse.baseUrl(),
                                     new EnvironmentResponse(model), null, httpContext);
         httpService.registerServlet(HelpResponse.baseUrl(),
-                                    new HelpResponse(model), null, httpContext);
+                                    new HelpResponse(model, adminParamKey), null, httpContext);
     }
 
 
@@ -108,13 +111,16 @@ public class EngineHttpServer {
                                                       @Nonnull final HttpContext httpContext) throws ServletException,
                                                                                     NamespaceException {
         final String version = provider.getPreferencesService().getVersion();
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
         httpService.registerServlet(MainResponse.baseUrl(), new MainResponse(model, version),
                                     null, httpContext);
-        httpService.registerServlet(RestartResponse.baseUrl(), new RestartResponse(model, provider),
+        httpService.registerServlet(RestartResponse.baseUrl(), new RestartResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
-        httpService.registerServlet(ResetResponse.baseUrl(), new ResetResponse(model, provider),
+        httpService.registerServlet(ResetResponse.baseUrl(), new ResetResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
-        httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, provider),
+        httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
     }
 
@@ -124,13 +130,16 @@ public class EngineHttpServer {
                                         @Nonnull final HttpService httpService,
                                         @Nonnull final HttpContext httpContext) throws ServletException,
                                                                                        NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
         httpService.registerServlet(GroupsResponse.baseUrl(),
                                     new GroupsResponse(model), null, httpContext);
         httpService.registerServlet(ShowGroupResponse.baseUrl(),
                                     new ShowGroupResponse(model), null, httpContext);
         httpService.registerServlet(StartGroupResponse.baseUrl(),
                                     new StartGroupResponse(model), null, httpContext);
-        httpService.registerServlet(StopGroupResponse.baseUrl(), new StopGroupResponse(model, provider),
+        httpService.registerServlet(StopGroupResponse.baseUrl(), new StopGroupResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
         httpService.registerServlet(AddGroupResponse.baseUrl(),
                                     new AddGroupResponse(model), null, httpContext);
@@ -140,8 +149,12 @@ public class EngineHttpServer {
     private void registerChannelServlets(@Nonnull final EngineModel model,
                                          @Nonnull final IServiceProvider provider,
                                          @Nonnull final HttpService httpService,
-                                         @Nonnull final HttpContext httpContext) throws ServletException,
-                                                                       NamespaceException {
+                                         @Nonnull final HttpContext httpContext)
+                                         throws ServletException,
+                                                NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
         httpService.registerServlet(ChannelListResponse.baseUrl(),
                                     new ChannelListResponse(model), null, httpContext);
         httpService.registerServlet(DisconnectedResponse.baseUrl(),
@@ -150,13 +163,13 @@ public class EngineHttpServer {
                                     new ShowChannelResponse(model), null, httpContext);
         httpService.registerServlet(StartChannelResponse.baseUrl(),
                                     new StartChannelResponse(model), null, httpContext);
-        httpService.registerServlet(StopChannelResponse.baseUrl(), new StopChannelResponse(model, provider),
+        httpService.registerServlet(StopChannelResponse.baseUrl(), new StopChannelResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
         httpService.registerServlet(AddChannelResponse.baseUrl(),
                                     new AddChannelResponse(model), null, httpContext);
-        httpService.registerServlet(RemoveChannelResponse.baseUrl(), new RemoveChannelResponse(model, provider),
+        httpService.registerServlet(RemoveChannelResponse.baseUrl(), new RemoveChannelResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
-        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, provider),
+        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, adminParamKey, adminParamValue),
                                     null, httpContext);
     }
 

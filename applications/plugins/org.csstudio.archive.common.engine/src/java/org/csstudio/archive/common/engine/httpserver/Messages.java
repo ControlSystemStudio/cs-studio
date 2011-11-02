@@ -32,6 +32,7 @@ public final class Messages {
     public static final String HTTP_DISCONNECTED = "Disconnected";
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
     public static final String HTTP_GROUPS = "Groups";
+    public static final String HTTP_HELP = "Help";
     public static final String HTTP_HOST = "HTTP Server";
     public static final String HTTP_INTERNAL_STATE = "Internal EngineState";
     public static final String HTTP_LAST_ARCHIVED_VALUE = "Last Archived Value";
@@ -45,6 +46,7 @@ public final class Messages {
     public static final String HTTP_OK = "Ok";
     public static final String HTTP_PARAMETERS = "Parameter(s)";
     public static final String HTTP_QUEUELEN = "Queue Len.";
+    public static final String HTTP_REQUIRED = "Required";
     public static final String HTTP_ROW_TOTAL = "Total";
     public static final String HTTP_START = "Start";
     public static final String HTTP_STARTED = "Started";
