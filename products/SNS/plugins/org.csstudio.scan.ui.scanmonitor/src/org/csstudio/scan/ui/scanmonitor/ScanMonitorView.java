@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor;
 
+import org.csstudio.scan.ui.scanmonitor.actions.InfoAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
@@ -67,6 +68,7 @@ public class ScanMonitorView extends ViewPart
 
         // Toolbar actions (duplicating context menu actions)
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        toolbar.add(new InfoAction(model));
         toolbar.add(new ResumeAction(model, null));
         toolbar.add(new PauseAction(model, null));
         toolbar.add(new RemoveCompletedAction(model));

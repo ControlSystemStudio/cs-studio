@@ -158,7 +158,15 @@ public class ScanInfoModel
         }
     }
 
-    /** @return Most recent infos obtained from server */
+	/** @return Scan Server info
+	 *  @throws RemoteException on error in remote access
+     */
+    public String getServerInfo() throws RemoteException
+    {
+    	return getServer().getInfo();
+    }
+
+	/** @return Most recent infos obtained from server */
     public List<ScanInfo> getInfos()
     {
         return infos;
