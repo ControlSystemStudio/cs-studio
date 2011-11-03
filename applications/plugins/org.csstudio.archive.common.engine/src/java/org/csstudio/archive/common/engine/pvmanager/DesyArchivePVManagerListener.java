@@ -70,6 +70,7 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
     private volatile boolean _firstConnection;
 
     private String _startInfo;
+    @SuppressWarnings("unused")
     private String _stopInfo;
 
     private final PVReader<?> _reader;

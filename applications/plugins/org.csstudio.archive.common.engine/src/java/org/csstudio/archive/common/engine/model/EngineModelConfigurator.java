@@ -144,7 +144,11 @@ public final class EngineModelConfigurator {
         final IArchiveChannelGroup archGroup =
             new ArchiveChannelGroup(ArchiveChannelGroupId.NONE, name, id, desc);
         try {
-            return provider.getEngineFacade().createGroup(archGroup);
+            final IArchiveChannelGroup group = provider.getEngineFacade().createGroup(archGroup);
+            if (group != null) {
+                throw new EngineModelException("Creation of group failed in archive service.", null);
+            }
+            return archGroup;
         } catch (final ArchiveServiceException e) {
             throw new EngineModelException("Creation of group failed in archive service.", e);
         } catch (final OsgiServiceUnavailableException e) {
@@ -183,13 +187,16 @@ public final class EngineModelConfigurator {
                                                                  @Nullable final ArchiveGroup group,
                                                                  @Nullable final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channelMap,
                                                                  @Nullable final DesyJCADataSource dataSource,
-                                                                 @Nullable final IServiceProvider provider) throws EngineModelException {
+                                                                 @Nonnull final IServiceProvider provider) throws EngineModelException {
     // CHECKSTYLE ON: ParameterNumber
 
         // FIXME (bknerr) : For now we use only one control system - for later this can be configured via HTTP server
-        IArchiveControlSystem cs;
         try {
-            cs = provider.getEngineFacade().getControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
+            final IArchiveControlSystem cs =
+                provider.getEngineFacade().getControlSystemByName(ControlSystem.EPICS_DEFAULT.getName());
+            if (cs == null) {
+                throw new EngineModelException("Channel creation failed. Control system unknown: " + ControlSystem.EPICS_DEFAULT.getName(), null);
+            }
 
             // FIXME (bknerr) : check whether channel is already covered by other engine!
             // only possible after db schema refactoring

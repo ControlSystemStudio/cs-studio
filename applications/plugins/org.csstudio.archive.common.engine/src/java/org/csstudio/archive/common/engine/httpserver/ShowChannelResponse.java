@@ -64,50 +64,49 @@ class ShowChannelResponse extends AbstractChannelResponse {
         html.openTable(2, new String[] {Messages.HTTP_CHANNEL_INFO});
 
         html.tableLine(new String[] {Messages.HTTP_CHANNEL, channel.getName()});
-
         html.tableLine(new String[] {
                            Messages.HTTP_STARTED,
                            channel.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
                        });
-
         final String connected = channel.isConnected()
                         ? Messages.HTTP_YES
                         : HTMLWriter.makeRedText(Messages.HTTP_NO);
         html.tableLine(new String[] {Messages.HTTP_CONNECTED, connected});
-
         html.tableLine(new String[] {Messages.HTTP_INTERNAL_STATE, channel.getInternalState()});
-
         html.tableLine(new String[] {Messages.HTTP_CURRENT_VALUE, getValueAsString(channel.getMostRecentSample())});
 
         final SampleBuffer<?, ?, ?> buffer = channel.getSampleBuffer();
         html.tableLine(new String[] {Messages.HTTP_QUEUELEN, Integer.toString(buffer.size())});
-
         final SampleBufferStatistics stats = buffer.getBufferStats();
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEAVG, String.format("%.1f", stats.getAverageSize())});
 
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});
-
-        if (channel.isStarted()) {
-            html.tableLine(new String[] {
-                                         Messages.HTTP_STOP_CHANNEL,
-                                         StopChannelResponse.linkTo(channel.getName()),
-                                         });
-        } else if (channel.isEnabled()) {
+//        if (channel.isStarted()) {
+//            html.tableLine(new String[] {
+//                                         Messages.HTTP_STOP_CHANNEL,
+//                                         StopChannelResponse.linkTo(channel.getName()),
+//                                         });
+//        } else if (channel.isEnabled()) {
+//            html.tableLine(new String[] {
+//                    Messages.HTTP_START_CHANNEL,
+//                    StartChannelResponse.linkTo(channel.getName()),
+//            });
+//            html.tableLine(new String[] {
+//                    Messages.HTTP_DISABLE_CHANNEL,
+//                    PermanentDisableChannelResponse.linkTo(channel.getName()),
+//            });
+//        } else {
+//            html.tableLine(new String[] {
+//                    Messages.HTTP_START_CHANNEL,
+//                    StartChannelResponse.linkTo(channel.getName()),
+//            });
+//        }
+        if (!channel.isStarted()) {
             html.tableLine(new String[] {
                     Messages.HTTP_START_CHANNEL,
-                    StartChannelResponse.linkTo(channel.getName()),
-            });
-            html.tableLine(new String[] {
-                    Messages.HTTP_DISABLE_CHANNEL,
-                    PermanentDisableChannelResponse.linkTo(channel.getName()),
-            });
-        } else {
-            html.tableLine(new String[] {
-                    Messages.HTTP_START_CHANNEL,
-                    StartChannelResponse.linkTo(channel.getName()),
+                    StartChannelResponse.linkTo(channel.getName(), Messages.HTTP_START),
             });
         }
-
         html.closeTable();
     }
 
@@ -117,7 +116,11 @@ class ShowChannelResponse extends AbstractChannelResponse {
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+        return linkTo(name, name);
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name, @Nonnull final String linkText) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(linkText);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {

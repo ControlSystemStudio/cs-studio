@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
-import org.csstudio.archive.common.engine.service.IServiceProvider;
 
 import com.google.common.base.Strings;
 
@@ -53,8 +52,9 @@ public class StopGroupResponse extends AbstractGroupResponse {
      * Constructor.
      */
     public StopGroupResponse(@Nonnull final EngineModel model,
-                             @Nonnull final IServiceProvider provider) {
-        super(model, provider);
+                             @Nonnull final String adminParamKey,
+                             @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     /**

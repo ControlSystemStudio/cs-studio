@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.domain.common.collection.CollectionsUtil;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.slf4j.Logger;
@@ -56,10 +55,19 @@ abstract class AbstractResponse extends HttpServlet {
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model,
-                               @Nonnull final IServiceProvider provider) {
+                               @Nonnull final String adminParamKey,
+                               @Nonnull final String admingParamValue) {
         _model = model;
-        _adminParamKey = provider.getPreferencesService().getHttpAdminKey();
-        _adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+        _adminParamKey = adminParamKey;
+        _adminParamValue = admingParamValue;
+    }
+    @Nonnull
+    public String getAdminParamKey() {
+        return _adminParamKey;
+    }
+    @Nonnull
+    public String getAdminParamValue() {
+        return _adminParamValue;
     }
 
     @Nonnull

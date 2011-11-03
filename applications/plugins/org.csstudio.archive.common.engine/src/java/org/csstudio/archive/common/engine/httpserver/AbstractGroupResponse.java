@@ -24,7 +24,6 @@ package org.csstudio.archive.common.engine.httpserver;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.archive.common.engine.service.IServiceProvider;
 
 /**
  * Super type for group related servlets.
@@ -49,7 +48,8 @@ abstract class AbstractGroupResponse extends AbstractResponse {
      * Constructor.
      */
     protected AbstractGroupResponse(@Nonnull final EngineModel model,
-                                    @Nonnull final IServiceProvider provider) {
-        super(model, provider);
+                                    @Nonnull final String adminParamKey,
+                                    @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 }

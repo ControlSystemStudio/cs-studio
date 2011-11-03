@@ -142,6 +142,13 @@ public class MysqlArchiveCreationServiceSupport {
         }
     }
 
+    /**
+     * Tries to create the given group. Returns <code>null</code> on success, otherwise the
+     * group that has been failed to be added.
+     * @param group
+     * @return <code>null</code> on success, and the group on failure
+     * @throws ArchiveServiceException
+     */
     @CheckForNull
     public IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException {
         final Collection<IArchiveChannelGroup> coll = createGroups(Collections.singleton(group));

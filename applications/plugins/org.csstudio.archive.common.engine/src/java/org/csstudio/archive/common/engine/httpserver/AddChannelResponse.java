@@ -39,6 +39,13 @@ import com.google.common.base.Strings;
  */
 public class AddChannelResponse extends AbstractChannelResponse {
 
+    static final String PARAM_CHANNEL_GROUP = "group";
+    static final String PARAM_DATATYPE = "datatype";
+//    private static final String PARAM_CONTROLSYSTEM = "controlsystem";
+//    private static final String PARAM_DESCRIPTION = "desc";
+    static final String PARAM_LOPR = "lopr";
+    static final String PARAM_HOPR = "hopr";
+
     private static String URL_ADD_CHANNEL_ACTION;
     private static String URL_ADD_CHANNEL_PAGE;
     static {
@@ -47,14 +54,6 @@ public class AddChannelResponse extends AbstractChannelResponse {
     }
 
     private static final long serialVersionUID = 1L;
-
-    private static final String PARAM_CHANNEL_GROUP = "group";
-    private static final String PARAM_DATATYPE = "datatype";
-//    private static final String PARAM_CONTROLSYSTEM = "controlsystem";
-//    private static final String PARAM_DESCRIPTION = "desc";
-    private static final String PARAM_LOPR = "lopr";
-    private static final String PARAM_HOPR = "hopr";
-
 
     /**
      * Constructor.

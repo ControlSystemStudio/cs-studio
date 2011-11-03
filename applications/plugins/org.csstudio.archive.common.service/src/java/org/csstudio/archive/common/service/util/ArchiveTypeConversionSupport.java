@@ -193,7 +193,6 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         return (T) fromArchiveString((Class) typeClass, (Class) elemClass, value);
     }
 
-
     /**
      * Tries to convert the archive string value data (supposed to represent a serializable collection)
      * into a typed collection. Whether the collection shall support a {@link java.util.HashSet},
@@ -308,7 +307,6 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                                                            dataType);
         return support.isOptimizableByAveraging();
     }
-
 
     // CHECKSTYLE OFF : ParameterNumber
     @SuppressWarnings("unchecked")

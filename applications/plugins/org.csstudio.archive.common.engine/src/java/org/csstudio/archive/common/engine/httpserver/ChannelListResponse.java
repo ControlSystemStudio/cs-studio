@@ -8,6 +8,7 @@
 package org.csstudio.archive.common.engine.httpserver;
 
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
@@ -22,13 +23,14 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 @SuppressWarnings("nls")
 class ChannelListResponse extends AbstractChannelResponse {
 
+    static final String PARAM_PATTERN = "pattern";
+
     private static String URL_BASE_PAGE;
     private static String URL_LIST_CHANNEL_ACTION;
     static {
         URL_LIST_CHANNEL_ACTION = "list";
         URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_LIST_CHANNEL_ACTION;
     }
-    private static final String PARAM_PATTERN = "pattern";
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -40,18 +42,21 @@ class ChannelListResponse extends AbstractChannelResponse {
     @Override
     protected void fillResponse(@Nonnull final HttpServletRequest req,
                                 @Nonnull final HttpServletResponse resp) throws Exception {
-        final String pat = req.getParameter(PARAM_PATTERN);
+        String pat = req.getParameter(PARAM_PATTERN);
         if (pat == null) {
-            resp.sendError(400, "Missing '" + PARAM_PATTERN + "' parameter for channel name pattern");
-            return;
+            pat = ".*";
         }
-        final Pattern pattern = Pattern.compile(pat);
+        try {
+            final Pattern pattern = Pattern.compile(pat);
+            // HTML table similar to group's list of channels
+            final HTMLWriter html = new HTMLWriter(resp, "Archive Channels for pattern '" + pat + "'");
 
-        // HTML table similar to group's list of channels
-        final HTMLWriter html = new HTMLWriter(resp, "Archive Channels for pattern '" + pat + "'");
+            createChannelListTable(pattern, html);
+            html.close();
+        } catch (final PatternSyntaxException e) {
+            redirectToErrorPage(resp, "Pattern syntax not correct:\n" + e.getMessage());
+        }
 
-        createChannelListTable(pattern, html);
-        html.close();
     }
 
     private void createChannelListTable(@Nonnull final Pattern pattern,

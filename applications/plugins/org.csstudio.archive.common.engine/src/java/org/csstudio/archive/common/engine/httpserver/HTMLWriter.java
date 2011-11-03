@@ -52,7 +52,8 @@ public class HTMLWriter {
         text("<div id=\"navigation\">");
         createNavigationBar(MainResponse.linkTo(),
                             GroupsResponse.linkTo(),
-                            DisconnectedResponse.linkTo());
+                            DisconnectedResponse.linkTo(Messages.HTTP_DISCONNECTED),
+                            HelpResponse.linkTo());
         text("</div>");
 
         text("<div id=\"content\">");

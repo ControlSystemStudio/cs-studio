@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.archive.common.engine.service.IServiceProvider;
 
 /** Provide web page for engine restart request.
  *  @author Kay Kasemir
@@ -26,8 +25,9 @@ class RestartResponse extends AbstractResponse {
     private static final long serialVersionUID = 1L;
 
     RestartResponse(@Nonnull final EngineModel model,
-                    @Nonnull final IServiceProvider provider) {
-        super(model, provider);
+                    @Nonnull final String adminParamKey,
+                    @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     @Override

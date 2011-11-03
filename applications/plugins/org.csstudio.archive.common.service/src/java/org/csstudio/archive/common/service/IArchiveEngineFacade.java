@@ -37,8 +37,6 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.enginestatus.EngineMonitorStatus;
 import org.csstudio.archive.common.service.enginestatus.IArchiveEngineStatus;
-import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
-import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.common.service.UpdateResult;
@@ -107,7 +105,8 @@ public interface IArchiveEngineFacade {
 
     /**
      * Writes the samples to the archive - the samples in this collection should be either of
-     * {@link ArchiveMultiScalarSample} or {@link ArchiveSample}, since these are treated
+     * {@link org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample} or
+     * {@link org.csstudio.archive.common.service.sample.ArchiveSample}, since these are treated
      * differently within the service.
      *
      * @param samples the samples to be archived with their channel id
@@ -207,9 +206,22 @@ public interface IArchiveEngineFacade {
     @Nonnull
     DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException;
 
+    /**
+     * Creates a group. Returns <code>null</code> on success and the group itself on failure.
+     * @param group
+     * @return
+     * @throws ArchiveServiceException
+     */
     @CheckForNull
     IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException;
 
+    /**
+     * Creates a collection of groups. Returns an empty list on success, and on failure it returns
+     * collection of those groups that could not be added.
+     * @param group
+     * @return
+     * @throws ArchiveServiceException
+     */
     @Nonnull
     Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException;
 
