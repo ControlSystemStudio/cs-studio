@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -29,7 +30,8 @@ public class LabelCellEditorLocator
 	
 		public void relocate(CellEditor celleditor) {
 			Text text = (Text)celleditor.getControl();
-			text.moveAbove(null);
+			if(OPIBuilderPlugin.isRAP())
+				text.moveAbove(null);
 			Rectangle rect = labelFigure.getClientArea();
 			labelFigure.translateToAbsolute(rect);
 			org.eclipse.swt.graphics.Rectangle trim = text.computeTrim(0, 0, 0, 0);

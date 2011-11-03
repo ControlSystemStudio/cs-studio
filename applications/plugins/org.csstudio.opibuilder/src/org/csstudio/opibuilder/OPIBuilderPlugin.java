@@ -53,7 +53,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
 
-	private static boolean isRAP;
+	private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
 	
 	
 	private IPropertyChangeListener preferenceLisener;
@@ -63,8 +63,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public OPIBuilderPlugin() {
-		plugin = this;
-		isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$
+		plugin = this;		
 	}
 
 
