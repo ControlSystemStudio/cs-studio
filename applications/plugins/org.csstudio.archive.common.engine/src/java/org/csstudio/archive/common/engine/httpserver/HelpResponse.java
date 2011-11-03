@@ -96,8 +96,68 @@ public class HelpResponse extends AbstractResponse {
         insertStartGroupCommandTableLines(html);
         insertStopGroupCommandTableLines(html);
 
+        insertEnvironmentCommandTableLines(html);
+        insertGroupsCommandTableLines(html);
+        insertMainCommandTableLines(html);
+        insertResetCommandTableLines(html);
+        insertRestartCommandTableLines(html);
+        insertShutdownCommandTableLines(html);
 
         html.closeTable();
+    }
+
+    private void insertShutdownCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                HTMLWriter.makeRedText(ShutdownResponse.baseUrl()),
+                "",
+                "",
+                "Gracefully shuts down the engine, writes all queued samples and status information of channels and the engine.",
+        });
+    }
+
+    private void insertRestartCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                HTMLWriter.makeRedText(RestartResponse.baseUrl()),
+                "",
+                "",
+                "Clears all channels, closes PVs, retrieves new configuration from DB and restarts the engine.",
+        });
+    }
+
+    private void insertResetCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                ResetResponse.baseUrl(),
+                "",
+                "",
+                "Resets the archiver's statistics.",
+        });
+    }
+
+    private void insertMainCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                MainResponse.baseUrl(),
+                "",
+                "",
+                "Start page with archiver's statistics and overview.",
+        });
+    }
+
+    private void insertGroupsCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                GroupsResponse.baseUrl(),
+                "",
+                "",
+                "Lists the archiver's groups and group statistics.",
+        });
+    }
+
+    private void insertEnvironmentCommandTableLines(@Nonnull final HTMLWriter html) {
+        html.tableLine(new String[] {
+                EnvironmentResponse.baseUrl(),
+                "",
+                "",
+                "Lists the archiver's runtime environment as key value pairs.",
+        });
     }
 
     @SuppressWarnings("static-access")
@@ -142,7 +202,7 @@ public class HelpResponse extends AbstractResponse {
     @SuppressWarnings("static-access")
     private void insertAddGroupCommandTableLines(@Nonnull final HTMLWriter html) {
         html.tableLine(new String[] {
-                HTMLWriter.makeRedText(AddGroupResponse.baseUrl()),
+                AddGroupResponse.baseUrl(),
                 AddGroupResponse.PARAM_NAME,
                 Messages.HTTP_YES,
                 "Adds the group with the given name, if not yet existing.",
