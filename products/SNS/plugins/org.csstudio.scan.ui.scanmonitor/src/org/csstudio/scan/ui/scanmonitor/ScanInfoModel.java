@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.server.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 
@@ -163,7 +164,14 @@ public class ScanInfoModel
      */
     public String getServerInfo() throws RemoteException
     {
-    	return getServer().getInfo();
+    	final StringBuilder buf = new StringBuilder();
+    	buf.append(getServer().getInfo()).append("\n");
+    	buf.append("\n");
+    	buf.append("Devices:\n");
+    	final DeviceInfo[] devices = getServer().getDeviceInfos();
+    	for (DeviceInfo device : devices)
+    		buf.append(device).append("\n");
+    	return buf.toString();
     }
 
 	/** @return Most recent infos obtained from server */

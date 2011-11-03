@@ -48,28 +48,36 @@ public interface ScanServer extends Remote
     final public static int RMI_SCAN_SERVER_PORT = 4811;
 
     /** @return Human-readable info about the scan server
-     *  @throws RemoteException on error
+     *  @throws RemoteException on error in remote access
      */
     public String getInfo() throws RemoteException;
 
+    /** Query server for devices used by a scan 
+     *  @return Info about devices
+     *  @throws RemoteException on error in remote access
+     */
+    public DeviceInfo[] getDeviceInfos() throws RemoteException;
+    
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands Commands to execute within the scan.
      *                  The command sequence can not be changed
      *                  once it has been submitted to the server!
      *  @return ID that uniquely identifies the scan (within JVM of the scan engine)
-     *  @throws RemoteException on error
+     *  @throws RemoteException on error in remote access
      */
     public long submitScan(String scan_name, List<ScanCommand> commands) throws RemoteException;
 
     /** Query server for scans
      *  @return Info for each scan on the server
+     *  @throws RemoteException on error in remote access
      */
     public List<ScanInfo> getScanInfos() throws RemoteException;
 
     /** Query server for scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Info for that scan on the server or <code>null</code>
+     *  @throws RemoteException on error in remote access
      */
     public ScanInfo getScanInfo(long id) throws RemoteException;
 
@@ -86,22 +94,26 @@ public interface ScanServer extends Remote
      *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            -1 to pause all running scans
+     *  @throws RemoteException on error in remote access
      */
     public void pause(long id) throws RemoteException;
 
     /** Ask server to resume a paused scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *            -1 to resume all paused scans
+     *  @throws RemoteException on error in remote access
      */
     public void resume(long id) throws RemoteException;
 
     /** Ask server to abort a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws RemoteException on error in remote access
      */
     public void abort(long id) throws RemoteException;
 
     /** Ask server to remove a (finished) scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws RemoteException on error in remote access
      */
     public void remove(long id) throws RemoteException;
 

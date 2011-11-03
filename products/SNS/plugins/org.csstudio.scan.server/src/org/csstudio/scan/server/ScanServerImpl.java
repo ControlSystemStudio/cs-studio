@@ -24,11 +24,14 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.CommandImplFactory;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 
 /** Server-side implementation of the {@link ScanServer} interface
@@ -111,6 +114,33 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
+    public DeviceInfo[] getDeviceInfos() throws RemoteException
+    {
+		// Get devices in context
+    	Device[] devices;
+    	try
+    	{
+    		final DeviceContext context = DeviceContext.getDefault();
+    		devices = context.getDevices();
+    	}
+    	catch (Exception ex)
+    	{
+    		Logger.getLogger(getClass().getName()).log(Level.WARNING,
+    				"Error reading device context", ex);
+    		devices = new Device[0];
+    	}
+    	// Turn into infos
+    	final DeviceInfo[] infos = new DeviceInfo[devices.length];
+    	for (int i = 0; i < infos.length; i++)
+    	{
+    		final Device device = devices[i];
+			infos[i] = new DeviceInfo(device.getName(), device.toString());
+    	}
+    	return infos;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
     public long submitScan(final String scan_name, final List<ScanCommand> commands)
             throws RemoteException
     {
@@ -133,7 +163,7 @@ public class ScanServerImpl implements ScanServer
         }
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public List<ScanInfo> getScanInfos() throws RemoteException
     {
@@ -167,8 +197,8 @@ public class ScanServerImpl implements ScanServer
             return scan.getScanInfo();
         return null;
     }
-
-    /** {@inheritDoc} */
+    
+	/** {@inheritDoc} */
     @Override
     public void pause(final long id) throws RemoteException
     {

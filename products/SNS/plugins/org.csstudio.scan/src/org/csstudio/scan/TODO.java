@@ -53,13 +53,24 @@ public interface TODO
      *  
      *  Done Allow configuration of config file location
      *  
-     *  TODO Query scan server for devices
+     *  Done Query scan server for device info
+     *  
+     *  TODO Unclear if devices will ever be anything by PVs.
+     *       If they're just PVs, one could use PVs.
+     *       If they're something else, then an API for
+     *       getting the device names _and_ underlying PVs from
+     *       server would be useful for GUI that can show them,
+     *       access other PV tools from device PVs etc.
      *
+     *  TODO 'log' sends values to data collector, once it's
+     *       clear what that data collector is
+     *  
      *  TODO Client settings (scan server host, port system properties) via Eclipse preferences
      *  
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
-     *  TODO fetch data data from ongoing or finished scans
+     *  TODO fetch data data from ongoing or finished scans?
+     *       Depends on who's doing the data collection in the end.
      *
      *  TODO plot data from ongoing scan?
      *  
