@@ -114,6 +114,10 @@ public class ChannelQuery {
 			listener.queryExecuted(result);
 		}
 	}
+	
+	public String getQuery() {
+		return query;
+	}
 
 	public Result getResult() {
 		return this.result;
@@ -153,6 +157,20 @@ public class ChannelQuery {
 				}
 			}
 		});
+	}
+	
+	@Override
+	public int hashCode() {
+		return getQuery().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ChannelQuery) {
+			return query.equals(((ChannelQuery) obj).getQuery());
+		}
+		
+		return false;
 	}
 
 }
