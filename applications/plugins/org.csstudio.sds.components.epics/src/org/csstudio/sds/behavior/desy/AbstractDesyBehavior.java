@@ -169,7 +169,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @return the DESY default Border width for the given {@link Severity}
      */
     protected static BorderStyleEnum determineBorderStyleBySeverity(final Severity severity) {
-        return severity.isOK()?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
+        return severity!=null&&severity.isOK()?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
     }
 
     /**
@@ -179,7 +179,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @return the DESY default Border width for the given {@link Severity}
      */
     protected static int determineBorderWidthBySeverity(final Severity severity) {
-        return severity.isOK()||severity.isInvalid()?0:3;
+        return severity!=null&&(severity.isOK()||severity.isInvalid())?0:3;
     }
 
     /**
