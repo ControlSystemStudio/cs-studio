@@ -1,8 +1,10 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -12,9 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
-import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.eclipse.swt.SWT;
@@ -27,13 +26,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.epics.pvmanager.PV;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
 
 public class ChannelTreeByPropertyWidget extends Composite {
 	
-	private String channelQuery;
+	private ChannelQuery channelQuery;
 	
 	private Tree tree;
 	private ErrorBar errorBar;
@@ -101,21 +97,13 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
-			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
+			List<String> properties = Arrays.asList("properties");
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (properties.contains(evt.getPropertyName())) {
 					computeTree();
 				}
-			}
-		});
-		
-		changeSupport.addPropertyChangeListener("channelQuery", new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				queryChannels();
 			}
 		});
 	}
@@ -132,30 +120,26 @@ public class ChannelTreeByPropertyWidget extends Composite {
     	changeSupport.removePropertyChangeListener( listener );
     }
 	
-	public String getChannelQuery() {
+	public ChannelQuery getChannelQuery() {
 		return channelQuery;
 	}
 	
-	public void setChannelQuery(String channelQuery) {
-		String oldValue = this.channelQuery;
+	public void setChannelQuery(ChannelQuery channelQuery) {
+		ChannelQuery oldValue = this.channelQuery;
 		this.channelQuery = channelQuery;
+		if (oldValue != null) {
+			oldValue.removeChannelQueryListener(queryListener);
+		}
+		computeTree();
+		if (channelQuery != null) {
+			channelQuery.execute(queryListener);
+		}
 		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
 	}
 	
-	public Collection<Channel> getChannels() {
-		return channels;
-	}
-	
-	private Collection<Channel> channels = new ArrayList<Channel>();
 	private List<String> properties = new ArrayList<String>();
 	private String selectionPv = null;
 	private LocalUtilityPvManagerBridge selectionWriter = null;
-	
-	private void setChannels(Collection<Channel> channels) {
-		Collection<Channel> oldChannels = this.channels;
-		this.channels = channels;
-		changeSupport.firePropertyChange("channels", oldChannels, channels);
-	}
 	
 	public List<String> getProperties() {
 		return properties;
@@ -164,47 +148,43 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	public void setProperties(List<String> properties) {
 		List<String> oldProperties = this.properties;
 		this.properties = properties;
-		computeTree();
+		tree.setItemCount(0);
+		tree.clearAll(true);
 		changeSupport.firePropertyChange("properties", oldProperties, properties);
 	}
 	
-	private void queryChannels() {
-		setChannels(new ArrayList<Channel>());
-		tree.setItemCount(0);
-		tree.clearAll(true);
-		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.addChannelQueryListener(new ChannelQueryListener() {
-			
-			@Override
-			public void getQueryResult() {
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						Exception e = query.getLastException();
-						if (e == null) {
-							setChannels(query.getResult());
-							List<String> newProperties = new ArrayList<String>(getProperties());
-							newProperties.retainAll(ChannelUtil.getPropertyNames(channels));
-							if (newProperties.size() != getProperties().size()) {
-								setProperties(newProperties);
-							}
-							computeTree();
-						} else {
-							errorBar.setException(e);
-						}
-					}
-				});
+	private final ChannelQueryListener queryListener = new ChannelQueryListener() {
+		
+		@Override
+		public void queryExecuted(final Result result) {
+			SWTUtil.swtThread().execute(new Runnable() {
 				
-			}
-		});
-		query.execute();
-	}
+				@Override
+				public void run() {
+					if (result.exception == null) {
+						List<String> newProperties = new ArrayList<String>(getProperties());
+						newProperties.retainAll(ChannelUtil.getPropertyNames(result.channels));
+						if (newProperties.size() != getProperties().size()) {
+							setProperties(newProperties);
+						}
+						computeTree();
+					} else {
+						errorBar.setException(result.exception);
+					}
+				}
+			});
+			
+		}
+	};
 	
 	private void computeTree() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
-		model = new ChannelTreeByPropertyModel(getChannels(), getProperties());
+		if (getChannelQuery() == null || getChannelQuery().getResult() == null) {
+			model = new ChannelTreeByPropertyModel(null, getProperties());
+		} else {
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getResult().channels, getProperties());
+		}
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
 	}
 	
