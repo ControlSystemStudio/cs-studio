@@ -22,7 +22,8 @@ PLATFORMS="LINUX_X64 LINUX_X86 WIN_X64 WIN_X86 MACOSX_X64 MACOSX_X86"
 DATE=$(date +'%Y%m%d_%H%M%S')
 
 # Destination of index.html and produced zip files.
-DEST=/mnt/linac-misc/httpd/home/cont/css
+#DEST=/mnt/linac-misc/httpd/home/cont/css
+DEST=${HOME}/tmp/css
 
 LINUX_X64_NAME="Linux (64 bit)"
 LINUX_X64_PREF="linux.gtk.x86_64"
@@ -77,8 +78,14 @@ for PLATFORM in ${PLATFORMS}; do
         cp ${SCRIPTDIR}/css_kek.sh ${BUILDDIR}/css_${VERSION}
         zip ${ZIP_BINARY} css_${VERSION}/css_kek.sh
 
+        cp ${SCRIPTDIR}/css_kek_functions.sh ${BUILDDIR}/css_${VERSION}
+        zip ${ZIP_BINARY} css_${VERSION}/css_kek_functions.sh
+
         cp ${SCRIPTDIR}/acc_settings.sh ${BUILDDIR}/css_${VERSION}
         zip ${ZIP_BINARY} css_${VERSION}/acc_settings.sh
+
+        cp ${SCRIPTDIR}/kblog_settings.sh ${BUILDDIR}/css_${VERSION}
+        zip ${ZIP_BINARY} css_${VERSION}/kblog_settings.sh
 
         for acc in ${ACCS}; do
             # Generate a launcher script and include it into the zip.
@@ -111,7 +118,9 @@ for PLATFORM in ${PLATFORMS}; do
             sed -i -e "s|<string>css</string>|<string>css_kek_${acc}</string>|" css_${VERSION}/css_kek_${acc}.app/Contents/Info.plist
 
             cp ${SCRIPTDIR}/css_kek.sh ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS
+            cp ${SCRIPTDIR}/css_kek_functions.sh ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS
             cp ${SCRIPTDIR}/acc_settings.sh ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS
+            cp ${SCRIPTDIR}/kblog_settings.sh ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS
 
             echo "#!/bin/sh" > ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
             echo "SCRIPTDIR=\$(cd \$(dirname \$0) && pwd)" >> ${BUILDDIR}/css_${VERSION}/css_kek_${acc}.app/Contents/MacOS/css_kek_${acc}
