@@ -15,9 +15,16 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.csstudio.scan.server.app.Activator;
+import org.csstudio.scan.server.app.Preferences;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
 
 /** Factory for creating {@link Device}s
  * 
@@ -32,6 +39,20 @@ public class DeviceContext
     /** Map of device names to {@link Device} */
     final private Map<String, Device> devices = new HashMap<String, Device>();
 
+    /** @return Default {@link DeviceContext}, initialized from preferences */
+    public static DeviceContext getDefault() throws Exception
+    {
+    	final String path = Preferences.getDeviceConfigPath();
+        final InputStream config_stream;
+        // Absolute file system path?
+        if (path.startsWith("/"))
+        	config_stream = new FileInputStream(path);
+        else // Path within plugin
+        	config_stream = FileLocator.openStream(
+        		Activator.getInstance().getBundle(), new Path(path), false);
+		return DeviceContextFile.read(config_stream);
+    }
+    
     /** Add a PV-based {@link Device} to the context.
      *  When adding a device with a name
      *  that is already in the context,

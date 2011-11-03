@@ -51,7 +51,9 @@ public interface TODO
      *  Done Device context can initialize from a config file that
      *       lists the devices for a beamline
      *  
-     *  TODO Allow configuration of config file location
+     *  Done Allow configuration of config file location
+     *  
+     *  TODO Query scan server for devices
      *
      *  TODO Client settings (scan server host, port system properties) via Eclipse preferences
      *  

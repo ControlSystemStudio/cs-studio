@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.InputStream;
 import java.net.BindException;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
@@ -31,10 +30,6 @@ import org.csstudio.scan.command.CommandImplFactory;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.device.DeviceContextFile;
-import org.csstudio.scan.server.app.Activator;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -125,10 +120,7 @@ public class ScanServerImpl implements ScanServer
             final List<CommandImpl> implementations = CommandImplFactory.implement(commands);
 
             // Get devices
-            // TODO Configurable device info
-            final InputStream config_stream = FileLocator.openStream(Activator.getInstance().getBundle(),
-            		new Path("/examples/devices.xml"), false);
-    		final DeviceContext devices = DeviceContextFile.read(config_stream);
+    		final DeviceContext devices = DeviceContext.getDefault();
             
             // Submit scan to engine for execution
             final Scan scan = new Scan(scan_name, implementations);
