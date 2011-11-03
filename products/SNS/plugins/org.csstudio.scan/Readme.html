@@ -70,8 +70,22 @@ which includes the scan monitor as well as PyDev.
 </p>
 
 <ul>
-<li>In CSS, create "linked folder" for /examples so you can open the *.opi files.</li>
+<li>In CSS, create a "linked folder" for /examples so you can open the *.opi files
+    and example scripts.
+</li>
 <li>To enable full PyDev use, open Edit/Preferences, PyDev.</li>
+<li>Under "Interactive Console", increase the 
+    "Maximum connection attempts for initial communication"
+    from its default of 50 to 200.
+</li>
+<li>Configure "Interactive Console", adding the following to the
+    "Initial interpreter commands":
+<pre>
+import sys
+sys.path.append('/path/to/org.csstudio.scan/examples')
+from scan_client import *
+</pre>
+</li>
 <li>Configure "Interpreter - Jython".
     Ideally, point it to a jython.jar of a full jython setup,
     i.e. one that includes a Lib/ subdirectory
@@ -98,17 +112,29 @@ which includes the scan monitor as well as PyDev.
 <ul>
 <li>Open eclipse console view</li>
 <li>From its toolbar, open new PyDev Console, selecting Jython when prompted.</li>
+<li><p>A new PyDev console for Jython should appear in the Eclipse console view,
+    executing the initial commands like "import sys".
+    </p>
+    <p>If you get an error "Failed to read servers response: Connection	refused",
+    increase the "Maximum connection attempts for initial communication" setting
+    mentioned in the previous section.
+    </p>
+</li>
 <li>Type this:
 <pre>
+// These "Initial interpreter commands" should appear:
 sys.path.append('/path/to/org.csstudio.scan/examples')
 from scan_client import *
 
+// Then try to create scans from the console
 scan('Demo 1D', ('xpos', 0, 10, 0.1))
 
 scan('Demo 2D', ('xpos', 0, 10, 0.1), ('ypos', 0, 10, -0.5))
 
 scan.server.getScanInfos()
 </pre>
+</li>
+<li>
 </li>
 </ul>
 

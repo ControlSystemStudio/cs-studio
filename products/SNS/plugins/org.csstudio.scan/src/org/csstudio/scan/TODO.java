@@ -45,7 +45,8 @@ public interface TODO
      *  Done Readme on how to configure pydev
      *       to be aware of scan classes for completion in editor
      *
-     *  TODO Jython shell/command view
+     *  Done Basic Jython shell/command view via PyDev Jython console:
+     *       Command-completion, tooltips show doc strings.
      *
      *  TODO Client settings (scan server host, port system properties) via Eclipse preferences
      *  
