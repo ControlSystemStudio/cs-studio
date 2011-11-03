@@ -50,10 +50,10 @@ public class ScanTest
 
         // Configure devices for beamline
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("xpos", "motor_x");
-        devices.addDevice("ypos", "motor_y");
-        devices.addDevice("setpoint", "setpoint");
-        devices.addDevice("readback", "readback");
+        devices.addPVDevice("xpos", "motor_x");
+        devices.addPVDevice("ypos", "motor_y");
+        devices.addPVDevice("setpoint", "setpoint");
+        devices.addPVDevice("readback", "readback");
 
         // Setup context
         final MemoryDataLogger data_logger = new MemoryDataLogger();

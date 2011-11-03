@@ -48,12 +48,14 @@ public interface TODO
      *  Done Basic Jython shell/command view via PyDev Jython console:
      *       Command-completion, tooltips show doc strings.
      *
+     *  Done Device context can initialize from a config file that
+     *       lists the devices for a beamline
+     *  
+     *  TODO Allow configuration of config file location
+     *
      *  TODO Client settings (scan server host, port system properties) via Eclipse preferences
      *  
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
-     *
-     *  TODO Device context should initialize from a config file that
-     *       lists the devices for a beamline
      *
      *  TODO fetch data data from ongoing or finished scans
      *

@@ -17,6 +17,7 @@ package org.csstudio.scan;
 
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** Start {@link ScanServer} as [Headless] JUnit Plug-in test
@@ -34,6 +35,9 @@ public class ScanServerDemo
     // when they try to invoke methods in the server.
     private ScanServerImpl server;
 
+    // Run only on demand when testing the server without
+    // starting the complete Application or Product
+    @Ignore
     @Test
     public void runScanServer() throws Exception
     {

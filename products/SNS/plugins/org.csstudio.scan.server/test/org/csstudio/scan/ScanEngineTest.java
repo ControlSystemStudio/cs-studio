@@ -54,8 +54,8 @@ public class ScanEngineTest
     public void testScanEngine() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("xpos", "motor_x");
-        devices.addDevice("ypos", "motor_y");
+        devices.addPVDevice("xpos", "motor_x");
+        devices.addPVDevice("ypos", "motor_y");
 
         final Scan scan_x = new Scan("Scan Motor X",
                 new LoopCommandImpl("xpos", 1.0, 5.0, 1.0,
@@ -140,7 +140,7 @@ public class ScanEngineTest
     public void testErrors() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("xpos", "motor_x");
+        devices.addPVDevice("xpos", "motor_x");
 
         final Scan scan = new Scan("Scan Motor X",
                 new LoopCommandImpl("xpos", 1.0, 5.0, 1.0,
@@ -173,7 +173,7 @@ public class ScanEngineTest
     public void testEngineStop() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("xpos", "motor_x");
+        devices.addPVDevice("xpos", "motor_x");
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
@@ -208,7 +208,7 @@ public class ScanEngineTest
     public void testAbort() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("xpos", "motor_x");
+        devices.addPVDevice("xpos", "motor_x");
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",

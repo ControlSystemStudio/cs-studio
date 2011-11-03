@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Factory for creating {@link Device}s
+ * 
+ *  <p>This is currently handling PV devices.
+ *  Fundamentally, another type of device might
+ *  be added in the future.
+ *  
  *  @author Kay Kasemir
  */
 public class DeviceContext
@@ -27,25 +32,15 @@ public class DeviceContext
     /** Map of device names to {@link Device} */
     final private Map<String, Device> devices = new HashMap<String, Device>();
 
-    /** Initialize with default beamline devices */
-    public DeviceContext() throws Exception
-    {
-        // TODO Read default devices from some config file
-        addDevice("xpos", "motor_x");
-        addDevice("ypos", "motor_y");
-        addDevice("setpoint", "setpoint");
-        addDevice("readback", "readback");
-    }
-
-    /** Add a {@link Device} to the context.
+    /** Add a PV-based {@link Device} to the context.
      *  When adding a device with a name
      *  that is already in the context,
      *  the original device will be replaced.
      *
      *  @param name Name of the device, used to access it in scan commands
-     *  @param path Path to the device, for example control system PV
+     *  @param path Path to the device, i.e. the control system PV
      */
-    public synchronized void addDevice(final String name, final String path) throws Exception
+    public synchronized void addPVDevice(final String name, final String path) throws Exception
     {
         devices.put(name, new PVDevice(name, path));
     }

@@ -15,11 +15,37 @@
  ******************************************************************************/
 package org.csstudio.scan.server.app;
 
-/** (Not really a) Plugin activator
+import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleContext;
+
+/** Plugin activator
  *  @author Kay Kasemir
  */
-public class Activator
+public class Activator extends Plugin
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "yabes.server";
+    
+    /** Singleton instance */
+    private static Activator instance = null;
+
+    /** {@inheritDoc} */
+	@Override
+	public void start(BundleContext context) throws Exception
+	{
+		super.start(context);
+		setInstance(this);
+	}
+
+	/** Static setter to please findbugs */
+	private static void setInstance(final Activator instance)
+	{
+		Activator.instance = instance;
+	}
+
+	/** @return Singleton instance */
+	public static Activator getInstance()
+	{
+		return instance;
+	}
 }
