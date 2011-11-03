@@ -200,4 +200,4 @@ EOF
 
 
 # Launch CSS with the temporary plugin customization file
-${CSS} -vm ${HOME}/work/jdk1.6.0_27/jre/bin -pluginCustomization ${TMP_INI}
+${CSS} -pluginCustomization ${TMP_INI}
