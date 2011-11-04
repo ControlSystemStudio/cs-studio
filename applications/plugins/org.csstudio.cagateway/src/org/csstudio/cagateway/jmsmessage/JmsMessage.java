@@ -1,4 +1,4 @@
-package org.csstudio.cagateway.jmsmessage;
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -20,6 +20,8 @@ package org.csstudio.cagateway.jmsmessage;
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+
+package org.csstudio.cagateway.jmsmessage;
 
 import java.text.SimpleDateFormat;
 
@@ -52,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public enum JmsMessage {
-    
+
 
     INSTANCE;
 
@@ -60,7 +62,7 @@ public enum JmsMessage {
 	public static final String SEVERITY_MINOR 		= "MINOR";
 	public static final String SEVERITY_MAJOR 		= "MAJOR";
 	public static final String SEVERITY_INVALID 	= "INVALID";
-	
+
 	public static final String STATUS_NO_ALARM 		= "NO_ALARM";
 	public static final String STATUS_HIHI_ALARM	= "HIHI_ALARM";
 	public static final String STATUS_HIGH_ALARM 	= "HIGH_ALARM";
@@ -80,11 +82,11 @@ public enum JmsMessage {
 	public static final int	JMS_MESSAGE_TYPE_ALARM		= 1;
 	public static final int	JMS_MESSAGE_TYPE_LOG		= 2;
 	public static final int	JMS_MESSAGE_TYPE_PUT_LOG	= 3;
-	
+
 	private ISharedConnectionHandle _sharedSenderConnection;
 
 	private static final Logger LOG = LoggerFactory.getLogger(JmsMessage.class);
-	
+
 	private JmsMessage () {
 		/*
 		 * nothing to do

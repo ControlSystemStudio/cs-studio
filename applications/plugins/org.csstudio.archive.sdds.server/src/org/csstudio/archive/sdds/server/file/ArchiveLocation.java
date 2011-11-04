@@ -31,13 +31,15 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.annotation.Nonnull;
 
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import org.csstudio.archive.sdds.server.util.TimeInterval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -52,6 +54,9 @@ public class ArchiveLocation {
 
     /** File separator */
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    /** Class logger */
+    private static Logger LOG = LoggerFactory.getLogger(ArchiveLocation.class);
 
     /**
      * TODO: A job has to read in the data paths every xx hours!!!!!
@@ -86,23 +91,42 @@ public class ArchiveLocation {
     @Nonnull
     public String[] getAllPaths(final long startTimeInS, final long endTimeInS) {
 
-        final List<String> result = Lists.newArrayList();
+        final Vector<String> result = new Vector<String>();
+        final TimeInterval timeInterval = new TimeInterval(startTimeInS, endTimeInS);
+        String path = null;
+        int lastMonth;
+        int lastYear;
+        int month;
 
-        final Interval interval = new Interval(startTimeInS*1000, endTimeInS*1000);
+        final int[] years = timeInterval.getYears();
 
-        for(DateTime curDate = interval.getStart(); curDate.isBefore(interval.getEnd()); curDate = curDate.plusMonths(1)) {
+        if(years.length > 0) {
 
-            final String path = assemblePath(curDate.getYear(), curDate.getMonthOfYear());
-            result.add(path);
+            lastYear = years[years.length - 1];
+            lastMonth = timeInterval.getEndMonth();
+
+            for(int y = years[0];y <= lastYear;y++) {
+                if(y == years[0]) {
+                    month = timeInterval.getStartMonth();
+                } else {
+                    month = 1;
+                }
+
+                if(y < lastYear) {
+                    for(int m = month;m <= 12;m++) {
+                        path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
+                        result.add(path);
+                    }
+                } else {
+                    for(int m = month;m <= lastMonth;m++) {
+                        path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
+                        result.add(path);
+                    }
+                }
+            }
         }
 
         return result.toArray(new String[result.size()]);
-    }
-
-    @Nonnull
-    private String assemblePath(final int year,
-                                              final int month) {
-        return dataPath.get(year) + getMonthAsString(month) + FILE_SEPARATOR;
     }
 
     /**
@@ -170,10 +194,14 @@ public class ArchiveLocation {
     }
 
     private void processPathEntries(@Nonnull final Pattern pattern, @Nonnull final File[] fileList) {
+
         for(final File fi : fileList) {
+
             final String name = fi.getName().trim();
             final Matcher matcher = pattern.matcher(name);
+
             if (matcher.matches()) {
+
                 try {
                     final int y = Integer.parseInt(name);
                     String fullPath = fi.getPath().trim();
@@ -190,7 +218,9 @@ public class ArchiveLocation {
                         }
                     }
 
-                } catch(final NumberFormatException nfe) {/* Can be ignored */}
+                } catch(final NumberFormatException nfe) {
+                    LOG.error("[*** NumberFormatException ***]: {}", nfe.getMessage());
+                }
             }
         }
     }
