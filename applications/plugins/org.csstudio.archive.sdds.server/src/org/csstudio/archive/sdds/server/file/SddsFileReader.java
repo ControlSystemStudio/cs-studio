@@ -60,8 +60,7 @@ public class SddsFileReader {
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
-        archiveLocation = new ArchiveLocation();
-        archiveLocation.loadLocationList(dataSourceFile);
+        archiveLocation = new ArchiveLocation(dataSourceFile);
     }
 
     /**
@@ -77,7 +76,8 @@ public class SddsFileReader {
                                          final long startTimeInS,
                                          final long endTimeInS) {
 
-        final String[] filePaths = archiveLocation.getAllPaths(getEndTimeOfPreviousMonth(startTimeInS), endTimeInS);
+        final String[] filePaths = archiveLocation.getAllPaths(1000L*getEndTimeOfPreviousMonth(startTimeInS),
+                                                               1000L*endTimeInS);
         final long st = System.currentTimeMillis();
 
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");

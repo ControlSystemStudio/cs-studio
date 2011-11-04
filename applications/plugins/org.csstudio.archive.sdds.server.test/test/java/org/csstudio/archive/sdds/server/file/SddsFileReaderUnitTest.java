@@ -50,8 +50,7 @@ public class SddsFileReaderUnitTest {
 
         try {
             @SuppressWarnings("unused")
-            final
-            SddsFileReader fileReader = new SddsFileReader(sddsLocation);
+            final SddsFileReader fileReader = new SddsFileReader(sddsLocation);
         } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().startsWith("File with the location paths cannot be found"));
         }
@@ -69,8 +68,7 @@ public class SddsFileReaderUnitTest {
 
         try {
             @SuppressWarnings("unused")
-            final
-            SddsFileReader fileReader = new SddsFileReader(sddsLocation);
+            final SddsFileReader fileReader = new SddsFileReader(sddsLocation);
         } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().endsWith("cannot be found or is empty."));
         }
