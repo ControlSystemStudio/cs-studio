@@ -105,7 +105,7 @@ public class ArchiveLocation {
             lastYear = years[years.length - 1];
             lastMonth = timeInterval.getEndMonth();
 
-            for(int y = years[0];y <= lastYear;y++) {
+            for(int y = years[0]; y <= lastYear; y++) {
                 if(y == years[0]) {
                     month = timeInterval.getStartMonth();
                 } else {
@@ -113,12 +113,12 @@ public class ArchiveLocation {
                 }
 
                 if(y < lastYear) {
-                    for(int m = month;m <= 12;m++) {
+                    for(int m = month; m <= 12; m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
                 } else {
-                    for(int m = month;m <= lastMonth;m++) {
+                    for(int m = month; m <= lastMonth; m++) {
                         path = dataPath.get(y) + getMonthAsString(m) + FILE_SEPARATOR;
                         result.add(path);
                     }
