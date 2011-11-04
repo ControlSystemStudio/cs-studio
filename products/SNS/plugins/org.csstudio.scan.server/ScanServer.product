@@ -27,7 +27,9 @@
    </vm>
 
    <plugins>
+      <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.data"/>
+      <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jms"/>

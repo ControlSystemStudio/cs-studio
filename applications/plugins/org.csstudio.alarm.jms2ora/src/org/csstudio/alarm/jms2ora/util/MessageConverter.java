@@ -26,6 +26,9 @@ package org.csstudio.alarm.jms2ora.util;
 
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.jms2ora.IMessageConverter;
 import org.csstudio.alarm.jms2ora.IMessageProcessor;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
@@ -33,34 +36,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 29.08.2011
  */
 public class MessageConverter extends Thread implements IMessageConverter {
-    
+
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageConverter.class);
 
     /** Writes the ArchiveMessage content to the DB */
-    private IMessageProcessor messageProcessor;
-    
+    private final IMessageProcessor messageProcessor;
+
     /** Object that gets all JMS messages */
-    private MessageAcceptor messageAcceptor;
-    
+    private final MessageAcceptor messageAcceptor;
+
     /** Queue for received messages */
-    private ConcurrentLinkedQueue<RawMessage> rawMessages;
+    private final ConcurrentLinkedQueue<RawMessage> rawMessages;
 
     /** Object that creates the MessageContent objects */
-    private MessageContentCreator contentCreator;
+    private final MessageContentCreator contentCreator;
 
-    private Object lock;
-    
+    private final Object lock;
+
     private boolean working;
-    
-    public MessageConverter(IMessageProcessor processor, StatisticCollector c) {
+
+    public MessageConverter(final IMessageProcessor processor, final StatisticCollector c) {
         messageProcessor = processor;
         messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
@@ -68,42 +71,42 @@ public class MessageConverter extends Thread implements IMessageConverter {
         lock = new Object();
         working = true;
     }
-    
+
     @Override
     public void run() {
-        
+
         LOG.info("Running thread {}", MessageConverter.class.getSimpleName());
-        
+
         while (working) {
-            
+
             synchronized (lock) {
                 try {
                     lock.wait();
-                } catch (InterruptedException ie) {
-                    // Can be ignored
+                } catch (final InterruptedException ie) {
+                    LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
                 }
             }
-            
+
             if (rawMessages.size() > 0) {
-                
+
                 // TODO: Convert the messages
-                Vector<RawMessage> convertMe = new Vector<RawMessage>(rawMessages);
-                Vector<ArchiveMessage> am = contentCreator.convertRawMessages(convertMe);
+                final Vector<RawMessage> convertMe = new Vector<RawMessage>(rawMessages);
+                final Vector<ArchiveMessage> am = contentCreator.convertRawMessages(convertMe);
             }
         }
-        
+
         messageAcceptor.closeAllReceivers();
     }
 
     public int getQueueSize() {
         return rawMessages.size();
     }
-    
+
     @Override
-    public synchronized void putRawMessage(RawMessage m) {
+    public final synchronized void putRawMessage(@Nonnull final RawMessage m) {
         rawMessages.add(m);
     }
-    
+
     /**
      * Sets the working flag to false. The thread will leave then.
      */

@@ -40,7 +40,7 @@ public class LoopCommandHeadlessTest
     public void testLoopCommand() throws Throwable
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("counter", "loc://counter");
+        devices.addPVDevice("counter", "loc://counter");
         final Device counter = devices.getDevice("counter");
         devices.startDevices();
 
@@ -64,8 +64,8 @@ public class LoopCommandHeadlessTest
     public void testLoopCommandWorkunits() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("counter", "loc://counter");
-        devices.addDevice("other", "loc://other");
+        devices.addPVDevice("counter", "loc://counter");
+        devices.addPVDevice("other", "loc://other");
 
         final ScanContext context = new ScanContext(devices);
 
@@ -90,7 +90,7 @@ public class LoopCommandHeadlessTest
     public void testOtherLoops() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("counter", "loc://counter");
+        devices.addPVDevice("counter", "loc://counter");
         final Device counter = devices.getDevice("counter");
         devices.startDevices();
 
@@ -128,7 +128,7 @@ public class LoopCommandHeadlessTest
     public void testReversingLoop() throws Exception
     {
         final DeviceContext devices = new DeviceContext();
-        devices.addDevice("counter", "loc://counter");
+        devices.addPVDevice("counter", "loc://counter");
         final Device counter = devices.getDevice("counter");
         devices.startDevices();
 
