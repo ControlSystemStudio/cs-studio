@@ -31,9 +31,13 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
+import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,13 +58,20 @@ public class SddsFileReader {
     /** The path to the data files */
     private final ArchiveLocation archiveLocation;
 
+    /** Indicates if byte order is little endian */
+    private final boolean littleEndian;
+
     /**
      * Constructor that gets a string containing the path to the data files.
      *
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
+
         archiveLocation = new ArchiveLocation(dataSourceFile);
+
+        final IPreferencesService pref = Platform.getPreferencesService();
+        littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
     }
 
     /**
@@ -72,14 +83,15 @@ public class SddsFileReader {
      * @return Array of data objects
      */
     @Nonnull
-    public RecordDataCollection readData(@Nonnull final String recordName,
+    public final RecordDataCollection readData(@Nonnull final String recordName,
                                          final long startTimeInS,
                                          final long endTimeInS) {
 
-        final String[] filePaths = archiveLocation.getAllPaths(1000L*startTimeInS,
-                                                               1000L*endTimeInS);
+        final String[] filePaths = archiveLocation.getAllPaths(1000L * startTimeInS,
+                                                               1000L * endTimeInS);
         final long st = System.currentTimeMillis();
 
+        // TODO: First check which paths do exist, then create the arrays
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");
         final Thread[] readerThread = new Thread[filePaths.length];
         final SddsDataReader[] reader = new SddsDataReader[filePaths.length];
@@ -87,7 +99,7 @@ public class SddsFileReader {
         for(int i = 0; i < filePaths.length; i++) {
             filePaths[i] = getCorrectFilename(filePaths[i], recordName);
             if(filePaths[i] != null) {
-                reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS);
+                reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
                 readerThread[i] = new Thread(threadGroup, reader[i]);
                 readerThread[i].start();
             }
@@ -156,6 +168,7 @@ public class SddsFileReader {
      * @param dwStartTime
      * @return The last timestamp of the month
      */
+    @SuppressWarnings("unused")
     private long getEndTimeOfPreviousMonth(final long dwStartTime) {
 
         GregorianCalendar cal = null;
