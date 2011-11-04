@@ -20,8 +20,10 @@ public class CaGateway implements IApplication, IGenericServiceListener<ISession
     public Object start(final IApplicationContext context) throws Exception {
 
 	    LOG.info("Start caGateway");
-		caGatewayInstance = CaServer.getGatewayInstance();
 
+	    Activator.getDefault().addSessionServiceListener(this);
+		caGatewayInstance = CaServer.getGatewayInstance();
+		context.applicationRunning();
 		caGatewayInstance.execute();
 
 		if (xmppService != null) {
@@ -40,6 +42,7 @@ public class CaGateway implements IApplication, IGenericServiceListener<ISession
 		    xmppService.disconnect();
 		}
 
+		LOG.info("Leaving caGateway application.");
 		return IApplication.EXIT_OK;
 	}
 

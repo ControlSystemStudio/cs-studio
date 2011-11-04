@@ -148,8 +148,8 @@ public class CaServer {
 			context = jca.createServerContext(JCALibrary.CHANNEL_ACCESS_SERVER_JAVA, this.getServer());
 
 			// Display basic information about the context.
-	        System.out.println(context.getVersion().getVersionString());
-	        context.printInfo(); System.out.println();
+	        LOG.info(context.getVersion().getVersionString());
+	        // context.printInfo();
 	    }
 
 	    private void initializeStatisticCollectors() {
