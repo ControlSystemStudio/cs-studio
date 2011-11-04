@@ -28,7 +28,7 @@
    <extension
          point="org.csstudio.platform.managementCommands">
       <command
-            class="org.csstudio.cagateway.StopServer"
+            class="org.csstudio.cagateway.management.StopServer"
             id="org.csstudio.diag.interconnectionServer.management.StopServer"
             label="Stop Server">
       </command>

@@ -1,3 +1,4 @@
+
 package org.csstudio.cagateway;
 
 import gov.aps.jca.CAException;
@@ -16,51 +17,55 @@ import gov.aps.jca.event.MonitorListener;
  */
 
 public class PVRequester {
-	
-	public static void main(String[] args){
-		JCALibrary jca = JCALibrary.getInstance();
-		
+
+	public static void main(final String[] args){
+		final JCALibrary jca = JCALibrary.getInstance();
+
 		try {
-			Context ctxt = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
-			
+			final Context ctxt = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+
 			//request for "speed" - Mock has it
-			Channel channel = ctxt.createChannel("speed");
+			final Channel channel = ctxt.createChannel("speed");
 			System.out.println("creating channel");
 			channel.addConnectionListener(new CListener());
-			
+
 			Thread.sleep(1000);
-			
-		} catch (Exception e) {
+
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			System.out.println(e);
 		}
-		
-		while(true);
+
+		while(true) {
+            ;
+        }
 	}
 }
 
 class CListener implements ConnectionListener {
 
-	public void connectionChanged(ConnectionEvent arg0) {
+	@Override
+    public void connectionChanged(final ConnectionEvent arg0) {
 		if (arg0.isConnected()){
-			Channel source = (Channel)arg0.getSource();
+			final Channel source = (Channel)arg0.getSource();
 			System.out.println("Connected!");
 			try {
 				source.addMonitor(Monitor.VALUE, new MListener());
 				source.getContext().flushIO();
-			} catch (IllegalStateException e) {
+			} catch (final IllegalStateException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (CAException e) {
+			} catch (final CAException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 }
 class MListener implements MonitorListener {
-	public void monitorChanged(MonitorEvent arg0) {
+	@Override
+    public void monitorChanged(final MonitorEvent arg0) {
 		arg0.getDBR().printInfo();
-	}	
+	}
 }
