@@ -107,9 +107,9 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
         } catch (final Throwable t) {
-            WORKER_LOG.error("Unknown throwable in thread {}.", _name);
+            WORKER_LOG.error("Unknown throwable in thread {}\n{}:", _name, t.toString());
             t.printStackTrace();
-            EMAIL_LOG.info("Unknown throwable in thread {}. See event.log for more info.", _name);
+            EMAIL_LOG.info("Unknown throwable in thread {}.\n{}", _name, t.getMessage());
         }
     }
 
