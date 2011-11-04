@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.slf4j;bundle-version="1.6.1",
  org.csstudio.remote;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  DoocsLibs/jdoocs.jar,
  DoocsLibs/tine.jar
