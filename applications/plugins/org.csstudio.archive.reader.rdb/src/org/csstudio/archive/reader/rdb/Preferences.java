@@ -15,6 +15,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Access to RDB archive preferences
  *  <p>
  *  See preferences.ini for explanation of settings
+ *  
+ *  TODO Archive reader preferences cleanup.
+ *  We use both archive.rdb and archive.reader.rdb preferences,
+ *  but the preference page only shows one of them.
+ *  Combine them into one!
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -24,7 +30,6 @@ public class Preferences
     final public static String PASSWORD = "password";
     final public static String SCHEMA = "schema";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
-    final public static String TIMEOUT_SECS = "timeout_secs";
 
     public static String getUser()
     {
@@ -51,14 +56,6 @@ public class Preferences
         return getString(STORED_PROCEDURE, "");
     }
 
-    public static int getTimeoutSecs()
-    {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        if (prefs == null)
-            return 120;
-        return prefs.getInt(Activator.ID, TIMEOUT_SECS, 120, null);
-    }
-    
     /** Get string preference
      *  @param key Preference key
      *  @return String or <code>null</code>

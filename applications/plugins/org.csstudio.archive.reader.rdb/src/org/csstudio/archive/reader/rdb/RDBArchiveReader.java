@@ -24,6 +24,7 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** ArchiveReader for RDB data
  *  @author Kay Kasemir
@@ -51,6 +52,7 @@ public class RDBArchiveReader implements ArchiveReader
 
     final private RDBUtil rdb;
     final private SQL sql;
+    final private boolean is_oracle;
     
     /** Map of status IDs to Status strings */
     final private HashMap<Integer, String> stati;
@@ -61,6 +63,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** List of statements to cancel in cancel() */
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
+
 
     /** Initialize
      *  @param url Database URL
@@ -84,6 +87,7 @@ public class RDBArchiveReader implements ArchiveReader
      *  @param password .. password
      *  @param schema .. schema (including ".") or ""
      *  @param stored_procedure Stored procedure or "" for client-side optimization
+     *  @param use_array_blob Use BLOB for array elements?
      *  @throws Exception on error
      */
     public RDBArchiveReader(final String url, final String user,
@@ -97,23 +101,26 @@ public class RDBArchiveReader implements ArchiveReader
         this.password = (password == null) ? 0 : password.length();
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = RDBUtil.connect(url, user, password, false);
-        // Ignore the stored procedure for MySQL
-        switch (rdb.getDialect())
-        {
-        case MySQL:
-        case PostgreSQL:
+        
+        is_oracle = rdb.getDialect() == Dialect.Oracle;
+        if (is_oracle)
+        	this.stored_procedure = stored_procedure;
+        else
             this.stored_procedure = "";
-            break;
-        case Oracle:
-    	default:
-            this.stored_procedure = stored_procedure;
-        }
         this.use_array_blob = use_array_blob;
         sql = new SQL(rdb.getDialect(), schema);
         stati = getStatusValues();
         severities = getSeverityValues();
     }
 
+    /** @return <code>true</code> when using Oracle, i.e. no 'nanosec'
+     *          because that is included in the 'smpl_time'
+     */
+    public boolean isOracle()
+    {
+    	return is_oracle;
+    }
+    
     /** @return <code>true</code> if array samples are stored in BLOB */
     public boolean useArrayBlob()
     {

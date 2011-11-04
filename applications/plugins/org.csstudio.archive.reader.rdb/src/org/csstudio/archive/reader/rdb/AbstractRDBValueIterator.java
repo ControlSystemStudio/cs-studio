@@ -30,7 +30,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Base for ValueIterators that read from the RDB
  *  @author Kay Kasemir
@@ -67,6 +66,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      *  there are array values until we know otherwise.
      */
     protected boolean is_an_array = true;
+
 
     /** @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -170,9 +170,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     {
         // Get time stamp
         final Timestamp stamp = result.getTimestamp(1);
-        // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
-        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
-            stamp.setNanos(result.getInt(8));
+        // Oracle has nanoseconds in TIMESTAMP, other RDBs in separate column
+        if (!reader.isOracle())
+            stamp.setNanos(result.getInt(7));
         final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
 
         // Get severity/status
@@ -180,15 +180,6 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         final ISeverity severity = filterSeverity(reader.getSeverity(result.getInt(2)), status);
 
         // Determine the value type
-        if (result.getBoolean(7))
-        	is_an_array = true; // Explicitly marked as array sample
-        else
-        	if (reader.useArrayBlob())
-        		is_an_array = false;
-        // else: Not using blob, could look at old data that doesn't tell
-        //       us if there are array samples, so keep current assumption
-        //       for is_an_array
-
         // Try double
         final double dbl0 = result.getDouble(5);
         if (! result.wasNull())
@@ -202,7 +193,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                         new int [] { (int) dbl0 });
             // Double data. Get array elements - if any.
             final double data[] = reader.useArrayBlob()
-        		? readBlobArrayElements(stamp, dbl0, severity)
+        		? readBlobArrayElements(dbl0, result)
 				: readArrayElements(stamp, dbl0, severity);
             if (meta instanceof INumericMetaData)
                 return ValueFactory.createDoubleValue(time, severity, status,
@@ -339,7 +330,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         sel_array_samples.setInt(1, channel_id);
         sel_array_samples.setTimestamp(2, stamp);
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
-        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
+        if (! reader.isOracle())
             sel_array_samples.setInt(3, stamp.getNanos());
 
         // Assemble array of unknown size in ArrayList ....
@@ -371,70 +362,42 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         return ret;
     }
 
-    /** Given the time and first element of the  sample, see if there
-     *  are more array elements.
-     *  @param stamp Time stamp of the sample
+    /** See if there are array elements.
      *  @param dbl0 Value of the first (maybe only) array element
-     *  @param severity Severity of the sample
+     *  @param result ResultSet for the sample table with blob
      *  @return Array with given element and maybe more.
      *  @throws Exception on error, including 'cancel'
      */
-    private double[] readBlobArrayElements(final Timestamp stamp,
-            final double dbl0,
-            final ISeverity severity) throws Exception
+    private double[] readBlobArrayElements(final double dbl0, final ResultSet result) throws Exception
     {
-        // For performance reasons, only look for array data until we hit a scalar sample.
-        if (is_an_array==false)
+    	final int nelm;
+    	if (reader.isOracle())
+    		nelm = result.getInt(7);
+    	else
+    		nelm = result.getInt(8);
+    		
+        // Not an array
+    	if (nelm <= 1)
             return new double [] { dbl0 };
 
-        // See if there are more array elements
-        if (sel_array_samples == null)
-        {   // Lazy initialization
-            sel_array_samples = reader.getRDB().getConnection().prepareStatement(
-                    reader.getSQL().sample_sel_array_vals_withblob);
-        }
-        sel_array_samples.setInt(1, channel_id);
-        sel_array_samples.setTimestamp(2, stamp);
-        // MySQL keeps nanoseconds in designated column, not TIMESTAMP
-        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
-            sel_array_samples.setInt(3, stamp.getNanos());
-
-        // Decode array elements from BLOB
-        double[] waveformFetched = null;
-        reader.addForCancellation(sel_array_samples);
-        try
-        {
-            final ResultSet res = sel_array_samples.executeQuery();
-            if (res.next())
-            {
-            	final long nelm = res.getLong(2);
-            	final String datatype = res.getString(1);
-
-            	waveformFetched = new double[(int)nelm];
-            	if ("double".equals(datatype))
-            	{
-	            	final byte[] asBytesFetched = res.getBytes(3);
-	            	final ByteArrayInputStream bin = new ByteArrayInputStream(asBytesFetched);
-	            	final DataInputStream din = new DataInputStream(bin);
-	            	for (int i = 0; i < waveformFetched.length; i++)
-		    	        	waveformFetched[i] = din.readDouble();
-            	}
-            	else
-            	{
-            		throw new Exception("Arrays of type " + datatype + " are not decoded");
-            	}
-            }
-            else
-            {	// No array data found
-            	waveformFetched = new double [] { dbl0 };
-            }
-            res.close();
-        }
-        finally
-        {
-            reader.removeFromCancellation(sel_array_samples);
-        }
-        return waveformFetched;
+        // Decode BLOB
+    	final byte[] bytes = result.getBytes(reader.isOracle() ? 8 : 9);
+    	final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+    	final DataInputStream data = new DataInputStream(stream);
+    	final char datatype = data.readChar();
+    	if (datatype == 'd')
+    	{	// Read Double typed array elements
+            final double[] array = new double[(int)nelm];
+        	for (int i = 0; i < array.length; i++)
+        		array[i] = data.readDouble();
+        	data.close();
+        	return array;
+    	}
+    	// TODO Decode 'l' Long and 'i' Integer?
+    	else
+    	{
+    		throw new Exception("Arrays of type " + datatype + " are not decoded");
+    	}
     }
 
     /** @param result ResultSet positioned on row to dump to console

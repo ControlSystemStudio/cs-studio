@@ -152,8 +152,9 @@ CREATE TABLE  channel
    retent_val DOUBLE precision NULL
 );
 INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine(0, 10, 50, 0.1)');
-INSERT INTO channel(channel_id, name) VALUES (2, 'freddy');
-INSERT INTO channel(channel_id, name) VALUES  (3, 'jane');
+INSERT INTO channel(channel_id, name) VALUES (2, 'sim://noiseWaveform(0,10,100,10)');
+INSERT INTO channel(channel_id, name) VALUES (3, 'freddy');
+INSERT INTO channel(channel_id, name) VALUES (4, 'jane');
 UPDATE channel SET retent_val=9999 WHERE channel_id < 4;
 UPDATE channel SET grp_id=1 WHERE channel_id < 4;
 UPDATE channel SET smpl_val=1 WHERE channel_id = 1;
@@ -188,8 +189,15 @@ SELECT * FROM status;
 -- Samples of a channel
 -- Either the numeric, floating point or string value should be set,
 -- not all of them.
+--
 -- For (double) arrays, the float_val contains the first array element,
--- and the array_val table has the following ones
+-- and the array_val has the full array.
+-- nelm > 1 will indicate that there are array elements,
+-- as would array_val != null, but we depend on nelm > 1.
+--
+-- The blob contains:
+-- char 'd' for 'Double',
+-- then nelm double samples for the array elements.
 DROP TABLE IF EXISTS sample;
 CREATE TABLE sample
 (
@@ -202,6 +210,9 @@ CREATE TABLE sample
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
    is_an_array boolean default false,
+   nelm INT NOT NULL DEFAULT 1,
+   array_val BYTEA  NULL,
+   
    -- Note that these foreign keys are good for data consistency,
    -- but bad for performance.
    -- Writing to the table will be almost twice as fast without
@@ -222,24 +233,8 @@ INSERT INTO sample (channel_id, smpl_time,  nanosecs, severity_id, status_id, fl
           (1, '2004-01-10 13:01:10', 4, 1, 2, 3.14);
 
 ------------------------
+-- *** OLD Array element table. Replaced by array_val BLOB in sample table ***
 -- See sample table: Array elements 1, 2, 3, ... beyond the element 0
--- that's in the sample table
-DROP TABLE IF EXISTS array_val_blob;
-CREATE TABLE  array_val_blob
-(
-   channel_id BIGINT  NOT NULL,
-   smpl_time TIMESTAMP NOT NULL,
-   nanosecs BIGINT  NOT NULL,
-   datatype varchar(20) NOT NULL,
-   nelm int,
-   --shall always be the last column
-   values BYTEA  NOT NULL,
-   FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
-);
-CREATE INDEX array_val_blob_id_time ON array_val_blob ( channel_id, smpl_time, nanosecs );
-
-------------------------
--- We need to keep it in case old clients wants to access.See sample table: Array elements 1, 2, 3, ... beyond the element 0
 -- that's in the sample table
 DROP TABLE IF EXISTS array_val;
 CREATE TABLE  array_val
@@ -252,10 +247,7 @@ CREATE TABLE  array_val
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE
 );
 
-
 CREATE INDEX array_val_id_time ON array_val ( channel_id, smpl_time, nanosecs );
-
-
 
 
 ------------------------
