@@ -119,41 +119,47 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      * @return
      */
     protected String getColorFromDigLogColorRule(final AnyData anyData) {
-        int arguments = -1;
-        if( anyData != null && anyData.numberValue() != null) {
-            arguments = anyData.numberValue().intValue();
-        }
         String color = "${Illegal}";
-        if(arguments >= 15||!hasValue(anyData)) {
-            color = "${Invalid}";
-        } else if(arguments >= 3) {
-            color = "${Minor}";
-        } else if(arguments >= 2) {
-            color = "${Offen}";
-        } else if(arguments >= 1) {
-            color = "${Geregelt}";
-        } else if(arguments >= 0) {
-            color = "${Zu}";
+        if (anyData != null) {
+            int arguments = -1;
+            if (anyData.numberValue() != null) {
+                arguments = anyData.numberValue().intValue();
+            }
+            if (arguments >= 15 || !hasValue(anyData)) {
+                color = "${Invalid}";
+            } else if (arguments >= 3) {
+                color = "${Minor}";
+            } else if (arguments >= 2) {
+                color = "${Offen}";
+            } else if (arguments >= 1) {
+                color = "${Geregelt}";
+            } else if (arguments >= 0) {
+                color = "${Zu}";
+            }
         }
         return color;
     }
 
     protected String getColorFromAlarmColorRule(final AnyData anyData) {
-        int arguments = -1;
-        if( anyData != null && anyData.numberValue() != null) {
-            arguments = anyData.numberValue().intValue();
-        }
         String color = "${Illegal}";
-        if(arguments >= 15||!hasValue(anyData)) {
-            color = "${Invalid}";
-        } else if(arguments >= 3) {
-            color = "${Minor}";
-        } else if(arguments >= 2) {
-            color = "${Offen}";
-        } else if(arguments >= 1) {
-            color = "${Geregelt}";
-        } else if(arguments >= 0) {
-            color = "${Zu}";
+        if (anyData != null) {
+            int arguments = -1;
+            if (anyData.numberValue() != null) {
+                arguments = anyData.numberValue().intValue();
+            }
+            if (!hasValue(anyData)) {
+                color = "${Invalid}";
+            } else if (arguments > 3) {
+                color = "${Illegal}";
+            } else if (arguments >= 3) {
+                color = "${Invalid}";
+            } else if (arguments >= 2) {
+                color = "${Major}";
+            } else if (arguments >= 1) {
+                color = "${Minor}";
+            } else if (arguments >= 0) {
+                color = "${NoAlarm}";
+            }
         }
         return color;
     }
