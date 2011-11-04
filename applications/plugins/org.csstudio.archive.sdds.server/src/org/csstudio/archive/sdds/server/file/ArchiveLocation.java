@@ -61,12 +61,9 @@ public class ArchiveLocation {
      */
     private final TreeMap<Integer, String> dataPath;
 
-
-    /**
-     *
-     */
-    public ArchiveLocation() {
+    public ArchiveLocation(@Nonnull final String location) throws DataPathNotFoundException {
         dataPath = new TreeMap<Integer, String>(new YearComparator());
+        loadLocationList(location);
     }
 
     /**
@@ -80,36 +77,38 @@ public class ArchiveLocation {
     }
 
     /**
-     *
+     * Returns all existing monthly paths for the interval plus the month before the interval
      * @return All matching paths
      */
     @Nonnull
-    public String[] getAllPaths(final long startTimeInS, final long endTimeInS) {
+    public String[] getAllPaths(final long startTimeInMS, final long endTimeInMS) {
 
-        final List<String> result = Lists.newArrayList();
 
-        final Interval interval = new Interval(startTimeInS*1000, endTimeInS*1000);
+        final Interval interval = new Interval(startTimeInMS, endTimeInMS);
 
-        for(DateTime curDate = interval.getStart(); curDate.isBefore(interval.getEnd()); curDate = curDate.plusMonths(1)) {
+        List<String> result = Lists.newArrayList();
 
-            final String path = assemblePath(curDate.getYear(), curDate.getMonthOfYear());
-            result.add(path);
+        // transform startDate to the first day of the month before
+        final DateTime inMonthBefore = interval.getStart().minusMonths(1);
+        final DateTime startDate = inMonthBefore.minusDays(inMonthBefore.getDayOfMonth() - 1);
+        final DateTime endDate = interval.getEnd().plusDays(1);
+
+        for(DateTime curDate = startDate; curDate.isBefore(endDate); curDate = curDate.plusMonths(1)) {
+            result = assemblePath(result, curDate);
         }
-
         return result.toArray(new String[result.size()]);
     }
 
     @Nonnull
-    private String assemblePath(final int year,
-                                              final int month) {
-        return dataPath.get(year) + getMonthAsString(month) + FILE_SEPARATOR;
+    private List<String> assemblePath(@Nonnull final List<String> result,
+                                      @Nonnull final DateTime curDate) {
+        final String pathPresent = dataPath.get(curDate.getYear());
+        if (pathPresent != null) {
+             result.add(pathPresent + getMonthAsString(curDate.getMonthOfYear()) + FILE_SEPARATOR);
+        }
+        return result;
     }
 
-    /**
-     *
-     * @param month
-     * @return The month as string
-     */
     @Nonnull
     public String getMonthAsString(final int month) {
         return month > 9 ? Integer.toString(month) : new String("0" + month);
@@ -119,7 +118,7 @@ public class ArchiveLocation {
      *
      * @param filePath - The name and path of the file that contains the SDDS file location list
      */
-    public void loadLocationList(@Nonnull final String filePath) throws DataPathNotFoundException {
+    private void loadLocationList(@Nonnull final String filePath) throws DataPathNotFoundException {
 
         List<String> paths = Collections.emptyList();
         try {
@@ -175,18 +174,18 @@ public class ArchiveLocation {
             final Matcher matcher = pattern.matcher(name);
             if (matcher.matches()) {
                 try {
-                    final int y = Integer.parseInt(name);
+                    final int year = Integer.parseInt(name);
                     String fullPath = fi.getPath().trim();
 
                     if(!fullPath.endsWith(FILE_SEPARATOR)) {
                         fullPath += FILE_SEPARATOR;
                     }
 
-                    if (!dataPath.containsKey(y)) {
-                        dataPath.put(y, fullPath);
+                    if (!dataPath.containsKey(year)) {
+                        dataPath.put(year, fullPath);
                     } else {
-                        if(containsMoreSubDirs(fullPath, dataPath.get(y))) {
-                            dataPath.put(y, fullPath);
+                        if(containsMoreSubDirs(fullPath, dataPath.get(year))) {
+                            dataPath.put(year, fullPath);
                         }
                     }
 

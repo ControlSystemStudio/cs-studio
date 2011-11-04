@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.eclipse.core.runtime.Platform;
@@ -143,11 +142,6 @@ class MainResponse extends AbstractResponse {
         html.tableLine(new String[] {Messages.HTTP_WRITE_PERIOD,
                                      getModel().getWritePeriodInMS() + " ms",
                                      });
-
-        html.tableLine(new String[] {Messages.HTTP_WRITE_STATE,
-                                     (SampleBuffer.isInErrorState() ? HTMLWriter.makeRedText(Messages.HTTP_WRITE_ERROR) :
-                                                                      Messages.HTTP_OK),
-                                                                      });
 
         final TimeInstant lastWriteTime = getModel().getLastWriteTime();
         html.tableLine(new String[] {Messages.HTTP_LAST_WRITETIME,

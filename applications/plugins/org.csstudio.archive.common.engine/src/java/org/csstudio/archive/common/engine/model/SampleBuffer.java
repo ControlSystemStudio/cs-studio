@@ -23,10 +23,9 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  * <p>
  * Assumes that one thread adds samples, while a different
  * thread removes them.
- * When the queue capacity is exceeded, older samples get dropped.
  *
  * Is implemented atop of LinkedBlockingQueue with Forwarding pattern. Hence,
- * a producer consumer scenario can be assumed.
+ * a producer consumer scenario can be installed.
  *
  *  @author Kay Kasemir
  *  @author Bastian Knerr
@@ -37,12 +36,7 @@ import com.google.common.util.concurrent.ForwardingBlockingQueue;
  */
 public class SampleBuffer<V extends Serializable,
                           T extends ISystemVariable<V>,
-                          S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S>
-{
-    /** Is the buffer in an error state because of RDB write errors?
-     *  Note that this is global for all buffers, not per instance!
-     */
-    private static volatile boolean ERROR;
+                          S extends IArchiveSample<V, T>> extends ForwardingBlockingQueue<S> {
 
     /** Name of channel that writes to this buffer.
      *  (we keep only the name, not the full channel,
@@ -64,23 +58,13 @@ public class SampleBuffer<V extends Serializable,
         super();
 
         this._channelName = channelName;
-        _samples = new LinkedBlockingQueue<S>(); // step by step to a producer consumer pattern
+        _samples = new LinkedBlockingQueue<S>();
     }
 
     /** @return channel name of this buffer */
     @Nonnull
     String getChannelName() {
         return _channelName;
-    }
-
-    /** @return <code>true</code> if currently experiencing write errors */
-    public static boolean isInErrorState() {
-        return ERROR;
-    }
-
-    /** Set the error state. */
-    static void setErrorState(final boolean error) {
-        SampleBuffer.ERROR = error;
     }
 
 
