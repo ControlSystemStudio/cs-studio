@@ -77,7 +77,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 					UIBundlingThread.getInstance().addRunnable(
 							getViewer().getControl().getDisplay(),new Runnable(){
 						public void run() {
-							figure.setCursor(savedCursor);
+							if(figure.getCursor() == Cursors.NO)
+								figure.setCursor(savedCursor);
 							figure.setEnabled(widgetModel.isEnabled());	
 						}
 					});
