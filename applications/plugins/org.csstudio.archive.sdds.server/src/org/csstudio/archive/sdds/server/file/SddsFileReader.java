@@ -76,7 +76,7 @@ public class SddsFileReader {
                                          final long startTimeInS,
                                          final long endTimeInS) {
 
-        final String[] filePaths = archiveLocation.getAllPaths(1000L*getEndTimeOfPreviousMonth(startTimeInS),
+        final String[] filePaths = archiveLocation.getAllPaths(1000L*startTimeInS,
                                                                1000L*endTimeInS);
         final long st = System.currentTimeMillis();
 
@@ -156,7 +156,7 @@ public class SddsFileReader {
      * @param dwStartTime
      * @return The last timestamp of the month
      */
-    public long getEndTimeOfPreviousMonth(final long dwStartTime) {
+    private long getEndTimeOfPreviousMonth(final long dwStartTime) {
 
         GregorianCalendar cal = null;
         long epoch;
@@ -169,38 +169,6 @@ public class SddsFileReader {
         cal.set(Calendar.SECOND, 0);
 
         epoch = cal.getTimeInMillis() / 1000 - 1;
-
-        return epoch;
-    }
-
-    /**
-     *  New start search time is '01-mmm-yyyy 00:00:00'.
-     *  Get year and month from current epoch, increase the month by one,
-     *  modify others and call 'mktime()' to get new start_time.
-     *
-     * @param dwStartTime
-     * @return The first timestamp of the next month
-     */
-    public long getStartTimeOfNextMonth(final long dwStartTime) {
-
-        GregorianCalendar cal = null;
-        long epoch;
-
-        cal = new GregorianCalendar();
-        cal.setTimeInMillis(dwStartTime * 1000);
-
-        cal.add(Calendar.MONTH, 1);
-        if(cal.get(Calendar.MONTH) > 10) {
-            cal.set(Calendar.MONTH, 0);
-            cal.add(Calendar.YEAR, 1);
-        }
-
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-
-        epoch = cal.getTimeInMillis() / 1000;
 
         return epoch;
     }

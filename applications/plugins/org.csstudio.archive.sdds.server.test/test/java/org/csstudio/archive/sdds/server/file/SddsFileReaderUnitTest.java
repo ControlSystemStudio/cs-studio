@@ -24,8 +24,10 @@
 
 package org.csstudio.archive.sdds.server.file;
 
+import org.csstudio.archive.sdds.server.data.RecordDataCollection;
 import org.csstudio.domain.common.resource.CssResourceLocator;
 import org.csstudio.domain.common.resource.CssResourceLocator.RepoDomain;
+import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -57,18 +59,25 @@ public class SddsFileReaderUnitTest {
     }
 
     @Test
-    public void testLocationPathNotFound() {
+    public void testReadData() {
 
         // This file contains invalid paths
-        final String sddsLocation = CssResourceLocator.
-                               composeResourceLocationString(
-                               RepoDomain.APPLICATIONS,
-                               "org.csstudio.archive.sdds.server.test",
-                               "res/sdds_data_invalid.txt");
+        final String sddsLocation =
+            CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS,
+                                                             "org.csstudio.archive.sdds.server.test",
+                                                             "res/sdds_data_valid_locations.txt");
 
         try {
-            @SuppressWarnings("unused")
             final SddsFileReader fileReader = new SddsFileReader(sddsLocation);
+
+            final long _1998_5_1 = new DateTime(0L).plusYears(28).plusMonths(4).getMillis();
+            final long _1998_7_1 = new DateTime(0L).plusYears(28).plusMonths(6).getMillis();
+
+            final RecordDataCollection dataCollection =
+                fileReader.readData("krykWeather_Temp_ai", _1998_5_1/1000, _1998_7_1/1000);
+
+            Assert.assertTrue(dataCollection.getNumberOfData() > 0);
+
         } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().endsWith("cannot be found or is empty."));
         }

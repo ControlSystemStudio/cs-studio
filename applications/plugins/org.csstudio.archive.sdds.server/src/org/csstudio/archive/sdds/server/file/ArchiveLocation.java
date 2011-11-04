@@ -77,7 +77,7 @@ public class ArchiveLocation {
     }
 
     /**
-     *
+     * Returns all existing monthly paths for the interval plus the month before the interval
      * @return All matching paths
      */
     @Nonnull
@@ -87,8 +87,13 @@ public class ArchiveLocation {
         final Interval interval = new Interval(startTimeInMS, endTimeInMS);
 
         List<String> result = Lists.newArrayList();
-        final DateTime endDate = interval.getEnd().plusMonths(1);
-        for(DateTime curDate = interval.getStart(); curDate.isBefore(endDate); curDate = curDate.plusMonths(1)) {
+
+        // transform startDate to the first day of the month before
+        final DateTime inMonthBefore = interval.getStart().minusMonths(1);
+        final DateTime startDate = inMonthBefore.minusDays(inMonthBefore.getDayOfMonth() - 1);
+        final DateTime endDate = interval.getEnd().plusDays(1);
+
+        for(DateTime curDate = startDate; curDate.isBefore(endDate); curDate = curDate.plusMonths(1)) {
             result = assemblePath(result, curDate);
         }
         return result.toArray(new String[result.size()]);
