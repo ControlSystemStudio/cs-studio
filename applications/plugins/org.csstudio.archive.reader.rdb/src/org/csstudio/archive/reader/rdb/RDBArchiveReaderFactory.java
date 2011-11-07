@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveReaderFactory;
 
@@ -40,11 +41,11 @@ public class RDBArchiveReaderFactory implements ArchiveReaderFactory
             throw new Exception("RDBArchiveReaderFactory requires Plugin infrastructure");
         synchronized (instance)
         {
-            final String user = Preferences.getUser();
-            final String password = Preferences.getPassword();
-            final String schema = Preferences.getSchema();
-            return new RDBArchiveReader(url, user,
-                    password, schema, Preferences.getStoredProcedure());
+            final String user = RDBArchivePreferences.getUser();
+            final String password = RDBArchivePreferences.getPassword();
+            final String schema = RDBArchivePreferences.getSchema();
+            final String stored_proc = Preferences.getStoredProcedure();
+			return new RDBArchiveReader(url, user, password, schema, stored_proc);
         }
     }
 }
