@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
-import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -16,40 +14,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  <p>
  *  See preferences.ini for explanation of settings
  *  
- *  TODO Archive reader preferences cleanup.
- *  We use both archive.rdb and archive.reader.rdb preferences,
- *  but the preference page only shows one of them.
- *  Combine them into one!
- *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Preferences
 {
-    final public static String USER = "user";
-    final public static String PASSWORD = "password";
-    final public static String SCHEMA = "schema";
     final public static String STORED_PROCEDURE = "use_stored_procedure";
-
-    public static String getUser()
-    {
-        return getString(USER, RDBArchivePreferences.getUser());
-    }
-    
-    public static String getPassword()
-    {
-        // Must use SecureStorage for password because preference page
-        // uses PasswordFieldEditor 
-        String password = SecureStorage.retrieveSecureStorage(Activator.ID, PASSWORD);
-        if (password == null)
-        	password = RDBArchivePreferences.getPassword();
-        return password;
-    }
-    
-    public static String getSchema()
-    {
-        return getString(SCHEMA, RDBArchivePreferences.getSchema());
-    }
 
     public static String getStoredProcedure()
     {
