@@ -9,6 +9,7 @@ package org.csstudio.archive.reader.rdb;
 
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -39,9 +40,13 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(GRID);
-        rdb_prefs = new ScopedPreferenceStore(InstanceScope.INSTANCE,
+        // TODO For Eclipse 3.7, use InstanceScope.INSTANCE
+        // ITER with Eclipse 3.6 needs new InstanceScope()
+        @SuppressWarnings("deprecation")
+        final IScopeContext scope = new InstanceScope();
+		rdb_prefs = new ScopedPreferenceStore(scope,
         		org.csstudio.archive.rdb.Activator.ID);
-        reader_prefs = new ScopedPreferenceStore(InstanceScope.INSTANCE,
+        reader_prefs = new ScopedPreferenceStore(scope,
         		org.csstudio.archive.reader.rdb.Activator.ID);
 		setPreferenceStore(rdb_prefs);
     }

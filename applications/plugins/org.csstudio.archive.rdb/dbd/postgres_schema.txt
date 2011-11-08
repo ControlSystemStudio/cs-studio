@@ -209,7 +209,6 @@ CREATE TABLE sample
    num_val INT NULL,
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
-   is_an_array boolean default false,
    nelm INT NOT NULL DEFAULT 1,
    array_val BYTEA  NULL,
    

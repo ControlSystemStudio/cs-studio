@@ -287,11 +287,20 @@ public class RDBArchiveWriter implements ArchiveWriter
         // More array elements?
         if (dbl.length <= 1)
     	{
-            if (rdb.getDialect() == Dialect.Oracle)
-            	insert_double_sample.setNull(7, Types.BLOB);// Types.BINARY?
-            else
-            	insert_double_sample.setNull(8, Types.BLOB);// Types.BINARY?
-    	}
+            switch (rdb.getDialect())
+            {
+            case Oracle:
+                // TODO Oracle case not tested
+                insert_double_sample.setNull(7, Types.BLOB);
+                break;
+            case PostgreSQL:
+                insert_double_sample.setBytes(8, null);
+                break;
+            default:
+                // Types.BINARY?
+                insert_double_sample.setNull(8, Types.BLOB);
+            }
+        }
         else
         {
     	     final ByteArrayOutputStream bout = new ByteArrayOutputStream();
