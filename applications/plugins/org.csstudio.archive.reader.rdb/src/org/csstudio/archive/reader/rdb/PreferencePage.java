@@ -11,6 +11,7 @@ import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.auth.ui.security.PasswordFieldEditor;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -74,5 +75,6 @@ public class PreferencePage extends FieldEditorPreferencePage
 	            return reader_prefs;
             }
         });
+        addField(new BooleanFieldEditor(RDBArchivePreferences.USE_ARRAY_BLOB, Messages.UseBLOB, parent));
     }
 }
