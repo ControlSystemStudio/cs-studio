@@ -36,9 +36,11 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
@@ -300,12 +302,29 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 
 	}
+	
+	public DragTracker getDragTracker(Request request) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			return new SelectEditPartTracker(this) {				
+				@Override
+				protected boolean handleButtonUp(int button) {
+					if (button == 1) {
+						//make widget in edit mode by single click
+						performOpen();
+					}
+					return super.handleButtonUp(button);
+				}
+			};
+		}else
+			return super.getDragTracker(request);
+	}
 
 	@Override
 	public void performRequest(Request request) {
 		if (getFigure().isEnabled()
-				&& (request.getType() == RequestConstants.REQ_DIRECT_EDIT || request
-						.getType() == RequestConstants.REQ_OPEN))
+				&&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
+				getExecutionMode() != ExecutionMode.RUN_MODE)||
+				request.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}
 
