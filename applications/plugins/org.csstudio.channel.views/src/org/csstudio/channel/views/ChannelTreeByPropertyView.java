@@ -6,6 +6,7 @@ import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,8 +57,9 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	/** Memento */
 	private IMemento memento = null;
 	
-	/** Memento tag */
-	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+	/** Memento tags */
+	private static final String MEMENTO_QUERY = "ChannelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_PROPERTIES = "Property"; //$NON-NLS-1$
 	
 	private final ChannelQueryListener channelQueryListener = new ChannelQueryListener() {
 		
@@ -98,13 +100,23 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		super.saveState(memento);
 		// Save the currently selected variable
 		if (combo.getText() != null) {
-			memento.putString(MEMENTO_PVNAME, combo.getText());
+			memento.putString(MEMENTO_QUERY, combo.getText());
+			if (!treeWidget.getProperties().isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				for (String property : treeWidget.getProperties()) {
+					sb.append(property).append(",");
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				memento.putString(MEMENTO_PROPERTIES, sb.toString());
+			}
 		}
 	}
 	
-	private void setQueryText(String name) {
-		combo.setText(name);
-		changeQuery(name);
+	private void setQueryText(String text) {
+		if (text == null)
+			text = "";
+		combo.setText(text);
+		changeQuery(text);
 	}
 	
 	private Combo combo;
@@ -189,8 +201,11 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		});
 		name_helper.loadSettings();
 		
-		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setQueryText(memento.getString(MEMENTO_PVNAME));
+		if (memento != null) {
+			setQueryText(memento.getString(MEMENTO_QUERY));
+			if (memento.getString(MEMENTO_PROPERTIES) != null) {
+				treeWidget.setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
+			}
 		}
 		
 		MenuManager menuMgr = new MenuManager();
