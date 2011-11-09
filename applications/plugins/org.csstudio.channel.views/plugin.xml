@@ -77,6 +77,12 @@
                label="Channel Tree by Property"
                style="push">
          </command>
+         <command
+               commandId="org.csstudio.channel.views.OpenWaterfallQuery"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+               label="Waterfall"
+               style="push">
+         </command>
       </menuContribution>
     </extension>
    <extension
@@ -84,6 +90,11 @@
       <command
             defaultHandler="org.csstudio.channel.views.OpenWaterfall"
             id="org.csstudio.channel.views.OpenWaterfall"
+            name="Waterfall">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenWaterfallQuery"
+            id="org.csstudio.channel.views.OpenWaterfallQuery"
             name="Waterfall">
       </command>
       <command
