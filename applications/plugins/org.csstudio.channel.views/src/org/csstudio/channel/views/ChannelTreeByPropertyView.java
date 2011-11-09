@@ -102,7 +102,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		}
 	}
 	
-	public void setPVName(String name) {
+	private void setQueryText(String name) {
 		combo.setText(name);
 		changeQuery(name);
 	}
@@ -123,13 +123,18 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			return;
 		}
 		
+		ChannelQuery newQuery = ChannelQuery.Builder.query(text).create();
+		setChannelQuery(newQuery);
+	}
+	
+	public void setChannelQuery(ChannelQuery query) {
+		combo.setText(query.getQuery());
+		ChannelQuery oldQuery = treeWidget.getChannelQuery();
 		if (oldQuery != null) {
 			oldQuery.removeChannelQueryListener(channelQueryListener);
 		}
-		
-		ChannelQuery newQuery = ChannelQuery.Builder.query(text).create();
-		newQuery.execute(channelQueryListener);
-		treeWidget.setChannelQuery(newQuery);
+		query.execute(channelQueryListener);
+		treeWidget.setChannelQuery(query);
 	}
 
 	@Override
@@ -185,7 +190,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		name_helper.loadSettings();
 		
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setPVName(memento.getString(MEMENTO_PVNAME));
+			setQueryText(memento.getString(MEMENTO_PVNAME));
 		}
 		
 		MenuManager menuMgr = new MenuManager();

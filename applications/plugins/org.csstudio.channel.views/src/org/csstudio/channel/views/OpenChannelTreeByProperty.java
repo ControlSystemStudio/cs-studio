@@ -20,7 +20,7 @@ public class OpenChannelTreeByProperty extends ChannelQueryCommandHandler {
 				ChannelTreeByPropertyView channelTree;
 					channelTree = (ChannelTreeByPropertyView) page
 					.showView(ChannelTreeByPropertyView.ID);
-				channelTree.setPVName(queries.get(0).getQuery());
+				channelTree.setChannelQuery(queries.get(0));
 			}
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
