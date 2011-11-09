@@ -36,9 +36,9 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 22.06.2011
  */
+@SuppressWarnings("rawtypes")
 public abstract class AbstractValueIterator implements ValueIterator {
 
-    @SuppressWarnings("rawtypes")
     protected static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
 
