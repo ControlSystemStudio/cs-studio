@@ -190,14 +190,7 @@ SELECT * FROM status;
 -- Either the numeric, floating point or string value should be set,
 -- not all of them.
 --
--- For (double) arrays, the float_val contains the first array element,
--- and the array_val has the full array.
--- nelm > 1 will indicate that there are array elements,
--- as would array_val != null, but we depend on nelm > 1.
---
--- The blob contains:
--- char 'd' for 'Double',
--- then nelm double samples for the array elements.
+-- See array_encoding.txt for handling of array data.
 DROP TABLE IF EXISTS sample;
 CREATE TABLE sample
 (
@@ -209,7 +202,7 @@ CREATE TABLE sample
    num_val INT NULL,
    float_val REAL NULL,
    str_val VARCHAR(120) NULL,
-   nelm INT NOT NULL DEFAULT 1,
+   datatype CHAR(1) NULL DEFAULT ' ',
    array_val BYTEA  NULL,
    
    -- Note that these foreign keys are good for data consistency,

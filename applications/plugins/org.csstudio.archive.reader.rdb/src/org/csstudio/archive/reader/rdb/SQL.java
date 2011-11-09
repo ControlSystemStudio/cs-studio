@@ -97,7 +97,7 @@ public class SQL
                 "     AND smpl_time BETWEEN ? AND ?" +
                 "   ORDER BY smpl_time";
             sample_sel_by_id_start_end_with_blob =
-    	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nelm, array_val" +
+    	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, datatype, array_val" +
     	            "   FROM " + prefix + "sample" +
     	            "   WHERE channel_id=?" +
     	            "     AND smpl_time>=? AND smpl_time<=?" +
@@ -117,7 +117,7 @@ public class SQL
                 "     AND smpl_time>=? AND smpl_time<=?" +
                 "   ORDER BY smpl_time, nanosecs";
             sample_sel_by_id_start_end_with_blob =
-	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs, nelm, array_val" +
+	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs, datatype, array_val" +
 	            "   FROM " + prefix + "sample" +
 	            "   WHERE channel_id=?" +
 	            "     AND smpl_time>=? AND smpl_time<=?" +

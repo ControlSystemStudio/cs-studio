@@ -370,25 +370,25 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      */
     private double[] readBlobArrayElements(final double dbl0, final ResultSet result) throws Exception
     {
-    	final int nelm;
+    	final String datatype;
     	if (reader.isOracle())
-    		nelm = result.getInt(7);
+    	    datatype = result.getString(7);
     	else
-    		nelm = result.getInt(8);
+    	    datatype = result.getString(8);
     		
-        // Not an array
-    	if (nelm <= 1)
+        // ' ' or NULL indicate: Scalar, not an array
+    	if (datatype == null || " ".equals(datatype) || result.wasNull())
             return new double [] { dbl0 };
 
         // Decode BLOB
     	final byte[] bytes = result.getBytes(reader.isOracle() ? 8 : 9);
     	final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
     	final DataInputStream data = new DataInputStream(stream);
-    	final char datatype = data.readChar();
-    	if (datatype == 'd')
+    	if ("d".equals(datatype))
     	{	// Read Double typed array elements
-            final double[] array = new double[(int)nelm];
-        	for (int i = 0; i < array.length; i++)
+    	    final int nelm = data.readInt();
+            final double[] array = new double[nelm];
+        	for (int i = 0; i < nelm; i++)
         		array[i] = data.readDouble();
         	data.close();
         	return array;
@@ -396,7 +396,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     	// TODO Decode 'l' Long and 'i' Integer?
     	else
     	{
-    		throw new Exception("Arrays of type " + datatype + " are not decoded");
+    		throw new Exception("Sample BLOBs of type '" + datatype + "' are not decoded");
     	}
     }
 

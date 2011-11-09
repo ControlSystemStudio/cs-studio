@@ -39,8 +39,9 @@ public class RDBArchiveReaderTest
     final private static double TIMERANGE_SECONDS = 60*60*24*14;
     final private static int BUCKETS = 50;
 
-    final private static boolean dump = false;
+    final private static boolean dump = true;
 
+    @SuppressWarnings("unused")
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
 	
     private RDBArchiveReader reader;
@@ -83,6 +84,7 @@ public class RDBArchiveReaderTest
      *  @param archive ArchiveReader to cance
      *  @param seconds Seconds until cancellation
      */
+    @SuppressWarnings("unused")
     private void scheduleCancellation(final ArchiveReader archive, final double seconds)
     {
         new Timer("CancellationTest").schedule(new TimerTask()
