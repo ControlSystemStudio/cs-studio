@@ -84,7 +84,7 @@ public class SQL
     	case Oracle:
     		sample_insert_double_blob =
     		"INSERT INTO " + schema + "sample " +
-    				"(channel_id, smpl_time, severity_id, status_id, float_val, nelm, array_val)" +
+    				"(channel_id, smpl_time, severity_id, status_id, float_val, datatype, array_val)" +
     				" VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
@@ -107,7 +107,7 @@ public class SQL
         	// Nanosecs are listed last to preserve the order of common columns
     		sample_insert_double_blob =
     			"INSERT INTO " + schema + "sample " +
-				"(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, nelm, array_val)" +
+				"(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
 				" VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
@@ -132,7 +132,7 @@ public class SQL
     		// Nanosecs must be param 6 to preserve the order of common columns.
             sample_insert_double_blob =
 	            "INSERT INTO " + schema + "sample " +
-	            "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, nelm, array_val)" +
+	            "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
 	            " VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +

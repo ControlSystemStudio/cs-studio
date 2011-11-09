@@ -169,14 +169,7 @@ SELECT * FROM status;
 # Either the numeric, floating point or string value should be set,
 # not all of them.
 #
-# For (double) arrays, the float_val contains the first array element,
-# and the array_val has the full array.
-# nelm > 1 will indicate that there are array elements,
-# as would array_val != null, but we depend on nelm > 1.
-#
-# The blob contains:
-# char 'd' for 'Double',
-# then nelm double samples for the array elements.
+# See array_encoding.txt for handling of array data.
 #
 # Blob size considerations:
 # TINYBLOB: Up to 2^8 = 256 bytes, 1 byte overhead
@@ -186,25 +179,26 @@ SELECT * FROM status;
 DROP TABLE IF EXISTS sample;
 CREATE TABLE IF NOT EXISTS sample
 (
-   channel_id INT UNSIGNED NOT NULL     COMMENT 'Channel ID',
-   smpl_time TIMESTAMP NOT NULL         COMMENT 'Time stamp',
-   nanosecs INT UNSIGNED NOT NULL       COMMENT 'Nanoseconds of time stamp',
-   severity_id INT UNSIGNED NOT NULL    COMMENT 'Severity ID',
-   status_id INT UNSIGNED NOT NULL      COMMENT 'Status ID',
-   num_val INT NULL                     COMMENT 'Integer value or null',
-   float_val REAL NULL                  COMMENT 'Float value or null',
-   str_val VARCHAR(120) NULL            COMMENT 'String value or null',
-   nelm INT UNSIGNED NOT NULL DEFAULT 1 COMMENT 'Array element count, 1 for scalar',
-   array_val LONGBLOB  NULL             COMMENT 'Array elements',
+   channel_id INT UNSIGNED NOT NULL                       COMMENT 'Channel ID',
+   smpl_time TIMESTAMP NOT NULL                           COMMENT 'Time stamp',
+   nanosecs INT UNSIGNED NOT NULL                         COMMENT 'Nanoseconds of time stamp',
+   severity_id INT UNSIGNED NOT NULL                      COMMENT 'Severity ID',
+   status_id INT UNSIGNED NOT NULL                        COMMENT 'Status ID',
+   num_val INT NULL                                       COMMENT 'Integer value or null',
+   float_val REAL NULL                                    COMMENT 'Float value or null',
+   str_val VARCHAR(120) NULL                              COMMENT 'String value or null',
+   datatype CHAR(1) CHARACTER SET binary NULL DEFAULT ' ' COMMENT 'Array element count, 1 for scalar',
+   array_val LONGBLOB  NULL                               COMMENT 'Array data',
    
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE,
    FOREIGN KEY (severity_id) REFERENCES severity (severity_id) ON DELETE CASCADE,
    FOREIGN KEY (status_id) REFERENCES status (status_id) ON DELETE CASCADE
 );
 
-# After the fact:
-# ALTER TABLE sample ADD COLUMN nelm INT NOT NULL DEFAULT 1 AFTER str_val;
-# ALTER TABLE sample ADD COLUMN array_val LONGBLOB NULL AFTER nelm;
+# Update original non-BLOB sample table:
+#
+# ALTER TABLE sample ADD COLUMN datatype CHAR(1) CHARACTER SET binary NULL DEFAULT ' ' COMMENT 'array_val data type' AFTER str_val;
+# ALTER TABLE sample ADD COLUMN array_val LONGBLOB NULL COMMENT 'Array data' AFTER datatype;
 #  
 # SHOW FULL COLUMNS FROM sample;
   
