@@ -142,10 +142,12 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 	private void computeTree() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
-		if (getChannelQuery() == null || getChannelQuery().getResult() == null) {
-			model = new ChannelTreeByPropertyModel(null, getProperties());
+		if (getChannelQuery() == null) {
+			model = new ChannelTreeByPropertyModel(null, null, getProperties());
+		} else if (getChannelQuery().getResult() == null) {
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties());
 		} else {
-			model = new ChannelTreeByPropertyModel(getChannelQuery().getResult().channels, getProperties());
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties());
 		}
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
 	}
