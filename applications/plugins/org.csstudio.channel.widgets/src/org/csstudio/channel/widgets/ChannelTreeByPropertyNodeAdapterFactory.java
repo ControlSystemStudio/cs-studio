@@ -16,7 +16,6 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		System.out.println("Adapting " + adaptableObject);
 		if (adapterType == Channel[].class) {
 			ChannelTreeByPropertyNode node = ((ChannelTreeByPropertyNode) adaptableObject);
 			return node.getNodeChannels().toArray(new Channel[node.getNodeChannels().size()]);
@@ -41,7 +40,6 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 	}
 	
 	private ChannelQuery toQuery(ChannelTreeByPropertyNode node) {
-		System.out.println("is query " + node.isSubQuery() + " query " + node.getSubQuery());
 		if (!node.isSubQuery()) {
 			return null;
 		}
