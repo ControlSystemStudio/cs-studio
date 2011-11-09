@@ -68,5 +68,28 @@
             </parameter>
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.channelquery">
+         <command
+               commandId="org.csstudio.channel.views.OpenChannelTreeByProperty"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+               label="Channel Tree by Property"
+               style="push">
+         </command>
+      </menuContribution>
     </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenWaterfall"
+            id="org.csstudio.channel.views.OpenWaterfall"
+            name="Waterfall">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenChannelTreeByProperty"
+            id="org.csstudio.channel.views.OpenChannelTreeByProperty"
+            name="Channel Tree by Property">
+      </command>
+   </extension>
 </plugin>
