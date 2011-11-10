@@ -31,7 +31,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @author jbercic
  *
  */
-public final class ArcModel extends AbstractWidgetModel {
+public class ArcModel extends AbstractWidgetModel {
 	/**
 	 * Unique identifier.
 	 */
@@ -98,7 +98,7 @@ public final class ArcModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Start Angle:\t");
 		buffer.append(createTooltipParameter(PROP_STARTANGLE) + "\n");

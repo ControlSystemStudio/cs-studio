@@ -65,9 +65,9 @@ public class ArcAlarmBehavior extends AbstractDesyAlarmBehavior<ArcModel> {
         super.doProcessValueChange(model, anyData);
         model.setPropertyValue(ArcModel.PROP_ANGLE, _multi * anyData.doubleValue());
         if(model.getFill()) {
-            model.setPropertyValue(ArcModel.PROP_FILLCOLOR, determineColorBySeverity(anyData.getSeverity(),null));
+            model.setColor(ArcModel.PROP_FILLCOLOR, determineColorBySeverity(anyData.getSeverity(),null));
         }else {
-            model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
+            model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(),null));
         }
     }
 
@@ -77,11 +77,13 @@ public class ArcAlarmBehavior extends AbstractDesyAlarmBehavior<ArcModel> {
     @Override
     protected void doProcessConnectionStateChange(final ArcModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        if(!isConnected(anyDataChannel)) {
-            // TODO (hrickens) [09.06.2011]: Muss auch wieder zurückgesetzt werden  
-            widget.setColor(ArcModel.PROP_FILLCOLOR,determineBackgroundColor(connectionState));
-        }
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? determineColorBySeverity(anyDataChannel
+                                                                                                               .getData()
+                                                                                                               .getSeverity(),
+                                                                                                       null)
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
         if(!widget.getFill()) {
             widget.setPropertyValue(ArcModel.PROP_TRANSPARENT, isConnected(anyDataChannel));
         }
