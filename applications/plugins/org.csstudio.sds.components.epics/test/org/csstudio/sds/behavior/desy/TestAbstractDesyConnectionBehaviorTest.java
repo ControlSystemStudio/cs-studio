@@ -71,6 +71,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
         _severityMock = mock(Severity.class);
         when(_anyDataChannelMock.getData()).thenReturn(_anyDataMock);
         when(_anyDataChannelMock.getProperty()).thenReturn(_dynamicValuePropertyMock);
+        when(_dynamicValuePropertyMock.getCondition()).thenReturn(new DynamicValueCondition(DynamicValueState.HAS_LIVE_DATA));
         when(_anyDataMock.getParentChannel()).thenReturn(_anyDataChannelMock);
         when(_anyDataMock.getSeverity()).thenReturn(_severityMock);
         when(_abstractWidgetModelMock.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND)).thenReturn("MyBC");

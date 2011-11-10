@@ -60,7 +60,7 @@ public abstract class AbstractTextinputBehaviorTest<B extends AbstractBehavior<T
 
     @Override
     protected void verifyConnectionStateConnectedWithoutData() {
-        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
+        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Invalid}");
         getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 

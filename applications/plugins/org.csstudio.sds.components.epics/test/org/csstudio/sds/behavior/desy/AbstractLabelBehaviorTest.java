@@ -61,7 +61,7 @@ public abstract class AbstractLabelBehaviorTest<B extends AbstractBehavior<Label
 
     @Override
     protected void verifyConnectionStateConnectedWithoutData() {
-        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
+        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Invalid}");
         getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
     }
 

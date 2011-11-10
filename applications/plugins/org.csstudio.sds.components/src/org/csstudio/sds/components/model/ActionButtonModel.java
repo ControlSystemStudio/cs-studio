@@ -38,7 +38,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * @version $Revision: 1.46 $
  *
  */
-public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
+public class ActionButtonModel extends AbstractTextTypeWidgetModel {
     /**
      * The ID of the label property.
      */
@@ -71,34 +71,34 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
      * The ID of this widget model.
      */
     public static final String ID = "org.csstudio.sds.components.ActionButton"; //$NON-NLS-1$
-    
+
     /**
      * The default value of the height property.
      */
     private static final int DEFAULT_HEIGHT = 20;
-    
+
     /**
      * The default value of the width property.
      */
     private static final int DEFAULT_WIDTH = 80;
-    
+
     /**
      * The default value of the Button style.
      */
     private static final boolean DEFAULT_TOGGLE_BUTTON = false;
-    
+
     /**
      * The default value of the toggle state.
      */
     private static final boolean DEFAULT_TOGGLE_STATE = false;
-    
+
     /**
      * Standard constructor.
      */
     public ActionButtonModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -106,7 +106,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public String getTypeID() {
         return ID;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -126,7 +126,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
                            DEFAULT_TOGGLE_STATE,
                            false,
                            PROP_TOGGLE_BUTTON);
-        
+
         addArrayOptionProperty(PROP_TEXT_TYPE,
                                "Value Type",
                                DISPLAY,
@@ -142,7 +142,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
                            10,
                            false,
                            PROP_TEXT_TYPE);
-        
+
         // Format
         addFontProperty(PROP_FONT,
                         "Font",
@@ -157,7 +157,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
                                TextAlignmentEnum.CENTER.getIndex(),
                                false,
                                PROP_FONT);
-        
+
         // Action
         addIntegerProperty(PROP_ACTION_PRESSED_INDEX,
                            "Action Index (pressed)",
@@ -175,19 +175,19 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
                            Integer.MAX_VALUE,
                            false,
                            PROP_ACTION_PRESSED_INDEX);
-        
+
         // .. hide properties
         hideProperty(PROP_BORDER_COLOR, getTypeID());
         hideProperty(PROP_BORDER_STYLE, getTypeID());
         hideProperty(PROP_BORDER_WIDTH, getTypeID());
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected String getDefaultToolTip() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
         buffer.append(createTooltipParameter(PROP_ACTIONDATA) + "\n");
         buffer.append("Performed Action: ");
@@ -195,7 +195,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
         buffer.append(createTooltipParameter(PROP_ACTION_RELEASED_INDEX));
         return buffer.toString();
     }
-    
+
     /**
      * Return the index of the selected WidgetAction from the ActionData. The
      * Action is running when the button is released.
@@ -205,7 +205,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public int getChoosenReleasedActionIndex() {
         return getIntegerProperty(PROP_ACTION_RELEASED_INDEX);
     }
-    
+
     /**
      * Return the index of the selected WidgetAction from the ActionData. The
      * Action is running when the button is pressed.
@@ -215,7 +215,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public int getChoosenPressedActionIndex() {
         return getIntegerProperty(PROP_ACTION_PRESSED_INDEX);
     }
-    
+
     /**
      * Return the label text.
      *
@@ -224,7 +224,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public String getLabel() {
         return getStringProperty(PROP_LABEL);
     }
-    
+
     /**
      * Returns the alignment for the text.
      *
@@ -233,7 +233,7 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public int getTextAlignment() {
         return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
     }
-    
+
     /**
      * Returns whether the button is a toggle button.
      *
@@ -242,21 +242,29 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     public boolean isToggleButton() {
         return getBooleanProperty(PROP_TOGGLE_BUTTON);
     }
-    
+
     /**
      * Returns whether the button is a toggle button AND pressed.
-     * 
+     *
      * @return boolean
      */
     public boolean isPressed() {
         return isToggleButton() && getBooleanProperty(PROP_TOGGLE_STATE);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getStringValueID() {
         return PROP_LABEL;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getTransparent() {
+        return false;
     }
 }
