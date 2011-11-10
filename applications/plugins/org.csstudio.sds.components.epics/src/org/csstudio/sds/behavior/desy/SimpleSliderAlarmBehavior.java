@@ -69,23 +69,20 @@ public class SimpleSliderAlarmBehavior extends AbstractDesyAlarmBehavior<SimpleS
 //        }
     }
 
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(SimpleSliderModel widget,
-                                                  AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final SimpleSliderModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        if ( isConnected(anyDataChannel)) {
-            widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _defColor);
-        } else {
-            widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-                                    determineBackgroundColor(connectionState));
-        }
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? _defColor
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
     }
-    
+
     @Override
     protected void doProcessMetaDataChange(final SimpleSliderModel widget, final MetaData meta) {
         if (meta != null) {
