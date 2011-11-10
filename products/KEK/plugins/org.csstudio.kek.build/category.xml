@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.opibuilder.feature_3.0.0.qualifier.jar" id="org.csstudio.opibuilder.feature" version="3.0.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
-   <feature url="features/org.csstudio.alarm.beast.ui.feature_3.0.0.qualifier.jar" id="org.csstudio.alarm.beast.ui.feature" version="3.0.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
-   <feature url="features/org.csstudio.kek.eclipse.feature_1.0.0.qualifier.jar" id="org.csstudio.kek.eclipse.feature" version="1.0.0.qualifier">
+   <feature url="features/org.csstudio.kek.eclipse.feature_3.0.1.qualifier.jar" id="org.csstudio.kek.eclipse.feature" version="3.0.1.qualifier">
       <category name="css_infrastructure"/>
    </feature>
-   <feature url="features/org.csstudio.kek.core.feature_1.0.0.qualifier.jar" id="org.csstudio.kek.core.feature" version="1.0.0.qualifier">
+   <feature url="features/org.csstudio.kek.core.feature_3.0.1.qualifier.jar" id="org.csstudio.kek.core.feature" version="3.0.1.qualifier">
       <category name="css_infrastructure"/>
    </feature>
-   <feature url="features/org.csstudio.kek.optional.feature_1.0.0.qualifier.jar" id="org.csstudio.kek.optional.feature" version="1.0.0.qualifier">
+   <feature url="features/org.csstudio.alarm.beast.ui.feature_3.0.1.qualifier.jar" id="org.csstudio.alarm.beast.ui.feature" version="3.0.1.qualifier">
       <category name="css_applications"/>
    </feature>
-   <feature url="features/org.csstudio.kek.applications.feature_1.0.0.qualifier.jar" id="org.csstudio.kek.applications.feature" version="1.0.0.qualifier">
+   <feature url="features/org.csstudio.kek.applications.feature_3.0.1.qualifier.jar" id="org.csstudio.kek.applications.feature" version="3.0.1.qualifier">
+      <category name="css_applications"/>
+   </feature>
+   <feature url="features/org.csstudio.kek.optional.feature_3.0.1.qualifier.jar" id="org.csstudio.kek.optional.feature" version="3.0.1.qualifier">
+      <category name="css_applications"/>
+   </feature>
+   <feature url="features/org.csstudio.opibuilder.feature_3.0.1.qualifier.jar" id="org.csstudio.opibuilder.feature" version="3.0.1.qualifier">
       <category name="css_applications"/>
    </feature>
    <category-def name="css_infrastructure" label="CSS Infrastructure"/>
