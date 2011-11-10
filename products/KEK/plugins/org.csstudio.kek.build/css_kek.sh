@@ -10,7 +10,7 @@
 #  OS - MACOSX or LINUX
 #
 # Author
-#  - Takashi Nakamoto
+#  - Takashi Nakamoto (Cosylab)
 #
 
 SCRIPTDIR=$(cd $(dirname $0) && pwd)

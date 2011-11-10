@@ -9,7 +9,7 @@
 #
 # Author:
 #  - Kay Kasemir
-#  - Takashi Nakamoto
+#  - Takashi Nakamoto (Cosylab)
 #
 
 SCRIPTDIR=$(cd $(dirname $0) && pwd)
