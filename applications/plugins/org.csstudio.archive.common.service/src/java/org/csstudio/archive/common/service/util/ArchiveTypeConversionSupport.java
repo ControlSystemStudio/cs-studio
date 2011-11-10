@@ -65,11 +65,9 @@ import com.google.common.collect.Iterables;
  * @param <T> the supported class type
  * CHECKSTYLE OFF: AbstractClassName
  *                 This class is accessed statically, hence the name should be short and descriptive!
- *
  */
 public abstract class ArchiveTypeConversionSupport<T extends Serializable> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
-
     protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
     protected static final String ARCHIVE_COLLECTION_PREFIX = "[";
     protected static final String ARCHIVE_COLLECTION_SUFFIX = "]";
@@ -83,9 +81,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         new String[]{
                      "org.csstudio.domain.desy.epics.types",
                      };
-
     private static boolean INSTALLED;
-
     /**
      * Constructor.
      */
