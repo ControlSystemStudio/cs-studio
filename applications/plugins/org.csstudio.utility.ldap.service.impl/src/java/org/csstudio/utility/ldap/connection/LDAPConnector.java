@@ -139,7 +139,7 @@ public class LDAPConnector {
 
         final Hashtable<Object, String> env = new Hashtable<Object, String>(contextPrefs);
 
-        env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
         return new InitialLdapContext(env, null);
     }

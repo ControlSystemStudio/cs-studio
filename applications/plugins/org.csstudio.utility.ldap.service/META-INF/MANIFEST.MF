@@ -14,4 +14,4 @@ Export-Package: org.csstudio.utility.ldap.service,
 Import-Package: org.osgi.framework,
  org.osgi.util.tracker;version="1.4.0"
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
