@@ -36,8 +36,6 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.epics.time.DesyDbrTimeValidator;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
-import org.csstudio.domain.desy.typesupport.TypeSupportException;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.jca.JCAChannelHandler;
 import org.epics.pvmanager.jca.TypeFactory;
@@ -55,34 +53,23 @@ import com.google.common.base.Predicate;
  */
 public class DesyJCAChannelHandler extends JCAChannelHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DesyJCAChannelHandler.class);
     private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private final Predicate<DBR> _validator;
-    private Class<?> _dataType;
+    private final Class<?> _dataType;
     private EpicsMetaData _desyMeta;
 
     /**
      * Constructor.
      * @param dataType
-     * @throws TypeSupportException
      */
     public DesyJCAChannelHandler(@Nonnull final String channelName,
-                                 @CheckForNull final String dataType,
+                                 @CheckForNull final Class<?> dataType,
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
         _validator = new DesyDbrTimeValidator();
-
-        if (dataType == null) {
-            _dataType = null;
-        } else {
-            try {
-                _dataType = BaseTypeConversionSupport.createBaseTypeClassFromString(dataType, "org.csstudio.domain.desy.epics.types");
-            } catch (final TypeSupportException e) {
-                LOG.error("Datatype for channel {} is not convertible to java type class!:\n{}", channelName, e.getMessage());
-            }
-        }
+        _dataType = dataType;
     }
 
     /**

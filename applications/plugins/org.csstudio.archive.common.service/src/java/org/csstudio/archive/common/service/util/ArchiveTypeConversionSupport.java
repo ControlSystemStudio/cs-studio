@@ -314,7 +314,9 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
             final ArchiveTypeConversionSupport<T> support =
                     (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                                    typeClass);
-            if ( !Strings.isNullOrEmpty(low) && !Strings.isNullOrEmpty(high)) {
+            if (!ArchiveTypeConversionSupport.isDataTypeSerializableCollection(typeClass) &&
+                !Strings.isNullOrEmpty(low) &&
+                !Strings.isNullOrEmpty(high)) {
                 return support.createChannel(id, name, typeClass, archiveChannelGroupId, time, cs, enabled,
                                              fromArchiveString(typeClass, low),
                                              fromArchiveString(typeClass, high));

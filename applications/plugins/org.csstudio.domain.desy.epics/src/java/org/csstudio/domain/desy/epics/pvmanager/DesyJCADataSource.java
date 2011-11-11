@@ -65,7 +65,7 @@ public class DesyJCADataSource extends JCADataSource {
     }
 
     @Nonnull
-    public DesyJCAChannelHandler createHandlerFor(@Nonnull final String name, @Nullable final String dataType) {
+    public DesyJCAChannelHandler createHandlerFor(@Nonnull final String name, @Nullable final Class<?> dataType) {
         final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(name, dataType, getContext(), getMonitorMask());
         _handlerMap.put(name, handler);
         return handler;
