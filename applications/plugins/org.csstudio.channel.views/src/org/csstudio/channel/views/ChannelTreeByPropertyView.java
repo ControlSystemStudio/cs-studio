@@ -1,5 +1,9 @@
 package org.csstudio.channel.views;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
@@ -8,6 +12,7 @@ import java.util.Map;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PropertyListDialog;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -54,6 +59,20 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	/** Memento tag */
 	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
 	
+	private final ChannelQueryListener channelQueryListener = new ChannelQueryListener() {
+		
+		@Override
+		public void queryExecuted(final Result result) {
+			SWTUtil.swtThread().execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					btnProperties.setEnabled(result.channels != null && !result.channels.isEmpty());
+				}
+			});
+		}
+	};
+	
 	/**
 	 * The constructor.
 	 */
@@ -94,7 +113,23 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	private Button btnProperties;
 	
 	private void changeQuery(String text) {
-		treeWidget.setChannelQuery(text);
+		ChannelQuery oldQuery = treeWidget.getChannelQuery();
+		if (text == null)
+			text = "";
+		text = text.trim();
+		
+		// Query is the same, do nothing
+		if (oldQuery != null && oldQuery.getQuery().equals(text)) {
+			return;
+		}
+		
+		if (oldQuery != null) {
+			oldQuery.removeChannelQueryListener(channelQueryListener);
+		}
+		
+		ChannelQuery newQuery = ChannelQuery.Builder.query(text).create();
+		newQuery.execute(channelQueryListener);
+		treeWidget.setChannelQuery(newQuery);
 	}
 
 	@Override
@@ -123,13 +158,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		treeWidget.setLayoutData(fd_waterfallComposite);
-		treeWidget.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				btnProperties.setEnabled(treeWidget.getChannels() != null && !treeWidget.getChannels().isEmpty());
-			}
-		});
 		
 		ComboHistoryHelper name_helper =
 			new ComboHistoryHelper(Activator.getDefault()

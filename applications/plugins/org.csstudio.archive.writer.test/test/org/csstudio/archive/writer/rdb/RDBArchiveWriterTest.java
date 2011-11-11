@@ -19,6 +19,7 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of the archive writer
@@ -28,7 +29,7 @@ import org.junit.Test;
 public class RDBArchiveWriterTest
 {
 	private RDBArchiveWriter writer = null;
-	private String name;
+	private String name, array_name;
 
     @Before
 	public void connect() throws Exception
@@ -37,13 +38,20 @@ public class RDBArchiveWriterTest
 		final String url = settings.getString("archive_rdb_url");
 		final String user = settings.getString("archive_rdb_user");
 		final String password = settings.getString("archive_rdb_password");
+		final String schema = settings.getString("archive_rdb_schema");
 		name = settings.getString("archive_channel");
+		array_name = settings.getString("archive_array_channel");
 		if (url == null  ||  user == null  ||  password == null  ||  name == null)
 		{
 			System.out.println("Skipping test, no archive_rdb_url, user, password");
 			return;
 		}
-		writer = new RDBArchiveWriter(url, user, password);
+		final boolean use_blob = Boolean.parseBoolean(settings.getString("archive_use_blob"));
+		if (use_blob)
+			System.out.println("Running write test with BLOB");
+		else
+			System.out.println("Running write test with old array_val table");
+		writer = new RDBArchiveWriter(url, user, password, schema, use_blob);
 	}
 	
 	@After
@@ -58,9 +66,16 @@ public class RDBArchiveWriterTest
 	{
 		if (writer == null)
 			return;
-		final WriteChannel channel = writer.getChannel(name);
+		WriteChannel channel = writer.getChannel(name);
 		System.out.println(channel);
 		assertNotNull(channel);
+		
+		if (array_name == null)
+			return;
+		channel = writer.getChannel(array_name);
+		System.out.println(channel);
+		assertNotNull(channel);
+
 	}
 
 	@Test
@@ -68,18 +83,37 @@ public class RDBArchiveWriterTest
 	{
 		if (writer == null)
 			return;
+		System.out.println("Writing double sample for channel " + name);
 		final WriteChannel channel = writer.getChannel(name);
-		IValue sample;
+		final IValue sample;
 		sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
 				ValueFactory.createOKSeverity(), "OK",
 				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
 				IValue.Quality.Original,
-				new double[] { 3.14, 6.28 });
+				new double[] { 3.14 });
 
 		writer.addSample(channel, sample);
 		writer.flush();
 	}
 
+	@Test
+	public void testWriteDoubleArray() throws Exception
+	{
+		if (writer == null  ||  array_name == null)
+			return;
+		System.out.println("Writing double array sample for channel " + array_name);
+		final WriteChannel channel = writer.getChannel(array_name);
+		final IValue sample;
+		sample = ValueFactory.createDoubleValue(TimestampFactory.now(),
+				ValueFactory.createOKSeverity(), "OK",
+				ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u."),
+				IValue.Quality.Original,
+				new double[] { 3.14, 6.28, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+
+		writer.addSample(channel, sample);
+		writer.flush();
+	}
+	
 	@Test
 	public void testWriteLongEnumText() throws Exception
 	{
@@ -132,12 +166,14 @@ public class RDBArchiveWriterTest
 	 * JProfiler shows most time spent in 'flush', some in addSample()'s call to setTimestamp(),
 	 * but overall time is in RDB, not Java.
 	 */
+ 	@Ignore
 	@Test
 	public void testWriteSpeedDouble() throws Exception
 	{
 		if (writer == null)
 			return;
 		
+		System.out.println("Write test: Adding samples to " + name + " for " + TEST_DURATION_SECS + " secs");
 		final WriteChannel channel = writer.getChannel(name);
 		final INumericMetaData meta =
 			ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 10, 1, "a.u.");

@@ -1,5 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
@@ -40,7 +42,7 @@ public class ChannelTreeByPropertyEditPart extends AbstractWidgetEditPart {
 	
 	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(model.getChannelQuery());
+			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
 			widget.setSelectionPv(model.getSelectionPvName());
 		}
 		widget.setProperties(model.getTreeProperties());

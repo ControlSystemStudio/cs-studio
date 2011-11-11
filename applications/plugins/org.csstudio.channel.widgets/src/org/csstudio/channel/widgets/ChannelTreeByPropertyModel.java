@@ -14,6 +14,10 @@ class ChannelTreeByPropertyModel {
 	private ChannelTreeByPropertyNode root; 
 	
 	public ChannelTreeByPropertyModel(Collection<Channel> allChannels, List<String> properties) {
+		if (allChannels == null) {
+			allChannels = Collections.emptyList();
+		}
+		
 		// Filter the channels that would not show up as leaf because they don't
 		// have a value for all properties
 		this.allChannels = new ArrayList<Channel>(ChannelUtil.filterbyProperties(allChannels, properties));

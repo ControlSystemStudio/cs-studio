@@ -79,6 +79,17 @@ public class EMailSenderDialog extends TitleAreaDialog
         return true;
     }
 
+    /** Make EMail dialog non-modal to allow user access to the "rest"
+     *  of the application.
+     *  This was requested by operators who tend to edit the entry
+     *  for a while but still need for example operator displays
+     *  to remain responsive.
+     */
+	protected void setShellStyle(final int style)
+	{
+		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
+	}
+    
     /** Set the dialog title. */
     @Override
     protected void configureShell(Shell shell)
