@@ -171,7 +171,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         final IArchiveChannel channel =
                 ArchiveTypeConversionSupport.createArchiveChannel(id,
                                                                   name,
-                                                                  datatype,
+                                                                  ArchiveTypeConversionSupport.createTypeClassFromArchiveString(datatype),
                                                                   new ArchiveChannelGroupId(groupId),
                                                                   time,
                                                                   cs,
@@ -474,7 +474,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             stmt = conn.prepareStatement(_createChannelsStmt);
             for (final IArchiveChannel chan : channels) {
                 stmt.setString(1, chan.getName());
-                stmt.setString(2, chan.getDataType());
+                final Class<?> dataType = chan.getDataType();
+                stmt.setString(2, dataType != null ? dataType.getSimpleName() : null);
                 stmt.setInt(3, chan.getGroupId().intValue());
                 stmt.setInt(4, chan.getControlSystem().getId().intValue());
                 stmt.setBoolean(5, chan.isEnabled());

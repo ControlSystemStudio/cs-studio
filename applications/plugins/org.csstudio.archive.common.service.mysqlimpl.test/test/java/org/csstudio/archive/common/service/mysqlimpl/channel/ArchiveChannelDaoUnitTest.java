@@ -47,6 +47,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.sample.TestSampleProvider;
 import org.csstudio.domain.common.service.DeleteResult;
 import org.csstudio.domain.common.service.UpdateResult;
+import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -140,20 +141,20 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("enumChannel1"));
         Assert.assertFalse(channels.isEmpty());
 
-        assertChannelContent(channels.iterator().next(), "enumChannel1", "EpicsEnum", new ArchiveChannelGroupId(2L),
+        assertChannelContent(channels.iterator().next(), "enumChannel1", EpicsEnum.class, new ArchiveChannelGroupId(2L),
                              cs, null, true, null);
 
         channels = DAO.retrieveChannelsByIds(Sets.newHashSet(new ArchiveChannelId(3L)));
         Assert.assertFalse(channels.isEmpty());
 
-        assertChannelContent(channels.iterator().next(), "byteChannel1", "Byte", new ArchiveChannelGroupId(2L),
+        assertChannelContent(channels.iterator().next(), "byteChannel1", Byte.class, new ArchiveChannelGroupId(2L),
                              cs, TimeInstantBuilder.fromNanos(2000000000L), false, Limits.create(Byte.valueOf((byte) -128), Byte.valueOf((byte) 127)));
     }
 
     // CHECKSTYLE OFF : ParameterNumber
     private void assertChannelContent(@CheckForNull final IArchiveChannel channel,
                                       @Nonnull final String name,
-                                      @Nonnull final String type,
+                                      @Nonnull final Class<?> type,
                                       @Nonnull final ArchiveChannelGroupId grpId,
                                       @Nonnull final IArchiveControlSystem cs,
                                       @Nullable final TimeInstant time,
@@ -221,7 +222,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final ArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "nolimits",
-                               "String",
+                               String.class,
                                grpId,
                                null,
                                cs,
@@ -232,7 +233,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
         final Collection<IArchiveChannel> channels = DAO.retrieveChannelsByNames(Sets.newHashSet("nolimits"));
         Assert.assertFalse(channels.isEmpty());
-        assertChannelContent(channels.iterator().next(), "nolimits", "String", grpId, cs, null, false, null);
+        assertChannelContent(channels.iterator().next(), "nolimits", String.class, grpId, cs, null, false, null);
 
         DAO.deleteChannel("nolimits");
     }
@@ -244,7 +245,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         IArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "nolimits",
-                               "String",
+                               String.class,
                                grpId,
                                null,
                                cs,
@@ -252,7 +253,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         IArchiveChannel chan2 =
             new ArchiveLimitsChannel<Double>(ArchiveChannelId.NONE,
                                "withLimits",
-                               "Double",
+                               Double.class,
                                grpId,
                                null,
                                cs,
@@ -264,9 +265,9 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertTrue(directResult.isEmpty());
 
         chan1 = DAO.retrieveChannelsByNames(Sets.newHashSet("nolimits")).iterator().next();
-        assertChannelContent(chan1, "nolimits", "String", grpId, cs, null, true, null);
+        assertChannelContent(chan1, "nolimits", String.class, grpId, cs, null, true, null);
         chan2 = DAO.retrieveChannelsByNames(Sets.newHashSet("withlimits")).iterator().next();
-        assertChannelContent(chan2, "withLimits", "Double", grpId, cs, null, false, Limits.create(Double.valueOf(0.0), Double.valueOf(10.0)));
+        assertChannelContent(chan2, "withLimits", Double.class, grpId, cs, null, false, Limits.create(Double.valueOf(0.0), Double.valueOf(10.0)));
 
         DAO.deleteChannel("nolimits");
         DAO.deleteChannel("withlimits");
@@ -282,7 +283,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final IArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "fooNoLimits",
-                               "String",
+                               String.class,
                                grpId,
                                null,
                                cs,
@@ -290,7 +291,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final IArchiveChannel chan2 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "fooNoLimits",
-                               "String",
+                               String.class,
                                grpId,
                                null,
                                cs,

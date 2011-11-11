@@ -23,6 +23,7 @@ package org.csstudio.archive.common.service.channel;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
@@ -47,8 +48,10 @@ public interface IArchiveChannel extends IIdentifiable<ArchiveChannelId> {
     @Nonnull
     TimeInstant getLatestTimestamp();
 
-    @Nonnull
-    String getDataType();
+    @CheckForNull
+    Class<?> getDataType();
+
+    void setDataType(@Nullable final Class<?> dataType);
 
     @Nonnull
     IArchiveControlSystem getControlSystem();

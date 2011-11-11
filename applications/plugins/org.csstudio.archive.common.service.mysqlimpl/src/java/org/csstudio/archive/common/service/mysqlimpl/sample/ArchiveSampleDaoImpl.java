@@ -398,8 +398,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e,
                                                          @Nonnull final DesyArchiveRequestType reqType)
-                                                         throws SQLException, TypeSupportException {
-        final PreparedStatement stmt = dispatchRequestTypeToStatement(conn, reqType, channel.getDataType());
+                                                         throws SQLException, ArchiveDaoException {
+        final Class<?> dataType = channel.getDataType();
+        if (dataType == null) {
+            throw new ArchiveDaoException("Data type of channel " + channel.getName() + " is unknown." , null);
+        }
+        final PreparedStatement stmt = dispatchRequestTypeToStatement(conn, reqType, dataType);
         stmt.setInt(1, channel.getId().intValue());
         stmt.setLong(2, s.getNanos());
         stmt.setLong(3, e.getNanos());
@@ -409,8 +413,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Nonnull
     private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final Connection conn,
                                                              @Nonnull final DesyArchiveRequestType type,
-                                                             @Nonnull final String dataType)
-                                                             throws SQLException, TypeSupportException {
+                                                             @Nonnull final Class<?> dataType)
+                                                             throws SQLException {
 
         PreparedStatement stmt = null;
         switch (type) {
@@ -432,7 +436,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return stmt;
     }
 
-
     @SuppressWarnings("unchecked")
     @Nonnull
     private <V extends Serializable, T extends ISystemVariable<V>>
@@ -441,7 +444,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final ResultSet result) throws SQLException,
                                                                                              ArchiveDaoException,
                                                                                              TypeSupportException {
-        final String dataType = channel.getDataType();
+        final Class<V> dataType = (Class<V>) channel.getDataType();
+        if (dataType == null) {
+            throw new ArchiveDaoException("The datatype of channel " + channel.getName() + " is unknown!", null);
+        }
         V value = null;
         V min = null;
         V max = null;

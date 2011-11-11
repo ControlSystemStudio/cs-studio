@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.common.service.channel;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -57,7 +58,7 @@ public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends Archi
      */
     public ArchiveLimitsChannel(@Nonnull final ArchiveChannelId id,
                                 @Nonnull final String name,
-                                @Nonnull final String type,
+                                @Nonnull final Class<V> type,
                                 @Nonnull final ArchiveChannelGroupId grpId,
                                 @Nullable final TimeInstant ltstTimestamp,
                                 @Nonnull final IArchiveControlSystem system,
@@ -67,6 +68,16 @@ public class ArchiveLimitsChannel<V extends Comparable<? super V>> extends Archi
         // CHECKSTYLE  ON : ParameterNumber
         super(id, name, type, grpId, ltstTimestamp, system, isEnabled);
         _limits = Limits.create(lo, hi);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    @CheckForNull
+    public Class<V> getDataType() {
+        return (Class<V>) super.getDataType();
     }
 
     /**

@@ -424,7 +424,7 @@ public final class EngineModel {
     public ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
     configureNewChannel(@Nonnull final EpicsChannelName epicsName,
                         @Nonnull final String groupName,
-                        @Nonnull final String type,
+                        @Nullable final String type,
                         @Nullable final String low,
                         @Nullable final String high) throws EngineModelException {
 

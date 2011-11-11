@@ -75,14 +75,11 @@ public class AddChannelResponse extends AbstractChannelResponse {
         }
 
         final String group = req.getParameter(PARAM_CHANNEL_GROUP);
-        final String type = req.getParameter(PARAM_DATATYPE);
-        if (Strings.isNullOrEmpty(group) || Strings.isNullOrEmpty(type)) {
-            redirectToErrorPage(resp, "At least one out of the required parameters '" +
-                                      PARAM_CHANNEL_GROUP + "' & '" +
-                                      PARAM_DATATYPE + "' is either null or empty!");
+        if (Strings.isNullOrEmpty(group)) {
+            redirectToErrorPage(resp, "The required parameter '" + PARAM_CHANNEL_GROUP + "' is either null or empty!");
             return;
         }
-
+        final String type = req.getParameter(PARAM_DATATYPE);
 //        final String controlsystem = req.getParameter(PARAM_CONTROLSYSTEM);
 //        final String desc = req.getParameter(PARAM_DESCRIPTION);
         final String lopr = req.getParameter(PARAM_LOPR);

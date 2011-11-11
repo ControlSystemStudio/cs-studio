@@ -181,7 +181,7 @@ public final class EngineModelConfigurator {
     // CHECKSTYLE OFF: ParameterNumber
     @Nonnull
     public static ArchiveChannelBuffer<?, ?> configureNewChannel(@Nonnull final EpicsChannelName epicsName,
-                                                                 @Nonnull final String type,
+                                                                 @Nullable final String type,
                                                                  @Nullable final String low,
                                                                  @Nullable final String high,
                                                                  @Nullable final ArchiveGroup group,
@@ -203,7 +203,7 @@ public final class EngineModelConfigurator {
             final IArchiveChannel channel =
                 ArchiveTypeConversionSupport.createArchiveChannel(ArchiveChannelId.NONE,
                                                                   epicsName.toString(),
-                                                                  type,
+                                                                  ArchiveTypeConversionSupport.createTypeClassFromArchiveString(type),
                                                                   group.getId(),
                                                                   null,
                                                                   cs,

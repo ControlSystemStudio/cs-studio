@@ -282,7 +282,7 @@ public class HelpResponse extends AbstractResponse {
         html.tableLine(new String[] {
                 "",
                 AddChannelResponse.PARAM_DATATYPE,
-                Messages.HTTP_YES,
+                Messages.HTTP_NO,
                 "Java datatype of the channel, as such or as ArrayList<?> out of:\n" + DesyTypeFactoryProvider.getInstalledTargetTypes(),
         });
         html.tableLine(new String[] {

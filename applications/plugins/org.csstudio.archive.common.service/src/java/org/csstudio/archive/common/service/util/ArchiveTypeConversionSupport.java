@@ -41,7 +41,6 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
-import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.AbstractTypeSupport;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -174,18 +173,14 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     @Nonnull
     public static <T extends Serializable> T fromArchiveString(@Nonnull final String datatype,
                                                                @Nonnull final String value) throws TypeSupportException {
-        final Class<T> typeClass =
-            (Class<T>) BaseTypeConversionSupport.createBaseTypeClassFromString(datatype,
-                                                                               ADDITIONAL_TYPE_PACKAGES);
+        final Class<T> typeClass = (Class<T>) createTypeClassFromArchiveString(datatype);
         if (!Collection.class.isAssignableFrom(typeClass)) {
             return fromArchiveString(typeClass, value);
         }
 
         final String elemType =
             BaseTypeConversionSupport.parseForFirstNestedGenericType(datatype);
-        final Class<T> elemClass =
-            (Class<T>) BaseTypeConversionSupport.createBaseTypeClassFromString(elemType,
-                                                                               ADDITIONAL_TYPE_PACKAGES);
+        final Class<T> elemClass = (Class<T>) createTypeClassFromArchiveString(elemType);
         return (T) fromArchiveString((Class) typeClass, (Class) elemClass, value);
     }
 
@@ -241,18 +236,25 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         }
     }
 
-    @Nonnull
-    public static <T extends Serializable> T fromDouble(@Nonnull final String dataType,
-                                                        @Nonnull final Double value) throws TypeSupportException {
-        final Class<?> typeClass =
-            BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                    ADDITIONAL_TYPE_PACKAGES);
-        if (typeClass == null) {
-            throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from packages " +
-                                           Joiner.on(", ").join(ADDITIONAL_TYPE_PACKAGES), null);
+    /**
+     * Returns the type class that can be loaded from this datatype simple name string.
+     * Using the {@link ArchiveTypeConversionSupport#ADDITIONAL_TYPE_PACKAGES}.
+     * @param datatype the simple class name
+     * @return the class type for this simple name
+     * @throws TypeSupportException
+     */
+    @SuppressWarnings("unchecked")
+    @CheckForNull
+    public static Class<Serializable> createTypeClassFromArchiveString(@CheckForNull final String datatype) throws TypeSupportException {
+        if (Strings.isNullOrEmpty(datatype)) {
+            return null;
         }
-        @SuppressWarnings("unchecked")
+        return (Class<Serializable>) BaseTypeConversionSupport.createBaseTypeClassFromString(datatype, ADDITIONAL_TYPE_PACKAGES);
+    }
+
+    @Nonnull
+    public static <T extends Serializable> T fromDouble(@Nonnull final Class<T> typeClass,
+                                                        @Nonnull final Double value) throws TypeSupportException {
         final ArchiveTypeConversionSupport<T> support =
             (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
                                                                            typeClass);
@@ -260,15 +262,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     }
 
     @Nonnull
-    public static Boolean isDataTypeSerializableCollection(@Nonnull final String dataType) throws TypeSupportException {
-        final Class<?> typeClass =
-            BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                    ADDITIONAL_TYPE_PACKAGES);
-        if (typeClass == null) {
-            throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from packages " +
-                                           Joiner.on(", ").join(ADDITIONAL_TYPE_PACKAGES), null);
-        }
+    public static Boolean isDataTypeSerializableCollection(@Nonnull final Class<?> typeClass) {
         return Collection.class.isAssignableFrom(typeClass) && Serializable.class.isAssignableFrom(typeClass);
     }
 
@@ -280,9 +274,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
      */
     @Nonnull
     public static Boolean isDataTypeOptimizable(@Nonnull final String dataType) throws TypeSupportException {
-        final Class<?> typeClass =
-            BaseTypeConversionSupport.createBaseTypeClassFromString(dataType,
-                                                                    ADDITIONAL_TYPE_PACKAGES);
+        final Class<?> typeClass = createTypeClassFromArchiveString(dataType);
         if (typeClass == null) {
             throw new TypeSupportException("Class object for data type " + dataType +
                                            " could not be loaded from packages " +
@@ -305,12 +297,11 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     }
 
     // CHECKSTYLE OFF : ParameterNumber
-    @SuppressWarnings("unchecked")
     @Nonnull
     public static <T extends Serializable>
     IArchiveChannel createArchiveChannel(@Nonnull final ArchiveChannelId id,
                                          @Nonnull final String name,
-                                         @Nonnull final String datatype,
+                                         @Nullable final Class<T> typeClass,
                                          @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
                                          @Nullable final TimeInstant time,
                                          @Nonnull final IArchiveControlSystem cs,
@@ -318,36 +309,25 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                          @CheckForNull final String low,
                                          @CheckForNull final String high) throws TypeSupportException {
         // CHECKSTYLE ON : ParameterNumber
-        if (Strings.isNullOrEmpty(low) || Strings.isNullOrEmpty(high)) {
-            return new ArchiveChannel(id,
-                                      name,
-                                      datatype,
-                                      archiveChannelGroupId,
-                                      time,
-                                      cs,
-                                      enabled);
+
+        if (typeClass != null) {
+            final ArchiveTypeConversionSupport<T> support =
+                    (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
+                                                                                   typeClass);
+            if ( !Strings.isNullOrEmpty(low) && !Strings.isNullOrEmpty(high)) {
+                return support.createChannel(id, name, typeClass, archiveChannelGroupId, time, cs, enabled,
+                                             fromArchiveString(typeClass, low),
+                                             fromArchiveString(typeClass, high));
+            }
         }
 
-        final Class<?> typeClass =
-            BaseTypeConversionSupport.createBaseTypeClassFromString(datatype, ADDITIONAL_TYPE_PACKAGES);
-
-        if (cs.getType() == ControlSystemType.EPICS_V3 && Collection.class.isAssignableFrom(typeClass)) {
-            // Epics allows for a multi scalar type with LOPR and HOPR values? oh dear...
-            return new ArchiveChannel(id,
-                                      name,
-                                      datatype,
-                                      archiveChannelGroupId,
-                                      time,
-                                      cs,
-                                      enabled);
-        }
-
-        final ArchiveTypeConversionSupport<T> support =
-            (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                           typeClass);
-        return support.createChannel(id, name, datatype, archiveChannelGroupId, time, cs, enabled,
-                                     (T) fromArchiveString(datatype, low),
-                                     (T) fromArchiveString(datatype, high));
+        return new ArchiveChannel(id,
+                                  name,
+                                  typeClass,
+                                  archiveChannelGroupId,
+                                  time,
+                                  cs,
+                                  enabled);
     }
 
     protected static <T> void checkInputVsOutputSize(@Nonnull final Iterable<String> strings,
@@ -479,7 +459,7 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     // CHECKSTYLE OFF : ParameterNumber
     protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
                                             @Nonnull final String name,
-                                            @Nonnull final String datatype,
+                                            @Nullable final Class<T> datatype,
                                             @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
                                             @Nonnull final TimeInstant time,
                                             @Nonnull final IArchiveControlSystem cs,

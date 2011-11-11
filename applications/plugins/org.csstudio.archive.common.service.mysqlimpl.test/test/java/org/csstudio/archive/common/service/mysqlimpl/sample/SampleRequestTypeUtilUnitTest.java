@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.sample;
 
+import java.util.LinkedHashSet;
+
 import junit.framework.Assert;
 
 import org.csstudio.archive.common.service.mysqlimpl.requesttypes.DesyArchiveRequestType;
@@ -50,10 +52,10 @@ public class SampleRequestTypeUtilUnitTest {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
         DesyArchiveRequestType type =
-            SampleRequestTypeUtil.determineRequestType("String", now, now.plusMillis(1L));
+            SampleRequestTypeUtil.determineRequestType(String.class, now, now.plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
 
-        type = SampleRequestTypeUtil.determineRequestType("String", now, now.plusMillis(1000L*60L*60L*24L*50L));
+        type = SampleRequestTypeUtil.determineRequestType(String.class, now, now.plusMillis(1000L*60L*60L*24L*50L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
     }
 
@@ -62,19 +64,19 @@ public class SampleRequestTypeUtilUnitTest {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
         DesyArchiveRequestType type =
-            SampleRequestTypeUtil.determineRequestType("Double", now, now.plusMillis(1L));
+            SampleRequestTypeUtil.determineRequestType(Double.class, now, now.plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
 
-        type = SampleRequestTypeUtil.determineRequestType("Double", now, now.plusDuration(Duration.standardDays(1)));
+        type = SampleRequestTypeUtil.determineRequestType(Double.class, now, now.plusDuration(Duration.standardDays(1)));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
 
-        type = SampleRequestTypeUtil.determineRequestType("Double", now, now.plusDuration(Duration.standardDays(1)).plusMillis(1L));
+        type = SampleRequestTypeUtil.determineRequestType(Double.class, now, now.plusDuration(Duration.standardDays(1)).plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.AVG_PER_MINUTE, type);
 
-        type = SampleRequestTypeUtil.determineRequestType("Double", now, now.plusDuration(Duration.standardDays(45)));
+        type = SampleRequestTypeUtil.determineRequestType(Double.class, now, now.plusDuration(Duration.standardDays(45)));
         Assert.assertEquals(DesyArchiveRequestType.AVG_PER_MINUTE, type);
 
-        type = SampleRequestTypeUtil.determineRequestType("Double", now, now.plusDuration(Duration.standardDays(45)).plusMillis(1L));
+        type = SampleRequestTypeUtil.determineRequestType(Double.class, now, now.plusDuration(Duration.standardDays(45)).plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.AVG_PER_HOUR, type);
     }
 
@@ -84,11 +86,11 @@ public class SampleRequestTypeUtilUnitTest {
         final TimeInstant now = TimeInstantBuilder.fromNow();
 
         DesyArchiveRequestType type =
-            SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusMillis(1L));
+            SampleRequestTypeUtil.determineRequestType(LinkedHashSet.class, now, now.plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
-        type = SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusDuration(Duration.standardDays(1)).plusMillis(1L));
+        type = SampleRequestTypeUtil.determineRequestType(LinkedHashSet.class, now, now.plusDuration(Duration.standardDays(1)).plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
-        type = SampleRequestTypeUtil.determineRequestType("LinkedHashSet<Byte>", now, now.plusDuration(Duration.standardDays(45)).plusMillis(1L));
+        type = SampleRequestTypeUtil.determineRequestType(LinkedHashSet.class, now, now.plusDuration(Duration.standardDays(45)).plusMillis(1L));
         Assert.assertEquals(DesyArchiveRequestType.RAW, type);
     }
 }

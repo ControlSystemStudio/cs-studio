@@ -23,12 +23,6 @@ package org.csstudio.archive.common.service.util;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
@@ -66,24 +60,5 @@ public class ShortArchiveTypeConversionSupport extends AbstractNumberArchiveType
     @Nonnull
     protected Short convertFromDouble(@Nonnull final Double value) throws TypeSupportException {
         return value.shortValue();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    // CHECKSTYLE OFF : ParameterNumber
-    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final String name,
-                                            @Nonnull final String datatype,
-                                            @Nonnull final ArchiveChannelGroupId grpId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final IArchiveControlSystem cs,
-                                            final boolean enabled,
-                                            @Nonnull final Short low,
-                                            @Nonnull final Short high) {
-        // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<Short>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }
