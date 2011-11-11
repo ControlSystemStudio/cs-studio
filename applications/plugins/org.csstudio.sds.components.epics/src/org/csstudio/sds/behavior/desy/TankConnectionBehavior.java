@@ -38,7 +38,6 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.TankModel;
-import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyDataChannel;
 
@@ -94,8 +93,8 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
             determineBackgroundColor = determineBackgroundColor(connectionState);
             determineFillColor = determineBackgroundColor;
         }
-        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
-        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineFillColor);
+        widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
+        widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineFillColor);
     }
 
 }

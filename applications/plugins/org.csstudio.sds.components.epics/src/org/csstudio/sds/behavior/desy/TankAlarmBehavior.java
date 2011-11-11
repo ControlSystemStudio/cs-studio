@@ -89,8 +89,8 @@ public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> 
             determineBackgroundColor = determineBackgroundColor(connectionState);
             determineFillColor = determineBackgroundColor;
         }
-        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
-        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineFillColor);
+        widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
+        widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineFillColor);
     }
 
 }
