@@ -105,7 +105,6 @@ public class ActionButtonBehaviorTest extends
      */
     @Override
     protected void verifyConnectionStateFailed() {
-        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,"${Initial}");
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,"${VerbAbbr}");
     }
 
@@ -122,7 +121,6 @@ public class ActionButtonBehaviorTest extends
      */
     @Override
     protected void verifyConnectionStateDestroyed() {
-        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,"${Initial}");
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,"${VerbAbbr}");
     }
 

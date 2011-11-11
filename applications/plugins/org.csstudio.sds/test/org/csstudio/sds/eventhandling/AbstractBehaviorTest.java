@@ -81,6 +81,7 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         when(_anyData.getParentChannel()).thenReturn(_anyDataChannel);
         setHasNoLiveData();
         _behavior.doInitialize(_modelMock);
+        verifyDoInitialize();
     }
 
     /**
@@ -243,7 +244,6 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         //      10: ConnectionState.CONNECTED;
         //      11: ConnectionState.OPERATIONAL;
 
-        verifyDoInitialize();
         when(_anyDataChannel.getProperty()).thenReturn(_dynamicValueProperty);
         when(_anyDataChannel.getData()).thenReturn(_anyData);
         when(_anyDataChannel.isRunning()).thenReturn(false);
@@ -338,7 +338,6 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
          *                     .
          *                     .
          */
-        verifyDoInitialize();
         when(_anyDataChannel.getProperty()).thenReturn(_dynamicValueProperty);
         when(_anyDataChannel.getData()).thenReturn(_anyData);
         when(_anyDataChannel.isRunning()).thenReturn(false);
