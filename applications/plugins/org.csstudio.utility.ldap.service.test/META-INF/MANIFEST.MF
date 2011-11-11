@@ -4,6 +4,6 @@ Bundle-Name: Test fragment for LDAP service
 Bundle-SymbolicName: org.csstudio.utility.ldap.service.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.csstudio.utility.ldap.service;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
 Require-Bundle: org.junit;bundle-version="4.8.1"
