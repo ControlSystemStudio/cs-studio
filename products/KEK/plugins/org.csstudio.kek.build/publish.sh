@@ -161,5 +161,6 @@ echo " Publishing built plugins for online update"
 echo "#####################################################"
 echo "Copying built plugins to ${DEST}/updates/repo${VERSION}_${DATE}"
 mkdir -p ${DEST}/updates/repo${VERSION}_${DATE}
-cp -r $CYGDRIVE/$BUILDDIR/buildRepo ${DEST}/updates/repo${VERSION}_${DATE}
+cp -r $CYGDRIVE/$BUILDDIR/buildRepo/* ${DEST}/updates/repo${VERSION}_${DATE}
 
+sh ${SCRIPTDIR}/mirror.sh ${DEST}/updates/repo${VERSION}_${DATE} ${DEST}/updates
