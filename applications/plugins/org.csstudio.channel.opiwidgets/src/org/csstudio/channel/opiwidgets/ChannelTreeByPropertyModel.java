@@ -3,21 +3,18 @@ package org.csstudio.channel.opiwidgets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
-public class ChannelTreeByPropertyModel extends AbstractWidgetModel {
+public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	
 	public final String ID = "org.csstudio.channel.opiwidgets.ChannelTreeByProperty"; //$NON-NLS-1$
 	
-	public static final String CHANNEL_QUERY = "channel_query"; //$NON-NLS-1$	
 	public static final String TREE_PROPERTIES = "tree_properties"; //$NON-NLS-1$	
 	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
-		addProperty(new StringProperty(CHANNEL_QUERY, "Channel query", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(SELECTION_PV_NAME, "Selection PV Name", WidgetPropertyCategory.Basic, ""));
 	}
@@ -25,10 +22,6 @@ public class ChannelTreeByPropertyModel extends AbstractWidgetModel {
 	@Override
 	public String getTypeID() {
 		return ID;
-	}
-	
-	public String getChannelQuery() {
-		return getCastedPropertyValue(CHANNEL_QUERY);
 	}
 	
 	public List<String> getTreeProperties() {

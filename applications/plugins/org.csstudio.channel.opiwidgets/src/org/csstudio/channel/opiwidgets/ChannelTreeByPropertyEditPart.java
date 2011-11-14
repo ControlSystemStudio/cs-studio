@@ -3,24 +3,28 @@ package org.csstudio.channel.opiwidgets;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
-import org.csstudio.channel.widgets.PVTableByPropertyWidget;
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.widgets.Composite;
 
-public class ChannelTreeByPropertyEditPart extends AbstractWidgetEditPart {
+public class ChannelTreeByPropertyEditPart extends AbstractChannelWidgetEditPart {
 	
 	/**
 	 * Create and initialize figure.
 	 */
 	@Override
-	protected IFigure doCreateFigure() {
+	protected AbstractChannelWidgetFigure<?> doCreateFigure() {
 		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		registerPopup(figure.getSWTWidget().getTree());
 		return figure;
+	}
+	
+	@Override
+	public ChannelTreeByPropertyFigure getFigure() {
+		return (ChannelTreeByPropertyFigure) super.getFigure();
 	}
 	
 	/**Get the widget model.
