@@ -36,10 +36,10 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class SixteenBinaryBarConnectionBehavior extends
         AbstractDesyConnectionBehavior<SixteenBinaryBarModel> {
-    
+
     private String _defOnColor;
     private String _defOffColor;
-    
+
     /**
      * Constructor.
      */
@@ -49,17 +49,17 @@ public class SixteenBinaryBarConnectionBehavior extends
         addInvisiblePropertyId(SixteenBinaryBarModel.PROP_VALUE);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doInitialize(SixteenBinaryBarModel widget) {
+    protected void doInitialize(final SixteenBinaryBarModel widget) {
         _defOnColor = widget.getColor(SixteenBinaryBarModel.PROP_ON_COLOR);
         _defOffColor = widget.getColor(SixteenBinaryBarModel.PROP_OFF_COLOR);
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -68,25 +68,35 @@ public class SixteenBinaryBarConnectionBehavior extends
         super.doProcessValueChange(model, anyData);
         model.setPropertyValue(SixteenBinaryBarModel.PROP_VALUE, anyData.numberValue());
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(SixteenBinaryBarModel widget,
-                                                  AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String onColor = isConnected(anyDataChannel) ? _defOnColor
-                : determineBackgroundColor(connectionState);
+    protected void doProcessConnectionStateChange(final SixteenBinaryBarModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        String onColor;
+        String offColor;
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                offColor = _defOffColor;
+                onColor = _defOnColor;
+            } else {
+                offColor = "${Invalid}";
+                onColor = "${Invalid}";
+            }
+        } else {
+            offColor = determineBackgroundColor(connectionState);
+            onColor = offColor;
+        }
         widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, onColor);
-        String offColor = isConnected(anyDataChannel) ? _defOffColor
-                : determineBackgroundColor(connectionState);
         widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, offColor);
     }
-    
+
     @Override
     protected void doProcessMetaDataChange(final SixteenBinaryBarModel widget,
                                            final MetaData metaData) {
-        
+
     }
 }
