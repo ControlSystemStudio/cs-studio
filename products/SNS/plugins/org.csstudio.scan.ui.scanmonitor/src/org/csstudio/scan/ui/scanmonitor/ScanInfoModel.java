@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -178,6 +179,16 @@ public class ScanInfoModel
     public List<ScanInfo> getInfos()
     {
         return infos;
+    }
+
+    /** @param info Scan for which to get data
+     *  @return ScanData or null
+     */
+    public ScanData getScanData(final ScanInfo info) throws RemoteException
+    {
+        if (info == null)
+            return null;
+        return getServer().getScanData(info.getId());
     }
 
     /** @param info Scan to pause (NOP if not running)

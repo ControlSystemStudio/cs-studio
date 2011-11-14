@@ -21,6 +21,7 @@ import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
+import org.csstudio.scan.ui.scanmonitor.actions.GetScanDataAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
@@ -329,6 +330,7 @@ public class GUI implements ScanInfoModelListener
                 }
                 else
                     manager.add(new RemoveAction(model, info));
+                manager.add(new GetScanDataAction(model, info));
                 manager.add(new RemoveCompletedAction(model));
             }
         });

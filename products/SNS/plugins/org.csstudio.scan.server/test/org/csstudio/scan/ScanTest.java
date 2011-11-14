@@ -25,7 +25,7 @@ import org.csstudio.scan.command.LogCommandImpl;
 import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommandImpl;
 import org.csstudio.scan.command.WaitForValueCommandImpl;
-import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
+import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanContext;
@@ -82,6 +82,6 @@ public class ScanTest
         assertEquals(100, info.getPercentage());
 
         // Dump data
-        new SpreadsheetDataLoggerFormatter(context.getScanData()).dump(System.out);
+        new SpreadsheetScanDataIterator(context.getScanData()).dump(System.out);
     }
 }

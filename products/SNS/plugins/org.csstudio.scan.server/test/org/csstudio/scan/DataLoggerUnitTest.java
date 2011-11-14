@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
-import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
+import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.logger.MemoryDataLogger;
 import org.csstudio.scan.logger.PrintDataLogger;
@@ -69,8 +69,8 @@ public class DataLoggerUnitTest
         System.out.println("MemoryDataLogger as Spreadsheet:");
 		final MemoryDataLogger logger = new MemoryDataLogger();
 		logData(logger);
-		SpreadsheetDataLoggerFormatter sheet =
-	        new SpreadsheetDataLoggerFormatter(logger.getScanData());
+		SpreadsheetScanDataIterator sheet =
+	        new SpreadsheetScanDataIterator(logger.getScanData());
         sheet.dump(System.out);
 	}
 }

@@ -55,6 +55,10 @@ public interface TODO
      *  
      *  Done Query scan server for device info
      *  
+     *  Done fetch data data from ongoing or finished scans?
+     *       
+     *  TODO plot data from ongoing scan?
+     *       
      *  TODO Unclear if devices will ever be anything by PVs.
      *       If they're just PVs, one could use PVs.
      *       If they're something else, then an API for
@@ -69,11 +73,6 @@ public interface TODO
      *  
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
-     *  TODO fetch data data from ongoing or finished scans?
-     *       Depends on who's doing the data collection in the end.
-     *
-     *  TODO plot data from ongoing scan?
-     *  
      *  TODO put callback? Maybe support Channel Access put-callback,
      *       or add a wait-for-value to the set command?
      *

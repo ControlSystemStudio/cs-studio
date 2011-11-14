@@ -16,14 +16,16 @@
 package org.csstudio.scan.data;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-/** Arrange {@link ScanData} as spreadsheet
+/** Iterate over {@link ScanData} as spreadsheet
  *  @author Kay Kasemir
  */
-public class SpreadsheetDataLoggerFormatter
+public class SpreadsheetScanDataIterator
 {
     /** Device names, i.e. columns in spreadsheet */
     final private List<String> device_names;
@@ -43,7 +45,7 @@ public class SpreadsheetDataLoggerFormatter
     /** Initialize for all devices in the {@link ScanData}
      *  @param scan_data Scan data
      */
-    public SpreadsheetDataLoggerFormatter(final ScanData scan_data)
+    public SpreadsheetScanDataIterator(final ScanData scan_data)
     {
         // Determine for which devices we have samples
         this(scan_data, scan_data.getDevices());
@@ -54,7 +56,7 @@ public class SpreadsheetDataLoggerFormatter
      *  @param device_names Devices that must be in the scan data
      */
 	@SuppressWarnings("unchecked")
-    public SpreadsheetDataLoggerFormatter(final ScanData scan_data,
+    public SpreadsheetScanDataIterator(final ScanData scan_data,
 	        final List<String> device_names)
     {
 	    this.device_names = device_names;
@@ -143,11 +145,20 @@ public class SpreadsheetDataLoggerFormatter
         return Arrays.asList(value);
     }
 
-    /** Print spreadsheet 
+    /** Write spreadsheet to stream
      *  @param out {@link PrintStream}
      */
     public void dump(final PrintStream out)
     {
+        dump(new PrintWriter(out, true));
+    }
+    
+    /** Write spreadsheet to writer
+     *  @param writer {@link Writer}
+     */
+    public void dump(final Writer writer)
+    {
+        final PrintWriter out = new PrintWriter(writer, true);
         // Print Header
         out.print("Time");
         for (String device : getDevices())
