@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.data;
+package org.csstudio.scan;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.scan.data.NumberScanSample;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.junit.Test;
 
 /** JUnit test of the {@link SpreadsheetScanDataIterator}
