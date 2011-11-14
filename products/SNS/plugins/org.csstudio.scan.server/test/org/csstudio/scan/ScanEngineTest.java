@@ -34,7 +34,6 @@ import org.csstudio.scan.server.ScanEngine;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-in test of the {@link ScanEngine}
  *  @author Kay Kasemir
  */
@@ -49,7 +48,7 @@ public class ScanEngineTest
         while (scan.getScanInfo().getState() != state);
     }
 
-    /** Test scans with pause/resume */
+    /** Test scans with pause/resume (15 secs) */
     @Test(timeout=30000)
     public void testScanEngine() throws Exception
     {

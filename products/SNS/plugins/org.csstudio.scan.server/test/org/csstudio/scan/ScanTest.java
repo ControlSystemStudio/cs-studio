@@ -25,21 +25,20 @@ import org.csstudio.scan.command.LogCommandImpl;
 import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommandImpl;
 import org.csstudio.scan.command.WaitForValueCommandImpl;
+import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.logger.MemoryDataLogger;
-import org.csstudio.scan.logger.SpreadsheetDataLoggerFormatter;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-in test of the {@link Scan}
  *  @author Kay Kasemir
  */
 public class ScanTest
 {
+    /** Scan takes about 20 seconds */
     @Test(timeout=40000)
     public void testScanner() throws Exception
     {
@@ -56,8 +55,7 @@ public class ScanTest
         devices.addPVDevice("readback", "readback");
 
         // Setup context
-        final MemoryDataLogger data_logger = new MemoryDataLogger();
-        final ScanContext context = new ScanContext(devices, data_logger);
+        final ScanContext context = new ScanContext(devices);
 
         // Configure a scan
         final Scan scan = new Scan("Scan Test",
@@ -84,6 +82,6 @@ public class ScanTest
         assertEquals(100, info.getPercentage());
 
         // Dump data
-        new SpreadsheetDataLoggerFormatter().format(System.out, data_logger);
+        new SpreadsheetDataLoggerFormatter(context.getScanData()).dump(System.out);
     }
 }

@@ -17,12 +17,17 @@ package org.csstudio.scan.data;
 
 import java.util.Date;
 
+import org.csstudio.scan.server.ScanServer;
+
 /** Scan sample for numbers
  *  @author Kay Kasemir
  */
 public class NumberScanSample extends ScanSample
 {
-	final private Number number;
+    /** Serialization ID */
+    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+
+    final private Number number;
 
     /** Initialize
      *  @param device_name Name of device that provided the sample
@@ -37,11 +42,13 @@ public class NumberScanSample extends ScanSample
 		this.number = number;
 	}
 
+	/** @return Number held in this {@link ScanSample} */
 	public Number getNumber()
     {
     	return number;
     }
 
+	/** {@inheritDoc} */
 	@Override
     public Object getValue()
 	{

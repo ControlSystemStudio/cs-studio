@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.WaitForDevicesCommand;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 
@@ -86,15 +87,20 @@ public class Scan
     {
         if (context == null)
             return new ScanInfo(id, name, created, state, error, 0, total_work_units, "");
+        final String command;
+        if (state == ScanState.Finished)
+            command = "- end -";
         else
-        {
-            final String command;
-            if (state == ScanState.Finished)
-                command = "- end -";
-            else
-                command = context.getCurrentCommand();
-            return new ScanInfo(id, name, created, state, error, context.getWorkPerformed(), total_work_units, command);
-        }
+            command = context.getCurrentCommand();
+        return new ScanInfo(id, name, created, state, error, context.getWorkPerformed(), total_work_units, command);
+    }
+
+    /** @return Data that has been logged for the scan */
+    public ScanData getScanData()
+    {
+        if (context == null)
+            return null;
+        return context.getScanData();
     }
 
     /** Execute all commands on the scan,

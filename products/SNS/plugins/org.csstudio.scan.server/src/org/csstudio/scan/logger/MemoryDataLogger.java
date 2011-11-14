@@ -16,14 +16,15 @@
 package org.csstudio.scan.logger;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
 /** {@link DataLogger} that keeps all samples in memory
+ *  so that it can provide {@link ScanData}
  *  @author Kay Kasemir
  */
 public class MemoryDataLogger implements DataLogger
@@ -34,7 +35,7 @@ public class MemoryDataLogger implements DataLogger
 
 	/** {@inheritDoc} */
 	@Override
-    public void log(final ScanSample sample)
+    public synchronized void log(final ScanSample sample)
     {
 		List<ScanSample> samples = device_logs.get(sample.getDeviceName());
 		if (samples == null)
@@ -45,9 +46,9 @@ public class MemoryDataLogger implements DataLogger
 		samples.add(sample);
     }
 
-	/** @return (Unmodifyable) Map of all device names with {@link ScanSample} for each device */
-	public Map<String, List<ScanSample>> getDeviceLogs()
+    /** @return {@link ScanData} with copy of currently logged data */
+	public synchronized ScanData getScanData()
 	{
-		return Collections.unmodifiableMap(device_logs);
+		return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
 	}
 }

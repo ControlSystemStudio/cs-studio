@@ -15,7 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
+import java.io.Serializable;
 import java.util.Date;
+
+import org.csstudio.scan.server.ScanServer;
 
 /** A sample taken by a scan
  *
@@ -25,19 +28,26 @@ import java.util.Date;
  *  <p>A serial number is used to track
  *  the time line of samples that are acquired in a scan.
  *  A scan can run faster than the resolution of the time stamp.
- *  In other cases, the scan might actually quite slow but we still
+ *  In other cases, the scan might actually be quite slow but we still
  *  want to identify samples as being taken at conceptually the same
  *  time.
- *  A serial number is used to identify which samples belong together.
+ *  A serial number is used to identify which samples belong together
+ *  because they were for example taken within the same iteration
+ *  of a scan loop.
  *
  *  @author Kay Kasemir
  */
-abstract public class ScanSample
+abstract public class ScanSample implements Serializable
 {
-	final private String device_name;
+    /** Serialization ID */
+    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+
+    final private String device_name;
 	final private Date timestamp;
 	final private long serial;
 
+	// TODO Does each Scan Sample need the device name?
+	//      Should the device name only be kept in the logger?
     /** Initialize
      *  @param device_name Name of device that provided the sample
      *  @param timestamp Time stamp

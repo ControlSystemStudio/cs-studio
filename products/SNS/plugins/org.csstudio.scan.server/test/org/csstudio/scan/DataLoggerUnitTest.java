@@ -15,14 +15,12 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-
 import org.csstudio.scan.data.ScanSampleFactory;
+import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
 import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.logger.MemoryDataLogger;
 import org.csstudio.scan.logger.PrintDataLogger;
-import org.csstudio.scan.logger.SpreadsheetDataLoggerFormatter;
 import org.junit.Test;
-
 
 /** JUnit test of the {@link DataLogger}s
  *  @author Kay Kasemir
@@ -42,6 +40,7 @@ public class DataLoggerUnitTest
 	@Test
 	public void testPrintLogger()
 	{
+	    System.out.println("PrintDataLogger:");
 		final DataLogger logger = new PrintDataLogger();
 		logData(logger);
 	}
@@ -49,8 +48,11 @@ public class DataLoggerUnitTest
 	@Test
 	public void testSpreadsheet()
 	{
+        System.out.println("MemoryDataLogger as Spreadsheet:");
 		final MemoryDataLogger logger = new MemoryDataLogger();
 		logData(logger);
-		new SpreadsheetDataLoggerFormatter().format(System.out, logger);
+		SpreadsheetDataLoggerFormatter sheet =
+	        new SpreadsheetDataLoggerFormatter(logger.getScanData());
+        sheet.dump(System.out);
 	}
 }

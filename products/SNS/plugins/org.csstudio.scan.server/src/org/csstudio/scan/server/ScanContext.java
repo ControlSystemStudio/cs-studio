@@ -22,11 +22,11 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.logger.PrintDataLogger;
+import org.csstudio.scan.logger.MemoryDataLogger;
 
 /** Context in which the {@link CommandImpl}s of a {@link Scan} are executed.
  *
@@ -43,7 +43,7 @@ public class ScanContext
 {
     final private DeviceContext devices;
 
-	final private DataLogger data_logger;
+	final private MemoryDataLogger data_logger = new MemoryDataLogger();
 
 	final private AtomicLong work_performed = new AtomicLong();
 
@@ -54,14 +54,8 @@ public class ScanContext
 	private volatile ScanCommand current_command = null;
 
 	public ScanContext(final DeviceContext devices)
-	{
-		this(devices, new PrintDataLogger());
-	}
-
-	public ScanContext(final DeviceContext devices, final DataLogger data_logger)
     {
 	    this.devices = devices;
-		this.data_logger = data_logger;
     }
 
     /** Start all devices
@@ -92,6 +86,12 @@ public class ScanContext
     public Device[] getDevices()
     {
         return devices.getDevices();
+    }
+
+    /** @return Data that has been logged for the scan */
+    public ScanData getScanData()
+    {
+        return data_logger.getScanData();
     }
 
     /** @param commands {@link CommandImpl}s to execute

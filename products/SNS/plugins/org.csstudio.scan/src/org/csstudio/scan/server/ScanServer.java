@@ -20,6 +20,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.data.ScanData;
 
 /** RMI interface for the scan server engine
  *
@@ -74,12 +75,19 @@ public interface ScanServer extends Remote
      */
     public List<ScanInfo> getScanInfos() throws RemoteException;
 
-    /** Query server for scan
+    /** Query server for scan info
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Info for that scan on the server or <code>null</code>
      *  @throws RemoteException on error in remote access
      */
     public ScanInfo getScanInfo(long id) throws RemoteException;
+    
+    /** Query server for scan data
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @return Data for that scan on the server or <code>null</code>
+     *  @throws RemoteException on error in remote access
+     */
+    public ScanData getScanData(long id) throws RemoteException;
 
     /** Ask server to pause a scan
      *

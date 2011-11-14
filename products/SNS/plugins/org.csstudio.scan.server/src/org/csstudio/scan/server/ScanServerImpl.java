@@ -31,6 +31,7 @@ import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.CommandImplFactory;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 
@@ -197,8 +198,18 @@ public class ScanServerImpl implements ScanServer
             return scan.getScanInfo();
         return null;
     }
-    
-	/** {@inheritDoc} */
+
+    /** {@inheritDoc} */
+	@Override
+    public ScanData getScanData(final long id) throws RemoteException
+    {
+        final Scan scan = findScan(id);
+        if (scan != null)
+            return scan.getScanData();
+        return null;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void pause(final long id) throws RemoteException
     {

@@ -26,6 +26,8 @@ import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.server.ScanInfo;
@@ -33,7 +35,6 @@ import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerImpl;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
-
 
 /** [Headless] JUnit Plug-in test of the {@link ScanServer}
  *
@@ -46,6 +47,16 @@ import org.junit.Test;
  */
 public class ScanServerHeadlessTest implements Runnable
 {
+    /** @return Demo scan sequence */
+    private CommandSequence createCommands() throws Exception
+    {
+        final CommandSequence commands = new CommandSequence();
+        commands.log("ypos", "readback");
+        commands.loop("xpos", 1, 5, 1,
+                new LogCommand("xpos"));
+        return commands;
+    }
+
     /** This 'Runnable' is executed by a demo client thread */
     @Override
     public void run()
@@ -67,8 +78,8 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
-            server.submitScan("My Test", commands.getCommands());
-            long id = server.submitScan("My Test", commands.getCommands());
+            server.submitScan("My Test 1", commands.getCommands());
+            long id = server.submitScan("My Test 2", commands.getCommands());
 
             System.out.println("All Scans on server:");
             List<ScanInfo> infos = server.getScanInfos();
@@ -100,12 +111,23 @@ public class ScanServerHeadlessTest implements Runnable
 
 
             // Submit scan again, and pause it early on
-            id = server.submitScan("My Test", commands.getCommands());
+            id = server.submitScan("My Test 3", commands.getCommands());
+            // Wait for thread to start
+            while (true)
+            {
+                final ScanInfo info = server.getScanInfo(id);
+                System.out.println("Started? " + info);
+                if (info.getState() != ScanState.Idle)
+                    break;
+                Thread.sleep(100);
+            }
+            // Pause it
             server.pause(id);
             System.out.println("All Scans on server:");
             infos = server.getScanInfos();
             for (ScanInfo info : infos)
                 System.out.println(info);
+            // Should stay paused
             for (int i=0; i<3; ++i)
             {
                 final ScanInfo info = server.getScanInfo(id);
@@ -113,7 +135,7 @@ public class ScanServerHeadlessTest implements Runnable
                 assertEquals(ScanState.Paused, info.getState());
                 Thread.sleep(1000);
             }
-
+            System.out.println("Resume, wait to finish");
             server.resume(id);
             // Poll scan until it finishes
             while (true)
@@ -124,6 +146,15 @@ public class ScanServerHeadlessTest implements Runnable
                     break;
                 Thread.sleep(100);
             }
+            
+            // Fetch data
+            System.out.println("Logged data:");
+            final ScanData data = server.getScanData(id);
+            System.out.println("Devices: " + data.getDevices());
+            assertTrue(data.getDevices().contains("xpos"));
+            assertTrue(data.getDevices().contains("ypos"));
+            assertTrue(data.getDevices().contains("readback"));
+            new SpreadsheetDataLoggerFormatter(data).dump(System.out);
 
             pv.stop();
         }
@@ -132,15 +163,6 @@ public class ScanServerHeadlessTest implements Runnable
             ex.printStackTrace();
         }
         System.out.println("--- Client ends ---");
-    }
-
-    /** @return Demo scan sequence */
-    private CommandSequence createCommands() throws Exception
-    {
-        final CommandSequence commands = new CommandSequence();
-        commands.loop("xpos", 1, 5, 1,
-                new LogCommand("xpos"));
-        return commands;
     }
 
     /** JUnit test that runs server and client */
