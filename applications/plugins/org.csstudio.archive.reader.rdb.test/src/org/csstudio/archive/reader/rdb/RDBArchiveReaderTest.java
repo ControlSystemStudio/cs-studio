@@ -39,12 +39,13 @@ public class RDBArchiveReaderTest
     final private static double TIMERANGE_SECONDS = 60*60*24*14;
     final private static int BUCKETS = 50;
 
-    final private static boolean dump = false;
+    final private static boolean dump = true;
 
+    @SuppressWarnings("unused")
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
 	
     private RDBArchiveReader reader;
-	private String name;
+	private String name, array_name;
 
     @Before
     public void connect() throws Exception
@@ -55,13 +56,18 @@ public class RDBArchiveReaderTest
 		final String password = settings.getString("archive_rdb_password");
 		final String schema = settings.getString("archive_rdb_schema");
 		name = settings.getString("archive_channel");
+		array_name = settings.getString("archive_array_channel");
 		if (url == null  ||  user == null  ||  password == null  ||  name == null)
 		{
 			System.out.println("Skipping test, no archive_rdb_url, user, password, name");
 			reader = null;
 			return;
 		}
-		final boolean use_blob = true;
+		final boolean use_blob = Boolean.parseBoolean(settings.getString("archive_use_blob"));
+		if (use_blob)
+			System.out.println("Running read test with BLOB");
+		else
+			System.out.println("Running read test with old array_val table");
 		reader = new RDBArchiveReader(url, user, password, schema, "", use_blob);
 		
 		assertEquals(use_blob, reader.useArrayBlob());
@@ -78,6 +84,7 @@ public class RDBArchiveReaderTest
      *  @param archive ArchiveReader to cance
      *  @param seconds Seconds until cancellation
      */
+    @SuppressWarnings("unused")
     private void scheduleCancellation(final ArchiveReader archive, final double seconds)
     {
         new Timer("CancellationTest").schedule(new TimerTask()
@@ -169,11 +176,13 @@ public class RDBArchiveReaderTest
             int count = 0;
             while (values.hasNext())
             {
-                assertNotNull(values.next());
+            	final IValue value = values.next();
+                // System.out.println(value);
+                assertNotNull(value);
                 ++count;
             }
             timer.stop();
-            /* PostgreSQL 9 Test Results:
+            /* PostgreSQL 9 Test Results without the System.out in the loop:
              * 
              * HP Compact 8000 Elite Small Form Factor,
 	    	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
@@ -199,9 +208,9 @@ public class RDBArchiveReaderTest
     @Test
     public void testRawWaveformData() throws Exception
     {
-    	if (reader == null)
+    	if (reader == null  ||  array_name == null)
     		return;
-        System.out.println("Raw samples for waveform " + name + ":");
+        System.out.println("Raw samples for waveform " + array_name + ":");
         
         if (reader.useArrayBlob())
         	System.out.println(".. using BLOB");
@@ -213,7 +222,7 @@ public class RDBArchiveReaderTest
 
         // Cancel after 10 secs
         // scheduleCancellation(reader, 10.0);
-        final ValueIterator values = reader.getRawValues(0, name, start, end);
+        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
         IMetaData meta = null;
         while (values.hasNext())
         {

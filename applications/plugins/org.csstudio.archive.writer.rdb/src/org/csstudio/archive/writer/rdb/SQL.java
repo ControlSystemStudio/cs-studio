@@ -38,14 +38,12 @@ public class SQL
     final public String status_name_column;
     
 	// 'sample' table
+	final public String sample_insert_double_blob;
 	final public String sample_insert_double;
 	final public String sample_insert_double_array_element;
 	final public String sample_insert_int;
 	final public String sample_insert_string;
-	final public String sample_insert_double_array_element_blob;
 
-	// TODO Use a column other than 'values' to avoid need for quotes
-	
 	/** Initialize
 	 *  @param dialect RDB Dialect
 	 *  @param schema Scheme (May be "")
@@ -84,80 +82,74 @@ public class SQL
 	    switch (dialect)
 	    {
     	case Oracle:
+    		sample_insert_double_blob =
+    		"INSERT INTO " + schema + "sample " +
+    				"(channel_id, smpl_time, severity_id, status_id, float_val, datatype, array_val)" +
+    				" VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
-                " (channel_id, smpl_time, severity_id, status_id, float_val, is_an_array)" +
-                " VALUES (?,?,?,?,?,?)";
+                " (channel_id, smpl_time, severity_id, status_id, float_val)" +
+                " VALUES (?,?,?,?,?)";
             sample_insert_double_array_element =
                 "INSERT INTO " + schema + "array_val" +
                 " (channel_id, smpl_time, seq_nbr, float_val)" +
                 " VALUES (?,?,?,?)";
-            sample_insert_double_array_element_blob =
-                "INSERT INTO " + schema + "array_val_blob" +
-                " (channel_id, smpl_time, datatype, nelm, values)" +
-                " VALUES (?,?,?,?,?)";
             sample_insert_int =
                 "INSERT INTO " + schema + "sample " +
-                " (channel_id, smpl_time, severity_id, status_id, num_val, is_an_array)" +
-                " VALUES (?,?,?,?,?,?)";
+                " (channel_id, smpl_time, severity_id, status_id, num_val)" +
+                " VALUES (?,?,?,?,?)";
             sample_insert_string =
                 "INSERT INTO " + schema + "sample " +
-                " (channel_id, smpl_time, severity_id, status_id, str_val, is_an_array)" +
-                " VALUES (?,?,?,?,?,?)";
+                " (channel_id, smpl_time, severity_id, status_id, str_val)" +
+                " VALUES (?,?,?,?,?)";
             break;
     	case PostgreSQL:
         	// Nanosecs are listed last to preserve the order of common columns
+    		sample_insert_double_blob =
+    			"INSERT INTO " + schema + "sample " +
+				"(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
+				" VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, float_val,  is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
-            
-            sample_insert_double_array_element_blob =
-                "INSERT INTO " + schema + "array_val_blob " +
-                "(channel_id, smpl_time,  datatype, nelm, values, nanosecs)" +
+                "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
-            
             sample_insert_double_array_element =
                 "INSERT INTO " + schema + "array_val " +
                 "(channel_id, smpl_time,  seq_nbr, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?)";
-            
             sample_insert_int =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, num_val,  is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
-            
+                "(channel_id, smpl_time, severity_id, status_id, num_val, nanosecs)" +
+                " VALUES (?,?,?,?,?,?)";
             sample_insert_string =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, str_val,  is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
+                "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
+                " VALUES (?,?,?,?,?,?)";
             break;
     	case MySQL:
-		    // Nanosecs are listed last to preserve the order of common columns
+		    // channel_id, smpl_time, severity_id, status_id are common columns.
+    		// Param 5 changes depending on the data type.
+    		// Nanosecs must be param 6 to preserve the order of common columns.
+            sample_insert_double_blob =
+	            "INSERT INTO " + schema + "sample " +
+	            "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs, datatype, array_val)" +
+	            " VALUES (?,?,?,?,?,?,?,?)";
             sample_insert_double =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, float_val, is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
-           
-            sample_insert_double_array_element_blob =
-                "INSERT INTO " + schema + "array_val_blob " +
-                "(channel_id, smpl_time,  datatype, nelm, `values`, nanosecs)" +
+                "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?,?)";
-            
             sample_insert_double_array_element =
                 "INSERT INTO " + schema + "array_val " +
                 "(channel_id, smpl_time, seq_nbr, float_val, nanosecs)" +
                 " VALUES (?,?,?,?,?)";
-            
             sample_insert_int =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, num_val,  is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
-            
+                "(channel_id, smpl_time, severity_id, status_id, num_val, nanosecs)" +
+                " VALUES (?,?,?,?,?,?)";
             sample_insert_string =
                 "INSERT INTO " + schema + "sample " +
-                "(channel_id, smpl_time, severity_id, status_id, str_val, is_an_array, nanosecs)" +
-                " VALUES (?,?,?,?,?,?,?)";
+                "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs)" +
+                " VALUES (?,?,?,?,?,?)";
             break;
          
     	default:

@@ -54,7 +54,8 @@ public class KBLogErrorHandleThread extends Thread {
 			
 			// Transfer the messages in the standard error to the CSS logging system.
 			while ((line = stderrReader.readLine()) != null) {
-				Logger.getLogger(Activator.ID).log(Level.WARNING,
+				// TODO add a new preference not to show error messages to log 
+				Logger.getLogger(Activator.ID).log(Level.FINEST,
 						"Error message from " + kblogrdPath + " (" + commandId + "): " + line);
 			}
 		} catch (IOException ex) {
@@ -78,7 +79,7 @@ public class KBLogErrorHandleThread extends Thread {
 					"End of reading the standard error of " + kblogrdPath + " (" + commandId + ").");
 		} catch (IOException ex) {
 			Logger.getLogger(Activator.ID).log(Level.SEVERE,
-					"Faeild to close the standard error off " + kblogrdPath + " (" + commandId + ")", ex);
+					"Failed to close the standard error off " + kblogrdPath + " (" + commandId + ")", ex);
 		}
 	}
 	

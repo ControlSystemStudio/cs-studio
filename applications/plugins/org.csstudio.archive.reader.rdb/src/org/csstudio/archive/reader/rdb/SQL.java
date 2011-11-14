@@ -34,9 +34,9 @@ public class SQL
 
     // 'sample' table
     final public String sample_sel_initial_time;
-    final public String sample_sel_array_vals;
-    final public String sample_sel_array_vals_withblob;
     final public String sample_sel_by_id_start_end;
+    final public String sample_sel_by_id_start_end_with_blob;
+    final public String sample_sel_array_vals;
 	final public String sample_count_by_id_start_end;
     
     /** Initialize SQL statements
@@ -92,31 +92,38 @@ public class SQL
                 prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
                 " ORDER BY smpl_time DESC) WHERE ROWNUM=1";
             sample_sel_by_id_start_end =
-                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, is_an_array FROM " + prefix + "sample"+
+                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val FROM " + prefix + "sample"+
                 "   WHERE channel_id=?" +
                 "     AND smpl_time BETWEEN ? AND ?" +
                 "   ORDER BY smpl_time";
+            sample_sel_by_id_start_end_with_blob =
+    	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, datatype, array_val" +
+    	            "   FROM " + prefix + "sample" +
+    	            "   WHERE channel_id=?" +
+    	            "     AND smpl_time>=? AND smpl_time<=?" +
+    	            "   ORDER BY smpl_time";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? ORDER BY seq_nbr";
-            
-            sample_sel_array_vals_withblob = "SELECT datatype, nelm, values FROM " + prefix + "array_val_blob" +
-            " WHERE channel_id=? AND smpl_time=? ";
         }
         else
-        {
+        {	// MySQL, Postgres
             sample_sel_initial_time =
                 "SELECT smpl_time, nanosecs" +
                 "   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
                 "   ORDER BY smpl_time DESC, nanosecs DESC LIMIT 1";
             sample_sel_by_id_start_end =
-                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, is_an_array, nanosecs FROM " + prefix + "sample" +
+                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs FROM " + prefix + "sample" +
                 "   WHERE channel_id=?" +
                 "     AND smpl_time>=? AND smpl_time<=?" +
                 "   ORDER BY smpl_time, nanosecs";
+            sample_sel_by_id_start_end_with_blob =
+	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs, datatype, array_val" +
+	            "   FROM " + prefix + "sample" +
+	            "   WHERE channel_id=?" +
+	            "     AND smpl_time>=? AND smpl_time<=?" +
+	            "   ORDER BY smpl_time, nanosecs";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
-            sample_sel_array_vals_withblob = "SELECT datatype, nelm, `values` FROM " + prefix + "array_val_blob" +
-            	" WHERE channel_id=? AND smpl_time=? AND nanosecs=?";
         }
         // Rough count, ignoring nanosecs for the non-Oracle dialects
         sample_count_by_id_start_end = "SELECT COUNT(*) FROM " + prefix + "sample" +

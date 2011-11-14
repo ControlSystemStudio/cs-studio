@@ -136,7 +136,7 @@ public class KBLogRDProcess {
 	 * So, it may take some time to complete this method.
 	 */
 	public synchronized void cancel() {
-		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogRDProcess.cancel() is requested + (" + commandId + ").");
+		Logger.getLogger(Activator.ID).log(Level.FINE, "KBLogRDProcess.cancel() is requested for " + kblogrdPath + " (" + commandId + ").");
 		
 		if (isFinished())
 			return;

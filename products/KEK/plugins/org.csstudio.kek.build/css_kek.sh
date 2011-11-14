@@ -1,87 +1,55 @@
-#!/bin/sh
+#!/bin/bash
 #
-# CSS Launcher for KEK
+# CSS Launcher for KEK (Linux and Mac OS X)
 #
-# Supported OS:
-#  Linux
-#  Mac
+# Usage:
+#  css_kek.sh ACC OS
+#
+#  ACC - One of valid accelerators name. See VALID_ACC varible defined
+#        in acc_settings.sh
+#  OS - MACOSX or LINUX
 #
 # Author
-#  - Takashi Nakamoto
+#  - Takashi Nakamoto (Cosylab)
 #
 
 SCRIPTDIR=$(cd $(dirname $0) && pwd)
 
 ACC=$(echo "$1" | tr "[a-z]" "[A-Z]")
 OS=$(echo "$2" | tr "[a-z]" "[A-Z]")
+
+# Temporary plugin customization file.
+# This file must be writable by the user who run this script.
 TMP_INI=/tmp/plugin_customization_$$.ini
+
+# Path to the CSS executable.
 CSS=${SCRIPTDIR}/css
 
-function num_seq {
-    if [ "${OS}" = "MACOSX" ]; then
-	jot -s " " $1
-    else
-	seq $1
-    fi
-}
+# Read KBLog settings
+source ${SCRIPTDIR}/kblog_settings.sh
 
+# Read settings of each accelerator
 source ${SCRIPTDIR}/acc_settings.sh
 
-valid=0
-ADDR_LIST=""
-ARCHIVE_URLS=()
+# Utility functions
+source ${SCRIPTDIR}/css_kek_functions.sh
 
-for a in $VALID_ACCS; do
-    URLS=($(eval 'echo $'$a'_ARCHIVE_URLS'))
-    NAMES=($(eval 'echo $'$a'_ARCHIVE_NAMES'))
+# Set basic parameters
+css_kek_settings
 
-    if [ ${#URLS[@]} -ne 0 ]; then
-		for i in $(num_seq ${#URLS[@]}); do
-			j=$(expr $i - 1)
-			if [ "$a" = "$ACC" ]; then
-			    
-			    ARCHIVE_URLS=(${URLS[$j]} ${ARCHIVE_URLS[@]})
-                            DATABROWSER_ARCHIVES="${NAMES[$j]}|1|${URLS[$j]}*${DATABROWSER_ARCHIVES}"
-			    
-			    ADDR_LIST=$(eval 'echo $'$a'_ADDR_LIST')
-			    valid=1
-			else
-			    ARCHIVE_URLS=(${ARCHIVE_URLS[@]} ${URLS[$j]})
-			fi
-		done
-    fi
-done
-
-if [ $valid -ne 1 ]; then
-    echo "Invalid accelerator name: $ACC"
-    echo ""
-    echo "Valid accelerator names are:"
-    for a in $VALID_ACCS; do
-	echo " - $a"
-    done
-    exit 1
-fi
-
-for i in $(num_seq ${#ARCHIVE_URLS[@]}); do
-    j=$(expr $i - 1)
-    DATABROWSER_URLS="${DATABROWSER_URLS}*${ARCHIVE_URLS[$j]}"
-done
-
-FIRST_CHAR=$(echo "${DATABROWSER_URLS}" | cut -c 1-1)
-if [ "${FIRST_CHAR}" = "*" ]; then
-    DATABROWSER_URLS=$(echo "${DATABROWSER_URLS}" | cut -c 2-)
-fi
-
-LAST_CHAR=$(echo "${DATABROWSER_ARCHIVES}" | rev | cut -c 1-1)
-if [ "${LAST_CHAR}" = "*" ]; then
-    DATABROWSER_ARCHIVES=$(echo "${DATABROWSER_ARCHIVES}" | rev | cut -c 2- | rev )
-fi
-
+# Output a temporary plugin customizaiton file
 cat > ${TMP_INI} <<EOF
 org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST}
 
-org.csstudio.trends.databrowser2/archives=${DATABROWSER_ARCHIVES}
-org.csstudio.trends.databrowser2/urls=${DATABROWSER_URLS}
+org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES}
+org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS}
+
+org.csstudio.archive.reader.kblog/path_to_kblogrd=${PATH_TO_KBLOGRD}
+org.csstudio.archive.reader.kblog/rel_path_to_subarchive_list=${KBLOG_REL_PATH_TO_SUBARCHIVE_LIST}
+org.csstudio.archive.reader.kblog/rel_path_to_lcf_dir=${KBLOG_REL_PATH_TO_LCF_DIR}
+org.csstudio.archive.reader.kblog/reduce_data=${KBLOG_REDUCE_DATA}
 EOF
 
+
+# Launch CSS with the temporary plugin customization file
 ${CSS} -pluginCustomization ${TMP_INI}

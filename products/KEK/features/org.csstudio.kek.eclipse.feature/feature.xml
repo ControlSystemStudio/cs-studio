@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.kek.eclipse.feature"
-      label="KEK / J-PARC Eclipse Feature"
-      version="1.0.0.qualifier"
-      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
+      label="KEK Eclipse Feature"
+      version="3.0.1.qualifier"
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,6 +16,10 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update label="KEK Update Site" url="http://www-linac.kek.jp/cont/css/updates"/>
+   </url>
 
    <includes
          id="org.eclipse.rcp"
