@@ -84,4 +84,10 @@ abstract public class ScanSample implements Serializable
 	 *  @return Value of the sample
 	 */
 	abstract public Object getValue();
+	
+	@Override
+	public String toString()
+	{
+	    return device_name + ": " + DataFormatter.format(timestamp) + " " + getValue();
+	}
 }

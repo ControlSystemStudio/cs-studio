@@ -17,6 +17,7 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -47,6 +48,8 @@ import org.junit.Test;
  */
 public class ScanServerHeadlessTest implements Runnable
 {
+    private volatile Throwable client_error = null;
+    
     /** @return Demo scan sequence */
     private CommandSequence createCommands() throws Exception
     {
@@ -160,7 +163,7 @@ public class ScanServerHeadlessTest implements Runnable
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+            client_error = ex;
         }
         System.out.println("--- Client ends ---");
     }
@@ -190,6 +193,12 @@ public class ScanServerHeadlessTest implements Runnable
         client.start();
         // Wait for client to finish
         client.join();
+        
+        if (client_error != null)
+        {
+            client_error.printStackTrace();
+            fail();
+        }
 
         System.out.println("Scan Server exiting.");
         server.stop();

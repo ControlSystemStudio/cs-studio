@@ -15,6 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.junit.Assert.*;
+
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.data.SpreadsheetDataLoggerFormatter;
 import org.csstudio.scan.logger.DataLogger;
@@ -38,12 +42,26 @@ public class DataLoggerUnitTest
     }
 
 	@Test
-	public void testPrintLogger()
+	public void testPrintDataLogger()
 	{
 	    System.out.println("PrintDataLogger:");
 		final DataLogger logger = new PrintDataLogger();
 		logData(logger);
 	}
+
+    @Test
+    public void testMemoryDataLogger()
+    {
+        System.out.println("MemoryDataLogger:");
+        final MemoryDataLogger logger = new MemoryDataLogger();
+        logData(logger);
+        final ScanData data = logger.getScanData();
+        assertEquals(2, data.getDevices().size());
+        assertNotNull(data.getSamples("x"));
+        assertNotNull(data.getSamples("y"));
+        for (ScanSample sample : data.getSamples("x"))
+            System.out.println(sample);
+    }
 
 	@Test
 	public void testSpreadsheet()
