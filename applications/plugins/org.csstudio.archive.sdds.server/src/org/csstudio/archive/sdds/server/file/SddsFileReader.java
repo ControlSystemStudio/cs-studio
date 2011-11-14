@@ -85,7 +85,7 @@ public class SddsFileReader {
     @Nonnull
     public final RecordDataCollection readData(@Nonnull final String recordName,
                                          final long startTimeInS,
-                                         final long endTimeInS) {
+                                         final long endTimeInS) throws SddsFileLengthException {
 
         final String[] filePaths = archiveLocation.getAllPaths(1000L * startTimeInS,
                                                                1000L * endTimeInS);
@@ -97,11 +97,24 @@ public class SddsFileReader {
         final SddsDataReader[] reader = new SddsDataReader[filePaths.length];
 
         for(int i = 0; i < filePaths.length; i++) {
+
             filePaths[i] = getCorrectFilename(filePaths[i], recordName);
             if(filePaths[i] != null) {
-                reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
-                readerThread[i] = new Thread(threadGroup, reader[i]);
-                readerThread[i].start();
+
+                // TODO: This is a hack to avoid OutOfMemory exceptions
+                //       1048576 Byte = 1 MB
+                final File file = new File(filePaths[i]);
+                final long fileLength = file.length();
+                LOG.info(" " + filePaths[i] + " - Length: " + fileLength);
+
+                // If the file length is greater then 5MB DO NOT read it
+                if (fileLength <= 5242880L) {
+                    reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
+                    readerThread[i] = new Thread(threadGroup, reader[i]);
+                    readerThread[i].start();
+                } else {
+                    throw new SddsFileLengthException("File '" + filePaths[i] + "' too big to be read (" + fileLength + ")");
+                }
             }
         }
 

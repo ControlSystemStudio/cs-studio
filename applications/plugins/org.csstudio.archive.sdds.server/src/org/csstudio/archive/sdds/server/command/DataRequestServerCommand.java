@@ -115,6 +115,11 @@ public class DataRequestServerCommand extends AbstractServerCommand {
                 data = dataCollector.readData(name, header);
                 LOG.info("Number of samples: " + data.getNumberOfData());
 
+                if (data.containsError()) {
+                    return new RawData(createErrorAnswer(AapiServerError.CAN_T_OPEN_FILE.getErrorNumber()),
+                                       AapiServerError.CAN_T_OPEN_FILE.getErrorNumber());
+                }
+
                 // TODO: Nicht vorhandene Daten abfangen und saubere Fehlermeldung zurueck liefern
                 // Error
                 dos.writeInt(0);
