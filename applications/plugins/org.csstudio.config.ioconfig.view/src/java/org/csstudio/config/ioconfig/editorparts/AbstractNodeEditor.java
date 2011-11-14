@@ -314,7 +314,8 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
      */
     @Override
     public final boolean isDirty() {
-        return getNode().isDirty();
+        final boolean dirty = getNode().isDirty();
+        return dirty;
     }
 
     @Override
@@ -324,7 +325,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
 
     public void perfromClose() {
         final IViewSite site = getProfiBusTreeView().getSite();
-        site.getPage().closeEditor(this, false);
+        site.getPage().closeEditor(this, true);
     }
 
     public void setDesc(@CheckForNull final String desc) {
@@ -1066,6 +1067,25 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
                 }
             }
         return shortDesc;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        final T node = getNode();
+        sb.append(getNameWidget()).append(" \r\n");
+        if(node !=null) {
+            sb.append(node).append(" \r\n");
+            sb.append("ID: ").append(node.getId()).append(" \r\n");
+        }
+
+        if(isDirty()) {
+            sb.append("(*)");
+        }
+        return sb.toString();
     }
 
 }
