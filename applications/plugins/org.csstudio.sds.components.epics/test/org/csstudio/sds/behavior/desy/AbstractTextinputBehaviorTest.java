@@ -24,23 +24,24 @@ package org.csstudio.sds.behavior.desy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.eventhandling.AbstractBehaviorTest;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
 
 /**
  * @author hrickens
  * @since 26.10.2011
  */
-public abstract class AbstractLabelBehaviorTest<B extends AbstractBehavior<LabelModel>> extends AbstractBehaviorTest<LabelModel, B> {
+public abstract class AbstractTextinputBehaviorTest<B extends AbstractBehavior<TextInputModel>> extends AbstractBehaviorTest<TextInputModel, B> {
 
 
     @Override
-    protected LabelModel createModelMock() {
-        final LabelModel mock = mock(LabelModel.class);
+    protected TextInputModel createModelMock() {
+        final TextInputModel mock = mock(TextInputModel.class);
         when(mock.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND)).thenReturn("UserDefinedColor");
+        when(mock.getBooleanProperty(TextInputModel.PROP_TRANSPARENT)).thenReturn(true);
         when(mock.getTransparent()).thenReturn(true);
         when(mock.getValueType()).thenReturn(TextTypeEnum.TEXT);
         return mock;
@@ -49,113 +50,81 @@ public abstract class AbstractLabelBehaviorTest<B extends AbstractBehavior<Label
 
     @Override
     protected void verifyConnectionStateConnectedWithData() {
-//        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, true);
     }
 
     @Override
     protected void verifyValueChangeConnectedWithData() {
-//        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, true);
     }
 
     @Override
     protected void verifyConnectionStateConnectedWithoutData() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Invalid}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyValueChangeConnectedWithoutData() {
-//        getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateConnecting() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Initial}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateFailed() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Initial}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateConnectionLost() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${VerbAbbr}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateDestroyed() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${VerbAbbr}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateDisconnecting() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${VerbAbbr}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateDisconnected() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${VerbAbbr}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateInitial() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Initial}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
 
     @Override
     protected void verifyConnectionStateOperational() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "UserDefinedColor");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, true);
     }
 
     @Override
     protected void verifyValueChangeOperational() {
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, true);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, true);
     }
 
     @Override
     protected void verifyConnectionStateReady() {
         getInOrder().verify(getModelMock()).setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Initial}");
-        getInOrder().verify(getModelMock()).setPropertyValue(LabelModel.PROP_TRANSPARENT, false);
+        getInOrder().verify(getModelMock()).setPropertyValue(TextInputModel.PROP_TRANSPARENT, false);
     }
-
-
-    //    @Test
-    //    public void testname() throws Exception {
-    //        when(_dynamicValueProperty.getConnectionState()).thenReturn(ConnectionState.CONNECTED);
-    //        when(_anyDataChannel.isRunning()).thenReturn(true);
-    //        _polygonAlarmBehavior.doProcessConnectionStateChange(_polygonModelMock, _anyDataChannel);
-    //        verify(_polygonModelMock, times(1)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        when(_anyData.numberValue()).thenReturn(1);
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        when(_anyData.numberValue()).thenReturn(2);
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        when(_anyData.numberValue()).thenReturn(3);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        when(_anyData.numberValue()).thenReturn(4);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        _polygonAlarmBehavior.doProcessValueChange(_polygonModelMock, _anyData);
-    //        when(_anyData.numberValue()).thenReturn(15);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //        when(_anyData.numberValue()).thenReturn(16);
-    //        verify(_polygonModelMock, times(2)).setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "${Zu}");
-    //    }
-
 }

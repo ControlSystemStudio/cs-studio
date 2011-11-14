@@ -62,9 +62,9 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
     public TextTypeEnum getValueType() {
         TextTypeEnum result = TextTypeEnum.TEXT;
 
-        int index = getArrayOptionProperty(PROP_TEXT_TYPE);
+        final int index = getArrayOptionProperty(PROP_TEXT_TYPE);
 
-        if ((index >= 0) && (index < TextTypeEnum.values().length)) {
+        if (index >= 0 && index < TextTypeEnum.values().length) {
             result = TextTypeEnum.values()[index];
         }
 
@@ -81,6 +81,13 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
     }
 
     public abstract String getStringValueID();
+
+    /**
+     * Returns the transparent state of the background.
+     *
+     * @return True if the background is transparent, false otherwise
+     */
+    public abstract boolean getTransparent();
 
     public String getStringValue() {
         return getStringProperty(getStringValueID());

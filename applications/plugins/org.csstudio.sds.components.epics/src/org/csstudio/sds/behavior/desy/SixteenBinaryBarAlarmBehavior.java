@@ -63,19 +63,29 @@ public class SixteenBinaryBarAlarmBehavior extends AbstractDesyAlarmBehavior<Six
         super.doProcessValueChange(model, anyData);
         model.setPropertyValue(SixteenBinaryBarModel.PROP_VALUE, anyData.numberValue());
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(SixteenBinaryBarModel widget,
-                                                  AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String onColor = isConnected(anyDataChannel) ? _defOnColor
-                : determineBackgroundColor(connectionState);
+    protected void doProcessConnectionStateChange(final SixteenBinaryBarModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        String onColor;
+        String offColor;
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                offColor = _defOffColor;
+                onColor = _defOnColor;
+            } else {
+                offColor = "${Invalid}";
+                onColor = "${Invalid}";
+            }
+        } else {
+            offColor = determineBackgroundColor(connectionState);
+            onColor = offColor;
+        }
         widget.setPropertyValue(SixteenBinaryBarModel.PROP_ON_COLOR, onColor);
-        String offColor = isConnected(anyDataChannel) ? _defOffColor
-                : determineBackgroundColor(connectionState);
         widget.setPropertyValue(SixteenBinaryBarModel.PROP_OFF_COLOR, offColor);
     }
 

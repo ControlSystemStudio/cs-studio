@@ -54,10 +54,18 @@ public class KnobConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<K
      */
     @Override
     protected void doProcessConnectionStateChange( final KnobModel widget, final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String fillColor = isConnected(anyDataChannel)?_defFillColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, fillColor);
-
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String determineFillColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineFillColor = _defFillColor;
+            } else {
+                determineFillColor = "${Invalid}";
+            }
+        } else {
+            determineFillColor = determineBackgroundColor(connectionState);
+        }
+        widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, determineFillColor);
     }
 
     /**

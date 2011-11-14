@@ -30,7 +30,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * @author Alexander Will, Kai Meyer
  * @version $Revision: 1.35 $
  */
-public final class TextInputModel extends AbstractTextTypeWidgetModel {
+public class TextInputModel extends AbstractTextTypeWidgetModel {
     /**
      * The ID of the text input.
      */
@@ -123,7 +123,7 @@ public final class TextInputModel extends AbstractTextTypeWidgetModel {
      */
     @Override
     protected String getDefaultToolTip() {
-        StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer();
         buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
         buffer.append("Text:\t");
         buffer.append(createTooltipParameter(PROP_INPUT_TEXT));
@@ -153,6 +153,7 @@ public final class TextInputModel extends AbstractTextTypeWidgetModel {
      *
      * @return boolean True, if it should have a transparent background, false otherwise
      */
+    @Override
     public boolean getTransparent() {
         return getBooleanProperty(PROP_TRANSPARENT);
     }

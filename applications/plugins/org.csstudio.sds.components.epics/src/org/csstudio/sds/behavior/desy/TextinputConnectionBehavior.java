@@ -37,7 +37,7 @@ import org.epics.css.dal.simple.MetaData;
  * @since 20.04.2010
  */
 public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<TextInputModel> {
-    
+
     private boolean _defTransparent;
 
     /**
@@ -51,7 +51,7 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_COLOR);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -64,9 +64,9 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
             widget.setJavaType(String.class);
         }
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -75,19 +75,22 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
+        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        model.setPropertyValue(TextInputModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(TextInputModel widget,
-                                                  AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final TextInputModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        boolean isTransparent = isConnected(anyDataChannel) && _defTransparent;
+//        boolean isTransparent = isConnected(anyDataChannel) && _defTransparent;
+        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
         widget.setPropertyValue(TextInputModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     @Override
     protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
         if(metaData != null) {
@@ -114,7 +117,7 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
             }
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */

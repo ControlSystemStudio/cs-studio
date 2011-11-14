@@ -31,7 +31,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * @version $Revision: 1.23 $
  *
  */
-public final class SimpleSliderModel extends AbstractWidgetModel {
+public class SimpleSliderModel extends AbstractWidgetModel {
 
 	/**
 	 * The ID of the "show value as text" property.
@@ -130,7 +130,7 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Maximum:\t");
 		buffer.append(createTooltipParameter(PROP_MAX) + "\n");

@@ -711,7 +711,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
         throw new IllegalArgumentException("No Integer property [" + propertyId + "] registered.");
 	}
 
-	public final synchronized double getDoubleProperty(final String propertyId) {
+	public synchronized double getDoubleProperty(final String propertyId) {
         final WidgetProperty property = _propertyMap.get(propertyId);
 
         if ( property != null && property instanceof DoubleProperty) {
@@ -729,7 +729,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
         throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
     }
 
-	public final synchronized boolean getBooleanProperty(final String propertyId) {
+	public synchronized boolean getBooleanProperty(final String propertyId) {
         final WidgetProperty property = _propertyMap.get(propertyId);
 
         if ( property != null && property instanceof BooleanProperty) {

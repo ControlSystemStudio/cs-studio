@@ -90,9 +90,18 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
     @Override
     protected void doProcessConnectionStateChange( final W widget,
                                                   final AnyDataChannel anyDataChannel) {
+        final String determineBackgroundColor;
         final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        final String backgroundColor = isConnected(anyDataChannel)?_userSetColor:determineBackgroundColor(connectionState);
-        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, backgroundColor);
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = _userSetColor;
+            } else {
+                determineBackgroundColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+        }
+        widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineBackgroundColor);
     }
 
     /**
