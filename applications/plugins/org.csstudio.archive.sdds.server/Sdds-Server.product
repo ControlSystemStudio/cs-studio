@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xms40m -Xmx256m -Dcom.sun.management.jmxremote.port=2222 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</vmArgs>
+      <vmArgs>-Xms128m -Xmx512m -Djava.awt.headless=true -Dcom.sun.management.jmxremote.port=2222 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -25,6 +25,7 @@
    <plugins>
       <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="javax.annotation"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.archive.sdds.server"/>
@@ -114,6 +115,7 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
       <plugin id="org.jivesoftware.smack"/>
+      <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.common"/>

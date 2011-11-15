@@ -73,10 +73,14 @@ public class SddsFileReaderUnitTest {
             final long _1998_5_1 = new DateTime(0L).plusYears(28).plusMonths(4).getMillis();
             final long _1998_7_1 = new DateTime(0L).plusYears(28).plusMonths(6).getMillis();
 
-            final RecordDataCollection dataCollection =
-                fileReader.readData("krykWeather_Temp_ai", _1998_5_1/1000, _1998_7_1/1000);
+            RecordDataCollection dataCollection = new RecordDataCollection();
+            try {
+                dataCollection = fileReader.readData("krykWeather_Temp_ai", _1998_5_1/1000, _1998_7_1/1000);
+                Assert.assertTrue(dataCollection.getNumberOfData() > 0);
+            } catch (final SddsFileLengthException e) {
+                Assert.assertTrue(dataCollection.containsError());
+            }
 
-            Assert.assertTrue(dataCollection.getNumberOfData() > 0);
 
         } catch (final DataPathNotFoundException e) {
             Assert.assertTrue(e.getMessage().endsWith("cannot be found or is empty."));
