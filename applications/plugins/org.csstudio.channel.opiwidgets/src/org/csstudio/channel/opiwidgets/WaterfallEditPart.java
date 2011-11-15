@@ -1,45 +1,28 @@
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.widgets.Composite;
 
-public class WaterfallEditPart extends AbstractWidgetEditPart {
+public class WaterfallEditPart
+extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	
 	/**
 	 * Create and initialize figure.
 	 */
 	@Override
-	protected IFigure doCreateFigure() {
+	protected WaterfallFigure doCreateFigure() {
 		WaterfallFigure figure = new WaterfallFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
 	
-	/**Get the widget model.
-	 * It is recommended that all widget controller should override this method.
-	 *@return the widget model.
-	 */
-	@Override
-	public WaterfallModel getWidgetModel() {
-		return (WaterfallModel) super.getWidgetModel();
-	}
-	
-	private static WaterfallWidget widgetOf(IFigure figure) {
-		return ((WaterfallFigure) figure).getSWTWidget();
-	}
-	
-	private static boolean runMode(IFigure figure) {
-		return ((WaterfallFigure) figure).isRunMode();
-	}
-	
 	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
 		if (runMode)
-			widget.setInputText(model.getInputText());
+			widget.setInputText(model.getChannelQuery());
 		widget.setShowRange(model.isShowRange());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
 		widget.setPixelDuration(model.getPixelDuration());
@@ -54,11 +37,11 @@ public class WaterfallEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure figure) {
-				configure(widgetOf(figure), getWidgetModel(), runMode(figure));
+				configure(getFigure().getSWTWidget(), getWidgetModel(), getFigure().isRunMode());
 				return false;
 			}
 		};
-		setPropertyChangeHandler(WaterfallModel.INPUT_TEXT, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(WaterfallModel.ADAPTIVE_RANGE, reconfigure);
 		setPropertyChangeHandler(WaterfallModel.PIXEL_DURATION, reconfigure);
 		setPropertyChangeHandler(WaterfallModel.SCROLL_DOWN, reconfigure);
