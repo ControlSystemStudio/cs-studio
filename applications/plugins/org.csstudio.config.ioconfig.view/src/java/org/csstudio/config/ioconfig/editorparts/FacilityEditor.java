@@ -51,15 +51,15 @@ import org.slf4j.LoggerFactory;
  * @since 31.03.2010
  */
 public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
-    
+
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.facility";
     private static final Logger LOG = LoggerFactory.getLogger(FacilityEditor.class);
-    
+
     /**
      * The Facility Object.
      */
     private FacilityDBO _facility;
-    
+
     /**
      *
      * Constructor.
@@ -67,7 +67,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
     public FacilityEditor() {
         //  nothing to do.
     }
-    
+
     /**
      * @param facility
      *            to Configure. Is NULL create a new one.
@@ -78,7 +78,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
         buildGui();
         selecttTabFolder(0);
     }
-    
+
     /**
      * Constructor.
      */
@@ -94,7 +94,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
         }
         buildGui();
     }
-    
+
     @Override
     public void cancel() {
         super.cancel();
@@ -120,7 +120,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
         cancelDocumentationManageView();
         setSaveButtonSaved();
     }
-    
+
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
@@ -128,7 +128,7 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
         buildGui();
         selecttTabFolder(0);
     }
-    
+
     /**
      * (@inheritDoc)
      */
@@ -141,38 +141,38 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
             _facility.setName(nameWidget.getText());
             nameWidget.setData(nameWidget.getText());
         }
-        
+
         final Spinner indexSpinner = getIndexSpinner();
         if(indexSpinner != null) {
             indexSpinner.setData(_facility.getSortIndex());
         }
-        
+
         // Document
         final DocumentationManageView documentationManageView = getDocumentationManageView();
         if(documentationManageView != null) {
             final Set<DocumentDBO> docs = documentationManageView.getDocuments();
             _facility.setDocuments(docs);
         }
-        
+
         save();
         //        getProfiBusTreeView().refresh(getNode());
         //        getProfiBusTreeView().refresh();
     }
-    
+
     private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
         getProfiBusTreeView().refresh(getNode()); // TODO: denke dieser refresh ist Überflüssig
         // _tabFolder.pack();
     }
-    
+
     private void cancelDocumentationManageView() {
         final DocumentationManageView dMV = getDocumentationManageView();
         if(dMV != null) {
             dMV.cancel();
         }
     }
-    
+
     /**
      * Generate the Main IOC configuration Tab.
      *
@@ -182,12 +182,12 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
     private void main(@Nonnull final String head) {
         final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 300, 260);
         comp.setLayout(new GridLayout(4, false));
-        
+
         final Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
         gName.setLayout(new GridLayout(3, false));
-        
+
         final Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _facility.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
@@ -196,8 +196,8 @@ public class FacilityEditor extends AbstractNodeEditor<FacilityDBO> {
                                                      _facility,
                                                      getMLSB(),
                                                      "Index",
-                                                     getProfiBusTreeView()));
-        
+                                                     getProfiBusTreeView(), 9999));
+
         makeDescGroup(comp, 3);
     }
 }

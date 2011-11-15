@@ -69,7 +69,6 @@ public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
     @Nonnull
     public FacilityDBO copyThisTo(@Nonnull final VirtualRoot parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
         final FacilityDBO copy = (FacilityDBO) super.copyThisTo(parentNode, namePrefix);
-//        final FacilityDBO copy = super.copyThisTo(parentNode);
         for (final IocDBO node : getChildren()) {
             final IocDBO childrenCopy = node.copyThisTo(copy, "Copy of ");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());

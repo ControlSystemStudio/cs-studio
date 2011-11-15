@@ -581,7 +581,7 @@ public class ModuleEditor extends AbstractGsdNodeEditor<ModuleDBO> {
                                                      _module,
                                                      getMLSB(),
                                                      "Sort Index",
-                                                     getProfiBusTreeView()));
+                                                     getProfiBusTreeView(), 99));
     }
 
     /**
