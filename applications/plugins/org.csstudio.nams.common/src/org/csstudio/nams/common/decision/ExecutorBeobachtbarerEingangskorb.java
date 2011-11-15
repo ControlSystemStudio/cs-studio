@@ -29,7 +29,7 @@ import java.util.concurrent.Executor;
 
 import org.csstudio.nams.common.SerialExecutor;
 
-public class ExecutorBeobachtbarerEingangskorb<T extends Ablagefaehig> extends StandardAblagekorb<T> implements BeobachbarerEingangskorb<T> {
+public class ExecutorBeobachtbarerEingangskorb<T extends Ablagefaehig> extends StandardAblagekorb<T> implements BeobachtbarerEingangskorb<T> {
 
 	private final SerialExecutor executor;
 	private EingangskorbBeobachter beobachter;

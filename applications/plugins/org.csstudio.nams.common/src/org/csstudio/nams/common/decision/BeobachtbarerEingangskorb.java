@@ -25,7 +25,7 @@
 
 package org.csstudio.nams.common.decision;
 
-public interface BeobachbarerEingangskorb<T extends Ablagefaehig> extends Eingangskorb<T> {
+public interface BeobachtbarerEingangskorb<T extends Ablagefaehig> extends Eingangskorb<T> {
 
 	public void setBeobachter(EingangskorbBeobachter beobachter);
 	

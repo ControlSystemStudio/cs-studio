@@ -37,7 +37,7 @@ import java.util.concurrent.Executors;
 
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
-import org.csstudio.nams.common.decision.BeobachbarerEingangskorb;
+import org.csstudio.nams.common.decision.BeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.ExecutorBeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
@@ -70,13 +70,15 @@ public class AlarmEntscheidungsBuero {
 	 * 
 	 * TODO Logger-Service hinzufuegen/reinreichen um das Logging testbar zu
 	 * machen, da dieses wichtig fuer Nachweiszwecke ist.
-	 * 
+	 * @param filterThreadCount TODO
 	 * @param historyService
 	 */
 	public AlarmEntscheidungsBuero(final ExecutionService executionService,
 			final Regelwerk[] regelwerke,
 			final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb,
-			final Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb) {
+			final Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb, 
+			int filterThreadCount) {
+		
 		this.alarmVorgangEingangskorb = alarmVorgangEingangskorb;
 		this.ausgangskorb = alarmVorgangAusgangskorb;
 		this._sachbearbeiterList = new LinkedList<Sachbearbeiter>();
@@ -86,11 +88,11 @@ public class AlarmEntscheidungsBuero {
 				.erzeugeEingangskoerbeArray(regelwerke.length);
 		final Map<String, Eingangskorb<Ablagefaehig>> terminEingangskoerbeDerSachbearbeiter = new HashMap<String, Eingangskorb<Ablagefaehig>>();
 
-		final Executor threadPool = Executors.newFixedThreadPool(10);
+		final Executor threadPool = Executors.newFixedThreadPool(filterThreadCount);
 		
 		for (int zaehler = 0; zaehler < regelwerke.length; zaehler++) {
 
-			final BeobachbarerEingangskorb<Ablagefaehig> eingangskorb = new ExecutorBeobachtbarerEingangskorb<Ablagefaehig>(threadPool);
+			final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb = new ExecutorBeobachtbarerEingangskorb<Ablagefaehig>(threadPool);
 			eingangskoerbeSachbearbeiter[zaehler] = eingangskorb;
 			final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
 					"" + zaehler, 

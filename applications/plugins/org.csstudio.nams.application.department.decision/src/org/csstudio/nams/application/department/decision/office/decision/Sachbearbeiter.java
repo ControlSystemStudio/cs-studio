@@ -31,7 +31,7 @@ import java.util.Iterator;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
-import org.csstudio.nams.common.decision.BeobachbarerEingangskorb;
+import org.csstudio.nams.common.decision.BeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.EingangskorbBeobachter;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
@@ -59,7 +59,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	private final Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge;
 	private final Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz;
 	private final String nameDesSachbearbeiters;
-	private final BeobachbarerEingangskorb<Ablagefaehig> eingangskorb;
+	private final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb;
 	private boolean istAmArbeiten;
 
 	/**
@@ -73,7 +73,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	 */
 	public Sachbearbeiter(
 			final String nameDesSachbearbeiters,
-			final BeobachbarerEingangskorb<Ablagefaehig> eingangskorb,
+			final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb,
 			final Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge,
 			final Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
 			final Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
