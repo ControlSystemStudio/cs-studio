@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,15 +22,40 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+/**
+ * A tree constructed by a query to channel finder and a set of properties.
+ * 
+ * @author carcassi
+ * 
+ */
 public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 	
 	private Tree tree;
 	private ErrorBar errorBar;
-	
+	private ISelectionProvider treeSelectionProvider;
+	private List<String> properties = new ArrayList<String>();
+	private String selectionPv = null;
+	private LocalUtilityPvManagerBridge selectionWriter = null;
 	private ChannelTreeByPropertyModel model;
 
+	/**
+	 * The tree that displays the data. Provided to add pop-up menu.
+	 * 
+	 * @return the tree
+	 */
 	public Tree getTree() {
 		return tree;
+	}
+	
+	/**
+	 * The selection provider with the selected data in the tree,
+	 * in terms of ChannelTreeByPropertyNode objects.
+	 * Provided to add pop-up menu.
+	 * 
+	 * @return the selection provider
+	 */
+	public ISelectionProvider getTreeSelectionProvider() {
+		return treeSelectionProvider;
 	}
 	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
@@ -82,6 +108,7 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 				widgetSelected(e);
 			}
 		});
+		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -103,14 +130,20 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 		errorBar.setException(ex);
 	}
 	
-	private List<String> properties = new ArrayList<String>();
-	private String selectionPv = null;
-	private LocalUtilityPvManagerBridge selectionWriter = null;
-	
+	/**
+	 * The properties, in the correct order, used to create the tree.
+	 * 
+	 * @return a list of property names
+	 */
 	public List<String> getProperties() {
 		return properties;
 	}
 	
+	/**
+	 * Changes the properties that are used to create the tree.
+	 * 
+	 * @param properties a list of property names
+	 */
 	public void setProperties(List<String> properties) {
 		List<String> oldProperties = this.properties;
 		this.properties = properties;
@@ -152,10 +185,20 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
 	}
 	
+	/**
+	 * The pv that is going to be used to broadcast the selection of the tree.
+	 * 
+	 * @return a pv name
+	 */
 	public String getSelectionPv() {
 		return selectionPv;
 	}
 	
+	/**
+	 * Changes the pv that is going to be used to broadcast the selection of the tree.
+	 * 
+	 * @param selectionPv a pv name
+	 */
 	public void setSelectionPv(String selectionPv) {
 		this.selectionPv = selectionPv;
 		if (selectionPv == null || selectionPv.trim().isEmpty()) {
