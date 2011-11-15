@@ -38,6 +38,10 @@
       <product
             application="org.csstudio.archive.sdds.server.SddsServerApplication"
             name="SddsServerProduct">
+         <property
+               name="appName"
+               value="SddsServerProduct">
+         </property>
       </product>
    </extension>
 

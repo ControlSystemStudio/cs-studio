@@ -38,6 +38,8 @@ import javax.annotation.Nonnull;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -52,6 +54,9 @@ public class ArchiveLocation {
 
     /** File separator */
     static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
+    /** The static class logger */
+    private static Logger LOG = LoggerFactory.getLogger(ArchiveLocation.class);
 
     /**
      * TODO: A job has to read in the data paths every xx hours!!!!!
@@ -189,7 +194,9 @@ public class ArchiveLocation {
                         }
                     }
 
-                } catch(final NumberFormatException nfe) {/* Can be ignored */}
+                } catch(final NumberFormatException nfe) {
+                    LOG.error("[*** NumberFormatException ***]: {}", nfe.getMessage());
+                }
             }
         }
     }

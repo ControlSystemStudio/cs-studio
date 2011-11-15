@@ -29,12 +29,8 @@ import java.util.TreeSet;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 import SDDS.java.SDDS.SDDSFile;
 
@@ -75,12 +71,7 @@ public class SddsDataReader implements Runnable {
      */
     public SddsDataReader(@Nonnull final String path,
                           final long timeStart,
-                          final long timeEnd) {
-
-        final IPreferencesService pref = Platform.getPreferencesService();
-
-        // Indicates if byte order is little endian
-        final boolean littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
+                          final long timeEnd, final boolean littleEndian) {
 
         filePath = path;
         this.startTime = timeStart;
