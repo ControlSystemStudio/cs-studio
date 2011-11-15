@@ -14,7 +14,7 @@ public class ChannelEditPartAdapterFactory implements IAdapterFactory {
 	@Override
 	public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
 		if (adaptableObject instanceof AbstractChannelWidgetEditPart) {
-			AbstractChannelWidgetFigure<?> figure = ((AbstractChannelWidgetEditPart)adaptableObject).getFigure();
+			AbstractChannelWidgetFigure<?> figure = ((AbstractChannelWidgetEditPart<?,?>)adaptableObject).getFigure();
 			if (adapterType == Channel[].class) {
 				return figure.getSelectedChannels();
 			}
