@@ -5,13 +5,17 @@ import java.net.UnknownHostException;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import junit.framework.Assert;
 
 import org.csstudio.nams.common.DefaultExecutionService;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.BeobachbarerEingangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.ExecutorBeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
@@ -47,9 +51,15 @@ public class Sachbearbeiter_Test extends
 		}
 
 	}
+	
+	private class DirectExecutor implements Executor {
+	     public void execute(Runnable r) {
+	         r.run();
+	     }
+	}
 
 	protected volatile boolean eineMappeIstfertig;
-	private Eingangskorb<Vorgangsmappe> eingangskorb;
+	private BeobachbarerEingangskorb<Vorgangsmappe> eingangskorb;
 	private Vorgangsmappe vorgangsmappe;
 	private Ausgangskorb<Vorgangsmappe> ausgangskorb;
 	private Zwischenablagekorb<Vorgangsmappe> zwischenablagekorb;
@@ -57,7 +67,7 @@ public class Sachbearbeiter_Test extends
 
 	private Ausgangskorb<Terminnotiz> assistenzkorb;
 
-	private Eingangskorb<Terminnotiz> terminnotizEingangskorb;
+	private BeobachbarerEingangskorb<Terminnotiz> terminnotizEingangskorb;
 
 	private WeiteresVersandVorgehen aktuellesGesamtErgebnisDesRegelwerk;
 
@@ -67,15 +77,16 @@ public class Sachbearbeiter_Test extends
 	public void testachteAufTerminnotizEingaenge() throws InterruptedException {
 		this.mocksAufIgnorierenSetzen();
 
-		final StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
-		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final ExecutorBeobachtbarerEingangskorb<Vorgangsmappe> zwischenablage = new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor());
+		final ExecutorBeobachtbarerEingangskorb<Terminnotiz> notizKorb = new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor());
 		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final boolean[] bloedeSensingVariable = { false };
 		final Terminnotiz notiz = Terminnotiz.valueOf(this.vorgangsmappe
 				.gibMappenkennung(), Millisekunden.valueOf(100), "Fritz");
 		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(), notizKorb,
+				"Fritz",
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()), 
+				notizKorb,
 				zwischenablage, new StandardAblagekorb<Terminnotiz>(),
 				ausgangskorb,
 				new StandardRegelwerk(Regelwerkskennung.valueOf())) {
@@ -92,7 +103,7 @@ public class Sachbearbeiter_Test extends
 
 		sachbearbeiter.beginneArbeit();
 		notizKorb.ablegen(notiz);
-		Thread.sleep(500);
+//		Thread.sleep(500);
 
 		Assert.assertTrue(bloedeSensingVariable[0]);
 		sachbearbeiter.beendeArbeit();
@@ -174,13 +185,13 @@ public class Sachbearbeiter_Test extends
 			InterruptedException {
 		this.mocksAufIgnorierenSetzen();
 
-		final StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
-		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final ExecutorBeobachtbarerEingangskorb<Vorgangsmappe> ablage = new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor());
+		final ExecutorBeobachtbarerEingangskorb<Terminnotiz> notizKorb = new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor());
 		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
+				"Fritz",
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor()), ablage, notizKorb,
 				ausgangskorb,
 				new StandardRegelwerk(Regelwerkskennung.valueOf()));
 
@@ -227,13 +238,13 @@ public class Sachbearbeiter_Test extends
 			UnknownHostException {
 		this.mocksAufIgnorierenSetzen();
 
-		final StandardAblagekorb<Vorgangsmappe> zwischenablage = new StandardAblagekorb<Vorgangsmappe>();
-		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final ExecutorBeobachtbarerEingangskorb<Vorgangsmappe> zwischenablage = new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor());
+		final ExecutorBeobachtbarerEingangskorb<Terminnotiz> notizKorb = new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor());
 		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), zwischenablage,
+				"Fritz",
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor()), zwischenablage,
 				notizKorb, ausgangskorb, new StandardRegelwerk(
 						Regelwerkskennung.valueOf()));
 
@@ -326,13 +337,13 @@ public class Sachbearbeiter_Test extends
 			InterruptedException {
 		this.mocksAufIgnorierenSetzen();
 
-		final StandardAblagekorb<Vorgangsmappe> ablage = new StandardAblagekorb<Vorgangsmappe>();
-		final StandardAblagekorb<Terminnotiz> notizKorb = new StandardAblagekorb<Terminnotiz>();
+		final ExecutorBeobachtbarerEingangskorb<Vorgangsmappe> ablage = new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor());
+		final ExecutorBeobachtbarerEingangskorb<Terminnotiz> notizKorb = new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor());
 		final StandardAblagekorb<Vorgangsmappe> ausgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Fritz",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(), ablage, notizKorb,
+				"Fritz",
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor()), ablage, notizKorb,
 				ausgangskorb,
 				new StandardRegelwerk(Regelwerkskennung.valueOf()));
 
@@ -384,10 +395,10 @@ public class Sachbearbeiter_Test extends
 		final boolean[] returnBearbeiteOffeneVorgaenge = new boolean[] { false };
 
 		final Sachbearbeiter bearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Hans",
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(),
-				new StandardAblagekorb<Vorgangsmappe>(),
+				"Hans",
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
 				new StandardAblagekorb<Terminnotiz>(),
 				new StandardAblagekorb<Vorgangsmappe>(), new StandardRegelwerk(
 						Regelwerkskennung.valueOf())) {
@@ -579,7 +590,7 @@ public class Sachbearbeiter_Test extends
 
 		// Test beginnen
 		final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-				new DefaultExecutionService(), "Horst Senkel",
+				"Horst Senkel",
 				this.eingangskorb, this.terminnotizEingangskorb,
 				this.zwischenablagekorb, this.assistenzkorb, this.ausgangskorb,
 				this.regelwerk);
@@ -633,10 +644,10 @@ public class Sachbearbeiter_Test extends
 	@Before
 	protected void setUp() throws Exception {
 		super.setUp();
-		this.eingangskorb = EasyMock.createMock(Eingangskorb.class);
+		this.eingangskorb = EasyMock.createMock(BeobachbarerEingangskorb.class);
 		this.zwischenablagekorb = EasyMock.createMock(Zwischenablagekorb.class);
 		this.assistenzkorb = EasyMock.createMock(Ausgangskorb.class);
-		this.terminnotizEingangskorb = EasyMock.createMock(Eingangskorb.class);
+		this.terminnotizEingangskorb = EasyMock.createMock(BeobachbarerEingangskorb.class);
 		this.ausgangskorb = EasyMock.createMock(Ausgangskorb.class);
 		this.regelwerk = EasyMock.createMock(Regelwerk.class);
 
@@ -679,10 +690,10 @@ public class Sachbearbeiter_Test extends
 	}
 
 	private Sachbearbeiter erzeugeSachbearbeiter(final String name) {
-		return new Sachbearbeiter(new DefaultExecutionService(), name,
-				new StandardAblagekorb<Vorgangsmappe>(),
-				new StandardAblagekorb<Terminnotiz>(),
-				new StandardAblagekorb<Vorgangsmappe>(),
+		return new Sachbearbeiter(name,
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Terminnotiz>(new DirectExecutor()),
+				new ExecutorBeobachtbarerEingangskorb<Vorgangsmappe>(new DirectExecutor()),
 				new StandardAblagekorb<Terminnotiz>(),
 				new StandardAblagekorb<Vorgangsmappe>(), new StandardRegelwerk(
 						Regelwerkskennung.valueOf()));

@@ -87,7 +87,8 @@ public class AMSPerformanceTest {
         } else if (options.component.equals("decision")) {
             sendTopic = "ALARM";
             if (options.receiveFromTopics.size() == 0) {
-                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+//                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
             }
         } else if (options.component.equals("minder")) {
             sendTopic = "T_AMS_MESSAGEMINDER";
