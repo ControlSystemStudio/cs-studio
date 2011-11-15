@@ -105,7 +105,7 @@ public class SddsFileReader {
                 //       1048576 Byte = 1 MB
                 final File file = new File(filePaths[i]);
                 final long fileLength = file.length();
-                LOG.info(" " + filePaths[i] + " - Length: " + fileLength);
+                LOG.debug(" " + filePaths[i] + " - Length: " + fileLength);
 
                 // If the file length is greater then 5MB DO NOT read it
                 if (fileLength <= 5242880L) {
