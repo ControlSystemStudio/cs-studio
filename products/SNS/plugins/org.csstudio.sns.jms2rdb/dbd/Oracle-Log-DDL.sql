@@ -28,6 +28,7 @@ DISABLE NOVALIDATE;
 
 
 -- MESSAGE_CONTENT Table: Additional message content, arbitrary type/value pairs
+-- ID column isn't really used...
 DROP TABLE message_content;
 
 CREATE TABLE message_content

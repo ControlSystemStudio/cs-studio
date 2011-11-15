@@ -56,7 +56,7 @@ public class Application implements IApplication
 
     /** {@inheritDoc} */
     @Override
-    public Object start(IApplicationContext context) throws Exception
+    public Object start(final IApplicationContext context) throws Exception
     {
         // Read settings from preferences.
         // Order of preference lookup:

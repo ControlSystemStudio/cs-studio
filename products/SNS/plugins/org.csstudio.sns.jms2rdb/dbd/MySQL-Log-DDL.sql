@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS message
 );
 
 -- Elements of a Message
+-- ID column isn't really used...
 DROP TABLE IF EXISTS message_content;
 CREATE TABLE IF NOT EXISTS message_content
 (

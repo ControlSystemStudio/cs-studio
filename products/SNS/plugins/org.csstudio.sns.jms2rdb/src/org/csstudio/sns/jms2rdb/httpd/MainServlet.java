@@ -30,7 +30,6 @@ public class MainServlet extends AbstractServlet
 
     private final String app_name;
 
-    @SuppressWarnings("unchecked")
     public MainServlet(final LogClientThread log_client_thread)
     {
         this.log_client_thread = log_client_thread;
