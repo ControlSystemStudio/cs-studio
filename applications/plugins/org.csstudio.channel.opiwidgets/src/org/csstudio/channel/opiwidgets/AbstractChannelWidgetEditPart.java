@@ -1,11 +1,11 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.widgets.Control;
 
-public abstract class AbstractChannelWidgetEditPart extends AbstractWidgetEditPart {
+public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChannelWidgetFigure<?>,
+    Model extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart {
 	
 	protected void registerPopup(Control control) {
 		control.addMouseListener(new MouseAdapter() {
@@ -18,11 +18,20 @@ public abstract class AbstractChannelWidgetEditPart extends AbstractWidgetEditPa
 	}
 	
 	@Override
-	protected abstract AbstractChannelWidgetFigure<?> doCreateFigure();
+	protected abstract Figure doCreateFigure();
 	
 	@Override
-	public AbstractChannelWidgetFigure<?> getFigure() {
-		// TODO Auto-generated method stub
-		return (AbstractChannelWidgetFigure<?>) super.getFigure();
+	public Figure getFigure() {
+		@SuppressWarnings("unchecked")
+		Figure figure = (Figure) super.getFigure();
+		return figure;
 	}
+	
+	@Override
+	public Model getWidgetModel() {
+		@SuppressWarnings("unchecked")
+		Model widgetModel = (Model) super.getWidgetModel();
+		return widgetModel;
+	}
+
 }
