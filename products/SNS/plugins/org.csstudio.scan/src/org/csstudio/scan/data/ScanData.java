@@ -59,7 +59,7 @@ public class ScanData implements Serializable
      *  @return Samples that were taken for this device.
      *          <code>null</code> if the device has no samples.
      */
-    public List<ScanSample> getSamples(String device_name)
+    public List<ScanSample> getSamples(final String device_name)
     {
         return device_logs.get(device_name);
     }

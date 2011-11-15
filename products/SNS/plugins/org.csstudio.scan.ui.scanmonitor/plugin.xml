@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            category="css"
+            category="org.csstudio"
             class="org.csstudio.scan.ui.scanmonitor.ScanMonitorView"
             icon="icons/scan_monitor.gif"
             id="org.csstudio.scan.ui.scanmonitor"

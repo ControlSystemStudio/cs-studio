@@ -28,6 +28,17 @@ public class DataFormatter
 	final public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	final private static DateFormat time_fmt = new SimpleDateFormat(TIME_FORMAT);
 
+	/** Extract double from sample
+	 *  @param sample ScanSample
+	 *  @return Double or NaN if there is no number to extract
+	 */
+	public static double toDouble(final ScanSample sample)
+	{
+	    if (sample instanceof NumberScanSample)
+	        return ((NumberScanSample) sample).getNumber().doubleValue();
+	    return Double.NaN;
+	}
+	
 	/** @param timestamp {@link Date}
 	 *  @return Date in preferred text format
 	 */
