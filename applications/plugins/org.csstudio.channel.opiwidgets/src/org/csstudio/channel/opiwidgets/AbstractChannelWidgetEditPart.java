@@ -1,6 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
+import org.csstudio.opibuilder.widgets.figures.WebBrowserFigure;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.widgets.Control;
 
@@ -32,6 +33,12 @@ public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChann
 		@SuppressWarnings("unchecked")
 		Model widgetModel = (Model) super.getWidgetModel();
 		return widgetModel;
+	}
+	
+	@Override
+	public void deactivate() {
+		getFigure().getSWTWidget().dispose();		
+		super.deactivate();
 	}
 
 }
