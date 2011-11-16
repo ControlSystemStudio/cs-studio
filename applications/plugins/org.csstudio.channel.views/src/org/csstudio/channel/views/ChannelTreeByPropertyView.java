@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
-import org.csstudio.channel.widgets.PropertyListDialog;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -131,6 +130,10 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		query.execute(channelQueryListener);
 		treeWidget.setChannelQuery(query);
 	}
+	
+	public void configure() {
+		treeWidget.openConfigurationDialog();
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -178,8 +181,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		btnProperties.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PropertyListDialog dialog = new PropertyListDialog(treeWidget);
-				dialog.open(e);
+				configure();
 			}
 		});
 		name_helper.loadSettings();
