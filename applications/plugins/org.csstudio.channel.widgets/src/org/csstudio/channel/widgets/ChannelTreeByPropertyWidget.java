@@ -160,6 +160,7 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 	
 	@Override
 	protected void queryExecuted(Result result) {
+		errorBar.setException(result.exception);
 		if (result.exception == null) {
 			List<String> newProperties = new ArrayList<String>(getProperties());
 			newProperties.retainAll(ChannelUtil.getPropertyNames(result.channels));
@@ -167,8 +168,6 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 				setProperties(newProperties);
 			}
 			computeTree();
-		} else {
-			errorBar.setException(result.exception);
 		}
 	}
 	
@@ -211,5 +210,10 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 		} else {
 			selectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
+	}
+	
+	public void openConfigurationDialog() {
+		ChannelTreeByPropertyConfigurationDialog dialog = new ChannelTreeByPropertyConfigurationDialog(this);
+		dialog.open();
 	}
 }
