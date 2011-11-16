@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,55 +19,65 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
  */
 
 package org.csstudio.archive.sdds.server.management;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.IRemotelyStoppable;
-import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 
 /**
- * @author Markus Moeller
+ * TODO (mmoeller) :
  *
+ * @author mmoeller
+ * @since 15.11.2011
  */
-public class RestartMgmtCommand implements IManagementCommand {
+public class GetVersionMgmtCommand implements IManagementCommand {
 
-    /** Static instance of the Application object. */
-    private static IRemotelyStoppable RESTART_ME;
+    /** The path to the file that contains the product version */
+    private static String VERSION_FILE;
 
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
+    /**
+     * {@inheritDoc}
      */
     @Override
     @Nonnull
     public CommandResult execute(@Nonnull final CommandParameters parameters) {
 
-        // The result of this method call.
         CommandResult result = null;
 
-        if(RESTART_ME != null) {
-            RESTART_ME.stopApplication(true);
-            result = CommandResult.createMessageResult(SddsServerActivator.PLUGIN_ID + " is restarting now.");
+        if (VERSION_FILE != null) {
+
+            final Properties prop = new Properties();
+
+            try {
+                prop.load(new FileInputStream(VERSION_FILE));
+                if (prop.containsKey("version")) {
+                    result = CommandResult.createMessageResult("SDDS-Server\n\nVersion: " + prop.getProperty("version"));
+                } else {
+                    result = CommandResult.createMessageResult("Cannot find version in file.");
+                }
+            } catch (final FileNotFoundException e) {
+                result = CommandResult.createMessageResult("Version file not found.");
+            } catch (final IOException e) {
+                result = CommandResult.createMessageResult("Cannot read version file.");
+            }
         } else {
-            result = CommandResult.createFailureResult("Do not have a valid reference to the Application object!");
+            result = CommandResult.createMessageResult("Path to version file is not defined.");
         }
 
         return result;
     }
 
-    /**
-     * Sets the static Application object.
-     *
-     * @param o
-     *
-     */
-    public static void injectStaticObject(@Nonnull final IRemotelyStoppable o) {
-        RESTART_ME = o;
+    public static void injectStaticObject(@Nonnull final String filePath) {
+        VERSION_FILE = filePath;
     }
 }
