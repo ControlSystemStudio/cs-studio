@@ -12,10 +12,10 @@ import java.util.Date;
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
+import org.csstudio.swt.xygraph.figures.XYGraph;
+import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
@@ -29,8 +29,10 @@ public class GUI
     private ToolbarArmedXYGraph plot;
     private XYGraph xygraph;
 
-    /** Initialize Draw2D plot */
-    private GUI()
+    /** Initialize
+     *  @param parent Parent composite
+     */
+    public GUI(final Composite parent)
     {
         // Create plot
         plot = new ToolbarArmedXYGraph(new XYGraph(), XYGraphFlags.SEPARATE_ZOOM);
@@ -39,21 +41,12 @@ public class GUI
         
         xygraph.primaryXAxis.setTitle("Scan");
         xygraph.primaryYAxis.setTitle("Value");
-    }
-    
-    /** Create GUI for Canvas, i.e. SWT container
-     *  @param parent Parent composite
-     *  @return GUI
-     */
-    public static GUI forCanvas(final Composite parent)
-    {
-        final GUI gui = new GUI();
+
+        // Embed Draw2D plot figure in SWT Canvas
         parent.setLayout(new FillLayout());
         final Canvas canvas = new Canvas(parent, 0);
         final LightweightSystem lws = new LightweightSystem(canvas);
-        lws.setContents(gui.plot);
-        
-        return gui;
+        lws.setContents(plot);
     }
     
     // TODO Replace dummy trace data with actual scan data
@@ -72,5 +65,6 @@ public class GUI
         trace.setPointStyle(PointStyle.FILLED_DIAMOND);
         trace.setPointSize(10);
         xygraph.addTrace(trace);
+        xygraph.performAutoScale();
     }
 }

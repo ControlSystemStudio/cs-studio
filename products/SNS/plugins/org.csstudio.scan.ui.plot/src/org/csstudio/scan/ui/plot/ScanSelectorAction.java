@@ -7,36 +7,30 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
+import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 
-/** Eclipse View for the scan plot
+/** View toolbar action to select the scan
  *  @author Kay Kasemir
  */
-public class ScanPlotView extends ViewPart
+public class ScanSelectorAction extends DropdownToolbarAction
 {
-    public ScanPlotView()
+    /** Initialize */
+    public ScanSelectorAction()
     {
-        // TODO Auto-generated constructor stub
+        super("Scan", "Select a Scan");
     }
 
     /** {@inheritDoc} */
     @Override
-    public void createPartControl(final Composite parent)
+    public String[] getOptions()
     {
-        final GUI gui = new GUI(parent);
-        gui.addTrace();
-        
-        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
-        toolbar.add(new ScanSelectorAction());
-        toolbar.add(new XValueSelectorAction());
+        return new String[] { "Scan 1", "Scan 2", "Scan 3" };
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setFocus()
+    public void handleSelection(final String item)
     {
-        // NOP
+        System.out.println(item);
     }
 }

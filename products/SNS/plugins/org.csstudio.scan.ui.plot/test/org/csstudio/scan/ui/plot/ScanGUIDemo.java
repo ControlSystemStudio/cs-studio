@@ -24,7 +24,7 @@ public class ScanGUIDemo
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout(1, false));
 
-        final GUI gui = GUI.forCanvas(shell);
+        final GUI gui = new GUI(shell);
         gui.addTrace();
         
         shell.setSize(800, 600);
