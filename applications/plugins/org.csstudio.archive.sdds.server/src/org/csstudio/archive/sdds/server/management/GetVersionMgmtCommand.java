@@ -65,10 +65,10 @@ public class GetVersionMgmtCommand implements IManagementCommand {
                 } else {
                     result = CommandResult.createMessageResult("Cannot find version in file.");
                 }
-            } catch (final FileNotFoundException e) {
-                result = CommandResult.createMessageResult("Version file not found.");
-            } catch (final IOException e) {
-                result = CommandResult.createMessageResult("Cannot read version file.");
+            } catch (final FileNotFoundException fnfe) {
+                result = CommandResult.createMessageResult("Version file not found.\n\n" + fnfe.getMessage());
+            } catch (final IOException ioe) {
+                result = CommandResult.createMessageResult("Cannot read version file.\n\n" + ioe.getMessage());
             }
         } else {
             result = CommandResult.createMessageResult("Path to version file is not defined.");

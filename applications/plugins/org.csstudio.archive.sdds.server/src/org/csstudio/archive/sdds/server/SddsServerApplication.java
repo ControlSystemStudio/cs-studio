@@ -120,12 +120,10 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
                 final File file = new File(".eclipseproduct");
                 if (file.exists()) {
                     final URI uri = file.toURI();
-                    String path = uri.toURL().getPath();
+                    final String path = uri.toURL().getPath();
                     if (path != null) {
-                        if  (path.startsWith("/")) {
-                            path = path.substring(1);
-                        }
 
+                        LOG.info("Path to version file: {}", path);
                         GetVersionMgmtCommand.injectStaticObject(path);
                     }
                 } else {
@@ -142,7 +140,7 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
             server.start();
 
         } catch(final ServerException se) {
-            LOG.error("Cannot create an instance of the SddsServer class. ", se);
+            LOG.error("Cannot create an instance of the SddsServer class: {}", se.getMessage());
             LOG.error("Stopping application!");
             running = false;
             restart = false;

@@ -63,7 +63,7 @@ public class DataCollector {
         try {
             sddsReader = new SddsFileReader("./sdds_data_location.txt");
         } catch(final DataPathNotFoundException dpnfe) {
-            LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe);
+            LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe.getMessage());
             throw new DataCollectorException("DataCollector: Cannot instantiate the class SddsFileReader: " + dpnfe.getMessage());
         }
     }
