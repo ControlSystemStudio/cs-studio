@@ -25,6 +25,7 @@
 package org.csstudio.archive.sdds.server.file;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -71,7 +72,14 @@ public class SddsFileReader {
         archiveLocation = new ArchiveLocation(dataSourceFile);
 
         final IPreferencesService pref = Platform.getPreferencesService();
-        littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
+        if (pref != null) {
+            littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                           ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN,
+                                           false, null);
+        } else {
+            LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
+            littleEndian = false;
+        }
     }
 
     /**
@@ -93,8 +101,8 @@ public class SddsFileReader {
 
         // TODO: First check which paths do exist, then create the arrays
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");
-        final Thread[] readerThread = new Thread[filePaths.length];
-        final SddsDataReader[] reader = new SddsDataReader[filePaths.length];
+        final ArrayList<Thread> readerThread = Lists.newArrayList();
+        final ArrayList<SddsDataReader> reader = Lists.newArrayList();
 
         for(int i = 0; i < filePaths.length; i++) {
 
@@ -109,9 +117,13 @@ public class SddsFileReader {
 
                 // If the file length is greater then 5MB DO NOT read it
                 if (fileLength <= 5242880L) {
-                    reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
-                    readerThread[i] = new Thread(threadGroup, reader[i]);
-                    readerThread[i].start();
+
+                    final SddsDataReader dataReader = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
+                    reader.add(dataReader);
+
+                    final Thread thread = new Thread(threadGroup, dataReader);
+                    readerThread.add(thread);
+                    thread.start();
                 } else {
                     throw new SddsFileLengthException("File '" + filePaths[i] + "' too big to be read (" + fileLength + ")");
                 }
@@ -136,15 +148,19 @@ public class SddsFileReader {
         final RecordDataCollection dataCollection = new RecordDataCollection();
 
         final List<EpicsRecordData> allResults = Lists.newLinkedList();
-        for(int i = 0; i < filePaths.length; i++) {
-            if(reader[i] != null) {
-                allResults.addAll(reader[i].getResult());
+        for(final SddsDataReader o : reader) {
+            if(o != null) {
+                if (!o.hasCausedError()) {
+                    allResults.addAll(o.getResult());
+                } else {
+                    LOG.warn(o.getError().toString() + ": " + o.getErrorDescription());
+                }
             }
         }
 
         dataCollection.setData(allResults);
-        if(reader[0] != null) {
-            dataCollection.setSampleParameter(reader[0].getSampleCtrl());
+        if(reader.size() > 0) {
+            dataCollection.setSampleParameter(reader.get(0).getSampleCtrl());
         } else {
             dataCollection.setSampleParameter(new SampleParameters());
         }

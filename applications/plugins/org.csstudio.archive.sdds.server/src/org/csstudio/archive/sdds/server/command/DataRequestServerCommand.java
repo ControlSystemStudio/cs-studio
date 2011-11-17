@@ -37,6 +37,8 @@ import org.csstudio.archive.sdds.server.data.DataCollector;
 import org.csstudio.archive.sdds.server.data.DataCollectorException;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
+import org.csstudio.archive.sdds.server.type.TypeFactory;
+import org.csstudio.archive.sdds.server.type.TypeNotSupportedException;
 import org.csstudio.archive.sdds.server.util.RawData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +82,6 @@ public class DataRequestServerCommand extends AbstractServerCommand {
         final DataRequestHeader header = new DataRequestHeader(buffer.getData());
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         final DataOutputStream dos = new DataOutputStream(baos);
-        double f;
 
         LOG.info(header.toString());
 
@@ -135,8 +136,12 @@ public class DataRequestServerCommand extends AbstractServerCommand {
                     // TODO: Handle ALL data types
                     switch(o.getSddsType()) {
                         case SDDS_DOUBLE:
-                            f = (Double) o.getValue();
-                            dos.writeDouble(f);
+                            try {
+                                final double f = TypeFactory.toDouble(o.getValue());
+                                dos.writeDouble(f);
+                            } catch (final TypeNotSupportedException tnse) {
+                                dos.writeDouble(Double.NaN);
+                            }
                             break;
                         default:
                             break;

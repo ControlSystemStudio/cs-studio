@@ -80,14 +80,14 @@ public class SddsServer extends Thread {
         try {
             commandExecutor = new CommandExecutor();
         } catch (final ServerCommandException sce) {
-            LOG.error("[*** ServerCommandException ***]: ", sce);
+            LOG.error("[*** ServerCommandException ***]: {}", sce.getMessage());
             throw new ServerException("Cannot create instance of CommandExecutor: " + sce.getMessage());
         }
 
         try {
             initSocketConnection(port, timeout);
         } catch(final IOException ioe) {
-            LOG.error("[*** IOException ***]: ", ioe);
+            LOG.error("[*** IOException ***]: {}", ioe.getMessage());
             throw new ServerException("Cannot create socket: " + ioe.getMessage());
         }
     }
