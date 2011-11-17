@@ -71,7 +71,14 @@ public class SddsFileReader {
         archiveLocation = new ArchiveLocation(dataSourceFile);
 
         final IPreferencesService pref = Platform.getPreferencesService();
-        littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
+        if (pref != null) {
+            littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                           ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN,
+                                           false, null);
+        } else {
+            LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
+            littleEndian = false;
+        }
     }
 
     /**

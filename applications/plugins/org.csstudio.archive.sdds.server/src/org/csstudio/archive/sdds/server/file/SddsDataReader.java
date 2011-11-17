@@ -31,6 +31,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
+import org.csstudio.archive.sdds.server.type.TypeFactory;
+import org.csstudio.archive.sdds.server.type.TypeNotSupportedException;
 
 import SDDS.java.SDDS.SDDSFile;
 
@@ -163,8 +165,12 @@ public class SddsDataReader implements Runnable {
 //        }
 
         for(int i = 0; i < time.length; i++) {
-            data.add(new EpicsRecordData((Long) time[i], (Long) nanoSec[i],
-                                         (Long) status[i], value[i]));
+            try {
+                data.add(new EpicsRecordData(TypeFactory.toLong(time[i]), TypeFactory.toLong(nanoSec[i]),
+                                             TypeFactory.toLong(status[i]), value[i]));
+            } catch (final TypeNotSupportedException tnse) {
+                // TODO Auto-generated catch block
+            }
         }
 
 //        if(result.isEmpty()) {
