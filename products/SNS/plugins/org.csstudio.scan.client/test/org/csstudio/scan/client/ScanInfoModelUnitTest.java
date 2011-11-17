@@ -13,16 +13,16 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.ui.scanmonitor;
+package org.csstudio.scan.client;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModelListener;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** JUnit test of the {@link ScanInfoModel}
@@ -35,16 +35,24 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
     @Test(timeout=15000)
     public void testStart() throws Exception
     {
-        final ScanInfoModel model = new ScanInfoModel();
+        final ScanInfoModel model = ScanInfoModel.getInstance();
+        final ScanInfoModel model2 = ScanInfoModel.getInstance();
+        assertSame(model, model2);
+        model2.release();
+        
+        // Adding the listener will trigger an immediate update
         model.addListener(this);
-        model.start();
         updates.await();
-        model.stop();
+        model.removeListener(this);
+        model.release();
+        
+        // Thread.sleep(2000);
     }
 
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
+        System.out.println("\n-- Scan Update --");
         for (ScanInfo info : infos)
             System.out.println(info);
         updates.countDown();
@@ -56,12 +64,12 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
         fail("Connection error");
     }
 
+    @Ignore
     @Test
     public void keepMonitoring() throws Exception
     {
-        final ScanInfoModel model = new ScanInfoModel();
+        final ScanInfoModel model = ScanInfoModel.getInstance();
         model.addListener(this);
-        model.start();
         // Wait forever
         while (true)
             Thread.sleep(1000);

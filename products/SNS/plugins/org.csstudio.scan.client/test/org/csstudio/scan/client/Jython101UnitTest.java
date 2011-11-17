@@ -49,7 +49,7 @@ public class Jython101UnitTest
 
         interpreter.exec("x=42");
         interpreter.exec("print 'I set x to %d ...' % x");
-        interpreter.exec("import yabes.Jython101UnitTest as T");
+        interpreter.exec("import org.csstudio.scan.client.Jython101UnitTest as T");
 
         assertEquals(0, number);
         interpreter.exec("T.setNumber(x)");

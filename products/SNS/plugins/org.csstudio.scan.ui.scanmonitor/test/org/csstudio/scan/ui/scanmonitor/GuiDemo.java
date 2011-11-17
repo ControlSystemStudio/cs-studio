@@ -15,8 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor;
 
-import org.csstudio.scan.ui.scanmonitor.GUI;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -36,8 +35,7 @@ public class GuiDemo
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout(1, false));
 
-        final ScanInfoModel model = new ScanInfoModel();
-        model.start();
+        final ScanInfoModel model = ScanInfoModel.getInstance();
         new GUI(shell, model);
 
         shell.setSize(600, 400);

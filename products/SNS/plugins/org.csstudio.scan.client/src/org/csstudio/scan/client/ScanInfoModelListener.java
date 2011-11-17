@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.ui.scanmonitor;
+package org.csstudio.scan.client;
 
 import java.util.List;
 

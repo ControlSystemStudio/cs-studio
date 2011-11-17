@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.ui.scanmonitor;
+package org.csstudio.scan.client;
 
 import java.rmi.RemoteException;
 import java.util.Collections;
@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
@@ -36,10 +35,20 @@ import org.csstudio.scan.server.ScanServer;
  *  This model periodically polls the scan server for its
  *  state and sends updates to a (GUI) listener.
  *
+ *  <p>Singleton to allow multiple views to monitor
+ *  the scan server by using a singler underlying
+ *  network connection and poll thread.
+ *  
  *  @author Kay Kasemir
  */
 public class ScanInfoModel
 {
+    /** Singleton instance */
+    private static ScanInfoModel instance;
+    
+    /** Reference count */
+    private int references = 0;
+    
     /** Connection to remote scan server.
      *  Maintained by the <code>poller</code> thread.
      */
@@ -56,20 +65,88 @@ public class ScanInfoModel
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
 
+    /** Obtain reference to the singleton instance.
+     *  Must release when no longer used.
+     *  @return {@link ScanInfoModel}
+     *  @throws Exception on error creating the initial instance
+     *  @see #release()
+     */
+    public static ScanInfoModel getInstance() throws Exception
+    {
+        synchronized (ScanInfoModel.class)
+        {
+            if (instance == null)
+            {
+                setInstance(new ScanInfoModel());
+                instance.start();
+            }
+            ++instance.references;
+            return instance;
+        }
+    }
+    
+    /** Set static (singleton) instance from static method to please FindBugs */
+    private static void setInstance(final ScanInfoModel model)
+    {
+        instance = model;
+    }
+    
+    /** Release
+     *  When last reference to the model has been released,
+     *  singleton instance is stopped and removed.
+     */
+    public void release()
+    {
+        synchronized (ScanInfoModel.class)
+        {
+            --references;
+            if (references > 0)
+                return;
+            setInstance(null);
+        }
+        stop();
+    }
+
+    /** Prevent instantiation
+     *  @see #getInstance()
+     */
+    private ScanInfoModel()
+    {
+        // NOP
+    }
+    
     /** @param listener Listener to add */
     public void addListener(final ScanInfoModelListener listener)
     {
         listeners.add(listener);
+        listener.scanUpdate(getInfos());
     }
 
+    /** @param listener Listener to remove */
+    public void removeListener(final ScanInfoModelListener listener)
+    {
+        listeners.remove(listener);
+    }
+    
     /** Start model, i.e. connect to server, poll, ... */
-    public void start() throws Exception
+    private void start() throws Exception
     {
         poller = new Thread(new Runnable()
         {
             @Override
             public void run()
             {
+                // Attempt initial connection.
+                // Poll() loop will then handle errors and
+                // re-connects
+                try
+                {
+                    reconnect();
+                }
+                catch (Exception ex)
+                {
+                    // Ignore
+                }
                 while (poller != null)
                 {
                     try
@@ -86,11 +163,12 @@ public class ScanInfoModel
                 }
             }
         }, "Scan Server Poll");
+        poller.setDaemon(true);
         poller.start();
     }
 
     /** Stop model, i.e. disconnect, stop polling */
-    public void stop()
+    private void stop()
     {
         poller = null;
     }
@@ -124,14 +202,11 @@ public class ScanInfoModel
     {
         try
         {
-            infos = getServer().getScanInfos();
-
-            // TODO Check for changes?
-//            System.out.println("----------------");
-//            for (ScanInfo info : infos)
-//            {
-//                System.out.println(info);
-//            }
+            final List<ScanInfo> update = getServer().getScanInfos();
+            if (update.equals(infos))
+                return;
+            // Received new information, remember and notify listeners
+            infos = update;
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
         }
@@ -152,7 +227,7 @@ public class ScanInfoModel
                 Thread.sleep(5000);
             }
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
             for (ScanInfoModelListener listener : listeners)
@@ -160,7 +235,7 @@ public class ScanInfoModel
         }
     }
 
-	/** @return Scan Server info
+    /** @return Scan Server info
 	 *  @throws RemoteException on error in remote access
      */
     public String getServerInfo() throws RemoteException

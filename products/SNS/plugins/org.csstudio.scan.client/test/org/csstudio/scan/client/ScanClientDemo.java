@@ -51,7 +51,7 @@ public class ScanClientDemo
     }
 
     /** Test basic scan */
-    @Test(timeout=5000)
+    @Test(timeout=10000)
     public void testScan() throws Exception
     {
         final ScanServer server = ScanServerConnector.connect();

@@ -20,6 +20,8 @@ import java.util.List;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
 import org.csstudio.scan.ui.scanmonitor.actions.GetScanDataAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;

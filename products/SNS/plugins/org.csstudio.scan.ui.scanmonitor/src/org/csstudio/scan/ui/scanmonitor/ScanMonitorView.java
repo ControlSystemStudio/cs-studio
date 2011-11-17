@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.ui.scanmonitor.actions.InfoAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
@@ -41,15 +42,15 @@ public class ScanMonitorView extends ViewPart
     public void createPartControl(final Composite parent)
     {
         // Create and start Model
-        model = new ScanInfoModel();
         try
         {
-            model.start();
+            model = ScanInfoModel.getInstance();
         }
         catch (Exception ex)
         {
             Label l = new Label(parent, 0);
             l.setText("Error: " + ex.getClass().getName() + ", " + ex.getMessage());
+            model = null;
             return;
         }
 
@@ -62,7 +63,7 @@ public class ScanMonitorView extends ViewPart
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                model.stop();
+                model.release();
             }
         });
 

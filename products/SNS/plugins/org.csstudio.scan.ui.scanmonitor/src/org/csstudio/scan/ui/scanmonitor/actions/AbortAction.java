@@ -16,7 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModel;
 
 /** Action that aborts a scan
  *  @author Kay Kasemir

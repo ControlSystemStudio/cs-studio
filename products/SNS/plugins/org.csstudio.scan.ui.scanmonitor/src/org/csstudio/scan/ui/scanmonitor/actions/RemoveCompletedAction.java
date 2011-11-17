@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModel;
 
 /** Action that removes all completed scans
  *  @author Kay Kasemir

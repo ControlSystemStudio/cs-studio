@@ -17,10 +17,10 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 
 import java.io.StringWriter;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /** Action that fetches scan data

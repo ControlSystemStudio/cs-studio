@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.scanmonitor.Activator;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

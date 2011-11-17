@@ -15,8 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
 
 /** Action that removes a scan
  *  @author Kay Kasemir

@@ -17,6 +17,7 @@ package org.csstudio.scan.ui.scanmonitor;
 
 import java.util.List;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

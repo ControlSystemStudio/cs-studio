@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
-import org.csstudio.scan.ui.scanmonitor.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModel;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /** Action that aborts a scan
