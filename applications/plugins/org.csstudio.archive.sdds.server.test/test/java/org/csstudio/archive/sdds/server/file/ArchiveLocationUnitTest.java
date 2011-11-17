@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test for {@link ArchiveLcoation}.
+ * Test for {@link ArchiveLocation}.
  *
  * @author bknerr
  * @since Nov 4, 2011

@@ -66,7 +66,7 @@ public class SddsFileReaderUnitTest {
             CssResourceLocator.composeResourceLocationString(RepoDomain.APPLICATIONS,
                                                              "org.csstudio.archive.sdds.server.test",
                                                              "res/sdds_data_valid_locations.txt");
-
+        System.out.println(sddsLocation);
         try {
             final SddsFileReader fileReader = new SddsFileReader(sddsLocation);
 
