@@ -30,7 +30,7 @@ public class ScanInfo implements Serializable
     final private String name;
     final private Date created;
     final private ScanState state;
-    final private Throwable error;
+    final private String error;
     final private long performed_work_units;
     final private long total_work_units;
     final private String current_commmand;
@@ -46,7 +46,7 @@ public class ScanInfo implements Serializable
      *  @param current_commmand
      */
     public ScanInfo(final long id, final String name, final Date created, final ScanState state,
-            final Throwable error,
+            final String error,
             final long performed_work_units, final long total_work_units, final String current_commmand)
     {
         this.id = id;
@@ -98,7 +98,7 @@ public class ScanInfo implements Serializable
     }
 
     /** @return Error (if state indicates failure) or <code>null</code> */
-    public Throwable getError()
+    public String getError()
     {
         return error;
     }
