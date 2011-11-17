@@ -28,7 +28,8 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author carcassi
  * 
  */
-public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
+public class ChannelTreeByPropertyWidget extends AbstractChannelWidget
+implements ConfigurableWidget {
 	
 	private Tree tree;
 	private ErrorBar errorBar;
@@ -175,11 +176,11 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 		tree.setItemCount(0);
 		tree.clearAll(true);
 		if (getChannelQuery() == null) {
-			model = new ChannelTreeByPropertyModel(null, null, getProperties());
+			model = new ChannelTreeByPropertyModel(null, null, getProperties(), this);
 		} else if (getChannelQuery().getResult() == null) {
-			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties());
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties(), this);
 		} else {
-			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties());
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties(), this);
 		}
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
 	}
@@ -212,8 +213,36 @@ public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 		}
 	}
 	
+	private boolean configurable = false;
+	
+	private ChannelTreeByPropertyConfigurationDialog dialog;
+	
 	public void openConfigurationDialog() {
-		ChannelTreeByPropertyConfigurationDialog dialog = new ChannelTreeByPropertyConfigurationDialog(this);
+		if (dialog != null)
+			return;
+		dialog = new ChannelTreeByPropertyConfigurationDialog(this);
 		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldConfigurable = configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldConfigurable, configurable);
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
 	}
 }

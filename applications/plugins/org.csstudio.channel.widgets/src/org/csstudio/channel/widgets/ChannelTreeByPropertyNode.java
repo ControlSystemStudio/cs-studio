@@ -9,7 +9,8 @@ import java.util.List;
 
 public class ChannelTreeByPropertyNode {
 	
-	// The model that contains the node
+	// The model that contains the node, used to access all data
+	// common to all nodes
 	private ChannelTreeByPropertyModel model;
 	
 	// Channels represented by this node and down

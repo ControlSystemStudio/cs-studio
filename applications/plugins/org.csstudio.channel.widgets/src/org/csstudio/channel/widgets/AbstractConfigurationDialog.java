@@ -19,8 +19,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Composite;
 
-public abstract class AbstractConfigurationDialog<Widget extends AbstractChannelWidget,
+public abstract class AbstractConfigurationDialog<Widget extends Composite & ConfigurableWidget,
 ConfigurationComposite extends AbstractConfigurationComposite> extends Dialog {
 
 	protected Shell dialogShell;
@@ -127,6 +128,7 @@ ConfigurationComposite extends AbstractConfigurationComposite> extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				populateInitialValues();
+				getWidget().configurationDialogClosed();
 				dialogShell.close();
 			}
 		});
@@ -140,6 +142,7 @@ ConfigurationComposite extends AbstractConfigurationComposite> extends Dialog {
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				getWidget().configurationDialogClosed();
 				dialogShell.close();
 			}
 		});
