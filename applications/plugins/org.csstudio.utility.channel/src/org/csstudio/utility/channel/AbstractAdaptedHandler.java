@@ -7,7 +7,6 @@ import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -17,7 +16,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author carcassi
  *
  */
-public abstract class AbstractAdaptedHandler<T> extends AbstractHandler implements IHandler {
+public abstract class AbstractAdaptedHandler<T> extends AbstractHandler {
 
 	private final Class<T> clazz;
 	
