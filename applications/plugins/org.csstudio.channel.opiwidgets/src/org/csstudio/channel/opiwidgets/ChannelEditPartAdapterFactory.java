@@ -17,11 +17,15 @@ public class ChannelEditPartAdapterFactory implements IAdapterFactory {
 		if (adaptableObject instanceof AbstractChannelWidgetEditPart) {
 			AbstractChannelWidgetFigure<?> figure = ((AbstractChannelWidgetEditPart<?,?>)adaptableObject).getFigure();
 			if (adapterType == Channel[].class) {
-				return figure.getSelectedChannels();
+				Channel[] array = figure.getSelectedChannels();
+				if (array != null && array.length > 0)
+					return array;
 			}
 			
 			if (adapterType == ChannelQuery[].class) {
-				return figure.getSelectedChannelQuery();
+				ChannelQuery[] array = figure.getSelectedChannelQuery();
+				if (array != null && array.length > 0)
+					return array;
 			}
 			
 			if (adapterType == ConfigurableWidget.class && figure.isRunMode()) {
