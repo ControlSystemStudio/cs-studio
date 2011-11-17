@@ -46,6 +46,7 @@ public class PlotDataModelUnitTest
         
         // Wait for model to obtain scans
         final PlotDataModel model = new PlotDataModel();
+        model.start();
         List<ScanInfo> infos = model.getScanInfos();
         while (infos.size() <= 0)
         {
@@ -64,6 +65,6 @@ public class PlotDataModelUnitTest
         }
         new SpreadsheetScanDataIterator(data).dump(System.out);
         
-        model.dispose();
+        model.stop();
     }
 }

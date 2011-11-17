@@ -36,6 +36,7 @@ public class ScanPlotView extends ViewPart
         try
         {
             model = new PlotDataModel();
+            model.start();
         }
         catch (Exception ex)
         {
@@ -51,7 +52,7 @@ public class ScanPlotView extends ViewPart
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                model.dispose();
+                model.stop();
                 model = null;
             }
         });
