@@ -77,7 +77,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
      */
     @Override
     @Nonnull
-    public List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+    public final List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
                                         @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
