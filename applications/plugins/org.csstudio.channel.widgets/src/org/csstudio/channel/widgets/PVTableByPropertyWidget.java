@@ -8,6 +8,9 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,8 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
@@ -211,18 +212,18 @@ public class PVTableByPropertyWidget extends Composite {
 	
 	private void queryChannels() {
 		setChannels(null);
-		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.addChannelQueryListener(new ChannelQueryListener() {
+		ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
+		query.execute(new ChannelQueryListener() {
 			
 			@Override
-			public void getQueryResult() {
+			public void queryExecuted(final Result result) {
 				SWTUtil.swtThread().execute(new Runnable() {
 					
 					@Override
 					public void run() {
-						Exception e = query.getLastException();
+						Exception e = result.exception;
 						if (e == null) {
-							setChannels(query.getResult());
+							setChannels(result.channels);
 						} else {
 							errorBar.setException(e);
 						}
@@ -231,7 +232,6 @@ public class PVTableByPropertyWidget extends Composite {
 				
 			}
 		});
-		query.execute();
 	}
 	
 	private void computeTableChannels() {
