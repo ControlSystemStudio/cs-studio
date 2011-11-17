@@ -168,7 +168,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 				mb.setMessage(confirmTip);
 				mb.setText("Confirm Dialog");				
 				int val = mb.open();
-				if(val == SWT.NO || val == SWT.CANCEL)
+				if(val != SWT.YES)
 					return false;					
 			}else {
 				InputDialog  dlg = new InputDialog(Display.getCurrent().getActiveShell(),
@@ -186,7 +186,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 						}};
 				dlg.setBlockOnOpen(true);
 				int val = dlg.open();
-				if(val == Window.CANCEL)
+				if(val != Window.OK)
 					return false;	
 			}			
 		}
