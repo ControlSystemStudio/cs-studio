@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.csstudio.opibuilder.editor.OPIEditor;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -59,7 +60,11 @@ public class CopyWidgetsAction extends SelectionAction {
 				getSelectedObjects().size() == 1 && getSelectedObjects().get(0) instanceof EditPart
 				&& ((EditPart)getSelectedObjects().get(0)).getModel() instanceof DisplayModel)
 			return false;
-		return true;
+		for(Object o : getSelectedObjects()){
+			if(o instanceof AbstractBaseEditPart)
+				return true;
+		}
+		return false;
 	}
 	
 	
@@ -67,9 +72,9 @@ public class CopyWidgetsAction extends SelectionAction {
 	public void run() {	
 		
 		DisplayModel tempModel = new DisplayModel();
-		
-		for(AbstractWidgetModel widget : getSelectedWidgetModels()){
-			tempModel.addChild(widget, false);
+		List<AbstractWidgetModel> widgetModels = getSelectedWidgetModels();
+		for(AbstractWidgetModel widget : widgetModels){
+			tempModel.addChild(widget, false);			
 		}
 		
 		String xml = XMLUtil.widgetToXMLString(tempModel, false);
@@ -96,16 +101,15 @@ public class CopyWidgetsAction extends SelectionAction {
 	 * @return a list with all widget models that are currently selected. 
 	 * The order of the selected widgets was kept. 
 	 */
-	@SuppressWarnings("unchecked")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
+		List<?> selection = getSelectedObjects();
 	
 		List<AbstractWidgetModel> sameParentModels = new ArrayList<AbstractWidgetModel>();
 		List<AbstractWidgetModel> differentParentModels = new ArrayList<AbstractWidgetModel>();
 		List<AbstractWidgetModel> result = new ArrayList<AbstractWidgetModel>();
 		AbstractContainerModel parent = null;
 		for (Object o : selection) {
-			if (o instanceof EditPart && !(o instanceof DisplayEditpart)) {
+			if (o instanceof AbstractBaseEditPart && !(o instanceof DisplayEditpart)) {
 				AbstractWidgetModel widgetModel = 
 					(AbstractWidgetModel) ((EditPart) o).getModel();
 				if(parent == null)

@@ -13,7 +13,6 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.swt.widgets.figures.PolylineFigure;
 import org.csstudio.swt.widgets.figures.PolylineFigure.ArrowType;
-import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 
@@ -91,19 +90,19 @@ public class PolyLineModel extends AbstractPolyModel {
 	 *            the polygon points
 	 * @param rememberPoints true if the zero relative points should be remembered, false otherwise.
 	 */
-	@Override
-	public void setPoints(final PointList points,
-			final boolean rememberPoints) {
-		if (points.size() > 0) {
-			PointList copy = points.getCopy();
-			if (rememberPoints) {
-				rememberZeroDegreePoints(copy);
-			}
-			getProperty(PROP_POINTS).setPropertyValue(points);
-			
-			updateBounds();
-		}
-	}
+//	@Override
+//	public void setPoints(final PointList points,
+//			final boolean rememberPoints) {
+//		if (points.size() > 0) {
+//			PointList copy = points.getCopy();
+//			if (rememberPoints) {
+//				rememberZeroDegreePoints(copy);
+//			}
+//			getProperty(PROP_POINTS).setPropertyValue(points);
+//			
+//			updateBounds();
+//		}
+//	}
 
 
 	/**

@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.eclipse.gef.EditPart;
@@ -34,6 +35,8 @@ public class WidgetEditPartFactory implements EditPartFactory {
 			part.setModel(model);
 			if(part instanceof AbstractBaseEditPart)
 				((AbstractBaseEditPart)part).setExecutionMode(executionMode);
+			else if(part instanceof WidgetConnectionEditPart)
+				((WidgetConnectionEditPart)part).setExecutionMode(executionMode);
 		}
 		return part;
 	}
@@ -42,6 +45,8 @@ public class WidgetEditPartFactory implements EditPartFactory {
     private EditPart getPartForModel(Object model){
 		if(model instanceof DisplayModel)
 			return new DisplayEditpart();
+		if(model instanceof ConnectionModel)
+			return new WidgetConnectionEditPart();
 		if(model instanceof AbstractWidgetModel){
 			AbstractBaseEditPart editpart =
 				WidgetsService.getInstance().getWidgetDescriptor(

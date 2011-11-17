@@ -192,6 +192,24 @@
                tooltip="Show detail infomation of PV">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.rerouteConnection"
+            objectClass="org.csstudio.opibuilder.editparts.WidgetConnectionEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.RerouteConnectionAction"
+               enablesFor="1"
+               icon="icons/reroute.gif"
+               id="org.csstudio.opibuilder.RerouteAction"
+               label="Reroute Connection">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="EDIT_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
    </extension>
    <extension
          point="org.eclipse.help.index">

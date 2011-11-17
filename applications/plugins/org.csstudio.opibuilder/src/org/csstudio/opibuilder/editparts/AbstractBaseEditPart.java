@@ -21,16 +21,22 @@
  */
 package org.csstudio.opibuilder.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.editparts.FixedPositionAnchor.AnchorPosition;
 import org.csstudio.opibuilder.editpolicies.WidgetComponentEditPolicy;
+import org.csstudio.opibuilder.editpolicies.WidgetNodeEditPolicy;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
@@ -57,15 +63,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.Border;
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.NodeEditPart;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
+import org.eclipse.gef.requests.DropRequest;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionFilter;
@@ -78,7 +90,7 @@ import org.eclipse.ui.progress.UIJob;
  * @author Xihui Chen
  * 
  */
-public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
+public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart implements NodeEditPart{
 
 	private boolean isSelectable = true;
 
@@ -97,6 +109,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	private ConnectionHandler connectionHandler;
 
 	private List<ScriptData> scriptDataList;
+	
+	protected Map<String, ConnectionAnchor> anchorMap;
 
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
@@ -228,6 +242,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new WidgetComponentEditPolicy());
+		installEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE, new WidgetNodeEditPolicy());
 	}
 
 	@Override
@@ -525,6 +540,23 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT,
 				refreshVisualHandler);
 
+		//add connection should not be ignored by widget listener.
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_SRC_CONNETIONS)
+			.addPropertyChangeListener(new PropertyChangeListener() {				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					refreshSourceConnections();					
+				}
+			});		
+		
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_TGT_CONNETIONS)
+			.addPropertyChangeListener(new PropertyChangeListener() {				
+				@Override
+				public void propertyChange(PropertyChangeEvent evt) {
+					refreshTargetConnections();
+				}
+			});	
+		
 		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
@@ -755,6 +787,101 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart {
 		this.isSelectable = isSelectable;
 	}
 	
+	@Override
+	protected List<ConnectionModel> getModelSourceConnections() {
+	  return getWidgetModel().getSourceConnections();
+	}
+	
+	@Override
+	protected List<ConnectionModel> getModelTargetConnections() {
+		return getWidgetModel().getTargetConnections();
+	}
+	
+	@Override
+	public ConnectionAnchor getSourceConnectionAnchor(
+			ConnectionEditPart connection) {
+		if(anchorMap == null)
+			fillAnchorMap();
+		ConnectionModel conn = (ConnectionModel) connection.getModel();
+		return anchorMap.get(conn.getSourceTerminal());
+	}	
+
+	@Override
+	public ConnectionAnchor getSourceConnectionAnchor(Request request) {
+		Point p = new Point(((DropRequest) request).getLocation());
+		return getClosestAnchorAt(p);
+	}	
+	
+	@Override
+	public ConnectionAnchor getTargetConnectionAnchor(
+			ConnectionEditPart connection) {
+		if(anchorMap == null)
+			fillAnchorMap();
+		ConnectionModel conn = (ConnectionModel) connection.getModel();
+		return anchorMap.get(conn.getTargetTerminal());
+	}
+	
+	@Override
+	public ConnectionAnchor getTargetConnectionAnchor(Request request) {
+		Point p = new Point(((DropRequest) request).getLocation());
+		return getClosestAnchorAt(p);
+	}
+	
+	/**Get name of the terminal by anchor
+	 * @param anchor the anchor
+	 * @return terminal name of the anchor. null if no name was found.
+	 */
+	public String getTerminalNameFromAnchor(ConnectionAnchor anchor){
+		if(anchorMap == null)
+			fillAnchorMap();
+		for(Entry<String, ConnectionAnchor> entry : anchorMap.entrySet()){
+			if(entry.getValue().equals(anchor)){
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Fill the anchor map with all predefined anchors.
+	 */
+	protected void fillAnchorMap() {
+		anchorMap = new HashMap<String, ConnectionAnchor>(AnchorPosition.values().length);
+		for(AnchorPosition pos: AnchorPosition.values()){
+			anchorMap.put(pos.name(), new FixedPositionAnchor(getFigure(), pos));
+		}
+	}
+	
+	/**Get the anchor map on this widget. Caller should not change the map.
+	 * @return all the anchors on this widget as in a anchor map. key is 
+	 * the connection terminal name. 
+	 */
+	public Map<String, ConnectionAnchor> getAnchorMap() {
+		if(anchorMap == null)
+			fillAnchorMap();	
+		return anchorMap;
+	}
+	
+	/**Get the closest anchor to point p.
+	 * @param p the reference point
+	 * @return the closest anchor to point p
+	 */
+	protected ConnectionAnchor getClosestAnchorAt(Point p) {
+		if(anchorMap == null)
+			fillAnchorMap();
+		ConnectionAnchor closest = null;
+		double min = Long.MAX_VALUE;
+		for(ConnectionAnchor anchor : anchorMap.values()){
+			Point p2 = anchor.getLocation(null);
+			double d=p.getDistance(p2);
+			if(d<min){
+				min=d;
+				closest=anchor;
+			}
+		}
+		return closest;
+	}
+
 	@Override
 	public String toString() {
 		return getWidgetModel().getName();
