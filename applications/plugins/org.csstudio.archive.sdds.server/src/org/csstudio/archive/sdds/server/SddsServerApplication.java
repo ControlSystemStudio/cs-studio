@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -42,6 +43,7 @@ import javax.management.ObjectName;
 import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
 import org.csstudio.archive.sdds.server.io.SddsServer;
 import org.csstudio.archive.sdds.server.io.ServerException;
+import org.csstudio.archive.sdds.server.management.GetVersionMgmtCommand;
 import org.csstudio.archive.sdds.server.management.RestartMgmtCommand;
 import org.csstudio.archive.sdds.server.management.StopMgmtCommand;
 import org.eclipse.core.runtime.Platform;
@@ -109,18 +111,36 @@ public class SddsServerApplication implements IApplication, IRemotelyStoppable, 
                 false, null);
 
         try {
+
             if (!useJmx) {
+
                 StopMgmtCommand.injectStaticObject(this);
                 RestartMgmtCommand.injectStaticObject(this);
+
+                final File file = new File(".eclipseproduct");
+                if (file.exists()) {
+                    final URI uri = file.toURI();
+                    final String path = uri.toURL().getPath();
+                    if (path != null) {
+
+                        LOG.info("Path to version file: {}", path);
+                        GetVersionMgmtCommand.injectStaticObject(path);
+                    }
+                } else {
+                    LOG.warn("File '.eclipseproduct' does not exist.");
+                }
+
                 SddsServerActivator.getDefault().addSessionServiceListener(this);
+
             } else {
                 connectMBeanServer();
             }
+
             server = new SddsServer(serverPort);
             server.start();
 
         } catch(final ServerException se) {
-            LOG.error("Cannot create an instance of the SddsServer class. ", se);
+            LOG.error("Cannot create an instance of the SddsServer class: {}", se.getMessage());
             LOG.error("Stopping application!");
             running = false;
             restart = false;

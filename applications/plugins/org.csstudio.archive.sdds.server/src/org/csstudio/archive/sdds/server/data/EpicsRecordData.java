@@ -88,6 +88,15 @@ public class EpicsRecordData {
     }
 
     /**
+     * Some (older) SDDS files only contains the columns time and val.
+     * @param t
+     * @param val
+     */
+    public EpicsRecordData(final long t, @Nonnull final Object val) {
+        this(t, 0L, 0L, val);
+    }
+
+    /**
      * Returns true, if the value is valid. It is valid if the severity is OK, MINOR, MAJOR, REPEAT or
      * Est. Repeat.
      *
@@ -208,7 +217,7 @@ public class EpicsRecordData {
      *
      * @param type
      */
-    public void setSxxxType(@Nonnull final SddsType type) {
+    public void setSddsType(@Nonnull final SddsType type) {
         this.sddsType = type;
     }
 
