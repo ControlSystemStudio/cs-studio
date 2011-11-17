@@ -10,10 +10,9 @@ package org.csstudio.scan.ui.plot;
 import java.util.List;
 
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
-import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 
-/** View toolbar action to select the scan
+/** Toolbar action to select the scan
  *  @author Kay Kasemir
  */
 public class ScanSelectorAction extends DropdownToolbarAction
@@ -22,11 +21,11 @@ public class ScanSelectorAction extends DropdownToolbarAction
     private static final String SEPARATOR = " - ";
     
     /** Scan model */
-    final private ScanInfoModel model;
+    final private PlotDataModel model;
 
     /** Initialize 
      * @param model */
-    public ScanSelectorAction(final ScanInfoModel model)
+    public ScanSelectorAction(final PlotDataModel model)
     {
         super("Scan", "Select a Scan");
         this.model = model;
@@ -36,7 +35,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
     @Override
     public String[] getOptions()
     {
-        final List<ScanInfo> infos = model.getInfos();
+        final List<ScanInfo> infos = model.getScanInfos();
         final String[] scans = new String[infos.size()];
         for (int i=0; i<scans.length; ++i)
         {
@@ -63,6 +62,6 @@ public class ScanSelectorAction extends DropdownToolbarAction
         {
             return;
         }
-        System.out.println("Scan ID " + id + " parsed from " + item);
+        model.selectScan(id);
     }
 }

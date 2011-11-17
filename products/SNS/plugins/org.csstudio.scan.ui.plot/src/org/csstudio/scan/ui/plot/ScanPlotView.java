@@ -10,7 +10,6 @@ package org.csstudio.scan.ui.plot;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanInfoModel;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -23,7 +22,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ScanPlotView extends ViewPart
 {
-    private ScanInfoModel model;
+    private PlotDataModel model;
 
     public ScanPlotView()
     {
@@ -36,7 +35,7 @@ public class ScanPlotView extends ViewPart
     {
         try
         {
-            model = ScanInfoModel.getInstance();
+            model = new PlotDataModel();
         }
         catch (Exception ex)
         {
@@ -52,7 +51,7 @@ public class ScanPlotView extends ViewPart
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                model.release();
+                model.dispose();
                 model = null;
             }
         });
@@ -67,7 +66,8 @@ public class ScanPlotView extends ViewPart
         
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new ScanSelectorAction(model));
-        toolbar.add(new XValueSelectorAction());
+        toolbar.add(DeviceSelectorAction.forXAxis(model));
+        toolbar.add(DeviceSelectorAction.forYAxis(model));
     }
 
     /** {@inheritDoc} */

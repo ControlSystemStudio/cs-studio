@@ -36,7 +36,7 @@ import org.csstudio.scan.server.ScanServer;
  *  state and sends updates to a (GUI) listener.
  *
  *  <p>Singleton to allow multiple views to monitor
- *  the scan server by using a singler underlying
+ *  the scan server by using a single underlying
  *  network connection and poll thread.
  *  
  *  @author Kay Kasemir
