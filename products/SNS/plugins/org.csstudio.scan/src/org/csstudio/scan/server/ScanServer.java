@@ -70,7 +70,7 @@ public interface ScanServer extends Remote
     public long submitScan(String scan_name, List<ScanCommand> commands) throws RemoteException;
 
     /** Query server for scans
-     *  @return Info for each scan on the server
+     *  @return Info for each scan on the server, most recently submitted scan first
      *  @throws RemoteException on error in remote access
      */
     public List<ScanInfo> getScanInfos() throws RemoteException;

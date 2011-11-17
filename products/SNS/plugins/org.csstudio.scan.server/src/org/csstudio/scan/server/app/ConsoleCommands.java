@@ -71,12 +71,19 @@ public class ConsoleCommands implements CommandProvider
     {
         try
         {
+            // The user is probably most interested in the most recent
+            // scan.
+            // List is provided most-recent-first because that
+            // is best for GUI tools: Table, drop-down, ... 
+            // On console, it's best to list the most recent _last_
+            // so that it's still visible while all the older scans
+            // have already scrolled 'up' in the terminal.
             final List<ScanInfo> infos = server.getScanInfos();
             if (infos.size() <= 0)
                 intp.println("- No scans -");
             else
-                for (ScanInfo info : infos)
-                    intp.println(info.toString());
+                for (int i=infos.size()-1; i>=0; --i)
+                    intp.println(infos.get(i).toString());
         }
         catch (RemoteException ex)
         {

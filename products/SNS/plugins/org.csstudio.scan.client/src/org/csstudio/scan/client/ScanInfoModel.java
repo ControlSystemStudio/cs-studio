@@ -213,6 +213,7 @@ public class ScanInfoModel
         catch (RemoteException ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
+            infos = Collections.emptyList();
             for (ScanInfoModelListener listener : listeners)
                 listener.connectionError();
             // Wait a little
@@ -230,6 +231,7 @@ public class ScanInfoModel
         catch (Throwable ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
+            infos = Collections.emptyList();
             for (ScanInfoModelListener listener : listeners)
                 listener.connectionError();
         }

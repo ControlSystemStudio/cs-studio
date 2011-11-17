@@ -170,8 +170,9 @@ public class ScanServerImpl implements ScanServer
     {
         final List<Scan> scans = scan_engine.getScans();
         final List<ScanInfo> infos = new ArrayList<ScanInfo>(scans.size());
-        for (Scan scan : scans)
-            infos.add(scan.getScanInfo());
+        // Build result with most recent scan first
+        for (int i=scans.size()-1; i>=0; --i)
+            infos.add(scans.get(i).getScanInfo());
         return infos;
     }
 
