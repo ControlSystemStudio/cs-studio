@@ -76,6 +76,12 @@ public class PropertiesSelectDialog extends Dialog {
 		
 		propSet.remove(AbstractPVWidgetModel.PROP_PVVALUE);
 		
+		for(Object propId : propSet.toArray()){
+			if(!widgetModel.getProperty(propId.toString()).isVisibleInPropSheet())
+				propSet.remove(propId);
+		}
+			
+		
 		String[] propArray = propSet.toArray(new String[0]);
 		Arrays.sort(propArray);	
 		

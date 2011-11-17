@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
@@ -44,17 +45,23 @@ public class XMLUtil {
 	public static String XMLTAG_DISPLAY = "display"; //$NON-NLS-1$
 
 	public static String XMLTAG_WIDGET = "widget"; //$NON-NLS-1$
-
+	
+	public static String XMLTAG_CONNECTION = "connection"; //$NON-NLS-1$
+	
 	public static String XMLATTR_TYPEID = "typeId"; //$NON-NLS-1$
 
 	public static String XMLATTR_PROPID = "id"; //$NON-NLS-1$
 	public static String XMLATTR_VERSION = "version"; //$NON-NLS-1$
 
 
+	/**Flatten a widget to XML element.
+	 * @param widgetModel model of the widget
+	 * @return the XML element
+	 */
 	public static Element widgetToXMLElement(AbstractWidgetModel widgetModel){
 
-		Element result = new Element(widgetModel instanceof DisplayModel ? XMLTAG_DISPLAY :
-			XMLTAG_WIDGET);
+		Element result = new Element((widgetModel instanceof DisplayModel) ? XMLTAG_DISPLAY :
+			(widgetModel instanceof ConnectionModel) ? XMLTAG_CONNECTION : XMLTAG_WIDGET);
 		result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
 		result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion());
 		for(String propId : widgetModel.getAllPropertyIDs()){
@@ -71,10 +78,24 @@ public class XMLUtil {
 				result.addContent(widgetToXMLElement(child));
 			}
 		}
+		
+		//convert connections on this displayModel to xml element
+		if(widgetModel instanceof DisplayModel && 
+				((DisplayModel)widgetModel).getConnectionList() != null){			
+			for(ConnectionModel connectionModel : ((DisplayModel)widgetModel).getConnectionList()){
+				Element connElement = widgetToXMLElement(connectionModel);
+				result.addContent(connElement);
+			}		
+		}
 
 		return result;
 	}
 
+	/**Flatten a widget to XML String.
+	 * @param widgetModel model of the widget.
+	 * @param prettyFormat true if the string is in pretty format
+	 * @return the XML String
+	 */
 	public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
 		Format format = prettyFormat? Format.getPrettyFormat() : Format.getRawFormat();
 		XMLOutputter xmlOutputter = new XMLOutputter();
@@ -83,6 +104,12 @@ public class XMLUtil {
 		return xmlOutputter.outputString(widgetToXMLElement(widgetModel));
 	}
 
+	/**Write widget to an output stream.
+	 * @param widgetModel model of the widget
+	 * @param out output stream
+	 * @param prettyFormat true if in pretty format
+	 * @throws IOException
+	 */
 	public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
 		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() :
 			Format.getRawFormat());
@@ -91,6 +118,11 @@ public class XMLUtil {
 	}
 
 
+	/**Convert an XML String to widget model
+	 * @param xmlString
+	 * @return the widget model
+	 * @throws Exception
+	 */
 	public static AbstractWidgetModel XMLStringToWidget(String xmlString) throws Exception{
 		SAXBuilder saxBuilder = new SAXBuilder();	
 		InputStream stream= new ByteArrayInputStream(xmlString.getBytes("UTF-8")); //$NON-NLS-1$
@@ -99,6 +131,11 @@ public class XMLUtil {
 		return XMLElementToWidget(root);
 	}
 
+	/**Convert an XML element to widget.
+	 * @param element the element
+	 * @return model of the widget.
+	 * @throws Exception
+	 */
 	public static AbstractWidgetModel XMLElementToWidget(Element element) throws Exception {
 		return XMLElementToWidget(element, null);
 	}
@@ -116,6 +153,8 @@ public class XMLUtil {
 		Element root = doc.getRootElement();
 		if(root != null){
 			 XMLElementToWidget(root, displayModel);
+			 
+			 //check version
 			 if(displayModel.getBOYVersion().compareTo(
 					 OPIBuilderPlugin.getDefault().getBundle().getVersion()) > 0){				
 				final String message = displayModel.getOpiFilePath() == null ? "This OPI"
@@ -157,20 +196,23 @@ public class XMLUtil {
 
 	/**Convert XML Element to a widget model.
 	 * @param element
-	 * @param displayModel use this display model as root model instead of creating a new one. Can be null.
-	 * @return
+	 * @param displayModel If root of the element is a display, use this display model as root model 
+	 * instead of creating a new one. If this is null, a new one will be created. If root of the element
+	 * is not a display, it will be ignored.
+	 * @return the root widget model
 	 * @throws Exception
 	 */
 	@SuppressWarnings("rawtypes")
 	public static AbstractWidgetModel XMLElementToWidget(Element element, DisplayModel displayModel) throws Exception{
 		AbstractWidgetModel rootWidgetModel = null;
+		
+		//Determine root widget model
 		if(element.getName().equals(XMLTAG_DISPLAY)){
 			if(displayModel != null)
 				rootWidgetModel =displayModel;
 			else
 				rootWidgetModel = new DisplayModel();
-		}
-		else if(element.getName().equals(XMLTAG_WIDGET)){
+		}else if(element.getName().equals(XMLTAG_WIDGET)){
 			String typeId = element.getAttributeValue(XMLATTR_TYPEID);
 			WidgetDescriptor desc = WidgetsService.getInstance().getWidgetDescriptor(typeId);
 			if(desc != null)
@@ -181,16 +223,15 @@ public class XMLUtil {
 				ErrorHandlerUtil.handleError(errorMessage, new Exception("Widget does not exist."));
 				return null;
 			}
+		}else if(element.getName().equals(XMLTAG_CONNECTION)){
+			rootWidgetModel = new ConnectionModel(displayModel);			
 		}else {
 			String errorMessage = "Unknown Tag: " + element.getName();
 			ConsoleService.getInstance().writeError(errorMessage);
 			return null;
 		}
-
-
-			//throw new Exception("The element is not a widget");
-
 		
+		//fill root widget model
 		List children = element.getChildren();
 		Iterator iterator = children.iterator();
 		Set<String> propIdSet = rootWidgetModel.getAllPropertyIDs();
@@ -199,7 +240,7 @@ public class XMLUtil {
 			//handle property
 			if(propIdSet.contains(subElement.getName())){
 				String propId = subElement.getName();
-				try {
+				try {				
 					rootWidgetModel.setPropertyValue(propId,
 							rootWidgetModel.getProperty(propId).readValueFromXML(subElement));
 				} catch (Exception e) {
@@ -215,10 +256,12 @@ public class XMLUtil {
 					if(child != null)
 						((AbstractContainerModel) rootWidgetModel).addChild(child);
 				}
-			}else {
-				//String warningMessage = subElement.getName() + " cannot be recogonized as a property or widget by the OPI file parser. " +
-				//		"It will be ignored as a consequence.";
-				//MessageDialog.openWarning(null, "OPI File format warning", warningMessage);
+			}else if(subElement.getName().equals(XMLTAG_CONNECTION)){
+				//fill connection model, widgetModel will be connected when
+				//connection model is created.
+				if(rootWidgetModel instanceof DisplayModel){					
+						XMLElementToWidget(subElement,(DisplayModel)rootWidgetModel);
+				}				
 			}
 		}
 		return rootWidgetModel;

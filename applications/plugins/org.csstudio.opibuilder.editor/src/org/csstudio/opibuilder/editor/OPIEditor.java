@@ -787,7 +787,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			synchronizer = new SelectionSynchronizer(){
 			protected EditPart convert(EditPartViewer viewer,  EditPart part) {
 				EditPart editPart = super.convert(viewer, part);
-				if(editPart.isSelectable()){
+				if(editPart != null && editPart.isSelectable()){
 					return editPart;
 				}
 				return null;

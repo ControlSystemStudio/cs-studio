@@ -86,12 +86,13 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 			if (rememberPoints) {
 				this.rememberZeroDegreePoints(copy);
 			}
-			super.setPropertyValue(PROP_POINTS, copy);
+			
 			Rectangle bounds = copy.getBounds();
 			super.setPropertyValue(PROP_XPOS, bounds.x);
 			super.setPropertyValue(PROP_YPOS, bounds.y);
 			super.setPropertyValue(PROP_WIDTH, bounds.width);
 			super.setPropertyValue(PROP_HEIGHT, bounds.height);
+			super.setPropertyValue(PROP_POINTS, copy);
 		}
 	}
 

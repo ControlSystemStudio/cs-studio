@@ -10,13 +10,19 @@ package org.csstudio.opibuilder.palette;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
 import org.csstudio.opibuilder.util.WidgetsService;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.palette.CombinedTemplateCreationEntry;
+import org.eclipse.gef.palette.ConnectionCreationToolEntry;
 import org.eclipse.gef.palette.PaletteDrawer;
 import org.eclipse.gef.palette.PaletteRoot;
+import org.eclipse.gef.palette.PaletteToolbar;
+import org.eclipse.gef.palette.PanningSelectionToolEntry;
+import org.eclipse.gef.palette.ToolEntry;
+import org.eclipse.gef.requests.CreationFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**The factory help to create the palette.
@@ -27,9 +33,41 @@ public class OPIEditorPaletteFactory {
 
 	public static PaletteRoot createPalette(){
 		PaletteRoot palette = new PaletteRoot();
+		createToolsGroup(palette);
 		createPaletteContents(palette);
 		return palette;
 	}
+	
+	private static void createToolsGroup(PaletteRoot palette){
+		PaletteToolbar toolbar = new PaletteToolbar("Tools");
+		// Add a selection tool to the group
+		ToolEntry tool = new PanningSelectionToolEntry();
+		toolbar.add(tool);
+		palette.setDefaultEntry(tool);
+		
+		tool = new ConnectionCreationToolEntry(
+				"Connection", "Create a connection between widgets", 
+				new CreationFactory() {
+					
+					@Override
+					public Object getObjectType() {
+						return null;
+					}
+					
+					@Override
+					public Object getNewObject() {
+						return null;
+					}
+				}, 
+				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+						OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s16.gif"),
+				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+						OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s24.gif"));
+		toolbar.add(tool);
+		palette.add(toolbar);
+		
+	}
+	
 	
 	private static void createPaletteContents(PaletteRoot palette){
 		Map<String, List<String>> categoriesMap = 

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.ChangeOrientationCommand;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.ui.util.CustomMediaFactory;
@@ -80,7 +81,7 @@ public class ChangeOrientationAction extends SelectionAction {
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	
 		for (Object o : selection) {
-			if (o instanceof EditPart) {
+			if (o instanceof AbstractBaseEditPart) {
 				selectedWidgetModels.add(
 						(AbstractWidgetModel) ((EditPart) o).getModel());
 			}
@@ -91,8 +92,9 @@ public class ChangeOrientationAction extends SelectionAction {
 
 	@Override
 	protected boolean calculateEnabled() {
-		if(getSelectedWidgetModels().size() >= 1 &&
-				!(getSelectedWidgetModels().get(0) instanceof DisplayModel))
+		List<AbstractWidgetModel> selectedWidgetModels = getSelectedWidgetModels();
+		if(selectedWidgetModels.size() >= 1 &&
+				!(selectedWidgetModels.get(0) instanceof DisplayModel))
 			return true;
 		return false;
 	}

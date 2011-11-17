@@ -45,6 +45,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		// disallows the removal of this edit part from its parent
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new RootComponentEditPolicy());
+		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 	}
 	
 	@Override

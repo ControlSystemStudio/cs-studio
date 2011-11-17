@@ -13,7 +13,6 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -60,8 +59,9 @@ public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator, 
 	this.multiLine = multiline;
 }
 
-public LabelEditManager(GraphicalEditPart source, CellEditorLocator locator) {
+public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator) {
 	super(source, null, locator);
+	this.editPart = source;
 }
 
 /**
