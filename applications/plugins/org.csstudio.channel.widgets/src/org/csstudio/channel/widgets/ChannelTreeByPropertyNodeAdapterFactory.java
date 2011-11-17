@@ -16,27 +16,29 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 
 	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (adapterType == Channel[].class) {
+		if (adaptableObject instanceof ChannelTreeByPropertyNode) {
 			ChannelTreeByPropertyNode node = ((ChannelTreeByPropertyNode) adaptableObject);
-			return node.getNodeChannels().toArray(new Channel[node.getNodeChannels().size()]);
-		} else if (adapterType == Channel.class) {
-			ChannelTreeByPropertyNode node = ((ChannelTreeByPropertyNode) adaptableObject);
-			if (node.getNodeChannels().isEmpty())
-				return null;
-			else
-				return node.getNodeChannels().get(0);
-		} else if (adapterType == ChannelQuery.class) {
-			ChannelTreeByPropertyNode node = ((ChannelTreeByPropertyNode) adaptableObject);
-			return toQuery(node);
-		} else if (adapterType == ChannelQuery[].class) {
-			ChannelTreeByPropertyNode node = ((ChannelTreeByPropertyNode) adaptableObject);
-			ChannelQuery query = toQuery(node);
-			if (query == null)
-				return null;
-			return new ChannelQuery[] {query};
-		} else {
-			return null;
+			if (adapterType == Channel[].class) {
+				return node.getNodeChannels().toArray(new Channel[node.getNodeChannels().size()]);
+			} else if (adapterType == Channel.class) {
+				if (node.getNodeChannels().isEmpty())
+					return null;
+				else
+					return node.getNodeChannels().get(0);
+			} else if (adapterType == ChannelQuery.class) {
+				return toQuery(node);
+			} else if (adapterType == ChannelQuery[].class) {
+				ChannelQuery query = toQuery(node);
+				if (query == null)
+					return null;
+				return new ChannelQuery[] {query};
+			} else if (adapterType == ConfigurableWidget.class) {
+				ConfigurableWidget widget = node.getConfigurableWidget();
+				if (widget.isConfigurable())
+					return widget;
+			}
 		}
+		return null;
 	}
 	
 	private ChannelQuery toQuery(ChannelTreeByPropertyNode node) {
@@ -49,7 +51,7 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class };
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class, ConfigurableWidget.class };
 	}
 
 }

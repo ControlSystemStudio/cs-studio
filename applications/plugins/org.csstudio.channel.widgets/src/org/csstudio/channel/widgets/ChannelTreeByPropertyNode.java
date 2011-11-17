@@ -113,6 +113,10 @@ public class ChannelTreeByPropertyNode {
 		return Collections.unmodifiableList(nodeChannels);
 	}
 	
+	public ConfigurableWidget getConfigurableWidget() {
+		return model.getWidget();
+	}
+	
 	/**
 	 * True if the node represents a sub-query and not a single channel.
 	 * @return

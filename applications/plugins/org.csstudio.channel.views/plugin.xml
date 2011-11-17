@@ -90,20 +90,6 @@
                style="push">
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.csstudio.channel.views.ChannelTreeByPropertyView?after=org.csstudio.ui.menu.popup.channel">
-         <separator
-               name="org.csstudio.channel.views.configure"
-               visible="true">
-         </separator>
-         <command
-               commandId="org.csstudio.channel.views.ConfigureView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/gear-16.png"
-               label="Configure..."
-               style="push">
-         </command>
-      </menuContribution>
     </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -126,11 +112,6 @@
             defaultHandler="org.csstudio.channel.views.OpenPVTableByProperty"
             id="org.csstudio.channel.views.OpenPVTableByProperty"
             name="PV Table by Property">
-      </command>
-      <command
-            defaultHandler="org.csstudio.channel.views.ConfigureView"
-            id="org.csstudio.channel.views.ConfigureView"
-            name="Configure...">
       </command>
    </extension>
 </plugin>

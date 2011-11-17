@@ -213,7 +213,7 @@ implements ConfigurableWidget {
 		}
 	}
 	
-	private boolean configurable = false;
+	private boolean configurable = true;
 	
 	private ChannelTreeByPropertyConfigurationDialog dialog;
 	
