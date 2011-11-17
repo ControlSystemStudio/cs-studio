@@ -31,7 +31,8 @@ public class ScanServerConnector
      *  and <code>ScanServerPort</code>
      *
      *  @return {@link ScanServer}
-     *  @throws Exception
+     *  @throws Exception on error
+     *  @see #disconnect(ScanServer)
      */
     public static ScanServer connect() throws Exception
     {
@@ -53,7 +54,8 @@ public class ScanServerConnector
     /** Connect to {@link ScanServer}
      *  @param hostname Host name where server is running
      *  @return {@link ScanServer}
-     *  @throws Exception
+     *  @throws Exception on error
+     *  @see #disconnect(ScanServer)
      */
     public static ScanServer connect(final String hostname, final int port) throws Exception
     {
@@ -63,5 +65,15 @@ public class ScanServerConnector
         Logger.getLogger(ScanServer.class.getName()).fine("Connected to " + server.getInfo());
 
         return server;
+    }
+    
+    /** Disconnect from a scan server
+     *  @param server Server to disconnect
+     */
+    public static void disconnect(final ScanServer server)
+    {
+        // For now there's nothing to do,
+        // but with a different implementation there could,
+        // so make all client code call disconnect to be prepared.
     }
 }

@@ -77,6 +77,7 @@ public class ScanClientDemo
             Thread.sleep(100);
         }
         dumpInfos(server);
+        ScanServerConnector.disconnect(server);
     }
 
     /** Test pausing a scan */
@@ -126,6 +127,8 @@ public class ScanClientDemo
             Thread.sleep(100);
         }
         dumpInfos(server);
+        
+        ScanServerConnector.disconnect(server);
     }
 
     /** Test aborting a scan */
@@ -157,5 +160,7 @@ public class ScanClientDemo
         dumpInfos(server);
         info = server.getScanInfo(id);
         assertEquals(ScanState.Aborted, info.getState());
+        
+        ScanServerConnector.disconnect(server);
     }
 }

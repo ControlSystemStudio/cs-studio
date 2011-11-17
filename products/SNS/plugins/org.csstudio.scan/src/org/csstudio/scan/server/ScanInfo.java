@@ -178,6 +178,11 @@ public class ScanInfo implements Serializable
     @Override
     public String toString()
     {
-        return "Scan '" + name + "' [" + id + "]: " + state + ", " + getPercentage() + "% done";
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Scan '").append(name).append("' [").append(id).append("]: ").append(state);
+        if (error != null)
+            buf.append(" (").append(error).append(")");
+        buf.append(", ").append(getPercentage()).append("% done");
+        return buf.toString();
     }
 }

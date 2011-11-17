@@ -159,11 +159,11 @@ public class ScanEngineTest
         // Wait for failure...
         waitForState(scan, ScanState.Failed);
 
-        final Throwable error = scan.getScanInfo().getError();
+        final String error = scan.getScanInfo().getError();
         assertNotNull(error);
-        System.out.println("Received expected error: " + error.getMessage());
-        assertTrue(error.getMessage().toLowerCase().contains("cannot"));
-        assertTrue(error.getMessage().toLowerCase().contains("finished"));
+        System.out.println("Received expected error: " + error);
+        assertTrue(error.toLowerCase().contains("cannot"));
+        assertTrue(error.toLowerCase().contains("finished"));
 
         engine.stop();
     }

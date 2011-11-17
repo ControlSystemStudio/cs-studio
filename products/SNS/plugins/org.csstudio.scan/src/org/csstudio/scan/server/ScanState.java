@@ -24,19 +24,19 @@ public enum ScanState
     Idle("Idle"),
 
     /** Scan is currently being executed */
-    Running("Running"),
+    Running("Running..."),
 
     /** Scan was Running, currently paused */
-    Paused("Paused"),
+    Paused("Paused..."),
 
     /** Scan was aborted by user */
     Aborted("Aborted"),
 
     /** Scan failed because of an error */
-    Failed("Failed (Error)"),
+    Failed("Failed"),
 
     /** Scan ended normally, i.e. not aborted or failed */
-    Finished("Finished (OK)");
+    Finished("Finished - OK");
 
     final private String name;
 

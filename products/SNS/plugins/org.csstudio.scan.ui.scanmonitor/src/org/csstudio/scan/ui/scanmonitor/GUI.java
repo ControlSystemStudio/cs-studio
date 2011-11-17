@@ -208,10 +208,11 @@ public class GUI implements ScanInfoModelListener
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                final Throwable error = info.getError();
+                final String error = info.getError();
                 if (error != null)
                 {
-                    return NLS.bind("Error type: {0}\nMessage: {1}", error.getClass().getName(), error.getMessage());
+                    return NLS.bind("Error type: {0}\nMessage: {1}",
+                            error.getClass().getName(), error);
                 }
                 else
                     return "No error";
@@ -221,20 +222,11 @@ public class GUI implements ScanInfoModelListener
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                final Throwable error = info.getError();
+                final String error = info.getError();
                 if (error == null)
                     cell.setText("");
                 else
-                {
-                    if (error.getMessage() != null)
-                        cell.setText(error.getMessage());
-                    else
-                    {
-                        String clazz = error.getClass().getName();
-                        final int i = clazz.lastIndexOf('.');
-                        cell.setText(clazz.substring(i+1));
-                    }
-                }
+                    cell.setText(error);
             }
         });
 

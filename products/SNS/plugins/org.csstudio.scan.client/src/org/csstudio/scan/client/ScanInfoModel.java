@@ -178,10 +178,11 @@ public class ScanInfoModel
      */
     private synchronized void reconnect() throws Exception
     {
-        // There really is no 'disconnect', but put that here
-        // in case another implementation offers explicit disconnect...
         if (server != null)
+        {
+            ScanServerConnector.disconnect(server);
             server = null;
+        }
         // Connect to server
         server = ScanServerConnector.connect();
     }

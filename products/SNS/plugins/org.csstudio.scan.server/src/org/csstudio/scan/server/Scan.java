@@ -44,7 +44,7 @@ public class Scan
 
     private volatile ScanState state = ScanState.Idle;
 
-    private volatile Throwable error = null;
+    private volatile String error = null;
 
     private volatile ScanContext context = null;
 
@@ -115,12 +115,12 @@ public class Scan
         catch (InterruptedException ex)
         {
             state = ScanState.Aborted;
-            error = ex;
+            error = "Interrupted";
         }
         catch (Throwable ex)
         {
             state = ScanState.Failed;
-            error = ex;
+            error = ex.getMessage();
         }
     }
 

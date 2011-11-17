@@ -21,12 +21,13 @@ import org.junit.Test;
 /** JUnit test of the {@link ScanServerConnector}
  *  @author Kay Kasemir
  */
-public class ScanServerConnectorTest
+public class ScanServerConnectorUnitTest
 {
     @Test
     public void testConnector() throws Exception
     {
         final ScanServer server = ScanServerConnector.connect();
         System.out.println(server.getInfo());
+        ScanServerConnector.disconnect(server);
     }
 }
