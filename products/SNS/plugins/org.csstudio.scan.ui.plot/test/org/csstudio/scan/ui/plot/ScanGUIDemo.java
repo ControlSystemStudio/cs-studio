@@ -24,8 +24,8 @@ public class ScanGUIDemo
         final Shell shell = new Shell(display);
         shell.setLayout(new GridLayout(1, false));
 
-        final GUI gui = new GUI(shell);
-        gui.addTrace();
+        final Plot plot = new Plot(shell);
+        plot.addTrace();
         
         shell.setSize(800, 600);
         shell.open();

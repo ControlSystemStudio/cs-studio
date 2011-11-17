@@ -45,8 +45,6 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
         updates.await();
         model.removeListener(this);
         model.release();
-        
-        // Thread.sleep(2000);
     }
 
     @Override

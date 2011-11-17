@@ -21,10 +21,10 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
-/** GUI for the scan plot
+/** Plot of scan data
  *  @author Kay Kasemir
  */
-public class GUI
+public class Plot
 {
     private ToolbarArmedXYGraph plot;
     private XYGraph xygraph;
@@ -32,7 +32,7 @@ public class GUI
     /** Initialize
      *  @param parent Parent composite
      */
-    public GUI(final Composite parent)
+    public Plot(final Composite parent)
     {
         // Create plot
         plot = new ToolbarArmedXYGraph(new XYGraph(), XYGraphFlags.SEPARATE_ZOOM);

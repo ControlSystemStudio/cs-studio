@@ -7,30 +7,62 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
+import java.util.List;
+
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
+import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.server.ScanInfo;
 
 /** View toolbar action to select the scan
  *  @author Kay Kasemir
  */
 public class ScanSelectorAction extends DropdownToolbarAction
 {
-    /** Initialize */
-    public ScanSelectorAction()
+    /** Separator between scan ID and name */
+    private static final String SEPARATOR = " - ";
+    
+    /** Scan model */
+    final private ScanInfoModel model;
+
+    /** Initialize 
+     * @param model */
+    public ScanSelectorAction(final ScanInfoModel model)
     {
         super("Scan", "Select a Scan");
+        this.model = model;
     }
 
     /** {@inheritDoc} */
     @Override
     public String[] getOptions()
     {
-        return new String[] { "Scan 1", "Scan 2", "Scan 3" };
+        final List<ScanInfo> infos = model.getInfos();
+        final String[] scans = new String[infos.size()];
+        for (int i=0; i<scans.length; ++i)
+        {
+            final ScanInfo info = infos.get(i);
+            scans[i] = info.getId() + SEPARATOR + info.getName();
+        }
+        return scans;
     }
 
     /** {@inheritDoc} */
     @Override
     public void handleSelection(final String item)
     {
-        System.out.println(item);
+        // Parse scan ID out of "42 - Some Scan Name"
+        final int sep = item.indexOf(SEPARATOR);
+        if (sep <= 0)
+            return;
+        final int id;
+        try
+        {
+            id = Integer.parseInt(item.substring(0, sep));
+        }
+        catch (NumberFormatException ex)
+        {
+            return;
+        }
+        System.out.println("Scan ID " + id + " parsed from " + item);
     }
 }
