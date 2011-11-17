@@ -29,6 +29,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 			widget.setSelectionPv(model.getSelectionPvName());
 		}
 		widget.setProperties(model.getTreeProperties());
+		widget.setConfigurable(model.getConfigurable());
 	}
 
 	@Override
