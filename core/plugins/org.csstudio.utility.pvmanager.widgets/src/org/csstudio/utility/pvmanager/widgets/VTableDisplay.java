@@ -1,18 +1,36 @@
 package org.csstudio.utility.pvmanager.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.epics.pvmanager.data.VTable;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 
 /**
@@ -20,11 +38,17 @@ import org.eclipse.swt.layout.FillLayout;
  * 
  * @author carcassi
  */
-public class VTableDisplay extends Composite {
+public class VTableDisplay extends Composite implements ISelectionProvider {
 	TableViewer tableViewer;
 	private Table table;
 	private Composite tableContainer;
 	private VTableCellLabelProvider cellLabelProvider;
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		table.setMenu(menu);
+	}
 
 	/**
 	 * Creates a new display.
@@ -42,6 +66,25 @@ public class VTableDisplay extends Composite {
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		table.addListener(SWT.MenuDetect, new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				Point pt = table.toControl(new Point(event.x, event.y));
+				Rectangle clientArea = table.getClientArea();
+				boolean header = clientArea.y <= pt.y && pt.y < (clientArea.y + table.getHeaderHeight());
+				ViewerCell cell = tableViewer.getCell(new Point(pt.x, Math.max(pt.y, clientArea.y + table.getHeaderHeight())));
+				if (cell == null) {
+					setSelection(null);
+				} else {
+					int row = ((VTableContentProvider.VTableRow) cell.getElement()).getRow();
+					if (header)
+						row = -1;
+					int column = cell.getColumnIndex();
+					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+				}
+			}
+		});
 		tableViewer.setContentProvider(new VTableContentProvider());
 		tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
@@ -120,6 +163,38 @@ public class VTableDisplay extends Composite {
 	 */
 	public VTable getVTable() {
 		return vTable;
+	}
+	
+	private List<ISelectionChangedListener> selectionChangedListeners = new ArrayList<ISelectionChangedListener>();
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionChangedListeners.add(listener);
+	}
+	
+	private ISelection selection = null;
+
+	@Override
+	public ISelection getSelection() {
+		return selection;
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionChangedListeners.remove(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		this.selection = selection;
+		fireSelectionChangedListener();
+	}
+	
+	private void fireSelectionChangedListener() {
+		for (ISelectionChangedListener listener : selectionChangedListeners) {
+			listener.selectionChanged(new SelectionChangedEvent(this, getSelection()));
+		}
 	}
 
 }
