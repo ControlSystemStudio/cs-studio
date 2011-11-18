@@ -38,8 +38,10 @@ public class PVTableByPropertyEditPart extends AbstractWidgetEditPart {
 	}
 	
 	private static void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
-		if (runMode)
+		if (runMode) {
 			widget.setChannelQuery(model.getChannelQuery());
+			widget.setRowSelectionPv(model.getRowSelectionPvName());
+		}
 		widget.setRowProperty(model.getRowProperty());
 		widget.setColumnProperty(model.getColumnProperty());
 	}
@@ -58,6 +60,7 @@ public class PVTableByPropertyEditPart extends AbstractWidgetEditPart {
 		setPropertyChangeHandler(PVTableByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.ROW_PROPERTY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.COLUMN_PROPERTY, reconfigure);
+		setPropertyChangeHandler(PVTableByPropertyModel.ROW_SELECTION_PV_NAME, reconfigure);
 	}
 	
 }

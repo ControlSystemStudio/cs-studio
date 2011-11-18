@@ -1,36 +1,18 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channels;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.column;
-import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
-import static org.epics.pvmanager.util.TimeDuration.ms;
-import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.channel.widgets.ChannelTreeByPropertyModel.Node;
-import org.csstudio.utility.channelfinder.CFClientManager;
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
-import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
-import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -38,19 +20,11 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VTable;
-import org.epics.pvmanager.data.VTableColumn;
 
-public class ChannelTreeByPropertyWidget extends Composite {
-	
-	private String channelQuery;
+public class ChannelTreeByPropertyWidget extends AbstractChannelWidget {
 	
 	private Tree tree;
 	private ErrorBar errorBar;
-	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 	
 	private ChannelTreeByPropertyModel model;
 
@@ -95,13 +69,26 @@ public class ChannelTreeByPropertyWidget extends Composite {
 		});
 		tree.setItemCount(0);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		tree.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (selectionWriter != null && tree.getSelectionCount() > 0) {
+					selectionWriter.write(tree.getSelection()[0].getText());
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
-			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
+			List<String> properties = Arrays.asList("properties");
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -110,50 +97,15 @@ public class ChannelTreeByPropertyWidget extends Composite {
 				}
 			}
 		});
-		
-		changeSupport.addPropertyChangeListener("channelQuery", new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				queryChannels();
-			}
-		});
 	}
 	
 	private void setLastException(Exception ex) {
 		errorBar.setException(ex);
 	}
 	
-    public void addPropertyChangeListener( PropertyChangeListener listener ) {
-        changeSupport.addPropertyChangeListener( listener );
-    }
-
-    public void removePropertyChangeListener( PropertyChangeListener listener ) {
-    	changeSupport.removePropertyChangeListener( listener );
-    }
-	
-	public String getChannelQuery() {
-		return channelQuery;
-	}
-	
-	public void setChannelQuery(String channelQuery) {
-		String oldValue = this.channelQuery;
-		this.channelQuery = channelQuery;
-		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
-	}
-	
-	public Collection<Channel> getChannels() {
-		return channels;
-	}
-	
-	private Collection<Channel> channels = new ArrayList<Channel>();
 	private List<String> properties = new ArrayList<String>();
-	
-	private void setChannels(Collection<Channel> channels) {
-		Collection<Channel> oldChannels = this.channels;
-		this.channels = channels;
-		changeSupport.firePropertyChange("channels", oldChannels, channels);
-	}
+	private String selectionPv = null;
+	private LocalUtilityPvManagerBridge selectionWriter = null;
 	
 	public List<String> getProperties() {
 		return properties;
@@ -162,47 +114,59 @@ public class ChannelTreeByPropertyWidget extends Composite {
 	public void setProperties(List<String> properties) {
 		List<String> oldProperties = this.properties;
 		this.properties = properties;
-		computeTree();
+		tree.setItemCount(0);
+		tree.clearAll(true);
 		changeSupport.firePropertyChange("properties", oldProperties, properties);
 	}
 	
-	private void queryChannels() {
-		setChannels(new ArrayList<Channel>());
+	@Override
+	protected void queryCleared() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
-		final ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.addChannelQueryListener(new ChannelQueryListener() {
-			
-			@Override
-			public void getQueryResult() {
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						Exception e = query.getLastException();
-						if (e == null) {
-							setChannels(query.getResult());
-							List<String> newProperties = new ArrayList<String>(getProperties());
-							newProperties.retainAll(ChannelUtil.getPropertyNames(channels));
-							if (newProperties.size() != getProperties().size()) {
-								setProperties(newProperties);
-							}
-							computeTree();
-						} else {
-							errorBar.setException(e);
-						}
-					}
-				});
-				
+	}
+	
+	@Override
+	protected void queryExecuted(Result result) {
+		if (result.exception == null) {
+			List<String> newProperties = new ArrayList<String>(getProperties());
+			newProperties.retainAll(ChannelUtil.getPropertyNames(result.channels));
+			if (newProperties.size() != getProperties().size()) {
+				setProperties(newProperties);
 			}
-		});
-		query.execute();
+			computeTree();
+		} else {
+			errorBar.setException(result.exception);
+		}
 	}
 	
 	private void computeTree() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
-		model = new ChannelTreeByPropertyModel(getChannels(), getProperties());
+		if (getChannelQuery() == null) {
+			model = new ChannelTreeByPropertyModel(null, null, getProperties());
+		} else if (getChannelQuery().getResult() == null) {
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties());
+		} else {
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties());
+		}
 		tree.setItemCount(model.getRoot().getChildrenNames().size());
+	}
+	
+	public String getSelectionPv() {
+		return selectionPv;
+	}
+	
+	public void setSelectionPv(String selectionPv) {
+		this.selectionPv = selectionPv;
+		if (selectionPv == null || selectionPv.trim().isEmpty()) {
+			// Close PVManager
+			if (selectionWriter != null) {
+				selectionWriter.close();
+				selectionWriter = null;
+			}
+			
+		} else {
+			selectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
+		}
 	}
 }

@@ -26,9 +26,12 @@ import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Table;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -66,6 +69,20 @@ public class PVTableByPropertyWidget extends Composite {
 		setLayout(gridLayout);
 		table = new VTableDisplay(this);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		table.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (rowSelectionWriter != null && ((Table) e.widget).getSelectionCount() > 0) {
+					rowSelectionWriter.write(((Table) e.widget).getSelection()[0].getText());
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -290,4 +307,26 @@ public class PVTableByPropertyWidget extends Composite {
 		
 		reconnect();
 	}
+	
+	private String rowSelectionPv = null;
+	private LocalUtilityPvManagerBridge rowSelectionWriter = null;
+	
+	public String getSelectionPv() {
+		return rowSelectionPv;
+	}
+	
+	public void setRowSelectionPv(String selectionPv) {
+		this.rowSelectionPv = selectionPv;
+		if (selectionPv == null || selectionPv.trim().isEmpty()) {
+			// Close PVManager
+			if (rowSelectionWriter != null) {
+				rowSelectionWriter.close();
+				rowSelectionWriter = null;
+			}
+			
+		} else {
+			rowSelectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
+		}
+	}
+	
 }

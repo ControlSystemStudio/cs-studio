@@ -16,6 +16,9 @@
          <adapter
                type="[Lgov.bnl.channelfinder.api.Channel;">
          </adapter>
+         <adapter
+               type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
+         </adapter>
       </factory>
    </extension>
 

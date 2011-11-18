@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: KEK / J-PARC Product
+Bundle-Name: KEK Product
 Bundle-SymbolicName: org.csstudio.kek.product;singleton:=true
-Bundle-Version: 3.0.0.qualifier
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-Version: 3.0.1.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS, Takashi Nakamoto <takashi.nakamoto@cosylab.com>
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui.intro;bundle-version="3.4.0",
