@@ -375,10 +375,10 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		ISelection tableSelection = table.getSelection();
 		if (tableSelection instanceof IStructuredSelection) {
 			VTableDisplayCell cell = (VTableDisplayCell) ((IStructuredSelection) tableSelection).getFirstElement();
-			return new StructuredSelection(new PVTableByPropertyCell(cell, this));
+			if (cell != null)
+				return new StructuredSelection(new PVTableByPropertyCell(cell, this));
 		}
-		// TODO Auto-generated method stub
-		return null;
+		return new StructuredSelection();
 	}
 
 	@Override
