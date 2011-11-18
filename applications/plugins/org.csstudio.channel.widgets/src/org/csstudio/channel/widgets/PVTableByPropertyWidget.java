@@ -419,5 +419,13 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		}
 		return rowChannels;
 	}
+
+	public List<String> getColumnPropertyValues() {
+		return columnNames;
+	}
+
+	public List<String> getRowPropertyValues() {
+		return rowNames;
+	}
 	
 }
