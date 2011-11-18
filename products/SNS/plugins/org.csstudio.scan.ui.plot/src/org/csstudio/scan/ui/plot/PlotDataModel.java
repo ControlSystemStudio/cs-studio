@@ -8,10 +8,15 @@
 package org.csstudio.scan.ui.plot;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 
 /** Model of the Plot's data
@@ -40,6 +45,10 @@ public class PlotDataModel implements Runnable
     private volatile String x_axis_device = null;
 
     private volatile String y_axis_device = null;
+
+    private double x_values[];
+
+    private double y_values[];
     
     /** Initialize
      *  @throws Exception on error connecting to scan server
@@ -94,7 +103,31 @@ public class PlotDataModel implements Runnable
                 {
                     scan_data = model.getScanData(scan);
                     
-                    // TODO get data for x_axis_device, y_axis_device
+                    final String x_device = x_axis_device;
+                    final String y_device = y_axis_device;
+                    if (x_device != null  &&  y_device != null)
+                    {
+                        // Get data for x_axis_device, y_axis_device
+                        final SpreadsheetScanDataIterator sheet =
+                                new SpreadsheetScanDataIterator(scan_data,
+                                        Arrays.asList(x_device, y_device));
+                        final List<Double> x = new ArrayList<Double>();
+                        final List<Double> y = new ArrayList<Double>();
+                        while (sheet.hasNext())
+                        {
+                            final List<ScanSample> samples = sheet.getSamples();
+                            x.add(DataFormatter.toDouble(samples.get(0)));
+                            y.add(DataFormatter.toDouble(samples.get(1)));
+                        }
+                        final int N = Math.min(x.size(), y.size());
+                        x_values = new double[N];
+                        y_values = new double[N];
+                        for (int i=0; i<N; ++i)
+                        {
+                            x_values[i] = x.get(i);
+                            y_values[i] = y.get(i);
+                        }
+                    }
                     // TODO notify listeners
                 }
                 catch (RemoteException ex)
@@ -106,6 +139,7 @@ public class PlotDataModel implements Runnable
             // or early wake from waveUpdateThread()
             synchronized (this)
             {
+                final long start = System.currentTimeMillis();
                 try
                 {
                     wait(1000);
@@ -114,6 +148,8 @@ public class PlotDataModel implements Runnable
                 {
                     // Ignore
                 }
+                final long time = System.currentTimeMillis() - start;
+                System.out.println("Update thread woke after " + time + "ms");
             }
         }
     }
@@ -141,6 +177,7 @@ public class PlotDataModel implements Runnable
     public void selectScan(final long id)
     {
         selected_scan = getScan(id);
+        System.out.println("selectScan");
         waveUpdateThread();
     }
 
@@ -167,6 +204,7 @@ public class PlotDataModel implements Runnable
     public void selectXDevice(final String device_name)
     {
         x_axis_device = device_name;
+        System.out.println("selectXDevice");
         waveUpdateThread();
     }
 
@@ -174,6 +212,19 @@ public class PlotDataModel implements Runnable
     public void selectYDevice(final String device_name)
     {
         y_axis_device = device_name;
+        System.out.println("selectYDevice");
         waveUpdateThread();
+    }
+    
+    // TODO Wrap x/y values in a class so it can be updated & fetched atomically.
+    //      Current implementation is not thread-save
+    public double[] getXValues()
+    {
+        return x_values;
+    }
+
+    public double[] getYValues()
+    {
+        return y_values;
     }
 }

@@ -7,10 +7,17 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
+import static org.junit.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.CommandSequence;
+import org.csstudio.scan.command.LogCommand;
+import org.csstudio.scan.command.LoopCommand;
+import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
@@ -28,10 +35,10 @@ public class PlotDataModelUnitTest
     {
         final ScanServer server = ScanServerConnector.connect();
 
-        final CommandSequence seq = new CommandSequence();
-        seq.log("xpos", "readback");
-        seq.log("xpos", "readback");
-        final long id = server.submitScan("PlotDemo", seq.getCommands());
+        final List<ScanCommand> commands = new ArrayList<ScanCommand>();
+        commands.add(new LoopCommand("xpos", 1.0, 2.0, 1.0,
+                                     new LogCommand("xpos", "readback")));
+        final long id = server.submitScan("PlotDemo", commands);
         
         while (! server.getScanInfo(id).isDone())
             Thread.sleep(100);
@@ -55,8 +62,10 @@ public class PlotDataModelUnitTest
         }
         for (ScanInfo info : infos)
             System.out.println(info);
-        model.selectScan(infos.get(infos.size()-1).getId());
+        model.selectScan(infos.get(0).getId());
         
+        model.selectXDevice("xpos");
+        model.selectYDevice("readback");
         ScanData data = model.getScanData();
         while (data == null)
         {
@@ -64,6 +73,14 @@ public class PlotDataModelUnitTest
             data = model.getScanData();
         }
         new SpreadsheetScanDataIterator(data).dump(System.out);
+
+        final double[] x = model.getXValues();
+        final double[] y = model.getYValues();
+        assertNotNull(x);
+        assertNotNull(y);
+        assertEquals(x.length, y.length);
+        for (int i=0; i<x.length; ++i)
+            System.out.println(x[i] + " " + y[i]);
         
         model.stop();
     }
