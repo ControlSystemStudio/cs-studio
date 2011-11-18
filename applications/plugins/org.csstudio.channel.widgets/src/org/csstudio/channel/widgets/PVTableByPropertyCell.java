@@ -24,6 +24,11 @@ public class PVTableByPropertyCell {
 		if (cell.getColumn() >= 1 && cell.getRow() == -1) {
 			columnChannels = table.getChannelsInColumn(cell.getColumn() - 1);
 		}
+		
+		// Set data for row
+		if (cell.getRow() >= 0 ) {
+			rowChannels = table.getChannelsInRow(cell.getRow());
+		}
 	}
 	
 	public Collection<Channel> getCellChannels() {
@@ -32,5 +37,9 @@ public class PVTableByPropertyCell {
 	
 	public Collection<Channel> getColumnChannels() {
 		return columnChannels;
+	}
+	
+	public Collection<Channel> getRowChannels() {
+		return rowChannels;
 	}
 }
