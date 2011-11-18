@@ -22,6 +22,9 @@ public class PVTableByPropertyCellAdapterFactory implements IAdapterFactory {
 				// If it's a cell, get the cell channels
 				if (cell.getCellChannels() != null)
 					return cell.getCellChannels().toArray(new Channel[cell.getCellChannels().size()]);
+				// If it's a column, get the column channels
+				if (cell.getColumnChannels() != null)
+					return cell.getColumnChannels().toArray(new Channel[cell.getColumnChannels().size()]);
 			} else if (adapterType == ChannelQuery[].class) {
 				return null;
 			} else if (adapterType == ConfigurableWidget.class) {

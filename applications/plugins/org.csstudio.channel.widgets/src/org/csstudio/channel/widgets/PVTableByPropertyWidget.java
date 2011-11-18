@@ -403,5 +403,13 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		super.setMenu(menu);
 		table.setMenu(menu);
 	}
+
+	public Collection<Channel> getChannelsInColumn(int column) {
+		Collection<Channel> columnChannels = new HashSet<Channel>();
+		for (Collection<Channel> channels : cellChannels.get(column)) {
+			columnChannels.addAll(channels);
+		}
+		return columnChannels;
+	}
 	
 }
