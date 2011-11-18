@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.epics.pvmanager.data.VTable;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 
 /**
@@ -44,6 +45,14 @@ public class VTableDisplay extends Composite {
 		tableViewer.setContentProvider(new VTableContentProvider());
 		tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
+	}
+	
+	public void addSelectionListener(SelectionListener listener) {
+		table.addSelectionListener(listener);
+	}
+	
+	public void removeSelecctionListener(SelectionListener listener) {
+		table.removeSelectionListener(listener);
 	}
 	
 	// The current table being displayed

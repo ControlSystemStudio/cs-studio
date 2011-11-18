@@ -1,13 +1,19 @@
 package org.csstudio.channel.views;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PropertyListDialog;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -51,8 +57,23 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	/** Memento */
 	private IMemento memento = null;
 	
-	/** Memento tag */
-	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+	/** Memento tags */
+	private static final String MEMENTO_QUERY = "ChannelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_PROPERTIES = "Property"; //$NON-NLS-1$
+	
+	private final ChannelQueryListener channelQueryListener = new ChannelQueryListener() {
+		
+		@Override
+		public void queryExecuted(final Result result) {
+			SWTUtil.swtThread().execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					btnProperties.setEnabled(result.channels != null && !result.channels.isEmpty());
+				}
+			});
+		}
+	};
 	
 	/**
 	 * The constructor.
@@ -79,13 +100,23 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		super.saveState(memento);
 		// Save the currently selected variable
 		if (combo.getText() != null) {
-			memento.putString(MEMENTO_PVNAME, combo.getText());
+			memento.putString(MEMENTO_QUERY, combo.getText());
+			if (!treeWidget.getProperties().isEmpty()) {
+				StringBuilder sb = new StringBuilder();
+				for (String property : treeWidget.getProperties()) {
+					sb.append(property).append(",");
+				}
+				sb.deleteCharAt(sb.length() - 1);
+				memento.putString(MEMENTO_PROPERTIES, sb.toString());
+			}
 		}
 	}
 	
-	public void setPVName(String name) {
-		combo.setText(name);
-		changeQuery(name);
+	private void setQueryText(String text) {
+		if (text == null)
+			text = "";
+		combo.setText(text);
+		changeQuery(text);
 	}
 	
 	private Combo combo;
@@ -94,7 +125,28 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	private Button btnProperties;
 	
 	private void changeQuery(String text) {
-		treeWidget.setChannelQuery(text);
+		ChannelQuery oldQuery = treeWidget.getChannelQuery();
+		if (text == null)
+			text = "";
+		text = text.trim();
+		
+		// Query is the same, do nothing
+		if (oldQuery != null && oldQuery.getQuery().equals(text)) {
+			return;
+		}
+		
+		ChannelQuery newQuery = ChannelQuery.Builder.query(text).create();
+		setChannelQuery(newQuery);
+	}
+	
+	public void setChannelQuery(ChannelQuery query) {
+		combo.setText(query.getQuery());
+		ChannelQuery oldQuery = treeWidget.getChannelQuery();
+		if (oldQuery != null) {
+			oldQuery.removeChannelQueryListener(channelQueryListener);
+		}
+		query.execute(channelQueryListener);
+		treeWidget.setChannelQuery(query);
 	}
 
 	@Override
@@ -123,13 +175,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		treeWidget.setLayoutData(fd_waterfallComposite);
-		treeWidget.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				btnProperties.setEnabled(treeWidget.getChannels() != null && !treeWidget.getChannels().isEmpty());
-			}
-		});
 		
 		ComboHistoryHelper name_helper =
 			new ComboHistoryHelper(Activator.getDefault()
@@ -156,8 +201,11 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		});
 		name_helper.loadSettings();
 		
-		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setPVName(memento.getString(MEMENTO_PVNAME));
+		if (memento != null) {
+			setQueryText(memento.getString(MEMENTO_QUERY));
+			if (memento.getString(MEMENTO_PROPERTIES) != null) {
+				treeWidget.setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
+			}
 		}
 		
 		MenuManager menuMgr = new MenuManager();

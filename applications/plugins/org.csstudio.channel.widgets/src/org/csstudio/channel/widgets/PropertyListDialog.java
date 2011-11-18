@@ -2,7 +2,6 @@ package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 
-import java.beans.Beans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -11,22 +10,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Dialog;
+import org.eclipse.swt.widgets.Shell;
 
 public class PropertyListDialog extends Dialog {
 
@@ -42,7 +36,7 @@ public class PropertyListDialog extends Dialog {
 	public PropertyListDialog(ChannelTreeByPropertyWidget widget) {
 		this(widget.getShell(), SWT.DIALOG_TRIM, "Select properties...");
 		this.control = widget;
-		addInitialValues("channels", widget.getChannels());
+		addInitialValues("channels", widget.getChannelQuery().getResult().channels);
 		addInitialValues("selectedProperties", widget.getProperties());
 	}
 	

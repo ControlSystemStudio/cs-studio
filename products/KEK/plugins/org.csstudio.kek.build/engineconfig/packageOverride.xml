@@ -1,0 +1,21 @@
+<project name="package.override" default="main">
+	<import file="${buildDirectory}/${assembleScriptName}" />
+	<target name="cleanup.assembly">
+		<condition property="doAssemblyCleanup">
+			<or>
+				<not><isset property="runPackager" /></not>
+				<contains string="${assembleScriptName}" substring="package." />
+			</or>
+		</condition>
+		<antcall target="perform.cleanup.assembly" />
+	</target>
+	<target name="perform.cleanup.assembly" if="doAssemblyCleanup">
+		<exec executable="mv" dir="${buildDirectory}">
+			<arg value="${assemblyTempDir}" />
+			<arg value="${buildDirectory}/tmp.${os}.${ws}.${arch}" />
+		</exec>
+		<exec executable="rm" dir="${buildDirectory}">
+			<arg line="-rf ${buildDirectory}/tmp.${os}.${ws}.${arch}" />
+		</exec>
+	</target>
+</project>

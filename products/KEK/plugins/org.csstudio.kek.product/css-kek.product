@@ -45,16 +45,18 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.csstudio.kek.eclipse.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.kek.core.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.kek.applications.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.kek.eclipse.feature" version="3.0.1.qualifier"/>
+      <feature id="org.csstudio.kek.core.feature" version="3.0.1.qualifier"/>
+      <feature id="org.csstudio.kek.applications.feature" version="3.0.1.qualifier"/>
    </features>
 
 

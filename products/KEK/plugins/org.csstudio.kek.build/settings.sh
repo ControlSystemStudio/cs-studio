@@ -2,11 +2,11 @@
 #
 # Author
 #  - Kay Kasemir
-#  - Takashi Nakamoto
+#  - Takashi Nakamoto (Cosylab)
 #
 
 # Version number of CSS
-export VERSION=3.0.0
+export VERSION=3.0.1
 
 # Root of CSS source tree.
 export TOP=${HOME}/work/cs-studio-3.0
