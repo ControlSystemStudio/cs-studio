@@ -131,9 +131,13 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
                 {
                     @Override
                     public void widgetSelected(final SelectionEvent e)
-                    {
-                        selection = option;
-                        handleSelection(option);
+                    {   // Only react to the selection, not de-selection of
+                        // the 'radio' buttons.
+                        if (item.getSelection())
+                        {
+                            selection = option;
+                            handleSelection(option);
+                        }
                     }
                 });
             }
