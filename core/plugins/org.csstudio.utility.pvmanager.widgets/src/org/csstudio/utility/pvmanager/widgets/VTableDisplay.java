@@ -172,7 +172,7 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 		selectionChangedListeners.add(listener);
 	}
 	
-	private ISelection selection = null;
+	private ISelection selection = new StructuredSelection();
 
 	@Override
 	public ISelection getSelection() {
@@ -188,6 +188,8 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 	@Override
 	public void setSelection(ISelection selection) {
 		this.selection = selection;
+		if (selection == null)
+			this.selection = new StructuredSelection();
 		fireSelectionChangedListener();
 	}
 	
