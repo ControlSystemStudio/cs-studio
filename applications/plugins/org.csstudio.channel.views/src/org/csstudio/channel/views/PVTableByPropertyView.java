@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
+import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -209,5 +210,7 @@ public class PVTableByPropertyView extends ViewPart {
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
+		
+		PopupMenuUtil.installPopupForView(tableWidget, getSite(), tableWidget);
 	}
 }

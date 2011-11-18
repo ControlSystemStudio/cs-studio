@@ -23,6 +23,19 @@
                type="org.csstudio.channel.widgets.ConfigurableWidget">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.csstudio.channel.widgets.PVTableByPropertyCell"
+            class="org.csstudio.channel.widgets.PVTableByPropertyCellAdapterFactory">
+         <adapter
+               type="[Lgov.bnl.channelfinder.api.Channel;">
+         </adapter>
+         <adapter
+               type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
+         </adapter>
+         <adapter
+               type="org.csstudio.channel.widgets.ConfigurableWidget">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
