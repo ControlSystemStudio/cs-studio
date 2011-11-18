@@ -17,6 +17,10 @@
       <product
             application="org.csstudio.ams.systemmonitor.AmsSystemMonitorApplication"
             name="AmsSystemMonitorProduct">
+         <property
+               name="appName"
+               value="AmsSystemMonitorProduct">
+         </property>
       </product>
    </extension>
 
