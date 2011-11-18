@@ -6,7 +6,6 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
