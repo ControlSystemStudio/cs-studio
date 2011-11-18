@@ -6,6 +6,7 @@ package org.csstudio.channel.widgets;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
@@ -48,6 +49,10 @@ public class PVTableByPropertyCellAdapterFactory implements IAdapterFactory {
 					return new ChannelQuery[] {
 						ChannelQuery.Builder.query(cell.getColumnQuery()).result(cell.getColumnChannels(), null).create()
 				    };
+			} else if (adapterType == ProcessVariable.class) {
+				// Only return the pv for the cell
+				if (cell.getCellChannels() != null && cell.getCellChannels().size() > 0)
+					return new ProcessVariable(cell.getCellChannels().iterator().next().getName());
 			} else if (adapterType == ConfigurableWidget.class) {
 				return null;
 			}
@@ -57,7 +62,7 @@ public class PVTableByPropertyCellAdapterFactory implements IAdapterFactory {
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel[].class, ChannelQuery[].class, ConfigurableWidget.class };
+		return new Class[] { Channel[].class, ChannelQuery[].class, ProcessVariable.class, ConfigurableWidget.class };
 	}
 
 }
