@@ -193,6 +193,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			}
 		}
 		
-		PopupMenuUtil.installPopupForView(treeWidget.getTree(), getSite(), treeWidget.getTreeSelectionProvider());
+		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
 	}
 }

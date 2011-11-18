@@ -19,7 +19,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		registerPopup(figure.getSWTWidget().getTree());
+		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	

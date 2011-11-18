@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -38,14 +39,11 @@ implements ConfigurableWidget {
 	private String selectionPv = null;
 	private LocalUtilityPvManagerBridge selectionWriter = null;
 	private ChannelTreeByPropertyModel model;
-
-	/**
-	 * The tree that displays the data. Provided to add pop-up menu.
-	 * 
-	 * @return the tree
-	 */
-	public Tree getTree() {
-		return tree;
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		tree.setMenu(menu);
 	}
 	
 	/**
