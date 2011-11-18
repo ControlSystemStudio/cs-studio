@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS to RDB Sender
 Bundle-SymbolicName: org.csstudio.sns.jms2rdb;singleton:=true
-Bundle-Version: 3.0.1.qualifier
+Bundle-Version: 3.0.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Description: Tool that writes JMS messages (log, alarm, ...) to an RDB
 Require-Bundle: org.junit4,

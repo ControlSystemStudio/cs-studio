@@ -79,6 +79,7 @@ CREATE TABLE  message
 );
 
 -- Elements of a Message
+-- ID column isn't really used...
 DROP TABLE IF EXISTS message_content;
 CREATE TABLE  message_content
 (

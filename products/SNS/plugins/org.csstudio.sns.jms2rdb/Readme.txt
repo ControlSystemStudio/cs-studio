@@ -3,7 +3,7 @@ JMS2RDB
 Tool that listens to CSS messages for log, alarm, ... on JMS
 and sends them to the RDB.
 
-"dbd" subdir has MySQL and Oracle DBD.
+"dbd" subdir has MySQL, Oracle and Postgres DBD.
 
 JMS2RDB.product is Eclipse product definition for building
 the application.
