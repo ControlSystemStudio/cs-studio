@@ -19,6 +19,10 @@ public class SampleAdapter implements ISample
 {
     final private ScanSample x, y;
     
+    /** Initialize
+     *  @param x
+     *  @param y
+     */
     public SampleAdapter(final ScanSample x, final ScanSample y)
     {
         this.x = x;
@@ -71,6 +75,15 @@ public class SampleAdapter implements ISample
     @Override
     public String getInfo()
     {
-        return y.getDeviceName() + " over " + x.getDeviceName();
+        final String xinfo = x == null ? "X" : x.getDeviceName();
+        final String yinfo = y == null ? "Y" : y.getDeviceName();
+        return yinfo + " over " + xinfo;
+    }
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+        return x + ", " + y;
     }
 }

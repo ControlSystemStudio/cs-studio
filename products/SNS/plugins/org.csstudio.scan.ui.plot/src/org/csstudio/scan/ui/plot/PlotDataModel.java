@@ -8,16 +8,12 @@
 package org.csstudio.scan.ui.plot;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanInfoModel;
-import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanSample;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
+import org.eclipse.swt.widgets.Display;
 
 /** Model of the Plot's data
  *  <ul>
@@ -40,29 +36,28 @@ public class PlotDataModel implements Runnable
     /** Currently selected scan */
     private volatile ScanInfo selected_scan = null;
 
-    private volatile ScanData scan_data = null;
-
+    private volatile List<String> devices = null;
+    
     private volatile String x_axis_device = null;
 
     private volatile String y_axis_device = null;
-
-    private double x_values[];
-
-    private double y_values[];
+    
+    final private PlotDataProvider plot_data;
     
     /** Initialize
      *  @throws Exception on error connecting to scan server
      *  @see #dispose()
      */
-    public PlotDataModel() throws Exception
+    public PlotDataModel(final Display display) throws Exception
     {
         model = ScanInfoModel.getInstance();
+        plot_data = new PlotDataProvider(display);
     }
     
     /** Start the model */
     public void start()
     {
-        update_thread = new Thread(this, "PlotDataThread");
+        update_thread = new Thread(this, "PlotDataModel");
         update_thread.setDaemon(true);
         update_thread.start();
     }
@@ -95,46 +90,33 @@ public class PlotDataModel implements Runnable
         while (update_thread != null)
         {
             final ScanInfo scan = selected_scan;
+            final String x_device = x_axis_device;
+            final String y_device = y_axis_device;
             if (scan == null)
-                scan_data = null;
-            else
             {
+                devices = null;
+                plot_data.clear();
+            }
+            else
+            {   // Get data for scan
+                final ScanData scan_data;
                 try
                 {
                     scan_data = model.getScanData(scan);
-                    
-                    final String x_device = x_axis_device;
-                    final String y_device = y_axis_device;
-                    if (x_device != null  &&  y_device != null)
-                    {
-                        // Get data for x_axis_device, y_axis_device
-                        final SpreadsheetScanDataIterator sheet =
-                                new SpreadsheetScanDataIterator(scan_data,
-                                        Arrays.asList(x_device, y_device));
-                        final List<Double> x = new ArrayList<Double>();
-                        final List<Double> y = new ArrayList<Double>();
-                        while (sheet.hasNext())
-                        {
-                            final List<ScanSample> samples = sheet.getSamples();
-                            x.add(DataFormatter.toDouble(samples.get(0)));
-                            y.add(DataFormatter.toDouble(samples.get(1)));
-                        }
-                        final int N = Math.min(x.size(), y.size());
-                        x_values = new double[N];
-                        y_values = new double[N];
-                        for (int i=0; i<N; ++i)
-                        {
-                            x_values[i] = x.get(i);
-                            y_values[i] = y.get(i);
-                        }
-                    }
-                    // TODO notify listeners
+                    devices = scan_data.getDevices();
+                    // Get data for selected devices from plot
+                    if (x_device == null  ||  y_device == null)
+                        plot_data.clear();
+                    else
+                        plot_data.update(scan_data, x_device, y_device);
                 }
                 catch (RemoteException ex)
                 {
-                    scan_data = null;
+                    plot_data.clear();
+                    devices = null;
                 }
-            }
+            }                
+            
             // Wait for next update period
             // or early wake from waveUpdateThread()
             synchronized (this)
@@ -177,16 +159,9 @@ public class PlotDataModel implements Runnable
     public void selectScan(final long id)
     {
         selected_scan = getScan(id);
-        System.out.println("selectScan");
         waveUpdateThread();
     }
 
-    /** @return Data of selected scan */
-    public ScanData getScanData()
-    {
-        return scan_data;
-    }
-    
     /** Get scan info by ID
      *  @param id Scan ID
      *  @return {@link ScanInfo} or <code>null</code>
@@ -200,11 +175,16 @@ public class PlotDataModel implements Runnable
         return null;
     }
 
+    /** @return Devices used by currently selected Scan */
+    public List<String> getDevices()
+    {
+        return devices;
+    }
+    
     /** @param device_name Device to use for "X" axis */
     public void selectXDevice(final String device_name)
     {
         x_axis_device = device_name;
-        System.out.println("selectXDevice");
         waveUpdateThread();
     }
 
@@ -212,19 +192,12 @@ public class PlotDataModel implements Runnable
     public void selectYDevice(final String device_name)
     {
         y_axis_device = device_name;
-        System.out.println("selectYDevice");
         waveUpdateThread();
     }
     
-    // TODO Wrap x/y values in a class so it can be updated & fetched atomically.
-    //      Current implementation is not thread-save
-    public double[] getXValues()
+    /** @return Data of selected scan */
+    public PlotDataProvider getPlotData()
     {
-        return x_values;
-    }
-
-    public double[] getYValues()
-    {
-        return y_values;
+        return plot_data;
     }
 }

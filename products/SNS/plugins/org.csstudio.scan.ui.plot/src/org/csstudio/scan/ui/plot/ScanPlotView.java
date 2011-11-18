@@ -35,12 +35,12 @@ public class ScanPlotView extends ViewPart
     {
         try
         {
-            model = new PlotDataModel();
+            model = new PlotDataModel(parent.getDisplay());
             model.start();
         }
         catch (Exception ex)
         {
-            Label l = new Label(parent, 0);
+            final Label l = new Label(parent, 0);
             l.setText("Error getting scan info: " + ex.getMessage());
             Logger.getLogger(getClass().getName()).
                 log(Level.WARNING, "Error getting scan info", ex);
@@ -63,7 +63,7 @@ public class ScanPlotView extends ViewPart
     private void createComponents(final Composite parent)
     {
         final Plot plot = new Plot(parent);
-        plot.addTrace();
+        plot.addTrace(model.getPlotData());
         
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new ScanSelectorAction(model));

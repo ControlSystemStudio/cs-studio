@@ -7,25 +7,18 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanServerConnector;
-import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.junit.Test;
 
 /** JUnit test of the {@link PlotDataModel}
- * 
  *  @author Kay Kasemir
  */
 public class PlotDataModelUnitTest
@@ -52,7 +45,7 @@ public class PlotDataModelUnitTest
         runDemoScan();
         
         // Wait for model to obtain scans
-        final PlotDataModel model = new PlotDataModel();
+        final PlotDataModel model = new PlotDataModel(null);
         model.start();
         List<ScanInfo> infos = model.getScanInfos();
         while (infos.size() <= 0)
@@ -66,22 +59,16 @@ public class PlotDataModelUnitTest
         
         model.selectXDevice("xpos");
         model.selectYDevice("readback");
-        ScanData data = model.getScanData();
-        while (data == null)
+        final PlotDataProvider data = model.getPlotData();
+        while (data.getSize() <= 0)
         {
             Thread.sleep(100);
-            data = model.getScanData();
         }
-        new SpreadsheetScanDataIterator(data).dump(System.out);
-
-        final double[] x = model.getXValues();
-        final double[] y = model.getYValues();
-        assertNotNull(x);
-        assertNotNull(y);
-        assertEquals(x.length, y.length);
-        for (int i=0; i<x.length; ++i)
-            System.out.println(x[i] + " " + y[i]);
-        
+        synchronized (data)
+        {
+            for (int i=0; i<data.getSize(); ++i)
+                System.out.println(data.getSample(i));
+        }        
         model.stop();
     }
 }

@@ -7,9 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import java.util.Date;
-
-import org.csstudio.scan.data.NumberScanSample;
+import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
@@ -49,14 +47,9 @@ public class Plot
         lws.setContents(plot);
     }
     
-    // TODO Replace dummy trace data with actual scan data
-    public void addTrace()
+    /** @param data Data to show in trace */
+    public void addTrace(final IDataProvider data)
     {
-        final ScanDataProvider data = new ScanDataProvider();
-        
-        for (int i=0; i<50; ++i)
-            data.addSample(new NumberScanSample("xpos", new Date(), i, i),
-                    new NumberScanSample("readback", new Date(), i, i));
         final Trace trace = new Trace("data",
                 xygraph.primaryXAxis,
                 xygraph.primaryYAxis,
