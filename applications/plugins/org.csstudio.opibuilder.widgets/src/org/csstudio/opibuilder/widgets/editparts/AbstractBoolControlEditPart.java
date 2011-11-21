@@ -44,7 +44,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 			final AbstractBoolControlFigure figure, final AbstractBoolControlModel model) {
 		super.initializeCommonFigureProperties(figure, model);
 		figure.setToggle(model.isToggleButton());
-		figure.setShowConfirmDialog(model.isShowConfirmDialog());
+		figure.setShowConfirmDialog(model.getShowConfirmDialog());
 		figure.setConfirmTip(model.getConfirmTip());
 		figure.setPassword(model.getPassword());
 		figure.setRunMode(getExecutionMode().equals(
@@ -101,7 +101,7 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractBoolControlFigure figure = (AbstractBoolControlFigure) refreshableFigure;
-				figure.setShowConfirmDialog((Boolean) newValue);
+				figure.setShowConfirmDialog(getWidgetModel().getShowConfirmDialog());
 				return true;
 			}
 		};
