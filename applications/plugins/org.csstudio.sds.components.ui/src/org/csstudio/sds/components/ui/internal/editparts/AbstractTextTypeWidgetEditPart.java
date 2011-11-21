@@ -85,12 +85,12 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
     @Override
     protected void registerPropertyChangeHandlers() {
 
-        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
+                final ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(null));
                 return true;
             }
@@ -98,12 +98,12 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         setPropertyChangeHandler(PROP_TEXT_TYPE, handle);
 
         // precision
-        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
+                final ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_PRECISION));
                 return true;
             }
@@ -111,24 +111,24 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         setPropertyChangeHandler(PROP_PRECISION, handler);
 
         // aliases
-        IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
+                final ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
             }
         };
         setPropertyChangeHandler(PROP_ALIASES, aliasHandler);
         // primary pv
-        IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
+                final ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
             }
@@ -144,11 +144,10 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
      * @return the new string value
      */
     protected String determineLabel(final String updatedPropertyId) {
-        AbstractTextTypeWidgetModel model = (AbstractTextTypeWidgetModel) getCastedModel();
+        final AbstractTextTypeWidgetModel model = (AbstractTextTypeWidgetModel) getCastedModel();
 
-        TextTypeEnum type = model.getValueType();
-        String text = model.getStringValue();
-
+        final TextTypeEnum type = model.getValueType();
+        final String text = model.getStringValue();
         String toprint = "none";
 
         switch (type) {
@@ -184,7 +183,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                               final AbstractTextTypeWidgetModel model,
                               final String text,
                               final String toprint) {
-        if ( (updatedPropertyId == null)
+        if ( updatedPropertyId == null
                 || updatedPropertyId.equals(model.getStringValueID())) {
             return text;
         }
@@ -202,16 +201,16 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                              final AbstractTextTypeWidgetModel model,
                              final String text,
                              final String toprint) {
-        if ( (updatedPropertyId == null)
+        if ( updatedPropertyId == null
                 || updatedPropertyId.equals(model.getStringValueID())) {
             try {
-                long l = Long.parseLong(text);
+                final long l = Long.parseLong(text);
                 return Long.toHexString(l);
-            } catch (Exception e1) {
+            } catch (final Exception e1) {
                 try {
-                    double d = Double.parseDouble(text);
+                    final double d = Double.parseDouble(text);
                     return Double.toHexString(d);
-                } catch (Exception e2) {
+                } catch (final Exception e2) {
                     return text;
                 }
             }
@@ -230,7 +229,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                              final AbstractTextTypeWidgetModel model,
                              final String text,
                              final String toprint) {
-        if ( (updatedPropertyId == null)
+        if ( updatedPropertyId == null
                 || updatedPropertyId.equals(model.getStringValueID())
                 || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
             try {
@@ -243,10 +242,10 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                     }
                 }
                 pattern = pattern.concat("E00");
-                DecimalFormat expFormat = new DecimalFormat(pattern);
-                double d = Double.parseDouble(text);
+                final DecimalFormat expFormat = new DecimalFormat(pattern);
+                final double d = Double.parseDouble(text);
                 return expFormat.format(d);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return text;
             }
         }
@@ -262,13 +261,13 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
     private static String handleAlias(final String updatedPropertyId,
                                final AbstractTextTypeWidgetModel model,
                                final String toprint) {
-        if ( (updatedPropertyId == null)
+        if ( updatedPropertyId == null
                 || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_ALIASES)
                 || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRIMARY_PV)) {
             try {
                 return ChannelReferenceValidationUtil.createCanonicalName(model
                         .getPrimaryPV(), model.getAllInheritedAliases());
-            } catch (ChannelReferenceValidationException e) {
+            } catch (final ChannelReferenceValidationException e) {
                 return model.getPrimaryPV();
             }
         }
@@ -286,13 +285,13 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                                 final AbstractTextTypeWidgetModel model,
                                 final String text,
                                 final String toprint) {
-        if ( (updatedPropertyId == null)
+        if ( updatedPropertyId == null
                 || updatedPropertyId.equals(model.getStringValueID())
                 || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
             try {
-                double d = Double.parseDouble(text);
-                int indexOf = text.indexOf('.');
-                int min = model.getPrecision();
+                final double d = Double.parseDouble(text);
+                final int indexOf = text.indexOf('.');
+                final int min = model.getPrecision();
                 // (hrickens) [04.05.2011]: show precision number of zeros
 //                if(indexOf>=0) {
 //                    int i = text.length()-indexOf-1;
@@ -303,7 +302,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                 numberFormat.setMinimumFractionDigits(min);
                 numberFormat.setMaximumFractionDigits(model.getPrecision());
                 return numberFormat.format(d);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 return text;
             }
         }
