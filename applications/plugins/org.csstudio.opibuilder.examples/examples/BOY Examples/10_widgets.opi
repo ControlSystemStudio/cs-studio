@@ -4,6 +4,8 @@
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
+  <wuid>-60e24287:133c6b5d52b:-751c</wuid>
+  <boy_version>2.0.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -32,6 +34,7 @@
     <line_color>
       <color red="128" green="0" blue="255" />
     </line_color>
+    <wuid>-60e24287:133c6b5d52b:-751b</wuid>
     <scripts />
     <height>127</height>
     <anti_alias>true</anti_alias>
@@ -51,10 +54,11 @@
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>493</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -70,6 +74,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-751a</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -89,10 +94,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -119,6 +125,7 @@ $(pv_value)</tooltip>
     <line_color>
       <color red="128" green="0" blue="255" />
     </line_color>
+    <wuid>-60e24287:133c6b5d52b:-7519</wuid>
     <scripts />
     <height>304</height>
     <anti_alias>true</anti_alias>
@@ -138,10 +145,11 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>229</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -157,6 +165,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7518</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -176,10 +185,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -202,6 +212,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7517</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -221,10 +232,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -247,6 +259,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7516</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -266,10 +279,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -296,6 +310,7 @@ $(pv_value)</tooltip>
     <line_color>
       <color red="128" green="0" blue="255" />
     </line_color>
+    <wuid>-60e24287:133c6b5d52b:-7515</wuid>
     <scripts />
     <height>304</height>
     <anti_alias>true</anti_alias>
@@ -315,10 +330,11 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>229</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -334,6 +350,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7514</wuid>
     <scripts />
     <height>43</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -354,10 +371,11 @@ ProgressBar</text>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -380,6 +398,7 @@ ProgressBar</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7513</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -399,10 +418,11 @@ ProgressBar</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -429,6 +449,7 @@ ProgressBar</text>
     <line_color>
       <color red="128" green="0" blue="255" />
     </line_color>
+    <wuid>-60e24287:133c6b5d52b:-7512</wuid>
     <scripts />
     <height>304</height>
     <anti_alias>true</anti_alias>
@@ -448,10 +469,11 @@ ProgressBar</text>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>229</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -467,6 +489,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7511</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
@@ -502,6 +525,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7510</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
@@ -537,6 +561,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-750f</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
@@ -572,6 +597,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-750e</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -591,10 +617,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -617,6 +644,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-750d</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -636,16 +664,17 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>191</y>
+    <y>187</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_2_Image.opi</path>
@@ -662,6 +691,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-750c</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -681,16 +711,17 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>239</y>
+    <y>233</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_3_Label.opi</path>
@@ -707,6 +738,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-750b</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -751,6 +783,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-750a</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -787,7 +820,7 @@ $(pv_value)</tooltip>
         <description />
       </action>
     </actions>
-    <y>197</y>
+    <y>193</y>
     <wrap_words>true</wrap_words>
     <tooltip />
     <x>43</x>
@@ -795,6 +828,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7509</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -831,7 +865,7 @@ $(pv_value)</tooltip>
         <description />
       </action>
     </actions>
-    <y>245</y>
+    <y>239</y>
     <wrap_words>true</wrap_words>
     <tooltip />
     <x>43</x>
@@ -839,6 +873,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7508</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -883,6 +918,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7507</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -902,10 +938,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -928,6 +965,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7506</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -947,10 +985,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -973,6 +1012,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7505</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1017,6 +1057,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-7504</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1036,10 +1077,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1062,6 +1104,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7503</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1106,6 +1149,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7502</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1150,6 +1194,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7501</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -1185,6 +1230,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-7500</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1229,6 +1275,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74ff</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1273,6 +1320,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74fe</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1317,6 +1365,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74fd</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1336,10 +1385,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1362,6 +1412,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74fc</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1406,6 +1457,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74fb</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -1441,6 +1493,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74fa</wuid>
     <scripts />
     <height>53</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1461,10 +1514,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1487,6 +1541,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f9</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>16</height>
@@ -1531,6 +1586,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f8</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1575,6 +1631,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f7</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1619,6 +1676,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74f6</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1638,10 +1696,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1664,6 +1723,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f5</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -1699,6 +1759,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f4</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1743,6 +1804,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f3</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1787,6 +1849,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74f2</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1806,10 +1869,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image>pictures/home-16x16.png</image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1832,6 +1896,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74f1</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1851,10 +1916,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1877,6 +1943,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74f0</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -1921,6 +1988,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74ef</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1940,10 +2008,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -1966,6 +2035,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74ee</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2010,6 +2080,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74ed</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2029,10 +2100,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -2055,6 +2127,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74ec</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2099,6 +2172,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74eb</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2118,16 +2192,17 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>283</y>
+    <y>279</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_4_Arc.opi</path>
@@ -2144,6 +2219,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74ea</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2180,7 +2256,7 @@ Scrollbar/Thumb Wheel</text>
         <description />
       </action>
     </actions>
-    <y>289</y>
+    <y>285</y>
     <wrap_words>true</wrap_words>
     <tooltip />
     <x>43</x>
@@ -2188,6 +2264,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74e9</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2207,16 +2284,17 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>329</y>
+    <y>325</y>
     <actions hook="false" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>widgets/1_5_Polyline_Polygon.opi</path>
@@ -2233,6 +2311,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74e8</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2269,7 +2348,7 @@ Scrollbar/Thumb Wheel</text>
         <description />
       </action>
     </actions>
-    <y>335</y>
+    <y>331</y>
     <wrap_words>true</wrap_words>
     <tooltip />
     <x>43</x>
@@ -2277,6 +2356,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74e7</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2296,10 +2376,11 @@ Scrollbar/Thumb Wheel</text>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -2322,6 +2403,7 @@ Scrollbar/Thumb Wheel</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74e6</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2364,12 +2446,24 @@ Scrollbar/Thumb Wheel</text>
     <x>307</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74e5</wuid>
+    <scripts />
+    <height>44</height>
+    <name>Widgets_Overview.html</name>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
@@ -2377,16 +2471,10 @@ Scrollbar/Thumb Wheel</text>
     <border_style>0</border_style>
     <rules />
     <lock_children>true</lock_children>
-    <scripts />
-    <height>44</height>
     <border_width>1</border_width>
-    <name>Widgets_Overview.html</name>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <transparent>true</transparent>
-    <show_scrollbar>false</show_scrollbar>
-    <y>554</y>
     <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/openHelp.js</path>
@@ -2395,17 +2483,13 @@ Scrollbar/Thumb Wheel</text>
         <description>Open Help</description>
       </action>
     </actions>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>596</x>
+    <y>554</y>
     <tooltip />
+    <x>596</x>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>-60e24287:133c6b5d52b:-74e4</wuid>
       <auto_size>false</auto_size>
       <scripts />
       <height>22</height>
@@ -2444,6 +2528,7 @@ Scrollbar/Thumb Wheel</text>
       <arrow_length>20</arrow_length>
       <visible>true</visible>
       <fill_level>0.0</fill_level>
+      <wuid>-60e24287:133c6b5d52b:-74e3</wuid>
       <rotation_angle>0.0</rotation_angle>
       <scripts />
       <arrows>0</arrows>
@@ -2469,10 +2554,11 @@ Scrollbar/Thumb Wheel</text>
       <font>
         <opifont.name>Default</opifont.name>
       </font>
-      <line_style>0</line_style>
       <width>120</width>
+      <line_style>0</line_style>
       <border_style>0</border_style>
       <rules />
+      <pv_value />
       <border_width>1</border_width>
       <line_width>1</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -2489,11 +2575,12 @@ $(pv_value)</tooltip>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <visible>true</visible>
+      <wuid>-60e24287:133c6b5d52b:-74e2</wuid>
       <auto_size>true</auto_size>
       <scripts />
       <height>44</height>
-      <stretch_to_fit>true</stretch_to_fit>
       <name>Image</name>
+      <stretch_to_fit>true</stretch_to_fit>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -2529,6 +2616,7 @@ $(pv_value)</tooltip>
     <line_color>
       <color red="128" green="0" blue="255" />
     </line_color>
+    <wuid>-60e24287:133c6b5d52b:-74e1</wuid>
     <scripts />
     <height>123</height>
     <anti_alias>true</anti_alias>
@@ -2548,10 +2636,11 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>229</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -2567,6 +2656,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74e0</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -2602,6 +2692,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74df</wuid>
     <scripts />
     <height>31</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -2621,10 +2712,11 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </font>
     <width>193</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -2647,6 +2739,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74de</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>19</height>
@@ -2687,5 +2780,97 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip />
     <x>564</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>-60e24287:133c6b5d52b:-74da</wuid>
+    <scripts />
+    <height>31</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_35</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Connection</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>193</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image />
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>371</y>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_6_Connection.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>1</replace>
+        <description />
+      </action>
+    </actions>
+    <tooltip />
+    <x>35</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <wuid>-60e24287:133c6b5d52b:-74d6</wuid>
+    <auto_size>true</auto_size>
+    <scripts />
+    <height>19</height>
+    <name>Label_38</name>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="51" green="51" blue="204" />
+    </foreground_color>
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>6.</text>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <width>13</width>
+    <border_style>0</border_style>
+    <rules />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <actions hook="false" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>widgets/1_1_Rectangle_Ellipse.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>0</replace>
+        <description />
+      </action>
+    </actions>
+    <y>377</y>
+    <wrap_words>true</wrap_words>
+    <tooltip />
+    <x>43</x>
   </widget>
 </display>
