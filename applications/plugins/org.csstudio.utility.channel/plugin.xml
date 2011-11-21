@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=css">
+            locationURI="popup:org.eclipse.ui.popup.any?before=org.csstudio.ui.menu.popup.processvariable">
          <menu
                icon="icons/channel-query-16.png"
                id="org.csstudio.ui.menu.popup.channelquery"
