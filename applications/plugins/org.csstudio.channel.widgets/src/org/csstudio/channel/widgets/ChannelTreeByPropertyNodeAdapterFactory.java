@@ -6,6 +6,7 @@ package org.csstudio.channel.widgets;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
@@ -32,6 +33,10 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 				if (query == null)
 					return null;
 				return new ChannelQuery[] {query};
+			} else if (adapterType == ProcessVariable.class) {
+				if (node.getNodeChannels().size() == 1) {
+					return new ProcessVariable(node.getNodeChannels().get(0).getName());
+				}
 			} else if (adapterType == ConfigurableWidget.class) {
 				ConfigurableWidget widget = node.getConfigurableWidget();
 				if (widget.isConfigurable())
@@ -51,7 +56,7 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class, ConfigurableWidget.class };
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class, ProcessVariable.class, ConfigurableWidget.class };
 	}
 
 }
