@@ -53,6 +53,10 @@ public class PVTableByPropertyCellAdapterFactory implements IAdapterFactory {
 				// Only return the pv for the cell
 				if (cell.getCellChannels() != null && cell.getCellChannels().size() > 0)
 					return new ProcessVariable(cell.getCellChannels().iterator().next().getName());
+			} else if (adapterType == ProcessVariable[].class) {
+				// Only return the pv for the cell
+				if (cell.getCellChannels() != null && cell.getCellChannels().size() > 0)
+					return new ProcessVariable[] {new ProcessVariable(cell.getCellChannels().iterator().next().getName())};
 			} else if (adapterType == ConfigurableWidget.class) {
 				return null;
 			}

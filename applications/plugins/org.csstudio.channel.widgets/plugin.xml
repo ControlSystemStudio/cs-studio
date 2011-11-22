@@ -25,6 +25,9 @@
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
       </factory>
       <factory
             adaptableType="org.csstudio.channel.widgets.PVTableByPropertyCell"
@@ -37,6 +40,9 @@
          </adapter>
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
          </adapter>
          <adapter
                type="org.csstudio.channel.widgets.ConfigurableWidget">

@@ -37,6 +37,14 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 				if (node.getNodeChannels().size() == 1) {
 					return new ProcessVariable(node.getNodeChannels().get(0).getName());
 				}
+			} else if (adapterType == ProcessVariable[].class) {
+				if (node.getNodeChannels().isEmpty())
+					return null;
+				
+				ProcessVariable[] pvs = new ProcessVariable[node.getNodeChannels().size()];
+				for (int i = 0; i < node.getNodeChannels().size(); i++) {
+					pvs[i] = new ProcessVariable(node.getNodeChannels().get(i).getName());
+				}
 			} else if (adapterType == ConfigurableWidget.class) {
 				ConfigurableWidget widget = node.getConfigurableWidget();
 				if (widget.isConfigurable())
@@ -56,7 +64,7 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class, ProcessVariable.class, ConfigurableWidget.class };
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class, ProcessVariable.class, ProcessVariable[].class, ConfigurableWidget.class };
 	}
 
 }
