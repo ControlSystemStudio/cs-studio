@@ -10,6 +10,7 @@ public class PVTableByPropertyFigure extends AbstractChannelWidgetFigure<PVTable
 	public PVTableByPropertyFigure(Composite composite, AbstractContainerModel parentModel) {
 		super(composite, parentModel);
 		widget = new PVTableByPropertyWidget(composite, SWT.NONE);
+		selectionProvider = widget;
 	}
 	
 }

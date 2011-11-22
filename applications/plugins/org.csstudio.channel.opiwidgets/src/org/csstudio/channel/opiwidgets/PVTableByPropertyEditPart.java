@@ -17,6 +17,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 		PVTableByPropertyFigure figure = new PVTableByPropertyFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
 		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	
