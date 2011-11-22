@@ -3,6 +3,7 @@ package org.csstudio.channel.opiwidgets;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
@@ -58,6 +59,12 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		if (selectionProvider == null)
 			return null;
 		return AdapterUtil.convert(getSelectionProvider().getSelection(), ChannelQuery.class);
+	}
+	
+	public ProcessVariable[] getSelectedProcessVariables() {
+		if (selectionProvider == null)
+			return null;
+		return AdapterUtil.convert(getSelectionProvider().getSelection(), ProcessVariable.class);
 	}
 	
 	public boolean isRunMode() {

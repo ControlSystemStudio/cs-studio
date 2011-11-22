@@ -4,6 +4,7 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 import org.csstudio.channel.widgets.ConfigurableWidget;
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**The adaptor factory to make a PV widget as a PV provider for css context menu.
@@ -28,6 +29,12 @@ public class ChannelEditPartAdapterFactory implements IAdapterFactory {
 					return array;
 			}
 			
+			if (adapterType == ProcessVariable.class) {
+				ProcessVariable[] array = figure.getSelectedProcessVariables();
+				if (array != null && array.length > 0)
+					return array[0];
+			}
+			
 			if (adapterType == ConfigurableWidget.class && figure.isRunMode()) {
 				Object widget = figure.getSWTWidget();
 				if (widget instanceof ConfigurableWidget) {
@@ -41,7 +48,7 @@ public class ChannelEditPartAdapterFactory implements IAdapterFactory {
 	}
 
 	public Class<?>[] getAdapterList() {
-        return new Class<?>[] { Channel[].class, ChannelQuery[].class, ConfigurableWidget.class };
+        return new Class<?>[] { Channel[].class, ChannelQuery[].class, ProcessVariable.class, ConfigurableWidget.class };
 	}
 
 }
