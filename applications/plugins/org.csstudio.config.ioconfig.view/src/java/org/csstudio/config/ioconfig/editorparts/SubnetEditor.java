@@ -379,7 +379,7 @@ public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
                                                      _subnet,
                                                      getMLSB(),
                                                      "Index",
-                                                     getProfiBusTreeView()));
+                                                     getProfiBusTreeView(), 99));
 
         makeDescGroup(comp, 3);
     }

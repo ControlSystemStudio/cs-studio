@@ -290,7 +290,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                                          channel,
                                          getMLSB(),
                                          "Index",
-                                         getProfiBusTreeView());
+                                         getProfiBusTreeView(), 99);
         setIndexSpinner(indexSpinner);
         indexSpinner.setEnabled(false);
     }

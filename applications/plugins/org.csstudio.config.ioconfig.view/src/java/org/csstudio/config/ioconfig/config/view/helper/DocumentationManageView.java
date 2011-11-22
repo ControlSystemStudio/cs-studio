@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
  * @since 20.02.2008
  */
 public class DocumentationManageView extends Composite {
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -87,17 +87,17 @@ public class DocumentationManageView extends Composite {
         protected AddAllDocumentsSelectionListener() {
             // Constructor.
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             addAll();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             addAll();
         }
-        
+
         private void addAll() {
             getDocumentAvailable().addAll(getDocumentResorce());
             getDocumentResorce().clear();
@@ -106,7 +106,7 @@ public class DocumentationManageView extends Composite {
             setSaveButton();
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -114,24 +114,24 @@ public class DocumentationManageView extends Composite {
      * @since 12.05.2011
      */
     private final class AddDocSelectionListener implements SelectionListener {
-        
+
         /**
          * Constructor.
          */
         public AddDocSelectionListener() {
             // Constructor.
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             doAddDoc();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             doAddDoc();
         }
-        
+
         @SuppressWarnings("unchecked")
         private void doAddDoc() {
             final IStructuredSelection sSelect = (IStructuredSelection) _docResorceTableViewer
@@ -143,7 +143,7 @@ public class DocumentationManageView extends Composite {
             setSaveButton();
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -154,7 +154,7 @@ public class DocumentationManageView extends Composite {
         private final Text _search;
         private final ViewerFilterExtension _filter;
         private final TableViewer _targetTableViewer;
-        
+
         /**
          * Constructor.
          * @param search
@@ -166,14 +166,14 @@ public class DocumentationManageView extends Composite {
             _filter = filter;
             _targetTableViewer = targetTableViewer;
         }
-        
+
         @Override
         public void modifyText(@Nonnull final ModifyEvent e) {
             _filter.setFilterText(_search.getText());
             _targetTableViewer.refresh();
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -187,17 +187,17 @@ public class DocumentationManageView extends Composite {
         protected RefreshDocumnetsSelectionListener() {
             // Constructor
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             refreshDocuments();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             refreshDocuments();
         }
-        
+
         private void refreshDocuments() {
             try {
                 setDocumentResorce(Repository.loadDocument(true));
@@ -208,7 +208,7 @@ public class DocumentationManageView extends Composite {
             }
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -222,7 +222,7 @@ public class DocumentationManageView extends Composite {
         protected RemoveAllDocumentsSelectionListener() {
             // Constructor.
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             getDocumentResorce().addAll(getDocumentAvailable());
@@ -231,7 +231,7 @@ public class DocumentationManageView extends Composite {
             setDocResorceTableInput();
             setSaveButton();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             getDocumentResorce().addAll(getDocumentAvailable());
@@ -241,7 +241,7 @@ public class DocumentationManageView extends Composite {
             setSaveButton();
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -249,7 +249,7 @@ public class DocumentationManageView extends Composite {
      * @since 12.05.2011
      */
     private final class RemoveSelectionListener implements SelectionListener {
-        
+
         /**
          * Constructor.
          * @param docAvailableTableViewer
@@ -257,17 +257,17 @@ public class DocumentationManageView extends Composite {
         public RemoveSelectionListener() {
             // Constructor.
         }
-        
+
         @Override
         public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
             doRemoveDoc();
         }
-        
+
         @Override
         public void widgetSelected(@Nonnull final SelectionEvent e) {
             doRemoveDoc();
         }
-        
+
         @SuppressWarnings("unchecked")
         private void doRemoveDoc() {
             final IStructuredSelection sSelect = (IStructuredSelection) _docAvailableTableViewer
@@ -279,7 +279,7 @@ public class DocumentationManageView extends Composite {
             setSaveButton();
         }
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -288,7 +288,7 @@ public class DocumentationManageView extends Composite {
      */
     protected static final class ViewerFilterExtension extends ViewerFilter {
         private String _filterString = "";
-        
+
         @Override
         public boolean select(@Nullable final Viewer viewer,
                               @Nullable final Object parentElement,
@@ -296,7 +296,7 @@ public class DocumentationManageView extends Composite {
             if(element instanceof IDocument) {
                 boolean status = false;
                 final IDocument doc = (IDocument) element;
-                
+
                 final String subject = doc.getSubject();
                 if(subject != null) {
                     status |= subject.toLowerCase().contains(_filterString.toLowerCase());
@@ -321,14 +321,14 @@ public class DocumentationManageView extends Composite {
             }
             return false;
         }
-        
+
         public void setFilterText(@Nonnull final String filterString) {
             _filterString = filterString;
         }
     }
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(DocumentationManageView.class);
-    
+
     /**
      * The table with a list of all assigned documents.
      */
@@ -348,9 +348,9 @@ public class DocumentationManageView extends Composite {
     private boolean _isActivate;
     private final Composite _mainComposite;
     private ArrayList<DocumentDBO> _originDocs;
-    
+
     private final IHasDocumentableObject _parentNodeConfig;
-    
+
     /**
      * @param parent
      *            The Parent Composite.
@@ -367,7 +367,7 @@ public class DocumentationManageView extends Composite {
         final GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1);
         this.setLayoutData(layoutData);
         _parentNodeConfig = parentNodeConfig;
-        
+
         // -Body
         final GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
         final ScrolledComposite scrolledComposite = new ScrolledComposite(this, SWT.H_SCROLL
@@ -377,20 +377,20 @@ public class DocumentationManageView extends Composite {
         scrolledComposite.setExpandHorizontal(true);
         fillDefaults.numColumns(3);
         scrolledComposite.setLayout(fillDefaults.create());
-        
+
         _mainComposite = new Composite(scrolledComposite, SWT.NONE);
         _mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         fillDefaults.numColumns(3);
         _mainComposite.setLayout(fillDefaults.create());
-        
+
         scrolledComposite.setContent(_mainComposite);
         scrolledComposite.setMinSize(700, 250);
-        
+
         makeSearchDocTable();
         makeChooser();
         makeAvailableDocTable();
     }
-    
+
     public final void cancel() {
         if(_documentResorce != null) {
             _documentResorce.addAll(_documentAvailable);
@@ -405,7 +405,7 @@ public class DocumentationManageView extends Composite {
         setDocAvailableTableInput();
         setDocResorceTableInput();
     }
-    
+
     /**
      * @return all available Documents.
      */
@@ -414,7 +414,7 @@ public class DocumentationManageView extends Composite {
         final Set<DocumentDBO> set = new HashSet<DocumentDBO>(_documentAvailable);
         return set;
     }
-    
+
     public final void onActivate() {
         if(!_isActivate) {
             final IDocumentable node = _parentNodeConfig.getDocumentableObject();
@@ -424,7 +424,7 @@ public class DocumentationManageView extends Composite {
             }
         }
     }
-    
+
     /**
      * @param chosserComposite
      */
@@ -435,7 +435,7 @@ public class DocumentationManageView extends Composite {
         addAllButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         addAllButton.addSelectionListener(new AddAllDocumentsSelectionListener());
     }
-    
+
     /**
      * @param chosserComposite
      */
@@ -446,7 +446,7 @@ public class DocumentationManageView extends Composite {
         addButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         addButton.addSelectionListener(new AddDocSelectionListener());
     }
-    
+
     /**
      * @param chosserComposite
      */
@@ -460,7 +460,7 @@ public class DocumentationManageView extends Composite {
         addNewDocButton.addSelectionListener(DocumentTableViewerBuilder
                                              .getAddFile2DBSelectionListener(null));
     }
-    
+
     /**
      * @param chosserComposite
      */
@@ -471,7 +471,7 @@ public class DocumentationManageView extends Composite {
         removeAllButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         removeAllButton.addSelectionListener(new RemoveAllDocumentsSelectionListener());
     }
-    
+
     /**
      * @param chosserComposite
      */
@@ -482,14 +482,14 @@ public class DocumentationManageView extends Composite {
         removeButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         removeButton.addSelectionListener(new RemoveSelectionListener());
     }
-    
+
     private void makeAvailableDocTable() {
         final Composite availableGroup = makeGroup("Available");
         _docAvailableTableViewer = DocumentTableViewerBuilder.crateDocumentTable(availableGroup,
                                                                                  false);
         DocumentTableViewerBuilder.makeMenus(_docAvailableTableViewer);
     }
-    
+
     private void makeChooser() {
         final Composite chosserComposite = new Composite(_mainComposite, SWT.NONE);
         final GridData layoutData = new GridData(SWT.CENTER, SWT.FILL, false, false, 1, 1);
@@ -498,7 +498,7 @@ public class DocumentationManageView extends Composite {
         final GridLayout create = fillDefaults.create();
         create.marginTop = 15;
         chosserComposite.setLayout(create);
-        
+
         final Button refreshButton = new Button(chosserComposite, SWT.FLAT);
         refreshButton.setLayoutData(new GridData(SWT.CENTER, SWT.BEGINNING, false, false));
         refreshButton.setImage(IOConfigActivatorUI.getImageDescriptor("icons/refresh.gif")
@@ -507,19 +507,19 @@ public class DocumentationManageView extends Composite {
         refreshButton.addSelectionListener(new RefreshDocumnetsSelectionListener());
         Label label = new Label(chosserComposite, SWT.NONE);
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-        
+
         buildNewDocButton(chosserComposite);
         new Label(chosserComposite, SWT.NONE).setText("");
         buildAddAllButton(chosserComposite);
         buildAddButton(chosserComposite);
         buildRemoveButton(chosserComposite);
         buildRemoveAllButton(chosserComposite);
-        
+
         label = new Label(chosserComposite, SWT.NONE);
         label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
-        
+
     }
-    
+
     @Nonnull
     private Composite makeGroup(@Nonnull final String groupHead) {
         final Group searchGroup = new Group(_mainComposite, SWT.NO_SCROLL);
@@ -529,25 +529,25 @@ public class DocumentationManageView extends Composite {
         searchGroup.setText(groupHead);
         return searchGroup;
     }
-    
+
     /**
      * Generate the Table with the received Documents.
      */
     private void makeSearchDocTable() {
         final ViewerFilterExtension filter = new ViewerFilterExtension();
-        
+
         // GROUP Layout
         final Composite searchGroup = makeGroup("Search");
-        
+
         final Text search = new Text(searchGroup, SWT.SINGLE | SWT.SEARCH | SWT.LEAD | SWT.BORDER);
         search.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
         search.setMessage("Filter");
-        
+
         _docResorceTableViewer = DocumentTableViewerBuilder.crateDocumentTable(searchGroup, false);
-        
+
         search.addModifyListener(new FilterModifyListener(search, filter, _docResorceTableViewer));
         try {
-            _documentResorce = Repository.loadDocument(false);
+            _documentResorce = new ArrayList<DocumentDBO>(Repository.loadDocument(false));
         } catch (final PersistenceException e) {
             _documentResorce = new ArrayList<DocumentDBO>();
             DeviceDatabaseErrorDialog.open(null, "Can't load Documents!", e);
@@ -558,10 +558,10 @@ public class DocumentationManageView extends Composite {
         TableViewerEditor.create(_docResorceTableViewer,
                                  new ColumnViewerEditorActivationStrategy(_docResorceTableViewer),
                                  ColumnViewerEditor.DEFAULT);
-        
+
         DocumentTableViewerBuilder.makeMenus(_docResorceTableViewer);
     }
-    
+
     private void setDocs(@CheckForNull final Set<DocumentDBO> set) {
         _originDocs = new ArrayList<DocumentDBO>();
         _documentAvailable = new ArrayList<DocumentDBO>();
@@ -575,29 +575,29 @@ public class DocumentationManageView extends Composite {
         }
         setDocResorceTableInput();
     }
-    
+
     @Nonnull
     protected final List<DocumentDBO> getDocumentAvailable() {
         return _documentAvailable;
     }
-    
+
     @Nonnull
     protected final List<DocumentDBO> getDocumentResorce() {
         return _documentResorce;
     }
-    
+
     protected final void setDocAvailableTableInput() {
         _docAvailableTableViewer.setInput(_documentAvailable);
     }
-    
+
     protected final void setDocResorceTableInput() {
         _docResorceTableViewer.setInput(_documentResorce);
     }
-    
+
     protected final void setDocumentResorce(@Nonnull final List<DocumentDBO> documentResorce) {
         _documentResorce = documentResorce;
     }
-    
+
     protected final void setSaveButton() {
         if(_originDocs.size() == _documentAvailable.size()) {
             final ArrayList<DocumentDBO> temp = new ArrayList<DocumentDBO>(_originDocs);
@@ -607,5 +607,5 @@ public class DocumentationManageView extends Composite {
             _parentNodeConfig.setSavebuttonEnabled("documentaion", true);
         }
     }
-    
+
 }

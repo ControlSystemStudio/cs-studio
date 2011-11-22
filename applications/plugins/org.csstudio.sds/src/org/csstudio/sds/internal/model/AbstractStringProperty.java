@@ -60,14 +60,13 @@ public abstract class AbstractStringProperty extends WidgetProperty {
 	public Object checkValue(final Object value) {
 		Object acceptedValue = value;
 
-		if((value != null) && (value instanceof Number)) {
-		    NumberFormat instance = NumberFormat.getInstance(Locale.US);
+		if(value != null && value instanceof Number) {
+		    final NumberFormat instance = NumberFormat.getInstance(Locale.US);
 		    instance.setGroupingUsed(false);
-		    int precision = getWidgetModel().getIntegerProperty("precision");
-		    instance.setMinimumFractionDigits(precision);
-		    instance.setMaximumFractionDigits(precision);
+		    instance.setMinimumFractionDigits(0);
+		    instance.setMaximumFractionDigits(100);
 		    acceptedValue = instance.format(value);
-		}else if ((value != null) && !(value instanceof String)) {
+		}else if (value != null && !(value instanceof String)) {
 			acceptedValue = value.toString();
 		}
 

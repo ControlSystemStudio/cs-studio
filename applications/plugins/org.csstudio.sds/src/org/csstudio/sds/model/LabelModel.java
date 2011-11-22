@@ -21,6 +21,9 @@
  */
 package org.csstudio.sds.model;
 
+import java.util.List;
+
+import org.csstudio.sds.cursorservice.AbstractCursor;
 import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.swt.graphics.FontData;
 
@@ -84,6 +87,15 @@ public class LabelModel extends AbstractTextTypeWidgetModel {
 	public LabelModel() {
 		setWidth(100);
 		setHeight(30);
+	}
+
+	/**
+	 * Constructor.
+	 */
+	public LabelModel(final List<AbstractCursor> cursorDescriptors) {
+	    super(cursorDescriptors);
+	    setWidth(100);
+	    setHeight(30);
 	}
 
 	/**
@@ -152,7 +164,8 @@ public class LabelModel extends AbstractTextTypeWidgetModel {
 	 *
 	 * @return True if the background is transparent, false otherwise
 	 */
-	public boolean getTransparent() {
+	@Override
+    public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
@@ -191,15 +204,6 @@ public class LabelModel extends AbstractTextTypeWidgetModel {
 	 */
 	public void setTextValue(final String value) {
 		setPropertyValue(PROP_TEXTVALUE, value);
-	}
-
-	/**
-	 * Returns the text.
-	 *
-	 * @return The text
-	 */
-	public String getTextValue() {
-		return getStringProperty(PROP_TEXTVALUE);
 	}
 
 	/**

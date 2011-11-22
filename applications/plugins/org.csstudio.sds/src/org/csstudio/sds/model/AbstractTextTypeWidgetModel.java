@@ -34,6 +34,10 @@
 		*/
 package org.csstudio.sds.model;
 
+import java.util.List;
+
+import org.csstudio.sds.cursorservice.AbstractCursor;
+
 /**
  * TODO (hrickens) :
  *
@@ -53,6 +57,21 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
      * The ID of the precision property.
      */
     public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
+
+    /**
+     * Constructor.
+     */
+    public AbstractTextTypeWidgetModel() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     */
+    public AbstractTextTypeWidgetModel(final List<AbstractCursor> cursorDescriptors) {
+        super(false, cursorDescriptors);
+    }
+
 
     /**
      * Returns the type of the text (Double or String).

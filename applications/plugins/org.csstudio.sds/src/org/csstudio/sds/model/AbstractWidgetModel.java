@@ -286,12 +286,17 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	private Class _javaType;
 
+    private final List<AbstractCursor> _cursorDescriptors;
+
+    public AbstractWidgetModel() {
+        this(false);
+    }
 
 	/**
 	 * Standard constructor. Creates a not rotatable widget
 	 */
-	public AbstractWidgetModel() {
-		this(false);
+	public AbstractWidgetModel(final boolean isRotatable) {
+		this(isRotatable, CursorService.getInstance().availableCursors());
 	}
 
 	/**
@@ -300,8 +305,9 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * @param isRotatable
 	 *            true if this widget is rotatable
 	 */
-	public AbstractWidgetModel(final boolean isRotatable) {
-		_propertyChangeSupport = new PropertyChangeSupport(this);
+	public AbstractWidgetModel(final boolean isRotatable, final List<AbstractCursor> cursorDescriptors) {
+		_cursorDescriptors = cursorDescriptors;
+        _propertyChangeSupport = new PropertyChangeSupport(this);
 		_propertyMap = new LinkedHashMap<String, WidgetProperty>();
 		_tempRemovedPropertyMap = new HashMap<String, WidgetProperty>();
 		_isRotatable = isRotatable;
@@ -356,15 +362,9 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		addBooleanProperty(PROP_ENABLED, "Enabled", WidgetPropertyCategory.BEHAVIOR, DEFAULT_ENABLED, false);
 		addStringProperty(PROP_PERMISSSION_ID, "Permission ID", WidgetPropertyCategory.BEHAVIOR, "", false);
 		// Cursor
-		final List<AbstractCursor> cursorDescriptors = CursorService.getInstance().availableCursors();
+		final List<AbstractCursor> cursorDescriptors = getCursorDescriptors();
 		addOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,
 		                  cursorDescriptors.toArray(new IOption[cursorDescriptors.size()]), "cursor.default", false);
-//		List<String> cursorTextDescriptors = new ArrayList<String>();
-//		for (AbstractCursor abstractCursor : cursorDescriptors) {
-//            cursorTextDescriptors.add(abstractCursor.getTitle());
-//        }
-//		int index = cursorDescriptors.indexOf(CursorService.getInstance().findCursor("cursor.default"));
-//		addArrayOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,cursorTextDescriptors.toArray(new String[0]), index, false);
 		// Rotation
 		if (isRotatable) {
 			addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false);
@@ -381,6 +381,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		hideProperty(PROP_ACCESS_GRANTED, getTypeID());
 		hideProperty(PROP_WRITE_ACCESS_GRANTED, getTypeID());
 	}
+
+    /**
+     * @return
+     */
+    private List<AbstractCursor> getCursorDescriptors() {
+        return _cursorDescriptors;
+    }
 
 	/**
 	 * Returns the default tooltip for this model.
