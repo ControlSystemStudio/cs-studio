@@ -94,7 +94,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
         }
 
         final long intervalStart = header.getFromSec();
-        final long intervalEnd = header.getToSec();
+        long intervalEnd = header.getToSec();
 
         long deltaTime = (intervalEnd - intervalStart) / resultLength;
         if(deltaTime == 0) {
@@ -102,6 +102,11 @@ public class AverageHandler extends AbstractAlgorithmHandler {
             // Requested region very short --> only 1 point per sec
             deltaTime = 1;
             header.setMaxNumOfSamples((int) (intervalEnd - intervalStart));
+        }
+
+        // Check if the server gets data for the whole time interval
+        if (data[data.length - 1].getTime() < intervalEnd) {
+            intervalEnd = data[data.length - 1].getTime();
         }
 
         // Get the first data sample with the valid time stamp within the request time interval
@@ -115,7 +120,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
             }
 
             if(o.isValueValid()) {
-             avg = ((Float) o.getValue()).floatValue();
+                avg = ((Float) o.getValue()).floatValue();
             }
 
             index++;
