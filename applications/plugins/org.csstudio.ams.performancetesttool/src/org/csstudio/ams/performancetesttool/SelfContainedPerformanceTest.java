@@ -2,7 +2,6 @@ package org.csstudio.ams.performancetesttool;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -31,6 +30,8 @@ public class SelfContainedPerformanceTest {
 	private volatile long[] erzeugungsZeiten;
 	private long[] empfangsZeiten;
 	private final SelfContainedCommandLineArgs arguments;
+	private int percentCounter;
+	private int messageCounter;
 	
 	public SelfContainedPerformanceTest(final SelfContainedCommandLineArgs arguments) {
 		this.arguments = arguments;
@@ -39,7 +40,9 @@ public class SelfContainedPerformanceTest {
 	}
 	
 	public void run() throws UnknownHostException, InterruptedException {
-		int messageCounter = 0;
+		printConfig();
+		messageCounter = 0;
+		percentCounter = 0;
 		final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		final StandardAblagekorb<Vorgangsmappe> alarmVorgangAusgangskorb = new StandardAblagekorb<Vorgangsmappe>();
 		
@@ -71,31 +74,22 @@ public class SelfContainedPerformanceTest {
 				}
 			}
 		}).start();
-		int percentCounter = 1;
+		System.out.println("Receiving messages");
 		while(messageCounter<arguments.messageCount) {
 			Vorgangsmappe vorgangsmappe = alarmVorgangAusgangskorb.entnehmeAeltestenEingang();
 			WeiteresVersandVorgehen gesamtErgebnis = vorgangsmappe.gibPruefliste().gesamtErgebnis();
 			if (gesamtErgebnis.equals(WeiteresVersandVorgehen.VERSENDEN)) {
 				empfangsZeiten[messageCounter] = System.currentTimeMillis();
 				messageCounter += 1;
-				if (messageCounter%(arguments.messageCount/100) == 0) {
-					System.out.println(percentCounter + "% bearbeitet");
-					percentCounter += 1;
-				}
+				printProgressBar();
 			}
 		}
-		
-		long latencySum = 0;
-		for (int index = 0; index < empfangsZeiten.length; index++) {
-			long latency = empfangsZeiten[index] - erzeugungsZeiten[index];
-			System.out.println(latency);
-			latencySum += latency;
-		}
-		System.out.println("Durchschnittliche Latenz: "+latencySum/empfangsZeiten.length);
-		System.out.println("Durchschnittliche Nachrichten / Sekunde: "+1000.0/(1.0*(empfangsZeiten[empfangsZeiten.length-1]-erzeugungsZeiten[0])/empfangsZeiten.length));
+		System.out.print("\n");
+		printMeasurements();
 		alarmEntscheidungsBuero.beendeArbeitUndSendeSofortAlleOffeneneVorgaenge();
 		System.exit(0);
 	}
+
 	
 	private Vorgangsmappe[] erzeugeVorgangsmappen(int anzahlAnMappen) throws UnknownHostException {
 		Vorgangsmappe[] result = new Vorgangsmappe[anzahlAnMappen];
@@ -118,6 +112,44 @@ public class SelfContainedPerformanceTest {
 		}
 		result[anzahlAnRegelwerken-1] = new StandardRegelwerk(Regelwerkskennung.valueOf("Regel0"), new StringRegel(StringRegelOperator.OPERATOR_TEXT_EQUAL, MessageKeyEnum.NAME, "TEST"));
 		return result;
+	}
+	
+	private void printMeasurements() {
+		long maxLatency = 0;
+		long minLatency = Long.MAX_VALUE;
+		long latencySum = 0;
+		for (int index = 0; index < empfangsZeiten.length; index++) {
+			long latency = empfangsZeiten[index] - erzeugungsZeiten[index];
+			maxLatency = Math.max(maxLatency, latency);
+			minLatency = Math.min(minLatency, latency);
+			latencySum += latency;
+		}
+		System.out.println("Max latency: "+maxLatency + " ms");
+		System.out.println("Min latency: "+minLatency + " ms");
+		System.out.println("Average latency: "+latencySum/empfangsZeiten.length + " ms");
+		System.out.println("Average number of messages / second: "+1000.0/(1.0*(empfangsZeiten[empfangsZeiten.length-1]-erzeugungsZeiten[0])/empfangsZeiten.length));
+	}
+
+	private void printProgressBar() {
+		if (messageCounter%(arguments.messageCount/100) == 0) {
+			System.out.print(".");
+			percentCounter += 1;
+		}
+		if (messageCounter%(arguments.messageCount/10) == 0) {
+			System.out.print(percentCounter + "%");
+		}
+	}
+	
+	private void printConfig() {
+		System.out.println(arguments.threads + " threads");
+		System.out.println(arguments.ruleCount + " filters");
+		if(arguments.rate == 0) {
+			System.out.println("Unlimited messages/second");
+		}
+		else {
+			System.out.println(arguments.rate + " messages/second");
+		}
+		System.out.println(arguments.messageCount + " alarm messages\n");
 	}
 	
 	public static void main(String[] args) {
