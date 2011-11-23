@@ -30,6 +30,7 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.csstudio.nams.common.DefaultExecutionService;
+import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
@@ -112,7 +113,7 @@ public class Abteilungsleiter_Test extends
 		EasyMock.replay(eingangskorb);
 		this.testFailed = null;
 
-		final Eingangskorb<Vorgangsmappe>[] sachbearbeiterkoerbe = new Eingangskorb[] {
+		final Eingangskorb<Ablagefaehig>[] sachbearbeiterkoerbe = new Eingangskorb[] {
 				sachbearbeiter1, sachbearbeiter2 };
 		final Abteilungsleiter abteilungsleiter = new Abteilungsleiter(
 				new DefaultExecutionService(), eingangskorb,

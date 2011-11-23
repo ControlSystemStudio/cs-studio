@@ -32,9 +32,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
+import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
+import org.csstudio.nams.common.decision.BeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.Eingangskorb;
+import org.csstudio.nams.common.decision.ExecutorBeobachtbarerEingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
@@ -65,44 +70,47 @@ public class AlarmEntscheidungsBuero {
 	 * 
 	 * TODO Logger-Service hinzufuegen/reinreichen um das Logging testbar zu
 	 * machen, da dieses wichtig fuer Nachweiszwecke ist.
-	 * 
+	 * @param filterThreadCount TODO
 	 * @param historyService
 	 */
 	public AlarmEntscheidungsBuero(final ExecutionService executionService,
 			final Regelwerk[] regelwerke,
 			final Eingangskorb<Vorgangsmappe> alarmVorgangEingangskorb,
-			final Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb) {
+			final Ausgangskorb<Vorgangsmappe> alarmVorgangAusgangskorb, 
+			int filterThreadCount) {
+		
 		this.alarmVorgangEingangskorb = alarmVorgangEingangskorb;
 		this.ausgangskorb = alarmVorgangAusgangskorb;
 		this._sachbearbeiterList = new LinkedList<Sachbearbeiter>();
 		// Sachbearbeiter und Koerbe anlegen:
-		final StandardAblagekorb<Terminnotiz> terminAssistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
-		final Eingangskorb<Vorgangsmappe>[] eingangskoerbeSachbearbeiter = this
+		final StandardAblagekorb<Terminnotiz> terminAssistenzAblagekorb = new StandardAblagekorb<Terminnotiz>();
+		final Eingangskorb<Ablagefaehig>[] eingangskoerbeSachbearbeiter = this
 				.erzeugeEingangskoerbeArray(regelwerke.length);
-		final Map<String, Eingangskorb<Terminnotiz>> terminEingangskoerbeDerSachbearbeiter = new HashMap<String, Eingangskorb<Terminnotiz>>();
+		final Map<String, Eingangskorb<Ablagefaehig>> terminEingangskoerbeDerSachbearbeiter = new HashMap<String, Eingangskorb<Ablagefaehig>>();
+
+		final Executor threadPool = Executors.newFixedThreadPool(filterThreadCount);
+		
 		for (int zaehler = 0; zaehler < regelwerke.length; zaehler++) {
-			final Eingangskorb<Vorgangsmappe> eingangskorb = new StandardAblagekorb<Vorgangsmappe>();
+
+			final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb = new ExecutorBeobachtbarerEingangskorb<Ablagefaehig>(threadPool);
 			eingangskoerbeSachbearbeiter[zaehler] = eingangskorb;
-			final StandardAblagekorb<Terminnotiz> terminEingangskorb = new StandardAblagekorb<Terminnotiz>();
 			final Sachbearbeiter sachbearbeiter = new Sachbearbeiter(
-					executionService, "" + zaehler, eingangskorb,
-					terminEingangskorb,
+					"" + zaehler, 
+					eingangskorb,
 					new StandardAblagekorb<Vorgangsmappe>(),
-					terminAssistenzEingangskorb, this.ausgangskorb
-					/*
-					 * TODO ggf. in selben Ausgangskorb legen
-					 */, regelwerke[zaehler]
-			// , historyService
+					terminAssistenzAblagekorb,
+					this.ausgangskorb,
+					regelwerke[zaehler]
 			);
 
 			terminEingangskoerbeDerSachbearbeiter.put(sachbearbeiter.gibName(),
-					terminEingangskorb);
+					eingangskorb);
 			this._sachbearbeiterList.add(sachbearbeiter);
 			sachbearbeiter.beginneArbeit();
 		}
 
 		this._assistenz = new TerminAssistenz(executionService,
-				terminAssistenzEingangskorb,
+				terminAssistenzAblagekorb,
 				terminEingangskoerbeDerSachbearbeiter, new Timer());
 		this._assistenz.beginneArbeit();
 
@@ -171,7 +179,7 @@ public class AlarmEntscheidungsBuero {
 	}
 
 	@SuppressWarnings("unchecked")
-	private Eingangskorb<Vorgangsmappe>[] erzeugeEingangskoerbeArray(
+	private Eingangskorb<Ablagefaehig>[] erzeugeEingangskoerbeArray(
 			final int length) {
 		return new Eingangskorb[length];
 	}
