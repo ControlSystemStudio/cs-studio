@@ -503,6 +503,10 @@ public class EPICS_V3_PV extends PlatformObject
                     val[i] = ival[i].intValue();
                 }
                 channel_ref.getChannel().put(val);
+            }
+            else if (new_value instanceof int[])
+            {
+            	channel_ref.getChannel().put((int[])new_value);
             } else {
                 throw new Exception("Cannot handle type "
                                     + new_value.getClass().getName());
