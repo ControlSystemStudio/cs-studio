@@ -507,6 +507,22 @@ public class EPICS_V3_PV extends PlatformObject
             else if (new_value instanceof int[])
             {
             	channel_ref.getChannel().put((int[])new_value);
+            }
+            else if (new_value instanceof double[])
+            {
+            	channel_ref.getChannel().put((double[])new_value);
+            }
+            else if (new_value instanceof byte[])
+            {
+            	channel_ref.getChannel().put((byte[])new_value);
+            }
+            else if (new_value instanceof short[])
+            {
+            	channel_ref.getChannel().put((short[])new_value);
+            }
+            else if (new_value instanceof float[])
+            {
+            	channel_ref.getChannel().put((float[])new_value);
             } else {
                 throw new Exception("Cannot handle type "
                                     + new_value.getClass().getName());
