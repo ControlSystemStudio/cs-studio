@@ -7,13 +7,24 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
+import java.util.logging.Level;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.runmode.DisplayOpenManager;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 
@@ -24,18 +35,51 @@ import org.eclipse.ui.handlers.IHandlerService;
 public class ScriptUtil {
 
 	/**Open an OPI.
-	 * @param widgetController the widgetController to which the script is attached.
+	 * @param widget the widget to which the script is attached.
 	 * @param relative_path the path of the OPI relative to the Display file of the widgetContoller.
 	 * @param newWindow true if it will be opened in a new window. false if in a new tab.
 	 * @param macrosInput the macrosInput. null if no macros needed.
 	 */
-	public final static void openOPI(AbstractBaseEditPart widgetController,
+	public final static void openOPI(AbstractBaseEditPart widget,
 			String relative_path, boolean newWindow, MacrosInput macrosInput){
 		IPath  path = ResourceUtil.buildAbsolutePath(
-				widgetController.getWidgetModel(), ResourceUtil.getPathFromString(relative_path));
+				widget.getWidgetModel(), ResourceUtil.getPathFromString(relative_path));
 		RunModeService.getInstance().runOPI(path,
 				newWindow ? TargetWindow.NEW_WINDOW : TargetWindow.SAME_WINDOW, null, macrosInput);
 	}
+	
+	/**Replace current OPI with a OPI on the path relative to this OPI.
+	 * @param widget the widget to which the script is attached.
+	 * @param relative_path the path of the OPI relative to the OPI that is calling this method.
+	 * @param macrosInput the macrosInput. null if no macros needed.
+	 */
+	public final static void replaceOPI(AbstractBaseEditPart widget,
+			String relative_path, MacrosInput macrosInput){
+		IPath  absolutePath = ResourceUtil.buildAbsolutePath(
+				widget.getWidgetModel(), ResourceUtil.getPathFromString(relative_path));
+		IWorkbenchPart activePart = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage()
+				.getActivePart();
+		if (activePart instanceof IOPIRuntime) {
+			DisplayOpenManager manager = (DisplayOpenManager) (activePart
+					.getAdapter(DisplayOpenManager.class));
+			manager.openNewDisplay();
+			try {
+				RunModeService.replaceOPIRuntimeContent(
+						(IOPIRuntime) activePart,
+						new RunnerInput(absolutePath, manager,
+								macrosInput));
+			} catch (PartInitException e) {
+				OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						"Failed to open " + absolutePath, e); //$NON-NLS-1$
+				MessageDialog.openError(Display.getDefault()
+						.getActiveShell(), "Open OPI error", NLS.bind(
+						"Failed to open {0}", absolutePath));
+			}
+
+		}
+	}
+	
 
 	/**Pop up an Elog dialog to make an Elog entry.
 	 * @param filePath path of a file to attach or null.
@@ -66,18 +110,5 @@ public class ScriptUtil {
 		
 	}
 	
-	/**
-	 * Enter or exit compact mode.
-	 */
-	public static void compactMode(){
-		executeEclipseCommand("org.csstudio.opibuilder.actions.compactMode"); //$NON-NLS-1$
-	}
-	
-	/**
-	 * Enter or exit full screen.
-	 */
-	public static void fullScreen(){
-		executeEclipseCommand("org.csstudio.opibuilder.actions.fullscreen"); //$NON-NLS-1$
-	}
 
 }
