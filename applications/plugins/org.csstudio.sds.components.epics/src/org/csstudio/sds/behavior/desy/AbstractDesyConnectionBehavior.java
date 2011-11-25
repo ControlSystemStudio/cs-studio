@@ -102,6 +102,12 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
             determineBackgroundColor = determineBackgroundColor(connectionState);
         }
         widget.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineBackgroundColor);
+        final Severity severity = anyDataChannel.getData().getSeverity();
+        if ( severity != null && severity.isInvalid()) {
+            widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
+        } else {
+            widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
+        }
     }
 
     /**
@@ -115,12 +121,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
 
     @Override
     protected void doProcessValueChange( final W model, final AnyData anyData) {
-        final Severity severity = anyData.getSeverity();
-        if ( severity != null && severity.isInvalid()) {
-            model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-        } else {
-            model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-        }
+        // Do nothing
     }
 
     /**
