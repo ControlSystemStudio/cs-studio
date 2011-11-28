@@ -76,11 +76,11 @@ public class PlotDataProvider implements IDataProvider
             
             // Update ranges
             double d = sample.getXValue();
-            if (! new_xrange.inRange(d))
+            if (!Double.isNaN(d)  &&  !new_xrange.inRange(d))
                 new_xrange = new Range(Math.min(new_xrange.getLower(), d),
                                         Math.max(new_xrange.getUpper(), d));
             d = sample.getYValue();
-            if (! new_yrange.inRange(d))
+            if (!Double.isNaN(d)  &&  !new_yrange.inRange(d))
                 new_yrange = new Range(Math.min(new_yrange.getLower(), d),
                                        Math.max(new_yrange.getUpper(), d));
         }
@@ -89,6 +89,8 @@ public class PlotDataProvider implements IDataProvider
             samples = new_samples;
             xrange = new_xrange;
             yrange = new_yrange;
+            
+            System.out.println("New Data: " + samples.size() + " samples, X " + xrange + ", Y " + yrange);
         }
         notifyListeners();
     }

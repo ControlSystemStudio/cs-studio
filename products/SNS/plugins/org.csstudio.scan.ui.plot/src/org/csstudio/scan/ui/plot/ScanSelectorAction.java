@@ -22,13 +22,17 @@ public class ScanSelectorAction extends DropdownToolbarAction
     
     /** Scan model */
     final private PlotDataModel model;
+    
+    /** Plot */
+    final private Plot plot;
 
     /** Initialize 
      * @param model */
-    public ScanSelectorAction(final PlotDataModel model)
+    public ScanSelectorAction(final PlotDataModel model, final Plot plot)
     {
         super("Scan", "Select a Scan");
         this.model = model;
+        this.plot = plot;
     }
 
     /** {@inheritDoc} */
@@ -63,5 +67,6 @@ public class ScanSelectorAction extends DropdownToolbarAction
             return;
         }
         model.selectScan(id);
+        plot.setTitle(item);
     }
 }

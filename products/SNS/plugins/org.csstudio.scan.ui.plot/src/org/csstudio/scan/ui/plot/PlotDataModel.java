@@ -92,36 +92,39 @@ public class PlotDataModel implements Runnable
             final ScanInfo scan = selected_scan;
             final String x_device = x_axis_device;
             final String y_device = y_axis_device;
+            
             if (scan == null)
-            {
                 devices = null;
-                plot_data.clear();
-            }
             else
             {   // Get data for scan
                 final ScanData scan_data;
                 try
                 {
                     scan_data = model.getScanData(scan);
-                    devices = scan_data.getDevices();
-                    // Get data for selected devices from plot
-                    if (x_device == null  ||  y_device == null)
-                        plot_data.clear();
+                    if (scan_data == null)
+                        devices = null;
                     else
-                        plot_data.update(scan_data, x_device, y_device);
+                    {
+                        devices = scan_data.getDevices();
+                        // Get data for selected devices from plot
+                        if (x_device == null  ||  y_device == null)
+                            plot_data.clear();
+                        else
+                            plot_data.update(scan_data, x_device, y_device);
+                    }
                 }
                 catch (RemoteException ex)
                 {
-                    plot_data.clear();
                     devices = null;
                 }
-            }                
+            }
+            if (devices == null)
+                plot_data.clear();
             
             // Wait for next update period
             // or early wake from waveUpdateThread()
             synchronized (this)
             {
-                final long start = System.currentTimeMillis();
                 try
                 {
                     wait(1000);
@@ -130,8 +133,6 @@ public class PlotDataModel implements Runnable
                 {
                     // Ignore
                 }
-                final long time = System.currentTimeMillis() - start;
-                System.out.println("Update thread woke after " + time + "ms");
             }
         }
     }
@@ -142,7 +143,7 @@ public class PlotDataModel implements Runnable
     private void waveUpdateThread()
     {
         synchronized (this)
-        {
+        {   // Findbugs gives 'naked notify' warning. Ignore.
             notifyAll();
         }
     }

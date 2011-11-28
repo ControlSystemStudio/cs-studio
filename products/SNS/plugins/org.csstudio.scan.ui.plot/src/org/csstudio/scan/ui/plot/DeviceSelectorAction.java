@@ -16,20 +16,25 @@ import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
  */
 abstract public class DeviceSelectorAction extends DropdownToolbarAction
 {
-    final private PlotDataModel model;
+    /** Scan model */
+    final protected PlotDataModel model;
+
+    /** Plot */
+    final protected Plot plot;
 
     /** @param model
      *  @return X axis device selector
      */
-    public static DeviceSelectorAction forXAxis(final PlotDataModel model)
+    public static DeviceSelectorAction forXAxis(final PlotDataModel model, final Plot plot)
     {
-        return new DeviceSelectorAction(model, "X Axis", "Select device for horizontal axis")
+        return new DeviceSelectorAction(model, plot, "X Axis", "Select device for horizontal axis")
         {
             /** {@inheritDoc} */
             @Override
             public void handleSelection(final String item)
             {
-                model.selectXDevice(item);
+                this.model.selectXDevice(item);
+                this.plot.setXAxisTitle(item);
             }
         };
     }
@@ -37,15 +42,16 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
     /** @param model
      *  @return Y axis device selector
      */
-    public static DeviceSelectorAction forYAxis(final PlotDataModel model)
+    public static DeviceSelectorAction forYAxis(final PlotDataModel model, final Plot plot)
     {
-        return new DeviceSelectorAction(model, "Y Axis", "Select device for vertical axis")
+        return new DeviceSelectorAction(model, plot, "Y Axis", "Select device for vertical axis")
         {
             /** {@inheritDoc} */
             @Override
             public void handleSelection(final String item)
             {
-                model.selectYDevice(item);
+                this.model.selectYDevice(item);
+                this.plot.setYAxisTitle(item);
             }
         };
     }
@@ -55,11 +61,13 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
      *  @param label
      *  @param tooltip
      */
-    private DeviceSelectorAction(final PlotDataModel model, final String label,
+    private DeviceSelectorAction(final PlotDataModel model, final Plot plot,
+            final String label,
             final String tooltip)
     {
         super(label, tooltip);
         this.model = model;
+        this.plot = plot;
     }
 
     /** {@inheritDoc} */

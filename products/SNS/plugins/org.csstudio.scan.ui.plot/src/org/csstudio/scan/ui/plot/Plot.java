@@ -36,9 +36,12 @@ public class Plot
         plot = new ToolbarArmedXYGraph(new XYGraph(), XYGraphFlags.SEPARATE_ZOOM);
         xygraph = plot.getXYGraph();
         xygraph.setTransparent(false);
+        xygraph.setShowLegend(false);
         
-        xygraph.primaryXAxis.setTitle("Scan");
-        xygraph.primaryYAxis.setTitle("Value");
+        xygraph.primaryXAxis.setTitle("- select X Axis Variable -");
+        xygraph.primaryXAxis.setAutoScale(true);
+        xygraph.primaryYAxis.setTitle("- select Y Axis Variable -");
+        xygraph.primaryYAxis.setAutoScale(true);
 
         // Embed Draw2D plot figure in SWT Canvas
         parent.setLayout(new FillLayout());
@@ -59,5 +62,23 @@ public class Plot
         trace.setPointSize(10);
         xygraph.addTrace(trace);
         xygraph.performAutoScale();
+    }
+
+    /** @param title Plot title */
+    public void setTitle(final String title)
+    {
+        xygraph.setTitle(title);
+    }
+
+    /** @param title Title for X axis */
+    public void setXAxisTitle(final String title)
+    {
+        xygraph.primaryXAxis.setTitle(title);
+    }
+
+    /** @param title Title for Y axis */
+    public void setYAxisTitle(final String title)
+    {
+        xygraph.primaryYAxis.setTitle(title);
     }
 }

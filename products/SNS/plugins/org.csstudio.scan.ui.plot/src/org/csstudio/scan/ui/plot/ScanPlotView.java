@@ -26,7 +26,7 @@ public class ScanPlotView extends ViewPart
 
     public ScanPlotView()
     {
-        // TODO Auto-generated constructor stub
+        // TODO Allow setting scan, X, Y, ... from outside to "open" plot on existing scan from context menu
     }
 
     /** {@inheritDoc} */
@@ -60,15 +60,16 @@ public class ScanPlotView extends ViewPart
         createComponents(parent);
     }
 
+    /** @param parent Parent composite under which to create GUI elements */
     private void createComponents(final Composite parent)
     {
         final Plot plot = new Plot(parent);
         plot.addTrace(model.getPlotData());
         
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
-        toolbar.add(new ScanSelectorAction(model));
-        toolbar.add(DeviceSelectorAction.forXAxis(model));
-        toolbar.add(DeviceSelectorAction.forYAxis(model));
+        toolbar.add(new ScanSelectorAction(model, plot));
+        toolbar.add(DeviceSelectorAction.forXAxis(model, plot));
+        toolbar.add(DeviceSelectorAction.forYAxis(model, plot));
     }
 
     /** {@inheritDoc} */
