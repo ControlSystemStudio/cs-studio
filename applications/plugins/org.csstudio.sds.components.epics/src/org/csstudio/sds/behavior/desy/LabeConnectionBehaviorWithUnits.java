@@ -23,9 +23,6 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.TextTypeEnum;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,7 +33,7 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision: 1.4.2.16 $
  * @since 19.04.2010
  */
-public class LabeConnectionBehaviorWithUnits extends AbstractDesyConnectionBehavior<LabelModel> {
+public class LabeConnectionBehaviorWithUnits extends LabeConnectionBehavior {
 
     /**
      * Constructor.
@@ -45,40 +42,6 @@ public class LabeConnectionBehaviorWithUnits extends AbstractDesyConnectionBehav
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
         addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_PERMISSSION_ID);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doInitialize(final LabelModel widget) {
-        super.doInitialize(widget);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
-            widget.setJavaType(String.class);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        // .. fill level (influenced by current value)
-        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
-        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
-        super.doProcessConnectionStateChange(widget, anyDataChannel);
-        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
-        widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
-
     }
 
     @Override
