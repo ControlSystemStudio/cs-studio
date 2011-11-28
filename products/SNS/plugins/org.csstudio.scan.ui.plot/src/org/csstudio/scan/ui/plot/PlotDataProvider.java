@@ -44,6 +44,7 @@ public class PlotDataProvider implements IDataProvider
         this.display = display;
     }
     
+    /** Remove all samples */
     public void clear()
     {
         synchronized (this)
@@ -55,6 +56,11 @@ public class PlotDataProvider implements IDataProvider
         notifyListeners();
     }
 
+    /** Set samples for plot from scan data
+     *  @param scan_data {@link ScanData}
+     *  @param x_device Name of device for 'X' axis
+     *  @param y_device Name of device for 'Y' axis
+     */
     public void update(final ScanData scan_data, final String x_device, final String y_device)
     {
         // Arrange data in 'spreadsheet'
@@ -89,12 +95,11 @@ public class PlotDataProvider implements IDataProvider
             samples = new_samples;
             xrange = new_xrange;
             yrange = new_yrange;
-            
-            System.out.println("New Data: " + samples.size() + " samples, X " + xrange + ", Y " + yrange);
         }
         notifyListeners();
     }
 
+    /** Update listeners on Display thread */
     private void notifyListeners()
     {
         if (display != null)

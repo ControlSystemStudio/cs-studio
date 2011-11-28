@@ -6,6 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -33,4 +34,11 @@ public class Activator extends AbstractUIPlugin
         return plugin;
     }
 
+    /** @param path Image path within plugin
+     *  @return {@link ImageDescriptor}
+     */
+    public static ImageDescriptor getImageDescriptior(final String path)
+    {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
 }

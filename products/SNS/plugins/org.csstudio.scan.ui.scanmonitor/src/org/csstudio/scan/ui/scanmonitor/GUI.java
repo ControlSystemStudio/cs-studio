@@ -22,6 +22,7 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.ui.plot.OpenPlotAction;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
 import org.csstudio.scan.ui.scanmonitor.actions.GetScanDataAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
@@ -325,6 +326,7 @@ public class GUI implements ScanInfoModelListener
                 else
                     manager.add(new RemoveAction(model, info));
                 manager.add(new GetScanDataAction(model, info));
+                manager.add(new OpenPlotAction(info.getId()));
                 manager.add(new RemoveCompletedAction(model));
             }
         });

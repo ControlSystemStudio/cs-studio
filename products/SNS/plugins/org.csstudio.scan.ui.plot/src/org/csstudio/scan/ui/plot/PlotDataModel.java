@@ -167,7 +167,7 @@ public class PlotDataModel implements Runnable
      *  @param id Scan ID
      *  @return {@link ScanInfo} or <code>null</code>
      */
-    private ScanInfo getScan(final long id)
+    public ScanInfo getScan(final long id)
     {
         final List<ScanInfo> infos = model.getInfos();
         for (ScanInfo info : infos)

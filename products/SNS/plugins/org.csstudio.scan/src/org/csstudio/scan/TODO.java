@@ -57,7 +57,11 @@ public interface TODO
      *  
      *  Done fetch data data from ongoing or finished scans?
      *       
-     *  TODO plot data from ongoing scan?
+     *  Done plot data of (ongoing) scan
+     *
+     *  Done Start plot from scan monitor
+     *  
+     *  TODO Improve scan data updates, use 'last update' time to suppress no-change updates
      *       
      *  TODO Unclear if devices will ever be anything by PVs.
      *       If they're just PVs, one could use PVs.

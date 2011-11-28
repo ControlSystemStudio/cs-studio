@@ -13,13 +13,15 @@ import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
 
 /** Toolbar action to select the scan
+ * 
+ *  <p>Selectable options are strings.
+ *  The scan ID that's used to identify a specific
+ *  scan is encoded/decoded in the string.
+ *  
  *  @author Kay Kasemir
  */
 public class ScanSelectorAction extends DropdownToolbarAction
 {
-    /** Separator between scan ID and name */
-    private static final String SEPARATOR = " - ";
-    
     /** Scan model */
     final private PlotDataModel model;
     
@@ -35,6 +37,33 @@ public class ScanSelectorAction extends DropdownToolbarAction
         this.plot = plot;
     }
 
+    /** @param scan ScanInfo
+     *  @return String for drop-down entry that encodes the scan
+     */
+    public static String encode(final ScanInfo scan)
+    {
+        return scan.getName() + " [" + scan.getId() + "]";
+    }
+
+    /** @param option Option in drop-down list
+     *  @return Decoded Scan ID or <code>-1</code>
+     */
+    public static long decode(final String option)
+    {
+        final int sep = option.lastIndexOf('[');
+        if (sep <= 0)
+            return -1;
+        final int len = option.length();
+        try
+        {
+            return Integer.parseInt(option.substring(sep + 1, len-1));
+        }
+        catch (NumberFormatException ex)
+        {
+            return -1;
+        }
+    }
+    
     /** {@inheritDoc} */
     @Override
     public String[] getOptions()
@@ -44,7 +73,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
         for (int i=0; i<scans.length; ++i)
         {
             final ScanInfo info = infos.get(i);
-            scans[i] = info.getId() + SEPARATOR + info.getName();
+            scans[i] = encode(info);
         }
         return scans;
     }
@@ -53,20 +82,12 @@ public class ScanSelectorAction extends DropdownToolbarAction
     @Override
     public void handleSelection(final String item)
     {
-        // Parse scan ID out of "42 - Some Scan Name"
-        final int sep = item.indexOf(SEPARATOR);
-        if (sep <= 0)
-            return;
-        final int id;
-        try
+        // Parse scan ID out of "Some Scan Name [42]"
+        final long id = decode(item);
+        if (id >= 0)
         {
-            id = Integer.parseInt(item.substring(0, sep));
+            model.selectScan(id);
+            plot.setTitle(item);
         }
-        catch (NumberFormatException ex)
-        {
-            return;
-        }
-        model.selectScan(id);
-        plot.setTitle(item);
     }
 }

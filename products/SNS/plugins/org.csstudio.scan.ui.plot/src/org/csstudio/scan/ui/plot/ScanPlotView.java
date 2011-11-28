@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.plot;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -22,13 +23,15 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ScanPlotView extends ViewPart
 {
+    /** View ID defined in plugin.xml */
+    final public static String ID = "org.csstudio.scan.ui.plot.view";
+    
     private PlotDataModel model;
 
-    public ScanPlotView()
-    {
-        // TODO Allow setting scan, X, Y, ... from outside to "open" plot on existing scan from context menu
-    }
+    private Plot plot;
 
+    private ScanSelectorAction scan_selector;
+    
     /** {@inheritDoc} */
     @Override
     public void createPartControl(final Composite parent)
@@ -63,11 +66,12 @@ public class ScanPlotView extends ViewPart
     /** @param parent Parent composite under which to create GUI elements */
     private void createComponents(final Composite parent)
     {
-        final Plot plot = new Plot(parent);
+        plot = new Plot(parent);
         plot.addTrace(model.getPlotData());
         
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
-        toolbar.add(new ScanSelectorAction(model, plot));
+        scan_selector = new ScanSelectorAction(model, plot);
+        toolbar.add(scan_selector);
         toolbar.add(DeviceSelectorAction.forXAxis(model, plot));
         toolbar.add(DeviceSelectorAction.forYAxis(model, plot));
     }
@@ -77,5 +81,17 @@ public class ScanPlotView extends ViewPart
     public void setFocus()
     {
         // NOP
+    }
+
+    /** @param scan_id ID of scan to select */
+    public void selectScan(final long scan_id)
+    {
+        final ScanInfo scan = model.getScan(scan_id);
+        if (scan != null)
+        {
+            final String option = ScanSelectorAction.encode(scan);
+            scan_selector.setSelection(option);
+            scan_selector.handleSelection(option);
+        }
     }
 }
