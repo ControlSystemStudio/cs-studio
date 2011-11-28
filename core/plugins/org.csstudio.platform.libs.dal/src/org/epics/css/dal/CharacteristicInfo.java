@@ -35,21 +35,21 @@ import org.epics.css.dal.simple.Severity;
 import com.cosylab.util.BitCondition;
 
 /**
- * This is info class, which provides some meta information about a characteristic. 
- * This class also provides access to set of characteristics, which 
+ * This is info class, which provides some meta information about a characteristic.
+ * This class also provides access to set of characteristics, which
  * DAL API forces to be supported on all DAL plugs.
- * 
+ *
  * <p>Info clasu is unmodifiable, data can be provided only trough constructor.
- * 
+ *
  * @author ikriznar
  *
  */
 public class CharacteristicInfo {
-	
+
 	/*
 	 * Static declaration of default DAL supported characteristics.
 	 */
-	
+
 	/**
 	 * Name of characteristic declaring position of this property
 	 * within group of properties. This could be physical layout position of
@@ -84,9 +84,14 @@ public class CharacteristicInfo {
 	 */
 	public static final CharacteristicInfo C_PROPERTY_TYPE = new CharacteristicInfo("propertyType",String.class, new Class[]{SimpleProperty.class},"Descriptive name for type of the property. Example: Device of type 'PowerSupply' has property 'current', property type would be 'current' or even 'PowerSupply/current'.");
 	/**
-	 * Name of the resolution characteristic which gives in number of bits used for ADC conversion of analog value when sampled. 
+	 * Name of the resolution characteristic which gives in number of bits used for ADC conversion of analog value when sampled.
 	 */
 	public static final CharacteristicInfo C_RESOLUTION = new CharacteristicInfo("resolution",Integer.class, new Class[]{NumericProperty.class},"Number of bits used for ADC conversion of analog value when sampled.");
+
+	/**
+	 * Name of the precision characteristic. Such characteristic represents the number of decimal places.
+	 */
+	public static final CharacteristicInfo C_PRECISION = new CharacteristicInfo("precision",Integer.class, new Class[]{NumericProperty.class},"Number of decimal places.");
 
 	/**
 	 * Name of the minimum characteristic. Such characteristic represents the
@@ -98,8 +103,8 @@ public class CharacteristicInfo {
 	/**
 	 * The name of the maximum characteristic. Such characteristic represents
 	 * the value that should be taken as a maximum allowed of the dynamic
-	 * value. 
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * value.
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or seuence.
 	 */
 	public static final CharacteristicInfo C_MAXIMUM = new CharacteristicInfo("maximum",Number.class, new Class[]{NumericProperty.class},"A maximum allowed value of the property.");
@@ -108,7 +113,7 @@ public class CharacteristicInfo {
 	 * Name of the graphMin characteristic. Such characteristic represents the
 	 * value that should be taken as a display minimum if the dynamic value of
 	 * the property is being charted.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_GRAPH_MIN = new CharacteristicInfo("graphMin",Number.class, new Class[]{NumericProperty.class},"A minimum display value of the property.");
@@ -117,7 +122,7 @@ public class CharacteristicInfo {
 	 * The name of the graphMax characteristic. Such characteristic represents
 	 * the value that should be taken as a display maximum if the dynamic
 	 * value of the property is being charted.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_GRAPH_MAX = new CharacteristicInfo("graphMax",Number.class, new Class[]{NumericProperty.class},"A maximum display value of the property.");
@@ -141,51 +146,51 @@ public class CharacteristicInfo {
 	 * or "logarithmic"; case is significant.
 	 */
 	public static final CharacteristicInfo C_SCALE_TYPE = new CharacteristicInfo("scaleType",String.class, new Class[]{NumericProperty.class},"Can specify 'linear' or 'logarithmic' scale.");
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the warning upper limit characteristic. Such characteristic
 	 * represents the value that should be taken as a maximum value which
 	 * is displayed without a warning. Any value higher that this maximum, should
 	 * have a warning label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_WARNING_MAX = new CharacteristicInfo("warningMax",Number.class, new Class[]{NumericProperty.class},"A maximum warning value of the property.");
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the warning lower limit characteristic. Such characteristic
 	 * represents the value that should be taken as a minimum value which
 	 * is displayed without a warning. Any value lower that this minimum, should
 	 * have a warning label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_WARNING_MIN = new CharacteristicInfo("warningMin",Number.class, new Class[]{NumericProperty.class},"A minimum warning value of the property.");
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the alarm upper limit characteristic. Such characteristic
 	 * represents the value that should be taken as a maximum value which
 	 * is displayed without an alarm. Any value higher that this maximum, should
 	 * have a major alarm label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_ALARM_MAX = new CharacteristicInfo("alarmMax",Number.class, new Class[]{NumericProperty.class},"A maximum alarm value of the property.");
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the alarm lower limit characteristic. Such characteristic
 	 * represents the value that should be taken as a minimum value which
 	 * is displayed without an alarm. Any value lower that this minimum, should
 	 * have a major alarm label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final CharacteristicInfo C_ALARM_MIN = new CharacteristicInfo("alarmMin",Number.class, new Class[]{NumericProperty.class},"A minimum alarm value of the property.");
@@ -227,8 +232,8 @@ public class CharacteristicInfo {
 	 * value type is <code>BitSet</code>.
 	 */
 	public static final CharacteristicInfo C_BIT_MASK = new CharacteristicInfo("bitMask", BitSet.class, new Class[]{PatternSimpleProperty.class},"A mask which tells which bits in value are relevant and has defined conditions and descriptions.");
-	
-	
+
+
 	/**
 	 * Meta characteristic for last received EPICS style timestamp.
 	 * Returned value type is <code>Timestamp</code>.
@@ -250,45 +255,45 @@ public class CharacteristicInfo {
 	 */
 	public static final CharacteristicInfo C_META_DATA = new CharacteristicInfo("metaData", MetaData.class, new Class[] { DynamicValueProperty.class }, "MetaData characteristic similar to that used by simple DAL.", null, true);
 
-	
+
 	private static CharacteristicInfo[] defaultCharacterictics;
 	private static Map<String,List<CharacteristicInfo>> plugSpecific= new HashMap<String, List<CharacteristicInfo>>();
 
 	/**
 	 * Returns an array with all default characteristics declared in this class.
-	 * 
+	 *
 	 * @param plug if plug name non-null also plug specific characteristic are included in returned array
-	 * 
+	 *
 	 * @return an array with all default characteristics
 	 */
-	public synchronized static final CharacteristicInfo[] getDefaultCharacteristics(String plug) {
+	public synchronized static final CharacteristicInfo[] getDefaultCharacteristics(final String plug) {
 		if (defaultCharacterictics==null) {
-			
-			List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(32);
-			
-			Field[] f= CharacteristicInfo.class.getDeclaredFields();
-			for (int i = 0; i < f.length; i++) {
-				if (Modifier.isStatic(f[i].getModifiers()) && f[i].getType()==CharacteristicInfo.class) {
+
+			final List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(32);
+
+			final Field[] f= CharacteristicInfo.class.getDeclaredFields();
+			for (final Field element : f) {
+				if (Modifier.isStatic(element.getModifiers()) && element.getType()==CharacteristicInfo.class) {
 					try {
-						CharacteristicInfo ci= (CharacteristicInfo)f[i].get(null);
+						final CharacteristicInfo ci= (CharacteristicInfo)element.get(null);
 						if (!ci.isMeta()) {
 							l.add(ci);
 						}
-					} catch (IllegalArgumentException e) {
+					} catch (final IllegalArgumentException e) {
 						e.printStackTrace();
-					} catch (IllegalAccessException e) {
+					} catch (final IllegalAccessException e) {
 						e.printStackTrace();
 					}
 				}
 			}
-			
+
 			defaultCharacterictics= l.toArray(new CharacteristicInfo[l.size()]);
-			
+
 		}
-		
-		List<CharacteristicInfo> infos= plugSpecific.get(plug);
+
+		final List<CharacteristicInfo> infos= plugSpecific.get(plug);
 		if (infos != null) {
-			CharacteristicInfo[] ci= new CharacteristicInfo[defaultCharacterictics.length+infos.size()];
+			final CharacteristicInfo[] ci= new CharacteristicInfo[defaultCharacterictics.length+infos.size()];
 			infos.toArray(ci);
 			System.arraycopy(defaultCharacterictics, 0, ci, infos.size(), defaultCharacterictics.length);
 			return ci;
@@ -296,98 +301,98 @@ public class CharacteristicInfo {
 
 		return defaultCharacterictics;
 	}
-	
+
 	private static final CharacteristicInfo[] getDeclaredCharacteristics() {
-		List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(32);
-		
-		Field[] f= CharacteristicInfo.class.getDeclaredFields();
-		for (int i = 0; i < f.length; i++) {
-			if (Modifier.isStatic(f[i].getModifiers()) && f[i].getType()==CharacteristicInfo.class) {
+		final List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(32);
+
+		final Field[] f= CharacteristicInfo.class.getDeclaredFields();
+		for (final Field element : f) {
+			if (Modifier.isStatic(element.getModifiers()) && element.getType()==CharacteristicInfo.class) {
 				try {
-					CharacteristicInfo ci= (CharacteristicInfo)f[i].get(null);
+					final CharacteristicInfo ci= (CharacteristicInfo)element.get(null);
 					l.add(ci);
-				} catch (IllegalArgumentException e) {
+				} catch (final IllegalArgumentException e) {
 					e.printStackTrace();
-				} catch (IllegalAccessException e) {
+				} catch (final IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		return l.toArray(new CharacteristicInfo[l.size()]);
 	}
 
 	/**
-	 * 
-	 * @param property the property type 
+	 *
+	 * @param property the property type
 	 * @param plug name if non-null also plug specific characteristic are included in returned array
-	 * @return array of characteristics info supported by provided property type and plug 
+	 * @return array of characteristics info supported by provided property type and plug
 	 */
-	public static final CharacteristicInfo[] getDefaultCharacteristics(Class<?> property, String plug) {
-		
-		CharacteristicInfo[] inf= getDefaultCharacteristics(plug);
-		List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(inf.length);
-		
-		for (int i = 0; i < inf.length; i++) {
-			Class[] c= inf[i].getProperties();
-			for (int j = 0; j < c.length; j++) {
-				if (c[j].isAssignableFrom(property)) {
-					l.add(inf[i]);
+	public static final CharacteristicInfo[] getDefaultCharacteristics(final Class<?> property, final String plug) {
+
+		final CharacteristicInfo[] inf= getDefaultCharacteristics(plug);
+		final List<CharacteristicInfo> l= new ArrayList<CharacteristicInfo>(inf.length);
+
+		for (final CharacteristicInfo element : inf) {
+			final Class[] c= element.getProperties();
+			for (final Class element2 : c) {
+				if (element2.isAssignableFrom(property)) {
+					l.add(element);
 					break;
 				}
 			}
 		}
-		
+
 		return l.toArray(new CharacteristicInfo[l.size()]);
 	}
-	
+
 	/**
 	 * Dynamically registers a characteristic info.
 	 * @param info a new characteristic info to register
 	 */
-	public static final void registerCharacteristicInfo(CharacteristicInfo info) {
+	public static final void registerCharacteristicInfo(final CharacteristicInfo info) {
 		List<CharacteristicInfo> infos= plugSpecific.get(info.getPlug());
 		if (infos == null) {
 			infos= new ArrayList<CharacteristicInfo>(8);
 			plugSpecific.put(info.getPlug(), infos);
 		}
-		
+
 		infos.add(info);
 	}
-	
-	
-	public static void main(String[] args) {
-		
-		CharacteristicInfo[] infos= getDeclaredCharacteristics();
 
-		for (CharacteristicInfo info : infos) {
+
+	public static void main(final String[] args) {
+
+		final CharacteristicInfo[] infos= getDeclaredCharacteristics();
+
+		for (final CharacteristicInfo info : infos) {
 			System.out.println(info);
 		}
-		
+
 	}
-	
-	private String name;
-	private String description;
+
+	private final String name;
+	private final String description;
 	private String plug;
-	private Class<?> type;
-	private Class<? extends SimpleProperty<?>>[] properties;
+	private final Class<?> type;
+	private final Class<? extends SimpleProperty<?>>[] properties;
 	private boolean meta= false;
 	private int hash=0;
-	
-	
-	
+
+
+
 	/**
 	 * Constructor with parameters.
-	 *  
+	 *
 	 * @param name characteristic name as it it used in DAL properties
-	 * @param type Java class of value as returned by DAL property. 
+	 * @param type Java class of value as returned by DAL property.
 	 * 			If more types are possible, first common superclass should be used.
 	 * @param description a short description
 	 * @param properties an array of DAL property interfaces, which support characteristic
 	 */
-	public CharacteristicInfo(String name, Class<?> type, 
-			Class<? extends SimpleProperty<?>>[] properties, String description) {
-		
+	public CharacteristicInfo(final String name, final Class<?> type,
+			final Class<? extends SimpleProperty<?>>[] properties, final String description) {
+
 		this.description = description;
 		this.name = name;
 		this.properties = properties;
@@ -396,20 +401,20 @@ public class CharacteristicInfo {
 
 	/**
 	 * Constructor with parameters.
-	 *  
+	 *
 	 * @param name characteristic name as it it used in DAL properties
-	 * @param type Java class of value as returned by DAL property. 
+	 * @param type Java class of value as returned by DAL property.
 	 * 			If more types are possible, first common superclass should be used.
 	 * @param description a short description
 	 * @param properties an array of DAL property interfaces, which support characteristic
-	 * @param plug name of plug if this characteristic is specific to certain plug. 
+	 * @param plug name of plug if this characteristic is specific to certain plug.
 	 * 			If null then characteristic applies to any plug.
-	 * @param meta <code>true</code> if this is "meta" characteristic generated by DAL and not directly 
+	 * @param meta <code>true</code> if this is "meta" characteristic generated by DAL and not directly
 	 * connected to a remote entity.
 	 */
-	public CharacteristicInfo(String name, Class<?> type, 
-			Class<? extends SimpleProperty<?>>[] properties, String description, String plug, boolean meta) {
-		
+	public CharacteristicInfo(final String name, final Class<?> type,
+			final Class<? extends SimpleProperty<?>>[] properties, final String description, final String plug, final boolean meta) {
+
 		this.description = description;
 		this.name = name;
 		this.properties = properties;
@@ -425,28 +430,28 @@ public class CharacteristicInfo {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
-	 * The Java type of returned characteristic value by DAL property. 
-	 * Charateristic value should be possible to cast to this type. 
+	 * The Java type of returned characteristic value by DAL property.
+	 * Charateristic value should be possible to cast to this type.
 	 * @return the type
 	 */
 	public Class<?> getType() {
 		return type;
 	}
-	
+
 	/**
-	 * The array of properties in which this characteristic is supported. 
+	 * The array of properties in which this characteristic is supported.
 	 * Instead of multiple property interfaces a common super interface should be used.
-	 * For example: NumericProperrty instead of DoubleProperty and LongProperty.  
+	 * For example: NumericProperrty instead of DoubleProperty and LongProperty.
 	 * @return the properties
 	 */
 	public Class<? extends SimpleProperty<?>>[] getProperties() {
-		Class<? extends SimpleProperty<?>>[] r= new Class[properties.length];
+		final Class<? extends SimpleProperty<?>>[] r= new Class[properties.length];
 		System.arraycopy(properties, 0, r, 0, r.length);
 		return r;
 	}
-	
+
 	/**
 	 * Short description of the characcteristic.
 	 * @return short description
@@ -454,7 +459,7 @@ public class CharacteristicInfo {
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
 	 * Returns plug name, if this characteristic is plug specific. If <code>null</code> then characteristic applies to all plugs.
 	 * @return plug name or <code>null</code>
@@ -462,24 +467,24 @@ public class CharacteristicInfo {
 	public String getPlug() {
 		return plug;
 	}
-	
+
 	@Override
 	public String toString() {
-		StringBuilder sb= new StringBuilder(256);
+		final StringBuilder sb= new StringBuilder(256);
 		sb.append(name);
 		sb.append(":{");
 		sb.append(type.getSimpleName());
-		
+
 		if (properties!=null) {
-			for (int i = 0; i < properties.length; i++) {
+			for (final Class<? extends SimpleProperty<?>> propertie : properties) {
 				sb.append(',');
-				sb.append(properties[i].getSimpleName());
+				sb.append(propertie.getSimpleName());
 			}
 		}
 		sb.append("}");
 		return sb.toString();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		if (hash==0) {
@@ -487,22 +492,22 @@ public class CharacteristicInfo {
 		}
 		return hash;
 	}
-	
+
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if (obj instanceof CharacteristicInfo) {
 			return hashCode()==obj.hashCode();
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Returns <code>true</code> if this is "meta" characteristic generated by DAL and not directly 
+	 * Returns <code>true</code> if this is "meta" characteristic generated by DAL and not directly
 	 * connected to a remote entity. It might not be supported in all DAL implementations.
 	 * @return <code>true</code> if this is "meta" characteristic, could be optional
 	 */
 	public boolean isMeta() {
 		return meta;
 	}
-	
+
 }

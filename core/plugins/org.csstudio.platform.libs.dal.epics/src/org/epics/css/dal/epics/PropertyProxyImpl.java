@@ -83,14 +83,14 @@ import com.cosylab.util.BitCondition;
 
 /**
  * Simulations implementations of proxy.
- * 
+ *
  * @author ikriznar
- * 
+ *
  */
 public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,MonitorProxyImpl<T>> implements
 		PropertyProxy<T,EPICSPlug>, SyncPropertyProxy<T,EPICSPlug>, DirectoryProxy<EPICSPlug>,
 		ConnectionListener, GetListener {
-	
+
 	/** C_CONDITION_WHEN_CLEARED characteristic for pattern channel */
 	public static BitCondition[] patternWhenCleared = new BitCondition[] {
 			BitCondition.UNUSED, BitCondition.UNUSED, BitCondition.UNUSED,
@@ -103,10 +103,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 	/** C_CONDITION_WHEN_SET characteristic for pattern channel */
 	public static BitCondition[] patternWhenSet = new BitCondition[] {
-			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
-			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
 			BitCondition.OK, BitCondition.OK, BitCondition.OK,
-			BitCondition.OK, BitCondition.OK, BitCondition.OK, 
+			BitCondition.OK, BitCondition.OK, BitCondition.OK,
+			BitCondition.OK, BitCondition.OK, BitCondition.OK,
+			BitCondition.OK, BitCondition.OK, BitCondition.OK,
 			BitCondition.OK, BitCondition.OK, BitCondition.OK,
 			BitCondition.OK
 		};
@@ -129,26 +129,27 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	protected String condDesc;
 
 	protected DBRType type;
-	
+
 	protected Class<T> dataType;
 
 	protected int elementCount;
-	
+
 	private ThreadPoolExecutor executor;
-	
+
 	private boolean initializeCharacteristicsRunning = false;
-	
+
 	// This task changes channel with INITIAL state to CONNECTION_FAILED.
 	private class AbortConnectionRunnable implements Runnable {
-		public void run() {
-			ConnectionState cs = getConnectionState();
+		@Override
+        public void run() {
+			final ConnectionState cs = getConnectionState();
 			if (cs == ConnectionState.CONNECTING) {
 				synchronized (abortConnectionTask) {
 					if (connectionStateMachine.isConnecting()) {
 						setConnectionState(
-								ConnectionState.CONNECTION_FAILED, 
+								ConnectionState.CONNECTION_FAILED,
 								new RemoteException(
-										PropertyProxyImpl.this, 
+										PropertyProxyImpl.this,
 										"Timeout '"+Plugs.getInitialConnectionTimeout(plug.getConfiguration())+"ms' while connecting!"));
 					}
 				}
@@ -157,7 +158,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 	private TimerTask abortConnectionTask = null;
 	//private boolean abortConnection = false;
-	
+
 	/**
 	 * Create a new proprty instance (channel).
 	 * @param plug plug hosting this property.
@@ -166,12 +167,13 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * @param type channel type to work with.
 	 * @throws RemoteException thrown on failure.
 	 */
-	public PropertyProxyImpl(EPICSPlug plug, String name, Class<T> dataType, DBRType type) throws RemoteException {
+	public PropertyProxyImpl(final EPICSPlug plug, final String name, final Class<T> dataType, final DBRType type) throws RemoteException {
 		super(name,plug);
 
-		if (type.getValue() >= DBR_STS_String.TYPE.getValue())
-			throw new IllegalArgumentException("type must be value-only type");
-		
+		if (type.getValue() >= DBR_STS_String.TYPE.getValue()) {
+            throw new IllegalArgumentException("type must be value-only type");
+        }
+
 		synchronized (this) {
 			this.type = type;
 			this.dataType = dataType;
@@ -181,39 +183,39 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			// create channel
 			try {
 				this.channel = plug.getContext().createChannel(name, this);
-			} catch (Throwable th) {
+			} catch (final Throwable th) {
 				throw new RemoteException(this, "Failed create CA channel: "+PlugUtilities.toShortErrorReport(th), th);
 			}
 			abortConnectionTask = plug.schedule(new AbortConnectionRunnable(), Plugs.getInitialConnectionTimeout(plug.getConfiguration()), 0);
 		}
 
-		
+
 	}
-	
+
 	/*
 	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
 	 */
 	@Override
 	public synchronized void destroy() {
-		
+
 		if (connectionStateMachine.isConnected()) {
 			setConnectionState(ConnectionState.DISCONNECTING,null);
 		}
-		
+
 		super.destroy();
 
 		if (channel.getConnectionState() != Channel.CLOSED) { // FIXME workaround because CAJChannel.removeConnectionListener throws IllegalStateException: "Channel closed."
 			try {
 				channel.removeConnectionListener(this);
-			} catch (IllegalStateException e) {
+			} catch (final IllegalStateException e) {
 				// we ignore
-			} catch (CAException e) {
+			} catch (final CAException e) {
 				Logger.getLogger(this.getClass()).warn("Removing CA listener: "+PlugUtilities.toShortErrorReport(e), e);
 			}
 		}
 		// destory channel
 		channel.dispose();
-		
+
 		if (connectionStateMachine.getConnectionState()==ConnectionState.DISCONNECTING) {
 			setConnectionState(ConnectionState.DISCONNECTED,null);
 		}
@@ -223,13 +225,14 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	/*
 	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
 	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
+	@Override
+    public Request<T> getValueAsync(final ResponseListener<T> callback)
 			throws DataExchangeException {
-		GetRequest<T> r = new GetRequest<T>(this, callback);
+		final GetRequest<T> r = new GetRequest<T>(this, callback);
 		try {
 			channel.get(type, channel.getElementCount(), r);
 			plug.flushIO();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			r.addResponse(new ResponseImpl<T>(this, r, null, "value", false, e,
 					getCondition(), null, true));
 		}
@@ -239,19 +242,20 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	/*
 	 * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
 	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+	@Override
+    public Request<T> setValueAsync(final T value, final ResponseListener<T> callback)
 			throws DataExchangeException {
-		PutRequest<T> r = new PutRequest<T>(this, callback, value);
+		final PutRequest<T> r = new PutRequest<T>(this, callback, value);
 		try {
-			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
-			if (channel instanceof CAJChannel) 
-				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o, r);
-			else {
+			final Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
+			if (channel instanceof CAJChannel) {
+                ((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o, r);
+            } else {
 				// TODO workaround until Channel supports put(DBRType, int, Object, PutListener)
 				PlugUtilities.put(channel, o, r);
 			}
 			plug.flushIO();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			r.addResponse(new ResponseImpl<T>(this, r, value, "value", false, e,
 					getCondition(), null, true));
 		}
@@ -259,64 +263,70 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/**
-	 * Get listener implementation to implement sync. get.  
+	 * Get listener implementation to implement sync. get.
 	 */
 	private class GetListenerImpl implements GetListener {
 		volatile GetEvent event = null;
 
-		public synchronized void getCompleted(GetEvent ev) {
+		@Override
+        public synchronized void getCompleted(final GetEvent ev) {
 			event = ev;
 			this.notifyAll();
 		}
 	}
 	/**
-	 * Connection listener implementation to implement sync. get.  
+	 * Connection listener implementation to implement sync. get.
 	 */
 	private class ConnectionListenerImpl implements ConnectionListener {
 		//volatile ConnectionEvent event= null;
 
-		public synchronized void connectionChanged(ConnectionEvent arg0) {
+		@Override
+        public synchronized void connectionChanged(final ConnectionEvent arg0) {
 			//event=arg0;
 			this.notifyAll();
 		}
 
 	}
-	
+
 	/*
 	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
 	 */
-	public T getValueSync() throws DataExchangeException {
-		try 
+	@Override
+    public T getValueSync() throws DataExchangeException {
+		try
 		{
 
-			GetListenerImpl listener = new GetListenerImpl();
+			final GetListenerImpl listener = new GetListenerImpl();
 	         synchronized (listener) {
 				channel.get(type, channel.getElementCount(), listener);
 				plug.flushIO();
 
 				try {
 					listener.wait((long) (plug.getTimeout() * 1000));
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					// noop
 				}
 			}
 
 			final GetEvent event = listener.event;
-			if (event == null)
-				throw new TimeoutException("Get timeout.");
+			if (event == null) {
+                throw new TimeoutException("Get timeout.");
+            }
 
 			// status check
-			if (event.getStatus() != CAStatus.NORMAL)
-				throw new CAStatusException(event.getStatus(), "Get failed.");
+			if (event.getStatus() != CAStatus.NORMAL) {
+                throw new CAStatusException(event.getStatus(), "Get failed.");
+            }
 
 			// sanity check
-			if (event.getDBR() == null)
-				throw new DataExchangeException(this, "Get failed.");
-			
+			if (event.getDBR() == null) {
+                throw new DataExchangeException(this, "Get failed.");
+            }
+
 			return toJavaValue(event.getDBR());
-		} catch (CAException e) {
+		} catch (final CAException e) {
 			throw new DataExchangeException(this, "Get failed: "+PlugUtilities.toShortErrorReport(e), e);
-		} catch (TimeoutException e) {
+		} catch (final TimeoutException e) {
 			throw new DataExchangeException(this, "Get failed with timeout.", e);
 		}
 	}
@@ -324,18 +334,19 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	/*
 	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
 	 */
-	public void setValueSync(Object value) throws DataExchangeException {
+	@Override
+    public void setValueSync(final Object value) throws DataExchangeException {
 		try {
-			Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
-			if (channel instanceof CAJChannel) 
-				((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o);
-			else {
+			final Object o = PlugUtilities.toDBRValue(value, channel.getFieldType());
+			if (channel instanceof CAJChannel) {
+                ((CAJChannel) channel).put(PlugUtilities.toDBRType(value.getClass()), Array.getLength(o), o);
+            } else {
 				// TODO workaround until Channel supports put(DBRType, int, Object)
 				PlugUtilities.put(channel, o);
 			}
 			// put does not affect on pendIO
 			plug.flushIO();
-		} catch (CAException e) {
+		} catch (final CAException e) {
 			throw new DataExchangeException(this, "Set failed: "+PlugUtilities.toShortErrorReport(e), e);
 		}
 	}
@@ -344,22 +355,25 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	/*
 	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
 	 */
-	public boolean isSettable() {
+	@Override
+    public boolean isSettable() {
 		return channel.getWriteAccess();
 	}
 
 	/*
 	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
 	 */
-	public synchronized MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param)
+	@Override
+    public synchronized MonitorProxy createMonitor(final ResponseListener<T> callback, final Map<String,Object> param)
 			throws RemoteException {
 
-		if (getConnectionState() == ConnectionState.DESTROYED)
-			throw new RemoteException(this, "Proxy destroyed.");
+		if (getConnectionState() == ConnectionState.DESTROYED) {
+            throw new RemoteException(this, "Proxy destroyed.");
+        }
 		try {
-			MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, param);
+			final MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, param);
 			return m;
-		} catch (Throwable th) {
+		} catch (final Throwable th) {
 			throw new RemoteException(this, "Failed to create new monitor: "+PlugUtilities.toShortErrorReport(th), th);
 		}
 	}
@@ -368,9 +382,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * Characteristics async get listener.
 	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
 	 */
-	public void getCompleted(GetEvent ev) {
-		if (!connectionStateMachine.isConnected() 
-				|| channel.getConnectionState()!= Channel.CONNECTED) 
+	@Override
+    public void getCompleted(final GetEvent ev) {
+		if (!connectionStateMachine.isConnected()
+				|| channel.getConnectionState()!= Channel.CONNECTED)
 		{
 			/*
 			 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
@@ -378,12 +393,12 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			 */
 			return;
 		}
-		if (ev.getStatus() == CAStatus.NORMAL && ev.getDBR()!=null)
-			createCharacteristics(ev.getDBR());
-		else if (ev.getDBR() == null) {
+		if (ev.getStatus() == CAStatus.NORMAL && ev.getDBR()!=null) {
+            createCharacteristics(ev.getDBR());
+        } else if (ev.getDBR() == null) {
 			recoverFromNullDbr();
 		}
-			
+
 	}
 
 	/**
@@ -391,7 +406,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 */
 	protected void createDefaultCharacteristics() {
 		synchronized (getCharacteristics()) {
-			
+
 			updateCharacteristic(PropertyCharacteristics.C_DESCRIPTION, "EPICS Channel '" + name + "'");
 			updateCharacteristic(PropertyCharacteristics.C_DISPLAY_NAME, name);
 			updateCharacteristic(PropertyCharacteristics.C_POSITION, new Double(0));
@@ -400,15 +415,15 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 			updateCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH, new Integer(elementCount));
 
-			if (channel != null 
+			if (channel != null
 					&& channel.getConnectionState() == Channel.CONNECTED
 					&& getConnectionState() == ConnectionState.CONNECTED) {
-				
+
 				try {
 
-					DBRType ft= channel.getFieldType();
+					final DBRType ft= channel.getFieldType();
 					updateCharacteristic("fieldType",ft);
-					
+
 					if (ft.isENUM()) {
 						updateCharacteristic(NumericPropertyCharacteristics.C_RESOLUTION, 0xF);
 					} else if (ft.isBYTE()) {
@@ -423,14 +438,14 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 					updateCharacteristic(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
 					updateCharacteristic(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
 
-				} catch (IllegalStateException ex) {
+				} catch (final IllegalStateException ex) {
 					/*
-					 * JCA channel was probably closed in the mean time, 
+					 * JCA channel was probably closed in the mean time,
 					 * nothing to do.
 					 */
 
 					updateCharacteristic(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
-					
+
 					updateCharacteristic(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
 					updateCharacteristic(PropertyCharacteristics.C_HOSTNAME,"unknown");
 					updateCharacteristic(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
@@ -439,7 +454,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			} else {
 
 				updateCharacteristic(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
-				
+
 				updateCharacteristic(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
 				updateCharacteristic(PropertyCharacteristics.C_HOSTNAME,"unknown");
 				updateCharacteristic(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
@@ -454,10 +469,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 			updateCharacteristic(PatternPropertyCharacteristics.C_BIT_MASK, patternBitMask);
 			updateCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, patternBitDescription);
-			
+
 		}
 	}
-	
+
 	/*private void abortInitalDBR() {
 		synchronized (characteristics) {
 			characteristics.notifyAll();
@@ -469,10 +484,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * Creates characteristics from given DBR.
 	 * @param dbr DBR containign characteristics.
 	 */
-	protected void createCharacteristics(DBR dbr)
+	protected void createCharacteristics(final DBR dbr)
 	{
 		synchronized (getCharacteristics()) {
-	
+
 			if (channel ==null || channel.getConnectionState()!= Channel.CONNECTED) {
 				/*
 				 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
@@ -483,19 +498,19 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 //			System.out.println(">>> "+name+" Creating characteristics from DBR");
 
-			
+
 			updateCharacteristic(PropertyCharacteristics.C_ACCESS_TYPE,channel != null ? AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()) : AccessType.NONE);
 			updateCharacteristic(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
 			updateCharacteristic(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
 			updateCharacteristic(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
-			
+
 			updateCharacteristicsWithDBR(dbr,false);
 
 			DynamicValueCondition condition=null;
 			if(dbr.isSTS()) {
-				condition = deriveNewConditionWithDBR((STS)dbr);			
+				condition = deriveNewConditionWithDBR((STS)dbr);
 			}
-			
+
 			createSpecificCharacteristics(dbr);
 
 			if (condition==null) {
@@ -504,26 +519,26 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				condition.getStates().add(DynamicValueState.HAS_METADATA);
 				setCondition(condition);
 			}
-			
+
 //			System.out.println(">>> "+name+" characteristics from DBR "+getCharacteristics());
 
 			getCharacteristics().notifyAll();
 			initializeCharacteristicsRunning = false;
 		}
 	}
-	
-	protected void updateCharacteristicsWithDBR(DBR dbr, boolean changeOnly)
+
+	protected void updateCharacteristicsWithDBR(final DBR dbr, final boolean changeOnly)
 	{
 		synchronized (getCharacteristics()) {
-	
+
 			boolean change = false;
-			
+
 			if (dbr.isCTRL())
 			{
-				CTRL gr = (CTRL)dbr;
+				final CTRL gr = (CTRL)dbr;
 				change |= updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, gr.getUnits());
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_UNITS, gr.getUnits());
-				
+
 				// Integer -> Long needed here
 				if (dbr.isINT())
 				{
@@ -532,14 +547,14 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(gr.getLowerDispLimit().longValue()));
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(gr.getUpperDispLimit().longValue()));
-					
+
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MIN, new Long(gr.getLowerWarningLimit().longValue()));
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_WARNING_MAX, new Long(gr.getUpperWarningLimit().longValue()));
-					
+
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, new Long(gr.getLowerAlarmLimit().longValue()));
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, new Long(gr.getUpperAlarmLimit().longValue()));
-					
-										
+
+
 				}
 				else
 				{
@@ -555,55 +570,56 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MIN, gr.getLowerAlarmLimit());
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_ALARM_MAX, gr.getUpperAlarmLimit());
 				}
-				
+
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_MINIMUM));
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_MAXIMUM));
-				
+
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MIN));
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_OPR_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_GRAPH_MAX));
-				
+
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MAX));
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_WARNING_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_WARNING_MIN));
-				
+
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MAX, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MAX));
 				change |= updateCharacteristic(EpicsPropertyCharacteristics.EPICS_ALARM_MIN, getCharacteristics().get(NumericPropertyCharacteristics.C_ALARM_MIN));
-				
+
 			} else {
 				if (!changeOnly) {
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_UNITS, "N/A");
 				}
 			}
-			
+
 			if (!changeOnly) {
 				if (dbr.isPRECSION())
 				{
-					short precision = ((PRECISION)dbr).getPrecision();
+					final int precision = ((PRECISION)dbr).getPrecision();
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%."  + precision + "f");
+					change |= updateCharacteristic(NumericPropertyCharacteristics.C_PRECISION, precision);
 				} else if (dbr.isSTRING()) {
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%s");
 				} else {
 					change |= updateCharacteristic(NumericPropertyCharacteristics.C_FORMAT, "%d");
 				}
-				
+
 				if (dbr.isLABELS())
 				{
-					String[] labels = ((LABELS)dbr).getLabels();
+					final String[] labels = ((LABELS)dbr).getLabels();
 					change |= updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, labels);
 					change |= updateCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, labels);
 
 					// create array of values (Long values)
-					Object[] values = new Object[labels.length];
+					final Object[] values = new Object[labels.length];
 					for (int i = 0; i < values.length; i++) {
 						values[i] = new Long(i);
 					}
-					
+
 					change |= updateCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES, values);
-					
+
 //					updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createEnumeratedMetaData(labels,values));
 
 				}
 			}
-			
+
 			if (change) {
 				updateCharacteristic(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(getCharacteristics()));
 			}
@@ -611,7 +627,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 	}
 
-	protected void createSpecificCharacteristics(DBR dbr) {
+	protected void createSpecificCharacteristics(final DBR dbr) {
 		// specific proxy implementation may override this and provide own characteristic initialization
 	}
 
@@ -621,30 +637,32 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	protected void initializeCharacteristics()
 	{
 		synchronized (getCharacteristics()) {
-			if (!connectionStateMachine.isConnected() 
+			if (!connectionStateMachine.isConnected()
 					|| channel.getConnectionState() != Channel.CONNECTED)
 			{
 				return;
 			}
-			
+
 //			System.out.println(">>> "+name+" initialize started");
-			
-			if (initializeCharacteristicsRunning) return;
+
+			if (initializeCharacteristicsRunning) {
+                return;
+            }
 			initializeCharacteristicsRunning = true;
-	
+
 			// convert to CTRL value
-			characteristicsRequestTimestamp = System.currentTimeMillis();		
+			characteristicsRequestTimestamp = System.currentTimeMillis();
 			try {
 				elementCount = channel.getElementCount();
-	
+
 				createDefaultCharacteristics();
-	
+
 				final int CTRL_OFFSET = 28;
-				DBRType ctrlType = DBRType.forValue(type.getValue() + CTRL_OFFSET);
+				final DBRType ctrlType = DBRType.forValue(type.getValue() + CTRL_OFFSET);
 				channel.get(ctrlType, 1, this);
 				plug.flushIO();
-			} catch (Throwable th) {
-				if (!connectionStateMachine.isConnected() 
+			} catch (final Throwable th) {
+				if (!connectionStateMachine.isConnected()
 						|| channel.getConnectionState() != Channel.CONNECTED)
 				{
 					return;
@@ -657,34 +675,35 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			}
 		}
 	}
-	
+
 	protected static final long CHARACTERISTICS_TIMEOUT = 5000;
 	protected long characteristicsRequestTimestamp = System.currentTimeMillis();
-	
+
 	/*
 	 * @see DirectoryProxy#getCharacteristicNames()
 	 */
-	public String[] getCharacteristicNames() throws DataExchangeException {
+	@Override
+    public String[] getCharacteristicNames() throws DataExchangeException {
 		synchronized (getCharacteristics())
 		{
 			// characteristics not initialized yet... wait
 			if (getCharacteristics().size() == 0)
 			{
 				initializeCharacteristics();
-				long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
+				final long timeToWait = CHARACTERISTICS_TIMEOUT - (System.currentTimeMillis() - characteristicsRequestTimestamp);
 				if (timeToWait > 0)
 				{
 					try {
 						getCharacteristics().wait(timeToWait);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						// noop
 					}
 				}
-				
+
 			}
-			
+
 			// get names
-			String[] names = new String[getCharacteristics().size()];
+			final String[] names = new String[getCharacteristics().size()];
 			getCharacteristics().keySet().toArray(names);
 			return names;
 		}
@@ -692,7 +711,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 	@Override
 	protected Object processCharacteristicBeforeCache(Object value,
-			String characteristicName) 
+			final String characteristicName)
 	{
 		if (value!=null) {
 			return value;
@@ -704,13 +723,13 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			if (getCharacteristics().size() == 0)
 			{
 				initializeCharacteristics();
-				long timeToWait = CHARACTERISTICS_TIMEOUT +100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
+				final long timeToWait = CHARACTERISTICS_TIMEOUT +100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
 //				System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait "+timeToWait);
 				if (timeToWait > 0)
 				{
 					try {
 						getCharacteristics().wait(timeToWait);
-					} catch (InterruptedException e) {
+					} catch (final InterruptedException e) {
 						// noop
 					}
 				}
@@ -720,22 +739,22 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 //		System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process before wait done");
 		return value;
 	}
-	
+
 	@Override
 	protected Object processCharacteristicAfterCache(Object value,
-			String characteristicName) 
+			final String characteristicName)
 	{
 		if (value==null && initializeCharacteristicsRunning) {
 //			System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after");
 			synchronized (getCharacteristics()) {
 				if (initializeCharacteristicsRunning) {
-					long timeToWait = CHARACTERISTICS_TIMEOUT + 100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
+					final long timeToWait = CHARACTERISTICS_TIMEOUT + 100 - (System.currentTimeMillis() - characteristicsRequestTimestamp);
 //					System.out.println(">>> "+name+" char "+characteristicName+" "+value+" process after wait "+timeToWait);
 					if (timeToWait > 0)
 					{
 						try {
 							getCharacteristics().wait(timeToWait);
-						} catch (InterruptedException e) {
+						} catch (final InterruptedException e) {
 							// noop
 						}
 					}
@@ -755,22 +774,23 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 		return value;
 	}
-	
-	private Object getCharacteristicFromField(String characteristicName) {
-		if (channel.getConnectionState() != Channel.CONNECTED)
-			return null;
-		
-		GetListenerImpl listener = new GetListenerImpl();
+
+	private Object getCharacteristicFromField(final String characteristicName) {
+		if (channel.getConnectionState() != Channel.CONNECTED) {
+            return null;
+        }
+
+		final GetListenerImpl listener = new GetListenerImpl();
         synchronized (listener) {
         	try {
         		CAJChannel ch=null;
-        		ConnectionListenerImpl conn= new ConnectionListenerImpl();
+        		final ConnectionListenerImpl conn= new ConnectionListenerImpl();
         		synchronized (conn) {
     				ch = (CAJChannel)plug.getContext().createChannel(name+"."+characteristicName,conn);
     				if (ch.getConnectionState() != Channel.CONNECTED) {
 	    				try {
 	    					conn.wait((long) (plug.getTimeout() * 1000));
-	    				} catch (InterruptedException e) {
+	    				} catch (final InterruptedException e) {
 	    					// noop
 	    				}
     				}
@@ -779,51 +799,52 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				plug.flushIO();
 				try {
 					listener.wait((long) (plug.getTimeout() * 1000));
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					// noop
 				}
 				ch.dispose();
-			} catch (IllegalStateException e1) {
+			} catch (final IllegalStateException e1) {
 				Logger.getLogger(this.getClass()).warn("Characteristic failed.", e1);
-			} catch (CAException e1) {
+			} catch (final CAException e1) {
 				Logger.getLogger(this.getClass()).warn("Characteristic failed: "+PlugUtilities.toShortErrorReport(e1), e1);
-			}			
+			}
 		}
 
 		final GetEvent event = listener.event;
 		if (event == null || event.getStatus() != CAStatus.NORMAL || event.getDBR() == null) {
 			return null;
-		}		
-				
+		}
+
 		return event.getDBR().getValue();
 	}
-	
-	
+
+
 	@Override
 	protected void handleCharacteristicsReponses(final String[] characteristics,
-			final ResponseListener<Object> callback, 
-			final RequestImpl<Object> request) 
+			final ResponseListener<Object> callback,
+			final RequestImpl<Object> request)
 	{
 
-		Runnable getCharsAsync = new Runnable () {
+		final Runnable getCharsAsync = new Runnable () {
 
-			public void run() {
+			@Override
+            public void run() {
 				handleCharacteristicsReponsesSync(characteristics, callback, request);
 			}
-			
+
 		};
 		execute(getCharsAsync);
 	}
-	
+
 	/**
 	 * Convert DBR to Java value.
 	 * @param dbr DBR to convert.
 	 * @return converted Java value.
 	 */
-	public final T toJavaValue(DBR dbr) {
+	public final T toJavaValue(final DBR dbr) {
 		return PlugUtilities.toJavaValue(dbr, dataType, channel.getFieldType());
 	}
-	
+
 	/**
 	 * Get CA channel.
 	 * @return channel.
@@ -839,17 +860,17 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	protected DBRType getType() {
 		return type;
 	}
-	
+
 	/**
 	 * Update conditions.
 	 * @param dbr status DBR.
 	 */
-	public void updateConditionWithDBR(DBR dbr) {
+	public void updateConditionWithDBR(final DBR dbr) {
 		if (dbr== null  || !dbr.isSTS()) {
 			return;
 		}
-		STS sts= (STS)dbr;
-		DynamicValueCondition cond= deriveNewConditionWithDBR(sts);
+		final STS sts= (STS)dbr;
+		final DynamicValueCondition cond= deriveNewConditionWithDBR(sts);
 		setCondition(cond);
 		if (plug.isDbrUpdatesCharacteristics()) {
 			synchronized (getCharacteristics()) {
@@ -869,28 +890,28 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 	/**
 	 * Creates copy of current condition condition .
-	 * 
+	 *
 	 * @param dbr status DBR.
 	 */
-	private DynamicValueCondition deriveNewConditionWithDBR(STS dbr) {
+	private DynamicValueCondition deriveNewConditionWithDBR(final STS dbr) {
 
-		Status st = dbr.getStatus();
-		Severity se = dbr.getSeverity();
+		final Status st = dbr.getStatus();
+		final Severity se = dbr.getSeverity();
 		EnumSet<DynamicValueState> states = getCondition().getStates();
-		
-		boolean change= 
-			(se == Severity.NO_ALARM && !states.contains(DynamicValueState.NORMAL)) ||
-			(se == Severity.MINOR_ALARM && !states.contains(DynamicValueState.WARNING)) ||
-			(se == Severity.MAJOR_ALARM && !states.contains(DynamicValueState.ALARM)) ||
-			(se == Severity.INVALID_ALARM && !states.contains(DynamicValueState.ERROR));
-		
+
+		final boolean change=
+			se == Severity.NO_ALARM && !states.contains(DynamicValueState.NORMAL) ||
+			se == Severity.MINOR_ALARM && !states.contains(DynamicValueState.WARNING) ||
+			se == Severity.MAJOR_ALARM && !states.contains(DynamicValueState.ALARM) ||
+			se == Severity.INVALID_ALARM && !states.contains(DynamicValueState.ERROR);
+
 		if (!change) {
 			return null;
 		}
 
 		condDesc = st.getName();
 		states = EnumSet.copyOf(getCondition().getStates());
-		
+
 		if (se == Severity.NO_ALARM) {
 			states.add(DynamicValueState.NORMAL);
 			states.remove(DynamicValueState.WARNING);
@@ -912,7 +933,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			states.remove(DynamicValueState.ALARM);
 			states.add(DynamicValueState.ERROR);
 		}
-		
+
 		Timestamp timestamp = null;
 		//((TIME)dbr).getTimeStamp() != null - could happen
 		if (dbr instanceof TIME && ((TIME)dbr).getTimeStamp() != null) {
@@ -920,29 +941,31 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 
 		return new DynamicValueCondition(states, timestamp, condDesc);
-		
+
 	}
 
 	/*
 	 * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
 	 */
-	public synchronized void connectionChanged(ConnectionEvent event) {
+	@Override
+    public synchronized void connectionChanged(final ConnectionEvent event) {
 		if (abortConnectionTask != null) {
 			abortConnectionTask.cancel();
 		}
-		
+
 		// this prevented the proxy from ever connecting
 //		if (abortConnection) return;
-		
-		Runnable connChangedRunnable = new Runnable () {
 
-			public void run() {
+		final Runnable connChangedRunnable = new Runnable () {
+
+			@Override
+            public void run() {
 //				 Maps JCA states to DAL states
-				gov.aps.jca.Channel.ConnectionState c= channel.getConnectionState();
+				final gov.aps.jca.Channel.ConnectionState c= channel.getConnectionState();
 				if (c==null) {
 					Logger.getLogger(PropertyProxyImpl.class).debug(PropertyProxyImpl.class.getName()+": JCA connection state for "+channel.getName()+" is NULL, connection event ignored!");
 					return;
-				} 
+				}
 				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
 					setConnectionState(ConnectionState.DESTROYED,null);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
@@ -964,11 +987,11 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 					setConnectionState(ConnectionState.CONNECTION_LOST,null);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.NEVER_CONNECTED) {
 					setConnectionState(ConnectionState.CONNECTING,null);
-				}		
+				}
 			}
-			
+
 		};
-		
+
 		if (getPlug().getMaxThreads() == 0) {
 			execute(connChangedRunnable);
 		} else if (!getExecutor().isShutdown()) {
@@ -980,15 +1003,16 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
 	 */
 	@Override
-	public void setConnectionState(ConnectionState s, Throwable error) {
+	public void setConnectionState(final ConnectionState s, final Throwable error) {
 		super.setConnectionState(s, error);
 		if (s == ConnectionState.DESTROYED) {
 			if (getPlug().getMaxThreads() != 0 && !getPlug().isUseCommonExecutor()) {
 				getExecutor().shutdown();
 		        try {
-		            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS))
-		                getExecutor().shutdownNow();
-		        } catch (InterruptedException ie) {  }
+		            if (!getExecutor().awaitTermination(1, TimeUnit.SECONDS)) {
+                        getExecutor().shutdownNow();
+                    }
+		        } catch (final InterruptedException ie) {  }
 			}
 		}
 	}
@@ -996,7 +1020,8 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	/*
 	 * @see org.epics.css.dal.proxy.DirectoryProxy#refresh()
 	 */
-	public void refresh() {
+	@Override
+    public void refresh() {
 		initializeCharacteristics();
 	}
 
@@ -1004,10 +1029,10 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	 * Executes a <code>Runnable</code>. The <code>Runnable</code> is run in the same thread if
 	 * {@link EPICSPlug#PROPERTY_MAX_THREADS} is equal to 0. Otherwise it is delegated to the
 	 * <code>Executor</code> ({@link #getExecutor()}).
-	 * 
+	 *
 	 * @param r the <code>Runnable</code> to run
 	 */
-	protected void execute(Runnable r) {
+	protected void execute(final Runnable r) {
 		if (getPlug().getMaxThreads() > 0) {
 			getExecutor().execute(r);
 		}
@@ -1015,16 +1040,16 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 			r.run();
 		}
 	}
-	
+
 	/**
 	 * This method should be called only if {@link EPICSPlug#PROPERTY_MAX_THREADS} is
-	 * a number greater than 0. 
+	 * a number greater than 0.
 	 * <p>
-	 * If {@link EPICSPlug#PROPERTY_USE_COMMON_EXECUTOR} is set to <code>true</code> the 
+	 * If {@link EPICSPlug#PROPERTY_USE_COMMON_EXECUTOR} is set to <code>true</code> the
 	 * <code>Executor</code> from {@link EPICSPlug#getExecutor()} is returned. Otherwise
 	 * a new </code>ThreadPoolExecutor</code> is created.
 	 * </p>
-	 * 
+	 *
 	 * @return the executor
 	 * @throws IllegalStateException if maximum number of threads defined by {@link EPICSPlug}
 	 * is equal to 0.
@@ -1032,16 +1057,20 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	public ThreadPoolExecutor getExecutor() {
 		if (executor==null) {
 			synchronized (this) {
-				if (getPlug().getMaxThreads() == 0) throw new IllegalStateException("Maximum number of threads must be greater than 0.");
-				if (getPlug().isUseCommonExecutor()) executor = getPlug().getExecutor();
-				else {
+				if (getPlug().getMaxThreads() == 0) {
+                    throw new IllegalStateException("Maximum number of threads must be greater than 0.");
+                }
+				if (getPlug().isUseCommonExecutor()) {
+                    executor = getPlug().getExecutor();
+                } else {
 					executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
 			                new LinkedBlockingQueue<Runnable>());
 					executor.prestartAllCoreThreads();
-				}		
+				}
 				executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
-					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+					@Override
+                    public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
 //						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
 					}
 				});
@@ -1049,8 +1078,8 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 		return executor;
 	}
-	
-	private static boolean equal(String s1, String s2) {
+
+	private static boolean equal(final String s1, final String s2) {
 		if (s1 == null || s2 == null) {
 			if (s1 == s2) {
 				return true;
@@ -1059,13 +1088,14 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 		return s1.equals(s2);
 	}
-	
-	private boolean fallbackInProgress = false;
-	private GetListener fallbackListener = new GetListener() {
 
-		public void getCompleted(GetEvent ev) {
-			if (!connectionStateMachine.isConnected() 
-					|| channel.getConnectionState()!= Channel.CONNECTED) 
+	private boolean fallbackInProgress = false;
+	private final GetListener fallbackListener = new GetListener() {
+
+		@Override
+        public void getCompleted(final GetEvent ev) {
+			if (!connectionStateMachine.isConnected()
+					|| channel.getConnectionState()!= Channel.CONNECTED)
 			{
 				/*
 				 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
@@ -1073,13 +1103,15 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 				 */
 				return;
 			}
-			
+
 			try {
-				DBR dbr = ev.getDBR();
-				if (dbr == null) return;
-				
+				final DBR dbr = ev.getDBR();
+				if (dbr == null) {
+                    return;
+                }
+
 				createCharacteristics(dbr);
-				
+
 				/*
 				T defaultValue = PlugUtilities.defaultValue(dataType);
 				if (isMonitorListCreated()) {
@@ -1089,7 +1121,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 						}
 					}
 				}*/
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				plug.getLogger().warn("Recovery from null DBR failed.", t);
 			} finally {
 				fallbackInProgress = false;
@@ -1099,25 +1131,28 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 	protected void recoverFromNullDbr() {
 		synchronized (fallbackListener) {
-			if (fallbackInProgress)	return;
+			if (fallbackInProgress) {
+                return;
+            }
 			fallbackInProgress = true;
 		}
 		getExecutor().execute(new Runnable() {
-			public void run() {
-		
+			@Override
+            public void run() {
+
 				try {
 					plug.getLogger().warn("Received NULL DBR, trying again with reovery procedure.");
 					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
 					plug.flushIO();
-				} catch (Throwable e) {
+				} catch (final Throwable e) {
 					plug.getLogger().warn("Recovery from null DBR failed.", e);
 					fallbackInProgress = false;
 				}
-				
+
 			}
 		});
 	}
-	
+
 	@Override
 	protected String getRemoteHostInfo() {
 		if (channel!=null) {
@@ -1125,5 +1160,5 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 		}
 		return super.getRemoteHostInfo();
 	}
-	
+
 }
