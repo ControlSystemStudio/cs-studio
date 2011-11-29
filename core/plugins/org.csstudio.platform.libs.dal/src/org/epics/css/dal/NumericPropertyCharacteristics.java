@@ -49,8 +49,8 @@ public interface NumericPropertyCharacteristics extends PropertyCharacteristics
 	/**
 	 * The name of the maximum characteristic. Such characteristic represents
 	 * the value that should be taken as a maximum allowed of the dynamic
-	 * value. 
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * value.
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_MAXIMUM = CharacteristicInfo.C_MAXIMUM.getName();
@@ -59,7 +59,7 @@ public interface NumericPropertyCharacteristics extends PropertyCharacteristics
 	 * Name of the graphMin characteristic. Such characteristic represents the
 	 * value that should be taken as a display minimum if the dynamic value of
 	 * the property is being charted.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_GRAPH_MIN = CharacteristicInfo.C_GRAPH_MIN.getName();
@@ -68,7 +68,7 @@ public interface NumericPropertyCharacteristics extends PropertyCharacteristics
 	 * The name of the graphMax characteristic. Such characteristic represents
 	 * the value that should be taken as a display maximum if the dynamic
 	 * value of the property is being charted.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_GRAPH_MAX = CharacteristicInfo.C_GRAPH_MAX.getName();
@@ -92,54 +92,61 @@ public interface NumericPropertyCharacteristics extends PropertyCharacteristics
 	 * or "logarithmic"; case is significant.
 	 */
 	public static final String C_SCALE_TYPE = CharacteristicInfo.C_SCALE_TYPE.getName();
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the warning upper limit characteristic. Such characteristic
 	 * represents the value that should be taken as a maximum value which
 	 * is displayed without a warning. Any value higher that this maximum, should
 	 * have a warning label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_WARNING_MAX = CharacteristicInfo.C_WARNING_MAX.getName();
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the warning lower limit characteristic. Such characteristic
 	 * represents the value that should be taken as a minimum value which
 	 * is displayed without a warning. Any value lower that this minimum, should
 	 * have a warning label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_WARNING_MIN = CharacteristicInfo.C_WARNING_MIN.getName();
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the alarm upper limit characteristic. Such characteristic
 	 * represents the value that should be taken as a maximum value which
 	 * is displayed without an alarm. Any value higher that this maximum, should
 	 * have a major alarm label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_ALARM_MAX = CharacteristicInfo.C_ALARM_MAX.getName();
-	
+
 	/**
 	 * Optional characteristic.
-	 * 
+	 *
 	 * The name of the alarm lower limit characteristic. Such characteristic
 	 * represents the value that should be taken as a minimum value which
 	 * is displayed without an alarm. Any value lower that this minimum, should
 	 * have a major alarm label attached to it.
-	 * If dynamic value type is array or sequence, then this value is scalar value and 
+	 * If dynamic value type is array or sequence, then this value is scalar value and
 	 * represents limit for all positions in array or sequence.
 	 */
 	public static final String C_ALARM_MIN = CharacteristicInfo.C_ALARM_MIN.getName();
+
+	/**
+	 * Optional characteristic.
+	 *
+	 * The name of the number of decimal places. Such characteristic
+	 */
+	public static final String C_PRECISION = CharacteristicInfo.C_PRECISION.getName();
 }
 
 /* __oOo__ */
