@@ -32,12 +32,13 @@ public class PlotDataProvider implements IDataProvider
             new CopyOnWriteArrayList<IDataProviderListener>();
 
     // Synchronize on access. XYPlot will also sync on 'this'.
+    private long last_serial = -1;
     private List<SampleAdapter> samples = new ArrayList<SampleAdapter>();
     private Range xrange = new Range(0, 0);
     private Range yrange = new Range(0, 0);
     
     /** Initialize
-     *  @param display Display to use for listener notifications
+     *  @param display Display to use for listener notifications, <code>null</code> for update thread
      */
     public PlotDataProvider(final Display display)
     {
@@ -49,6 +50,7 @@ public class PlotDataProvider implements IDataProvider
     {
         synchronized (this)
         {
+            last_serial = -1;
             samples.clear();
             xrange = new Range(0, 0);
             yrange = new Range(0, 0);
@@ -57,12 +59,14 @@ public class PlotDataProvider implements IDataProvider
     }
 
     /** Set samples for plot from scan data
+     *  @param last_serial Serial of last sample
      *  @param scan_data {@link ScanData}
      *  @param x_device Name of device for 'X' axis
      *  @param y_device Name of device for 'Y' axis
      */
-    public void update(final ScanData scan_data, final String x_device, final String y_device)
+    public void update(final long last_serial, final ScanData scan_data, final String x_device, final String y_device)
     {
+        this.last_serial = last_serial;
         // Arrange data in 'spreadsheet'
         final SpreadsheetScanDataIterator sheet =
                 new SpreadsheetScanDataIterator(scan_data,
@@ -102,7 +106,12 @@ public class PlotDataProvider implements IDataProvider
     /** Update listeners on Display thread */
     private void notifyListeners()
     {
-        if (display != null)
+        if (display == null)
+        {
+            for (IDataProviderListener listener : listeners)
+                listener.dataChanged(PlotDataProvider.this);
+        }
+        else
             display.asyncExec(new Runnable()
             {
                 @Override
@@ -128,6 +137,11 @@ public class PlotDataProvider implements IDataProvider
         return listeners.remove(listener);
     }
 
+    public long getLastSerial()
+    {
+        return last_serial;
+    }
+    
     /** {@inheritDoc} */
     @Override
     public int getSize()

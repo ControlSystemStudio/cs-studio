@@ -36,12 +36,16 @@ public class PlotDataModel implements Runnable
     /** Currently selected scan */
     private volatile ScanInfo selected_scan = null;
 
+    /** Devices in current scan */
     private volatile List<String> devices = null;
     
+    /** Device used for 'X' axis */
     private volatile String x_axis_device = null;
 
+    /** Device used for 'Y' axis */
     private volatile String y_axis_device = null;
     
+    /** Data for X/Y axes */
     final private PlotDataProvider plot_data;
     
     /** Initialize
@@ -100,18 +104,24 @@ public class PlotDataModel implements Runnable
                 final ScanData scan_data;
                 try
                 {
-                    scan_data = model.getScanData(scan);
-                    if (scan_data == null)
-                        devices = null;
-                    else
+                    // Check if there is new data
+                    final long last_serial = model.getLastScanDataSerial(scan);
+                    if (last_serial != plot_data.getLastSerial())
                     {
-                        devices = scan_data.getDevices();
-                        // Get data for selected devices from plot
-                        if (x_device == null  ||  y_device == null)
-                            plot_data.clear();
+                        scan_data = model.getScanData(scan);
+                        if (scan_data == null)
+                            devices = null;
                         else
-                            plot_data.update(scan_data, x_device, y_device);
+                        {
+                            devices = scan_data.getDevices();
+                            // Get data for selected devices from plot
+                            if (x_device == null  ||  y_device == null)
+                                plot_data.clear();
+                            else
+                                plot_data.update(last_serial, scan_data, x_device, y_device);
+                        }
                     }
+                    // else: Skip fetching the same data. No plot_data.update, no events
                 }
                 catch (RemoteException ex)
                 {

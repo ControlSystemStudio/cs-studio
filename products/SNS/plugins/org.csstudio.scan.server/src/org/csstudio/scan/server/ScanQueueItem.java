@@ -46,7 +46,6 @@ class ScanQueueItem implements Callable<Object>
     @Override
     public Object call() throws Exception
     {
-        // TODO DataLogger?
         System.out.println("== " + scan.getName());
         final ScanContext context = new ScanContext(devices);
         scan.execute(context);

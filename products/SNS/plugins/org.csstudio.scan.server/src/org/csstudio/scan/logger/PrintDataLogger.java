@@ -18,25 +18,34 @@ package org.csstudio.scan.logger;
 import java.io.PrintStream;
 
 import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
-/** {@link DataLogger} that prints all samples right away
+/** {@link DataLogger} that prints all samples right away.
+ * 
+ *  <p>"write only"
+ *  
  *  @author Kay Kasemir
  */
 public class PrintDataLogger implements DataLogger
 {
 	final private PrintStream stream;
 
+	/** Initialize for standard output */
 	public PrintDataLogger()
 	{
 		this(System.out);
 	}
 
+	/** Initialize
+	 *  @param stream Output stream
+	 */
 	public PrintDataLogger(final PrintStream stream)
 	{
 		this.stream = stream;
 	}
 
+    /** {@inheritDoc} */
 	@Override
     public void log(final ScanSample sample)
     {
@@ -46,5 +55,19 @@ public class PrintDataLogger implements DataLogger
 		stream.print('=');
 		stream.print(sample.getValue().toString());
 		stream.println();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long getLastScanDataSerial()
+    {
+        return -1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ScanData getScanData()
+    {
+        return null;
     }
 }

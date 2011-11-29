@@ -82,6 +82,6 @@ public class ScanTest
         assertEquals(100, info.getPercentage());
 
         // Dump data
-        new SpreadsheetScanDataIterator(context.getScanData()).dump(System.out);
+        new SpreadsheetScanDataIterator(context.getDataLogger().getScanData()).dump(System.out);
     }
 }

@@ -22,10 +22,10 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.logger.MemoryDataLogger;
 
 /** Context in which the {@link CommandImpl}s of a {@link Scan} are executed.
@@ -88,10 +88,10 @@ public class ScanContext
         return devices.getDevices();
     }
 
-    /** @return Data that has been logged for the scan */
-    public ScanData getScanData()
+    /** @return {@link DataLogger} of this scan */
+    public DataLogger getDataLogger()
     {
-        return data_logger.getScanData();
+        return data_logger;
     }
 
     /** @param commands {@link CommandImpl}s to execute

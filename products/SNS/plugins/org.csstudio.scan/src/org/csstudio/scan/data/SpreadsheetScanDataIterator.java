@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -68,6 +69,8 @@ public class SpreadsheetScanDataIterator
         for (int i=0; i<N; ++i)
         {
             data[i] = scan_data.getSamples(device_names.get(i));
+            if (data[i] == null)
+                data[i] = Collections.emptyList();
             index[i] = 0;
             value[i] = null;
         }

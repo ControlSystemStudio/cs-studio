@@ -34,6 +34,7 @@ import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.logger.DataLogger;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -200,13 +201,34 @@ public class ScanServerImpl implements ScanServer
         return null;
     }
 
+    /** @param id Scan ID
+     *  @return {@link DataLogger} of scan or <code>null</code>
+     */
+    private DataLogger getDataLogger(final long id)
+    {
+        final Scan scan = findScan(id);
+        if (scan == null)
+            return null;
+        return scan.getDataLogger();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public long getLastScanDataSerial(final long id) throws RemoteException
+    {
+        final DataLogger logger = getDataLogger(id);
+        if (logger != null)
+            return logger.getLastScanDataSerial();
+        return -1;
+    }
+    
     /** {@inheritDoc} */
 	@Override
     public ScanData getScanData(final long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
-        if (scan != null)
-            return scan.getScanData();
+        final DataLogger logger = getDataLogger(id);
+        if (logger != null)
+            return logger.getScanData();
         return null;
     }
 
