@@ -11,9 +11,11 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public abstract class PropertySSHelper {
 	
-	private static final PropertySSHelper IMPL =
-			(PropertySSHelper)ImplementationLoader.newInstance(
-					PropertySSHelper.class, false);
+	private static final PropertySSHelper IMPL =			
+			(PropertySSHelper)ImplementationLoader.loadObjectInPlugin(
+					"org.csstudio.opibuilder.editor",  //$NON-NLS-1$
+					"org.csstudio.opibuilder.properties.support.PropertySSHelperImpl", //$NON-NLS-1$
+					false);
 	
 	
 	public static PropertySSHelper getIMPL(){
