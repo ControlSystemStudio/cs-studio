@@ -17,7 +17,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jdom,
  org.csstudio.auth;bundle-version="1.0.0",
  org.csstudio.auth.ui;bundle-version="1.0.0",
- org.mockito;bundle-version="1.8.5"
+ org.mockito;bundle-version="1.8.5",
+ org.csstudio.domain.desy;bundle-version="1.0.0",
+ org.csstudio.domain.desy.softioc;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds,
  org.csstudio.sds.cursorservice,
