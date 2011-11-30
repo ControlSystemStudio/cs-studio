@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.plot;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
+import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
@@ -27,16 +28,15 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenPlotAction extends Action
 {
-    final private long scan_id;
+    final private ScanInfo info;
     
     /** Initialize
-     *  @param model
-     *  @param info
+     *  @param info Scan info
      */
-    public OpenPlotAction(final long scan_id)
+    public OpenPlotAction(final ScanInfo info)
     {
         super("Plot", Activator.getImageDescriptior("icons/plot.gif"));
-        this.scan_id = scan_id;
+        this.info = info;
     }
 
     /** {@inheritDoc} */
@@ -49,7 +49,7 @@ public class OpenPlotAction extends Action
             final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             final IWorkbenchPage page = window.getActivePage();
             final ScanPlotView view = (ScanPlotView) page.showView(ScanPlotView.ID);
-            view.selectScan(scan_id);
+            view.selectScan(info.getName(), info.getId());
         }
         catch (Exception ex)
         {

@@ -326,7 +326,7 @@ public class GUI implements ScanInfoModelListener
                 else
                     manager.add(new RemoveAction(model, info));
                 manager.add(new GetScanDataAction(model, info));
-                manager.add(new OpenPlotAction(info.getId()));
+                manager.add(new OpenPlotAction(info));
                 manager.add(new RemoveCompletedAction(model));
             }
         });

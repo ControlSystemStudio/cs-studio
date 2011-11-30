@@ -34,7 +34,7 @@ public class PlotDataModel implements Runnable
     private volatile Thread update_thread;
 
     /** Currently selected scan */
-    private volatile ScanInfo selected_scan = null;
+    private volatile long selected_scan_id = -1;
 
     /** Devices in current scan */
     private volatile List<String> devices = null;
@@ -93,7 +93,7 @@ public class PlotDataModel implements Runnable
     {
         while (update_thread != null)
         {
-            final ScanInfo scan = selected_scan;
+            final ScanInfo scan = getScan(selected_scan_id);
             final String x_device = x_axis_device;
             final String y_device = y_axis_device;
             
@@ -169,7 +169,7 @@ public class PlotDataModel implements Runnable
      */
     public void selectScan(final long id)
     {
-        selected_scan = getScan(id);
+        selected_scan_id = id;
         waveUpdateThread();
     }
 
