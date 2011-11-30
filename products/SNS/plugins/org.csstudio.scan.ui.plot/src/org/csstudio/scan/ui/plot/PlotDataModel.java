@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
  *  </ul>
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PlotDataModel implements Runnable
 {
     /** Scan model */

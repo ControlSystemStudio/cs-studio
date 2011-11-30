@@ -24,7 +24,7 @@ import org.eclipse.ui.part.ViewPart;
 public class ScanPlotView extends ViewPart
 {
     /** View ID defined in plugin.xml */
-    final public static String ID = "org.csstudio.scan.ui.plot.view";
+    final public static String ID = "org.csstudio.scan.ui.plot.view"; //$NON-NLS-1$
     
     private PlotDataModel model;
 
@@ -48,9 +48,9 @@ public class ScanPlotView extends ViewPart
         catch (Exception ex)
         {
             final Label l = new Label(parent, 0);
-            l.setText("Error getting scan info: " + ex.getMessage());
+            l.setText("Error getting scan info: " + ex.getMessage()); //$NON-NLS-1$
             Logger.getLogger(getClass().getName()).
-                log(Level.WARNING, "Error getting scan info", ex);
+                log(Level.WARNING, "Error getting scan info", ex); //$NON-NLS-1$
             return;
         }
         

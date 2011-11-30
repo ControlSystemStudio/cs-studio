@@ -67,7 +67,7 @@ public interface TODO
      *  
      *  TODO Allow multiple scan plots
      *       
-     *  TODO Plot: Show/Hide (default) toolbar
+     *  Done Plot: Show/Hide (default) toolbar
      *  
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.

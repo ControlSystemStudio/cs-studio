@@ -35,7 +35,7 @@ public class OpenPlotAction extends Action
      */
     public OpenPlotAction(final ScanInfo info)
     {
-        super("Plot", Activator.getImageDescriptior("icons/plot.gif"));
+        super(Messages.Plot, Activator.getImageDescriptor("icons/plot.gif")); //$NON-NLS-1$
         this.info = info;
     }
 
@@ -53,7 +53,7 @@ public class OpenPlotAction extends Action
         }
         catch (Exception ex)
         {
-            new ErrorDetailDialog(null, "Error", "Error opening plot view", ex.getMessage()).open();
+            new ErrorDetailDialog(null, Messages.Error, Messages.OpenPlotError, ex.getMessage()).open();
         }
     }
 }
