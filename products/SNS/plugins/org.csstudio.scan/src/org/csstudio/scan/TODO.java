@@ -63,6 +63,12 @@ public interface TODO
      *  
      *  Done Improve scan data updates, use 'last update' time to suppress no-change updates
      *       
+     *  Done Start plot from script
+     *  
+     *  TODO Allow multiple scan plots
+     *       
+     *  TODO Plot: Show/Hide (default) toolbar
+     *  
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
      *       If they're something else, then an API for

@@ -42,9 +42,18 @@ public class ScanSelectorAction extends DropdownToolbarAction
      */
     public static String encode(final ScanInfo scan)
     {
-        return scan.getName() + " [" + scan.getId() + "]";
+        return encode(scan.getName(), scan.getId());
     }
 
+    /** @param name Scan name
+     *  @param id Scan ID
+     *  @return String for drop-down entry that encodes the scan
+     */
+    public static String encode(final String name, final long id)
+    {
+        return name + " [" + id + "]";
+    }
+    
     /** @param option Option in drop-down list
      *  @return Decoded Scan ID or <code>-1</code>
      */

@@ -31,6 +31,10 @@ public class ScanPlotView extends ViewPart
     private Plot plot;
 
     private ScanSelectorAction scan_selector;
+
+    private DeviceSelectorAction y_selector;
+
+    private DeviceSelectorAction x_selector;
     
     /** {@inheritDoc} */
     @Override
@@ -71,9 +75,11 @@ public class ScanPlotView extends ViewPart
         
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         scan_selector = new ScanSelectorAction(model, plot);
+        x_selector = DeviceSelectorAction.forXAxis(model, plot);
+        y_selector = DeviceSelectorAction.forYAxis(model, plot);
         toolbar.add(scan_selector);
-        toolbar.add(DeviceSelectorAction.forXAxis(model, plot));
-        toolbar.add(DeviceSelectorAction.forYAxis(model, plot));
+        toolbar.add(x_selector);
+        toolbar.add(y_selector);
     }
 
     /** {@inheritDoc} */
@@ -83,15 +89,35 @@ public class ScanPlotView extends ViewPart
         // NOP
     }
 
-    /** @param scan_id ID of scan to select */
-    public void selectScan(final long scan_id)
+    /** Select a scan to display in the plot
+     *  @param name  Scan name  (might be replaced with the actual scan name)
+     *  @param id    ID of scan to select
+     */
+    public void selectScan(final String name, final long id)
     {
-        final ScanInfo scan = model.getScan(scan_id);
+        final String option;
+        // Try to use the 'correct' scan information for the ID,
+        // but if the model has not (yet) obtained that,
+        // use the name and ID as given
+        final ScanInfo scan = model.getScan(id);
         if (scan != null)
-        {
-            final String option = ScanSelectorAction.encode(scan);
-            scan_selector.setSelection(option);
-            scan_selector.handleSelection(option);
-        }
+            option = ScanSelectorAction.encode(scan);
+        else
+            option = ScanSelectorAction.encode(name, id);
+        scan_selector.setSelection(option);
+        scan_selector.handleSelection(option);
+    }
+
+    /** Select the devices to use for the plot's axes
+     *  @param xdevice Name of X axis device
+     *  @param ydevice .. Y axis ...
+     */
+    public void selectDevices(final String xdevice, final String ydevice)
+    {
+        x_selector.setSelection(xdevice);
+        x_selector.handleSelection(xdevice);
+        
+        y_selector.setSelection(ydevice);
+        y_selector.handleSelection(ydevice);
     }
 }
