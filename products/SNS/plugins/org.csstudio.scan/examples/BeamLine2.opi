@@ -321,8 +321,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>24</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Horizontal start position</tooltip>
       <x>57</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -407,8 +406,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>54</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Horizontal end position</tooltip>
       <x>57</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -436,7 +434,7 @@ $(pv_value)</tooltip>
       <width>97</width>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
-      <image />
+      <image>run.gif</image>
       <rules />
       <pv_value />
       <toggle_button>false</toggle_button>
@@ -453,8 +451,7 @@ $(pv_value)</tooltip>
           <description>Go!</description>
         </action>
       </actions>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Schedule a Scan</tooltip>
       <x>165</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
@@ -503,8 +500,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>24</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Vertical start position</tooltip>
       <x>165</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
@@ -553,8 +549,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>54</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Vertical end position</tooltip>
       <x>165</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
@@ -603,8 +598,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>84</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Vertical step size</tooltip>
       <x>165</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
@@ -657,8 +651,7 @@ $(pv_value)</tooltip>
       </border_color>
       <y>162</y>
       <actions hook="false" hook_all="false" />
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Scan up/down or always in one direction?</tooltip>
       <x>83</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -779,8 +772,7 @@ $(pv_value)</tooltip>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
       <y>126</y>
-      <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+      <tooltip>Scan Name</tooltip>
       <x>57</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -972,8 +964,7 @@ $(pv_value)</tooltip>
     <horizontal_alignment>0</horizontal_alignment>
     <actions hook="false" hook_all="false" />
     <y>107</y>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
+    <tooltip>Horizontal step size</tooltip>
     <x>488</x>
   </widget>
 </display>
