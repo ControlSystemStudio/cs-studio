@@ -17,5 +17,13 @@
             class="org.csstudio.application.weightrequest.internal.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.application.weightrequest.management.Stop"
+            id="org.csstudio.application.weightrequest.Stop"
+            label="Stop">
+      </command>
+   </extension>
 
 </plugin>
