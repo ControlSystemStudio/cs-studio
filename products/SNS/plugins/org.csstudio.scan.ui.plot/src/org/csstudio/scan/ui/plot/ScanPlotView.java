@@ -7,15 +7,20 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse View for the scan plot
@@ -25,17 +30,56 @@ public class ScanPlotView extends ViewPart
 {
     /** View ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.plot.view"; //$NON-NLS-1$
+
+    /** Memento tags */
+    @SuppressWarnings("nls")
+    final private static String TAG_SCAN = "scan",
+                                TAG_XDEVICE = "xdevice",
+                                TAG_YDEVICE = "ydevice";
     
+    /** Instance of this view, used to create the secondary view ID
+     *  necessary to allow multiple views
+     */
+    final private static AtomicInteger instance = new AtomicInteger(0);
+    
+    /** State saved from previous instance */
+    private IMemento memento = null;
+
+    /** Data model */
     private PlotDataModel model;
 
+    // GUI elements
     private Plot plot;
-
     private ScanSelectorAction scan_selector;
-
     private DeviceSelectorAction y_selector;
-
     private DeviceSelectorAction x_selector;
     
+    /** @return Next secondary view ID for creating multiple plot views */
+    public static String getNextViewID()
+    {
+        return Integer.toString(instance.incrementAndGet());
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void init(final IViewSite site, final IMemento memento) throws PartInitException
+    {
+        super.init(site, memento);
+        this.memento  = memento;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void saveState(final IMemento memento)
+    {
+        if (scan_selector.getSelection() != null)
+            memento.putString(TAG_SCAN, scan_selector.getSelection());
+        if (x_selector.getSelection() != null)
+            memento.putString(TAG_XDEVICE, x_selector.getSelection());
+        if (y_selector.getSelection() != null)
+            memento.putString(TAG_YDEVICE, y_selector.getSelection());
+    }
+
     /** {@inheritDoc} */
     @Override
     public void createPartControl(final Composite parent)
@@ -65,6 +109,27 @@ public class ScanPlotView extends ViewPart
         });
         
         createComponents(parent);
+        
+        // Restore saved state
+        if (memento != null)
+        {
+            updateSelection(scan_selector, memento.getString(TAG_SCAN));
+            updateSelection(x_selector, memento.getString(TAG_XDEVICE));
+            updateSelection(y_selector, memento.getString(TAG_YDEVICE));
+            memento = null;
+        }
+    }
+
+    /** Update a selector as if user had entered a value
+     *  @param selector {@link DropdownToolbarAction}
+     *  @param selection Desired value or <code>null</code>
+     */
+    private void updateSelection(final DropdownToolbarAction selector, final String selection)
+    {
+        if (selection == null)
+            return;
+        selector.setSelection(selection);
+        selector.handleSelection(selection);
     }
 
     /** @param parent Parent composite under which to create GUI elements */
@@ -104,8 +169,7 @@ public class ScanPlotView extends ViewPart
             option = ScanSelectorAction.encode(scan);
         else
             option = ScanSelectorAction.encode(name, id);
-        scan_selector.setSelection(option);
-        scan_selector.handleSelection(option);
+        updateSelection(scan_selector, option);
     }
 
     /** Select the devices to use for the plot's axes
@@ -114,10 +178,7 @@ public class ScanPlotView extends ViewPart
      */
     public void selectDevices(final String xdevice, final String ydevice)
     {
-        x_selector.setSelection(xdevice);
-        x_selector.handleSelection(xdevice);
-        
-        y_selector.setSelection(ydevice);
-        y_selector.handleSelection(ydevice);
+        updateSelection(x_selector, xdevice);
+        updateSelection(y_selector, ydevice);
     }
 }

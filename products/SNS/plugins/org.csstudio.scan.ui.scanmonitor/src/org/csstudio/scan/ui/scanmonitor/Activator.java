@@ -25,7 +25,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Activator
 {
     /** Plugin ID defined in MANIFEST.MF */
-    final public static String ID = "org.csstudio.scan.ui.scanmonitor";
+    final public static String ID = "org.csstudio.scan.ui.scanmonitor"; //$NON-NLS-1$
 
     /** @param path Image path within plugin
      *  @return {@link ImageDescriptor}

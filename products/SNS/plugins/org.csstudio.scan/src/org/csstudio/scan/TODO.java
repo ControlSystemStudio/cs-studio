@@ -65,9 +65,13 @@ public interface TODO
      *       
      *  Done Start plot from script
      *  
-     *  TODO Allow multiple scan plots
+     *  Done Allow multiple scan plots, use memento
      *       
      *  Done Plot: Show/Hide (default) toolbar
+     *  
+     *  TODO Other scan configuration GUIs.
+     *       'Spreadsheet' of loop variable, start/end?
+     *       Process block GUI?
      *  
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
@@ -78,10 +82,6 @@ public interface TODO
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
-     *  
-     *  TODO Other scan configuration GUIs.
-     *       'Spreadsheet' of loop variable, start/end?
-     *       Process block GUI?
      *  
      *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
      *  

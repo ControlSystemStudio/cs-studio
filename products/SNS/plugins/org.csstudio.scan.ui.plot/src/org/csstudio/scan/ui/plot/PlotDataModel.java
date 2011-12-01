@@ -49,6 +49,9 @@ public class PlotDataModel implements Runnable
     /** Data for X/Y axes */
     final private PlotDataProvider plot_data;
     
+    /** Mostly to please FindBugs: Flag that update thread was woken early */
+    private boolean wake_early = false;
+    
     /** Initialize
      *  @throws Exception on error connecting to scan server
      *  @see #dispose()
@@ -144,6 +147,9 @@ public class PlotDataModel implements Runnable
                 {
                     // Ignore
                 }
+                // Mostly for FindBugs, or as debugger breakpoint to check wakeup
+                if (wake_early)
+                    wake_early = false;
             }
         }
     }
@@ -155,6 +161,7 @@ public class PlotDataModel implements Runnable
     {
         synchronized (this)
         {   // Findbugs gives 'naked notify' warning. Ignore.
+            wake_early = true;
             notifyAll();
         }
     }
