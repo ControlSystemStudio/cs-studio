@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.Path;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DeviceContext
 {
     /** Map of device names to {@link Device} */

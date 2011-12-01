@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /** Factory for {@link ScanSample} instances
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanSampleFactory
 {
     /** Provides the next available <code>serial</code> */

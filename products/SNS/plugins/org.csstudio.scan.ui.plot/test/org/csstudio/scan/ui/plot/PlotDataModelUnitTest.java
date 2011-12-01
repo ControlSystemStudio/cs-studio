@@ -27,6 +27,7 @@ import org.junit.Test;
 /** JUnit test of the {@link PlotDataModel}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PlotDataModelUnitTest
 {
     /** Execute a scan that logs something 

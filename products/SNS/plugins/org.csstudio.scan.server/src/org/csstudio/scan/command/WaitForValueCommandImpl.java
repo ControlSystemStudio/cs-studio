@@ -27,6 +27,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WaitForValueCommandImpl extends WaitForValueCommand implements CommandImpl
 {
     /** Serialization ID */

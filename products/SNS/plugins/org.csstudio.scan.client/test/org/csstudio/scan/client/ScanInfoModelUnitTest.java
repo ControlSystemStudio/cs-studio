@@ -28,6 +28,7 @@ import org.junit.Test;
 /** JUnit test of the {@link ScanInfoModel}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanInfoModelUnitTest implements ScanInfoModelListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);

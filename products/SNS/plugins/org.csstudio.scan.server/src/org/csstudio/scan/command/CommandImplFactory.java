@@ -30,6 +30,7 @@ import org.csstudio.scan.command.WaitForValueCommand;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class CommandImplFactory
 {
     /** Get implementation

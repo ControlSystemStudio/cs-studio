@@ -24,6 +24,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-In demo of the Scan GUI
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanGUIDemo
 {
     @Test

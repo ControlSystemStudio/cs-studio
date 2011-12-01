@@ -39,6 +39,7 @@ import org.csstudio.scan.logger.MemoryDataLogger;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanContext
 {
     final private DeviceContext devices;

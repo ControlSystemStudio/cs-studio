@@ -46,6 +46,7 @@ import org.junit.Test;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanServerHeadlessTest implements Runnable
 {
     private volatile Throwable client_error = null;

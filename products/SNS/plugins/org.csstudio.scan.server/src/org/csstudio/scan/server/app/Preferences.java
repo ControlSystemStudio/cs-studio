@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 /** Scan server preferences
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Preferences
 {
 	/** @return Path to the default device context initialization file */

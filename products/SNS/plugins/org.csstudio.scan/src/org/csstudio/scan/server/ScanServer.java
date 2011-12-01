@@ -28,6 +28,7 @@ import org.csstudio.scan.data.ScanData;
  *  with the scan server.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public interface ScanServer extends Remote
 {
     /** Serialization version used for all RMI interfaces */
