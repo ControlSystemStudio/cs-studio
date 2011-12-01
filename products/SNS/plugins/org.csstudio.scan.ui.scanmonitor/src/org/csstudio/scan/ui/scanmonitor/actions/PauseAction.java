@@ -17,6 +17,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.scanmonitor.Messages;
 
 /** Action that pauses a scan
  *  @author Kay Kasemir
@@ -29,7 +30,7 @@ public class PauseAction extends AbstractGUIAction
      */
     public PauseAction(final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, "Pause", "icons/pause.gif");
+        super(model, info, Messages.Pause, "icons/pause.gif"); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

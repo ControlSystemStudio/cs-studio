@@ -41,6 +41,7 @@ import org.csstudio.scan.server.ScanServer;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanInfoModel
 {
     /** Singleton instance */

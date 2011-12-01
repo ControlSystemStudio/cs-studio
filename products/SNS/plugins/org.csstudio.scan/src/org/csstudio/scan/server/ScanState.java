@@ -18,6 +18,7 @@ package org.csstudio.scan.server;
 /** State of a scan
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public enum ScanState
 {
     /** Scan is waiting to be executed */

@@ -28,12 +28,12 @@ import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanContext;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-In test of the {@link LoopCommand}
  *  and its work unit computation
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LoopCommandHeadlessTest
 {
     @Test //(timeout=5000)

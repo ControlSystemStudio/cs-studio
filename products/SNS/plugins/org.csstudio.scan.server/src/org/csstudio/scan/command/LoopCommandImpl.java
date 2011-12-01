@@ -30,6 +30,7 @@ import org.csstudio.scan.server.ScanServer;
 /** Command that performs a loop
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LoopCommandImpl extends BaseCommand implements CommandImpl
 {
     /** Serialization ID */

@@ -23,6 +23,7 @@ import org.csstudio.scan.server.ScanServer;
  *  with indentation levels
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BaseCommand implements ScanCommand
 {
     /** Serialization ID */

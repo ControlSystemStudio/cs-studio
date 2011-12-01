@@ -37,6 +37,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link ScanEngine}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanEngineTest
 {
     private void waitForState(final Scan scan, final ScanState state) throws InterruptedException

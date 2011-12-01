@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.ui.scanmonitor.Messages;
 
 /** Action that removes all completed scans
  *  @author Kay Kasemir
@@ -27,7 +28,7 @@ public class RemoveCompletedAction extends AbstractGUIAction
      */
     public RemoveCompletedAction(final ScanInfoModel model)
     {
-        super(model, null, "Remove Completed Scans", "icons/remove_completed.gif");
+        super(model, null, Messages.RemoveCompleted, "icons/remove_completed.gif"); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

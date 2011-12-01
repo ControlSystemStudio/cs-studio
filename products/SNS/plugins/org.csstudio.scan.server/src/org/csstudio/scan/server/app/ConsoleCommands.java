@@ -32,6 +32,7 @@ import org.eclipse.osgi.framework.console.CommandProvider;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ConsoleCommands implements CommandProvider
 {
     final private ScanServerImpl server;

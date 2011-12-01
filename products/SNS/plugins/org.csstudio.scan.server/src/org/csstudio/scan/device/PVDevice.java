@@ -29,6 +29,7 @@ import org.csstudio.utility.pv.PVListener;
  *  supporting read and write access to that PV
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVDevice extends Device implements PVListener
 {
 	/** Underlying control system PV */

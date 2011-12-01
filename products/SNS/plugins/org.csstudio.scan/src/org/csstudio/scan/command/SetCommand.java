@@ -20,6 +20,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link ScanCommand} that sets a device to a value
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SetCommand extends BaseCommand
 {
 	/** Serialization ID */

@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /** Action that aborts a scan
@@ -29,14 +30,14 @@ public class InfoAction extends AbstractGUIAction
      */
     public InfoAction(final ScanInfoModel model)
     {
-        super(model, null, "Info", "icons/information.gif");
+        super(model, null, Messages.Info, "icons/information.gif"); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
     @Override
     protected void runModelAction() throws Exception
     {
-    	MessageDialog.openInformation(null, "Scan Server Info",
+    	MessageDialog.openInformation(null, Messages.InfoTitle,
     			model.getServerInfo());
     }
 }

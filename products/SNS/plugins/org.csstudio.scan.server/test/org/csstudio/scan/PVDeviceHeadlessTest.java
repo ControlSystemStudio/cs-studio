@@ -22,10 +22,10 @@ import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-in test of the {@link PVDevice}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PVDeviceHeadlessTest implements DeviceListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);

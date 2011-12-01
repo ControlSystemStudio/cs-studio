@@ -32,6 +32,7 @@ import org.junit.Test;
 /** JUnit test of the Command printout
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class CommandUnitTest
 {
     /** Very fragile line counter,
