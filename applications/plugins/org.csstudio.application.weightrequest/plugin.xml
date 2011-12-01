@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="WeightrequestApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.application.weightrequest.WeightRequestApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.application.weightrequest.internal.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
