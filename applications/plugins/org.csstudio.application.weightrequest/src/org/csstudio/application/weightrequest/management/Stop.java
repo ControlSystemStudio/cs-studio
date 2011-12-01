@@ -71,7 +71,7 @@ public class Stop implements IManagementCommand {
                 ApplicationHandle[] regApps = services.toArray(new ApplicationHandle[0]);
 
                 for (ApplicationHandle o : regApps) {
-                    if (o.getInstanceId().contains("WeightRequestApplication")) {
+                    if (o.getInstanceId().contains("WeightrequestApplication")) {
                         thisHandle = o;
                         break;
                     }
