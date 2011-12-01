@@ -25,5 +25,17 @@
             label="Stop">
       </command>
    </extension>
+   <extension
+         id="WeightRequestProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.application.weightrequest.WeightrequestApplication"
+            name="WeightRequest">
+         <property
+               name="appName"
+               value="WeightRequest">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
