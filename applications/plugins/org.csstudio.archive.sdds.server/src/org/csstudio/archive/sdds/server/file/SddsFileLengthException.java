@@ -62,18 +62,4 @@ public class SddsFileLengthException extends Exception {
     public SddsFileLengthException(final String message, final Throwable cause) {
         super(message, cause);
     }
-
-    /**
-     * Constructor.
-     * @param message
-     * @param cause
-     * @param enableSuppression
-     * @param writableStackTrace
-     */
-    public SddsFileLengthException(final String message,
-                                   final Throwable cause,
-                                   final boolean enableSuppression,
-                                   final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }
