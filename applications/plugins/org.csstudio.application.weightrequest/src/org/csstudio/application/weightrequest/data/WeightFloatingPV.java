@@ -70,8 +70,8 @@ public class WeightFloatingPV extends FloatingDecimalProcessVariable
                             long refreshRate) {
       
         super(pvName, pvEventCallback);
-        // request = new WeightRequest("http://krykwaageh54.desy.de/cgi-bin/display.cgi", refreshRate);
-        request = new WeightRequest("http://localhost:8080/Web-Playground/random.jsp", refreshRate);
+        request = new WeightRequest("http://krykwaageh54.desy.de/cgi-bin/display.cgi", refreshRate);
+        // request = new WeightRequest("http://localhost:8080/Web-Playground/random.jsp", refreshRate);
         metaData = mData;
         initialize();
     }
@@ -97,17 +97,17 @@ public class WeightFloatingPV extends FloatingDecimalProcessVariable
         LOG.debug("Wert erhalten: {}", value);
         
         if (value.isValid()) {
-            setDoubleValue(value.getValue().doubleValue());
-        } else {
-            setDoubleValue(this.currentValue);
-        }
-
-        if (value.isValid()) {
             status = Status.NO_ALARM;
             severity = Severity.NO_ALARM;
         } else {
             status = Status.READ_ACCESS_ALARM;
             severity = Severity.INVALID_ALARM;
+        }
+
+        if (value.isValid()) {
+            setDoubleValue(value.getValue().doubleValue());
+        } else {
+            setDoubleValue(this.currentValue);
         }
     }
 
@@ -133,7 +133,9 @@ public class WeightFloatingPV extends FloatingDecimalProcessVariable
 
         if (interest) {
                 
-            int mask = 3;
+            int mask = EventMask.DBE_VALUE.getEventMask() 
+                       + EventMask.DBE_ARCHIVE.getEventMask()
+                       + EventMask.DBE_ALARM.getEventMask();
 
             DBR monitorDBR = AbstractCASResponseHandler.createDBRforReading(this);
             ((DBR_Double) monitorDBR).getDoubleValue()[0] = currentValue;
