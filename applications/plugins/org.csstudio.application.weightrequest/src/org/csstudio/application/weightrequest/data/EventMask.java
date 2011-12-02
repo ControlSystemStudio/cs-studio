@@ -49,13 +49,7 @@ public enum EventMask {
      */
     DBE_PROPERTY((1 << 3));
     
-    /*
-    #define DBE_VALUE    (1<<0)
-    #define DBE_ARCHIVE  (1<<1)
-    #define DBE_LOG      DBE_ARCHIVE
-    #define DBE_ALARM    (1<<2)
-    #define DBE_PROPERTY (1<<3)
-    */
+    /** The bit mask for this event */
     private int eventMask;
     
     private EventMask(int mask) {

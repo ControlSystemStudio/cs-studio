@@ -134,9 +134,12 @@ public class WeightFloatingPV extends FloatingDecimalProcessVariable
         if (interest) {
                 
             int mask = EventMask.DBE_VALUE.getEventMask() 
-                       + EventMask.DBE_ARCHIVE.getEventMask()
-                       + EventMask.DBE_ALARM.getEventMask();
-
+                       | EventMask.DBE_ARCHIVE.getEventMask();
+            
+            if (status != Status.NO_ALARM) {
+                mask |= EventMask.DBE_ALARM.getEventMask();
+            }
+            
             DBR monitorDBR = AbstractCASResponseHandler.createDBRforReading(this);
             ((DBR_Double) monitorDBR).getDoubleValue()[0] = currentValue;
             fillInDBR(monitorDBR);
