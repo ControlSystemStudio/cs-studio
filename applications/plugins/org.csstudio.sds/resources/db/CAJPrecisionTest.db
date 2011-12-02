@@ -4,7 +4,7 @@ record(calc,"DALPrecisionTest1") {
         field(INPA, "12345.678901234")       
         field(CALC, "A")
         field(LOPR,"0")       
-        field(HOPR,"20")       
+        field(HOPR,"20000")       
         field(PREC,"4")
 }
 
@@ -14,7 +14,7 @@ record(calc,"DALPrecisionTest2") {
         field(INPA, "12456.1")       
         field(CALC, "A")
         field(LOPR,"0")       
-        field(HOPR,"20")       
+        field(HOPR,"20000")       
         field(PREC,"4")
 }
 

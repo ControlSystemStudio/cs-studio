@@ -24,12 +24,8 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -69,17 +65,7 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        if(model.getValueType().equals(TextTypeEnum.TEXT)) {
-            final int prec = anyData.getMetaData().getPrecision();
-            final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-            numberFormat.setMinimumFractionDigits(prec);
-            numberFormat.setMaximumFractionDigits(prec);
-            final double doubleValue = anyData.doubleValue();
-            final String valueToString = numberFormat.format(doubleValue);
-            model.setPropertyValue(LabelModel.PROP_TEXTVALUE, valueToString);
-        } else {
-            model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-        }
+        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
         final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
         model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }

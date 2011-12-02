@@ -21,12 +21,9 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -64,18 +61,9 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        if(model.getValueType().equals(TextTypeEnum.TEXT)) {
-            final int prec = anyData.getMetaData().getPrecision();
-            final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-            numberFormat.setMinimumFractionDigits(prec);
-            numberFormat.setMaximumFractionDigits(prec);
-            final double doubleValue = anyData.doubleValue();
-            final String valueToString = numberFormat.format(doubleValue);
-            model.setPropertyValue(LabelModel.PROP_TEXTVALUE, valueToString);
-        } else {
-            model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-        }
-        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
+        final boolean isTransparent = model.getTransparent()
+                && hasValue(anyData.getParentChannel());
         model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
@@ -83,15 +71,17 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
+        final boolean isTransparent = isConnected(anyDataChannel) && widget.getTransparent()
+                && hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
     @Override
-	protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
-		// Nothing to do;
-	}
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
+        // Nothing to do;
+    }
 
 }

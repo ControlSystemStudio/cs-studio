@@ -16,13 +16,17 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.Severity;
 
 /**
@@ -136,8 +140,15 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      */
 
     protected final String determineBackgroundColor(final ConnectionState connectionState) {
-        return connectionState != null ? colorsByConnectionState.get(connectionState)
-                : colorsByConnectionState.get(ConnectionState.INITIAL);
+        final ConnectionState tempConnectionState = connectionState != null ? connectionState : ConnectionState.INITIAL;
+        return getColorsByConnectionState(tempConnectionState);
+    }
+
+    private String getColorsByConnectionState(final ConnectionState connectionState) {
+        if(colorsByConnectionState.containsKey(connectionState)) {
+            return colorsByConnectionState.get(connectionState);
+        }
+        return ININTIAL;
     }
 
     /**
@@ -212,6 +223,35 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
         }
 
         return color;
+    }
+
+    public static void handleValueType(final AbstractWidgetModel model, final TextTypeEnum textTypeEnum, final String propertyId, final AnyData anyData) {
+        switch (textTypeEnum) {
+            case ALIAS:
+                model.setPropertyValue(propertyId, anyData.getMetaData().getName());
+                break;
+            case DOUBLE:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case EXP:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case HEX:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case TEXT:
+                final int prec = anyData.getMetaData().getPrecision();
+                final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
+                numberFormat.setGroupingUsed(false);
+                numberFormat.setMinimumFractionDigits(prec);
+                numberFormat.setMaximumFractionDigits(prec);
+                final double doubleValue = anyData.doubleValue();
+                final String valueToString = numberFormat.format(doubleValue);
+                model.setPropertyValue(propertyId, valueToString);
+                break;
+            default:
+                break;
+        }
     }
 
 }

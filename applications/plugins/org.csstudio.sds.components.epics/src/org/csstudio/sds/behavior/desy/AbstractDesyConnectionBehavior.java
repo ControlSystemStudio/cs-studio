@@ -46,7 +46,7 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
         AbstractDesyBehavior<W> {
 
     private final Set<String> _invisiblePropertyIds = new HashSet<String>();
-    private String _userSetColor;
+    private String _userSetColor = "";
 
     /**
      * Constructor.
