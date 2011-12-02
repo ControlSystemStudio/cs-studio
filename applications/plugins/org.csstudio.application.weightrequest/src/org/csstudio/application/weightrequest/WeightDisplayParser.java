@@ -56,6 +56,8 @@ public class WeightDisplayParser {
         if (m.find()) {
             String value = m.group();
             parseResult = new ParseResult(value);
+        } else {
+            parseResult = new ParseResult();
         }
         
         return parseResult;

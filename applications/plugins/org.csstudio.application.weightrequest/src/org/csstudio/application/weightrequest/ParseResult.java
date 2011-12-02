@@ -44,6 +44,12 @@ public class ParseResult {
     
     private boolean validValue;
 
+    public ParseResult() {
+        value = Double.NaN;
+        validValue = false;
+        valueIsMoving = false;
+    }
+    
     public ParseResult(String doubleValue) {
         
         try {

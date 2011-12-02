@@ -70,7 +70,8 @@ public class WeightFloatingPV extends FloatingDecimalProcessVariable
                             long refreshRate) {
       
         super(pvName, pvEventCallback);
-        request = new WeightRequest("http://krykwaageh54.desy.de/cgi-bin/display.cgi", refreshRate);
+        // request = new WeightRequest("http://krykwaageh54.desy.de/cgi-bin/display.cgi", refreshRate);
+        request = new WeightRequest("http://localhost:8080/Web-Playground/random.jsp", refreshRate);
         metaData = mData;
         initialize();
     }
