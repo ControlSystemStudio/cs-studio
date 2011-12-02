@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tree display of Scan
+Bundle-SymbolicName: org.csstudio.scan.ui.scantree
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.scan.ui.scantree.Activator
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.scan;bundle-version="1.0.0",
+ org.csstudio.scan.client;bundle-version="1.0.0",
+ org.junit;bundle-version="4.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
