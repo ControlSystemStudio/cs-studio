@@ -22,20 +22,14 @@
       </command>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.csstudio.cagateway.preferences.PreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
-         id="CAGatewayProduct"
+         id="DoocsCaGatewayProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.cagateway.CAGatewayApplication"
-            name="CAGateway">
+            name="DoocsCaGateway">
          <property
                name="appName"
-               value="CAGateway">
+               value="DoocsCaGateway">
          </property>
       </product>
    </extension>

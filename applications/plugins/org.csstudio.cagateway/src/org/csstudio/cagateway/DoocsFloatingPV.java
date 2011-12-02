@@ -373,11 +373,11 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#readValue(gov.aps.jca.dbr.DBR, gov.aps.jca.cas.ProcessVariableReadCallback)
 	 */
 	@Override
-    protected synchronized CAStatus readValue(DBR value,
+    protected synchronized CAStatus readValue(DBR valueToRead,
 			ProcessVariableReadCallback asyncReadCallback) throws CAException {
 		
 		// it is always at least DBR_TIME_Int DBR
-		DBR_TIME_Double timeDBR = (DBR_TIME_Double)value;
+		DBR_TIME_Double timeDBR = (DBR_TIME_Double) valueToRead;
 
 		// set status and time
 		fillInStatusAndTime(timeDBR);
@@ -409,14 +409,14 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#writeValue(gov.aps.jca.dbr.DBR, gov.aps.jca.cas.ProcessVariableWriteCallback)
 	 */
 	@Override
-    protected synchronized CAStatus writeValue(DBR value,
+    protected synchronized CAStatus writeValue(DBR valueToWrite,
 			ProcessVariableWriteCallback asyncWriteCallback) throws CAException {
 		
 		// TODO: MCL 2010-07-23
 		// add putLogging
 		
 		// it is always at least DBR_Int DBR
-		DBR_Double doubleDBR = (DBR_Double)value;
+		DBR_Double doubleDBR = (DBR_Double) valueToWrite;
 		
 		// check value
 		double val = doubleDBR.getDoubleValue()[0];
@@ -512,21 +512,21 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 				if ( eq == null) {
 					eq = new EqCall();
 				}
+				
 				// necessary if in a loop
 				ed.init();
 				data.init();
 				
 		        data = eq.get(doocsAddr, ed);
 		        if (data.error() == 0) {
-		        	doocsReadOk = true;
-		        	value = data.get_double();
-//		        	System.out.println (doocsName + " - double = " + value);
-//		        	System.out.println (doocsName + " - float  = " + data.get_float());
 		        	
-		        	setDoubleValue(value);
+		            doocsReadOk = true;
+		        	value = data.get_double();
 		        	
 		        	status = Status.NO_ALARM;
 		        	severity = Severity.NO_ALARM;
+		        	
+		        	setDoubleValue(value);
 		        	
 		        	if ( errorCount > 0) {
 		        		errorCount--;
@@ -581,8 +581,8 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		return doocsReadOk;
 	}
 
-	public void setDoocsReadOk(boolean doocsReadOk) {
-		this.doocsReadOk = doocsReadOk;
+	public void setDoocsReadOk(boolean readOk) {
+		this.doocsReadOk = readOk;
 	}
 
 }
