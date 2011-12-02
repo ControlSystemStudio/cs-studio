@@ -18,6 +18,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.scanmonitor.Activator;
+import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -53,8 +54,8 @@ public abstract class AbstractGUIAction extends Action
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(null, "Error",
-                NLS.bind("Error when performing the action:\n{0}", ex.getMessage()));
+            MessageDialog.openError(null, Messages.Error,
+                NLS.bind(Messages.ErrorMsgFmt,ex.getClass().getName(), ex.getMessage()));
         }
     }
 

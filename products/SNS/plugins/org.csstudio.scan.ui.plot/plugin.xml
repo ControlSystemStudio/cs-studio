@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.scan.ui.plot.ScanPlotView"
             icon="icons/plot.gif"

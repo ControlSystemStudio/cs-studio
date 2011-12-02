@@ -26,6 +26,7 @@ import java.util.List;
 /** Iterate over {@link ScanData} as spreadsheet
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SpreadsheetScanDataIterator
 {
     /** Device names, i.e. columns in spreadsheet */

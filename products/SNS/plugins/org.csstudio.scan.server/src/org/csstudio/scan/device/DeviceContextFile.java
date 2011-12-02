@@ -28,6 +28,7 @@ import org.w3c.dom.Element;
 /** Helper for handling device context files
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DeviceContextFile
 {
 	private static final String XML_DEVICES = "devices";

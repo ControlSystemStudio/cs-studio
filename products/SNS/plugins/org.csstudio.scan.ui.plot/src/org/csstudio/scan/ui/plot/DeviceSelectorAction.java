@@ -27,7 +27,7 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
      */
     public static DeviceSelectorAction forXAxis(final PlotDataModel model, final Plot plot)
     {
-        return new DeviceSelectorAction(model, plot, "X Axis", "Select device for horizontal axis")
+        return new DeviceSelectorAction(model, plot, Messages.Device_X, Messages.Device_X_TT)
         {
             /** {@inheritDoc} */
             @Override
@@ -44,7 +44,7 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
      */
     public static DeviceSelectorAction forYAxis(final PlotDataModel model, final Plot plot)
     {
-        return new DeviceSelectorAction(model, plot, "Y Axis", "Select device for vertical axis")
+        return new DeviceSelectorAction(model, plot, Messages.Device_Y, Messages.Device_Y_TT)
         {
             /** {@inheritDoc} */
             @Override

@@ -36,6 +36,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link Scan}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanTest
 {
     /** Scan takes about 20 seconds */

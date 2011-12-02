@@ -24,6 +24,7 @@ import org.csstudio.scan.device.DeviceContext;
 /** Scan engine queue info for a scan
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class ScanQueueItem implements Callable<Object>
 {
     final private DeviceContext devices;

@@ -24,6 +24,7 @@ import org.csstudio.scan.server.ScanServer;
 /** Connect to a {@link ScanServer}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanServerConnector
 {
     /** Connect to {@link ScanServer} on host and port

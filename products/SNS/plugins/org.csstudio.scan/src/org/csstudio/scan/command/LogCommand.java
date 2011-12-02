@@ -20,6 +20,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LogCommand extends BaseCommand
 {
     /** Serialization ID */

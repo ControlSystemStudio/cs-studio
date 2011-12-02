@@ -27,6 +27,7 @@ import org.csstudio.scan.logger.DataLogger;
 /** Scanner executes the {@link CommandImpl}s for one scan within a {@link ScanContext}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Scan
 {
     /** Provides the next available <code>id</code> */

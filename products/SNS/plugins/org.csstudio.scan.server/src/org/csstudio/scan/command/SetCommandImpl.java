@@ -26,6 +26,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that sets a device to a value
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SetCommandImpl extends SetCommand implements CommandImpl
 {
     /** Serialization ID */

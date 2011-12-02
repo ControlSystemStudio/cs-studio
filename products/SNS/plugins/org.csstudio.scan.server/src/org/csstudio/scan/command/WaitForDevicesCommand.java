@@ -27,6 +27,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WaitForDevicesCommand extends BaseCommand implements CommandImpl
 {
     /** Serialization ID */

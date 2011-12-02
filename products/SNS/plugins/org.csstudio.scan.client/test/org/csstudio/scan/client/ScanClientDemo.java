@@ -27,13 +27,13 @@ import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 import org.junit.Test;
 
-
 /** JUnit demo of the scan client
  *
  *  <p>The Scan server must be running!
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanClientDemo
 {
     /** Helper to dump info about all scans on server

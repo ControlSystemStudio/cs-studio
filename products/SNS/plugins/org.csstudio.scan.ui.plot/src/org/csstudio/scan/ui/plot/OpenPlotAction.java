@@ -23,7 +23,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
-/** Action that opens plot for scan data
+/** Action that opens a (new) plot for scan data
  *  @author Kay Kasemir
  */
 public class OpenPlotAction extends Action
@@ -35,7 +35,7 @@ public class OpenPlotAction extends Action
      */
     public OpenPlotAction(final ScanInfo info)
     {
-        super("Plot", Activator.getImageDescriptior("icons/plot.gif"));
+        super(Messages.Plot, Activator.getImageDescriptor("icons/plot.gif")); //$NON-NLS-1$
         this.info = info;
     }
 
@@ -48,12 +48,13 @@ public class OpenPlotAction extends Action
             final IWorkbench workbench = PlatformUI.getWorkbench();
             final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
             final IWorkbenchPage page = window.getActivePage();
-            final ScanPlotView view = (ScanPlotView) page.showView(ScanPlotView.ID);
+            final String secondary = ScanPlotView.getNextViewID();
+            final ScanPlotView view = (ScanPlotView) page.showView(ScanPlotView.ID, secondary, IWorkbenchPage.VIEW_ACTIVATE);
             view.selectScan(info.getName(), info.getId());
         }
         catch (Exception ex)
         {
-            new ErrorDetailDialog(null, "Error", "Error opening plot view", ex.getMessage()).open();
+            new ErrorDetailDialog(null, Messages.Error, Messages.OpenPlotError, ex.getMessage()).open();
         }
     }
 }

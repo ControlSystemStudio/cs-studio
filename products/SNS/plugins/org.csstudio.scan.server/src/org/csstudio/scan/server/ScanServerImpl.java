@@ -41,6 +41,7 @@ import org.csstudio.scan.logger.DataLogger;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanServerImpl implements ScanServer
 {
     final private int port;

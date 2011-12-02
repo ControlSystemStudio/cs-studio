@@ -24,7 +24,7 @@ import org.csstudio.scan.device.DeviceListener;
  */
 public class WaitForDevicesCondition implements Condition, DeviceListener
 {
-    private volatile Device[] devices;
+    final private Device[] devices;
     private volatile boolean all_ready;
 
     /** Initialize

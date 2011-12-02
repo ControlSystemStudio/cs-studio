@@ -32,6 +32,7 @@ import org.junit.Test;
 /** JUnit test of the {@link SpreadsheetScanDataIterator}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SpreadsheetScanDataIteratorTest
 {
     @Test

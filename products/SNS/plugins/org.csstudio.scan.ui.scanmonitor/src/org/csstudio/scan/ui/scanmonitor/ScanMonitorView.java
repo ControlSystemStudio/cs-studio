@@ -21,6 +21,7 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -34,9 +35,6 @@ public class ScanMonitorView extends ViewPart
 {
     private ScanInfoModel model;
 
-    @SuppressWarnings("unused")
-	private GUI gui;
-
     /** {@inheritDoc} */
     @Override
     public void createPartControl(final Composite parent)
@@ -49,13 +47,13 @@ public class ScanMonitorView extends ViewPart
         catch (Exception ex)
         {
             Label l = new Label(parent, 0);
-            l.setText("Error: " + ex.getClass().getName() + ", " + ex.getMessage());
+            l.setText(NLS.bind(Messages.ErrorMsgFmt, ex.getClass().getName(), ex.getMessage()));
             model = null;
             return;
         }
 
         // Connect to view
-        gui = new GUI(parent, model);
+        new GUI(parent, model);
 
         // Stop model when view is closed
         parent.addDisposeListener(new DisposeListener()

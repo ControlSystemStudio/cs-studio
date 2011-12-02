@@ -29,6 +29,7 @@ import org.junit.Test;
 /** JUnit test of the {@link DataLogger}s
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataLoggerUnitTest
 {
 	private void logData(final DataLogger logger)

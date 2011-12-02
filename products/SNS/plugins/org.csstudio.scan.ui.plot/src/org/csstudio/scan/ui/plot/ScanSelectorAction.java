@@ -32,7 +32,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
      * @param model */
     public ScanSelectorAction(final PlotDataModel model, final Plot plot)
     {
-        super("Scan", "Select a Scan");
+        super(Messages.Scan, Messages.Scan_TT);
         this.model = model;
         this.plot = plot;
     }
@@ -49,6 +49,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
      *  @param id Scan ID
      *  @return String for drop-down entry that encodes the scan
      */
+    @SuppressWarnings("nls")
     public static String encode(final String name, final long id)
     {
         return name + " [" + id + "]";

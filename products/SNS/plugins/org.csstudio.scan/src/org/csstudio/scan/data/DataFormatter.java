@@ -22,6 +22,7 @@ import java.util.Date;
 /** Helper for formatting data
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataFormatter
 {
 	/** Suggested time format */

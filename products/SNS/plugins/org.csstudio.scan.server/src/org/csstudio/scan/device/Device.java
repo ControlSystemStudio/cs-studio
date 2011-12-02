@@ -24,6 +24,7 @@ import org.csstudio.data.values.IValue;
  *
  *  @author ky9
  */
+@SuppressWarnings("nls")
 public class Device
 {
 	final private String name;

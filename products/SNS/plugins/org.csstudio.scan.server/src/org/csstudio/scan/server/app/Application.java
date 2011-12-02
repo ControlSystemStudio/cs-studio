@@ -27,6 +27,7 @@ import org.osgi.framework.BundleContext;
 /** RCP Application that runs the scan server
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Application implements IApplication
 {
     final private CountDownLatch run = new CountDownLatch(1);
