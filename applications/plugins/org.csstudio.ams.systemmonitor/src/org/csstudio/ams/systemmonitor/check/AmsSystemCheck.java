@@ -34,7 +34,7 @@ import org.csstudio.ams.systemmonitor.status.MonitorStatusEntry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-public class AmsSystemCheck extends ACheckProcessor
+public class AmsSystemCheck extends AbstractCheckProcessor
 {
     public AmsSystemCheck(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
     {
@@ -144,5 +144,10 @@ public class AmsSystemCheck extends ACheckProcessor
                 throw new AmsSystemMonitorException("Timeout! Sent message could not be received.", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
         }
+    }
+    
+    @Override
+    public void closeJms() {
+        super.closeJms();
     }
 }

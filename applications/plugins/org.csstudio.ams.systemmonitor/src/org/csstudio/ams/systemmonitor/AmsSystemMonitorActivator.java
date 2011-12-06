@@ -60,6 +60,7 @@ public class AmsSystemMonitorActivator extends Plugin {
 
     @Override
     public void start(BundleContext context) throws Exception {
+        LOG.info("----------------------------------------------------------------------------------");
         LOG.info("AmsSystemMonitor plugin started.");
     }
 

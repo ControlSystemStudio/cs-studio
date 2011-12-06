@@ -43,10 +43,10 @@ import org.slf4j.LoggerFactory;
  * @author Markus
  *
  */
-public abstract class ACheckProcessor
+public abstract class AbstractCheckProcessor
 {
     /** The class logger */
-    protected static final Logger LOG = LoggerFactory.getLogger(ACheckProcessor.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(AbstractCheckProcessor.class);
     
     /** JMS receiver */
     protected JmsRedundantReceiver amsReceiver;
@@ -61,8 +61,9 @@ public abstract class ACheckProcessor
      * 
      * @throws AmsSystemMonitorException
      */
-    public ACheckProcessor(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
-    {
+    public AbstractCheckProcessor(String senderClientId,
+                           String receiverClientId,
+                           String subscriberName) throws AmsSystemMonitorException {
         messageHelper = new MessageHelper();
         initJms(senderClientId, receiverClientId, subscriberName);
     }
@@ -73,16 +74,11 @@ public abstract class ACheckProcessor
      * 
      * @param message
      */
-    protected void acknowledge(Message message)
-    {
-        if(message != null)
-        {
-            try
-            {
+    protected void acknowledge(Message message) {
+        if(message != null) {
+            try {
                 message.acknowledge();
-            }
-            catch(JMSException e)
-            {
+            } catch(JMSException e) {
                 LOG.warn("Cannot acknowledge message: " + message.toString());
             }
         }
@@ -93,22 +89,18 @@ public abstract class ACheckProcessor
      * @param dateString
      * @return
      */
-    protected long convertDateStringToLong(String dateString)
-    {
+    protected long convertDateStringToLong(String dateString) {
+        
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         long result = 0;
         
-        if(dateString == null)
-        {
+        if(dateString == null) {
             return result;
         }
         
-        try
-        {
+        try {
             result = dateFormat.parse(dateString).getTime();
-        }
-        catch(ParseException e)
-        {
+        } catch(ParseException e) {
             result = 0;
         }
         
@@ -119,8 +111,10 @@ public abstract class ACheckProcessor
      * 
      * @throws AmsSystemMonitorException
      */
-    private void initJms(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
-    {
+    private void initJms(String senderClientId,
+                         String receiverClientId,
+                         String subscriberName) throws AmsSystemMonitorException {
+        
         String url1 = null;
         String url2 = null;
         String topic = null;
@@ -128,17 +122,19 @@ public abstract class ACheckProcessor
         
         IPreferencesService prefs = Platform.getPreferencesService();
 
-        url1 = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL, "", null);
-        topic = prefs.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM, "", null);
+        url1 = prefs.getString(AmsActivator.PLUGIN_ID,
+                               AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL,
+                               "", null);
+        topic = prefs.getString(AmsActivator.PLUGIN_ID,
+                                AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM,
+                                "", null);
 
         LOG.debug("JMS Sender URL: " + url1);
         LOG.debug("JMS Sender Monitor Topic: " + topic);
 
         amsPublisher = new JmsSender(senderClientId, url1, topic);
-        if(amsPublisher.isNotConnected())
-        {
+        if(amsPublisher.isNotConnected()) {
             closeJms();
-            
             throw new AmsSystemMonitorException("JMS Sender could not be created. URL: " + url1 + " - Topic: " + topic);
         }
 
@@ -151,12 +147,13 @@ public abstract class ACheckProcessor
         
         // TODO: 
         amsReceiver = new JmsRedundantReceiver(receiverClientId, url1, url2);
-        result = amsReceiver.createRedundantSubscriber("amsSystemMonitor", topic, subscriberName, true);
-        if(result == false)
-        {
+        result = amsReceiver.createRedundantSubscriber("amsSystemMonitor",
+                                                       topic,
+                                                       subscriberName,
+                                                       true);
+        if(result == false) {
             LOG.error("Could not create redundant receiver for URL " + url1 + ", " + url2 + " and topic " + topic);
             closeJms();
-            
             throw new AmsSystemMonitorException("Could not create redundant receiver for URL " + url1 + ", " + url2 + " and topic " + topic, AmsSystemMonitorException.ERROR_CODE_JMS_CONNECTION);
         }
     }
@@ -164,8 +161,7 @@ public abstract class ACheckProcessor
     /**
      * 
      */
-    protected void closeJms()
-    {
+    protected void closeJms() {
         if(amsReceiver != null) { amsReceiver.closeAll(); }
         if(amsPublisher != null) { amsPublisher.closeAll(); }
     }
