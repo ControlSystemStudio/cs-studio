@@ -35,8 +35,8 @@ public class VersionInfo {
     
     public VersionInfo() {
         applicationName = "AmsSystemMonitor ";
-        version = "1.1.0 ";
-        build = "2011-12-05 12:00";
+        version = "1.1.1 ";
+        build = "2011-12-06 17:00";
     }
 
     /**
