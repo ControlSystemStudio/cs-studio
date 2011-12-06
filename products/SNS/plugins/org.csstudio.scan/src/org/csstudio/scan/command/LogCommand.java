@@ -26,7 +26,7 @@ public class LogCommand extends BaseCommand
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String[] device_names;
+    private String[] device_names;
 
 	/** Initialize
 	 *  @param device_names List of device names
@@ -48,6 +48,12 @@ public class LogCommand extends BaseCommand
     public String[] getDeviceNames()
     {
         return device_names;
+    }
+    
+    /** @param device_names Names of devices to read and log */
+    public void setDeviceNames(final String... device_names)
+    {
+        this.device_names = device_names;
     }
 
     /** {@inheritDoc} */

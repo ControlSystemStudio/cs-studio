@@ -46,11 +46,11 @@ public class LoopCommand extends BaseCommand
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
-	final private double start;
-	final private double end;
-	final private double stepsize;
-	final private List<ScanCommand> body;
+    private String device_name;
+	private double start;
+	private double end;
+	private double stepsize;
+	private List<ScanCommand> body;
 
 	/** Initialize
      *  @param device_name Device to update with the loop variable
@@ -70,10 +70,34 @@ public class LoopCommand extends BaseCommand
         this.body = Arrays.asList(body);
     }
 
+    /** Initialize
+     *  @param device_name Device to update with the loop variable
+     *  @param start Initial loop value
+     *  @param end Final loop value
+     *  @param stepsize Increment of the loop variable
+     *  @param body Loop body commands
+     */
+    public LoopCommand(final String device_name, final double start,
+            final double end, final double stepsize,
+            final List<ScanCommand> body)
+    {
+        this.device_name = device_name;
+        this.stepsize = stepsize;
+        this.start = start;
+        this.end = end;
+        this.body = body;
+    }
+    
 	/** @return Device name */
     public String getDeviceName()
     {
         return device_name;
+    }
+    
+    /** @param device_name Name of device */
+    public void setDeviceName(final String device_name)
+    {
+        this.device_name = device_name;
     }
 
     /** @return Loop start value */
@@ -82,10 +106,16 @@ public class LoopCommand extends BaseCommand
         return start;
     }
 
-    /** @return Loop end value */
-    public double getEnd()
+    /** @param start Initial loop value */
+    public void setStart(final double start)
     {
-        return end;
+        this.start = start;
+    }
+
+    /** @param end Final loop value */
+    public void setEnd(final double end)
+    {
+        this.end = end;
     }
 
     /** @return Loop step size */
@@ -94,10 +124,28 @@ public class LoopCommand extends BaseCommand
         return stepsize;
     }
 
+    /** @param stepsize Increment of the loop variable */
+    public void setStepsize(final double stepsize)
+    {
+        this.stepsize = stepsize;
+    }
+
     /** @return Descriptions for loop body */
     public List<ScanCommand> getBody()
     {
         return body;
+    }
+
+    /** @param body Loop body commands */
+    public void setBody(final List<ScanCommand> body)
+    {
+        this.body = body;
+    }
+    
+    /** @return Loop end value */
+    public double getEnd()
+    {
+        return end;
     }
 
     /** {@inheritDoc} */
