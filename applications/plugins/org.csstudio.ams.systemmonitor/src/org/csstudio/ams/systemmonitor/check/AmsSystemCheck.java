@@ -79,7 +79,6 @@ public class AmsSystemCheck extends AbstractCheckProcessor
             {
                 LOG.error("Message could NOT be sent.");
                 
-                closeJms();
                 throw new AmsSystemMonitorException("Message could NOT be sent.", AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
             }
         }
@@ -134,8 +133,6 @@ public class AmsSystemCheck extends AbstractCheckProcessor
         
         }while((success == false) && (currentTime <= endTime));
     
-        closeJms();
-        
         if(!success)
         {
             // Timeout?

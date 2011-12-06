@@ -83,7 +83,6 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
                 LOG.info("Message sent.");
             } else {
                 LOG.error("Message could NOT be sent.");
-                closeJms();
                 throw new AmsSystemMonitorException("Message could NOT be sent.", AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
             }
         } else {
@@ -149,8 +148,6 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
         }
         while((result == CheckResult.NONE) && (currentTime <= endTime));
         
-        closeJms();
-
         if(result == CheckResult.NONE)
         {
             // Timeout?

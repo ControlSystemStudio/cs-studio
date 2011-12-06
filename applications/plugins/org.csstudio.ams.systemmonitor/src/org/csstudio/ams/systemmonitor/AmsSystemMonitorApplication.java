@@ -156,6 +156,8 @@ public class AmsSystemMonitorApplication implements IApplication
             }
             
             monitorStatusHandler.stopCurrentCheck();
+            amsSystemCheck.closeJms();
+            smsConnectorCheck.closeJms();
             return IApplication.EXIT_OK;
         }
         
@@ -164,6 +166,7 @@ public class AmsSystemMonitorApplication implements IApplication
         while(running)
         {
             this.checkSystem();
+            amsSystemCheck.closeJms();
             
             // If the first check was not successful, we need not to do the second check
             if(amsStatusHandler.getCurrentStatus() != CheckResult.OK)
@@ -171,11 +174,12 @@ public class AmsSystemMonitorApplication implements IApplication
                 // Force a modem check
                 modemStatusHandler.forceNextCheck();
                 modemStatusHandler.storeStatus();
-                
+                smsConnectorCheck.closeJms();
                 break;
             }
             
             this.checkSmsConnector();
+            smsConnectorCheck.closeJms();
             
             // Just one time
             running = false;
@@ -275,8 +279,6 @@ public class AmsSystemMonitorApplication implements IApplication
         
             amsStatusHandler.stopCurrentCheck();
             monitorStatusHandler.stopCurrentCheck();
-        } else {
-            amsSystemCheck.closeJms();
         }
     }
 
@@ -418,11 +420,8 @@ public class AmsSystemMonitorApplication implements IApplication
 
             modemStatusHandler.stopCurrentCheck();
             monitorStatusHandler.stopCurrentCheck();
-        }
-        else
-        {
+        } else {
             LOG.info("No modem check now.");
-            smsConnectorCheck.closeJms();
         }
     }
 
