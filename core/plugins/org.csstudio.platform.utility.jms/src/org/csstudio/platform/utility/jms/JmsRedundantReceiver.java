@@ -336,7 +336,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         {
             for(int i = 0;i < connectionCount;i++)
             {
-                if(connection[i] != null){try{connection[i].stop();}catch(JMSException jmse){}}
+                if(connection[i] != null){try{connection[i].stop();}catch(JMSException jmse){System.err.println(jmse.getMessage());}}
             }
         }
         
@@ -350,7 +350,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 
                 for(int i = 0;i < c.length;i++)
                 {
-                    try{c[i].close();}catch(JMSException jmse){}
+                    try{c[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                 }
             }
             
@@ -364,7 +364,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             {
                 if(session[i] != null)
                 {
-                    try{session[i].close();}catch(JMSException jmse){}
+                    try{session[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                     session[i] = null;
                 }
             }
@@ -373,7 +373,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             {
                 if(connection[i] != null)
                 {
-                    try{connection[i].close();}catch(JMSException jmse){}
+                    try{connection[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                     connection[i] = null;
                 }
             }
