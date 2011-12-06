@@ -34,9 +34,9 @@ public class VersionInfo {
     private String build;
     
     public VersionInfo() {
-        applicationName = "AmsSystemMonitor";
-        version = "1.0.0 RC";
-        build = "2011-06-28 12:00";
+        applicationName = "AmsSystemMonitor ";
+        version = "1.1.1 ";
+        build = "2011-12-06 17:00";
     }
 
     /**
@@ -62,6 +62,6 @@ public class VersionInfo {
     
     @Override
     public String toString() {
-        return applicationName + " " + version + " (BUILD " + build + ")";
+        return applicationName + version + " (BUILD " + build + ")";
     }
 }

@@ -40,11 +40,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Markus
  *
  */
-public class SmsConnectorCheck extends ACheckProcessor
+public class SmsConnectorCheck extends AbstractCheckProcessor
 {
-    public SmsConnectorCheck(String senderClientId, String receiverClientId,
-            String subscriberName) throws AmsSystemMonitorException
-    {
+    public SmsConnectorCheck(String senderClientId,
+                             String receiverClientId,
+                             String subscriberName)
+                                     throws AmsSystemMonitorException {
         super(senderClientId, receiverClientId, subscriberName);
     }
 
@@ -65,8 +66,7 @@ public class SmsConnectorCheck extends ACheckProcessor
 
         IPreferencesService pref = Platform.getPreferencesService();
         waitTime = pref.getInt(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_WAIT_TIME, -1, null);
-        if(waitTime == -1)
-        {
+        if(waitTime == -1) {
             waitTime = 60000;
             LOG.warn("Could not get the wait time. Using default: " + waitTime + " ms");
         }
@@ -77,29 +77,20 @@ public class SmsConnectorCheck extends ACheckProcessor
         // checkTimeStamp = convertDateStringToLong(messageContent.get("EVENTTIME"));
 
         // Send a new check message only if we do not wait for a older check message
-        if(statusEntry.getCheckStatus() != CheckResult.TIMEOUT)
-        {
+        if(statusEntry.getCheckStatus() != CheckResult.TIMEOUT) {
             success = amsPublisher.sendMessage(messageContent);
-            if(success)
-            {
+            if(success) {
                 LOG.info("Message sent.");
-            }
-            else
-            {
+            } else {
                 LOG.error("Message could NOT be sent.");
-                
-                closeJms();
                 throw new AmsSystemMonitorException("Message could NOT be sent.", AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
             }
-        }
-        else
-        {
+        } else {
             LOG.info("A new message has NOT been sent. Looking for an old check message.");
         }
         
         // Not more then 3 minutes to wait, please
-        if(waitTime > 180000)
-        {
+        if(waitTime > 180000) {
             waitTime = 180000;
             LOG.warn("The whole wait time is too long (not more then 3 minutes). Using: " + waitTime + " ms");
         }
@@ -157,8 +148,6 @@ public class SmsConnectorCheck extends ACheckProcessor
         }
         while((result == CheckResult.NONE) && (currentTime <= endTime));
         
-        closeJms();
-
         if(result == CheckResult.NONE)
         {
             // Timeout?
@@ -177,5 +166,10 @@ public class SmsConnectorCheck extends ACheckProcessor
         {
             throw new AmsSystemMonitorException("WARN - " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN);
         }
+    }
+    
+    @Override
+    public void closeJms() {
+        super.closeJms();
     }
 }

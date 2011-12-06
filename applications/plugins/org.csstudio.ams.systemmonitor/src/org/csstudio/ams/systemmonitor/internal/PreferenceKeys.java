@@ -47,6 +47,10 @@ public class PreferenceKeys
     public static final String P_SMS_REPEAT_INTERVAL = "smsRepeatInterval";
     public static final String P_SMS_USE_OAS = "useOAS";
     public static final String P_AMS_GROUP = "amsGroup";
+    public static final String P_JMX_PORT_1 = "jmxPort1";
+    public static final String P_JMX_HOST_1 = "jmxHostname1";
+    public static final String P_JMX_PORT_2 = "jmxPort2";
+    public static final String P_JMX_HOST_2 = "jmxHostname2";
 
 	/**
 	 * Read out the preference from the plugin's preference store and display
