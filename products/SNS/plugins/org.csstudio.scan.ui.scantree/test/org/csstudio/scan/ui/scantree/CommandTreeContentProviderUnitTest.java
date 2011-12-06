@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.WaitForValueCommand;
 import org.junit.Test;
 
 /** JUnit test of the {@link CommandTreeContentProvider}
@@ -59,7 +59,7 @@ public class CommandTreeContentProviderUnitTest
         assertEquals("ypos", loop.getDeviceName());
         body = provider.getChildren(loop);
         
-        assertTrue(body[0] instanceof LogCommand);
+        assertTrue(body[0] instanceof WaitForValueCommand);
         assertEquals(loop, provider.getParent(body[0]));
     }
 }

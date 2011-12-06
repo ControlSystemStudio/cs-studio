@@ -19,16 +19,14 @@ import org.eclipse.jface.viewers.Viewer;
  *  for input of {@link ScanCommand} list.
  *  
  *  <p>This implementation is not very fast.
- *  It converts <code>List</code>s into an arrays
+ *  It converts <code>List</code>s into arrays
  *  as required by the {@link ITreeContentProvider},
- *  and resolves parent relationships via a linear search
- *  of the scan arrays.
+ *  and resolves parent relationships via a recursive,
+ *  linear search.
  *  
  *  <p>The goal was to have an adapter from the original
  *  {@link ScanCommand} list to the tree viewer without
  *  creating actual tree links, including parent links.
- *  Once this is no longer "good enough", an actual
- *  tree model of the scan will be required.
  *  
  *  @author Kay Kasemir
  */
