@@ -26,7 +26,7 @@ public class DelayCommand extends BaseCommand
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private double seconds;
+    private double seconds;
 
 	/** Initialize
 	 *  @param seconds Delay in seconds
@@ -42,6 +42,12 @@ public class DelayCommand extends BaseCommand
         return seconds;
     }
 
+	/**@param seconds Delay in seconds */
+	public void setSeconds(final double seconds)
+	{
+	    this.seconds = seconds;
+	}
+	
     /** {@inheritDoc} */
 	@Override
 	public String toString()

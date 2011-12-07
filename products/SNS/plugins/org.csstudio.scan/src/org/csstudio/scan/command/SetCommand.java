@@ -26,8 +26,8 @@ public class SetCommand extends BaseCommand
 	/** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
-	final private Object value;
+    private String device_name;
+	private Object value;
 
 	/** Initialize
 	 *  @param device_name Name of device
@@ -45,10 +45,22 @@ public class SetCommand extends BaseCommand
         return device_name;
     }
 
-	/** @return Value to write to device */
+	/** @param device_name Name of device */
+    public void setDeviceName(final String device_name)
+    {
+        this.device_name = device_name;
+    }
+
+    /** @return Value to write to device */
     public Object getValue()
     {
         return value;
+    }
+    
+    /** @param value Value to write to the device */
+    public void setValue(final Object value)
+    {
+        this.value = value;
     }
 
     /** {@inheritDoc} */

@@ -11,8 +11,11 @@ import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
@@ -24,6 +27,9 @@ public class GUI
 {
     private TreeViewer tree_view;
 
+    /** Initialize
+     *  @param parent
+     */
     public GUI(final Composite parent)
     {
         parent.setLayout(new FillLayout());
@@ -37,10 +43,40 @@ public class GUI
         tree_view.setLabelProvider(new CommandTreeLabelProvider());
         
         ColumnViewerToolTipSupport.enableFor(tree_view);
+        
+        ScanCommandAdapterFactory.setGUI(this);
+        
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                ScanCommandAdapterFactory.setGUI(null);
+            }
+        });
     }
 
+    /** Set focus */
+    public void setFocus()
+    {
+        tree_view.getTree().setFocus();
+    }
+    
+    /** @param commands Commands to display/edit */
     public void setCommands(final List<ScanCommand> commands)
     {
         tree_view.setInput(commands);
+    }
+    
+    /** @param command Command that has been updated, requiring a refresh of the GUI */
+    public void refreshCommand(final ScanCommand command)
+    {
+        tree_view.refresh(command);
+    }
+
+    /** @return Selection provider for commands in scan tree */
+    public ISelectionProvider getSelectionProvider()
+    {
+        return tree_view;
     }
 }

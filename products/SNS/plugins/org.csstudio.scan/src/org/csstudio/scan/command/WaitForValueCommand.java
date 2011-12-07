@@ -26,9 +26,9 @@ public class WaitForValueCommand extends BaseCommand
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
-    final private double desired_value;
-    final private double tolerance;
+    private String device_name;
+    private double desired_value;
+    private double tolerance;
 
     /** Initialize
      *  @param device_name Name of device to check
@@ -49,10 +49,22 @@ public class WaitForValueCommand extends BaseCommand
         return device_name;
     }
 
+    /** @param device_name Name of device */
+    public void setDeviceName(final String device_name)
+    {
+        this.device_name = device_name;
+    }
+
 	/** @return Desired value */
     public double getDesiredValue()
     {
         return desired_value;
+    }
+    
+    /** @param desired_value Desired value */
+    public void setDesiredValue(final double desired_value)
+    {
+        this.desired_value = desired_value;
     }
 
     /** @return Tolerance */
@@ -61,6 +73,12 @@ public class WaitForValueCommand extends BaseCommand
         return tolerance;
     }
 
+    /** @param tolerance Tolerance */
+    public void setTolerance(final double tolerance)
+    {
+        this.tolerance = tolerance;
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()
