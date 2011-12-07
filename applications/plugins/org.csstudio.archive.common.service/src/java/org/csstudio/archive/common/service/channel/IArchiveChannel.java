@@ -45,7 +45,7 @@ public interface IArchiveChannel extends IIdentifiable<ArchiveChannelId> {
     @Nonnull
     ArchiveChannelGroupId getGroupId();
 
-    @Nonnull
+    @CheckForNull
     TimeInstant getLatestTimestamp();
 
     @CheckForNull

@@ -74,11 +74,30 @@ public interface IArchiveSampleDao {
                                                      @Nonnull final TimeInstant start,
                                                      @Nonnull final TimeInstant end) throws ArchiveDaoException;
 
-
+    /**
+     * Retrieves the latest sample value if existing for a channel and before a given time stamp.
+     * Attention, this statement may take quite some time, when the given timestamp is not equal or
+     * after the timestamp of the latest known sample. If so, it defaults to
+     * {@link IArchiveSampleDao#retrieveLatestSample(IArchiveChannel)} which is much faster.
+     * @param channel
+     * @param time
+     * @return
+     * @throws ArchiveDaoException
+     */
     @CheckForNull
     <V extends Serializable, T extends ISystemVariable<V>>
-    IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull IArchiveChannel channel,
-                                                        @Nonnull TimeInstant time) throws ArchiveDaoException;
+    IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
+                                                        @Nonnull final TimeInstant time) throws ArchiveDaoException;
+
+    /**
+     * Retrieves the latest known sample if existing for a given channel.
+     * @param channel
+     * @return
+     * @throws ArchiveDaoException
+     */
+    @CheckForNull
+    <V extends Serializable, T extends ISystemVariable<V>>
+    IArchiveSample<V, T> retrieveLatestSample(@Nonnull final IArchiveChannel channel) throws ArchiveDaoException;
 
     /**
      * Checks whether at least one sample exists for the given channel.
@@ -88,4 +107,6 @@ public interface IArchiveSampleDao {
      * @throws ArchiveDaoException
      */
     boolean doesSampleExistForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
+
+
 }

@@ -105,6 +105,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         SELECT_RAW_PREFIX +
         "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
+    private final String _selectLatestSampleStmt =
+            SELECT_RAW_PREFIX +
+            "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
+            "AND " + COLUMN_TIME + "=?";
     private final String _selectSampleExistsForChannel =
         "SELECT * FROM " + getDatabaseName() + "." + ARCH_TABLE_PLACEHOLDER +
         " WHERE " + COLUMN_CHANNEL_ID + "=? LIMIT 1";
@@ -143,8 +147,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         try {
             getEngineMgr().submitToBatch(samples);
 
-            final List<? extends AbstractReducedDataSample> minuteSamples;
-                minuteSamples = generatePerMinuteSamples(samples, _reducedDataMapForMinutes);
+            final List<? extends AbstractReducedDataSample> minuteSamples =
+                generatePerMinuteSamples(samples, _reducedDataMapForMinutes);
             if (minuteSamples.isEmpty()) {
                 return;
             }
@@ -273,14 +277,13 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         if (aggregator == null) {
             aggregator = new SampleMinMaxAggregator();
             aggMap.put(channelId, aggregator);
-            initAggregatorToLastKnownSample(channelId, time, aggregator);
+            initAggregatorToLastKnownSample(channelId, aggregator);
         }
         aggregator.aggregate(value, min, max, time);
         return aggregator;
     }
 
     private void initAggregatorToLastKnownSample(@Nonnull final ArchiveChannelId channelId,
-                                                 @Nonnull final TimeInstant time,
                                                  @Nonnull final SampleMinMaxAggregator aggregator) throws ArchiveDaoException {
         final Collection<IArchiveChannel> channels = _channelDao.retrieveChannelsByIds(Sets.newHashSet(channelId));
         if (channels.isEmpty()) {
@@ -288,7 +291,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                           " does not exist.", null);
         }
         final IArchiveSample<Serializable, ISystemVariable<Serializable>> sample =
-            retrieveLatestSampleBeforeTime(channels.iterator().next(), time);
+            retrieveLatestSample(channels.iterator().next());
         if (sample != null) {
             final Double lastWrittenValue =
                 BaseTypeConversionSupport.createDoubleFromValueOrNull(sample.getSystemVariable());
@@ -489,8 +492,32 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Override
     @CheckForNull
     public <V extends Serializable, T extends ISystemVariable<V>>
+    IArchiveSample<V, T> retrieveLatestSample(@Nonnull final IArchiveChannel channel)
+                                              throws ArchiveDaoException {
+        final TimeInstant latestTimestamp = channel.getLatestTimestamp();
+        if (latestTimestamp == null) {
+            return null;
+        }
+        final Collection<IArchiveSample<V, T>> samples =
+                retrieveSamples(DesyArchiveRequestType.RAW, channel.getId(), latestTimestamp, latestTimestamp.plusNanosPerSecond(1L));
+        return samples.isEmpty() ? null : samples.iterator().next();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLatestSampleBeforeTime(@Nonnull final IArchiveChannel channel,
                                                         @Nonnull final TimeInstant time) throws ArchiveDaoException {
+        final TimeInstant latestTimestamp = channel.getLatestTimestamp();
+        if (latestTimestamp == null) {
+            return null;
+        }
+        if (!time.isBefore(latestTimestamp)) {
+            return retrieveLatestSample(channel);
+        }
 
         Connection conn = null;
         PreparedStatement stmt = null;

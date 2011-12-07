@@ -47,6 +47,9 @@ public abstract class AbstractDaoTestSetup {
     protected static PersistEngineDataManager PERSIST_MGR;
     // CHECKSTYLE ON: |
 
+    // FIXME (bknerr) : the rollback mechanism for tests doesn't work anymore as it is not easily possible to 
+    // get access to the newly created connection within the dao impls... but save this structure for later
+    // reference when the connection provider can be mocked or substituted
     private Connection _connection;
     private Savepoint _savepoint;
     private boolean _autoCommit;
@@ -117,7 +120,6 @@ public abstract class AbstractDaoTestSetup {
      * @throws SQLException
      * @throws ArchiveConnectionException
      */
-    @SuppressWarnings("unused")
     protected void beforeHook() throws ArchiveConnectionException, SQLException {
         // Empty on purpose
     }
@@ -151,7 +153,6 @@ public abstract class AbstractDaoTestSetup {
      * @throws SQLException
      * @throws ArchiveConnectionException
      */
-    @SuppressWarnings("unused")
     protected void afterHook() throws ArchiveConnectionException, SQLException {
         // Empty on purpose
     }

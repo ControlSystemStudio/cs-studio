@@ -23,7 +23,6 @@ package org.csstudio.archive.common.service.mysqlimpl;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
@@ -145,23 +144,12 @@ public class MysqlArchiveRetrievalServiceSupport {
         }
     }
 
-    @CheckForNull
-    public IArchiveChannelStatus retrieveLatestChannelStatusByChannelName(@Nonnull final String name) throws ArchiveServiceException {
-        final IArchiveChannel channel = retrieveChannelByName(name);
-        if (channel != null) {
-            final Collection<IArchiveChannelStatus> result =
-                retrieveLatestChannelsStatusForChannels(Collections.singleton(channel.getId()));
-            if (!result.isEmpty()) {
-                return result.iterator().next();
-            }
-        }
-        return null;
-    }
-
     @Nonnull
-    public Collection<IArchiveChannelStatus> retrieveLatestChannelsStatusForChannels(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException {
+    public Collection<IArchiveChannelStatus> retrieveLatestChannelsStatusForChannels(@Nonnull final Collection<ArchiveChannelId> channels,
+                                                                                     @Nonnull final TimeInstant start,
+                                                                                     @Nonnull final TimeInstant end) throws ArchiveServiceException {
         try {
-            return _channelStatusDao.retrieveLatestStatusByChannelIds(channels);
+            return _channelStatusDao.retrieveLatestStatusByChannelIds(channels, start, end);
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Multiple latest channel status could not be retrieved.", e);
         }
@@ -229,7 +217,7 @@ public class MysqlArchiveRetrievalServiceSupport {
     @CheckForNull
     public <V extends Serializable, T extends ISystemVariable<V>>
     IArchiveSample<V, T> retrieveLastSampleBefore(@Nonnull final String channelName,
-                                              @Nonnull final TimeInstant time) throws ArchiveServiceException {
+                                                  @Nonnull final TimeInstant time) throws ArchiveServiceException {
         try {
             final IArchiveChannel channel = retrieveChannelByName(channelName);
             if (channel != null) {

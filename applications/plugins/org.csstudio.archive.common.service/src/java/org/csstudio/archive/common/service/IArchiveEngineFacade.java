@@ -173,20 +173,15 @@ public interface IArchiveEngineFacade {
                                                           throws ArchiveServiceException;
 
     /**
-     * @param name
-     * @return
-     */
-    @CheckForNull
-    IArchiveChannelStatus getLatestChannelStatusByChannelName(@Nonnull final String name)
-                                                        throws ArchiveServiceException;
-
-    /**
+     * Returns the latest channels' status for the given channels in the specified interval.
      * @param channels
      * @return
      * @throws ArchiveServiceException
      */
     @Nonnull
-    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException;
+    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels,
+                                                                @Nonnull final TimeInstant start,
+                                                                @Nonnull final TimeInstant end) throws ArchiveServiceException;
 
     @CheckForNull
     IArchiveControlSystem getControlSystemByName(@Nonnull final String name) throws ArchiveServiceException;

@@ -23,10 +23,11 @@ import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.domain.desy.epics.pvmanager.DesyJCAChannelHandler;
+import org.csstudio.domain.desy.epics.pvmanager.DesyJCADataSource;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.util.TimeDuration;
@@ -55,7 +56,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     private final ArchiveChannelId _id;
 
-    private final DesyJCAChannelHandler _channelHandler;
+    private final DesyJCADataSource _source;
 
     /** Control system PV */
     private PVReader<List<Object>> _pv;
@@ -103,7 +104,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
      */
     public ArchiveChannelBuffer(@Nonnull final IArchiveChannel cfg,
                                 @Nonnull final IServiceProvider provider,
-                                @Nonnull final DesyJCAChannelHandler handler) {
+                                @Nonnull final DesyJCADataSource source) {
 
         _name = cfg.getName();
         _id = cfg.getId();
@@ -111,7 +112,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         _isEnabled = cfg.isEnabled();
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(_name);
         _provider = provider;
-        _channelHandler = handler;
+        _source = source;
     }
 
 
@@ -129,7 +130,11 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
     /** @return <code>true</code> if connected */
     public boolean isConnected() {
-        return _channelHandler != null && _channelHandler.isConnected();
+        if (_source != null) {
+            final ChannelHandler<?> channelHandler = _source.getChannels().get(_name);
+            return channelHandler != null && channelHandler.isConnected();
+        }
+        return false;
     }
 
     /** @return <code>true</code> if connected */

@@ -41,7 +41,6 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.name.EpicsChannelName;
-import org.csstudio.domain.desy.epics.pvmanager.DesyJCAChannelHandler;
 import org.csstudio.domain.desy.epics.pvmanager.DesyJCADataSource;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ControlSystem;
@@ -92,14 +91,9 @@ public final class EngineModelConfigurator {
                                      @Nonnull final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channelMap,
                                      @Nonnull final DesyJCADataSource dataSource) {
 
-        // Actually, this handler is created by the DesyJCADataSource but as have to set some
-        // specific fields for any handler (for type safety), the creation has been extracted
-        final DesyJCAChannelHandler handler =
-            dataSource.createHandlerFor(channelCfg.getName(), channelCfg.getDataType());
-
         @SuppressWarnings({ "rawtypes", "unchecked" })
         final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel =
-            new ArchiveChannelBuffer(channelCfg, provider, handler);
+            new ArchiveChannelBuffer(channelCfg, provider, dataSource);
 
         ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> presentChannel =
             channelMap.putIfAbsent(channel.getName(), channel);
