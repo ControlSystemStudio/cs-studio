@@ -93,8 +93,8 @@ public class StartChannelResponse extends AbstractChannelResponse {
         return URL_BASE_PAGE;
     }
     @Nonnull
-    public static String linkTo(@Nonnull final String name, @Nonnull final String linkText) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(linkText);
+    public static String linkTo(@Nonnull final String name) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_START_CHANNEL);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {
