@@ -56,8 +56,8 @@ import org.joda.time.ReadableDuration;
  *
  * @author bknerr
  * @since Feb 24, 2011
- * @param <V> the base type of this channel
  */
+@SuppressWarnings("rawtypes")
 public class EquidistantTimeBinsIterator extends AbstractValueIterator {
 
     /**
@@ -159,10 +159,11 @@ public class EquidistantTimeBinsIterator extends AbstractValueIterator {
                                                         @CheckForNull final Iterator<IArchiveSample> samplesIter) {
 
         if (samplesIter != null && samplesIter.hasNext()) {
+            @SuppressWarnings("unchecked")
             final IArchiveSample<Serializable, ISystemVariable<Serializable>> firstSampleInWindow = samplesIter.next();
             final int window = findWindowOfFirstSample(firstSampleInWindow.getSystemVariable().getTimestamp(),
-                                                     startTime,
-                                                     windowLength);
+                                                       startTime,
+                                                       windowLength);
             return new SampleAndWindow(firstSampleInWindow, window);
         }
         return new SampleAndWindow(null, 1);

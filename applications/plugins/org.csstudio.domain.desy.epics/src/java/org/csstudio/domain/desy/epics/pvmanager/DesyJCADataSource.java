@@ -21,16 +21,11 @@
  */
 package org.csstudio.domain.desy.epics.pvmanager;
 
-import java.util.Map;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.jca.JCADataSource;
-
-import com.google.common.collect.MapMaker;
 
 
 /**
@@ -41,33 +36,19 @@ import com.google.common.collect.MapMaker;
  */
 public class DesyJCADataSource extends JCADataSource {
 
-    private final Map<String, DesyJCAChannelHandler> _handlerMap;
-
     public DesyJCADataSource(@Nonnull final String className,
                              final int monitorMask) {
         super(className, monitorMask);
-
-        _handlerMap = new MapMaker().concurrencyLevel(5).softValues().makeMap();
     }
 
     @Override
     @Nonnull
     protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        if(_handlerMap.containsKey(channelName)) {
-            return _handlerMap.get(channelName);
-        }
-        return createHandlerFor(channelName, null);
+        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
     }
 
     @CheckForNull
     public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
-        return _handlerMap.get(channelName);
-    }
-
-    @Nonnull
-    public DesyJCAChannelHandler createHandlerFor(@Nonnull final String name, @Nullable final String dataType) {
-        final DesyJCAChannelHandler handler = new DesyJCAChannelHandler(name, dataType, getContext(), getMonitorMask());
-        _handlerMap.put(name, handler);
-        return handler;
+        return (DesyJCAChannelHandler) getChannels().get(channelName);
     }
 }

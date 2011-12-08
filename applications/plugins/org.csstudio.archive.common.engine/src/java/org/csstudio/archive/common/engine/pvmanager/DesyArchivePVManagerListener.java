@@ -28,7 +28,9 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveEngineSampleRescuer;
 import org.csstudio.archive.common.engine.model.EngineModelException;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
@@ -38,12 +40,12 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample;
 import org.csstudio.archive.common.service.sample.ArchiveSample;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
 import org.csstudio.domain.desy.epics.types.EpicsGraphicsData;
 import org.csstudio.domain.desy.epics.types.EpicsMetaData;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.slf4j.Logger;
@@ -63,10 +65,13 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
 // CHECKSTYLE ON: AbstractClassName
 
     private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVManagerListener.class);
+    private static final Logger EMAIL_LOG = LoggerFactory.getLogger("ErrorPerEmailLogger");
 
+    private final ArchiveChannelBuffer<V, T> _buffer;
     private IServiceProvider _provider;
     private final String _channelName;
     private final ArchiveChannelId _channelId;
+    private String _datatype;
     private volatile boolean _firstConnection;
 
     private String _startInfo;
@@ -77,14 +82,18 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
     /**
      * Constructor.
      */
-    public DesyArchivePVManagerListener(@Nonnull final PVReader<?> reader,
+    public DesyArchivePVManagerListener(@Nonnull final ArchiveChannelBuffer<V, T> buffer,
+                                        @Nonnull final PVReader<?> reader,
                                         @Nonnull final IServiceProvider provider,
                                         @Nonnull final String name,
-                                        @Nonnull final ArchiveChannelId id) {
+                                        @Nonnull final ArchiveChannelId id,
+                                        @Nullable final String datatype) {
+        _buffer = buffer;
         _reader = reader;
         _provider = provider;
         _channelName = name;
         _channelId = id;
+        _datatype = datatype;
         _firstConnection = true;
     }
 
@@ -101,7 +110,7 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
 
             final List<EpicsSystemVariable> sysVars = (List<EpicsSystemVariable>) _reader.getValue();
             if (_firstConnection && !sysVars.isEmpty()) {
-                handleOnConnectionInformation(sysVars.get(0), _channelId, isConnected(), _startInfo);
+                handleOnConnectionInformation(_provider, sysVars.get(0), _channelId, _buffer.isConnected(), _startInfo);
                 _firstConnection = false;
             }
             for (final EpicsSystemVariable sysVar : sysVars) {
@@ -112,54 +121,52 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
         }
     }
 
-
-    /**
-     * Interface to capture the type of a Comparable & Serializable object.
-     * Damn Java.
-     *
-     * @author bknerr
-     * @since 04.08.2011
-     */
-    private interface ICompSer extends Serializable, Comparable<Object> {
-        // EMPTY
-    }
-
     @SuppressWarnings("rawtypes")
-    @CheckForNull
-    private EpicsMetaData handleOnConnectionInformation(@Nonnull final EpicsSystemVariable pv,
-                                                        @Nonnull final ArchiveChannelId id,
-                                                        final boolean connected,
-                                                        @Nonnull final String info)
-                                                        throws EngineModelException {
-        persistChannelStatusInfo(id, connected, info);
+    private void handleOnConnectionInformation(@Nonnull final IServiceProvider provider,
+                                               @Nonnull final EpicsSystemVariable pv,
+                                               @Nonnull final ArchiveChannelId id,
+                                               final boolean connected,
+                                               @Nonnull final String info)
+                                               throws EngineModelException, OsgiServiceUnavailableException, ArchiveServiceException {
+        _buffer.persistChannelStatusInfo(id, connected, info);
+
+        if(!validateAndPersistDatatype(provider, id, pv.getData())) {
+            _buffer.stop("Datatype mismatch");
+            return;
+        }
 
         final EpicsMetaData metaData = pv.getMetaData();
-
         if (metaData != null) {
-            return this.<ICompSer>handleMetaDataInfo(metaData, id);
-        }
-        return null;
-    }
-
-    protected void persistChannelStatusInfo(@Nonnull final ArchiveChannelId id,
-                                            final boolean connected,
-                                            @Nonnull final String info) throws EngineModelException {
-        try {
-            final IArchiveEngineFacade service = _provider.getEngineFacade();
-            service.writeChannelStatusInfo(id, connected, info, TimeInstantBuilder.fromNow());
-        } catch (final OsgiServiceUnavailableException e) {
-            throw new EngineModelException("Service unavailable to handle channel connection info.", e);
-        } catch (final ArchiveServiceException e) {
-            throw new EngineModelException("Internal service error on handling channel connection info.", e);
+            handleMetaDataInfo(id, metaData);
         }
     }
 
+    private boolean validateAndPersistDatatype(@Nonnull final IServiceProvider provider,
+                                               @Nonnull final ArchiveChannelId id,
+                                               @Nonnull final Object data) throws OsgiServiceUnavailableException,
+                                                                                     ArchiveServiceException {
+
+        final String actualTypeFromData = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(data);
+
+        if (_datatype == null) {
+            _datatype = actualTypeFromData;
+            final IArchiveEngineFacade service = provider.getEngineFacade();
+            service.writeChannelDataTypeInfo(id, actualTypeFromData);
+        } else if (!_datatype.equals(actualTypeFromData)) {
+            final String msg = "Datatype mismatch for channel: " + _channelName +
+                               ". Expected from configuration is " + _datatype +
+                               " which is not assignable from datatype " + actualTypeFromData + " of first received value.";
+            EMAIL_LOG.info(msg);
+            return false;
+        }
+        return true;
+    }
 
     @SuppressWarnings("unchecked")
     @CheckForNull
     private <W extends Comparable<? super W> & Serializable>
-    EpicsMetaData handleMetaDataInfo(@Nonnull final EpicsMetaData data,
-                                     @Nonnull final ArchiveChannelId id)
+    EpicsMetaData handleMetaDataInfo(@Nonnull final ArchiveChannelId id,
+                                     @Nonnull final EpicsMetaData data)
                                      throws EngineModelException {
 
        final EpicsGraphicsData<W> grData = (EpicsGraphicsData<W>) data.getGrData();
@@ -219,5 +226,8 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
         _provider = provider;
     }
 
-    protected abstract boolean isConnected();
+    @CheckForNull
+    public String getDatatype() {
+        return _datatype;
+    }
 }

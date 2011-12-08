@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
@@ -63,6 +64,7 @@ public final class EngineModel {
     private final ConcurrentMap<String, ArchiveGroup> _groupMap;
 
     /** Engine start state */
+    @GuardedBy("this")
     private volatile EngineState _state = EngineState.IDLE;
 
     /** Start time of the model */
@@ -122,6 +124,9 @@ public final class EngineModel {
     public synchronized EngineState getState() {
         return _state;
     }
+    public synchronized void setState(@Nonnull final EngineState state) {
+        _state = state;
+    }
 
     /** @return Start time of the engine or <code>null</code> if not running */
     @CheckForNull
@@ -170,14 +175,14 @@ public final class EngineModel {
      * @throws EngineModelException
      */
     public void start() throws EngineModelException {
-        if (_state != EngineState.CONFIGURED) {
+        if (getState() != EngineState.CONFIGURED) {
             throw new IllegalStateException("Engine has not been configured before start.", null);
         }
         if (_engine == null) {
             throw new IllegalStateException("Engine model is null although in state " + EngineState.CONFIGURED.name(), null);
         }
         _startTime = TimeInstantBuilder.fromNow();
-        _state = EngineState.RUNNING;
+        setState(EngineState.RUNNING);
 
         checkAndUpdateLastShutdownStatus(_provider, _engine, _channelMap.values());
 
@@ -240,28 +245,41 @@ public final class EngineModel {
         return engineStatus != null;
     }
 
+    /**
+     * Looks up the latest channels' status in the 1 week interval before the latest engine's heartbeat.
+     * Since the archive engine is not supposed to terminate ungracefully and then not be restarted within a
+     * few days, it is reasonable to provide this information via the interface, whether the layer below
+     * may use it or not. (infact, it is used and speeds up things drastically)
+     * @param facade
+     * @param engine
+     * @param channels
+     * @throws ArchiveServiceException
+     */
     private void checkAndUpdateChannelsStatus(@Nonnull final IArchiveEngineFacade facade,
                                               @Nonnull final IArchiveEngine engine,
                                               @Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels)
                                               throws ArchiveServiceException {
 
+        final TimeInstant latestAliveTime = engine.getLastAliveTime();
         @SuppressWarnings("rawtypes")
         final Collection<IArchiveChannelStatus> statuus =
             facade.getLatestChannelsStatusBy(Collections2.transform(channels,
-                                                              new Function<ArchiveChannelBuffer, ArchiveChannelId>() {
-                                                                  @Override
-                                                                  @Nonnull
-                                                                  public ArchiveChannelId apply(@Nonnull final ArchiveChannelBuffer input) {
-                                                                      return input.getId();
-                                                                  }
-                                                              }));
+                                                                    new Function<ArchiveChannelBuffer, ArchiveChannelId>() {
+                                                                        @Override
+                                                                        @Nonnull
+                                                                        public ArchiveChannelId apply(@Nonnull final ArchiveChannelBuffer input) {
+                                                                            return input.getId();
+                                                                        }
+                                                                    }),
+                                             latestAliveTime.minusSeconds(3600L*24L*7L),
+                                             latestAliveTime);
 
         for (final IArchiveChannelStatus status : statuus) {
             if (status != null && status.isConnected()) { // still connected?
                 facade.writeChannelStatusInfo(status.getChannelId(),
                                               false,
                                               "Ungraceful engine shutdown",
-                                              engine.getLastAliveTime());
+                                              latestAliveTime);
             }
 
         }
@@ -298,14 +316,14 @@ public final class EngineModel {
      *  @see #getState()
      */
     public synchronized void requestShutdown() {
-        _state = EngineState.SHUTDOWN_REQUESTED;
+        setState(EngineState.SHUTDOWN_REQUESTED);
     }
 
     /** Setting the model state to restart.
      *  @see #getState()
      */
     public synchronized void requestRestart() {
-        _state = EngineState.RESTART_REQUESTED;
+        setState(EngineState.RESTART_REQUESTED);
     }
 
     /** Reset engine statistics */
@@ -324,10 +342,11 @@ public final class EngineModel {
      */
     @SuppressWarnings("nls")
     public void stop() throws EngineModelException {
-        if (_state == EngineState.STOPPING || _state == EngineState.IDLE) {
+        final EngineState state = getState();
+        if (state == EngineState.STOPPING || state == EngineState.IDLE) {
             return;
         }
-        _state = EngineState.STOPPING;
+        setState(EngineState.STOPPING);
 
         LOG.info("Stopping archive groups");
         for (final ArchiveGroup group : _groupMap.values()) {
@@ -345,7 +364,7 @@ public final class EngineModel {
         LOG.info("Shutting down writer");
         _writeExecutor.shutdown();
 
-        _state = EngineState.IDLE;
+        setState(EngineState.IDLE);
     }
 
 
@@ -356,8 +375,9 @@ public final class EngineModel {
     @SuppressWarnings("nls")
     public void readConfigurationAndSetupGroupsAndChannels() throws EngineModelException {
         try {
-            if (_state != EngineState.IDLE) {
-                LOG.error("Read configuration while state " + _state + ". Should be " + EngineState.IDLE);
+            final EngineState state = getState();
+            if (state != EngineState.IDLE) {
+                LOG.error("Read configuration while state " + state + ". Should be " + EngineState.IDLE);
                 return;
             }
 
@@ -375,7 +395,7 @@ public final class EngineModel {
         } catch (final Exception e) {
             handleExceptions(e);
         }
-        _state = EngineState.CONFIGURED;
+        setState(EngineState.CONFIGURED);
     }
 
 
@@ -399,7 +419,7 @@ public final class EngineModel {
     }
 
     public void clearConfiguration() {
-        if (!(_state == EngineState.IDLE || _state == EngineState.CONFIGURED)) {
+        if (!(getState() == EngineState.IDLE || getState() == EngineState.CONFIGURED)) {
             throw new IllegalStateException("Clearing configuration only allowed in " +
                                             EngineState.IDLE.name() + " or " + EngineState.CONFIGURED.name() + " state.");
         }
@@ -408,7 +428,7 @@ public final class EngineModel {
         _channelMap.clear();
         _startTime = null;
 
-        _state = EngineState.IDLE;
+        setState(EngineState.IDLE);
     }
 
     @CheckForNull
@@ -424,7 +444,7 @@ public final class EngineModel {
     public ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>
     configureNewChannel(@Nonnull final EpicsChannelName epicsName,
                         @Nonnull final String groupName,
-                        @Nonnull final String type,
+                        @Nullable final String type,
                         @Nullable final String low,
                         @Nullable final String high) throws EngineModelException {
 

@@ -124,6 +124,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                              " WHERE name=?";
     private final String _updateChannelEnabledStmt = "UPDATE " + getDatabaseName() + "." + TAB +
                                                      " SET enabled=? WHERE name=?";
+    private final String _updateChannelDatatypeStmt = "UPDATE " + getDatabaseName() + "." + TAB +
+                                                      " SET datatype=? WHERE id=?";
 
     /**
      * Constructor.
@@ -558,6 +560,32 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             closeSqlResources(null, stmt, conn, _deleteChannelStmt);
         }
         return UpdateResult.failed("Channel '" + name + "' has not been updated, doesn't it exist?");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public UpdateResult updateChannelDatatype(@Nonnull final ArchiveChannelId id,
+                                              @Nonnull final String datatype) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_updateChannelDatatypeStmt);
+            stmt.setString(1, datatype);
+            stmt.setInt(2, id.intValue());
+            final int updated = stmt.executeUpdate();
+            if (updated == 1) {
+                return UpdateResult.succeeded("Update of datatype for channel '" + id.asString() + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return UpdateResult.failed("Update of datatype for channel '" + id.asString() + "' failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, conn, _deleteChannelStmt);
+        }
+        return UpdateResult.failed("Channel '" + id.asString() + "' has not been updated, doesn't it exist?");
     }
 
 }

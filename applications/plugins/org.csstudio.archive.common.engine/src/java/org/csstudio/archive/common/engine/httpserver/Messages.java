@@ -15,6 +15,7 @@ package org.csstudio.archive.common.engine.httpserver;
  */
 public final class Messages {
 
+    public static final String HTTP_ACTION = "Action";
     public static final String HTTP_AVG_WRITE = "Average Write";
     public static final String HTTP_CHANNEL = "Channel";
     public static final String HTTP_CHANNEL_INFO = "Channel Info";

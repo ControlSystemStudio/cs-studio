@@ -88,7 +88,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannelStatus> coll =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST), fstTime, sndTime);
 
         Assert.assertTrue(coll.size() == 1);
         final IArchiveChannelStatus result = coll.iterator().next();
@@ -103,7 +103,9 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
     @Test
     public void testDeleteChannelStatus() throws ArchiveDaoException {
         final Iterable<IArchiveChannelStatus> status =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST),
+                                                 TimeInstantBuilder.fromMillis(0L),
+                                                 TimeInstantBuilder.fromNow());
         Assert.assertTrue(status.iterator().hasNext());
 
         final DeleteResult deleteResult =
@@ -111,7 +113,9 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         Assert.assertTrue(deleteResult.succeeded());
 
         final Iterable<IArchiveChannelStatus> statusResult =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST),
+                                                 TimeInstantBuilder.fromMillis(0L),
+                                                 TimeInstantBuilder.fromNow());
         Assert.assertFalse(statusResult.iterator().hasNext());
 
         DAO.createChannelStatus(status.iterator().next());

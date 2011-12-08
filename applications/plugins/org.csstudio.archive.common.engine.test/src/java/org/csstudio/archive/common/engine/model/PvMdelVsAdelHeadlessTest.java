@@ -181,7 +181,7 @@ public class PvMdelVsAdelHeadlessTest {
                 iterator.next();
                 // get the second value as first value, and init last value
                 final Double lastValue = iterator.next() - (deadband + 0.1);
-                for (;iterator.hasNext();) {
+                while (iterator.hasNext()) {
                     final Double value = iterator.next();
                     Assert.assertTrue(Math.abs(value - lastValue) > deadband);
 

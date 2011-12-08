@@ -29,6 +29,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channelstatus.IArchiveChannelStatus;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Dao for archive channel status.
@@ -43,7 +44,9 @@ public interface IArchiveChannelStatusDao {
 
     @Nonnull
     Collection<IArchiveChannelStatus>
-    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveDaoException;
+    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> channels,
+                                     @Nonnull final TimeInstant start,
+                                     @Nonnull final TimeInstant end) throws ArchiveDaoException;
 
     @Nonnull
     DeleteResult deleteStatusForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;

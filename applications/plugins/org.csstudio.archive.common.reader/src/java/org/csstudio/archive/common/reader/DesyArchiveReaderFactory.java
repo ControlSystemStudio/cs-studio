@@ -190,8 +190,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveChannel channel = service.getChannelByName(name);
 
             if (channel!= null &&
-                BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
-                                                                        "org.csstudio.domain.desy.epics.types")) {
+                BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType())) {
 
                 final IArchiveSample lastSampleBefore = service.readLastSampleBefore(name, s);
 
