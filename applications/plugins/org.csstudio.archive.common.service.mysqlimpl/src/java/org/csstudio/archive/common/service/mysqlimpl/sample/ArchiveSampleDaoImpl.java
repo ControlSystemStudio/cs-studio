@@ -105,10 +105,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         SELECT_RAW_PREFIX +
         "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
         "AND " + COLUMN_TIME + "<? ORDER BY " + COLUMN_TIME + " DESC LIMIT 1";
-    private final String _selectLatestSampleStmt =
-            SELECT_RAW_PREFIX +
-            "FROM " + getDatabaseName() + "." + TAB_SAMPLE + " WHERE " + COLUMN_CHANNEL_ID + "=? " +
-            "AND " + COLUMN_TIME + "=?";
     private final String _selectSampleExistsForChannel =
         "SELECT * FROM " + getDatabaseName() + "." + ARCH_TABLE_PLACEHOLDER +
         " WHERE " + COLUMN_CHANNEL_ID + "=? LIMIT 1";
@@ -447,11 +443,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final ResultSet result) throws SQLException,
                                                                                              ArchiveDaoException,
                                                                                              TypeSupportException {
-        final String datatype = channel.getDataType();
-        if (datatype == null) {
-            throw new ArchiveDaoException("The datatype of channel " + channel.getName() + " is unknown!", null);
-        }
-        final Class<V> typeClass = (Class<V>) ArchiveTypeConversionSupport.createTypeClassFromArchiveString(datatype);
+        final Class<V> typeClass = createDataTypeClass(channel);
 
         V value = null;
         V min = null;
@@ -488,6 +480,17 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         return new ArchiveMinMaxSample<V, T>(channel.getId(), (T) sysVar, null, min, max);
     }
 
+    @SuppressWarnings("unchecked")
+    @CheckForNull
+    private <V> Class<V> createDataTypeClass(@Nonnull final IArchiveChannel channel)
+                                             throws ArchiveDaoException, TypeSupportException {
+        final String datatype = channel.getDataType();
+        if (datatype == null) {
+            throw new ArchiveDaoException("The datatype of channel " + channel.getName() + " is unknown!", null);
+        }
+        return (Class<V>) ArchiveTypeConversionSupport.createTypeClassFromArchiveString(datatype);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -501,7 +504,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return null;
         }
         final Collection<IArchiveSample<V, T>> samples =
-                retrieveSamples(DesyArchiveRequestType.RAW, channel.getId(), latestTimestamp, latestTimestamp.plusNanosPerSecond(1L));
+                retrieveSamples(DesyArchiveRequestType.RAW, channel.getId(),
+                                latestTimestamp,
+                                latestTimestamp.plusNanosPerSecond(1L));
         return samples.isEmpty() ? null : samples.iterator().next();
     }
 

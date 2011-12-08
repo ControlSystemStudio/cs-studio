@@ -108,7 +108,7 @@
             <transaction src="tables/channel_group.sql"/>
             <transaction src="tables/control_system.sql"/>
             <transaction src="tables/channel.sql"/>
-            <transaction src="tables/last_sample.sql"/>
+            <transaction src="tables/last_sample_time.sql"/>
             <transaction src="tables/channel_status.sql"/>
             <transaction src="tables/sample.sql"/>
             <transaction src="tables/sample_m.sql"/>
@@ -179,7 +179,7 @@
              	TRUNCATE TABLE sample_h;
              	TRUNCATE TABLE sample_m;
              	TRUNCATE TABLE sample;
-                TRUNCATE TABLE last_sample;
+                TRUNCATE TABLE last_sample_time;
              	DELETE FROM channel;
              	TRUNCATE TABLE channel_status; 
              	DELETE FROM control_system;

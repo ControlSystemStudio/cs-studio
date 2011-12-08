@@ -84,7 +84,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
     public static final String TAB = "channel";
     private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
-    private static final String LST_TAB = "last_sample";
+    private static final String LST_TAB = "last_sample_time";
 
     private static final String EXC_MSG = "Channel table access failed.";
 
@@ -146,7 +146,6 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private IArchiveChannel readChannelFromResultIntoCache(@Nonnull final ResultSet result)
                                                            throws SQLException,
                                                                   TypeSupportException {
-        // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
         final String name = result.getString(TAB + ".name");
         final String datatype = result.getString(TAB + ".datatype");

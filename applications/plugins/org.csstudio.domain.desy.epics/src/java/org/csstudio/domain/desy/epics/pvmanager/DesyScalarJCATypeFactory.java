@@ -21,35 +21,53 @@
  */
 package org.csstudio.domain.desy.epics.pvmanager;
 
+import gov.aps.jca.dbr.DBR;
+import gov.aps.jca.dbr.DBRType;
+import gov.aps.jca.dbr.STS;
+import gov.aps.jca.dbr.TIME;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.jca.JCADataSource;
-
 
 /**
- * The DESY specific data source that create DESY specific channel handlers (which will refer to
- * DESY specific type factories).
+ * Dedicated type factory to create {@link org.csstudio.domain.desy.epics.types.EpicsSystemVariable}s from DBR types.
  *
  * @author bknerr
  * @since 30.08.2011
+ * @param <V> The desired value into which to convert the scalars or multiscalar elements.
+ * @param <EV> the epics value with time information
+ * @param <EM> the epics value with sev and status information
  */
-public class DesyJCADataSource extends JCADataSource {
+// CHECKSTYLE OFF : AbstractClassName
+public abstract class DesyScalarJCATypeFactory<V,
+                                               EV extends DBR & TIME,
+                                               EM extends DBR & STS>
+    extends AbstractDesyJCATypeFactory<V, EV, EM> {
+// CHECKSTYLE ON : AbstractClassName
 
-    public DesyJCADataSource(@Nonnull final String className,
-                             final int monitorMask) {
-        super(className, monitorMask);
+    public DesyScalarJCATypeFactory(@Nonnull final Class<V> valueType,
+                                    @Nonnull final DBRType epicsValueType,
+                                    @Nonnull final DBRType epicsMetaType,
+                                    @Nonnull final DBRType channelFieldType) {
+        super(valueType, epicsValueType, epicsMetaType, channelFieldType);
     }
 
     @Override
     @Nonnull
-    protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
+    public V toData(@Nonnull final DBR eVal, @Nonnull final EM eMeta) {
+        return toScalarData(eVal, eMeta, 0);
     }
 
-    @CheckForNull
-    public DesyJCAChannelHandler getHandler(@Nonnull final String channelName) {
-        return (DesyJCAChannelHandler) getChannels().get(channelName);
+    @Nonnull
+    public abstract V toScalarData(@Nonnull final DBR eVal,
+                                   @CheckForNull final EM eMeta,
+                                   final int index);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isArray() {
+        return false;
     }
 }

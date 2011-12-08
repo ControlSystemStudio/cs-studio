@@ -28,8 +28,6 @@ import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.STS;
 import gov.aps.jca.dbr.TIME;
 
-import java.util.ArrayList;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -47,40 +45,34 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
 import org.epics.pvmanager.jca.TypeFactory;
 
-import com.google.common.collect.Lists;
-
-
 /**
- * Dedicated type factory to create {@link EpicsSystemVariable}s from DBR types.
- *
- * Take care - from API present it cannot be ensured that
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 30.08.2011
+ * @since 08.12.2011
  * @param <V> The desired value into which to convert the scalars or multiscalar elements.
  * @param <EV> the epics value with time information
  * @param <EM> the epics value with sev and status information
  */
-// CHECKSTYLE OFF : AbstractClassName
-@SuppressWarnings("rawtypes")
-public abstract class DesyJCATypeFactory<V,
-                                         EV extends DBR & TIME,
-                                         EM extends DBR & STS>
+public abstract class AbstractDesyJCATypeFactory<V,
+                                                 EV extends DBR & TIME,
+                                                 EM extends DBR & STS>
     implements TypeFactory<EpicsSystemVariable<V>, EV, EM> {
-// CHECKSTYLE ON : AbstractClassName
 
     private final Class<V> _valueType;
     private final DBRType _epicsValueType;
     private final DBRType _epicsMetaType;
-    private boolean _isArray;
+    private final DBRType _channelFieldType;
 
-    public DesyJCATypeFactory(@Nonnull final Class<V> valueType,
-                              @Nonnull final DBRType epicsValueType,
-                              @Nonnull final DBRType epicsMetaType) {
+    public AbstractDesyJCATypeFactory(@Nonnull final Class<V> valueType,
+                                      @Nonnull final DBRType epicsValueType,
+                                      @Nonnull final DBRType epicsMetaType,
+                                      @Nonnull final DBRType channelFieldType) {
 
         _valueType = valueType;
         _epicsValueType = epicsValueType;
         _epicsMetaType = epicsMetaType;
+        _channelFieldType = channelFieldType;
     }
 
     /**
@@ -110,20 +102,21 @@ public abstract class DesyJCATypeFactory<V,
         return _epicsValueType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isArray() {
-        return _isArray; // TODO (bknerr) : is not always an array - better isCollection or isMultiScalar or the like
-    }
-
     @Override
     @Nonnull
     public EpicsSystemVariable<V> createValue(@Nonnull final EV value,
                                               @CheckForNull final EM metadata,
                                               final boolean connected) {
         throw new UnsupportedOperationException("DESY type factory does not support variable creation without channel name.");
+    }
+
+    /**
+     * The {@link Channel#getFieldType} serving as key in the type factory provider maps.
+     * @return
+     */
+    @Nonnull
+    public DBRType getChannelFieldType() {
+        return _channelFieldType;
     }
 
     /**
@@ -135,7 +128,7 @@ public abstract class DesyJCATypeFactory<V,
      * @param dMeta
      * @return
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Nonnull
     public EpicsSystemVariable<V> createValue(@Nonnull final String channelName,
                                               @Nonnull final EV eVal,
@@ -144,14 +137,11 @@ public abstract class DesyJCATypeFactory<V,
 
         final TimeInstant timestamp = EpicsSystemVariableSupport.toTimeInstant(eVal);
 
-        final Object data;
-        if (isArray()) {
-            data = toMultiScalarData(eVal, eMeta);
-        } else {
-            data = toScalarData(eVal, eMeta);
-        }
+        final Object data = toData(eVal, eMeta);
+
         return new EpicsSystemVariable(channelName, data, ControlSystem.EPICS_DEFAULT, timestamp, dMeta);
     }
+
 
     @Nonnull
     public <W extends Comparable<? super W>>
@@ -189,27 +179,6 @@ public abstract class DesyJCATypeFactory<V,
     }
 
     @Nonnull
-    protected V toScalarData(@Nonnull final DBR eVal, @CheckForNull final EM eMeta) {
-        return toScalarData(eVal, eMeta, 0);
-    }
-    @Nonnull
-    protected abstract V toScalarData(@Nonnull final DBR eVal,
-                                      @CheckForNull final EM eMeta,
-                                      final int index);
+    public abstract V toData(@Nonnull final DBR eVal, @CheckForNull final EM eMeta);
 
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    private ArrayList toMultiScalarData(@Nonnull final DBR eVal,
-                                        @CheckForNull final EM eMeta) {
-        final int nelm = eVal.getCount();
-        final ArrayList array = Lists.newArrayListWithCapacity(nelm);
-        for (int i = 0; i < nelm; i++) {
-            array.add(toScalarData(eVal, eMeta, i));
-        }
-        return array;
-    }
-
-    public void setIsArray(final boolean b) {
-        _isArray = b;
-    }
 }
