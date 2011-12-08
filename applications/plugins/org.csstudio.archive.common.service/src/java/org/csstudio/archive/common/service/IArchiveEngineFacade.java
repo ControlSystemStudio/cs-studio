@@ -155,6 +155,14 @@ public interface IArchiveEngineFacade {
                                       @Nonnull final V displayHigh) throws ArchiveServiceException;
 
     /**
+     * Writes the channel's datatype information.
+     * @param id
+     * @param datatype
+     */
+    void writeChannelDataTypeInfo(@Nonnull final ArchiveChannelId id,
+                                  @Nonnull final String datatype) throws ArchiveServiceException;
+
+    /**
      * Updates the time information for the given archive engine.
      * @param engineId
      * @param lastTimeAlive

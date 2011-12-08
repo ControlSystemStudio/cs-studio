@@ -7,7 +7,7 @@ CREATE TABLE `channel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `description` varchar(100) DEFAULT NULL,
-  `datatype` varchar(100) NOT NULL DEFAULT 'String',
+  `datatype` varchar(100) DEFAULT NULL,
   `group_id` int(10) unsigned DEFAULT NULL,
   `control_system_id` int(10) NOT NULL,
   `enabled` boolean NOT NULL,

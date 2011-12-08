@@ -187,6 +187,15 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
         _updateSupport.updateChannelDisplayRangeInfo(id, displayLow, displayHigh);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeChannelDataTypeInfo(@Nonnull final ArchiveChannelId id,
+                                         @Nonnull final String datatype) throws ArchiveServiceException {
+        _updateSupport.updateChannelDataType(id, datatype);
+    }
+
 
     /**
      * {@inheritDoc}

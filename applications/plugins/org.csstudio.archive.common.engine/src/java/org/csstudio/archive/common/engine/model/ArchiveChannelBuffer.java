@@ -20,6 +20,8 @@ import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.archive.common.engine.pvmanager.DesyArchivePVManagerListener;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
+import org.csstudio.archive.common.service.ArchiveServiceException;
+import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
@@ -27,6 +29,7 @@ import org.csstudio.domain.desy.epics.pvmanager.DesyJCADataSource;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
@@ -55,6 +58,8 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
     private final String _name;
 
     private final ArchiveChannelId _id;
+
+    private final String _datatype;
 
     private final DesyJCADataSource _source;
 
@@ -108,6 +113,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
 
         _name = cfg.getName();
         _id = cfg.getId();
+        _datatype = cfg.getDataType();
         _timeOfLastSampleBeforeChannelStart = cfg.getLatestTimestamp();
         _isEnabled = cfg.isEnabled();
         _buffer = new SampleBuffer<V, T, IArchiveSample<V, T>>(_name);
@@ -183,7 +189,7 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         }
         _pv = PVManager.read(newValuesOf(channel(_name))).every(RATE);
 
-        _listener = new DesyArchivePVManagerListener(_pv, _provider, _name, _id) {
+        _listener = new DesyArchivePVManagerListener(this, _pv, _provider, _name, _id, _datatype) {
             @SuppressWarnings("synthetic-access")
             @Override
             protected boolean addSampleToBuffer(@Nonnull final IArchiveSample sample) {
@@ -193,10 +199,6 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
                 }
                 return _buffer.add(sample);
 
-            }
-            @Override
-            public boolean isConnected() {
-                return ArchiveChannelBuffer.this.isConnected();
             }
         };
         _listener.setStartInfo(info);
@@ -217,17 +219,30 @@ public class ArchiveChannelBuffer<V extends Serializable, T extends ISystemVaria
         }
     }
 
+    public void persistChannelStatusInfo(@Nonnull final ArchiveChannelId id,
+                                         final boolean connected,
+                                         @Nonnull final String info) throws EngineModelException {
+        try {
+            final IArchiveEngineFacade service = _provider.getEngineFacade();
+            service.writeChannelStatusInfo(id, connected, info, TimeInstantBuilder.fromNow());
+        } catch (final OsgiServiceUnavailableException e) {
+            throw new EngineModelException("Service unavailable to handle channel connection info.", e);
+        } catch (final ArchiveServiceException e) {
+            throw new EngineModelException("Internal service error on handling channel connection info.", e);
+        }
+    }
     /**
      * Stop archiving this channel
+     * @throws EngineModelException
      */
-    public void stop(@Nonnull final String info) {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
             if (!_isStarted) {
                 return;
             }
             _isStarted = false;
         }
-        _listener.setStopInfo(info);
+        persistChannelStatusInfo(_id, false, info);
         _pv.removePVReaderListener(_listener);
         _pv.close();
     }

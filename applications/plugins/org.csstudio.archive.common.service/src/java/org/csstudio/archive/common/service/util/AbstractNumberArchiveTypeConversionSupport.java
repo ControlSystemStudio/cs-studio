@@ -24,14 +24,7 @@ package org.csstudio.archive.common.service.util;
 import java.io.Serializable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.service.channel.ArchiveChannelId;
-import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
-import org.csstudio.archive.common.service.channel.IArchiveChannel;
-import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
 /**
@@ -65,24 +58,5 @@ public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Numbe
     @Nonnull
     public Boolean isOptimizableByAveraging() {
         return Boolean.TRUE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    // CHECKSTYLE OFF : ParameterNumber
-    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final String name,
-                                            @Nullable final Class<N> datatype,
-                                            @Nonnull final ArchiveChannelGroupId grpId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final IArchiveControlSystem cs,
-                                            final boolean enabled,
-                                            @Nonnull final N low,
-                                            @Nonnull final N high) {
-        // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveLimitsChannel<N>(id, name, datatype, grpId, time, cs, enabled, low, high);
     }
 }

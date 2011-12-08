@@ -202,7 +202,7 @@ public abstract class DesyJCATypeFactory<V,
     private ArrayList toMultiScalarData(@Nonnull final DBR eVal,
                                         @CheckForNull final EM eMeta) {
         final int nelm = eVal.getCount();
-        final ArrayList array = Lists.newArrayList(nelm);
+        final ArrayList array = Lists.newArrayListWithCapacity(nelm);
         for (int i = 0; i < nelm; i++) {
             array.add(toScalarData(eVal, eMeta, i));
         }
@@ -211,6 +211,5 @@ public abstract class DesyJCATypeFactory<V,
 
     public void setIsArray(final boolean b) {
         _isArray = b;
-
     }
 }

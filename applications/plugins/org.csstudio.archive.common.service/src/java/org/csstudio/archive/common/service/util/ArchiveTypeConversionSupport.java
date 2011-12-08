@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.archive.common.service.channel.ArchiveChannel;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
@@ -262,6 +263,14 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     }
 
     @Nonnull
+    public static Boolean isDataTypeSerializableCollection(@Nonnull final String datatype) throws TypeSupportException {
+        final Class<?> typeClass = createTypeClassFromArchiveString(datatype);
+        if (typeClass == null) {
+            return false;
+        }
+        return isDataTypeSerializableCollection(typeClass);
+    }
+    @Nonnull
     public static Boolean isDataTypeSerializableCollection(@Nonnull final Class<?> typeClass) {
         return Collection.class.isAssignableFrom(typeClass) && Serializable.class.isAssignableFrom(typeClass);
     }
@@ -297,11 +306,12 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
     }
 
     // CHECKSTYLE OFF : ParameterNumber
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Nonnull
     public static <T extends Serializable>
     IArchiveChannel createArchiveChannel(@Nonnull final ArchiveChannelId id,
                                          @Nonnull final String name,
-                                         @Nullable final Class<T> typeClass,
+                                         @Nullable final String datatype,
                                          @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
                                          @Nullable final TimeInstant time,
                                          @Nonnull final IArchiveControlSystem cs,
@@ -310,22 +320,25 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
                                          @CheckForNull final String high) throws TypeSupportException {
         // CHECKSTYLE ON : ParameterNumber
 
-        if (typeClass != null) {
-            final ArchiveTypeConversionSupport<T> support =
-                    (ArchiveTypeConversionSupport<T>) findTypeSupportForOrThrowTSE(ArchiveTypeConversionSupport.class,
-                                                                                   typeClass);
-            if (!ArchiveTypeConversionSupport.isDataTypeSerializableCollection(typeClass) &&
+        if (datatype != null) {
+            final Class<T> clazz = (Class<T>) createTypeClassFromArchiveString(datatype);
+            if (!ArchiveTypeConversionSupport.isDataTypeSerializableCollection(clazz) &&
                 !Strings.isNullOrEmpty(low) &&
                 !Strings.isNullOrEmpty(high)) {
-                return support.createChannel(id, name, typeClass, archiveChannelGroupId, time, cs, enabled,
-                                             fromArchiveString(typeClass, low),
-                                             fromArchiveString(typeClass, high));
+                return new ArchiveLimitsChannel(id,
+                                                name,
+                                                datatype,
+                                                archiveChannelGroupId,
+                                                time,
+                                                cs,
+                                                enabled,
+                                                (Comparable) fromArchiveString(clazz, low),
+                                                (Comparable) fromArchiveString(clazz, high));
             }
         }
-
         return new ArchiveChannel(id,
                                   name,
-                                  typeClass,
+                                  datatype,
                                   archiveChannelGroupId,
                                   time,
                                   cs,
@@ -454,27 +467,21 @@ public abstract class ArchiveTypeConversionSupport<T extends Serializable> exten
         return Boolean.FALSE;
     }
 
-    /**
-     * Has to be overridden for all types that support display ranges in the channel abstraction
-     */
+    @SuppressWarnings("rawtypes")
     @Nonnull
-    // CHECKSTYLE OFF : ParameterNumber
-    protected IArchiveChannel createChannel(@Nonnull final ArchiveChannelId id,
-                                            @Nonnull final String name,
-                                            @Nullable final Class<T> datatype,
-                                            @Nonnull final ArchiveChannelGroupId archiveChannelGroupId,
-                                            @Nonnull final TimeInstant time,
-                                            @Nonnull final IArchiveControlSystem cs,
-                                            final boolean enabled,
-                                            @SuppressWarnings("unused") @Nonnull final T low,
-                                            @SuppressWarnings("unused") @Nonnull final T high) {
-        // CHECKSTYLE ON : ParameterNumber
-        return new ArchiveChannel(id,
-                                  name,
-                                  datatype,
-                                  archiveChannelGroupId,
-                                  time,
-                                  cs,
-                                  enabled);
+    public static String createArchiveTypeStringFromData(@Nonnull final Object data) {
+
+        final Class<? extends Object> clazz = data.getClass();
+        if (Collection.class.isAssignableFrom(clazz) && !((Collection) data).isEmpty()) {
+            return clazz.getSimpleName() +
+                    "<" +
+                   createArchiveTypeStringFromData(((Collection) data).iterator().next()) +
+                   ">";
+        } else {
+            return clazz.getSimpleName();
+        }
     }
+
+
+
 }

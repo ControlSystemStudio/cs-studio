@@ -58,7 +58,7 @@ public final class SampleRequestTypeUtil {
      * @throws TypeSupportException
      */
     @Nonnull
-    public static DesyArchiveRequestType determineRequestType(@Nonnull final Class<?> dataType,
+    public static DesyArchiveRequestType determineRequestType(@Nonnull final String dataType,
                                                               @Nonnull final TimeInstant start,
                                                               @Nonnull final TimeInstant end) throws TypeSupportException {
         if (ArchiveTypeConversionSupport.isDataTypeOptimizable(dataType)) {

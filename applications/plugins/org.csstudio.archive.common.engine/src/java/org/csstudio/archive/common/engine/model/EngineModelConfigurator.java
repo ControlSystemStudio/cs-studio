@@ -197,7 +197,7 @@ public final class EngineModelConfigurator {
             final IArchiveChannel channel =
                 ArchiveTypeConversionSupport.createArchiveChannel(ArchiveChannelId.NONE,
                                                                   epicsName.toString(),
-                                                                  ArchiveTypeConversionSupport.createTypeClassFromArchiveString(type),
+                                                                  type,
                                                                   group.getId(),
                                                                   null,
                                                                   cs,

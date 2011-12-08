@@ -64,14 +64,14 @@ public final class TestUtils {
 
     public static final IArchiveChannel CHANNEL_1 = new ArchiveChannel(new ArchiveChannelId(1L),
                                                                        CHANNEL_NAME_1,
-                                                                       Double.class,
+                                                                       "Double",
                                                                        new ArchiveChannelGroupId(1L),
                                                                        TimeInstantBuilder.fromMillis(0L),
                                                                        new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3),
                                                                        true);
     public static final IArchiveChannel CHANNEL_2 = new ArchiveChannel(new ArchiveChannelId(1L),
                                                                        CHANNEL_NAME_2,
-                                                                       Double.class,
+                                                                       "Double",
                                                                        new ArchiveChannelGroupId(2L),
                                                                        TimeInstantBuilder.fromMillis(0L),
                                                                        new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3),
@@ -79,7 +79,7 @@ public final class TestUtils {
 
     public static final IArchiveChannel CHANNEL_3 = new ArchiveChannel(new ArchiveChannelId(3L),
                                                                        CHANNEL_NAME_3,
-                                                                       Double.class,
+                                                                       "Double",
                                                                        new ArchiveChannelGroupId(3L),
                                                                        TimeInstantBuilder.fromMillis(0L),
                                                                        new ArchiveControlSystem("EPICS", ControlSystemType.EPICS_V3),

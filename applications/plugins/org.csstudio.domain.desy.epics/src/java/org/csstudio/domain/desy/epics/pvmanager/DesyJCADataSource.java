@@ -44,7 +44,7 @@ public class DesyJCADataSource extends JCADataSource {
     @Override
     @Nonnull
     protected ChannelHandler<?> createChannel(@Nonnull final String channelName) {
-        return new DesyJCAChannelHandler(channelName, null, getContext(), getMonitorMask());
+        return new DesyJCAChannelHandler(channelName, getContext(), getMonitorMask());
     }
 
     @CheckForNull

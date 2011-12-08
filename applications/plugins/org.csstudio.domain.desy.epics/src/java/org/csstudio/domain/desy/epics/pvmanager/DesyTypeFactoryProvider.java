@@ -80,8 +80,8 @@ public final class DesyTypeFactoryProvider {
         // DBR_TIME_Float -> EpicsSystemVariable<Float>
         FACTORY_MAP.put(DBR_Float.TYPE,
                         new DesyJCATypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
-                                                                                   DBR_TIME_Float.TYPE,
-                                                                                   DBR_CTRL_Float.TYPE){
+                                                                                      DBR_TIME_Float.TYPE,
+                                                                                      DBR_CTRL_Float.TYPE){
                             @Override
                             @Nonnull
                             public Float toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Float eMeta, final int index) {
@@ -91,8 +91,8 @@ public final class DesyTypeFactoryProvider {
         // DBR_CTRL_Double -> EpicsSystemVariable<Double>
         FACTORY_MAP.put(DBR_Double.TYPE,
                         new DesyJCATypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
-                                                                                      DBR_TIME_Double.TYPE,
-                                                                                      DBR_CTRL_Double.TYPE){
+                                                                                         DBR_TIME_Double.TYPE,
+                                                                                         DBR_CTRL_Double.TYPE){
                             @Override
                             @Nonnull
                             public Double toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Double eMeta, final int index) {
@@ -102,8 +102,8 @@ public final class DesyTypeFactoryProvider {
         // DBR_CTRL_Byte -> EpicsSystemVariable<Byte>
         FACTORY_MAP.put(DBR_Byte.TYPE,
                         new DesyJCATypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
-                                                                                DBR_TIME_Byte.TYPE,
-                                                                                DBR_CTRL_Byte.TYPE){
+                                                                                   DBR_TIME_Byte.TYPE,
+                                                                                   DBR_CTRL_Byte.TYPE){
                             @Override
                             @Nonnull
                             public Byte toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Byte eMeta, final int index) {
@@ -188,6 +188,7 @@ public final class DesyTypeFactoryProvider {
         if (fac == null) {
             throw new IllegalArgumentException("The dbrType type is not supported: " + channel, null);
         }
+        fac.setIsArray(channel.getElementCount() > 1);
         return fac;
     }
 

@@ -121,7 +121,6 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
 
         //from cache
         channels = DAO.retrieveChannelsByNamePattern(Pattern.compile("doubleChannel1"));
-        Assert.assertNotNull(channels);
         Assert.assertFalse(channels.isEmpty());
         Assert.assertTrue(channels.size() == 1);
         Assert.assertEquals("doubleChannel1", channels.iterator().next().getName());
@@ -222,7 +221,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final ArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "nolimits",
-                               String.class,
+                               "String",
                                grpId,
                                null,
                                cs,
@@ -245,7 +244,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         IArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "nolimits",
-                               String.class,
+                               "String",
                                grpId,
                                null,
                                cs,
@@ -253,7 +252,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         IArchiveChannel chan2 =
             new ArchiveLimitsChannel<Double>(ArchiveChannelId.NONE,
                                "withLimits",
-                               Double.class,
+                               "Double",
                                grpId,
                                null,
                                cs,
@@ -283,7 +282,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final IArchiveChannel chan1 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "fooNoLimits",
-                               String.class,
+                               "String",
                                grpId,
                                null,
                                cs,
@@ -291,7 +290,7 @@ public class ArchiveChannelDaoUnitTest extends AbstractDaoTestSetup {
         final IArchiveChannel chan2 =
             new ArchiveChannel(ArchiveChannelId.NONE,
                                "fooNoLimits",
-                               String.class,
+                               "String",
                                grpId,
                                null,
                                cs,

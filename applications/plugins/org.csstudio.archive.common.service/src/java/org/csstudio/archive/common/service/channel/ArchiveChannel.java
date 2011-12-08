@@ -44,7 +44,7 @@ public class ArchiveChannel implements IArchiveChannel {
 
     private final ArchiveChannelGroupId _groupId;
 
-    private Class<?> _dataType;
+    private final String _dataType;
 
     private final TimeInstant _latestTimestamp;
 
@@ -57,7 +57,7 @@ public class ArchiveChannel implements IArchiveChannel {
      */
     public ArchiveChannel(@Nonnull final ArchiveChannelId id,
                           @Nonnull final String name,
-                          @Nullable final Class<?> type,
+                          @Nullable final String type,
                           @Nonnull final ArchiveChannelGroupId grpId,
                           @Nullable final TimeInstant ltstTimestamp,
                           @Nonnull final IArchiveControlSystem system,
@@ -101,17 +101,8 @@ public class ArchiveChannel implements IArchiveChannel {
      */
     @Override
     @CheckForNull
-    public Class<?> getDataType() {
+    public String getDataType() {
         return _dataType;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public void setDataType(@Nullable final Class<?> dataType) {
-        _dataType = dataType;
     }
 
     /**

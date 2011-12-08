@@ -27,9 +27,6 @@ import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.STS;
 import gov.aps.jca.event.MonitorEvent;
 
-import java.util.Collection;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -56,7 +53,6 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     private static final Logger STRANGE_LOG = LoggerFactory.getLogger("StrangeThingsLogger");
 
     private final Predicate<DBR> _validator;
-    private final Class<?> _dataType;
     private EpicsMetaData _desyMeta;
 
     /**
@@ -64,12 +60,10 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
      * @param dataType
      */
     public DesyJCAChannelHandler(@Nonnull final String channelName,
-                                 @CheckForNull final Class<?> dataType,
                                  @Nullable final Context context,
                                  final int monitorMask) {
         super(channelName, context, monitorMask);
         _validator = new DesyDbrTimeValidator();
-        _dataType = dataType;
     }
 
     /**
@@ -79,8 +73,8 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     @Override
     @Nonnull
     protected TypeFactory matchFactoryFor(@Nonnull final Class<?> desiredType,
-                                          @Nonnull final Channel channel) {
-        return DesyTypeFactoryProvider.matchFor(channel);
+                                          @Nonnull final Channel pChannel) {
+        return DesyTypeFactoryProvider.matchFor(pChannel);
     }
 
 
@@ -90,7 +84,7 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
                                @Nonnull final ValueCache<?> cache) {
         final DBR rawDBR = event.getDBR();
 
-        handleFirstCacheUpdate(rawDBR);
+        handleFirstCacheUpdate();
 
         if (!_validator.apply(rawDBR)) {
             STRANGE_LOG.info("{} has invalid timestamp.", getChannelName());
@@ -108,16 +102,11 @@ public class DesyJCAChannelHandler extends JCAChannelHandler {
     }
 
     @SuppressWarnings("rawtypes")
-    private void handleFirstCacheUpdate(@Nonnull final DBR rawDBR) {
+    private void handleFirstCacheUpdate() {
         if (_desyMeta == null) {
             _desyMeta = EpicsMetaData.EMPTY_DATA;
             if (metadata != null) {
                 _desyMeta = ((DesyJCATypeFactory) vTypeFactory).createMetaData((STS) metadata);
-            }
-            if (_dataType != null) {
-                ((DesyJCATypeFactory) vTypeFactory).setIsArray(Collection.class.isAssignableFrom(_dataType));
-            } else {
-                ((DesyJCATypeFactory) vTypeFactory).setIsArray(rawDBR.getCount() > 1);
             }
         }
     }

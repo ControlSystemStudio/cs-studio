@@ -401,8 +401,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                          @Nonnull final TimeInstant s,
                                                          @Nonnull final TimeInstant e,
                                                          @Nonnull final DesyArchiveRequestType reqType)
-                                                         throws SQLException, ArchiveDaoException {
-        final Class<?> dataType = channel.getDataType();
+                                                         throws SQLException, ArchiveDaoException, TypeSupportException {
+        final String dataType = channel.getDataType();
         if (dataType == null) {
             throw new ArchiveDaoException("Data type of channel " + channel.getName() + " is unknown." , null);
         }
@@ -416,8 +416,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     @Nonnull
     private PreparedStatement dispatchRequestTypeToStatement(@Nonnull final Connection conn,
                                                              @Nonnull final DesyArchiveRequestType type,
-                                                             @Nonnull final Class<?> dataType)
-                                                             throws SQLException {
+                                                             @Nonnull final String dataType)
+                                                             throws SQLException, TypeSupportException {
 
         PreparedStatement stmt = null;
         switch (type) {
@@ -447,27 +447,29 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                                                      @Nonnull final ResultSet result) throws SQLException,
                                                                                              ArchiveDaoException,
                                                                                              TypeSupportException {
-        final Class<V> dataType = (Class<V>) channel.getDataType();
-        if (dataType == null) {
+        final String datatype = channel.getDataType();
+        if (datatype == null) {
             throw new ArchiveDaoException("The datatype of channel " + channel.getName() + " is unknown!", null);
         }
+        final Class<V> typeClass = (Class<V>) ArchiveTypeConversionSupport.createTypeClassFromArchiveString(datatype);
+
         V value = null;
         V min = null;
         V max = null;
         switch (type) {
             case RAW : { // (..., value)
-                if (ArchiveTypeConversionSupport.isDataTypeSerializableCollection(dataType)) {
+                if (ArchiveTypeConversionSupport.isDataTypeSerializableCollection(typeClass)) {
                     value = ArchiveTypeConversionSupport.fromByteArray(result.getBytes(COLUMN_VALUE));
                 } else {
-                    value = ArchiveTypeConversionSupport.fromArchiveString(dataType, result.getString(COLUMN_VALUE));
+                    value = ArchiveTypeConversionSupport.fromArchiveString(typeClass, result.getString(COLUMN_VALUE));
                 }
                 break;
             }
             case AVG_PER_MINUTE :
             case AVG_PER_HOUR : { // (..., avg_val, min_val, max_val)
-                value = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_AVG));
-                min = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MIN));
-                max = ArchiveTypeConversionSupport.fromDouble(dataType, result.getDouble(COLUMN_MAX));
+                value = ArchiveTypeConversionSupport.fromDouble(typeClass, result.getDouble(COLUMN_AVG));
+                min = ArchiveTypeConversionSupport.fromDouble(typeClass, result.getDouble(COLUMN_MIN));
+                max = ArchiveTypeConversionSupport.fromDouble(typeClass, result.getDouble(COLUMN_MAX));
                 break;
             }
             default:
