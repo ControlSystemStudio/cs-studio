@@ -80,8 +80,6 @@ public class AddChannelResponse extends AbstractChannelResponse {
             return;
         }
         final String type = req.getParameter(PARAM_DATATYPE);
-//        final String controlsystem = req.getParameter(PARAM_CONTROLSYSTEM);
-//        final String desc = req.getParameter(PARAM_DESCRIPTION);
         final String lopr = req.getParameter(PARAM_LOPR);
         final String hopr = req.getParameter(PARAM_HOPR);
 
