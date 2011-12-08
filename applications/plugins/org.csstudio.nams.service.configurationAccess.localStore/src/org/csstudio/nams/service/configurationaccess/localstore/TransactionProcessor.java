@@ -2,7 +2,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.csstudio.nams.common.contract.Contract;
@@ -31,12 +33,17 @@ public class TransactionProcessor {
 	private class MapperImpl implements Mapper {
 		private final Session _session;
 
+		private final Map<Class<?>, Map<Serializable, NewAMSConfigurationElementDTO>>idCacheMap;
+		private final Map<Class<?>,List<NewAMSConfigurationElementDTO>> loadAllCacheMap;
+		
 		/**
 		 * Creates a new mapper with given session. No check is be done on
 		 * working if session is open!
 		 */
 		public MapperImpl(final Session session) {
 			this._session = session;
+			idCacheMap = new HashMap<Class<?>,Map<Serializable, NewAMSConfigurationElementDTO>>();
+			loadAllCacheMap = new HashMap<Class<?>, List<NewAMSConfigurationElementDTO>>();
 		}
 
 		/**
@@ -108,7 +115,7 @@ public class TransactionProcessor {
 				elementAsElementWithJoins.storeJoinLinkData(this);
 			}
 		}
-
+		
 		/**
 		 * Loads a list of all elements from session and performs the unsafe
 		 * cast.
@@ -116,7 +123,15 @@ public class TransactionProcessor {
 		@SuppressWarnings("unchecked")
 		private <T extends NewAMSConfigurationElementDTO> List<T> loadAll(
 				final Session session, final Class<T> clasz) throws Throwable {
-			return session.createCriteria(clasz).list();
+			
+			List<NewAMSConfigurationElementDTO> dtoList;
+			if(loadAllCacheMap.containsKey(clasz)) {
+				dtoList = loadAllCacheMap.get(clasz);
+			} else {
+				dtoList = session.createCriteria(clasz).list();
+				loadAllCacheMap.put(clasz, dtoList);
+			}
+			return (List<T>) dtoList;
 		}
 
 		/**
@@ -126,8 +141,23 @@ public class TransactionProcessor {
 		private <T extends NewAMSConfigurationElementDTO> T loadForId(
 				final Session session, final Class<T> clasz,
 				final Serializable id) throws Throwable {
-			return (T) session.createCriteria(clasz).add(Restrictions.idEq(id))
-					.uniqueResult();
+
+			NewAMSConfigurationElementDTO result;
+			Map<Serializable, NewAMSConfigurationElementDTO> idToDtoMap;
+			if(idCacheMap.containsKey(clasz)) {
+				idToDtoMap = idCacheMap.get(clasz);
+			} else {
+				idToDtoMap = new HashMap<Serializable, NewAMSConfigurationElementDTO>();
+				idCacheMap.put(clasz, idToDtoMap);
+			}
+			if(idToDtoMap.containsKey(id)) {
+				result = idToDtoMap.get(id);
+			} else {
+				result = (T) session.createCriteria(clasz).add(Restrictions.idEq(id))
+						.uniqueResult();
+				idToDtoMap.put(id, result);
+			}
+			return (T) result;
 		}
 	}
 
@@ -179,8 +209,9 @@ public class TransactionProcessor {
 
 			this._logger.logDebugMessage(this, "Beginning unit of work of type "
 					+ work.getClass().getName() + "...");
+			long startTime = System.currentTimeMillis();
 			result = work.doWork(new MapperImpl(session));
-			this._logger.logDebugMessage(this, "... done.");
+			this._logger.logDebugMessage(this, "Time to complete unit of work: "+((System.currentTimeMillis()-startTime)/1000.0) + " seconds.");
 
 			tx.commit();
 		} catch (final Throwable e) {
