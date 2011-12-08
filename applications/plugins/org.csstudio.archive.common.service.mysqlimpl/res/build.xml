@@ -179,7 +179,7 @@
              	TRUNCATE TABLE sample_h;
              	TRUNCATE TABLE sample_m;
              	TRUNCATE TABLE sample;
-                TRUNCATE TABLE last_sample_time;
+                TRUNCATE TABLE last_sample;
              	DELETE FROM channel;
              	TRUNCATE TABLE channel_status; 
              	DELETE FROM control_system;
