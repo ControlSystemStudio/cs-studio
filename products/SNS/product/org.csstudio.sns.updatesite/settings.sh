@@ -3,11 +3,11 @@
 # Kay Kasemir
 
 export VERSION=3.0.3
-export TOP=/Kram/MerurialRepos/cs-studio-3.0.0
+export TOP=/Kram/MerurialRepos/cs-studio
 
-export ECLIPSE_BASE=/Kram/Eclipse/3_7/rcp
+export ECLIPSE_BASE=/Kram/Eclipse/3_7_1/rcp
+export DELTAPACK=/Kram/Eclipse/3_7_1/delta/eclipse
 export WORKSPACE=/Kram/Eclipse/Workspace3.0
-export DELTAPACK=/Kram/Eclipse/3_7/delta/eclipse
 
 # Mac OS X window system
 OSWIN=cocoa
