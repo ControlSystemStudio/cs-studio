@@ -383,8 +383,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	 * @param value
 	 */
 	public void manualSetValue(double value){
-		setValue(
-				value < minimum ? minimum : (value > maximum ? maximum : value));
+		setValue(getCoercedValue(value));
 	}
 
 	@Override

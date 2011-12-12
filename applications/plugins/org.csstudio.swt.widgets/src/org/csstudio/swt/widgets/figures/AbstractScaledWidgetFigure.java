@@ -51,15 +51,27 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new ScaleWidgetIntrospector().getBeanInfo(this.getClass());
 	}
+	
+	/**
+	 * @return the coerced value of the widget based on the scale range.
+	 */
 	public double getCoercedValue(){
+		return getCoercedValue(value);
+	}
+	
+	/**Coerce a value into range of the scale.
+	 * @param v the value to be coerced.
+	 * @return the coerced value
+	 */
+	public double getCoercedValue(double v){
 		Range range = scale.getRange();
-		if(range.inRange(value))
-			return value;
+		if(range.inRange(v))
+			return v;
 		else {
 			if(range.getUpper() >= range.getLower())
-				return value > range.getUpper()? range.getUpper() : range.getLower();
+				return v > range.getUpper()? range.getUpper() : range.getLower();
 			else
-				return value > range.getLower()?range.getLower(): range.getUpper();
+				return v > range.getLower()?range.getLower(): range.getUpper();
 		}
 			
 //		return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
