@@ -87,4 +87,10 @@ public class MysqlArchiveUpdateServiceSupport {
     public UpdateResult updateChannelIsEnabledFlag(@Nonnull final String name, final boolean isEnabled) {
         return _channelDao.updateChannelEnabledFlag(name, isEnabled);
     }
+
+    @Nonnull
+    public UpdateResult updateChannelDataType(@Nonnull final ArchiveChannelId id,
+                                      @Nonnull final String datatype) {
+        return _channelDao.updateChannelDatatype(id, datatype);
+    }
 }

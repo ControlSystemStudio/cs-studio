@@ -51,7 +51,7 @@ public final class SampleRequestTypeUtil {
      * If not so, a raw request type is used, either the multiscalar or the scalar one depending on
      * what the datatype is.
      *
-     * @param dataType the data type as string
+     * @param dataType the data type
      * @param start the start of the time interval
      * @param end the end of the time interval
      * @return the archive request type

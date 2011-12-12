@@ -107,7 +107,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
 
     @Test
     public void testMultiScalarIntegerConversion() {
-        final Serializable valuesI = Lists.newArrayList(1,2,3,4);
+        final Serializable valuesI = Lists.newArrayList(1, 2, 3, 4);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesI);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1\\,2\\,3\\,4" + ARCHIVE_COLLECTION_SUFFIX, archiveString);
@@ -118,7 +118,7 @@ public class ArchiveMultiScalarTypeConversionSupportUnitTest {
 
     @Test
     public void testMultiScalarDoubleConversion() {
-        final Serializable valuesD = Lists.newArrayList(1.0,2.0);
+        final Serializable valuesD = Lists.newArrayList(1.0, 2.0);
         try {
             final String archiveString = ArchiveTypeConversionSupport.toArchiveString(valuesD);
             Assert.assertEquals(ARCHIVE_COLLECTION_PREFIX + "1.0\\,2.0" + ARCHIVE_COLLECTION_SUFFIX, archiveString);

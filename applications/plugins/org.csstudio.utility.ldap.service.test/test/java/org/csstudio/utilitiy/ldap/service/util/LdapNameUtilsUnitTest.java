@@ -74,7 +74,7 @@ public class LdapNameUtilsUnitTest {
                                FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
                                UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
                                ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
-                               COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
+                               COUNTRY_FIELD_NAME, COUNTRY_FIELD_VALUE);
     }
 
     @Test
@@ -196,7 +196,7 @@ public class LdapNameUtilsUnitTest {
         final LdapName name = createLdapName(RECORD.getNodeTypeName(), "foobar",
                                               UNIT.getNodeTypeName(), "Test",
                                               "dc", "example",
-                                              "dc","com");
+                                              "dc", "com");
         final Rdn rdn = name.getRdn(name.size() - 1);
         assertEquals(RECORD, RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
     }
@@ -216,12 +216,12 @@ public class LdapNameUtilsUnitTest {
         final LdapName namex = createLdapName(RECORD.getNodeTypeName(), "foobar",
                                               UNIT.getNodeTypeName(), "Test",
                                               "dc", "example",
-                                              "dc","com");
+                                              "dc", "com");
 
         final ImmutableList<Rdn> rdns = ImmutableList.of(new Rdn("dc", "example"), new Rdn(UNIT.getNodeTypeName(), "Test"));
         final LdapName newName = LdapNameUtils.removeRdns(namex, rdns);
 
         assertEquals(newName, createLdapName(RECORD.getNodeTypeName(), "foobar",
-                                             "dc","com"));
+                                             "dc", "com"));
     }
 }

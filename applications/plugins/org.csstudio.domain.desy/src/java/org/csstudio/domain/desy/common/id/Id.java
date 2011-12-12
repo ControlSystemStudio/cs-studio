@@ -92,7 +92,7 @@ public class Id<T extends Id<T>> extends Number implements Comparable<T> {
      */
     @Override
     public final int compareTo(@Nullable final T other) {
-        return other == null ? 1 : Long.signum(_value - other._value);
+        return other == null ? 1 : Long.signum(_value - ((Id<?>) other)._value);
     }
 
     /**
