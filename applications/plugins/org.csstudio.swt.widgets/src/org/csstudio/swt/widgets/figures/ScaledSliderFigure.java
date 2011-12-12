@@ -288,8 +288,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	 * @param value
 	 */
 	public void manualSetValue(double value){
-		setValue(
-				value < minimum ? minimum : (value > maximum ? maximum : value));
+		setValue(getCoercedValue(value));
+//				value < minimum ? minimum : (value > maximum ? maximum : value));
 	}
 
 	public void pageDown(){

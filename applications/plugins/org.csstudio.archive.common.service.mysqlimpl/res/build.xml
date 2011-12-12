@@ -108,7 +108,7 @@
             <transaction src="tables/channel_group.sql"/>
             <transaction src="tables/control_system.sql"/>
             <transaction src="tables/channel.sql"/>
-            <transaction src="tables/last_sample.sql"/>
+            <transaction src="tables/last_sample_time.sql"/>
             <transaction src="tables/channel_status.sql"/>
             <transaction src="tables/sample.sql"/>
             <transaction src="tables/sample_m.sql"/>

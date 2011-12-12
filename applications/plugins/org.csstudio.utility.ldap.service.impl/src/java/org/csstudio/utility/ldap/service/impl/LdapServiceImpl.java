@@ -125,7 +125,7 @@ public final class LdapServiceImpl implements ILdapService {
 
             final Hashtable<Object, String> env = new Hashtable<Object, String>(ldapPrefs);
 
-            env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+            env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
             try {
                 _context = new InitialLdapContext(env, null);
@@ -282,7 +282,7 @@ public final class LdapServiceImpl implements ILdapService {
             new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();
         final ContentModel<T> model = builder.getModel();
-        
+
         if (model == null) {
             return false;
         }
@@ -346,13 +346,14 @@ public final class LdapServiceImpl implements ILdapService {
                                         @Nonnull final ISubtreeNodeComponent<T> treeParent,
                                         final boolean copy) throws InvalidNameException {
 
+        if (ldapParentName == null) {
+            return;
+        }
+        final LdapName newChildLdapName = new LdapName(ldapParentName.getRdns());
         // process contents of model and build subtree below 'newLdapName'
         for (final INodeComponent<T> child : treeParent.getDirectChildren()) {
-
-            final LdapName newChildLdapName = ldapParentName != null ? new LdapName(ldapParentName.getRdns()) : null;
             if (copy) {
                 newChildLdapName.add(new Rdn(((ITreeNodeConfiguration<T>) child.getType()).getNodeTypeName(), child.getName()));
-
                 // generate LDAP component for child
                 createComponent(newChildLdapName, child.getAttributes());
             }

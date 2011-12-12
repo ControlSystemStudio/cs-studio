@@ -119,7 +119,7 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
         long written = 0;
 
-        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> allSamples =
+        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> bufferSamples =
             Lists.newLinkedList();
 
         for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
@@ -132,11 +132,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
             }
             buffer.updateStats();
 
-            buffer.drainTo(allSamples);
+            buffer.drainTo(bufferSamples);
 
-            written += writeSamples(_provider,  allSamples);
+            written += writeSamples(_provider,  bufferSamples);
 
-            allSamples.clear();
+            bufferSamples.clear();
         }
         return written;
     }
