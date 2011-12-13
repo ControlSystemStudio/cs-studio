@@ -54,7 +54,7 @@ public class DelayCommand extends BaseCommand
 	public void writeXML(final PrintStream out, final int level)
 	{
 	    writeIndent(out, level);
-	    out.println("<delay><seconds>" + seconds + "</seconds></command>");
+	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
 	}
 	
     /** {@inheritDoc} */
