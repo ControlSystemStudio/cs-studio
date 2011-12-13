@@ -8,7 +8,7 @@
 package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.ui.scantree.GUI;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -16,10 +16,10 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
-/** Adapter from {@link WaitForValueCommand} to {@link IPropertySource}.
+/** Adapter from {@link WaitCommand} to {@link IPropertySource}.
  *  @author Kay Kasemir
  */
-public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitForValueCommand>
+public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitCommand>
 {
     final private static String DEVICE = "DEVICE"; //$NON-NLS-1$
     final private static String DESIRED = "DESIRED"; //$NON-NLS-1$
@@ -46,7 +46,7 @@ public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitForValueC
      *  @param gui GUI to notify on change of command
      *  @param command {@link ScanCommand}
      */
-    public WaitForValueCommandAdapter(final GUI gui, final WaitForValueCommand command)
+    public WaitForValueCommandAdapter(final GUI gui, final WaitCommand command)
     {
         super(gui, command);
     }
@@ -71,7 +71,7 @@ public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitForValueC
     {
         try
         {
-            final WaitForValueCommand command = getCommand();
+            final WaitCommand command = getCommand();
             if (id == DEVICE)
                 command.setDeviceName(value.toString());
             else if (id == DESIRED)

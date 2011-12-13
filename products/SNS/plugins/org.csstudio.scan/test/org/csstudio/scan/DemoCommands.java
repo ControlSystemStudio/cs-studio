@@ -23,7 +23,7 @@ import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 
 /** Create Commands for tests
  *  @author Kay Kasemir
@@ -35,13 +35,13 @@ public class DemoCommands
     {
     	final List<ScanCommand> commands = new ArrayList<ScanCommand>();
     	commands.add(new SetCommand("setpoint", 1.0));
-    	commands.add(new WaitForValueCommand("readback", 1.0, 0.1));
+    	commands.add(new WaitCommand("readback", 1.0, 0.1));
     	commands.add(
     	        new LoopCommand("outer", 1.0, 5.0, 1.0,
                     new LogCommand("outer"),
                     new LoopCommand("inner", 1.0, 10.0, 2.0,
                             new SetCommand("setpoint", 1.0),
-                            new WaitForValueCommand("readback", 1.0, 0.1),
+                            new WaitCommand("readback", 1.0, 0.1),
                             new DelayCommand(0.5),
                             new LogCommand("inner", "readback"))));
     	return commands;

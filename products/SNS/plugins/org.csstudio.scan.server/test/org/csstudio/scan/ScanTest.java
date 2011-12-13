@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.LogCommandImpl;
 import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommandImpl;
-import org.csstudio.scan.command.WaitForValueCommandImpl;
+import org.csstudio.scan.command.WaitCommandImpl;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
@@ -63,9 +63,9 @@ public class ScanTest
                 new LoopCommandImpl("xpos", 1.0, 5.0, 1.0,
                         new LoopCommandImpl("ypos", 1.0, 5.0, 1.0,
                                 new SetCommandImpl("setpoint", 0),
-                                new WaitForValueCommandImpl("readback", 0, 0.2),
+                                new WaitCommandImpl("readback", 0, 0.2),
                                 new SetCommandImpl("setpoint", 0.5),
-                                new WaitForValueCommandImpl("readback", 0.5, 0.1),
+                                new WaitCommandImpl("readback", 0.5, 0.1),
                                 new LogCommandImpl("xpos", "ypos", "readback")
                         )
                 )

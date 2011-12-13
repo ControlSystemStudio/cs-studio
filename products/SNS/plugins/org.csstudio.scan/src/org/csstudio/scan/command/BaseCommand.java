@@ -18,9 +18,12 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
-/** Base for a command that prints itself
- *  with indentation levels
+/** Base for commands that supports XML read/write.
+ * 
+ *  @see XMLCommandReader for additional requirements
+ * 
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -28,6 +31,17 @@ public abstract class BaseCommand implements ScanCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+
+    /** Write the command (and its sub-commands) in an XML format.
+     * 
+     *  <p>A command called AbcCommand should write itself as a tag "abc"
+     *  so that the {@link XMLCommandReader} can later determine
+     *  which class to use for reading the command back from XML.
+     *  
+     *  @param out {@link PrintStream}
+     *  @param level Indentation level
+     */
+    abstract public void writeXML(PrintStream out, final int level);
 
     /** Write indentation
      *  @param out Where to print

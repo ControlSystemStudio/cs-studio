@@ -15,7 +15,7 @@ import java.util.List;
 
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.junit.Test;
 
 /** JUnit test of the {@link CommandTreeContentProvider}
@@ -59,7 +59,7 @@ public class CommandTreeContentProviderUnitTest
         assertEquals("ypos", loop.getDeviceName());
         body = provider.getChildren(loop);
         
-        assertTrue(body[0] instanceof WaitForValueCommand);
+        assertTrue(body[0] instanceof WaitCommand);
         assertEquals(loop, provider.getParent(body[0]));
     }
 }

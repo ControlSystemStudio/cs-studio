@@ -150,7 +150,7 @@ public class CommandSequence
     public void wait(final String device_name, final double desired_value,
          final double tolerance)
     {
-        commands.add(new WaitForValueCommand(device_name, desired_value, tolerance));
+        commands.add(new WaitCommand(device_name, desired_value, tolerance));
     }
 
     // Note: This was called 'print' which causes warnings in a PyDev python
@@ -160,7 +160,7 @@ public class CommandSequence
     {
         try
         {
-            new XMLCommandWriter(System.out).writeXML(commands);
+            XMLCommandWriter.write(System.out, commands);
         }
         catch (Exception ex)
         {

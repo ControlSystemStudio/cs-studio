@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitForValueCommand extends BaseCommand
+public class WaitCommand extends BaseCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -38,7 +38,7 @@ public class WaitForValueCommand extends BaseCommand
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
      */
-	public WaitForValueCommand(final String device_name,
+	public WaitCommand(final String device_name,
 	        final double desired_value, final double tolerance)
     {
         this.device_name = device_name;
@@ -92,18 +92,23 @@ public class WaitForValueCommand extends BaseCommand
         		    "</wait>");
     }
     
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final String device = DOMHelper.getSubelementString(element, "device");
+        final double value = DOMHelper.getSubelementDouble(element, "value");
+        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance");
+        return new WaitCommand(device, value, tolerance);
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
 	    return "Wait for '" + device_name + "' to reach " + desired_value + " (+-" + tolerance + ")";
 	}
-
-    public static ScanCommand fromXML(Element element)
-    {
-        final String device = DOMHelper.getSubelementString(element, "device", null);
-        final double value = DOMHelper.getSubelementDouble(element, "value", 0.0);
-        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance", 1.0);
-        return new WaitForValueCommand(device, value, tolerance);
-    }
 }

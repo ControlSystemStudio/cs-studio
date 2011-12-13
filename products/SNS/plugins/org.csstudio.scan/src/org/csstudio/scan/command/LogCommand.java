@@ -80,6 +80,29 @@ public class LogCommand extends BaseCommand
         out.println("</log>");
     }
     
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final List<String> devices = new ArrayList<String>();
+        Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
+        if (node == null)
+            throw new Exception("Missing 'devices'");
+        node = DOMHelper.findFirstElementNode(node.getFirstChild(), "device");
+        while (node != null)
+        {
+            Node text_node = node.getFirstChild();
+            if (text_node == null)
+                throw new Exception("Missing device name");
+            devices.add(text_node.getNodeValue());
+            node = DOMHelper.findNextElementNode(node, "device");
+        }
+        return new LogCommand(devices.toArray(new String[devices.size()]));
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()
@@ -95,20 +118,4 @@ public class LogCommand extends BaseCommand
 		}
 	    return buf.toString();
 	}
-
-    public static ScanCommand fromXML(final Element element) throws Exception
-    {
-        final List<String> devices = new ArrayList<String>();
-        Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
-        node = DOMHelper.findFirstElementNode(node.getFirstChild(), "device");
-        while (node != null)
-        {
-            Node text_node = node.getFirstChild();
-            if (text_node == null)
-                throw new Exception("Missing device name");
-            devices.add(text_node.getNodeValue());
-            node = DOMHelper.findNextElementNode(node, "device");
-        }
-        return new LogCommand(devices.toArray(new String[devices.size()]));
-    }
 }

@@ -22,7 +22,7 @@ import java.util.List;
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.junit.Test;
 
 /** JUnit test of the Command printout
@@ -37,7 +37,7 @@ public class CommandSequenceUnitTest
     	final CommandSequence commands = new CommandSequence();
     	// Add commands
     	commands.add(new SetCommand("setpoint", 1));
-    	commands.add(new WaitForValueCommand("readback", 1.0, 0.1));
+    	commands.add(new WaitCommand("readback", 1.0, 0.1));
     	// Add same commands via shortcut
     	commands.set("setpoint", 1);
     	commands.wait("readback", 1.0, 0.1);

@@ -18,7 +18,7 @@ package org.csstudio.scan.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanContext;
@@ -28,7 +28,7 @@ import org.csstudio.scan.server.ScanServer;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitForValueCommandImpl extends WaitForValueCommand implements CommandImpl
+public class WaitCommandImpl extends WaitCommand implements CommandImpl
 {
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -38,7 +38,7 @@ public class WaitForValueCommandImpl extends WaitForValueCommand implements Comm
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
      */
-	public WaitForValueCommandImpl(final String device_name,
+	public WaitCommandImpl(final String device_name,
 	        final double desired_value, final double tolerance)
     {
 	    super(device_name, desired_value, tolerance);
@@ -47,7 +47,7 @@ public class WaitForValueCommandImpl extends WaitForValueCommand implements Comm
 	/** Initialize
 	 *  @param command Command description
 	 */
-    public WaitForValueCommandImpl(final WaitForValueCommand command)
+    public WaitCommandImpl(final WaitCommand command)
     {
         this(command.getDeviceName(), command.getDesiredValue(), command.getTolerance());
     }

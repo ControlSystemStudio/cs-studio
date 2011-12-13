@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.io.Serializable;
 
 /** Information about a command in a scan
@@ -40,12 +39,6 @@ import java.io.Serializable;
  */
 public interface ScanCommand extends Serializable
 {
-    /** Write the command (and its sub-commands) in an XML format
-     *  @param out {@link PrintStream}
-     *  @param level Indentation level
-     */
-    public void writeXML(PrintStream out, final int level);
-    
     /** @return One-line text representation of the command */
 	@Override
     public String toString();

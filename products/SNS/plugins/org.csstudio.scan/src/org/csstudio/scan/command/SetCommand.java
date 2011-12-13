@@ -73,6 +73,18 @@ public class SetCommand extends BaseCommand
         out.println("<set><device>" + device_name + "</device><value>" + value + "</value></set>");
     }
     
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final String device = DOMHelper.getSubelementString(element, "device");
+        final double value = DOMHelper.getSubelementDouble(element, "value");
+        return new SetCommand(device, value);
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()
@@ -80,10 +92,4 @@ public class SetCommand extends BaseCommand
 	    return "Set '" + device_name + "' = " + value;
 	}
 
-    public static ScanCommand fromXML(final Element element)
-    {
-        final String device = DOMHelper.getSubelementString(element, "device", null);
-        final double value = DOMHelper.getSubelementDouble(element, "value", 0.0);
-        return new SetCommand(device, value);
-    }
 }

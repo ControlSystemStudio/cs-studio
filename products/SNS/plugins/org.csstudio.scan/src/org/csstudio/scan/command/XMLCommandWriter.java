@@ -18,25 +18,22 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class XMLCommandWriter
 {
-    final private PrintStream out;
-
-    /** Initialize
-     *  @param out Where to write the commands
-     */
-    public XMLCommandWriter(final OutputStream out)
-    {
-        this.out = new PrintStream(new BufferedOutputStream(out));
-    }
-
-    /** @param commands Commands to write as XML to output stream 
+    /**
+     *  @param stream Where to write the commands
+     *  @param commands Commands to write as XML to output stream 
      *  @throws Exception on error
      */
-    public void writeXML(final List<ScanCommand> commands) throws Exception
+    public static void write(final OutputStream stream, final List<ScanCommand> commands) throws Exception
     {
+        final PrintStream out = new PrintStream(new BufferedOutputStream(stream));
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<commands>");
         for (ScanCommand command : commands)
-            command.writeXML(out, 1);
+        {
+            if (! (command instanceof BaseCommand))
+                throw new Exception("Cannot write " + command.getClass().getName() + " to XML");
+            ((BaseCommand)command).writeXML(out, 1);
+        }
         out.println("</commands>");
         out.flush();
     }

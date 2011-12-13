@@ -25,8 +25,8 @@ import org.w3c.dom.Node;
 public class DOMHelper
 {
     /** Look for Element node of given name.
-     *  <p>
-     *  Checks the node and its siblings.
+     *
+     *  <p>Checks the node and its siblings.
      *  Does not descent down the 'child' links.
      *  @param node Node where to start.
      *  @param name Name of the nodes to look for.
@@ -52,10 +52,9 @@ public class DOMHelper
         return findFirstElementNode(node.getNextSibling(), name);
     }
 
-
     /** Locate a sub-element tagged 'name', return its value.
      * 
-     *  Will only go one level down, not search the whole tree.
+     *  <p>Will only go one level down, not search the whole tree.
      *  
      *  @param element Element where to start looking. May be null.
      *  @param name Name of sub-element to locate.
@@ -80,9 +79,58 @@ public class DOMHelper
         return default_value;
     }
     
+    /** Locate a sub-element tagged 'name', return its value.
+     * 
+     *  <p>Will only go one level down, not search the whole tree.
+     *  
+     *  @param element Element where to start looking.
+     *  @param name Name of sub-element to locate.
+     *  
+     *  @return Returns string that was found
+     *  @throws Exception when nothing found
+     */
+    public static final String getSubelementString(final Element element, final String name) throws Exception
+    {
+        if (element == null)
+            throw new Exception("Missing '" + name + "'");
+        Node n = element.getFirstChild();
+        n = findFirstElementNode(n, name);
+        if (n != null)
+        {
+            Node text_node = n.getFirstChild();
+            if (text_node != null)
+                return text_node.getNodeValue();
+        }
+        throw new Exception("Missing '" + name + "'");
+    }
+    
     /** Locate a sub-element tagged 'name', return its double value.
      *
-     *  Will only go one level down, not seach the whole tree.
+     *  <p>Will only go one level down, not search the whole tree.
+     *
+     *  @param element Element where to start looking.
+     *  @param element_name Name of sub-element to locate.
+     *
+     *  @return Returns number found in the sub-element.
+     *  @throws Exception when nothing found
+     */
+    public static final double getSubelementDouble(
+          final Element element, final String element_name) throws Exception
+    {
+        final String s = getSubelementString(element, element_name);
+        try
+        {
+            return Double.parseDouble(s);
+        }
+        catch (NumberFormatException ex)
+        {
+            throw new Exception("Missing numeric value for '" + element_name + "'");
+        }
+    }
+
+    /** Locate a sub-element tagged 'name', return its double value.
+     *
+     *  <p>Will only go one level down, not search the whole tree.
      *
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
@@ -90,12 +138,12 @@ public class DOMHelper
      *
      *  @return Returns number found in the sub-element.
      */
-   public static final double getSubelementDouble(
+    public static final double getSubelementDouble(
            final Element element, final String element_name, final double default_value)
-   {
-       final String s = getSubelementString(element, element_name, "");
-       if (s.length() < 1)
-           return default_value;
-       return Double.parseDouble(s);
-   }
+    {
+        final String s = getSubelementString(element, element_name, "");
+        if (s.length() < 1)
+            return default_value;
+        return Double.parseDouble(s);
+    }
 }

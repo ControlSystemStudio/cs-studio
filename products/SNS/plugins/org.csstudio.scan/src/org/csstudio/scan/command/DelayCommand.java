@@ -58,16 +58,21 @@ public class DelayCommand extends BaseCommand
 	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
 	}
 	
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+	{
+	    final double seconds = DOMHelper.getSubelementDouble(element, "seconds");
+	    return new DelayCommand(seconds);
+	}
+	
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
 	    return "Delay " + seconds + " sec";
 	}
-
-    public static ScanCommand fromXML(final Element element)
-    {
-        final double seconds = DOMHelper.getSubelementDouble(element, "seconds", 0.0);
-        return new DelayCommand(seconds);
-    }
 }

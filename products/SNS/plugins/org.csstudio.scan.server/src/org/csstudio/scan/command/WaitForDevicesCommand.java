@@ -18,7 +18,6 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.BaseCommand;
 import org.csstudio.scan.condition.Condition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.device.Device;

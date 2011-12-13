@@ -12,7 +12,7 @@ import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.ui.scantree.properties.DelayCommandAdapter;
 import org.csstudio.scan.ui.scantree.properties.LogCommandAdapter;
 import org.csstudio.scan.ui.scantree.properties.LoopCommandAdapter;
@@ -65,8 +65,8 @@ public class ScanCommandAdapterFactory implements IAdapterFactory
                 return new LoopCommandAdapter(gui, (LoopCommand) command);
             else if (command instanceof SetCommand)
                 return new SetCommandAdapter(gui, (SetCommand) command);
-            else if (command instanceof WaitForValueCommand)
-                return new WaitForValueCommandAdapter(gui, (WaitForValueCommand) command);
+            else if (command instanceof WaitCommand)
+                return new WaitForValueCommandAdapter(gui, (WaitCommand) command);
         }
         return null;
     }

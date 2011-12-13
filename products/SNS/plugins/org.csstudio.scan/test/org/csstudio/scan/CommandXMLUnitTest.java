@@ -43,7 +43,7 @@ public class CommandXMLUnitTest
         final List<ScanCommand> commands = DemoCommands.createDemoCommands();
         
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new XMLCommandWriter(out).writeXML(commands);
+        XMLCommandWriter.write(out, commands);
         out.close();
         
         xml = out.toString();
@@ -59,12 +59,13 @@ public class CommandXMLUnitTest
         assertNotNull(xml);
         assertTrue(xml.length() > 0);
         final InputStream in = new ByteArrayInputStream(xml.getBytes());
-        final List<ScanCommand> commands = new XMLCommandReader(in).readXML();
+        final List<ScanCommand> commands = XMLCommandReader.readXMLStream(in);
+        in.close();
         assertNotNull(commands);
         
         // When turned back into XML, result should match
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        new XMLCommandWriter(out).writeXML(commands);
+        XMLCommandWriter.write(out, commands);
         out.close();
         final String copy = out.toString();
         System.out.println("Read from XML:");
