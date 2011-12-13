@@ -18,7 +18,6 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
-import org.w3c.dom.Element;
 
 /** Base for commands that supports XML read/write.
  * 
