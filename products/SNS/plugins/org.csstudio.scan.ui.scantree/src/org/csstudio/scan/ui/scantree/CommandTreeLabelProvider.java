@@ -21,7 +21,10 @@ public class CommandTreeLabelProvider extends CellLabelProvider
     public void update(final ViewerCell cell)
     {
         final ScanCommand command = (ScanCommand) cell.getElement();
-        cell.setText(command.toString());
+        // Add space between icon and text
+        cell.setText(" " + command.toString()); //$NON-NLS-1$
+        
+        cell.setImage(CommandImages.getImage(command));
     }
 
     /** {@inheritDoc} */
