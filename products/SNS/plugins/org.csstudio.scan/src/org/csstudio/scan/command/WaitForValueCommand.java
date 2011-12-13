@@ -18,6 +18,7 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** {@link CommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
@@ -97,4 +98,12 @@ public class WaitForValueCommand extends BaseCommand
 	{
 	    return "Wait for '" + device_name + "' to reach " + desired_value + " (+-" + tolerance + ")";
 	}
+
+    public static ScanCommand fromXML(Element element)
+    {
+        final String device = DOMHelper.getSubelementString(element, "device", null);
+        final double value = DOMHelper.getSubelementDouble(element, "value", 0.0);
+        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance", 1.0);
+        return new WaitForValueCommand(device, value, tolerance);
+    }
 }

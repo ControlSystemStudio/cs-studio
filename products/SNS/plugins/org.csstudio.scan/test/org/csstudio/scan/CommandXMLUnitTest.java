@@ -15,12 +15,17 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.junit.Test;
 
@@ -30,8 +35,10 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class CommandXMLUnitTest
 {
+    private static String xml;
+    
     @Test
-    public void testCommands() throws Exception
+    public void testWriteXML() throws Exception
     {
         final List<ScanCommand> commands = DemoCommands.createDemoCommands();
         
@@ -39,10 +46,29 @@ public class CommandXMLUnitTest
         new XMLCommandWriter(out).writeXML(commands);
         out.close();
         
-        final String xml = out.toString();
+        xml = out.toString();
         System.out.println(xml);
         assertTrue(xml.startsWith("<?xml"));
         assertTrue(xml.contains("<commands>"));
         assertTrue(xml.contains("</commands>"));
+    }
+    
+    @Test
+    public void testReadXML() throws Exception
+    {
+        assertNotNull(xml);
+        assertTrue(xml.length() > 0);
+        final InputStream in = new ByteArrayInputStream(xml.getBytes());
+        final List<ScanCommand> commands = new XMLCommandReader(in).readXML();
+        assertNotNull(commands);
+        
+        // When turned back into XML, result should match
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new XMLCommandWriter(out).writeXML(commands);
+        out.close();
+        final String copy = out.toString();
+        System.out.println("Read from XML:");
+        System.out.println(copy);
+        assertEquals(xml, copy);
     }
 }

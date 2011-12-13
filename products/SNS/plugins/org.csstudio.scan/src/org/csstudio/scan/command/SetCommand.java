@@ -18,6 +18,7 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** {@link ScanCommand} that sets a device to a value
  *  @author Kay Kasemir
@@ -78,4 +79,11 @@ public class SetCommand extends BaseCommand
 	{
 	    return "Set '" + device_name + "' = " + value;
 	}
+
+    public static ScanCommand fromXML(final Element element)
+    {
+        final String device = DOMHelper.getSubelementString(element, "device", null);
+        final double value = DOMHelper.getSubelementDouble(element, "value", 0.0);
+        return new SetCommand(device, value);
+    }
 }

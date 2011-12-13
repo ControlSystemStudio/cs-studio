@@ -16,8 +16,12 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /** {@link CommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir
@@ -91,4 +95,20 @@ public class LogCommand extends BaseCommand
 		}
 	    return buf.toString();
 	}
+
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final List<String> devices = new ArrayList<String>();
+        Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
+        node = DOMHelper.findFirstElementNode(node.getFirstChild(), "device");
+        while (node != null)
+        {
+            Node text_node = node.getFirstChild();
+            if (text_node == null)
+                throw new Exception("Missing device name");
+            devices.add(text_node.getNodeValue());
+            node = DOMHelper.findNextElementNode(node, "device");
+        }
+        return new LogCommand(devices.toArray(new String[devices.size()]));
+    }
 }

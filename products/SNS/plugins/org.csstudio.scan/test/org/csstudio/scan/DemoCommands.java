@@ -34,13 +34,13 @@ public class DemoCommands
     public static List<ScanCommand> createDemoCommands()
     {
     	final List<ScanCommand> commands = new ArrayList<ScanCommand>();
-    	commands.add(new SetCommand("setpoint", 1));
+    	commands.add(new SetCommand("setpoint", 1.0));
     	commands.add(new WaitForValueCommand("readback", 1.0, 0.1));
     	commands.add(
-    	        new LoopCommand("outer", 1, 5, 1,
+    	        new LoopCommand("outer", 1.0, 5.0, 1.0,
                     new LogCommand("outer"),
-                    new LoopCommand("inner", 1, 10, 2,
-                            new SetCommand("setpoint", 1),
+                    new LoopCommand("inner", 1.0, 10.0, 2.0,
+                            new SetCommand("setpoint", 1.0),
                             new WaitForValueCommand("readback", 1.0, 0.1),
                             new DelayCommand(0.5),
                             new LogCommand("inner", "readback"))));

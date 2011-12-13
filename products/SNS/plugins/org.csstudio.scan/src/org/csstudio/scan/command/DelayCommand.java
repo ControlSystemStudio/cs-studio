@@ -18,6 +18,7 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** {@link ScanCommand} that delays the scan for some time
  *  @author Kay Kasemir
@@ -63,4 +64,10 @@ public class DelayCommand extends BaseCommand
 	{
 	    return "Delay " + seconds + " sec";
 	}
+
+    public static ScanCommand fromXML(final Element element)
+    {
+        final double seconds = DOMHelper.getSubelementDouble(element, "seconds", 0.0);
+        return new DelayCommand(seconds);
+    }
 }

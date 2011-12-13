@@ -16,10 +16,12 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** Command that performs a loop
  *
@@ -188,4 +190,15 @@ public class LoopCommand extends BaseCommand
 	{
 	    return "Loop '" + device_name + "' = " + start + " ... " + end + ", step "  + stepsize;
 	}
+
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final String device = DOMHelper.getSubelementString(element, "device", null);
+        final double start = DOMHelper.getSubelementDouble(element, "start", 0.0);
+        final double end = DOMHelper.getSubelementDouble(element, "end", 10.0);
+        final double step = DOMHelper.getSubelementDouble(element, "step", 1.0);
+        final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
+        final List<ScanCommand> body = XMLCommandReader.readCommands(body_node.getFirstChild());
+        return new LoopCommand(device, start, end, step, body);
+    }
 }
