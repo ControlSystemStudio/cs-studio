@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.command.BaseCommand;
@@ -49,6 +50,14 @@ public class WaitForDevicesCommand extends BaseCommand implements CommandImpl
 		final Condition ready = new WaitForDevicesCondition(context.getDevices());
 		ready.await();
         context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+	@Override
+    public void writeXML(final PrintStream out, final int level)
+    {
+	    writeIndent(out, level);
+	    out.println("<waitfordevices/>");
     }
 
     /** {@inheritDoc} */

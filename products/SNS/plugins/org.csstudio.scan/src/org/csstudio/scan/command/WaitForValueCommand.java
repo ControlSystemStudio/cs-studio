@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
+
 import org.csstudio.scan.server.ScanServer;
 
 /** {@link CommandImpl} that delays the scan until a device reaches a certain value
@@ -77,6 +79,16 @@ public class WaitForValueCommand extends BaseCommand
     public void setTolerance(final double tolerance)
     {
         this.tolerance = tolerance;
+    }
+    
+    /** {@inheritDoc} */
+    public void writeXML(final PrintStream out, final int level)
+    {
+        writeIndent(out, level);
+        out.println("<wait><device>" + device_name + "</device>" +
+        		    "<value>" + desired_value + "</value>" +
+                    "<tolerance>" + tolerance + "</tolerance>" +
+        		    "</wait>");
     }
     
     /** {@inheritDoc} */

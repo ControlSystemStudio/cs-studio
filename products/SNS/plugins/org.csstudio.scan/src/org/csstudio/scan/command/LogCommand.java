@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
+
 import org.csstudio.scan.server.ScanServer;
 
 /** {@link CommandImpl} that reads data from devices and logs it
@@ -56,6 +58,24 @@ public class LogCommand extends BaseCommand
         this.device_names = device_names;
     }
 
+    /** {@inheritDoc} */
+    public void writeXML(final PrintStream out, final int level)
+    {
+        writeIndent(out, level);
+        out.println("<log>");
+        writeIndent(out, level+1);
+        out.println("<devices>");
+        for (String device : device_names)
+        {
+            writeIndent(out, level+2);
+            out.println("<device>" + device + "</device>");
+        }
+        writeIndent(out, level+1);
+        out.println("</devices>");
+        writeIndent(out, level);
+        out.println("</log>");
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()

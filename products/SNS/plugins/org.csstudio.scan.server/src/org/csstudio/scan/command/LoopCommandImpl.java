@@ -20,8 +20,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.BaseCommand;
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanContext;
@@ -31,64 +29,54 @@ import org.csstudio.scan.server.ScanServer;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LoopCommandImpl extends BaseCommand implements CommandImpl
+public class LoopCommandImpl extends LoopCommand implements CommandImpl
 {
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
-	final private double start;
-	final private double end;
-	private double stepsize;
     final private boolean reverse;
-	final private List<CommandImpl> body;
+	final private List<CommandImpl> implementation;
 
 	/** Initialize
 	 *  @param device_name Device to update with the loop variable
 	 *  @param start Initial loop value
 	 *  @param end Final loop value
 	 *  @param stepsize Increment of the loop variable
-	 *  @param body Optional loop body commands
+	 *  @param body Loop body commands
+	 *  @throws Exception on error implementing the loop body
 	 */
 	public LoopCommandImpl(final String device_name, final double start,
 			final double end, final double stepsize,
-			final List<CommandImpl> body)
+			final List<ScanCommand> body) throws Exception
     {
-		this.device_name = device_name;
-		if (stepsize == 0.0)
-		    this.stepsize = 1.0;
-		else
-	        this.stepsize = stepsize;
-		this.start = start;
-		this.end = end;
-		this.reverse = (start <= end  &&  this.stepsize < 0) ||
+	    super(device_name, start, end, stepsize, body);
+		reverse = (start <= end  &&  this.stepsize < 0) ||
 		               (start >= end  &&  this.stepsize > 0);
-		this.body = body;
+		implementation = CommandImplFactory.implement(body);
     }
 
-    /** Initialize
+	/** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
      *  @param body Optional loop body commands
+     *  @throws Exception on error implementing the loop body
      */
     public LoopCommandImpl(final String device_name, final double start,
-            final double end, final double stepsize, final CommandImpl... body)
+            final double end, final double stepsize,
+            final ScanCommand... body) throws Exception
     {
         this(device_name, start, end, stepsize, Arrays.asList(body));
     }
-
-	/** Initialize
-	 *  @param command Command description
-	 *  @throws Exception if a command in the 'body' of the description lacks an implementation
-	 */
+	
+    /** Initialize
+     *  @param command Command description
+     */
     public LoopCommandImpl(final LoopCommand command) throws Exception
     {
-        this(command.getDeviceName(),
-             command.getStart(), command.getEnd(),
-             command.getStepSize(),
-             CommandImplFactory.implement(command.getBody()));
+        this(command.getDeviceName(), command.getStart(), command.getEnd(),
+             command.getStepSize(), command.getBody());
     }
 
     /** {@inheritDoc} */
@@ -97,7 +85,7 @@ public class LoopCommandImpl extends BaseCommand implements CommandImpl
     {
         final int iterations = 1 + (int) Math.round(Math.abs((end - start) / stepsize));
         int body_units = 0;
-        for (CommandImpl command : body)
+        for (CommandImpl command : implementation)
             body_units += command.getWorkUnits();
         if (body_units == 0)
             return iterations;
@@ -150,7 +138,7 @@ public class LoopCommandImpl extends BaseCommand implements CommandImpl
         // Execute loop body
         try
         {
-        	context.execute(body);
+        	context.execute(implementation);
         }
         catch (InterruptedException ex)
         {   // Pass interruption of body command up
@@ -163,11 +151,11 @@ public class LoopCommandImpl extends BaseCommand implements CommandImpl
         	throw new Exception(message, ex);
         }
         // If there are no commands that inc. the work units, do it yourself
-        if (body.size() <= 0)
+        if (implementation.size() <= 0)
             context.workPerformed(1);
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{

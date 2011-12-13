@@ -46,10 +46,10 @@ public class LoopCommand extends BaseCommand
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    private String device_name;
-	private double start;
-	private double end;
-	private double stepsize;
+    protected String device_name;
+    protected double start;
+    protected double end;
+    protected double stepsize;
 	private List<ScanCommand> body;
 
 	/** Initialize
@@ -82,7 +82,10 @@ public class LoopCommand extends BaseCommand
             final List<ScanCommand> body)
     {
         this.device_name = device_name;
-        this.stepsize = stepsize;
+        if (stepsize == 0.0)
+            this.stepsize = 1.0;
+        else
+            this.stepsize = stepsize;
         this.start = start;
         this.end = end;
         this.body = body;
@@ -149,17 +152,34 @@ public class LoopCommand extends BaseCommand
     }
 
     /** {@inheritDoc} */
-    @Override
-    protected void printIndented(final PrintStream out, final int level)
+    public void writeXML(final PrintStream out, final int level)
     {
-        super.printIndented(out, level);
+        writeIndent(out, level);
+        out.println("<loop>");
+        writeIndent(out, level+1);
+        out.println("<device>" + device_name + "</device>");
+        writeIndent(out, level+1);
+        out.println("<start>" + start + "</start>");
+        writeIndent(out, level+1);
+        out.println("<end>" + end + "</end>");
+        writeIndent(out, level+1);
+        out.println("<step>" + stepsize + "</step>");
+        writeIndent(out, level+1);
+        out.println("<body>");
         for (ScanCommand b : body)
         {   // Anticipate that Command might be implemented without BaseCommand
             if (b instanceof BaseCommand)
-                ((BaseCommand)b).printIndented(out, level + 1);
+                ((BaseCommand)b).writeXML(out, level + 2);
             else
-                b.dump(out);
+            {
+                writeIndent(out, level+2);
+                out.println("<unknown>" + b.toString() + "</unknown>");
+            }
         }
+        writeIndent(out, level+1);
+        out.println("</body>");
+        writeIndent(out, level);
+        out.println("</loop>");
     }
 
     /** {@inheritDoc} */

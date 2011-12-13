@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
+
 import org.csstudio.scan.server.ScanServer;
 
 /** {@link ScanCommand} that delays the scan for some time
@@ -46,6 +48,13 @@ public class DelayCommand extends BaseCommand
 	public void setSeconds(final double seconds)
 	{
 	    this.seconds = seconds;
+	}
+	
+    /** {@inheritDoc} */
+	public void writeXML(final PrintStream out, final int level)
+	{
+	    writeIndent(out, level);
+	    out.println("<delay><seconds>" + seconds + "</seconds></command>");
 	}
 	
     /** {@inheritDoc} */

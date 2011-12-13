@@ -158,8 +158,14 @@ public class CommandSequence
     /** Print current command sequence */
     public void dump()
     {
-        for (ScanCommand command : commands)
-            command.dump(System.out);
+        try
+        {
+            new XMLCommandWriter(System.out).writeXML(commands);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     /** @return List of commands in the sequence */

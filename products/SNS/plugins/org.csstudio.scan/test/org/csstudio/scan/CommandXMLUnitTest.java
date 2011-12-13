@@ -13,29 +13,36 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan;
 
-import java.io.PrintStream;
+import static org.junit.Assert.assertTrue;
 
-import org.csstudio.scan.server.ScanServer;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
 
-/** Base for a command that prints itself
- *  with indentation levels
+import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
+import org.junit.Test;
+
+/** JUnit test of writing/reading a Command sequence as XML
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public abstract class BaseCommand implements ScanCommand
+public class CommandXMLUnitTest
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
-    /** Write indentation
-     *  @param out Where to print
-     *  @param level Indentation level
-     */
-    protected void writeIndent(final PrintStream out, final int level)
+    @Test
+    public void testCommands() throws Exception
     {
-        for (int i=0; i<level; ++i)
-            out.print("  ");
+        final List<ScanCommand> commands = DemoCommands.createDemoCommands();
+        
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        new XMLCommandWriter(out).writeXML(commands);
+        out.close();
+        
+        final String xml = out.toString();
+        System.out.println(xml);
+        assertTrue(xml.startsWith("<?xml"));
+        assertTrue(xml.contains("<commands>"));
+        assertTrue(xml.contains("</commands>"));
     }
 }

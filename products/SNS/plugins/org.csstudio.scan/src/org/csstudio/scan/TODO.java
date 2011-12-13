@@ -73,6 +73,9 @@ public interface TODO
      *       'Spreadsheet' of loop variable, start/end?
      *       Process block GUI?
      *  
+     *  TODO Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
+     *       not just "at" the desired value
+     *  
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
      *       If they're something else, then an API for

@@ -40,12 +40,11 @@ import java.io.Serializable;
  */
 public interface ScanCommand extends Serializable
 {
-    // Note: This was called 'print' which causes warnings in a PyDev python
-    //       editor because print is a reserved word in python
-    /** Print the command (and its sub-commands)
+    /** Write the command (and its sub-commands) in an XML format
      *  @param out {@link PrintStream}
+     *  @param level Indentation level
      */
-    public void dump(PrintStream out);
+    public void writeXML(PrintStream out, final int level);
     
     /** @return One-line text representation of the command */
 	@Override

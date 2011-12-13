@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
+
 import org.csstudio.scan.server.ScanServer;
 
 /** {@link ScanCommand} that sets a device to a value
@@ -63,6 +65,13 @@ public class SetCommand extends BaseCommand
         this.value = value;
     }
 
+    /** {@inheritDoc} */
+    public void writeXML(final PrintStream out, final int level)
+    {
+        writeIndent(out, level);
+        out.println("<set><device>" + device_name + "</device><value>" + value + "</value></set>");
+    }
+    
     /** {@inheritDoc} */
 	@Override
 	public String toString()

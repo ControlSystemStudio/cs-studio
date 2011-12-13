@@ -156,5 +156,4 @@ public class LoopCommandHeadlessTest
 
         devices.stopDevices();
     }
-
 }
