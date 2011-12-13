@@ -29,7 +29,7 @@ public class CommandImages
             // Construct image name for class name
             int sep = command_name.lastIndexOf('.');
             final String imagefile = "icons/" + command_name.substring(sep+1).toLowerCase() + ".gif";
-            final ImageDescriptor descriptor = Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, imagefile);
+            final ImageDescriptor descriptor = Activator.getImageDescriptor(imagefile);
             if (descriptor == null)
                 return null;
             // Remember in registry

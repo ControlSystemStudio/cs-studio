@@ -11,12 +11,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 
 /** GUI for the scan tree
@@ -35,6 +40,15 @@ public class GUI
      */
     public GUI(final Composite parent)
     {
+        createComponents(parent);
+        createContextMenu();
+    }
+
+    /** Create GUI elements
+     *  @param parent Parent widget
+     */
+    private void createComponents(final Composite parent)
+    {
         parent.setLayout(new FillLayout());
 
         tree_view = new TreeViewer(parent,
@@ -45,9 +59,29 @@ public class GUI
         tree_view.setContentProvider(new CommandTreeContentProvider());
         tree_view.setLabelProvider(new CommandTreeLabelProvider());
         
+        // Double-click opens property panel
+        tree_view.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(DoubleClickEvent event)
+            {
+                new OpenPropertiesAction().run();
+            }
+        });
+        
         ColumnViewerToolTipSupport.enableFor(tree_view);
     }
 
+    /** Create context menu */
+    private void createContextMenu()
+    {
+        final MenuManager manager = new MenuManager();
+        manager.add(new OpenPropertiesAction());
+        
+        final Menu menu = manager.createContextMenu(tree_view.getControl());
+        tree_view.getControl().setMenu(menu);
+    }
+    
     /** Set focus */
     public void setFocus()
     {
