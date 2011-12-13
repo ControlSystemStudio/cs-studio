@@ -69,6 +69,8 @@ public interface TODO
      *       
      *  Done Plot: Show/Hide (default) toolbar
      *  
+     *  Done Load/Save scan as XML
+     *  
      *  TODO Other scan configuration GUIs.
      *       'Spreadsheet' of loop variable, start/end?
      *       Process block GUI?
