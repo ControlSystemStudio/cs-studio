@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 

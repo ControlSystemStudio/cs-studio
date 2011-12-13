@@ -17,10 +17,20 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 
@@ -42,6 +52,7 @@ public class GUI
     {
         createComponents(parent);
         createContextMenu();
+        addDragDrop();
     }
 
     /** Create GUI elements
@@ -80,6 +91,74 @@ public class GUI
         
         final Menu menu = manager.createContextMenu(tree_view.getControl());
         tree_view.getControl().setMenu(menu);
+    }
+    
+    /** @return Currently selected scan command or <code>null</code> */
+    private ScanCommand getSelectedCommand()
+    {
+        final IStructuredSelection sel = (IStructuredSelection)  tree_view.getSelection();
+        if (sel.isEmpty())
+            return null;
+        return (ScanCommand) sel.getFirstElement();
+    }
+    
+    /** Add drag-and-drop support */
+    private void addDragDrop()
+    {
+        final Transfer[] transfers = new Transfer[]
+        {
+            ScanCommandTransfer.getInstance()
+        };
+        tree_view.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
+        {
+            private ScanCommand command = null;
+            
+            @Override
+            public void dragStart(final DragSourceEvent event)
+            {
+                command = getSelectedCommand();
+                if (command == null)
+                    event.doit = false;
+            }
+            
+            @Override
+            public void dragSetData(final DragSourceEvent event)
+            {
+                event.data = command;
+            }
+            
+            @Override
+            public void dragFinished(final DragSourceEvent event)
+            {
+                // Anything at all? Or was this a 'copy', not a 'move'?
+                if (command == null  ||  event.detail != DND.DROP_MOVE)
+                    return;
+                // TODO Remove 'original' command that was moved to new location?
+                System.out.println("Should remove original " + command);
+            }
+        });
+
+        tree_view.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DropTargetAdapter()
+        {
+
+            @Override
+            public void drop(final DropTargetEvent event)
+            {
+                // TODO Add dropped command
+                if (! (event.data instanceof ScanCommand))
+                    return;
+                final ScanCommand command = (ScanCommand) event.data;
+                
+                // Determine _where_ it was dropped
+                final Control tree = tree_view.getControl();
+                final Point point = tree.getDisplay().map(null, tree, event.x, event.y);
+                final ViewerCell cell = tree_view.getCell(point);
+                if (cell == null)
+                    return;
+                final ScanCommand target = (ScanCommand) cell.getElement();
+                System.out.println("Dropped: " + command + " onto " + target);
+            }
+        });
     }
     
     /** Set focus */
