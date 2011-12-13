@@ -54,6 +54,7 @@ public class ScanCommandAdapterFactory implements IAdapterFactory
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
+        // TODO Locate the currently active editor, the one that needs to be updated when the command changes
         final ScanCommand command = (ScanCommand) adaptableObject;
         if (adapterType == IPropertySource.class)
         {
