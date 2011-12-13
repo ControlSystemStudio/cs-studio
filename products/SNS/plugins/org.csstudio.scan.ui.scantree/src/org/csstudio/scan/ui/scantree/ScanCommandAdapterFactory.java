@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
@@ -17,8 +20,10 @@ import org.csstudio.scan.ui.scantree.properties.DelayCommandAdapter;
 import org.csstudio.scan.ui.scantree.properties.LogCommandAdapter;
 import org.csstudio.scan.ui.scantree.properties.LoopCommandAdapter;
 import org.csstudio.scan.ui.scantree.properties.SetCommandAdapter;
-import org.csstudio.scan.ui.scantree.properties.WaitForValueCommandAdapter;
+import org.csstudio.scan.ui.scantree.properties.WaitCommandAdapter;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /** Factory for adapters from {@link ScanCommand}
@@ -29,6 +34,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  * 
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanCommandAdapterFactory implements IAdapterFactory
 {
     final private static Class<?>[] targets = new Class<?>[]
@@ -36,39 +42,42 @@ public class ScanCommandAdapterFactory implements IAdapterFactory
         IPropertySource.class
     };
     
-    private static GUI gui = null;
-    
+    /** {@inheritDoc} */
     @Override
     public Class<?>[] getAdapterList()
     {
         return targets;
     }
     
-    /** @param gui Current GUI to which commands are bound */
-    public static void setGUI(final GUI gui)
-    {
-        ScanCommandAdapterFactory.gui = gui;
-    }
-
+    /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
-        // TODO Locate the currently active editor, the one that needs to be updated when the command changes
+        if (! (adaptableObject instanceof ScanCommand)  ||
+               adapterType != IPropertySource.class)
+            return null;
         final ScanCommand command = (ScanCommand) adaptableObject;
-        if (adapterType == IPropertySource.class)
-        {
-            if (command instanceof DelayCommand)
-                return new DelayCommandAdapter(gui, (DelayCommand) command);
-            else if (command instanceof LogCommand)
-                return new LogCommandAdapter(gui, (LogCommand) command);
-            else if (command instanceof LoopCommand)
-                return new LoopCommandAdapter(gui, (LoopCommand) command);
-            else if (command instanceof SetCommand)
-                return new SetCommandAdapter(gui, (SetCommand) command);
-            else if (command instanceof WaitCommand)
-                return new WaitForValueCommandAdapter(gui, (WaitCommand) command);
-        }
+        
+        // Locate the currently active editor, the one that needs to be updated when the command changes
+        final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (! (editor instanceof ScanEditor))
+            return null;
+        final ScanEditor scan_editor = (ScanEditor) editor;
+
+        // Create the appropriate adapter
+        if (command instanceof DelayCommand)
+            return new DelayCommandAdapter(scan_editor, (DelayCommand) command);
+        else if (command instanceof LogCommand)
+            return new LogCommandAdapter(scan_editor, (LogCommand) command);
+        else if (command instanceof LoopCommand)
+            return new LoopCommandAdapter(scan_editor, (LoopCommand) command);
+        else if (command instanceof SetCommand)
+            return new SetCommandAdapter(scan_editor, (SetCommand) command);
+        else if (command instanceof WaitCommand)
+            return new WaitCommandAdapter(scan_editor, (WaitCommand) command);
+        
+        Logger.getLogger(getClass().getName()).log(Level.WARNING, "No adapter for {0}", command.getClass().getName());
         return null;
     }
 }

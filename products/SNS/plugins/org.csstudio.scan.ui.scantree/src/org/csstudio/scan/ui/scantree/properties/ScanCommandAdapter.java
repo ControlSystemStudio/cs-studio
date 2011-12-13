@@ -8,7 +8,7 @@
 package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.ui.scantree.GUI;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /** Base for Adapters from {@link ScanCommand} to {@link IPropertySource}
@@ -17,16 +17,16 @@ import org.eclipse.ui.views.properties.IPropertySource;
  */
 abstract public class ScanCommandAdapter<C extends ScanCommand> implements IPropertySource
 {
-    final private GUI gui;
+    final private ScanEditor editor;
     private C command;
     
     /** Initialize
-     *  @param gui GUI that displays the command
+     *  @param scan_editor GUI that displays the command
      *  @param command {@link ScanCommand}
      */
-    public ScanCommandAdapter(final GUI gui, final C command)
+    public ScanCommandAdapter(final ScanEditor editor, final C command)
     {
-        this.gui = gui;
+        this.editor = editor;
         this.command = command;
     }
     
@@ -39,8 +39,8 @@ abstract public class ScanCommandAdapter<C extends ScanCommand> implements IProp
     /** @param command Command that changed, requiring a GUI refresh */
     protected void refreshCommand(final C command)
     {
-        if (gui != null)
-            gui.refreshCommand(command);
+        if (editor != null)
+            editor.refreshCommand(command);
     }
     
     /** {@inheritDoc} */

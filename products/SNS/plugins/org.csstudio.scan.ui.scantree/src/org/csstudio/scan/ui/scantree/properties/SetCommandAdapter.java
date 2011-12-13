@@ -9,7 +9,7 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.ui.scantree.GUI;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -40,12 +40,12 @@ public class SetCommandAdapter extends ScanCommandAdapter<SetCommand>
     }
     
     /** Initialize
-     *  @param gui GUI to notify on change of command
+     *  @param editor GUI to notify on change of command
      *  @param command {@link ScanCommand}
      */
-    public SetCommandAdapter(final GUI gui, final SetCommand command)
+    public SetCommandAdapter(final ScanEditor editor, final SetCommand command)
     {
-        super(gui, command);
+        super(editor, command);
     }
     
     /** {@inheritDoc} */

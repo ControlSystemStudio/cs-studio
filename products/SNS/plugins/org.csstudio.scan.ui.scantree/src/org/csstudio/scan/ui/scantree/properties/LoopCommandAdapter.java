@@ -9,7 +9,7 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.ui.scantree.GUI;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -46,12 +46,12 @@ public class LoopCommandAdapter extends ScanCommandAdapter<LoopCommand>
     }
     
     /** Initialize
-     *  @param gui GUI to notify on change of command
+     *  @param editor GUI to notify on change of command
      *  @param command {@link ScanCommand}
      */
-    public LoopCommandAdapter(final GUI gui, final LoopCommand command)
+    public LoopCommandAdapter(final ScanEditor editor, final LoopCommand command)
     {
-        super(gui, command);
+        super(editor, command);
     }
     
     /** {@inheritDoc} */

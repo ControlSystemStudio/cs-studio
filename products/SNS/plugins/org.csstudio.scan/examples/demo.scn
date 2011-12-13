@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<commands>
+  <set><device>setpoint</device><value>1.0</value></set>
+  <wait><device>readback</device><value>1.0</value><tolerance>0.1</tolerance></wait>
+  <delay><seconds>5.0</seconds></delay>
+  <loop>
+    <device>xpos</device>
+    <start>1.0</start>
+    <end>5.0</end>
+    <step>1.0</step>
+    <body>
+      <log>
+        <devices>
+          <device>readback</device>
+        </devices>
+      </log>
+    </body>
+  </loop>
+  <loop>
+    <device>xpos</device>
+    <start>1.0</start>
+    <end>5.0</end>
+    <step>1.0</step>
+    <body>
+      <loop>
+        <device>ypos</device>
+        <start>2.0</start>
+        <end>4.0</end>
+        <step>0.5</step>
+        <body>
+          <wait><device>setpoint</device><value>1.0</value><tolerance>0.1</tolerance></wait>
+          <log>
+            <devices>
+              <device>readback</device>
+            </devices>
+          </log>
+        </body>
+      </loop>
+    </body>
+  </loop>
+</commands>

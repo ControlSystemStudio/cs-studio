@@ -9,7 +9,7 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.WaitCommand;
-import org.csstudio.scan.ui.scantree.GUI;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -19,7 +19,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 /** Adapter from {@link WaitCommand} to {@link IPropertySource}.
  *  @author Kay Kasemir
  */
-public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitCommand>
+public class WaitCommandAdapter extends ScanCommandAdapter<WaitCommand>
 {
     final private static String DEVICE = "DEVICE"; //$NON-NLS-1$
     final private static String DESIRED = "DESIRED"; //$NON-NLS-1$
@@ -43,12 +43,12 @@ public class WaitForValueCommandAdapter extends ScanCommandAdapter<WaitCommand>
     }
     
     /** Initialize
-     *  @param gui GUI to notify on change of command
+     *  @param editor GUI to notify on change of command
      *  @param command {@link ScanCommand}
      */
-    public WaitForValueCommandAdapter(final GUI gui, final WaitCommand command)
+    public WaitCommandAdapter(final ScanEditor editor, final WaitCommand command)
     {
-        super(gui, command);
+        super(editor, command);
     }
     
     /** {@inheritDoc} */
