@@ -34,11 +34,6 @@ public class DemoScan
                 new LoopCommand("ypos", 2.0, 4.0, 0.5,
                         new WaitCommand("setpoint", 1.0, 0.1),
                         new LogCommand("readback")));
-        
-        commands.dump();
-        
         return commands.getCommands();
     }
-    
-
 }
