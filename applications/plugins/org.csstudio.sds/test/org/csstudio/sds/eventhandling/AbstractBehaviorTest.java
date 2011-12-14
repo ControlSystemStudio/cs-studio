@@ -34,6 +34,7 @@ import org.epics.css.dal.DynamicValueState;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
+import org.epics.css.dal.simple.MetaData;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -52,6 +53,7 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
     private AnyDataChannel _anyDataChannel;
     private AnyData _anyData;
     private InOrder _inOrder;
+    private MetaData _metaData;
 
     /**
      * Constructor.
@@ -73,12 +75,15 @@ abstract public class AbstractBehaviorTest<M extends AbstractWidgetModel, B exte
         _dynamicValueProperty = mock(DynamicValueProperty.class);
         _anyDataChannel = mock(AnyDataChannel.class);
         _anyData = mock(AnyData.class);
+        _metaData = mock(MetaData.class);
         setInOrder(inOrder(_modelMock));
         when(_anyDataChannel.getProperty()).thenReturn(_dynamicValueProperty);
         when(_anyDataChannel.getData()).thenReturn(_anyData);
         when(_anyData.numberValue()).thenReturn(0);
         when(_anyData.getParentProperty()).thenReturn(_dynamicValueProperty);
         when(_anyData.getParentChannel()).thenReturn(_anyDataChannel);
+        when(_anyData.getMetaData()).thenReturn(_metaData);
+        when(_metaData.getPrecision()).thenReturn(4);
         setHasNoLiveData();
         _behavior.doInitialize(_modelMock);
         verifyDoInitialize();

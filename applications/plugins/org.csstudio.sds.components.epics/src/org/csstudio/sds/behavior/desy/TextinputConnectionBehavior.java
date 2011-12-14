@@ -22,7 +22,6 @@ import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -61,10 +60,6 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                                 BorderStyleEnum.LOWERED.getIndex());
         _defTransparent = widget.getBooleanProperty(TextInputModel.PROP_TRANSPARENT);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
-            widget.setJavaType(String.class);
-        }
-
     }
 
     /**
@@ -74,8 +69,8 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     protected void doProcessValueChange(final TextInputModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(TextInputModel.PROP_INPUT_TEXT, anyData.stringValue());
-        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        handleValueType(model, model.getValueType(), TextInputModel.PROP_INPUT_TEXT, anyData);
+        final boolean isTransparent = _defTransparent&&hasValue(anyData.getParentChannel());
         model.setPropertyValue(TextInputModel.PROP_TRANSPARENT, isTransparent);
     }
 
@@ -86,7 +81,6 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     protected void doProcessConnectionStateChange(final TextInputModel widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-//        boolean isTransparent = isConnected(anyDataChannel) && _defTransparent;
         final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
         widget.setPropertyValue(TextInputModel.PROP_TRANSPARENT, isTransparent);
     }

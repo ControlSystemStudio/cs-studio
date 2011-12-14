@@ -38,6 +38,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
+    private boolean _defTransparent;
+
     /**
      * Constructor.
      */
@@ -52,6 +54,7 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
+        _defTransparent = widget.getTransparent();
     }
 
     /**
@@ -62,7 +65,7 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
-        final boolean isTransparent = model.getTransparent()
+        final boolean isTransparent = _defTransparent
                 && hasValue(anyData.getParentChannel());
         model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
@@ -74,7 +77,7 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     protected void doProcessConnectionStateChange(final LabelModel widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        final boolean isTransparent = isConnected(anyDataChannel) && widget.getTransparent()
+        final boolean isTransparent = isConnected(anyDataChannel) && _defTransparent
                 && hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }

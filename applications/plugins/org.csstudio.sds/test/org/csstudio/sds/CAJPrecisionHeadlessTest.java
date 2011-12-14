@@ -85,7 +85,7 @@ public class CAJPrecisionHeadlessTest {
             // wait IOC startup finished
         }
         setSystemPropertys();
-        Thread.sleep(200);
+        Thread.sleep(400);
     }
 
 
