@@ -79,6 +79,7 @@ class ConfigurationSynchronizer implements Runnable {
     /**
      * Runs this synchronizer.
      */
+    @Override
     synchronized public void run() {
         _stopped = false;
         while (!_stopped) {
