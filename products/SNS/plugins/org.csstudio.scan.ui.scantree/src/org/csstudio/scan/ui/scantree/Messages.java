@@ -33,6 +33,7 @@ public class Messages extends NLS
     public static String Lbl_WaitTolerance;
     public static String Lbl_WaitValue;
     public static String OpenProperties;
+    public static String RemoveCommand;
 
     static
     {

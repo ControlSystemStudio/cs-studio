@@ -11,7 +11,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
+import org.csstudio.scan.ui.scantree.actions.RemoveCommandAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -38,8 +40,11 @@ import org.eclipse.swt.widgets.Tree;
 /** GUI for the scan tree
  *  @author Kay Kasemir
  */
-public class GUI
+public class ScanTreeGUI
 {
+    /** Listener */
+    final private ScanTreeGUIListener listener;
+    
     /** Commands displayed and edited in this GUI */
     private List<ScanCommand> commands = Collections.emptyList();
     
@@ -49,8 +54,9 @@ public class GUI
     /** Initialize
      *  @param parent
      */
-    public GUI(final Composite parent)
+    public ScanTreeGUI(final Composite parent, final ScanTreeGUIListener listener)
     {
+        this.listener = listener;
         createComponents(parent);
         createContextMenu();
         addDragDrop();
@@ -88,6 +94,8 @@ public class GUI
     private void createContextMenu()
     {
         final MenuManager manager = new MenuManager();
+        manager.add(new AddCommandAction());
+        manager.add(new RemoveCommandAction(this));
         manager.add(new OpenPropertiesAction());
         
         final Menu menu = manager.createContextMenu(tree_view.getControl());
@@ -95,7 +103,7 @@ public class GUI
     }
     
     /** @return Currently selected scan command or <code>null</code> */
-    private ScanCommand getSelectedCommand()
+    public ScanCommand getSelectedCommand()
     {
         final IStructuredSelection sel = (IStructuredSelection)  tree_view.getSelection();
         if (sel.isEmpty())
@@ -174,8 +182,9 @@ public class GUI
                 // Anything at all? Or was this a 'copy', not a 'move'?
                 if (command == null  ||  event.detail != DND.DROP_MOVE)
                     return;
-                // TODO Remove 'original' command that was moved to new location?
-                System.out.println("Should remove original " + command);
+                // Remove 'original' command that was moved to new location
+                TreeManipulator.remove(commands, command);
+                refresh();
             }
         });
         
@@ -204,16 +213,20 @@ public class GUI
             @Override
             public void drop(final DropTargetEvent event)
             {
-                // TODO Add dropped command
                 if (! (event.data instanceof ScanCommand))
                     return;
+                // Add dropped command
                 final ScanCommand command = (ScanCommand) event.data;
                 
                 // Determine _where_ it was dropped
                 final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
                 if (target == null)
                     return;
-                System.out.println("Dropped: " + command + " onto " + target.command);
+                
+                // System.out.println("Dropped: " + command + " onto " + target.command);
+                final boolean after = target.section != TreeItemInfo.Section.UPPER;
+                TreeManipulator.insert(commands, target.command, command, after);
+                refresh();
             }
         });
     }
@@ -231,6 +244,14 @@ public class GUI
         tree_view.setInput(commands);
     }
     
+    /** Perform full GUI refresh */
+    public void refresh()
+    {
+        setCommands(commands);
+        if (listener != null)
+            listener.scanTreeChanged();
+    }
+    
     /** @return Commands displayed/edited in GUI */
     public List<ScanCommand> getCommands()
     {
@@ -241,6 +262,8 @@ public class GUI
     public void refreshCommand(final ScanCommand command)
     {
         tree_view.refresh(command);
+        if (listener != null)
+            listener.scanTreeChanged();
     }
 
     /** @return Selection provider for commands in scan tree */

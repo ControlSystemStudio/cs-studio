@@ -15,9 +15,14 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in Demo of scan tree GUI
+ * 
+ *  Can run in plain JUnit test,
+ *  but then without icons.
+ *  On OS X, add JVM param -XstartOnFirstThread
+ *  
  *  @author Kay Kasemir
  */
-public class ScanTreeDemo
+public class ScanTreeGUIDemo
 {
     @Test
     public void runScanTreeDemo() throws Exception
@@ -28,7 +33,7 @@ public class ScanTreeDemo
 
         // Scan GUI
         final List<ScanCommand> commands = DemoScan.createCommands();
-        final GUI gui = new GUI(shell);
+        final ScanTreeGUI gui = new ScanTreeGUI(shell, null);
         gui.setCommands(commands);
 
         // SWT main loop

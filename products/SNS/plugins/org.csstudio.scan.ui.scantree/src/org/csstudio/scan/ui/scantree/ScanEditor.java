@@ -34,15 +34,14 @@ import org.eclipse.ui.part.EditorPart;
  *  as necessary to support Properties view/editor.
  *  
  *  TODO Add scan commands
- *  TODO Drag/drop commands in tree
  *  TODO Context menu to submit scan
  *  TODO Context menu to load scan from server?
  *  
  *  @author Kay Kasemir
  */
-public class ScanEditor extends EditorPart
+public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 {
-    private GUI gui;
+    private ScanTreeGUI gui;
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
@@ -64,7 +63,7 @@ public class ScanEditor extends EditorPart
     {
         final IFileEditorInput input = (IFileEditorInput) getEditorInput();
         
-        gui = new GUI(parent);
+        gui = new ScanTreeGUI(parent, this);
 
         try
         {
@@ -94,9 +93,15 @@ public class ScanEditor extends EditorPart
     public void refreshCommand(final ScanCommand command)
     {
         gui.refreshCommand(command);
-        setDirty(true);
     }
     
+    /** @see ScanTreeGUIListener */
+    @Override
+    public void scanTreeChanged()
+    {
+        setDirty(true);
+    }
+
     /** {@inheritDoc} */
     @Override
     public boolean isSaveAsAllowed()

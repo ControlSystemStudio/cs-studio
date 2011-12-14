@@ -29,7 +29,7 @@ import org.junit.Test;
 public class TreeManipulatiorUnitTest
 {
     @Test
-    public void testTreeManipulation() throws Exception
+    public void testTreeInsertion() throws Exception
     {
         final List<ScanCommand> commands = DemoScan.createCommands();
         XMLCommandWriter.write(System.out, commands);
@@ -71,5 +71,38 @@ public class TreeManipulatiorUnitTest
         assertEquals(7, commands.size());
         body = ((LoopCommand) commands.get(5)).getBody();
         assertSame(add, body.get(0));
+    }
+    
+    @Test
+    public void testTreeDeletion() throws Exception
+    {
+        final List<ScanCommand> commands = DemoScan.createCommands();
+        XMLCommandWriter.write(System.out, commands);
+        System.out.println("-----------------------------------------");
+        assertEquals(5, commands.size());
+
+        ScanCommand command = commands.get(2);
+        
+        // Remove second element, so next one should move 'up'
+        boolean ok = TreeManipulator.remove(commands, commands.get(1));
+        XMLCommandWriter.write(System.out, commands);
+        System.out.println("-----------------------------------------");
+        assertTrue(ok);
+        assertEquals(4, commands.size());
+        assertSame(command, commands.get(1));
+
+        // Remove from loop
+        assertEquals(LoopCommand.class, commands.get(2).getClass());
+        List<ScanCommand> body = ((LoopCommand) commands.get(2)).getBody();
+        int body_size = body.size();
+        assertTrue(body_size > 0);
+        ok = TreeManipulator.remove(commands, body.get(0));
+        XMLCommandWriter.write(System.out, commands);
+        System.out.println("-----------------------------------------");
+        assertTrue(ok);
+        // Overall size didn't change
+        assertEquals(4, commands.size());
+        body = ((LoopCommand) commands.get(2)).getBody();
+        assertEquals(body_size-1, body.size());
     }
 }

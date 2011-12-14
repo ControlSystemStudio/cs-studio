@@ -30,19 +30,67 @@ import org.csstudio.scan.command.ScanCommand;
  */
 public class TreeManipulator
 {
+    /** @param commands List of scan commands
+     *  @param target Item before or after which new command should be inserted
+     *  @param command New command to insert
+     *  @param after <code>true</code> to insert after target, else before
+     *  @return <code>true</code> if insertion succeeded
+     */
+    public static boolean remove(final List<ScanCommand> commands, final ScanCommand command)
+    {
+        for (int i=0; i<commands.size(); ++i)
+        {
+            final ScanCommand current = commands.get(i);
+            if (current == command)
+            {   // Found the item
+                commands.remove(i);
+                return true;
+            }
+            else if (current instanceof LoopCommand)
+            {   // Recurse into loop, because target may be inside that loop.
+                // Loop body may be read-only, so create writable copy...
+                final LoopCommand loop = (LoopCommand) current;
+                final List<ScanCommand> body = new ArrayList<ScanCommand>(loop.getBody());
+                if (remove(body, command))
+                {   // ... and update loop with that on success
+                    loop.setBody(body);
+                    return true;
+                }
+                // else: target wasn't in that loop
+            }
+        }
+        return false;
+    }
+
+    /** @param commands List of scan commands
+     *  @param target Item after which new command should be inserted
+     *  @param command New command to insert
+     *  @return <code>true</code> if insertion succeeded
+     */
     public static boolean insertAfter(final List<ScanCommand> commands,
             final ScanCommand target, final ScanCommand command)
     {
         return insert(commands, target, command, true);
     }
 
+    /** @param commands List of scan commands
+     *  @param target Item before which new command should be inserted
+     *  @param command New command to insert
+     *  @return <code>true</code> if insertion succeeded
+     */
     public static boolean insertBefore(final List<ScanCommand> commands,
             final ScanCommand target, final ScanCommand command)
     {
         return insert(commands, target, command, false);
     }
 
-    private static boolean insert(final List<ScanCommand> commands,
+    /** @param commands List of scan commands
+     *  @param target Item before or after which new command should be inserted
+     *  @param command New command to insert
+     *  @param after <code>true</code> to insert after target, else before
+     *  @return <code>true</code> if insertion succeeded
+     */
+    public static boolean insert(final List<ScanCommand> commands,
             final ScanCommand target, final ScanCommand command, final boolean after)
     {
         for (int i=0; i<commands.size(); ++i)
@@ -54,7 +102,7 @@ public class TreeManipulator
                 return true;
             }
             else if (current instanceof LoopCommand)
-            {   // Recurse into loop, because target may be inside that loop
+            {   // Recurse into loop, because target may be inside that loop.
                 // Loop body may be read-only, so create writable copy...
                 final LoopCommand loop = (LoopCommand) current;
                 final List<ScanCommand> body = new ArrayList<ScanCommand>(loop.getBody());
