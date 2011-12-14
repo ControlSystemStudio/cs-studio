@@ -4,8 +4,9 @@ Bundle-Name: Olog ClientAPI
 Bundle-SymbolicName: edu.msu.nscl.olog.api
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.csstudio.platform.libs.jersey;bundle-version="1.1.5",
- net.coobird.thumbnailator;bundle-version="1.0.0",
- org.apache.jackrabbit;bundle-version="1.0.0",
- org.apache.commons.httpclient;bundle-version="3.1.0"
+ net.coobird.thumbnailator,
+ org.apache.jackrabbit,
+ org.apache.commons.httpclient
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: edu.msu.nscl.olog.api
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
