@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.repository"
       label="Repository Access (CVS)"
-      version="3.0.0.qualifier"
+      version="3.0.3.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -48,11 +48,11 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.filesystem" version="1.1.0" match="compatible"/>
-      <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
       <import plugin="com.jcraft.jsch" version="0.1.27"/>
       <import plugin="org.eclipse.jsch.core" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.team.cvs.core" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.team.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.jsch.core" version="1.1.0" match="compatible"/>
       <import plugin="org.eclipse.ui.console" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.team.ui" version="3.3.0" match="compatible"/>
@@ -61,6 +61,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.forms" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui.editors" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.3.0" match="compatible"/>
+      <import plugin="org.eclipse.team.core" version="3.6.0" match="compatible"/>
    </requires>
 
    <plugin

@@ -22,13 +22,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.WaitForDevicesCommand;
-import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.logger.DataLogger;
 
 /** Scanner executes the {@link CommandImpl}s for one scan within a {@link ScanContext}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Scan
 {
     /** Provides the next available <code>id</code> */
@@ -95,12 +94,12 @@ public class Scan
         return new ScanInfo(id, name, created, state, error, context.getWorkPerformed(), total_work_units, command);
     }
 
-    /** @return Data that has been logged for the scan */
-    public ScanData getScanData()
+    /** @return Data logger of this scan */
+    public DataLogger getDataLogger()
     {
         if (context == null)
             return null;
-        return context.getScanData();
+        return context.getDataLogger();
     }
 
     /** Execute all commands on the scan,

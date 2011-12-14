@@ -81,30 +81,24 @@ class ShowChannelResponse extends AbstractChannelResponse {
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEAVG, String.format("%.1f", stats.getAverageSize())});
 
         html.tableLine(new String[] {Messages.HTTP_COLUMN_QUEUEMAX, Integer.toString(stats.getMaxSize())});
-//        if (channel.isStarted()) {
-//            html.tableLine(new String[] {
-//                                         Messages.HTTP_STOP_CHANNEL,
-//                                         StopChannelResponse.linkTo(channel.getName()),
-//                                         });
-//        } else if (channel.isEnabled()) {
-//            html.tableLine(new String[] {
-//                    Messages.HTTP_START_CHANNEL,
-//                    StartChannelResponse.linkTo(channel.getName()),
-//            });
-//            html.tableLine(new String[] {
-//                    Messages.HTTP_DISABLE_CHANNEL,
-//                    PermanentDisableChannelResponse.linkTo(channel.getName()),
-//            });
-//        } else {
-//            html.tableLine(new String[] {
-//                    Messages.HTTP_START_CHANNEL,
-//                    StartChannelResponse.linkTo(channel.getName()),
-//            });
-//        }
-        if (!channel.isStarted()) {
+        if (channel.isStarted()) {
             html.tableLine(new String[] {
-                    Messages.HTTP_START_CHANNEL,
-                    StartChannelResponse.linkTo(channel.getName(), Messages.HTTP_START),
+                                         Messages.HTTP_STOP_CHANNEL,
+                                         StopChannelResponse.linkTo(channel.getName()),
+                                         });
+        } else if (channel.isEnabled()) {
+            html.tableLine(new String[] {
+                    Messages.HTTP_ACTION,
+                    StartChannelResponse.linkTo(channel.getName()),
+            });
+            html.tableLine(new String[] {
+                    Messages.HTTP_ACTION,
+                    PermanentDisableChannelResponse.linkTo(channel.getName()),
+            });
+        } else {
+            html.tableLine(new String[] {
+                    Messages.HTTP_ACTION,
+                    StartChannelResponse.linkTo(channel.getName()),
             });
         }
         html.closeTable();

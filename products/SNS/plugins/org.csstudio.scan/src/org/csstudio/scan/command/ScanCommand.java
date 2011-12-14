@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.PrintStream;
 import java.io.Serializable;
 
 /** Information about a command in a scan
@@ -40,13 +39,6 @@ import java.io.Serializable;
  */
 public interface ScanCommand extends Serializable
 {
-    // Note: This was called 'print' which causes warnings in a PyDev python
-    //       editor because print is a reserved word in python
-    /** Print the command (and its sub-commands)
-     *  @param out {@link PrintStream}
-     */
-    public void dump(PrintStream out);
-    
     /** @return One-line text representation of the command */
 	@Override
     public String toString();

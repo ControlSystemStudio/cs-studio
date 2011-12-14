@@ -28,6 +28,7 @@ import org.csstudio.scan.data.ScanData;
  *  with the scan server.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public interface ScanServer extends Remote
 {
     /** Serialization version used for all RMI interfaces */
@@ -82,10 +83,22 @@ public interface ScanServer extends Remote
      */
     public ScanInfo getScanInfo(long id) throws RemoteException;
     
+    /** Get serial of last logged sample.
+     *  
+     *  <p>Can be used to determine if there are new samples
+     *  that should be fetched via <code>getScanData()</code>
+     *  
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @return Serial of last sample in scan data
+     *  @see #getScanData(long)
+     */
+    public long getLastScanDataSerial(final long id) throws RemoteException;
+    
     /** Query server for scan data
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Data for that scan on the server or <code>null</code>
      *  @throws RemoteException on error in remote access
+     *  @see #getLastScanDataSerial(long)
      */
     public ScanData getScanData(long id) throws RemoteException;
 

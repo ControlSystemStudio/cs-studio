@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Display;
  *  </ul>
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PlotDataModel implements Runnable
 {
     /** Scan model */
@@ -34,15 +35,22 @@ public class PlotDataModel implements Runnable
     private volatile Thread update_thread;
 
     /** Currently selected scan */
-    private volatile ScanInfo selected_scan = null;
+    private volatile long selected_scan_id = -1;
 
+    /** Devices in current scan */
     private volatile List<String> devices = null;
     
+    /** Device used for 'X' axis */
     private volatile String x_axis_device = null;
 
+    /** Device used for 'Y' axis */
     private volatile String y_axis_device = null;
     
+    /** Data for X/Y axes */
     final private PlotDataProvider plot_data;
+    
+    /** Mostly to please FindBugs: Flag that update thread was woken early */
+    private boolean wake_early = false;
     
     /** Initialize
      *  @throws Exception on error connecting to scan server
@@ -89,39 +97,48 @@ public class PlotDataModel implements Runnable
     {
         while (update_thread != null)
         {
-            final ScanInfo scan = selected_scan;
+            final ScanInfo scan = getScan(selected_scan_id);
             final String x_device = x_axis_device;
             final String y_device = y_axis_device;
+            
             if (scan == null)
-            {
                 devices = null;
-                plot_data.clear();
-            }
             else
             {   // Get data for scan
                 final ScanData scan_data;
                 try
                 {
-                    scan_data = model.getScanData(scan);
-                    devices = scan_data.getDevices();
-                    // Get data for selected devices from plot
-                    if (x_device == null  ||  y_device == null)
-                        plot_data.clear();
-                    else
-                        plot_data.update(scan_data, x_device, y_device);
+                    // Check if there is new data
+                    final long last_serial = model.getLastScanDataSerial(scan);
+                    if (last_serial != plot_data.getLastSerial())
+                    {
+                        scan_data = model.getScanData(scan);
+                        if (scan_data == null)
+                            devices = null;
+                        else
+                        {
+                            devices = scan_data.getDevices();
+                            // Get data for selected devices from plot
+                            if (x_device == null  ||  y_device == null)
+                                plot_data.clear();
+                            else
+                                plot_data.update(last_serial, scan_data, x_device, y_device);
+                        }
+                    }
+                    // else: Skip fetching the same data. No plot_data.update, no events
                 }
                 catch (RemoteException ex)
                 {
-                    plot_data.clear();
                     devices = null;
                 }
-            }                
+            }
+            if (devices == null)
+                plot_data.clear();
             
             // Wait for next update period
             // or early wake from waveUpdateThread()
             synchronized (this)
             {
-                final long start = System.currentTimeMillis();
                 try
                 {
                     wait(1000);
@@ -130,8 +147,9 @@ public class PlotDataModel implements Runnable
                 {
                     // Ignore
                 }
-                final long time = System.currentTimeMillis() - start;
-                System.out.println("Update thread woke after " + time + "ms");
+                // Mostly for FindBugs, or as debugger breakpoint to check wakeup
+                if (wake_early)
+                    wake_early = false;
             }
         }
     }
@@ -142,7 +160,8 @@ public class PlotDataModel implements Runnable
     private void waveUpdateThread()
     {
         synchronized (this)
-        {
+        {   // Findbugs gives 'naked notify' warning. Ignore.
+            wake_early = true;
             notifyAll();
         }
     }
@@ -158,7 +177,7 @@ public class PlotDataModel implements Runnable
      */
     public void selectScan(final long id)
     {
-        selected_scan = getScan(id);
+        selected_scan_id = id;
         waveUpdateThread();
     }
 
@@ -166,7 +185,7 @@ public class PlotDataModel implements Runnable
      *  @param id Scan ID
      *  @return {@link ScanInfo} or <code>null</code>
      */
-    private ScanInfo getScan(final long id)
+    public ScanInfo getScan(final long id)
     {
         final List<ScanInfo> infos = model.getInfos();
         for (ScanInfo info : infos)

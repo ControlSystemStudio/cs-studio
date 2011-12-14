@@ -4,34 +4,36 @@ Schedule YABES scan with parameters from BOY script
 @author: Kay Kasemir
 """
 
-from org.csstudio.opibuilder.scriptUtil import PVUtil
 from scan_client import *
+from scan_ui import *
 
-pv = display.getWidget("x0").getPV();
-x0 = PVUtil.getDouble(pv);
-pv = display.getWidget("x1").getPV();
-x1 = PVUtil.getDouble(pv);
-pv = display.getWidget("dx").getPV();
-dx = PVUtil.getDouble(pv);
+x0 = getWidgetPVDouble(display, "x0")
+x1 = getWidgetPVDouble(display, "x1")
+dx = getWidgetPVDouble(display, "dx")
 
-pv = display.getWidget("y0").getPV();
-y0 = PVUtil.getDouble(pv);
-pv = display.getWidget("y1").getPV();
-y1 = PVUtil.getDouble(pv);
-pv = display.getWidget("dy").getPV();
-dy = PVUtil.getDouble(pv);
+y0 = getWidgetPVDouble(display, "y0")
+y1 = getWidgetPVDouble(display, "y1")
+dy = getWidgetPVDouble(display, "dy")
 
-pv = display.getWidget("updown").getPV();
-if PVUtil.getLong(pv) > 0:
+name = getWidgetPVString(display, "name")
+
+if getWidgetPVLong(display, "updown") > 0:
     toggle = -1
 else:
     toggle = 1
-
-
-scan('Scan',
+    
+id = scan(name,
      ('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx))),
      ('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy))),
      'readback')
+
+#from org.eclipse.jface.dialogs import MessageDialog
+#MessageDialog.openWarning(
+#        None, "Type", "Type is " + id.__class__.__name__)       
+
+showScans()
+showPlot(name, id, 'xpos', 'ypos')
+
 
 
 

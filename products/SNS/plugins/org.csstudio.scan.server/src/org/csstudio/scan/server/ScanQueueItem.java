@@ -24,6 +24,7 @@ import org.csstudio.scan.device.DeviceContext;
 /** Scan engine queue info for a scan
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 class ScanQueueItem implements Callable<Object>
 {
     final private DeviceContext devices;
@@ -46,7 +47,6 @@ class ScanQueueItem implements Callable<Object>
     @Override
     public Object call() throws Exception
     {
-        // TODO DataLogger?
         System.out.println("== " + scan.getName());
         final ScanContext context = new ScanContext(devices);
         scan.execute(context);

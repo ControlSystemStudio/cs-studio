@@ -34,10 +34,10 @@ import org.csstudio.domain.desy.typesupport.TypeSupportException;
  * @since 10.12.2010
  * @param <N> the number subtype
  */
-public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number & Serializable> extends ArchiveTypeConversionSupport<N> {
+public abstract class AbstractNumberArchiveTypeConversionSupport<N extends Number & Comparable<? super N> & Serializable >
+                      extends ArchiveTypeConversionSupport<N> {
     /**
      * Constructor.
-     * @param type
      */
     AbstractNumberArchiveTypeConversionSupport(@Nonnull final Class<N> type) {
         super(type);

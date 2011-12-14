@@ -998,16 +998,19 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		Range axisRange = xAxis.getRange();
 		if(traceDataProvider.getSize() <=0)
 			return null;
-		if(axisRange.getLower()> traceDataProvider.getSample(traceDataProvider.getSize()-1).getXValue()
-				|| axisRange.getUpper()<traceDataProvider.getSample(0).getXValue())
+		double min = axisRange.getLower() > axisRange.getUpper()? axisRange.getUpper():axisRange.getLower();
+		double max = axisRange.getUpper() > axisRange.getLower()? axisRange.getUpper():axisRange.getLower();
+		
+		if(min> traceDataProvider.getSample(traceDataProvider.getSize()-1).getXValue()
+				|| max<traceDataProvider.getSample(0).getXValue())
 			return null;
 
 		int lowIndex = 0;
 		int highIndex = traceDataProvider.getSize()-1;
-		if(axisRange.getLower()>traceDataProvider.getSample(0).getXValue())
-				lowIndex = nearBinarySearchX(axisRange.getLower(), true);
-		if(axisRange.getUpper()<traceDataProvider.getSample(highIndex).getXValue())
-				highIndex = nearBinarySearchX(axisRange.getUpper(), false);
+		if(min>traceDataProvider.getSample(0).getXValue())
+				lowIndex = nearBinarySearchX(min, true);
+		if(max<traceDataProvider.getSample(highIndex).getXValue())
+				highIndex = nearBinarySearchX(max, false);
 		return new Range(lowIndex, highIndex);
 	}
 

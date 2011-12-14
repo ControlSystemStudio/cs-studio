@@ -37,6 +37,7 @@ import org.csstudio.scan.server.ScanServer;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class ScanSample implements Serializable
 {
     /** Serialization ID */

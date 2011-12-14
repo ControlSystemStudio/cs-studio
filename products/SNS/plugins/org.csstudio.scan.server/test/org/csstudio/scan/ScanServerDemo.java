@@ -23,6 +23,7 @@ import org.junit.Test;
 /** Start {@link ScanServer} as [Headless] JUnit Plug-in test
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanServerDemo
 {
     // Nothing is setting this to false, but it makes FindBugs happy

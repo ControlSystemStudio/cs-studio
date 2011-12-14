@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** Command that performs a loop
  *
@@ -40,16 +41,17 @@ import org.csstudio.scan.server.ScanServer;
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class LoopCommand extends BaseCommand
 {
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
-	final private double start;
-	final private double end;
-	final private double stepsize;
-	final private List<ScanCommand> body;
+    protected String device_name;
+    protected double start;
+    protected double end;
+    protected double stepsize;
+	private List<ScanCommand> body;
 
 	/** Initialize
      *  @param device_name Device to update with the loop variable
@@ -69,10 +71,37 @@ public class LoopCommand extends BaseCommand
         this.body = Arrays.asList(body);
     }
 
+    /** Initialize
+     *  @param device_name Device to update with the loop variable
+     *  @param start Initial loop value
+     *  @param end Final loop value
+     *  @param stepsize Increment of the loop variable
+     *  @param body Loop body commands
+     */
+    public LoopCommand(final String device_name, final double start,
+            final double end, final double stepsize,
+            final List<ScanCommand> body)
+    {
+        this.device_name = device_name;
+        if (stepsize == 0.0)
+            this.stepsize = 1.0;
+        else
+            this.stepsize = stepsize;
+        this.start = start;
+        this.end = end;
+        this.body = body;
+    }
+    
 	/** @return Device name */
     public String getDeviceName()
     {
         return device_name;
+    }
+    
+    /** @param device_name Name of device */
+    public void setDeviceName(final String device_name)
+    {
+        this.device_name = device_name;
     }
 
     /** @return Loop start value */
@@ -81,10 +110,16 @@ public class LoopCommand extends BaseCommand
         return start;
     }
 
-    /** @return Loop end value */
-    public double getEnd()
+    /** @param start Initial loop value */
+    public void setStart(final double start)
     {
-        return end;
+        this.start = start;
+    }
+
+    /** @param end Final loop value */
+    public void setEnd(final double end)
+    {
+        this.end = end;
     }
 
     /** @return Loop step size */
@@ -93,24 +128,75 @@ public class LoopCommand extends BaseCommand
         return stepsize;
     }
 
+    /** @param stepsize Increment of the loop variable */
+    public void setStepsize(final double stepsize)
+    {
+        this.stepsize = stepsize;
+    }
+
     /** @return Descriptions for loop body */
     public List<ScanCommand> getBody()
     {
         return body;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected void printIndented(final PrintStream out, final int level)
+    /** @param body Loop body commands */
+    public void setBody(final List<ScanCommand> body)
     {
-        super.printIndented(out, level);
+        this.body = body;
+    }
+    
+    /** @return Loop end value */
+    public double getEnd()
+    {
+        return end;
+    }
+
+    /** {@inheritDoc} */
+    public void writeXML(final PrintStream out, final int level)
+    {
+        writeIndent(out, level);
+        out.println("<loop>");
+        writeIndent(out, level+1);
+        out.println("<device>" + device_name + "</device>");
+        writeIndent(out, level+1);
+        out.println("<start>" + start + "</start>");
+        writeIndent(out, level+1);
+        out.println("<end>" + end + "</end>");
+        writeIndent(out, level+1);
+        out.println("<step>" + stepsize + "</step>");
+        writeIndent(out, level+1);
+        out.println("<body>");
         for (ScanCommand b : body)
         {   // Anticipate that Command might be implemented without BaseCommand
             if (b instanceof BaseCommand)
-                ((BaseCommand)b).printIndented(out, level + 1);
+                ((BaseCommand)b).writeXML(out, level + 2);
             else
-                b.dump(out);
+            {
+                writeIndent(out, level+2);
+                out.println("<unknown>" + b.toString() + "</unknown>");
+            }
         }
+        writeIndent(out, level+1);
+        out.println("</body>");
+        writeIndent(out, level);
+        out.println("</loop>");
+    }
+
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+    {
+        final String device = DOMHelper.getSubelementString(element, "device");
+        final double start = DOMHelper.getSubelementDouble(element, "start");
+        final double end = DOMHelper.getSubelementDouble(element, "end");
+        final double step = DOMHelper.getSubelementDouble(element, "step");
+        final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
+        final List<ScanCommand> body = XMLCommandReader.readCommands(body_node.getFirstChild());
+        return new LoopCommand(device, start, end, step, body);
     }
 
     /** {@inheritDoc} */

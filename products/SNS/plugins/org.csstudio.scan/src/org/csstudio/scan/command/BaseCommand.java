@@ -19,30 +19,36 @@ import java.io.PrintStream;
 
 import org.csstudio.scan.server.ScanServer;
 
-/** Base for a command that prints itself
- *  with indentation levels
+/** Base for commands that supports XML read/write.
+ * 
+ *  @see XMLCommandReader for additional requirements
+ * 
  *  @author Kay Kasemir
  */
-public class BaseCommand implements ScanCommand
+@SuppressWarnings("nls")
+public abstract class BaseCommand implements ScanCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    /** {@inheritDoc} */
-    @Override
-    public void dump(final PrintStream out)
-    {
-        printIndented(out, 0);
-    }
+    /** Write the command (and its sub-commands) in an XML format.
+     * 
+     *  <p>A command called AbcCommand should write itself as a tag "abc"
+     *  so that the {@link XMLCommandReader} can later determine
+     *  which class to use for reading the command back from XML.
+     *  
+     *  @param out {@link PrintStream}
+     *  @param level Indentation level
+     */
+    abstract public void writeXML(PrintStream out, final int level);
 
-    /** Print command with indentation
+    /** Write indentation
      *  @param out Where to print
      *  @param level Indentation level
      */
-    protected void printIndented(final PrintStream out, final int level)
+    protected void writeIndent(final PrintStream out, final int level)
     {
         for (int i=0; i<level; ++i)
             out.print("  ");
-        out.println(toString());
     }
 }

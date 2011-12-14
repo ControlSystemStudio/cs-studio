@@ -74,104 +74,151 @@ import com.google.common.collect.Sets;
 public final class DesyTypeFactoryProvider {
 
     @SuppressWarnings("rawtypes")
-    private static Map<DBRType, DesyJCATypeFactory> FACTORY_MAP = Maps.newConcurrentMap();
-    static {
-        // Add all SCALARs
-        // DBR_TIME_Float -> EpicsSystemVariable<Float>
-        FACTORY_MAP.put(DBR_Float.TYPE,
-                        new DesyJCATypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
-                                                                                   DBR_TIME_Float.TYPE,
-                                                                                   DBR_CTRL_Float.TYPE){
-                            @Override
-                            @Nonnull
-                            public Float toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Float eMeta, final int index) {
-                                return Float.valueOf(((DBR_TIME_Float) eVal).getFloatValue()[index]);
-                            }
-                        });
-        // DBR_CTRL_Double -> EpicsSystemVariable<Double>
-        FACTORY_MAP.put(DBR_Double.TYPE,
-                        new DesyJCATypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
-                                                                                      DBR_TIME_Double.TYPE,
-                                                                                      DBR_CTRL_Double.TYPE){
-                            @Override
-                            @Nonnull
-                            public Double toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Double eMeta, final int index) {
-                                return Double.valueOf(((DBR_TIME_Double) eVal).getDoubleValue()[index]);
-                            }
-                        });
-        // DBR_CTRL_Byte -> EpicsSystemVariable<Byte>
-        FACTORY_MAP.put(DBR_Byte.TYPE,
-                        new DesyJCATypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
-                                                                                DBR_TIME_Byte.TYPE,
-                                                                                DBR_CTRL_Byte.TYPE){
-                            @Override
-                            @Nonnull
-                            public Byte toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Byte eMeta, final int index) {
-                                return Byte.valueOf(((DBR_TIME_Byte) eVal).getByteValue()[index]);
-                            }
-                        });
-        // DBR_CTRL_Short -> EpicsSystemVariable<Short>
-        FACTORY_MAP.put(DBR_Short.TYPE,
-                        new DesyJCATypeFactory<Short, DBR_TIME_Short, DBR_CTRL_Short>(Short.class,
-                                                                                   DBR_TIME_Short.TYPE,
-                                                                                   DBR_CTRL_Short.TYPE){
-                            @Override
-                            @Nonnull
-                            public Short toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Short eMeta, final int index) {
-                                return Short.valueOf(((DBR_TIME_Short) eVal).getShortValue()[index]);
-                            }
-                        });
-        // DBR_CTRL_Int -> EpicsSystemVariable<Integer>
-        FACTORY_MAP.put(DBR_Int.TYPE,
-                        new DesyJCATypeFactory<Integer, DBR_TIME_Int, DBR_CTRL_Int>(Integer.class,
-                                                                                 DBR_TIME_Int.TYPE,
-                                                                                 DBR_CTRL_Int.TYPE){
-                            @Override
-                            @Nonnull
-                            public Integer toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Int eMeta, final int index) {
-                                return Integer.valueOf(((DBR_TIME_Int) eVal).getIntValue()[index]);
-                            }
-                        });
-        // DBR_TIME_String -> EpicsSystemVariable<String>
-        FACTORY_MAP.put(DBR_String.TYPE,
-                        new DesyJCATypeFactory<String, DBR_TIME_String, DBR_STS_String>(String.class,
-                                                                                     DBR_TIME_String.TYPE,
-                                                                                     DBR_STS_String.TYPE){
-                            @Override
-                            @Nonnull
-                            public String toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_STS_String eMeta, final int index) {
-                                return ((DBR_TIME_String) eVal).getStringValue()[index];
-                            }
+    private static Map<DBRType, DesyScalarJCATypeFactory> SCALAR_FACTORY_MAP =
+        Maps.newConcurrentMap();
+    @SuppressWarnings("rawtypes")
+    private static Map<DBRType, DesyMultiScalarJCATypeFactory> MULTISCALAR_FACTORY_MAP =
+        Maps.newConcurrentMap();
 
-                            @Override
-                            @CheckForNull
-                            public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
-                                return EpicsMetaData.create(new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
-                                                                           EpicsAlarmStatus.valueOf(eMeta.getStatus())),
-                                                            null, null, null);
-                            }
-                        });
+    static {
+        // Add all SCALARs and MULTISCALARs
+        // DBR_TIME_Float -> EpicsSystemVariable<Float>
+        SCALAR_FACTORY_MAP.put(DBR_Float.TYPE,
+                               new DesyScalarJCATypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
+                                       DBR_TIME_Float.TYPE,
+                                       DBR_CTRL_Float.TYPE,
+                                       DBR_Float.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public Float toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Float eMeta, final int index) {
+                                       return Float.valueOf(((DBR_TIME_Float) eVal).getFloatValue()[index]);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Float.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<Float, DBR_TIME_Float, DBR_CTRL_Float>(Float.class,
+                                                                                                             DBR_TIME_Float.TYPE,
+                                                                                                             DBR_CTRL_Float.TYPE,
+                                                                                                             DBR_Float.TYPE));
+        // DBR_CTRL_Double -> EpicsSystemVariable<Double>
+        SCALAR_FACTORY_MAP.put(DBR_Double.TYPE,
+                               new DesyScalarJCATypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
+                                       DBR_TIME_Double.TYPE,
+                                       DBR_CTRL_Double.TYPE,
+                                       DBR_Double.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public Double toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Double eMeta, final int index) {
+                                       return Double.valueOf(((DBR_TIME_Double) eVal).getDoubleValue()[index]);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Double.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<Double, DBR_TIME_Double, DBR_CTRL_Double>(Double.class,
+                                                                                                                DBR_TIME_Double.TYPE,
+                                                                                                                DBR_CTRL_Double.TYPE,
+                                                                                                                DBR_Double.TYPE));
+        // DBR_CTRL_Byte -> EpicsSystemVariable<Byte>
+        SCALAR_FACTORY_MAP.put(DBR_Byte.TYPE,
+                               new DesyScalarJCATypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
+                                       DBR_TIME_Byte.TYPE,
+                                       DBR_CTRL_Byte.TYPE,
+                                       DBR_Byte.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public Byte toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Byte eMeta, final int index) {
+                                       return Byte.valueOf(((DBR_TIME_Byte) eVal).getByteValue()[index]);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Byte.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<Byte, DBR_TIME_Byte, DBR_CTRL_Byte>(Byte.class,
+                                                                                                          DBR_TIME_Byte.TYPE,
+                                                                                                          DBR_CTRL_Byte.TYPE,
+                                                                                                          DBR_Byte.TYPE));
+        // DBR_CTRL_Short -> EpicsSystemVariable<Short>
+        SCALAR_FACTORY_MAP.put(DBR_Short.TYPE,
+                               new DesyScalarJCATypeFactory<Short, DBR_TIME_Short, DBR_CTRL_Short>(Short.class,
+                                       DBR_TIME_Short.TYPE,
+                                       DBR_CTRL_Short.TYPE,
+                                       DBR_Short.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public Short toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Short eMeta, final int index) {
+                                       return Short.valueOf(((DBR_TIME_Short) eVal).getShortValue()[index]);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Short.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<Short, DBR_TIME_Short, DBR_CTRL_Short>(Short.class,
+                                                                                                          DBR_TIME_Short.TYPE,
+                                                                                                          DBR_CTRL_Short.TYPE,
+                                                                                                          DBR_Short.TYPE));
+        // DBR_CTRL_Int -> EpicsSystemVariable<Integer>
+        SCALAR_FACTORY_MAP.put(DBR_Int.TYPE,
+                               new DesyScalarJCATypeFactory<Integer, DBR_TIME_Int, DBR_CTRL_Int>(Integer.class,
+                                       DBR_TIME_Int.TYPE,
+                                       DBR_CTRL_Int.TYPE,
+                                       DBR_Int.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public Integer toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_CTRL_Int eMeta, final int index) {
+                                       return Integer.valueOf(((DBR_TIME_Int) eVal).getIntValue()[index]);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Int.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<Integer, DBR_TIME_Int, DBR_CTRL_Int>(Integer.class,
+                                            DBR_TIME_Int.TYPE,
+                                            DBR_CTRL_Int.TYPE,
+                                            DBR_Int.TYPE));
+        // DBR_TIME_String -> EpicsSystemVariable<String>
+        SCALAR_FACTORY_MAP.put(DBR_String.TYPE,
+                               new DesyScalarJCATypeFactory<String, DBR_TIME_String, DBR_STS_String>(String.class,
+                                       DBR_TIME_String.TYPE,
+                                       DBR_STS_String.TYPE,
+                                       DBR_String.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public String toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_STS_String eMeta, final int index) {
+                                       return ((DBR_TIME_String) eVal).getStringValue()[index];
+                                   }
+
+                                   @Override
+                                   @CheckForNull
+                                   public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
+                                       return EpicsMetaData.create(new EpicsAlarm(EpicsAlarmSeverity.valueOf(eMeta.getSeverity()),
+                                                                                  EpicsAlarmStatus.valueOf(eMeta.getStatus())),
+                                                                                  null, null, null);
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_String.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<String, DBR_TIME_String, DBR_STS_String>(String.class,
+                                            DBR_TIME_String.TYPE,
+                                            DBR_STS_String.TYPE,
+                                            DBR_String.TYPE));
         // DBR_TIME_Enum -> EpicsSystemVariable<EpicsEnum>
-        FACTORY_MAP.put(DBR_Enum.TYPE,
-                        new DesyJCATypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
-                                                                                          DBR_TIME_Enum.TYPE,
-                                                                                          DBR_LABELS_Enum.TYPE){
-                            @Override
-                            @Nonnull
-                            public EpicsEnum toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_LABELS_Enum eMeta, final int index) {
-                                final short i = ((DBR_TIME_Enum) eVal).getEnumValue()[index];
-                                final String[] labels = eMeta!= null ? eMeta.getLabels() : null;
-                                if (labels != null && i >=0 && i < labels.length && !Strings.isNullOrEmpty(labels[i])) {
-                                    return EpicsEnum.createFromState(labels[i], (int) i);
-                                }
-                                return EpicsEnum.createFromRaw(Integer.valueOf(i));
-                            }
-                            @Override
-                            @Nonnull
-                            public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
-                                return EpicsMetaData.create(((LABELS) eMeta).getLabels());
-                            }
-                        });
+        SCALAR_FACTORY_MAP.put(DBR_Enum.TYPE,
+                               new DesyScalarJCATypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
+                                       DBR_TIME_Enum.TYPE,
+                                       DBR_LABELS_Enum.TYPE,
+                                       DBR_Enum.TYPE){
+                                   @Override
+                                   @Nonnull
+                                   public EpicsEnum toScalarData(@Nonnull final DBR eVal, @CheckForNull final DBR_LABELS_Enum eMeta, final int index) {
+                                       final short i = ((DBR_TIME_Enum) eVal).getEnumValue()[index];
+                                       final String[] labels = eMeta!= null ? eMeta.getLabels() : null;
+                                       if (labels != null && i >=0 && i < labels.length && !Strings.isNullOrEmpty(labels[i])) {
+                                           return EpicsEnum.createFromState(labels[i], (int) i);
+                                       }
+                                       return EpicsEnum.createFromRaw(Integer.valueOf(i));
+                                   }
+                                   @Override
+                                   @Nonnull
+                                   public EpicsMetaData createMetaData(@Nonnull final STS eMeta) {
+                                       return EpicsMetaData.create(((LABELS) eMeta).getLabels());
+                                   }
+                               });
+        MULTISCALAR_FACTORY_MAP.put(DBR_Enum.TYPE,
+                                    new DesyMultiScalarJCATypeFactory<EpicsEnum, DBR_TIME_Enum, DBR_LABELS_Enum>(EpicsEnum.class,
+                                            DBR_TIME_Enum.TYPE,
+                                            DBR_LABELS_Enum.TYPE,
+                                            DBR_Enum.TYPE));
     }
 
     /**
@@ -184,23 +231,28 @@ public final class DesyTypeFactoryProvider {
     @SuppressWarnings("rawtypes")
     @Nonnull
     public static TypeFactory matchFor(@Nonnull final Channel channel) {
-        final DesyJCATypeFactory fac = FACTORY_MAP.get(channel.getFieldType());
+        final AbstractDesyJCATypeFactory fac;
+        if (channel.getElementCount() > 1) {
+            fac = MULTISCALAR_FACTORY_MAP.get(channel.getFieldType());
+        } else {
+            fac = SCALAR_FACTORY_MAP.get(channel.getFieldType());
+        }
         if (fac == null) {
-            throw new IllegalArgumentException("The dbrType type is not supported: " + channel, null);
+            throw new IllegalArgumentException("The dbrType " + channel.getFieldType() + " is not supported for channel " + channel, null);
         }
         return fac;
     }
 
     @SuppressWarnings("rawtypes")
     @Nonnull
-    static Map<DBRType, DesyJCATypeFactory> getMap() {
-        return FACTORY_MAP;
+    static Map<DBRType, DesyScalarJCATypeFactory> getScalarMap() {
+        return SCALAR_FACTORY_MAP;
     }
 
     @Nonnull
     public static Set<Class<?>> getInstalledTargetTypes() {
         final Set<Class<?>> targetTypes = Sets.newHashSet();
-        for (@SuppressWarnings("rawtypes") final DesyJCATypeFactory fac : getMap().values()) {
+        for (@SuppressWarnings("rawtypes") final DesyScalarJCATypeFactory fac : getScalarMap().values()) {
             targetTypes.add(fac.getValueType());
         }
         return targetTypes;

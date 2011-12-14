@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.logger;
 
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
 /** Logger for {@link ScanSample}s
@@ -26,4 +27,10 @@ public interface DataLogger
 	 *  @param sample {@link ScanSample} to log
 	 */
 	public void log(ScanSample sample);
+	
+    /** @return Serial of last sample in scan data or -1 */
+    public long getLastScanDataSerial();
+    
+    /** @return {@link ScanData} with copy of currently logged data or <code>null</code> */
+    public ScanData getScanData();
 }

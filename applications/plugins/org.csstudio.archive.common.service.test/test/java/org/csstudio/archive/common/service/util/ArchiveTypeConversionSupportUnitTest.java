@@ -27,6 +27,7 @@ import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupp
 import static org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport.collectionRelease;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.csstudio.domain.desy.epics.types.EpicsEnum;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
@@ -35,6 +36,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Test of scalar type conversion in {@link ArchiveTypeConversionSupport}.
@@ -221,5 +224,25 @@ public class ArchiveTypeConversionSupportUnitTest {
     @Test(expected=TypeSupportException.class)
     public void testTypeNotSuppportedException() throws TypeSupportException {
         ArchiveTypeConversionSupport.toArchiveString(new IDoNotExist());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testCreateArchiveTypeStringFromData() throws TypeSupportException {
+        String type = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(Byte.MAX_VALUE);
+        Assert.assertEquals("Byte", type);
+        type = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(EpicsEnum.createFromRaw(1));
+        Assert.assertEquals("EpicsEnum", type);
+
+        type = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(Lists.newArrayList(Byte.MAX_VALUE));
+        Assert.assertEquals("ArrayList<Byte>", type);
+
+        type = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(Maps.newHashMap());
+        Assert.assertEquals("HashMap", type);
+
+        final Set<Byte> set1 = Sets.newHashSet(Byte.MAX_VALUE);
+        final Set<Byte> set2 = Sets.newHashSet(Byte.MIN_VALUE);
+        type = ArchiveTypeConversionSupport.createArchiveTypeStringFromData(Lists.<Set<Byte>>newArrayList(set1, set2));
+        Assert.assertEquals("ArrayList<HashSet<Byte>>", type);
     }
 }

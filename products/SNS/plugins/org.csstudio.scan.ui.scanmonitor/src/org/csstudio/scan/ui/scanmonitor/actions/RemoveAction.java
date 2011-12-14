@@ -17,6 +17,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.scanmonitor.Messages;
 
 /** Action that removes a scan
  *  @author Kay Kasemir
@@ -29,7 +30,7 @@ public class RemoveAction extends AbstractGUIAction
      */
     public RemoveAction(final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, "Remove", "icons/remove.gif");
+        super(model, info, Messages.Remove, "icons/remove.gif"); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

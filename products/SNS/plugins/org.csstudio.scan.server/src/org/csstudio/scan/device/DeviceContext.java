@@ -26,7 +26,7 @@ import org.csstudio.scan.server.app.Preferences;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 
-/** Factory for creating {@link Device}s
+/** Context that maintains {@link Device}s: Create, start, get, stop. 
  * 
  *  <p>This is currently handling PV devices.
  *  Fundamentally, another type of device might
@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.Path;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DeviceContext
 {
     /** Map of device names to {@link Device} */
@@ -51,6 +52,14 @@ public class DeviceContext
         	config_stream = FileLocator.openStream(
         		Activator.getInstance().getBundle(), new Path(path), false);
 		return DeviceContextFile.read(config_stream);
+    }
+    
+    /** Initialize empty device context
+     *  @see #getDefault()
+     */
+    public DeviceContext()
+    {
+        
     }
     
     /** Add a PV-based {@link Device} to the context.

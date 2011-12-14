@@ -32,6 +32,9 @@ public class MemoryDataLogger implements DataLogger
 	/** Map from device name to list of samples for that device */
 	final private Map<String, List<ScanSample>> device_logs =
 			new HashMap<String, List<ScanSample>>();
+	
+	/** Serial of last logged sample */
+    private long last_serial = -1;
 
 	/** {@inheritDoc} */
 	@Override
@@ -44,8 +47,15 @@ public class MemoryDataLogger implements DataLogger
 			device_logs.put(sample.getDeviceName(), samples);
 		}
 		samples.add(sample);
+		last_serial  = sample.getSerial();
     }
 
+    /** @return Serial of last sample in scan data */
+	public synchronized long getLastScanDataSerial()
+	{
+	    return last_serial;
+	}
+	
     /** @return {@link ScanData} with copy of currently logged data */
 	public synchronized ScanData getScanData()
 	{

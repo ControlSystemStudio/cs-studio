@@ -24,6 +24,7 @@ import org.python.util.PythonInterpreter;
 /** JUnit test of Java calling Jython, which calls back into Java
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Jython101UnitTest
 {
     private static int number = 0;

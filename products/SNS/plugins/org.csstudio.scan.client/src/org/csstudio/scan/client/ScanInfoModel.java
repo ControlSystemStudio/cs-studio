@@ -41,6 +41,7 @@ import org.csstudio.scan.server.ScanServer;
  *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanInfoModel
 {
     /** Singleton instance */
@@ -259,6 +260,22 @@ public class ScanInfoModel
         return infos;
     }
 
+    /** Get serial of last logged sample.
+     *  
+     *  <p>Can be used to determine if there are new samples
+     *  that should be fetched via <code>getScanData()</code>
+     *  
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @return Serial of last sample in scan data
+     *  @see #getScanData(ScanInfo)
+     */
+    public long getLastScanDataSerial(final ScanInfo info) throws RemoteException
+    {
+        if (info == null)
+            return -1;
+        return getServer().getLastScanDataSerial(info.getId());
+    }
+    
     /** @param info Scan for which to get data
      *  @return ScanData or null
      */

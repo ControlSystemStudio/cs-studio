@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.scan.ui.plot.ScanPlotView"
             icon="icons/plot.gif"
@@ -11,6 +12,23 @@
             name="%ScanPlot"
             restorable="true">
       </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/plot.gif"
+               label="%ScanPlot"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.scan.ui.plot.view">
+            </parameter>
+         </command>
+      </menuContribution>
    </extension>
 
 </plugin>

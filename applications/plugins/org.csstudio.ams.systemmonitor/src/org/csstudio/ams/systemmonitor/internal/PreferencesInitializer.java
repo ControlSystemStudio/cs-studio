@@ -61,5 +61,9 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer
         node.put(PreferenceKeys.P_SMS_REPEAT_INTERVAL, "15");
         node.put(PreferenceKeys.P_SMS_USE_OAS, "false");
         node.put(PreferenceKeys.P_AMS_GROUP, "AMSAdmin");
+        node.put(PreferenceKeys.P_JMX_HOST_1, "krykjmsa.desy.de");
+        node.put(PreferenceKeys.P_JMX_PORT_1, "1199");
+        node.put(PreferenceKeys.P_JMX_HOST_2, "krykjmsb.desy.de");
+        node.put(PreferenceKeys.P_JMX_PORT_2, "1199");
 	}
 }

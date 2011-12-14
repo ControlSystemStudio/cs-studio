@@ -36,7 +36,6 @@ import org.csstudio.utility.ldapupdater.preferences.LdapUpdaterPreferencesServic
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.joda.time.DateTimeFieldType;
-import org.joda.time.DateTimeZone;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 import org.slf4j.Logger;
@@ -169,9 +168,7 @@ public class LdapUpdaterServer implements IApplication,
         if (delayInS < 0) {
             delayInS = 3600*24 + delayInS; // start at startTimeSec on the next day
         }
-        final DateTimeZone localZone = DateTimeZone.getDefault();
-        final int offsetOfLocalTZInS = localZone.getOffset(now.getInstant())/1000;
-        return delayInS - offsetOfLocalTZInS;
+        return delayInS;
     }
 
     /**

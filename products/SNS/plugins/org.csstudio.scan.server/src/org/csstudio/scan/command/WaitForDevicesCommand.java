@@ -15,9 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.BaseCommand;
 import org.csstudio.scan.condition.Condition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.device.Device;
@@ -27,6 +27,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WaitForDevicesCommand extends BaseCommand implements CommandImpl
 {
     /** Serialization ID */
@@ -48,6 +49,14 @@ public class WaitForDevicesCommand extends BaseCommand implements CommandImpl
 		final Condition ready = new WaitForDevicesCondition(context.getDevices());
 		ready.await();
         context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+	@Override
+    public void writeXML(final PrintStream out, final int level)
+    {
+	    writeIndent(out, level);
+	    out.println("<waitfordevices/>");
     }
 
     /** {@inheritDoc} */

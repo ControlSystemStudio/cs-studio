@@ -17,13 +17,13 @@ package org.csstudio.scan.ui.scanmonitor;
 
 import java.util.List;
 
+import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.client.ScanInfoModel;
-import org.csstudio.scan.client.ScanInfoModelListener;
+import org.csstudio.scan.ui.plot.OpenPlotAction;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
-import org.csstudio.scan.ui.scanmonitor.actions.GetScanDataAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
@@ -92,13 +92,13 @@ public class GUI implements ScanInfoModelListener
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        createColumn(table_viewer, table_layout, "ID", 30, 25, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.ID, 30, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                return NLS.bind("Scan Identifier: {0}", info.getId());
+                return NLS.bind(Messages.ID_Fmt, info.getId());
             }
 
             @Override
@@ -108,13 +108,13 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(Long.toString(info.getId()));
             }
         });
-        createColumn(table_viewer, table_layout, "Created", 150, 25, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.CreateTime, 150, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                return NLS.bind("Time when scan was created: {0}",
+                return NLS.bind(Messages.CreateTimeFmt,
                         DataFormatter.format(info.getCreated()));
             }
 
@@ -125,13 +125,13 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(DataFormatter.format(info.getCreated()));
             }
         });
-        createColumn(table_viewer, table_layout, "Name", 120, 100, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.Name, 120, 100, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                return NLS.bind("Scan Name: {0}", info.getName());
+                return NLS.bind(Messages.NameFmt, info.getName());
             }
 
             @Override
@@ -141,13 +141,13 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(info.getName());
             }
         });
-        createColumn(table_viewer, table_layout, "State", 90, 50, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.State, 90, 50, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                return NLS.bind("Scan State: {0}", info.getState());
+                return NLS.bind(Messages.StateFmt, info.getState());
             }
 
             @Override
@@ -158,13 +158,13 @@ public class GUI implements ScanInfoModelListener
                 cell.setForeground(getStateColor(display, info));
             }
         });
-        final TableViewerColumn perc_col = createColumn(table_viewer, table_layout, "%", 25, 25, new CellLabelProvider()
+        final TableViewerColumn perc_col = createColumn(table_viewer, table_layout, Messages.Percent, 25, 25, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
             {
                 final ScanInfo info = (ScanInfo) element;
-                return NLS.bind("Scan executed {0} of {1} commands, i.e. {2} %",
+                return NLS.bind(Messages.PercentFmt,
                     new Object[]
                     {
                         info.getPerformedWorkUnits(),
@@ -182,7 +182,7 @@ public class GUI implements ScanInfoModelListener
                 */
             }
         });
-        createColumn(table_viewer, table_layout, "Command", 80, 100, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -190,9 +190,9 @@ public class GUI implements ScanInfoModelListener
                 final ScanInfo info = (ScanInfo) element;
                 final String command = info.getCurrentCommand();
                 if (command.length() > 0)
-                    return NLS.bind("Last executed command:\n {0}", command);
+                    return NLS.bind(Messages.CurrentCommandFmt, command);
                 else
-                    return "No command has been executed";
+                    return Messages.CurrentCommandEmpty;
             }
 
             @Override
@@ -202,7 +202,7 @@ public class GUI implements ScanInfoModelListener
                 cell.setText(info.getCurrentCommand());
             }
         });
-        createColumn(table_viewer, table_layout, "Error", 80, 150, new CellLabelProvider()
+        createColumn(table_viewer, table_layout, Messages.Error, 80, 150, new CellLabelProvider()
         {
             @Override
             public String getToolTipText(final Object element)
@@ -211,11 +211,11 @@ public class GUI implements ScanInfoModelListener
                 final String error = info.getError();
                 if (error != null)
                 {
-                    return NLS.bind("Error type: {0}\nMessage: {1}",
+                    return NLS.bind(Messages.ErrorMsgFmt,
                             error.getClass().getName(), error);
                 }
                 else
-                    return "No error";
+                    return Messages.NoError;
             }
 
             @Override
@@ -224,7 +224,7 @@ public class GUI implements ScanInfoModelListener
                 final ScanInfo info = (ScanInfo) cell.getElement();
                 final String error = info.getError();
                 if (error == null)
-                    cell.setText("");
+                    cell.setText(""); //$NON-NLS-1$
                 else
                     cell.setText(error);
             }
@@ -324,7 +324,7 @@ public class GUI implements ScanInfoModelListener
                 }
                 else
                     manager.add(new RemoveAction(model, info));
-                manager.add(new GetScanDataAction(model, info));
+                manager.add(new OpenPlotAction(info));
                 manager.add(new RemoveCompletedAction(model));
             }
         });

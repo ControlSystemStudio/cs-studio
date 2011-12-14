@@ -15,17 +15,21 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
+
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** {@link ScanCommand} that delays the scan for some time
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DelayCommand extends BaseCommand
 {
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private double seconds;
+    private double seconds;
 
 	/** Initialize
 	 *  @param seconds Delay in seconds
@@ -41,6 +45,30 @@ public class DelayCommand extends BaseCommand
         return seconds;
     }
 
+	/**@param seconds Delay in seconds */
+	public void setSeconds(final double seconds)
+	{
+	    this.seconds = seconds;
+	}
+	
+    /** {@inheritDoc} */
+	public void writeXML(final PrintStream out, final int level)
+	{
+	    writeIndent(out, level);
+	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
+	}
+	
+    /** Create from XML 
+     *  @param element XML element for this command
+     *  @return ScanCommand
+     *  @throws Exception on error, for example missing configuration element
+     */
+    public static ScanCommand fromXML(final Element element) throws Exception
+	{
+	    final double seconds = DOMHelper.getSubelementDouble(element, "seconds");
+	    return new DelayCommand(seconds);
+	}
+	
     /** {@inheritDoc} */
 	@Override
 	public String toString()

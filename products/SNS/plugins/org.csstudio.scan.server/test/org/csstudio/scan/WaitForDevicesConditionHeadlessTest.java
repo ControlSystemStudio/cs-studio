@@ -21,10 +21,10 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-In test of the {@link WaitForDevicesCondition}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WaitForDevicesConditionHeadlessTest
 {
     @Test(timeout=3000)

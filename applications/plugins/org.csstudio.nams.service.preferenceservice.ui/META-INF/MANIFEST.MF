@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.nams.service.configurationAccess.localStore,
  org.csstudio.nams.common,
  org.junit;bundle-version="4.8.1"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.nams.service.preferenceservice.ui;x-friends:="org.csstudio.nams.testUtils.testSuites",
  org.csstudio.nams.service.preferenceservice.ui.preferencepages;x-friends:="org.csstudio.nams.testUtils.testSuites"
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

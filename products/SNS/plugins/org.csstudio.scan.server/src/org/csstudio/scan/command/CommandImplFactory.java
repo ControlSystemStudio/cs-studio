@@ -15,21 +15,19 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.command.DelayCommand;
-import org.csstudio.scan.command.LogCommand;
-import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitForValueCommand;
-
 /** Factory that creates executable command implementations
- *  from command descriptions sent by a client
+ *  from command descriptions sent by a client.
+ *  
+ *  <p>Locates the {@link CommandImpl} for a {@link ScanCommand}
+ *  based on the class name of the command via introspection.
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class CommandImplFactory
 {
     /** Get implementation
@@ -39,20 +37,33 @@ public class CommandImplFactory
      */
     public static CommandImpl implement(final ScanCommand command) throws Exception
     {
-        if (command instanceof DelayCommand)
-            return new DelayCommandImpl((DelayCommand) command);
-
-        if (command instanceof LogCommand)
-            return new LogCommandImpl((LogCommand) command);
-
-        if (command instanceof LoopCommand)
-            return new LoopCommandImpl((LoopCommand) command);
-
-        if (command instanceof SetCommand)
-            return new SetCommandImpl((SetCommand) command);
-
-        if (command instanceof WaitForValueCommand)
-            return new WaitForValueCommandImpl((WaitForValueCommand) command);
+        // Is the passed command already an implementation?
+        if (command instanceof CommandImpl)
+            return (CommandImpl) command;
+        
+        // Convert
+        //   org.csstudio.scan.command.LogCommand
+        // into
+        //   org.csstudio.scan.command.LogCommandImpl
+        final String class_name = command.getClass().getName() + "Impl";
+        try
+        {
+            // Find a constructor that takes the original ScanCommand as parameter
+            Constructor<?>[] constructors = Class.forName(class_name).getConstructors();
+            for (Constructor<?> c : constructors)
+            {
+                Class<?>[] parms = c.getParameterTypes();
+                if (parms.length == 1  &&
+                    parms[0] == command.getClass())
+                {
+                    return (CommandImpl) c.newInstance(command);
+                }
+            }
+        }
+        catch (Throwable ex)
+        {
+            throw new Exception("Error implementing " + command.getClass().getName(), ex);
+        }
 
         throw new Exception("Unknown command " + command.getClass().getName());
     }

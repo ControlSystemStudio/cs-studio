@@ -48,7 +48,7 @@ public interface IArchiveChannelDao {
     @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByNames(@Nonnull final Set<String> names) throws ArchiveDaoException;
 
-    @CheckForNull
+    @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByIds(@Nonnull final Set<ArchiveChannelId> id) throws ArchiveDaoException;
 
     /**
@@ -104,4 +104,8 @@ public interface IArchiveChannelDao {
 
     @Nonnull
     UpdateResult updateChannelEnabledFlag(@Nonnull final String name, final boolean isEnabled);
+
+    @Nonnull
+    UpdateResult updateChannelDatatype(@Nonnull final ArchiveChannelId id,
+                                       @Nonnull final String datatype);
 }

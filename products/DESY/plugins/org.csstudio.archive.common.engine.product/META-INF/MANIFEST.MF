@@ -5,4 +5,4 @@ Bundle-SymbolicName: org.csstudio.archive.common.engine.product
 Bundle-ClassPath: .
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Desy <css-developer@desy.de>, Bastian Knerr
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

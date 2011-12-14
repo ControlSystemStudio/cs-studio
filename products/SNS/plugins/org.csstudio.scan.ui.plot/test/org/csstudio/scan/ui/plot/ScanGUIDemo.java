@@ -24,6 +24,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-In demo of the Scan GUI
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanGUIDemo
 {
     @Test
@@ -48,7 +49,7 @@ public class ScanGUIDemo
         }));
 
         final PlotDataProvider trace = new PlotDataProvider(display);
-        trace.update(new ScanData(data), "xpos", "readback");
+        trace.update(1, new ScanData(data), "xpos", "readback");
         plot.addTrace(trace);
         
         shell.setSize(800, 600);

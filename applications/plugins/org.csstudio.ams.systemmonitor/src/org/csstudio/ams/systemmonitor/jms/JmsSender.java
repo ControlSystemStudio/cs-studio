@@ -301,13 +301,13 @@ public class JmsSender {
     }
     
     public void closeAll() {
-        if(sender!=null){try{sender.close();}catch(Exception e){}sender=null;}
+        if(sender!=null){try{sender.close();}catch(Exception e){System.err.println(e.getMessage());}sender=null;}
         dest = null;
-        if(session!=null){try{session.close();}catch(Exception e){}session=null;}
-        if(connection!=null){try{connection.stop();}catch(Exception e){}}
-        if(connection!=null){try{connection.close();}catch(Exception e){}connection=null;}
+        if(connection!=null){try{connection.stop();}catch(Exception e){System.err.println(e.getMessage());}}
+        if(session!=null){try{session.close();}catch(Exception e){System.err.println(e.getMessage());}session=null;}
+        if(connection!=null){try{connection.close();}catch(Exception e){System.err.println(e.getMessage());}connection=null;}
         factory = null;
-        if(context!=null){try{context.close();}catch(Exception e){}context=null;}
+        if(context!=null){try{context.close();}catch(Exception e){System.err.println(e.getMessage());}context=null;}
         if(properties != null)
         {
             properties.clear();

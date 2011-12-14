@@ -38,8 +38,6 @@ public class ScanEngine
      *  The currently executing scan is Running or Paused.
      *  Scans that either Finished, Failed or were Aborted
      *  are kept around for a little while.
-     *
-     *  TODO Remove scans that are Finished, Failed or were Aborted.
      */
     final private List<ScanQueueItem> scan_queue = new LinkedList<ScanQueueItem>();
 

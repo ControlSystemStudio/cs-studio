@@ -15,15 +15,14 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
-
 /** [Headless] JUnit Plug-in test of the {@link DeviceValueCondition}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DeviceValueConditionHeadlessTest
 {
     @Test(timeout=5000)

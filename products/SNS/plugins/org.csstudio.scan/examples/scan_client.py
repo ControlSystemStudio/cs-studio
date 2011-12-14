@@ -8,6 +8,10 @@ monitor the execution.
 
 Shortcuts for 1D, 2D scans.
 
+This code depends on the basic org.csstudio.scan.*
+packages and can be invoked from Jython command
+lines outside of CSS.
+
 @author: Kay Kasemir
 """
 
@@ -102,7 +106,7 @@ class ScanNd(ScanClient):
     # inside that looping 'ypos' from 1 to 5 by 0.2,
     # logging 'readback'
 
-    scan( ('xpos', 1, 10), ('ypos', 1, 5, 0.2), 'readback')
+    scan('XY Example', ('xpos', 1, 10), ('ypos', 1, 5, 0.2), 'readback')
     """
     
     def __init__(self):
@@ -123,6 +127,9 @@ class ScanNd(ScanClient):
             raise Exception('Scan parameters should be (''device'', start, end, step), not %s' % str(parms)) 
     
     def __call__(self, *args):
+        """ N-dimensional scan command.
+            @return ID of scan that was scheduled on the scan server
+        """
         args = list(args)
         if len(args) > 0  and  isinstance(args[0], str):
             name = args[0]
@@ -159,10 +166,11 @@ class ScanNd(ScanClient):
             
             log = []
             
-        self.submit(name, cmds)
+        id = self.submit(name, cmds)
         if __name__ == '__main__':
             cmds.dump()
             self.waitUntilDone()
+        return id
 
 # Create 'scan' command
 scan = ScanNd()

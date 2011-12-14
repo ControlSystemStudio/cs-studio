@@ -132,8 +132,9 @@ public class ArchiveGroup {
 
     /**
      * Stops all the channels in group that have been started before.
+     * @throws EngineModelException
      */
-    public void stop(@Nonnull final String info) {
+    public void stop(@Nonnull final String info) throws EngineModelException {
         synchronized (this) {
             if (!_isStarted) {
                 return;

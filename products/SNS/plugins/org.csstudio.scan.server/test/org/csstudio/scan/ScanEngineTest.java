@@ -27,7 +27,7 @@ import org.csstudio.scan.command.DelayCommandImpl;
 import org.csstudio.scan.command.LogCommandImpl;
 import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommandImpl;
-import org.csstudio.scan.command.WaitForValueCommandImpl;
+import org.csstudio.scan.command.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanEngine;
@@ -37,6 +37,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link ScanEngine}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanEngineTest
 {
     private void waitForState(final Scan scan, final ScanState state) throws InterruptedException
@@ -177,9 +178,9 @@ public class ScanEngineTest
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
                 new SetCommandImpl("xpos", 2.0),
-                new WaitForValueCommandImpl("xpos", 2.0, 0.1),
+                new WaitCommandImpl("xpos", 2.0, 0.1),
                 new LogCommandImpl("xpos"),
-                new WaitForValueCommandImpl("xpos", 10.0, 0.1)
+                new WaitCommandImpl("xpos", 10.0, 0.1)
         );
 
         final ScanEngine engine = new ScanEngine();
@@ -212,9 +213,9 @@ public class ScanEngineTest
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
                 new SetCommandImpl("xpos", 2.0),
-                new WaitForValueCommandImpl("xpos", 2.0, 0.1),
+                new WaitCommandImpl("xpos", 2.0, 0.1),
                 new LogCommandImpl("xpos"),
-                new WaitForValueCommandImpl("xpos", 10.0, 0.1)
+                new WaitCommandImpl("xpos", 10.0, 0.1)
         );
 
         final ScanEngine engine = new ScanEngine();

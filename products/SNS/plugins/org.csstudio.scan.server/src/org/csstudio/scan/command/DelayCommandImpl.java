@@ -25,6 +25,7 @@ import org.csstudio.scan.server.ScanServer;
 /** {@link CommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DelayCommandImpl extends DelayCommand implements CommandImpl
 {
     /** Serialization ID */

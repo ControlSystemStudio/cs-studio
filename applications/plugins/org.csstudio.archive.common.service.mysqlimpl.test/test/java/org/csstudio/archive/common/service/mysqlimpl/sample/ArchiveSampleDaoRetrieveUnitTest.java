@@ -66,7 +66,9 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
     @SuppressWarnings("rawtypes")
     @Test
     public void retrieveSamples() throws ArchiveDaoException {
-        Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_3RD));
+        Collection<IArchiveChannel> channels = 
+                CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_3RD));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
         IArchiveChannel channel = channels.iterator().next();
 
@@ -84,6 +86,7 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
 
 
         channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_5TH));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
         channel = channels.iterator().next();
 

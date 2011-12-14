@@ -15,6 +15,7 @@ import org.csstudio.swt.xygraph.dataprovider.ISample;
  *  to an {@link ISample} as used by the XYGraph
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SampleAdapter implements ISample
 {
     final private ScanSample x, y;

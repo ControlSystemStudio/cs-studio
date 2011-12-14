@@ -29,6 +29,7 @@ import org.junit.Test;
 /** JUnit test of the {@link DataLogger}s
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataLoggerUnitTest
 {
 	private void logData(final DataLogger logger)
@@ -54,13 +55,21 @@ public class DataLoggerUnitTest
     {
         System.out.println("MemoryDataLogger:");
         final MemoryDataLogger logger = new MemoryDataLogger();
+        assertTrue(logger.getLastScanDataSerial() < 0);
+        
         logData(logger);
+        
         final ScanData data = logger.getScanData();
         assertEquals(2, data.getDevices().size());
         assertNotNull(data.getSamples("x"));
         assertNotNull(data.getSamples("y"));
         for (ScanSample sample : data.getSamples("x"))
             System.out.println(sample);
+        assertEquals(5, data.getSamples("x").size());
+        assertEquals(5*5, data.getSamples("y").size());
+        
+        assertEquals(data.getSamples("y").get(5*5-1).getSerial(),
+                     logger.getLastScanDataSerial());
     }
 
 	@Test

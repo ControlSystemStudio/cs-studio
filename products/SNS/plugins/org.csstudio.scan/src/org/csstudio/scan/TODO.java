@@ -57,9 +57,28 @@ public interface TODO
      *  
      *  Done fetch data data from ongoing or finished scans?
      *       
-     *  TODO plot data from ongoing scan?
+     *  Done plot data of (ongoing) scan
+     *
+     *  Done Start plot from scan monitor
+     *  
+     *  Done Improve scan data updates, use 'last update' time to suppress no-change updates
      *       
-     *  TODO Unclear if devices will ever be anything by PVs.
+     *  Done Start plot from script
+     *  
+     *  Done Allow multiple scan plots, use memento
+     *       
+     *  Done Plot: Show/Hide (default) toolbar
+     *  
+     *  Done Load/Save scan as XML
+     *  
+     *  TODO Other scan configuration GUIs.
+     *       'Spreadsheet' of loop variable, start/end?
+     *       Process block GUI?
+     *  
+     *  TODO Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
+     *       not just "at" the desired value
+     *  
+     *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
      *       If they're something else, then an API for
      *       getting the device names _and_ underlying PVs from
@@ -69,7 +88,7 @@ public interface TODO
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
      *  
-     *  TODO Client settings (scan server host, port system properties) via Eclipse preferences
+     *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
      *  
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *

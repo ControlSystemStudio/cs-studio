@@ -37,7 +37,16 @@ import org.csstudio.scan.server.ScanContext;
  *  it should return 1.
  *  Likewise, a delay of 1 second or 1 minute would each be one
  *  work unit, even though their duration differs a lot.
- *
+ *  
+ *  <p>Most commands are implemented by extending the underlying
+ *  {@link ScanCommand} that describes the command, simply
+ *  providing the <code>execute()</code> method to perform
+ *  the actual work.
+ *  This, however, is not as easy for commands that themselve hold
+ *  a 'body' of commands, for example the loop:
+ *  The basic LoopCommand has a body of scan commands, but the 
+ *  implementation needs a body of executable commands.
+ *   
  *  @author Kay Kasemir
  */
 public interface CommandImpl extends ScanCommand

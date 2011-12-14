@@ -21,10 +21,11 @@ import org.osgi.framework.BundleContext;
 /** Plugin activator
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Activator extends Plugin
 {
     /** Plugin ID defined in MANIFEST.MF */
-    final public static String ID = "yabes.server";
+    final public static String ID = "org.csstudio.scan.server";
     
     /** Singleton instance */
     private static Activator instance = null;

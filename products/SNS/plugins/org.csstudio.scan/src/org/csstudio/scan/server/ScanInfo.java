@@ -21,6 +21,7 @@ import java.util.Date;
 /** Information about a Scan
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanInfo implements Serializable
 {
     /** Serialization ID */

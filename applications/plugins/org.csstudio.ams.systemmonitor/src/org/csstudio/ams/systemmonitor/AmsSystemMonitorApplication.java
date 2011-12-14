@@ -30,8 +30,11 @@ import org.csstudio.ams.systemmonitor.check.AmsSystemCheck;
 import org.csstudio.ams.systemmonitor.check.CheckResult;
 import org.csstudio.ams.systemmonitor.check.SmsConnectorCheck;
 import org.csstudio.ams.systemmonitor.database.DatabaseHelper;
+import org.csstudio.ams.systemmonitor.file.FileCleaner;
 import org.csstudio.ams.systemmonitor.internal.PreferenceKeys;
+import org.csstudio.ams.systemmonitor.jmx.JmsSubscriptionCleaner;
 import org.csstudio.ams.systemmonitor.status.MonitorStatusHandler;
+import org.csstudio.ams.systemmonitor.util.CommandLine;
 import org.csstudio.ams.systemmonitor.util.CommonMailer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -72,8 +75,13 @@ public class AmsSystemMonitorApplication implements IApplication
     /** Flag that indicates whether or not the application should run */
     private boolean running;
 
-    public AmsSystemMonitorApplication()
-    {
+    public AmsSystemMonitorApplication() {
+        version = new VersionInfo();
+        running = true;
+    }
+    
+    private void initialize() {
+        
         // Retrieve the check interval
         IPreferencesService pref = Platform.getPreferencesService();
 
@@ -84,34 +92,50 @@ public class AmsSystemMonitorApplication implements IApplication
         amsStatusHandler = new MonitorStatusHandler("AMS Status", "amsStatus.ser", allowedTimeout);
         
         long checkInterval = pref.getLong(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_CHECK_INTERVAL, -1, null);
-        if(checkInterval > 0)
-        {
+        if(checkInterval > 0) {
             // Assume minutes and convert it to ms
             checkInterval *= 60000;
-        }
-        else
-        {
+        } else {
             LOG.warn("Modem check interval '" + checkInterval + "' is invalid. Using default: 20 minutes");
             checkInterval = 1200000;
         }
         
         modemStatusHandler = new MonitorStatusHandler("SmsConnector Status", "modemStatus.ser", checkInterval, allowedTimeout);
-
-        version = new VersionInfo();
-        running = true;
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
     @Override
-    public Object start(IApplicationContext context) throws Exception
-    {
+    public Object start(IApplicationContext context) throws Exception {
+        
         LOG.info("AmsSystemMonitor started [" + version.toString() + "]");
         
+        /* 
+         * Get the command line parameters
+         * At the moment we just have one parameter:
+         * 
+         * -startClean - Deletes the status handler and the subscription within the ActiveMQ-Server
+         */
+
+        String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+        CommandLine cmdLine = new CommandLine(args);
+        if (cmdLine.exists("startClean")) {
+            
+            LOG.info("Application starts with parameter 'startClean'.");
+            JmsSubscriptionCleaner cleaner = new JmsSubscriptionCleaner();
+            cleaner.destroyAllSubscriptions();
+            cleaner = null;
+            
+            FileCleaner fileCleaner = new FileCleaner();
+            fileCleaner.deleteStatusHandlerFiles();
+            fileCleaner = null;
+        }
+        
+        initialize();
+        
         monitorStatusHandler.beginCurrentCheck();
-        try
-        {
+        try {
             amsSystemCheck = new AmsSystemCheck("AmsSystemCheckSender", "AmsSystemCheckReceiver", "AmsSystemCheck");
             smsConnectorCheck = new SmsConnectorCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
             
@@ -123,18 +147,17 @@ public class AmsSystemMonitorApplication implements IApplication
             }
 
             monitorStatusHandler.resetErrorFlag();
-        }
-        catch(AmsSystemMonitorException asme)
-        {
+        } catch(AmsSystemMonitorException asme) {
             LOG.error("[*** AmsSystemMonitorException ***]: " + asme.getMessage());
             monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
-            if(monitorStatusHandler.sendErrorSms())
-            {
+            if(monitorStatusHandler.sendErrorSms()) {
                 sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                 monitorStatusHandler.setSmsSent(true);
             }
             
             monitorStatusHandler.stopCurrentCheck();
+            amsSystemCheck.closeJms();
+            smsConnectorCheck.closeJms();
             return IApplication.EXIT_OK;
         }
         
@@ -143,6 +166,7 @@ public class AmsSystemMonitorApplication implements IApplication
         while(running)
         {
             this.checkSystem();
+            amsSystemCheck.closeJms();
             
             // If the first check was not successful, we need not to do the second check
             if(amsStatusHandler.getCurrentStatus() != CheckResult.OK)
@@ -150,11 +174,12 @@ public class AmsSystemMonitorApplication implements IApplication
                 // Force a modem check
                 modemStatusHandler.forceNextCheck();
                 modemStatusHandler.storeStatus();
-                
+                smsConnectorCheck.closeJms();
                 break;
             }
             
             this.checkSmsConnector();
+            smsConnectorCheck.closeJms();
             
             // Just one time
             running = false;
@@ -395,9 +420,7 @@ public class AmsSystemMonitorApplication implements IApplication
 
             modemStatusHandler.stopCurrentCheck();
             monitorStatusHandler.stopCurrentCheck();
-        }
-        else
-        {
+        } else {
             LOG.info("No modem check now.");
         }
     }
