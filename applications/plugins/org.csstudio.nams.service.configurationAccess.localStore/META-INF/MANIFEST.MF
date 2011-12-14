@@ -21,10 +21,10 @@ Export-Package: org.csstudio.nams.service.configurationaccess.localstore;x-frien
  org.csstudio.nams.service.configurationaccess.localstore.internalDTOs,
  org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics
 Bundle-ClassPath: .,
- lib/hibernate-annotations.jar,
- lib/hibernate3.jar,
  lib-db/derbyclient.jar,
  lib-db/derbytools.jar,
+ lib/hibernate-annotations.jar,
+ lib/hibernate3.jar,
  lib-hibernate/ant-1.6.5.jar,
  lib-hibernate/ant-antlr-1.6.5.jar,
  lib-hibernate/ant-junit-1.6.5.jar,
