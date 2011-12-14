@@ -11,13 +11,16 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  lib/jersey-client-1.1.5.1.jar,
  lib/jersey-core-1.1.5.1.jar,
- lib/jsr311-api-1.1.1.jar
+ lib/jsr311-api-1.1.1.jar,
+ lib/jersey-apache-client-1.6.jar
 Export-Package: com.sun.jersey.api.client,
  com.sun.jersey.api.client.async,
  com.sun.jersey.api.client.config,
  com.sun.jersey.api.client.filter,
  com.sun.jersey.api.representation,
  com.sun.jersey.api.uri,
+ com.sun.jersey.client.apache,
+ com.sun.jersey.client.apache.config,
  com.sun.jersey.client.impl,
  com.sun.jersey.client.impl.async,
  com.sun.jersey.client.urlconnection,
