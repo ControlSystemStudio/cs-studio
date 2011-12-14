@@ -109,9 +109,9 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
     private final ConfigurationSynchronizer synchronizer;
 
-	public DistributorWork(final java.sql.Connection localDatabaseConnection, final ConfigurationSynchronizer synchronizer) {
+	public DistributorWork(final java.sql.Connection localDatabaseConnection, final ConfigurationSynchronizer synch) {
 		localAppDb = localDatabaseConnection;
-        this.synchronizer = synchronizer;
+        this.synchronizer = synch;
 
 		// Create the container that holds the information about the connector topics.
 		topicContainer = new ConnectorTopicContainer();
@@ -127,7 +127,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
         }
 	}
 
-	public void onMessage(final Message message) {
+	@Override
+    public void onMessage(final Message message) {
 	    synchronized (synchronizer) {
     	    try {
                 workOnMessage(message);
@@ -431,8 +432,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
     /**
      * Sets the boolean variable that controlls the main loop to true
      */
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         bStop = true;
     }
 

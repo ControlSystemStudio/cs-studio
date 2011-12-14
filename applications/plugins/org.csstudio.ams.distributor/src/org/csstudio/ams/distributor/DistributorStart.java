@@ -69,6 +69,7 @@ public class DistributorStart implements IApplication,
         }
     }
 
+    @Override
     public void stop() {
         return;
     }
@@ -101,6 +102,7 @@ public class DistributorStart implements IApplication,
     /**
      *
      */
+    @Override
     public Object start(final IApplicationContext context) throws Exception {
         Log.log(this, Log.INFO, "Starting Distributor ...");
 
@@ -152,8 +154,9 @@ public class DistributorStart implements IApplication,
             }
 
             // TODO: There really should be two worker classes!
-            new Thread(worker).start();
-
+            // new Thread(worker).start();
+            worker.start();
+            
             Log.log(this, Log.INFO, "Distributor started");
 
             synchronized (this) {
@@ -161,7 +164,8 @@ public class DistributorStart implements IApplication,
                     this.wait();
                 }
             }
-
+            
+            worker.stopWorking();
             synchronizer.stop();
             synchronizerThread.join();
 
@@ -181,6 +185,13 @@ public class DistributorStart implements IApplication,
         Log.log(this, Log.INFO, "DistributorStart is exiting now");
 
         if (xmppService != null) {
+            synchronized (xmppService) {
+                try {
+                    xmppService.wait(500L);
+                } catch (InterruptedException ie) {
+                    Log.log(this, Log.WARN, "xmppService.wait() was interrupted."); 
+                }
+            }
             xmppService.disconnect();
         }
 
@@ -192,6 +203,7 @@ public class DistributorStart implements IApplication,
         return exitCode;
     }
 
+    @Override
     public void bindService(final ISessionService sessionService) {
     	final IPreferencesService pref = Platform.getPreferencesService();
     	final String xmppServer = pref.getString(DistributorPlugin.PLUGIN_ID, DistributorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
@@ -206,6 +218,7 @@ public class DistributorStart implements IApplication,
 		}
     }
 
+    @Override
     public void unbindService(final ISessionService service) {
     	// Nothing to do here
     }
