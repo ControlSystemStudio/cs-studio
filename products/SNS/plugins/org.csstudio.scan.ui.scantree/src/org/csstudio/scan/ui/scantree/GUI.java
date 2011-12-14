@@ -28,6 +28,7 @@ import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -102,6 +103,46 @@ public class GUI
         return (ScanCommand) sel.getFirstElement();
     }
     
+    /** Information about Pointer location relative to a tree item */
+    static class TreeItemInfo
+    {
+        enum Section { UPPER, CENTER, LOWER };
+        final public ScanCommand command;
+        final public Section section;
+        
+        public TreeItemInfo(final ScanCommand command, final Section section)
+        {
+            this.command = command;
+            this.section = section;
+        }
+    };
+    
+    /** Determine where mouse pointer is relative to a tree item
+     *  @param x Mouse coordinate
+     *  @param y Mouse coordinate
+     *  @return {@link TreeItemInfo} or <code>null</code>
+     */
+    private TreeItemInfo getTreeItemInfo(final int x, final int y)
+    {
+        // Get cell under mouse pointer
+        final Control tree = tree_view.getControl();
+        final Point point = tree.getDisplay().map(null, tree, x, y);
+        final ViewerCell cell = tree_view.getCell(point);
+        if (cell == null)
+            return null;
+        
+        final ScanCommand command = (ScanCommand) cell.getElement();
+
+        final Rectangle bounds = cell.getBounds();
+        // Determine if we are in upper, middle or lower 1/3 of the cell
+        if (point.y < bounds.y + bounds.height/3)
+            return new TreeItemInfo(command, TreeItemInfo.Section.UPPER);
+        else if (point.y > bounds.y + 2*bounds.height/3)
+            return new TreeItemInfo(command, TreeItemInfo.Section.LOWER);
+        else
+            return new TreeItemInfo(command, TreeItemInfo.Section.CENTER);
+    }
+    
     /** Add drag-and-drop support */
     private void addDragDrop()
     {
@@ -137,9 +178,28 @@ public class GUI
                 System.out.println("Should remove original " + command);
             }
         });
-
+        
         tree_view.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DropTargetAdapter()
         {
+            @Override
+            public void dragOver(final DropTargetEvent event)
+            {
+                event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL;
+                final TreeItemInfo info = getTreeItemInfo(event.x, event.y);
+                if (info == null)
+                    return;
+                switch (info.section)
+                {
+                case UPPER:
+                    event.feedback |= DND.FEEDBACK_INSERT_BEFORE;
+                    break;
+                case LOWER:
+                    event.feedback |= DND.FEEDBACK_INSERT_AFTER;
+                    break;
+                default:
+                    event.feedback |= DND.FEEDBACK_SELECT;
+                }
+            }
 
             @Override
             public void drop(final DropTargetEvent event)
@@ -150,13 +210,10 @@ public class GUI
                 final ScanCommand command = (ScanCommand) event.data;
                 
                 // Determine _where_ it was dropped
-                final Control tree = tree_view.getControl();
-                final Point point = tree.getDisplay().map(null, tree, event.x, event.y);
-                final ViewerCell cell = tree_view.getCell(point);
-                if (cell == null)
+                final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
+                if (target == null)
                     return;
-                final ScanCommand target = (ScanCommand) cell.getElement();
-                System.out.println("Dropped: " + command + " onto " + target);
+                System.out.println("Dropped: " + command + " onto " + target.command);
             }
         });
     }
