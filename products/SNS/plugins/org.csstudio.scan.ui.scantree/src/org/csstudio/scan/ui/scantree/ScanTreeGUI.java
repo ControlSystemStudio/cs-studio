@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
@@ -224,9 +226,21 @@ public class ScanTreeGUI
                     return;
                 
                 // System.out.println("Dropped: " + command + " onto " + target.command);
-                final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                TreeManipulator.insert(commands, target.command, command, after);
+                // Special handling for loop
+                if (target.command instanceof LoopCommand  &&
+                    target.section == TreeItemInfo.Section.CENTER)
+                {   // Dropping exactly onto a loop means: Add command to that loop
+                    final LoopCommand loop = (LoopCommand) target.command;
+                    TreeManipulator.addToLoop(loop, command);
+                }
+                else
+                {
+                    final boolean after = target.section != TreeItemInfo.Section.UPPER;
+                    TreeManipulator.insert(commands, target.command, command, after);
+                }
                 refresh();
+                // Set selection to new command, which also asserts that it is visible
+                tree_view.setSelection(new StructuredSelection(command));
             }
         });
     }

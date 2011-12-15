@@ -116,4 +116,16 @@ public class TreeManipulator
         }
         return false;
     }
+    
+    /** @param loop Loop to which to add a command
+     *  @param command New command to insert
+     *  @return <code>true</code> if insertion succeeded
+     */
+    public static boolean addToLoop(final LoopCommand loop, final ScanCommand command)
+    {
+        final List<ScanCommand> body = new ArrayList<ScanCommand>(loop.getBody());
+        body.add(0, command);
+        loop.setBody(body);
+        return true;
+    }
 }

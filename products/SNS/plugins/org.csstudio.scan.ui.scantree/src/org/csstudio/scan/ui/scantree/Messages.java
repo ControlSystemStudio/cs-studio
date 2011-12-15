@@ -15,11 +15,15 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.scan.ui.scantree.messages"; //$NON-NLS-1$
+    public static String AddCommand;
+    public static String AddCommandMessage;
+    public static String AddCommandTitle;
     public static String Cat_Delay;
     public static String Cat_Log;
     public static String Cat_Loop;
     public static String Cat_Set;
     public static String Cat_Wait;
+    public static String CommandListTT;
     public static String Error;
     public static String FileOpenErrorFmt;
     public static String FileSaveErrorFmt;

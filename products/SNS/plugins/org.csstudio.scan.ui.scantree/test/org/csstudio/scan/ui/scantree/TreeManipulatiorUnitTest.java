@@ -105,4 +105,26 @@ public class TreeManipulatiorUnitTest
         body = ((LoopCommand) commands.get(2)).getBody();
         assertEquals(body_size-1, body.size());
     }
+
+    @Test
+    public void testLoopAddition() throws Exception
+    {
+        final List<ScanCommand> commands = DemoScan.createCommands();
+        XMLCommandWriter.write(System.out, commands);
+        System.out.println("-----------------------------------------");
+        assertEquals(5, commands.size());
+
+        // Add to loop
+        assertEquals(LoopCommand.class, commands.get(3).getClass());
+        List<ScanCommand> body = ((LoopCommand) commands.get(3)).getBody();
+        final int body_size = body.size();
+        ScanCommand add = new LogCommand("start_of_loop");
+        boolean ok = TreeManipulator.addToLoop((LoopCommand)commands.get(3), add);
+        XMLCommandWriter.write(System.out, commands);
+        body = ((LoopCommand) commands.get(3)).getBody();
+        assertTrue(ok);
+        assertEquals(body_size+1, body.size());
+        assertSame(add, body.get(0));
+    }
+
 }

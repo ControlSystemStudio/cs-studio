@@ -22,5 +22,16 @@
             name="%ScanTree">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.scan.ui.scantree.CommandListView"
+            icon="icons/scantree.gif"
+            id="org.csstudio.scan.ui.scantree.commandlist"
+            name="%ScanCommands"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>

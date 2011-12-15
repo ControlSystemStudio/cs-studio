@@ -7,23 +7,29 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.actions;
 
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.scan.ui.scantree.Activator;
-import org.eclipse.jface.action.Action;
+import org.csstudio.scan.ui.scantree.CommandListView;
+import org.csstudio.scan.ui.scantree.Messages;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /** (Menu) action to add command to tree
+ * 
+ *  <p>Opens CommandListView and displays guidance.
  *  @author Kay Kasemir
  */
-public class AddCommandAction extends Action
+public class AddCommandAction extends OpenViewAction
 {
     public AddCommandAction()
     {
-        super("Add Command", Activator.getImageDescriptor("icons/add.gif"));
+        super(CommandListView.ID, Messages.AddCommand, Activator.getImageDescriptor("icons/add.gif")); //$NON-NLS-1$
     }
 
     @Override
     public void run()
     {
-        // TODO Add command
         super.run();
+        MessageDialog.openInformation(null, Messages.AddCommandTitle,
+            Messages.AddCommandMessage);
     }
 }
