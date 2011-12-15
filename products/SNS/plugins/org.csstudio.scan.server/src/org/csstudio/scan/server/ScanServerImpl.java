@@ -150,7 +150,7 @@ public class ScanServerImpl implements ScanServer
         try
         {
             // Obtain implementations for the requested commands
-            final List<CommandImpl> implementations = CommandImplFactory.implement(commands);
+            final List<CommandImpl<?>> implementations = CommandImplFactory.implement(commands);
 
             // Get devices
     		final DeviceContext devices = DeviceContext.getDefault();

@@ -18,45 +18,22 @@ package org.csstudio.scan.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.ScanServer;
 
 /** {@link CommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitCommandImpl extends WaitCommand implements CommandImpl
+public class WaitCommandImpl extends CommandImpl<WaitCommand>
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
-    /** Initialize
-     *  @param device_name Name of device to check
-     *  @param desired_value Desired value of the device
-     *  @param tolerance Numeric tolerance when checking value
-     */
-	public WaitCommandImpl(final String device_name,
-	        final double desired_value, final double tolerance)
-    {
-	    super(device_name, desired_value, tolerance);
-    }
-
 	/** Initialize
 	 *  @param command Command description
 	 */
     public WaitCommandImpl(final WaitCommand command)
     {
-        this(command.getDeviceName(), command.getDesiredValue(), command.getTolerance());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getWorkUnits()
-    {
-        return 1;
+        super(command);
     }
 
     /** {@inheritDoc} */
@@ -64,10 +41,11 @@ public class WaitCommandImpl extends WaitCommand implements CommandImpl
     public void execute(final ScanContext context) throws Exception
     {
 		Logger.getLogger(getClass().getName()).log(Level.FINE, "Wait for {0} to reach {1}",
-				new Object[] { getDeviceName(), getDesiredValue() });
-        final Device device = context.getDevice(getDeviceName());
+				new Object[] { command.getDeviceName(), command.getDesiredValue() });
+        final Device device = context.getDevice(command.getDeviceName());
 
-        final DeviceValueCondition condition = new DeviceValueCondition(device, getDesiredValue(), getTolerance());
+        final DeviceValueCondition condition =
+            new DeviceValueCondition(device, command.getDesiredValue(), command.getTolerance());
         condition.await();
         context.workPerformed(1);
     }

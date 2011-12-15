@@ -18,40 +18,20 @@ package org.csstudio.scan.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.ScanServer;
 
 /** {@link CommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DelayCommandImpl extends DelayCommand implements CommandImpl
+public class DelayCommandImpl extends CommandImpl<DelayCommand>
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
-    /** Initialize
-     *  @param seconds Delay in seconds
-     */
-    public DelayCommandImpl(final double seconds)
-    {
-        super(seconds);
-    }
-
     /** Initialize
      *  @param command Command description
      */
     public DelayCommandImpl(final DelayCommand command)
     {
-        this(command.getSeconds());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getWorkUnits()
-    {
-        return 1;
+        super(command);
     }
 
 	/** {@inheritDoc} */
@@ -59,8 +39,8 @@ public class DelayCommandImpl extends DelayCommand implements CommandImpl
     public void execute(final ScanContext command_context) throws Exception
     {
 		Logger.getLogger(getClass().getName()).log(Level.FINE, "Delay {0} secs",
-				getSeconds());
-		Thread.sleep(Math.round(getSeconds() * 1000));
+				command.getSeconds());
+		Thread.sleep(Math.round(command.getSeconds() * 1000));
         command_context.workPerformed(1);
     }
 }

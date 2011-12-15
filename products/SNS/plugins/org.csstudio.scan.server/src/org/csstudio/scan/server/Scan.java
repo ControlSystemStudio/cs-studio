@@ -39,7 +39,7 @@ public class Scan
 
     final private Date created = new Date();
 
-    final private List<CommandImpl> commands;
+    final private List<CommandImpl<?>> commands;
 
     private volatile ScanState state = ScanState.Idle;
 
@@ -53,7 +53,7 @@ public class Scan
      *  @param name User-provided name for this scan
      *  @param commands Commands to execute in this scan
      */
-    public Scan(final String name, CommandImpl... commands)
+    public Scan(final String name, CommandImpl<?>... commands)
     {
         this(name, Arrays.asList(commands));
     }
@@ -62,7 +62,7 @@ public class Scan
      *  @param name User-provided name for this scan
      *  @param commands Commands to execute in this scan
      */
-    public Scan(final String name, final List<CommandImpl> commands)
+    public Scan(final String name, final List<CommandImpl<?>> commands)
     {
         id = ids.incrementAndGet();
         this.name = name;
@@ -142,7 +142,7 @@ public class Scan
 
         // Determine work units
         total_work_units = 1; // WaitForDevicesCommand
-        for (CommandImpl command : commands)
+        for (CommandImpl<?> command : commands)
             total_work_units += command.getWorkUnits();
 
         // Execute commands

@@ -47,10 +47,10 @@ public class LoopCommand extends BaseCommand
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    protected String device_name;
-    protected double start;
-    protected double end;
-    protected double stepsize;
+    private String device_name;
+    private double start;
+    private double end;
+    private double stepsize;
 	private List<ScanCommand> body;
 
 	/** Initialize
@@ -65,9 +65,9 @@ public class LoopCommand extends BaseCommand
             final ScanCommand... body)
     {
         this.device_name = device_name;
-        this.stepsize = stepsize;
         this.start = start;
         this.end = end;
+        this.stepsize = stepsize;
         this.body = Arrays.asList(body);
     }
 

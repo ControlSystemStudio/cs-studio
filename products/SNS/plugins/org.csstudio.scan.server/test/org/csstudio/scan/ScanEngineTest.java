@@ -23,10 +23,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.csstudio.scan.command.DelayCommandImpl;
+import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LogCommandImpl;
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.LoopCommandImpl;
+import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.SetCommandImpl;
+import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.command.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
@@ -58,16 +62,19 @@ public class ScanEngineTest
         devices.addPVDevice("ypos", "motor_y");
 
         final Scan scan_x = new Scan("Scan Motor X",
-                new LoopCommandImpl("xpos", 1.0, 5.0, 1.0,
-                    new DelayCommandImpl(1.0),
-                    new LogCommandImpl("xpos")
+            new LoopCommandImpl(
+                new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                    new DelayCommand(1.0),
+                    new LogCommand("xpos")
                 )
+            )
         );
 
         final Scan scan_y = new Scan("Scan Motor Y",
-                new LoopCommandImpl("ypos", 1.0, 5.0, 1.0,
-                    new DelayCommandImpl(1.0),
-                    new LogCommandImpl("ypos")));
+            new LoopCommandImpl(
+                new LoopCommand("ypos", 1.0, 5.0, 1.0,
+                    new DelayCommand(1.0),
+                    new LogCommand("ypos"))));
 
         final ScanEngine engine = new ScanEngine();
         engine.start();
@@ -143,9 +150,11 @@ public class ScanEngineTest
         devices.addPVDevice("xpos", "motor_x");
 
         final Scan scan = new Scan("Scan Motor X",
-                new LoopCommandImpl("xpos", 1.0, 5.0, 1.0,
-                    new LogCommandImpl("xpos")
+            new LoopCommandImpl(
+                new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                    new LogCommand("xpos")
                 )
+            )
         );
 
         final ScanEngine engine = new ScanEngine();
@@ -177,10 +186,10 @@ public class ScanEngineTest
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
-                new SetCommandImpl("xpos", 2.0),
-                new WaitCommandImpl("xpos", 2.0, 0.1),
-                new LogCommandImpl("xpos"),
-                new WaitCommandImpl("xpos", 10.0, 0.1)
+                new SetCommandImpl(new SetCommand("xpos", 2.0)),
+                new WaitCommandImpl(new WaitCommand("xpos", 2.0, 0.1)),
+                new LogCommandImpl(new LogCommand("xpos")),
+                new WaitCommandImpl(new WaitCommand("xpos", 10.0, 0.1))
         );
 
         final ScanEngine engine = new ScanEngine();
@@ -212,10 +221,10 @@ public class ScanEngineTest
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
-                new SetCommandImpl("xpos", 2.0),
-                new WaitCommandImpl("xpos", 2.0, 0.1),
-                new LogCommandImpl("xpos"),
-                new WaitCommandImpl("xpos", 10.0, 0.1)
+                new SetCommandImpl(new SetCommand("xpos", 2.0)),
+                new WaitCommandImpl(new WaitCommand("xpos", 2.0, 0.1)),
+                new LogCommandImpl(new LogCommand("xpos")),
+                new WaitCommandImpl(new WaitCommand("xpos", 10.0, 0.1))
         );
 
         final ScanEngine engine = new ScanEngine();

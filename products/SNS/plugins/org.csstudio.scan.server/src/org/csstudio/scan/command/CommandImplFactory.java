@@ -35,12 +35,9 @@ public class CommandImplFactory
      *  @return Implementation
      *  @throws Exception if command lacks an implementation
      */
-    public static CommandImpl implement(final ScanCommand command) throws Exception
+    @SuppressWarnings("unchecked")
+    public static CommandImpl<?> implement(final ScanCommand command) throws Exception
     {
-        // Is the passed command already an implementation?
-        if (command instanceof CommandImpl)
-            return (CommandImpl) command;
-        
         // Convert
         //   org.csstudio.scan.command.LogCommand
         // into
@@ -49,14 +46,14 @@ public class CommandImplFactory
         try
         {
             // Find a constructor that takes the original ScanCommand as parameter
-            Constructor<?>[] constructors = Class.forName(class_name).getConstructors();
+            final Constructor<?>[] constructors = Class.forName(class_name).getConstructors();
             for (Constructor<?> c : constructors)
             {
                 Class<?>[] parms = c.getParameterTypes();
                 if (parms.length == 1  &&
                     parms[0] == command.getClass())
                 {
-                    return (CommandImpl) c.newInstance(command);
+                    return (CommandImpl<ScanCommand>) c.newInstance(command);
                 }
             }
         }
@@ -73,9 +70,9 @@ public class CommandImplFactory
      *  @return Implementations
      *  @throws Exception if a command lacks an implementation
      */
-    public static List<CommandImpl> implement(final List<ScanCommand> commands) throws Exception
+    public static List<CommandImpl<?>> implement(final List<ScanCommand> commands) throws Exception
     {
-        final List<CommandImpl> impl = new ArrayList<CommandImpl>(commands.size());
+        final List<CommandImpl<?>> impl = new ArrayList<CommandImpl<?>>(commands.size());
         for (ScanCommand command : commands)
             impl.add(CommandImplFactory.implement(command));
         return impl;

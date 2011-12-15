@@ -21,7 +21,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.command.CommandImpl;
-import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -52,7 +51,7 @@ public class ScanContext
 
 	private boolean paused = false;
 
-	private volatile ScanCommand current_command = null;
+	private volatile CommandImpl<?> current_command = null;
 
 	public ScanContext(final DeviceContext devices)
     {
@@ -98,9 +97,9 @@ public class ScanContext
     /** @param commands {@link CommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
-    public void execute(final List<CommandImpl> commands) throws Exception
+    public void execute(final List<CommandImpl<?>> commands) throws Exception
     {
-        for (CommandImpl command : commands)
+        for (CommandImpl<?> command : commands)
         {
             if (! run)
                 return;
@@ -111,7 +110,7 @@ public class ScanContext
     /** @param command {@link CommandImpl} to execute
      *  @throws Exception on error in executing the command
      */
-    public void execute(final CommandImpl command) throws Exception
+    public void execute(final CommandImpl<?> command) throws Exception
     {
         synchronized (this)
         {
@@ -194,7 +193,7 @@ public class ScanContext
     /** @return String representation of current command */
     public String getCurrentCommand()
     {
-        final ScanCommand command = current_command;
+        final CommandImpl<?> command = current_command;
         if (command == null)
             return "";
         return command.toString();

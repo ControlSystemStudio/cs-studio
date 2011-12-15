@@ -18,42 +18,21 @@ package org.csstudio.scan.command;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.ScanServer;
 
 /** {@link CommandImpl} that sets a device to a value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SetCommandImpl extends SetCommand implements CommandImpl
+public class SetCommandImpl extends CommandImpl<SetCommand>
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
-    /** Initialize
-     *  @param device_name Name of device
-     *  @param value Value to write to the device
-     */
-    public SetCommandImpl(final String device_name, Object value)
-    {
-        super(device_name, value);
-    }
-
     /** Initialize
      *  @param command Command description
      */
     public SetCommandImpl(final SetCommand command)
     {
-        this(command.getDeviceName(), command.getValue());
-    }
-
-    /** {@inheritDoc} */
-	@Override
-    public int getWorkUnits()
-    {
-        return 1;
+        super(command);
     }
 
 	/** {@inheritDoc} */
@@ -61,9 +40,9 @@ public class SetCommandImpl extends SetCommand implements CommandImpl
     public void execute(final ScanContext context)  throws Exception
     {
 		Logger.getLogger(getClass().getName()).log(Level.FINE, "Set {0} to {1}",
-				new Object[] { getDeviceName(), getValue() });
-		final Device device = context.getDevice(getDeviceName());
-		device.write(getValue());
+				new Object[] { command.getDeviceName(), command.getValue() });
+		final Device device = context.getDevice(command.getDeviceName());
+		device.write(command.getValue());
 
 		// Note we do NOT wait for the device to reach the value
 		// If that is desired, a separate WaitForValueCommand is needed

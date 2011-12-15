@@ -18,10 +18,11 @@ package org.csstudio.scan;
 import static org.junit.Assert.assertEquals;
 
 import org.csstudio.data.values.ValueUtil;
-import org.csstudio.scan.command.LogCommandImpl;
+import org.csstudio.scan.command.CommandImpl;
+import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.LoopCommandImpl;
-import org.csstudio.scan.command.SetCommandImpl;
+import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
@@ -36,7 +37,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class LoopCommandHeadlessTest
 {
-    @Test //(timeout=5000)
+    @Test(timeout=5000)
     public void testLoopCommand() throws Throwable
     {
         final DeviceContext devices = new DeviceContext();
@@ -48,9 +49,9 @@ public class LoopCommandHeadlessTest
         assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
 
         final ScanContext context = new ScanContext(devices);
-        final LoopCommandImpl loop =
-            new LoopCommandImpl("counter", 1.0, 5.0, 1.0,
-                    new LogCommandImpl("counter"));
+        final CommandImpl<?> loop = new LoopCommandImpl(
+                new LoopCommand("counter", 1.0, 5.0, 1.0,
+                    new LogCommand("counter")));
         System.out.println(loop);
 
         context.execute(loop);
@@ -69,12 +70,13 @@ public class LoopCommandHeadlessTest
 
         final ScanContext context = new ScanContext(devices);
 
-        final LoopCommandImpl loop1 = new LoopCommandImpl("counter", 1.0, 5.0, 1.0);
+        final LoopCommandImpl loop1 = new LoopCommandImpl(new LoopCommand("counter", 1.0, 5.0, 1.0));
         assertEquals(5, loop1.getWorkUnits());
 
-        final LoopCommandImpl loop2 = new LoopCommandImpl("counter", 1.0, 5.0, 1.0,
-                new SetCommandImpl("other", 1.0),
-                new SetCommandImpl("other", 2.0));
+        final LoopCommandImpl loop2 = new LoopCommandImpl(
+            new LoopCommand("counter", 1.0, 5.0, 1.0,
+                new SetCommand("other", 1.0),
+                new SetCommand("other", 2.0)));
         assertEquals(10, loop2.getWorkUnits());
 
         final Scan scan = new Scan("Loop Test", loop1, loop2);
@@ -99,23 +101,25 @@ public class LoopCommandHeadlessTest
         // Downward loop 5, 4, 3, 2, 1
         counter.write(4.0);
         assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
-        LoopCommandImpl loop =
-            new LoopCommandImpl("counter", 5.0, 1.0, -1.0,
-                new LogCommandImpl("counter"));
+        LoopCommandImpl loop = new LoopCommandImpl(
+            new LoopCommand("counter", 5.0, 1.0, -1.0,
+                new LogCommand("counter")));
         System.out.println(loop);
         context.execute(loop);
         assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
         // Step 2: 1, 3, 5, 7, 9
-        loop = new LoopCommandImpl("counter", 1.0, 10.0, 2.0,
-                new LogCommandImpl("counter"));
+        loop = new LoopCommandImpl(
+            new LoopCommand("counter", 1.0, 10.0, 2.0,
+                new LogCommand("counter")));
         System.out.println(loop);
         context.execute(loop);
         assertEquals(9.0, ValueUtil.getDouble(counter.read()), 0.1);
 
         // Down 3: 8, 5, 2
-        loop = new LoopCommandImpl("counter", 8.0, 0.0, -3.0,
-                new LogCommandImpl("counter"));
+        loop = new LoopCommandImpl(
+            new LoopCommand("counter", 8.0, 0.0, -3.0,
+                new LogCommand("counter")));
         System.out.println(loop);
         context.execute(loop);
         assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
@@ -133,9 +137,9 @@ public class LoopCommandHeadlessTest
         devices.startDevices();
 
         // 1 .. 5, but stepping down -> Creates 'reversing' loop
-        LoopCommandImpl loop =
-                new LoopCommandImpl("counter", 1.0, 5.0, -1.0,
-                    new LogCommandImpl("counter"));
+        LoopCommandImpl loop = new LoopCommandImpl(
+                new LoopCommand("counter", 1.0, 5.0, -1.0,
+                    new LogCommand("counter")));
         System.out.println(loop);
 
         final ScanContext context = new ScanContext(devices);

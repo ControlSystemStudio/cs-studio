@@ -19,7 +19,9 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanContext;
 
-/** A command that can be executed
+/** Implementation of a command
+ * 
+ *  <p>Wraps a {@link ScanCommand} and allows execution of the command.
  *
  *  <p>Most commands will perform one unit of work,
  *  for example set a PV.
@@ -38,26 +40,36 @@ import org.csstudio.scan.server.ScanContext;
  *  Likewise, a delay of 1 second or 1 minute would each be one
  *  work unit, even though their duration differs a lot.
  *  
- *  <p>Most commands are implemented by extending the underlying
- *  {@link ScanCommand} that describes the command, simply
- *  providing the <code>execute()</code> method to perform
- *  the actual work.
- *  This, however, is not as easy for commands that themselve hold
- *  a 'body' of commands, for example the loop:
- *  The basic LoopCommand has a body of scan commands, but the 
- *  implementation needs a body of executable commands.
- *   
  *  @author Kay Kasemir
  */
-public interface CommandImpl extends ScanCommand
+abstract public class CommandImpl<C extends ScanCommand>
 {
+    final protected C command;
+
+    /** Initliaze
+     *  @param command Command that is implemented
+     */
+    public CommandImpl(final C command)
+    {
+        this.command = command;
+    }
+    
+    /** @return {@link ScanCommand} */
+    public C getCommand()
+    {
+        return command;
+    }
+    
     /** Most commands will perform one unit of work,
      *  for example set a PV.
      *  A loop on the other hand will perform one unit of work per loop
      *  iteration.
      *
      *  @return Number of work units that this command performs */
-    public int getWorkUnits();
+    public int getWorkUnits()
+    {
+        return 1;
+    }
 
 	/** Execute the command
 	 *
@@ -68,5 +80,12 @@ public interface CommandImpl extends ScanCommand
 	 *
 	 *  @see ScanContext#workPerformed(int)
 	 */
-    public void execute(ScanContext context) throws Exception;
+    abstract public void execute(ScanContext context) throws Exception;
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+        return command.toString();
+    }
 }
