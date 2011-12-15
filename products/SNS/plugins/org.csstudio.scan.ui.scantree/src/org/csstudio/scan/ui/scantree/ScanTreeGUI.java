@@ -194,7 +194,7 @@ public class ScanTreeGUI
         {
             @Override
             public void dragOver(final DropTargetEvent event)
-            {
+            {   // Modify feedback when dropping 'before', 'on' or 'after' existing command
                 event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL;
                 final TreeItemInfo info = getTreeItemInfo(event.x, event.y);
                 if (info == null)
@@ -215,32 +215,35 @@ public class ScanTreeGUI
             @Override
             public void drop(final DropTargetEvent event)
             {
+                // Add dropped command
                 if (! (event.data instanceof ScanCommand))
                     return;
-                // Add dropped command
-                final ScanCommand command = (ScanCommand) event.data;
+                final ScanCommand dropped_command = (ScanCommand) event.data;
                 
                 // Determine _where_ it was dropped
                 final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
                 if (target == null)
-                    return;
-                
-                // System.out.println("Dropped: " + command + " onto " + target.command);
-                // Special handling for loop
-                if (target.command instanceof LoopCommand  &&
-                    target.section == TreeItemInfo.Section.CENTER)
-                {   // Dropping exactly onto a loop means: Add command to that loop
-                    final LoopCommand loop = (LoopCommand) target.command;
-                    TreeManipulator.addToLoop(loop, command);
+                {   // Add to end of commands
+                    commands.add(dropped_command);
                 }
                 else
-                {
-                    final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                    TreeManipulator.insert(commands, target.command, command, after);
+                {   // System.out.println("Dropped: " + command + " onto " + target.command);
+                    // Special handling for loop
+                    if (target.command instanceof LoopCommand  &&
+                        target.section == TreeItemInfo.Section.CENTER)
+                    {   // Dropping exactly onto a loop means add to that loop
+                        final LoopCommand loop = (LoopCommand) target.command;
+                        TreeManipulator.addToLoop(loop, dropped_command);
+                    }
+                    else
+                    {
+                        final boolean after = target.section != TreeItemInfo.Section.UPPER;
+                        TreeManipulator.insert(commands, target.command, dropped_command, after);
+                    }
                 }
                 refresh();
                 // Set selection to new command, which also asserts that it is visible
-                tree_view.setSelection(new StructuredSelection(command));
+                tree_view.setSelection(new StructuredSelection(dropped_command));
             }
         });
     }
