@@ -146,8 +146,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                     if (scs.getStatus() == SmsConnectorStart.STAT_INIT)
                         scs.setStatus(SmsConnectorStart.STAT_OK);
 
-                    // Log.log(this, Log.DEBUG, "is running");
-
                     Message message = null;
                     try {
                         message = amsReceiver.receive("amsSubscriberSmsModemtest");
