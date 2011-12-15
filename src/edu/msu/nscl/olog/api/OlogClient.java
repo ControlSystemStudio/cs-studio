@@ -272,6 +272,14 @@ public interface OlogClient {
 
 	/**
 	 * 
+	 * @param logId
+	 * @return
+	 * @throws OlogException
+	 */
+	public Log findLogById(Long logId) throws OlogException;
+	
+	/**
+	 * 
 	 * @param pattern
 	 * @return collection of Log objects
 	 * @throws OlogException

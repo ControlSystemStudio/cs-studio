@@ -77,22 +77,20 @@ public class Property {
 		return this.attributes.entrySet();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result
+				+ ((attributes == null) ? 0 : attributes.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -101,9 +99,14 @@ public class Property {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Property))
+		if (getClass() != obj.getClass())
 			return false;
 		Property other = (Property) obj;
+		if (attributes == null) {
+			if (other.attributes != null)
+				return false;
+		} else if (!attributes.equals(other.attributes))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -111,4 +114,6 @@ public class Property {
 			return false;
 		return true;
 	}
+
+	
 }
