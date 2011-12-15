@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.scan.command.LoopCommand;
@@ -48,7 +48,7 @@ public class ScanTreeGUI
     final private ScanTreeGUIListener listener;
     
     /** Commands displayed and edited in this GUI */
-    private List<ScanCommand> commands = Collections.emptyList();
+    private List<ScanCommand> commands = new ArrayList<ScanCommand>();
     
     /** Tree that shows commands */
     private TreeViewer tree_view;

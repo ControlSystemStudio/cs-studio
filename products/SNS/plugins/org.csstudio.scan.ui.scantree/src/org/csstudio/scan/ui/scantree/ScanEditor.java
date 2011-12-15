@@ -10,6 +10,8 @@ package org.csstudio.scan.ui.scantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -27,8 +29,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -47,21 +52,54 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 {
+    /** Editor ID defined in plugin.xml */
+    final public static String ID = "org.csstudio.scan.ui.scantree.editor"; //$NON-NLS-1$
+
     /** File extension used to save files */
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
+
 
     private ScanTreeGUI gui;
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
 
+    /** Create scan editor
+     *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
+     *  @return ScanEditor or <code>null</code> on error
+     */
+    private static ScanEditor createInstance(final IEditorInput input)
+    {
+        final ScanEditor editor;
+        try
+        {
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            editor = (ScanEditor) page.openEditor(input, ID);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(ScanEditor.class.getName())
+                .log(Level.WARNING, "Cannot create ScanEditor", ex); //$NON-NLS-1$
+            return null;
+        }
+        return editor;
+    }
+
+    /** Create scan editor with empty configuration
+     *  @return ScanEditor or <code>null</code> on error
+     */
+    public static ScanEditor createInstance()
+    {
+        return createInstance(new EmptyEditorInput());
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
             throws PartInitException
     {
-        if (! (input instanceof IFileEditorInput))
-            throw new PartInitException("Cannot handle input of type " + input.getClass().getName()); //$NON-NLS-1$
         setSite(site);
         setInput(input);
     }
@@ -70,24 +108,25 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     @Override
     public void createPartControl(final Composite parent)
     {
-        final IFileEditorInput input = (IFileEditorInput) getEditorInput();
-        
         gui = new ScanTreeGUI(parent, this);
 
-        try
+        final IEditorInput input = getEditorInput();
+        final IFile file = (IFile) input.getAdapter(IFile.class);
+        if (file != null)
         {
-            final IFile file = input.getFile();
-            final List<ScanCommand> commands = XMLCommandReader.readXMLStream(file.getContents());
-            gui.setCommands(commands);
-            setPartName(file.getName());
+            try
+            {
+                final List<ScanCommand> commands = XMLCommandReader.readXMLStream(file.getContents());
+                gui.setCommands(commands);
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.openError(parent.getShell(), Messages.Error,
+                        NLS.bind(Messages.FileOpenErrorFmt,
+                                new Object[] { input.getName(), ex.getMessage() }));
+            }
         }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(parent.getShell(), Messages.Error,
-                    NLS.bind(Messages.FileOpenErrorFmt,
-                            new Object[] { input.getName(), ex.getMessage() }));
-        }
-        
+        setPartName(input.getName());
         getSite().setSelectionProvider(gui.getSelectionProvider());
     }
 
@@ -156,8 +195,12 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     @Override
     public void doSave(final IProgressMonitor monitor)
     {
-        final IFileEditorInput input = (IFileEditorInput) getEditorInput();
-        saveToFile(monitor, input.getFile());
+        final IEditorInput input = getEditorInput();
+        final IFile file = (IFile) input.getAdapter(IFile.class);
+        if (file == null)
+            doSaveAs();
+        else // Input is EmptyEditorInput, no file, yet
+            saveToFile(monitor, file);
     }
     
     /** {@inheritDoc} */
