@@ -104,6 +104,11 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		valueLabel.setText(getValueText());			
 	}
 	
+	
+	public void setValueLabelVisibility(boolean visible) {
+		valueLabel.setVisible(visible);
+	}
+	
 	/**
 	 * @param needleColor the needleColor to set
 	 */
