@@ -13,9 +13,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.server.ScanServer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -45,7 +47,6 @@ import org.eclipse.ui.part.FileEditorInput;
  *  {@link ScanCommandAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
  *  
- *  TODO Context menu to submit scan
  *  TODO Context menu to load scan from server?
  *  
  *  @author Kay Kasemir
@@ -150,6 +151,28 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     public void scanTreeChanged()
     {
         setDirty(true);
+    }
+    
+    /** @see ScanTreeGUIListener */
+    @Override
+    public void submitScan(final List<ScanCommand> commands)
+    {
+        String name = getEditorInput().getName();
+        final int sep = name.lastIndexOf('.');
+        if (sep > 0)
+            name = name.substring(0, sep);
+        
+        // Use Job to submit?
+        try
+        {
+            final ScanServer server = ScanServerConnector.connect();
+            server.submitScan(name, commands);
+        }
+        catch (Exception ex)
+        {
+            MessageDialog.openError(getSite().getShell(), Messages.Error,
+                NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()));
+        }
     }
 
     /** {@inheritDoc} */

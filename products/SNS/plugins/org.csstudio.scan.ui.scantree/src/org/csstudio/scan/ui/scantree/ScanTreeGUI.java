@@ -16,7 +16,9 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.actions.RemoveCommandAction;
+import org.csstudio.scan.ui.scantree.actions.SubmitScanAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -99,6 +101,9 @@ public class ScanTreeGUI
         final MenuManager manager = new MenuManager();
         manager.add(new AddCommandAction());
         manager.add(new RemoveCommandAction(this));
+        manager.add(new Separator());
+        manager.add(new SubmitScanAction(listener, this));
+        manager.add(new Separator());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
                 Messages.OpenScanTreePerspective, Perspective.ID));

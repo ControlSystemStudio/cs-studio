@@ -59,7 +59,7 @@ public class CommandListView extends ViewPart
         table_viewer.setInput(new ScanCommand[]
         {
             new DelayCommand(1.0),
-            new LogCommand(),
+            new LogCommand(device_name),
             new LoopCommand(device_name, 1.0, 10.0, 1.0, new ArrayList<ScanCommand>()),
             new SetCommand(device_name, 1.0),
             new WaitCommand(device_name, 1.0, 0.1),

@@ -40,6 +40,8 @@ public class Messages extends NLS
     public static String OpenProperties;
     public static String OpenScanTreePerspective;
     public static String RemoveCommand;
+    public static String ScanSubmitErrorFmt;
+    public static String SubmitScan;
 
     static
     {
