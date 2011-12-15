@@ -36,7 +36,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.scan.ui.scantree.NewScanTree"
+            defaultHandler="org.csstudio.scan.ui.scantree.actions.NewScanTree"
             id="org.csstudio.scan.ui.scantree.new"
             name="%ScanTree">
       </command>
@@ -52,10 +52,20 @@
                   commandId="org.csstudio.scan.ui.scantree.new"
                   icon="icons/new_scantree.png"
                   label="%ScanTree"
-                  style="push">
+                  style="push"
+                  tooltip="%NewScanTreeTT">
             </command>
          </toolbar>
       </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.scan.ui.scantree.Perspective"
+            icon="icons/scantree.gif"
+            id="org.csstudio.scan.ui.scantree.perspective"
+            name="%ScanTree">
+      </perspective>
    </extension>
 
 </plugin>

@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
@@ -99,6 +100,8 @@ public class ScanTreeGUI
         manager.add(new AddCommandAction());
         manager.add(new RemoveCommandAction(this));
         manager.add(new OpenPropertiesAction());
+        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
+                Messages.OpenScanTreePerspective, Perspective.ID));
         
         final Menu menu = manager.createContextMenu(tree_view.getControl());
         tree_view.getControl().setMenu(menu);

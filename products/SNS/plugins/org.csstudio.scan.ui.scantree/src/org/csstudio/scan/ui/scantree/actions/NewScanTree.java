@@ -5,8 +5,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.scan.ui.scantree.actions;
 
+import org.csstudio.scan.ui.scantree.Perspective;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -21,15 +23,14 @@ public class NewScanTree extends AbstractHandler
     {
         ScanEditor.createInstance();
         
-        // TODO Perspective
-//        try
-//        {
-//            Perspective.showPerspective();
-//        }
-//        catch (Exception ex)
-//        {
-//            // never mind
-//        }
+        try
+        {
+            Perspective.showPerspective();
+        }
+        catch (Exception ex)
+        {
+            // never mind
+        }
         return null;
     }
 }

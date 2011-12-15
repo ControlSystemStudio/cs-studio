@@ -27,7 +27,7 @@ public class EmptyEditorInput implements IEditorInput
     @Override
     public String getName()
     {
-        return "Not Saved";
+        return Messages.NotSaved;
     }
 
     /** Cause tool top to reflect the 'not saved' state. */
