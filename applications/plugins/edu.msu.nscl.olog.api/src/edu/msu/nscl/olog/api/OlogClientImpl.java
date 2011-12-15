@@ -1,7 +1,5 @@
 package edu.msu.nscl.olog.api;
 
-import static edu.msu.nscl.olog.api.TagBuilder.tag;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -506,8 +504,10 @@ public class OlogClientImpl implements OlogClient {
 				}
 				xmlTag.setXmlLogs(xmlLogs);
 			}
-			ClientResponse response = service.path("tags").path(tag.toXml().getName())
-					.accept(MediaType.APPLICATION_XML).put(ClientResponse.class, xmlTag);
+			ClientResponse response = service.path("tags")
+					.path(tag.toXml().getName())
+					.accept(MediaType.APPLICATION_XML)
+					.put(ClientResponse.class, xmlTag);
 			return new Tag(response.getEntity(XmlTag.class));
 		}
 	}
@@ -518,7 +518,7 @@ public class OlogClientImpl implements OlogClient {
 	}
 
 	@Override
-	public Logbook set(LogbookBuilder logbook, Long logId) throws OlogException {		 
+	public Logbook set(LogbookBuilder logbook, Long logId) throws OlogException {
 		return wrappedSubmit(new SetLogbook(logbook, logId));
 
 	}
@@ -526,7 +526,7 @@ public class OlogClientImpl implements OlogClient {
 	@Override
 	public Logbook set(LogbookBuilder logbook, Collection<Long> logIds)
 			throws OlogException {
-				return null;
+		return null;
 		// TODO Auto-generated method stub
 
 	}
@@ -546,11 +546,13 @@ public class OlogClientImpl implements OlogClient {
 		@Override
 		public Logbook call() {
 			XmlLogbook xmlLogbook = logbook.toXml();
-			ClientResponse response = service.path("logbooks").path(xmlLogbook.getName())
+			ClientResponse response = service.path("logbooks")
+					.path(xmlLogbook.getName())
 					.accept(MediaType.APPLICATION_XML)
-					.accept(MediaType.APPLICATION_JSON).put(ClientResponse.class, xmlLogbook);
+					.accept(MediaType.APPLICATION_JSON)
+					.put(ClientResponse.class, xmlLogbook);
 			return new Logbook(response.getEntity(XmlLogbook.class));
-//			return null;
+			// return null;
 		}
 
 	}
@@ -593,10 +595,12 @@ public class OlogClientImpl implements OlogClient {
 
 			@Override
 			public Tag call() {
-				ClientResponse response = service.path("tags").path(xmlTag.getName())
+				ClientResponse response = service.path("tags")
+						.path(xmlTag.getName())
 						.path(String.valueOf(appendLogId))
 						.accept(MediaType.APPLICATION_XML)
-						.accept(MediaType.APPLICATION_JSON).put(ClientResponse.class);
+						.accept(MediaType.APPLICATION_JSON)
+						.put(ClientResponse.class);
 				return new Tag(response.getEntity(XmlTag.class));
 			}
 
@@ -617,11 +621,13 @@ public class OlogClientImpl implements OlogClient {
 					logs.addXmlLog(new XmlLog(logId));
 				}
 				xmlTag.setXmlLogs(logs);
-				ClientResponse reponse = service.path("tags").path(xmlTag.getName())
+				ClientResponse reponse = service.path("tags")
+						.path(xmlTag.getName())
 						.accept(MediaType.APPLICATION_XML)
-						.accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, xmlTag);
+						.accept(MediaType.APPLICATION_JSON)
+						.post(ClientResponse.class, xmlTag);
 				return new Tag(reponse.getEntity(XmlTag.class));
-				
+
 			}
 		});
 	}
@@ -633,10 +639,11 @@ public class OlogClientImpl implements OlogClient {
 		return wrappedSubmit(new Callable<Logbook>() {
 			@Override
 			public Logbook call() {
-				ClientResponse response = service.path("logbooks").path(xmlLogbook.getName())
-						.path(logId.toString())
+				ClientResponse response = service.path("logbooks")
+						.path(xmlLogbook.getName()).path(logId.toString())
 						.accept(MediaType.APPLICATION_XML)
-						.accept(MediaType.APPLICATION_JSON).put(ClientResponse.class);
+						.accept(MediaType.APPLICATION_JSON)
+						.put(ClientResponse.class);
 				return new Logbook(response.getEntity(XmlLogbook.class));
 			}
 		});
@@ -672,9 +679,11 @@ public class OlogClientImpl implements OlogClient {
 				}
 				xmlLogBook.setXmlLogs(xmlLogs);
 			}
-			ClientResponse response = service.path("logbooks").path(xmlLogBook.getName())
+			ClientResponse response = service.path("logbooks")
+					.path(xmlLogBook.getName())
 					.accept(MediaType.APPLICATION_XML)
-					.accept(MediaType.APPLICATION_JSON).post(ClientResponse.class, xmlLogBook);
+					.accept(MediaType.APPLICATION_JSON)
+					.post(ClientResponse.class, xmlLogBook);
 			return new Logbook(response.getEntity(XmlLogbook.class));
 		}
 	}
@@ -682,7 +691,7 @@ public class OlogClientImpl implements OlogClient {
 	@Override
 	public Property update(PropertyBuilder property, Long logId)
 			throws OlogException {
-				return null;
+		return null;
 		// TODO Auto-generated method stub
 
 	}
@@ -690,7 +699,7 @@ public class OlogClientImpl implements OlogClient {
 	@Override
 	public Property update(PropertyBuilder property, Collection<Long> logIds)
 			throws OlogException {
-				return null;
+		return null;
 		// TODO Auto-generated method stub
 
 	}
@@ -753,6 +762,20 @@ public class OlogClientImpl implements OlogClient {
 		} catch (IOException e) {
 			throw new OlogException(e);
 		}
+	}
+
+	@Override
+	public Log findLogById(final Long logId) {
+		return wrappedSubmit(new Callable<Log>() {
+
+			@Override
+			public Log call() throws Exception {
+				XmlLog xmlLog =  service.path("logs").path(logId.toString()).accept(MediaType.APPLICATION_XML)
+						.accept(MediaType.APPLICATION_JSON).get(XmlLog.class);
+				return new Log(xmlLog);
+			}
+
+		});
 	}
 
 	@Override
