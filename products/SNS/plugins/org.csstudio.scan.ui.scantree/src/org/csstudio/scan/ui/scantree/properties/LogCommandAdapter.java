@@ -9,8 +9,8 @@ package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.Messages;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

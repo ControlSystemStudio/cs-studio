@@ -22,5 +22,50 @@
             name="%ScanTree">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.scan.ui.scantree.CommandListView"
+            icon="icons/scantree.gif"
+            id="org.csstudio.scan.ui.scantree.commandlist"
+            name="%ScanCommands"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.actions.NewScanTree"
+            id="org.csstudio.scan.ui.scantree.new"
+            name="%ScanTree">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar">
+         <toolbar
+               id="org.csstudio.scan.ui.scantree.toolbar">
+            <command
+                  commandId="org.csstudio.scan.ui.scantree.new"
+                  icon="icons/new_scantree.png"
+                  label="%ScanTree"
+                  style="push"
+                  tooltip="%NewScanTreeTT">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.scan.ui.scantree.Perspective"
+            icon="icons/scantree.gif"
+            id="org.csstudio.scan.ui.scantree.perspective"
+            name="%ScanTree">
+      </perspective>
+   </extension>
 
 </plugin>
