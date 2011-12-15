@@ -52,6 +52,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextInputEditpart extends TextUpdateEditPart {
 
+	private static final char SPACE = ' ';
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
 
@@ -177,9 +178,14 @@ public class TextInputEditpart extends TextUpdateEditPart {
 						}
 					}
 
-					try {
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME,
-								parseString(text));
+					try {						
+						Object result;
+						if(getWidgetModel().getFormat() != FormatEnum.STRING
+								&& text.trim().indexOf(SPACE)!=-1){
+							result = parseStringArray(text.split(" +"));//StringSplitter.splitIgnoreInQuotes(text.trim(), SPACE, true));
+						}else
+							result = parseString(text);
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
 					} catch (Exception e) {
 						String msg = NLS
 								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
@@ -337,6 +343,27 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	protected int getUpdateSuppressTime() {
 		return -1;
 	}
+	
+	private Object parseStringArray(final String[] texts) throws ParseException{		
+		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
+				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))){
+			double[] result = new double[texts.length];
+			for (int i = 0; i < texts.length; i++) {
+				Object o = parseString(texts[i]);
+				if (o instanceof Number)
+					result[i] = ((Number) o).doubleValue();
+				else
+					throw new ParseException(texts[i] + " cannot be parsed as a number!", i);
+			}
+			return result;
+		}
+		if(pvValue instanceof IStringValue && ((IStringValue)pvValue).getValues().length>1){
+			return texts;
+		}
+		
+		return parseString(texts[0]);
+	}
 
 	/**
 	 * Parse string to a value according PV value type and format
@@ -462,7 +489,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			valueText = text.substring(2);
 		}
 		if (valueText.contains(" ")) { //$NON-NLS-1$
-			valueText = valueText.substring(0, valueText.indexOf(' '));
+			valueText = valueText.substring(0, valueText.indexOf(SPACE));
 		}
 		long i = Long.parseLong(valueText, 16);
 		if (coerce) {
