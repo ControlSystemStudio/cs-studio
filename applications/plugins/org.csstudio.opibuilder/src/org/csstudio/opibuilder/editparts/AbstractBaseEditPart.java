@@ -373,13 +373,26 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	}
 
 	/**
+	 * 
 	 * Get the external object by name.
 	 * 
 	 * @return the external object. null if no such an object was set before.
+	 * @deprecated Use {@link #getVar(String)} instead.
 	 */
 	public synchronized Object getExternalObject(String name) {
+		return getVar(name);
+	}
+	
+	/**Get the value of a variable which 
+	 * is attached to this widget by {@link #setVar(String, Object)}.
+	 * @param varName name of the variable
+	 * @return value of the variable. 
+	 * null if no variable in this name has been attached to this widget.
+	 * @since 2.0.0
+	 */
+	public synchronized Object getVar(String varName){
 		if (externalObjectsMap != null)
-			return externalObjectsMap.get(name);
+			return externalObjectsMap.get(varName);
 		return null;
 	}
 
@@ -720,12 +733,25 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 *            the name of the object.
 	 * @param var
 	 *            the object.
+	 * 
+	 * @deprecated use {@link #setVar(String, Object)} instead.
+	 *  
 	 */
 	public synchronized void setExternalObject(String name, Object var) {
+		setVar(name, var);
+	}
+	
+	/**Set variable value. If the variable does not exist, it will be added to this widget first.	 * 
+	 * @param varName name of the variable.
+	 * @param varValue value of the variable, which can be any type.
+	 * @since 2.0.0
+	 */
+	public synchronized void setVar(String varName, Object varValue) {
 		if (externalObjectsMap == null)
 			externalObjectsMap = new HashMap<String, Object>();
-		externalObjectsMap.put(name, var);
+		externalObjectsMap.put(varName, varValue);
 	}
+	
 
 	/**Set border of the figure. It will consider the connection status.
 	 * @param border
@@ -785,6 +811,52 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	
 	public void setSelectable(boolean isSelectable) {
 		this.isSelectable = isSelectable;
+	}
+	
+	/**Set this widget to be enabled.
+	 * @param enable true if the widget should be enabled.
+	 */
+	public void setEnabled(boolean enable){
+		getWidgetModel().setEnabled(enable);
+	}
+	
+	/**Set this widget's visibility.
+	 * @param enable true if the widget should be visible.
+	 */
+	public void setVisible(boolean visible){
+		getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_VISIBLE, visible);
+	}
+	
+	/**Set X position of the widget
+	 * @param x x position in pixel which is relative to its parent.
+	 * @since 2.0.0
+	 */
+	public void setX(Number x){
+		getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_XPOS, x);
+	}
+	
+	/**Set Y position of the widget
+	 * @param y y position in pixel which is relative to its parent.
+	 * @since 2.0.0
+	 */
+	public void setY(Number y){
+		getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_YPOS, y);
+	}
+	
+	/**Set widget's width
+	 * @param width width in pixel.
+	 * @since 2.0.0
+	 */
+	public void setWidth(Number width){
+		getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_WIDTH, width);
+	}
+	
+	/**Set widget's height
+	 * @param height height in pixel.
+	 * @since 2.0.0
+	 */
+	public void setHeight(Number height){
+		getWidgetModel().setPropertyValue(AbstractWidgetModel.PROP_HEIGHT, height);
 	}
 	
 	@Override

@@ -13,6 +13,9 @@ import java.io.InputStreamReader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgetActions.OpenFileAction;
+import org.csstudio.opibuilder.widgetActions.OpenWebpageAction;
+import org.csstudio.opibuilder.widgetActions.PlayWavFileAction;
 import org.eclipse.core.runtime.IPath;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -152,6 +155,47 @@ public class FileUtil {
 			ScriptUtilSSHelper.getIMPL().writeTextFile(filePath, inWorkspace, widget, text, append);
 		else
 			throw new RuntimeException("This method is not implemented!");
+	}
+	
+	/**Open a file in default editor. If no such an editor for the type of file, OS 
+	 * default program will be called to open this file.
+	 * @param filePath path of the file. It can be an absolute path or a relative path to 
+	 * the OPI that contains the specified widget. If it is an absolute path, it can be either
+	 * a workspace path such as <br><code>/BOY Examples/Scripts/myfile.txt</code><br> or a local file
+	 * system path such as <code>C:\myfile.txt</code>.
+	 * @param widget a widget in the OPI, which is used to provide relative path reference. It 
+	 * can be null if the path is an absolute path.
+	 */
+	public static void openFile(String filePath, AbstractBaseEditPart widget){
+		OpenFileAction action = new OpenFileAction();
+		action.setWidgetModel(widget != null ? widget.getWidgetModel() : null);
+		action.setPropertyValue(OpenFileAction.PROP_PATH, filePath);
+		action.run();
+	}
+	
+	/**Open a web page.
+	 * @param link link to the web page. It can be a link started with http://, https:// or file://.
+	 */
+	public static void openWebPage(String link){
+		OpenWebpageAction action = new OpenWebpageAction();
+		action.setPropertyValue(OpenWebpageAction.PROP_HYPERLINK, link);
+		action.run();
+	}
+	
+	/**Play a .wav file.
+	 * @param filePath path of the file. It can be an absolute path or a relative path to 
+	 * the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
+	 * a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
+	 * system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
+	 * <code>http://mysite.com/myfile.xml</code>.
+	 * @param widget a widget in the OPI, which is used to provide relative path reference. It 
+	 * can be null if the path is an absolute path.
+	 * 	 */
+	public static void playWavFile(String filePath, AbstractBaseEditPart widget){
+		PlayWavFileAction action = new PlayWavFileAction();
+		action.setWidgetModel(widget != null ? widget.getWidgetModel() : null);
+		action.setPropertyValue(PlayWavFileAction.PROP_PATH, filePath);
+		action.run();
 	}
 	
 	/**Open a file select dialog.
