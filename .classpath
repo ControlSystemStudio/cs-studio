@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-apache-client-1.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.1.5.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.1.5.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-apache-client-1.6.jar" sourcepath="C:/Users/shroffk/.m2/repository/com/sun/jersey/contribs/jersey-apache-client/1.6/jersey-apache-client-1.6-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
