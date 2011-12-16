@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Scan System" topic="doc/scansystem.html">
+    <topic label="Scan System"  href="doc/scansystem.html">
+        <topic label="Overview" href="doc/scansystem.html#overview"/>
+        <topic label="Scan Server" href="doc/scansystem.html#server"/>
+    </topic>
+</toc>

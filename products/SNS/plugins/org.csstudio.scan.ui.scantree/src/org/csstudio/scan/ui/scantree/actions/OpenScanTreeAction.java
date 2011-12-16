@@ -63,7 +63,7 @@ public class OpenScanTreeAction extends Action
         catch (Exception ex)
         {
             MessageDialog.openError(null, Messages.Error,
-                NLS.bind("Cannot fetch scan commands and open in editor.\n{0}", ex.getMessage()));
+                NLS.bind(Messages.OpenScanTreeErrorFmt, ex.getMessage()));
         }
     }
 }

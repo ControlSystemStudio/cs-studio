@@ -14,6 +14,7 @@ import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
+import org.csstudio.scan.ui.scantree.actions.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.actions.RemoveCommandAction;
 import org.csstudio.scan.ui.scantree.actions.SubmitScanAction;
@@ -105,6 +106,7 @@ public class ScanTreeGUI
         manager.add(new SubmitScanAction(listener, this));
         manager.add(new Separator());
         manager.add(new OpenPropertiesAction());
+        manager.add(new OpenCommandListAction());
         manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
                 Messages.OpenScanTreePerspective, Perspective.ID));
         

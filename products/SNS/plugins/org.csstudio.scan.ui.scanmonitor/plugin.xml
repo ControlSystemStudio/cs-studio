@@ -16,7 +16,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:display">
+            locationURI="menu:scan?before=additions">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/scan_monitor.gif"

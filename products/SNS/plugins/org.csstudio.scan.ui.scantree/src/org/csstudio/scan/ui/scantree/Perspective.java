@@ -59,6 +59,8 @@ public class Perspective implements IPerspectiveFactory
 
         // Stuff for 'bottom'
         bottom.addView("org.csstudio.scan.ui.scanmonitor");
+        bottom.addPlaceholder("org.csstudio.scan.ui.plot.view");
+        bottom.addPlaceholder("org.csstudio.scan.ui.plot.view:*");
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Stuff for 'right_top'

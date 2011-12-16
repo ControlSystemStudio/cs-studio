@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan UI support
+Bundle-SymbolicName: org.csstudio.scan.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui;bundle-version="3.6.0",
+ org.eclipse.help;bundle-version="3.5.100",
+ org.csstudio.ui.menu;bundle-version="3.1.0",
+ org.csstudio.ui.help;bundle-version="3.1.0"

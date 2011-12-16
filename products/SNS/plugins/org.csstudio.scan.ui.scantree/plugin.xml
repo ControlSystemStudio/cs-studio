@@ -57,6 +57,17 @@
             </command>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:scan">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.new"
+               icon="icons/new_scantree.png"
+               label="%ScanTree"
+               style="push"
+               tooltip="%NewScanTreeTT">
+         </command>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
