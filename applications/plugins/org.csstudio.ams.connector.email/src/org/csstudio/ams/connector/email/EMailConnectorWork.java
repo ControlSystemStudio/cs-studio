@@ -100,8 +100,6 @@ public class EMailConnectorWork extends Thread implements AmsConstants {
                         ecs.setStatus(EMailConnectorStart.STAT_OK);
                     }
 
-                    Log.log(this, Log.DEBUG, "runs");
-
                     Message message = null;
                     try
                     {

@@ -36,6 +36,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
+import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -69,6 +70,7 @@ public class DistributorStart implements IApplication,
         }
     }
 
+    @Override
     public void stop() {
         return;
     }
@@ -93,15 +95,16 @@ public class DistributorStart implements IApplication,
      *
      * @return The password for management
      */
-    public synchronized String getPassword()
-    {
+    public synchronized String getPassword() {
         return managementPassword;
     }
 
     /**
      *
      */
+    @Override
     public Object start(final IApplicationContext context) throws Exception {
+        
         Log.log(this, Log.INFO, "Starting Distributor ...");
 
         DistributorPlugin.getDefault().addSessionServiceListener(this);
@@ -109,11 +112,17 @@ public class DistributorStart implements IApplication,
         DistributorPreferenceKey.showPreferences();
         final IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
 
+        final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
+        final String dbType = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_TYPE);
+        final String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
+        final String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER);
+        final String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
+
+        ConfigDbProperties dbProp = new ConfigDbProperties(dbType, dbCon, user, pwd);
         java.sql.Connection localDatabaseConnection = null;
-        java.sql.Connection masterDatabaseConnection = null;
+        //java.sql.Connection masterDatabaseConnection = null;
         try {
             localDatabaseConnection = AmsConnectionFactory.getApplicationDB();
-            masterDatabaseConnection = AmsConnectionFactory.getConfigurationDB();
 
             // Create a JMS sender connection
             final ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
@@ -128,7 +137,7 @@ public class DistributorStart implements IApplication,
 
             // Create the synchronizer object for the database synchronization
             final ConfigurationSynchronizer synchronizer =
-                new ConfigurationSynchronizer(localDatabaseConnection, masterDatabaseConnection, commandSenderSession, commandMessageProducer);
+                new ConfigurationSynchronizer(localDatabaseConnection, dbProp, commandSenderSession, commandMessageProducer);
             final Thread synchronizerThread = new Thread(synchronizer);
             synchronizerThread.start();
 
@@ -152,8 +161,9 @@ public class DistributorStart implements IApplication,
             }
 
             // TODO: There really should be two worker classes!
-            new Thread(worker).start();
-
+            // new Thread(worker).start();
+            worker.start();
+            
             Log.log(this, Log.INFO, "Distributor started");
 
             synchronized (this) {
@@ -161,7 +171,9 @@ public class DistributorStart implements IApplication,
                     this.wait();
                 }
             }
-
+            
+            worker.stopWorking();
+            worker.join(10000);
             synchronizer.stop();
             synchronizerThread.join();
 
@@ -175,12 +187,18 @@ public class DistributorStart implements IApplication,
             return IApplication.EXIT_OK;
         } finally {
             AmsConnectionFactory.closeConnection(localDatabaseConnection);
-            AmsConnectionFactory.closeConnection(masterDatabaseConnection);
         }
 
         Log.log(this, Log.INFO, "DistributorStart is exiting now");
 
         if (xmppService != null) {
+            synchronized (xmppService) {
+                try {
+                    xmppService.wait(500L);
+                } catch (InterruptedException ie) {
+                    Log.log(this, Log.WARN, "xmppService.wait() was interrupted."); 
+                }
+            }
             xmppService.disconnect();
         }
 
@@ -192,6 +210,7 @@ public class DistributorStart implements IApplication,
         return exitCode;
     }
 
+    @Override
     public void bindService(final ISessionService sessionService) {
     	final IPreferencesService pref = Platform.getPreferencesService();
     	final String xmppServer = pref.getString(DistributorPlugin.PLUGIN_ID, DistributorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
@@ -206,6 +225,7 @@ public class DistributorStart implements IApplication,
 		}
     }
 
+    @Override
     public void unbindService(final ISessionService service) {
     	// Nothing to do here
     }

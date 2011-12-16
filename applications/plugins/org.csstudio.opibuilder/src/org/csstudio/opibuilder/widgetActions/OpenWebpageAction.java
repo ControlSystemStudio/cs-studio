@@ -41,27 +41,24 @@ public class OpenWebpageAction extends AbstractWidgetAction {
 
 	@Override
 	public void run() {
-		if (getHyperLink().startsWith("http:") || //$NON-NLS-1$
-	        getHyperLink().startsWith("https:") || //$NON-NLS-1$
-	        getHyperLink().startsWith("file:")) //$NON-NLS-1$
-		{
-			try {
-				if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-					SingleSourceHelper.rapOpenWebPage(getHyperLink());
-				else
-					PlatformUI.getWorkbench().getBrowserSupport().createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
-						new URL(getHyperLink()));
-			} catch (Exception e) {
-				String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(), e);
-                OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to open " + getHyperLink(), e); //$NON-NLS-1$
-				ConsoleService.getInstance().writeError(message);
-			}
-		}else{
-			String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}", getHyperLink(),
-					"The hyperlink must start with http://, https:// or file://");
+		String hyperLink = getHyperLink();
+		if (!hyperLink.contains("://")) { //$NON-NLS-1$
+			hyperLink = "http://" + hyperLink; //$NON-NLS-1$
+		}
+		try {
+			if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+				SingleSourceHelper.rapOpenWebPage(hyperLink);
+			else
+				PlatformUI.getWorkbench().getBrowserSupport()
+						.createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
+								new URL(hyperLink));
+		} catch (Exception e) {
+			String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}",
+					hyperLink, e);
+			OPIBuilderPlugin.getLogger().log(Level.WARNING,
+					"Failed to open " + hyperLink, e); //$NON-NLS-1$
 			ConsoleService.getInstance().writeError(message);
 		}
-
 	}
 
 	private String getHyperLink(){

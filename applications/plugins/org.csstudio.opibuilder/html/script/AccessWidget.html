@@ -31,10 +31,17 @@
     <li><a href = "#getPropertyValue(java.lang.String)">getPropertyValue(prop_id) </a></li>
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object)">setPropertyValue(prop_id, value)</a></li>
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object, boolean)">setPropertyValue(prop_id, value, forceFire)</a></li>
-    <li><a href = "#setExternalObject(java.lang.String, java.lang.Object)">setExternalObject(name, var)</a></li>
-    <li><a href = "#getExternalObject(java.lang.String)">getExternalObject(name)</a></li>
+    <li><a href = "#setVar(java.lang.String, java.lang.Object)">setVar(varName, varValue)</a></li>
+    <li><a href = "#getVar(java.lang.String)">getVar(name)</a></li>
     <li><a href = "#getMacroValue(java.lang.String)">getMacroValue(macroName)</a></li>
     <li><a href = "#executeAction(int)">executeAction(index)</a></li>
+    <li><a href = "#setEnabled(boolean)">setEnabled(enable)</li>
+    <li><a href = "#setVisible(boolean)">setVisible(visible)</li>
+    <li><a href = "#setX(java.lang.Number)">setX(x)</li>
+	<li><a href = "#setY(java.lang.Number)">setY(y)</li>
+	<li><a href = "#setWidth(java.lang.Number)">setWidth(width)</li>
+	<li><a href = "#setHeight(java.lang.Number)">setHeight(height)</li>
+    
     </ul>
  <a name="ContainerWidgets"></a>
  <h3>Common methods to all container widgets</h3>
@@ -121,30 +128,35 @@ public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
 </DL>
 <HR>
 
-<A NAME="setExternalObject(java.lang.String, java.lang.Object)"><!-- --></A><H3>
-setExternalObject</H3>
+<A NAME="setVar(java.lang.String, java.lang.Object)"><!-- --></A><H3>
+setVar</H3>
 <PRE>
-public void <B>setExternalObject</B>(java.lang.String&nbsp;name,
-                              java.lang.Object&nbsp;var)</PRE>
+public void <B>setVar</B>(java.lang.String&nbsp;varName,
+                   java.lang.Object&nbsp;varValue)</PRE>
 <DL>
-<DD>Add/modify an external object from javascript.
+<DD>Set variable value. If the variable does not exist, it will be added to this widget first.       *
 <P>
 <DD><DL>
-<DT><B>Parameters:</B><DD><CODE>name</CODE> - the name of the object.<DD><CODE>var</CODE> - the object.</DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>varName</CODE> - name of the variable.<DD><CODE>varValue</CODE> - value of the variable, which can be any type.<DT><B>Since:</B></DT>
+  <DD>2.0.0</DD>
+</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="getExternalObject(java.lang.String)"><!-- --></A><H3>
-getExternalObject</H3>
+<A NAME="getVar(java.lang.String)"><!-- --></A><H3>
+getVar</H3>
 <PRE>
-public java.lang.Object <B>getExternalObject</B>(java.lang.String&nbsp;name)</PRE>
+public java.lang.Object <B>getVar</B>(java.lang.String&nbsp;name)</PRE>
 <DL>
-<DD>Get the external object by name.
+<DD>Get the value of a Variable.
 <P>
 <DD><DL>
 
-<DT><B>Returns:</B><DD>the external object. null if no such an object was set before.</DL>
+<DT><B>Returns:</B><DD>the variable value. null if no such a variable was set before.</DL>
 <b>Example:</b>
 <p>This is an example which uses these two methods to remember if the dialog has been
 poped before.</p>
@@ -155,21 +167,21 @@ importPackage(Packages.java.lang);
 
 var flagName = "popped";
 
-if(widget.getExternalObject(flagName) == null){
-	widget.setExternalObject(flagName, false);	
+if(widget.getVar(flagName) == null){
+	widget.setVar(flagName, false);	
 }
 
-var b = widget.getExternalObject(flagName);
+var b = widget.getVar(flagName);
 
 if(ValueUtil.getDouble(pvs[0].getValue()) > 80){		
 		if( b == false){
-			widget.setExternalObject(flagName, true);
+			widget.setVar(flagName, true);
 			MessageDialog.openWarning(
 				null, "Warning", "The temperature you set is too high!");
 		}
 		
 }else if (b == true){
-	widget.setExternalObject(flagName, false);
+	widget.setVar(flagName, false);
 }
 </pre>
 </DD>
@@ -204,6 +216,109 @@ public void <B>executeAction</B>(int&nbsp;index)</PRE>
 </DL>
 <HR>
  
+ <A NAME="setEnabled(boolean)"><!-- --></A><H3>
+setEnabled</H3>
+<PRE>
+public void <B>setEnabled</B>(boolean&nbsp;enable)</PRE>
+<DL>
+<DD>Set this widget to be enabled.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>enable</CODE> - true if the widget should be enabled.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setVisible(boolean)"><!-- --></A><H3>
+setVisible</H3>
+<PRE>
+public void <B>setVisible</B>(boolean&nbsp;visible)</PRE>
+<DL>
+<DD>Set this widget's visibility.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>enable</CODE> - true if the widget should be visible.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setX(java.lang.Number)"><!-- --></A><H3>
+setX</H3>
+<PRE>
+public void <B>setX</B>(java.lang.Number&nbsp;x)</PRE>
+<DL>
+<DD>Set X position of the widget
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>x</CODE> - x position in pixel which is relative to its parent.<DT><B>Since:</B></DT>
+  <DD>2.0.0</DD>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setY(java.lang.Number)"><!-- --></A><H3>
+setY</H3>
+<PRE>
+public void <B>setY</B>(java.lang.Number&nbsp;y)</PRE>
+<DL>
+<DD>Set Y position of the widget
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>y</CODE> - y position in pixel which is relative to its parent.<DT><B>Since:</B></DT>
+  <DD>2.0.0</DD>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setWidth(java.lang.Number)"><!-- --></A><H3>
+setWidth</H3>
+<PRE>
+public void <B>setWidth</B>(java.lang.Number&nbsp;width)</PRE>
+<DL>
+<DD>Set widget's width
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>width</CODE> - width in pixel.<DT><B>Since:</B></DT>
+  <DD>2.0.0</DD>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="setHeight(java.lang.Number)"><!-- --></A><H3>
+setHeight</H3>
+<PRE>
+public void <B>setHeight</B>(java.lang.Number&nbsp;height)</PRE>
+<DL>
+<DD>Set widget's height
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>height</CODE> - height in pixel.<DT><B>Since:</B></DT>
+  <DD>2.0.0</DD>
+</DL>
+</DD>
+</DL>
+<HR>
  
  <h2>Common methods to all container widgets</h2>
 <HR>
