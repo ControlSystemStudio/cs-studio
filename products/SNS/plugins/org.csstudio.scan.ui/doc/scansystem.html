@@ -208,11 +208,31 @@ It shows the hierarchical structure of loops in a scan.
 
 <img src="scan_edit.png" width="100%"/>
 
-<p>Open editor, drag commands from the Scan Command Palette into the "tree",
-configure the properties of a command, save the scan as a file for later re-use,
-load a saved scan configurations,
-submit to scan server for execution.
-</p>
+<p>Basic Operation:</p>
+
+<ul>
+<li>Open new editor from menu <code>CSS/Scan/Scan Editor</code>, or open
+    existing <code>*.scn</code> scan file
+</li>
+<li>Open respectively reset the Scan Editor perspective via
+    the context menu.
+</li>
+<li>Drag new commands from the Scan Command Palette into the "tree"-type
+    display of the scan.
+</li>
+<li>Re-arrange commands by dragging them to a new position within the scan tree.
+    Holding the 'Alt' or 'Ctr' key (depending on the operating system)
+    while doing this will copy a command.
+</li>
+<li>Configure the properties of a command in the Properties view.
+</li>
+<li>Save the scan as a file for later re-use as a <code>*.scn</code> file
+    via the menu <code>File/Save</code>.
+</li>
+<li>Submit to scan server for execution via either the context menu
+or the toolbar button <img src="../icons/run.png"/>.
+</li>
+</ul>
 
 
 <h2><a name="monitor">Scan Monitor</a></h2> 
@@ -221,6 +241,8 @@ submit to scan server for execution.
 
 <img src="scan_monitor.png" width="80%"/>
 
+<p>Access the scan monitor via the menu <code>CSS/Scan/Scan Monitor</code>
+</p>
 <p>It lists which scans have been submitted to the server
 and their state:
 <ul>
@@ -239,7 +261,7 @@ and to remove completed scans from the server, i.e. scans that have either finis
 
 
 <h2><a name="programmatic">Programmatic Access</a></h2> 
-<p>
+<p>For now refer to <code>org.csstudio.scan/examples</code>
 </p>
 <p>
 </p>

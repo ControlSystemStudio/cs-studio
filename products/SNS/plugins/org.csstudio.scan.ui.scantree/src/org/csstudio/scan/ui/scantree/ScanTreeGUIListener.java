@@ -7,10 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import java.util.List;
-
-import org.csstudio.scan.command.ScanCommand;
-
 /** Listener to the {@link ScanTreeGUI}
  *  @author Kay Kasemir
  */
@@ -20,9 +16,4 @@ public interface ScanTreeGUIListener
      *  (commands moved, removed, added)
      */
     public void scanTreeChanged();
-
-    /** Invoked when user wants to submit the scan
-     *  @param commands Scan commands
-     */
-    public void submitScan(List<ScanCommand> commands);
 }

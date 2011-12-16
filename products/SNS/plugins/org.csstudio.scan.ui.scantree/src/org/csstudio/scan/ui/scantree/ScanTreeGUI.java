@@ -17,7 +17,7 @@ import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.actions.RemoveCommandAction;
-import org.csstudio.scan.ui.scantree.actions.SubmitScanAction;
+import org.csstudio.scan.ui.scantree.actions.SubmitCurrentScanAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -103,7 +103,7 @@ public class ScanTreeGUI
         manager.add(new AddCommandAction());
         manager.add(new RemoveCommandAction(this));
         manager.add(new Separator());
-        manager.add(new SubmitScanAction(listener, this));
+        manager.add(new SubmitCurrentScanAction());
         manager.add(new Separator());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenCommandListAction());

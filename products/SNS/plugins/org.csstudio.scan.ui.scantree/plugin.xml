@@ -15,6 +15,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.scan.ui.scantree.ScanEditor"
+            contributorClass="org.csstudio.scan.ui.scantree.ScanEditorContributor"
             default="false"
             extensions="scn"
             icon="icons/scantree.gif"
