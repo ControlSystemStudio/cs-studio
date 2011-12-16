@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Email Delivery
-Bundle-SymbolicName: org.csstudio.ams.delivery.email
+Bundle-SymbolicName: org.csstudio.ams.delivery.email;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.ams.delivery.email.Activator
 Bundle-Vendor: Markus Moeller <Markus.Moeller@desy.de>
