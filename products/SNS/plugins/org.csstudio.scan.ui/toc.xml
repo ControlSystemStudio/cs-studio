@@ -2,8 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="Scan System" topic="doc/scansystem.html">
-    <topic label="Scan System"  href="doc/scansystem.html">
-        <topic label="Overview" href="doc/scansystem.html#overview"/>
-        <topic label="Scan Server" href="doc/scansystem.html#server"/>
-    </topic>
+    <topic label="Overview" href="doc/scansystem.html#overview"/>
+    <topic label="Commands" href="doc/scansystem.html#commands"/>
+    <topic label="Scan Server" href="doc/scansystem.html#server"/>
 </toc>
