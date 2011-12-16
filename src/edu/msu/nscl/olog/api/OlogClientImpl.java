@@ -244,7 +244,7 @@ public class OlogClientImpl implements OlogClient {
 			return this;
 		}
 
-		public OlogClientImpl create() {
+		public OlogClientImpl create() throws Exception{
 			if (this.protocol.equalsIgnoreCase("http")) { //$NON-NLS-1$
 				this.clientConfig = new DefaultClientConfig();
 			} else if (this.protocol.equalsIgnoreCase("https")) { //$NON-NLS-1$
@@ -289,7 +289,7 @@ public class OlogClientImpl implements OlogClient {
 		}
 
 	}
-
+	
 	private OlogClientImpl(URI ologURI, URI ologJCRURI, ClientConfig config,
 			boolean withHTTPBasicAuthFilter, String username, String password,
 			ExecutorService executor) {
