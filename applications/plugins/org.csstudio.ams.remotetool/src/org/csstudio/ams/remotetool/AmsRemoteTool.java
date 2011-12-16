@@ -23,22 +23,9 @@
 
 package org.csstudio.ams.remotetool;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Vector;
 import org.csstudio.ams.remotetool.internal.PreferenceKeys;
-import org.csstudio.platform.management.CommandDescription;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommandService;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.presence.roster.IRoster;
-import org.eclipse.ecf.presence.roster.IRosterEntry;
-import org.eclipse.ecf.presence.roster.IRosterGroup;
-import org.eclipse.ecf.presence.roster.IRosterItem;
-import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -68,15 +55,9 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
     /**
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public Object start(IApplicationContext context) throws Exception {
         
-        Vector<IRosterItem> rosterItems = null;
-        Vector<IRosterEntry> rosterEntries = null;
-        IRosterGroup jmsApplics = null;
-        IRosterEntry currentApplic = null;
-        CommandParameters parameter = null;
-        CommandDescription stopAction = null;
         int iResult = ApplicResult.RESULT_ERROR_GENERAL.getApplicResultNumber();
         
         String[] args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
@@ -107,10 +88,10 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
         
         Activator.getDefault().addSessionServiceListener(this);
 
-        String applicName = cl.value("applicname");
-        String host = cl.value("host");
-        String user = cl.value("username");
-        String pw = cl.value("pw");
+        String applicName = (cl.value("applicname") != null) ? cl.value("applicname") : "";
+        String host = (cl.value("host") != null) ? cl.value("host") : "";
+        String user = (cl.value("username") != null) ? cl.value("username") : "";
+        String pw = (cl.value("pw") != null) ? cl.value("pw") : "";
                 
         LOG.info("Try to stop " + applicName + " on host " + host + ". Running under the account: " + user);
 
@@ -126,120 +107,8 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
             return ApplicResult.RESULT_ERROR_XMPP.getApplicResultNumber();
         }
         
-        IRosterManager rosterManager = xmppSession.getRosterManager();
-
-        IRoster roster = null;
-        int count = 0;
-  
-        // We have to wait until the DCF connection manager have been initialized
-        synchronized(this) {
-            
-            do {
-                try {
-                    this.wait(2000);
-                } catch(InterruptedException ie) {
-                    LOG.error("*** InterruptedException ***: " + ie.getMessage());
-                }
-  
-                roster = rosterManager.getRoster();
-
-                // Get the roster items
-                rosterItems = new Vector<IRosterItem>(roster.getItems());
-            } while((++count <= 10) && (rosterItems.isEmpty()));
-        }
-
-        // We have to wait until the DCF connection manager have been initialized
-        synchronized(this) {
-            try {
-                this.wait(2000);
-            } catch(InterruptedException ie) {
-                LOG.error("*** InterruptedException ***: " + ie.getMessage());
-            }
-        }
-        
-        if(rosterItems.size() == 0) {
-            LOG.info("XMPP roster not found. Stopping application.");
-            return ApplicResult.RESULT_ERROR_XMPP.getApplicResultNumber();
-        }
-        
-        LOG.info("Manager initialized");
-        LOG.info("Anzahl Directory-Elemente: " + rosterItems.size());
-        
-        // Get the group of JMS applications
-        for(IRosterItem ri : rosterItems) {
-            if(ri.getName().compareToIgnoreCase("jms-applications") == 0) {
-                jmsApplics = (IRosterGroup)ri;
-                break;
-            }
-        }
-        
-        String name = null;
-        
-        // Get the application container
-        if(jmsApplics != null) {
-            
-            rosterEntries = new Vector<IRosterEntry>(jmsApplics.getEntries());
-            
-            Iterator<IRosterEntry> list = rosterEntries.iterator();
-            while(list.hasNext()) {
-                IRosterEntry ce = list.next();
-                name = ce.getUser().getID().toExternalForm();
-                if(name.contains(applicName)) {
-                    if((name.indexOf(host) > -1) && (name.indexOf(user) > -1)) {
-                        currentApplic = ce;
-                        break;
-                    }
-                }
-            }
-        } else {
-            iResult = ApplicResult.RESULT_ERROR_UNKNOWN.getApplicResultNumber();
-        }
-        
-        IManagementCommandService service = null;
-        
-        if(currentApplic != null) {
-            
-            LOG.info("Anwendung gefunden: " + currentApplic.getUser().getID().getName());
-            
-            List<IManagementCommandService> managementServices =
-                xmppSession.getRemoteServiceProxies(
-                    IManagementCommandService.class, new ID[] {currentApplic.getUser().getID()});
-            
-            if (managementServices.size() == 1) {
-                service = managementServices.get(0);
-                CommandDescription[] commands = service.getSupportedCommands();
-                
-                for (int i = 0; i < commands.length; i++) {
-                    if(commands[i].getLabel().compareToIgnoreCase("stop") == 0) {
-                        stopAction = commands[i];
-                        break;
-                    }
-                }
-            }
-            
-            if((stopAction != null) && (service != null)) {
-                
-                parameter = new CommandParameters();
-                parameter.set("Password", pw);
-                
-                CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
-                if(retValue != null) {
-                    String result = (String)retValue.getValue();
-                    if((result.trim().startsWith("OK:")) || (result.indexOf("stopping") > -1)) {
-                        LOG.info("Application stopped: " + result);
-                        iResult = ApplicResult.RESULT_OK.getApplicResultNumber();
-                    } else {
-                        LOG.error("Something went wrong: " + result);
-                        iResult = ApplicResult.RESULT_ERROR_INVALID_PASSWORD.getApplicResultNumber();
-                    }
-                } else {
-                    LOG.info("Return value is null!");
-                    iResult = ApplicResult.RESULT_ERROR_UNKNOWN.getApplicResultNumber();
-                }
-            }
-        } else {
-            iResult = ApplicResult.RESULT_ERROR_NOT_FOUND.getApplicResultNumber();
-        }
+        ApplicationStopper appStopper = new ApplicationStopper(xmppSession);
+        iResult = appStopper.stopApplication(host, applicName, user, pw);
         
         if (xmppSession != null) {
             xmppSession.disconnect();
@@ -262,10 +131,12 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
     /**
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
+    @Override
     public void stop() {
         // Nothing to do here
     }
     
+    @Override
     public void bindService(ISessionService sessionService) {
     	
         IPreferencesService pref = Platform.getPreferencesService();
@@ -282,6 +153,7 @@ public class AmsRemoteTool implements IApplication, IGenericServiceListener<ISes
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	// Nothing to do here
     }
