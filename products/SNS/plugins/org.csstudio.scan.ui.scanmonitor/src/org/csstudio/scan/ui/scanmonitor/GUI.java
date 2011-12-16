@@ -28,9 +28,11 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
+import org.csstudio.scan.ui.scantree.actions.OpenScanTreeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -324,8 +326,11 @@ public class GUI implements ScanInfoModelListener
                 }
                 else
                     manager.add(new RemoveAction(model, info));
-                manager.add(new OpenPlotAction(info));
+                manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(model));
+                manager.add(new Separator());
+                manager.add(new OpenPlotAction(info));
+                manager.add(new OpenScanTreeAction(info));
             }
         });
 
