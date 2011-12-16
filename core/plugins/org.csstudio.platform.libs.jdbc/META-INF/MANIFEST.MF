@@ -6,10 +6,10 @@ Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
-Bundle-ClassPath: libs/ojdbc5_g.jar,
+Bundle-ClassPath: .,
+ libs/ojdbc6_g.jar,
  libs/mysql-connector-java-5.0.4-bin.jar,
- libs/postgresql-8.2-511.jdbc4.jar,
- .
+ libs/postgresql-8.2-511.jdbc4.jar
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
  com.mysql.jdbc.util,

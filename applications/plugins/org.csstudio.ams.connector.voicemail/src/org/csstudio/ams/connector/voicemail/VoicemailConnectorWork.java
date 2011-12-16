@@ -120,8 +120,6 @@ public class VoicemailConnectorWork extends Thread implements AmsConstants {
                     if (application.getStatus() == VoicemailConnectorStart.STAT_INIT)
                         application.setStatus(VoicemailConnectorStart.STAT_OK);
 
-                    // Log.log(this, Log.DEBUG, "runs");
-                    
                     Message message = null;
                     try {
                         message = amsReceiver.receive("amsSubscriberVm");                        
