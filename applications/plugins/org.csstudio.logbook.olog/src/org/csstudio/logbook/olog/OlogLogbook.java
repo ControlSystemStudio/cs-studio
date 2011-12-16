@@ -36,8 +36,8 @@ public class OlogLogbook implements ILogbook {
 
 	public OlogLogbook(String logbookName, String user, String password)
 			throws Exception {
-		client = OlogClientBuilder.serviceURL().username("shroffk")
-				.password("1234").withHTTPAuthentication(true).jcrURI("http://localhost:8080/Olog/repository/olog").create();
+		client = OlogClientBuilder.serviceURL().username(user)
+				.password(password).withHTTPAuthentication(true).create();
 		LogbookName = logbookName;
 		/* The maximum allowed size of logbook text entry MEDIUMTEXT */
 		MAX_TEXT_SIZE = 16777215;
