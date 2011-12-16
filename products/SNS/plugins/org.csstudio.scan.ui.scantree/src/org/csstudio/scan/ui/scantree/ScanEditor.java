@@ -47,8 +47,6 @@ import org.eclipse.ui.part.FileEditorInput;
  *  {@link ScanCommandAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
  *  
- *  TODO Context menu to load scan from server?
- *  
  *  @author Kay Kasemir
  */
 public class ScanEditor extends EditorPart implements ScanTreeGUIListener
@@ -145,7 +143,14 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         gui.refreshCommand(command);
     }
-    
+
+    /** @param commands Commands to edit */
+    public void setCommands(final List<ScanCommand> commands)
+    {
+        gui.setCommands(commands);
+        setDirty(true);
+    }
+
     /** @see ScanTreeGUIListener */
     @Override
     public void scanTreeChanged()
@@ -167,6 +172,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         {
             final ScanServer server = ScanServerConnector.connect();
             server.submitScan(name, commands);
+            ScanServerConnector.disconnect(server);
         }
         catch (Exception ex)
         {
