@@ -195,7 +195,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			}
 		}
 
-        Log.log(this, Log.INFO, "Distributor exited");
+        Log.log(this, Log.INFO, "Distributor is leaving.");
 	}
 
 	//

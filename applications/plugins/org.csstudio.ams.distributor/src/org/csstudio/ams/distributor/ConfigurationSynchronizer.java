@@ -1,3 +1,4 @@
+
 package org.csstudio.ams.distributor;
 
 import java.sql.Connection;
@@ -11,6 +12,8 @@ import javax.jms.Session;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
+import org.csstudio.ams.dbAccess.AmsConnectionFactory;
+import org.csstudio.ams.dbAccess.DatabaseProperties;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
 
 /**
@@ -18,6 +21,7 @@ import org.csstudio.ams.dbAccess.configdb.FlagDAO;
  * into the local application database.
  */
 class ConfigurationSynchronizer implements Runnable {
+    
     private static enum SynchronizerState {
         WAITING_FOR_REQUEST,
         SYNCHRONIZATION_REQUESTED,
@@ -26,7 +30,7 @@ class ConfigurationSynchronizer implements Runnable {
     }
     
     private final Connection _localDatabaseConnection;
-    private final Connection _masterDatabaseConnection;
+    private final DatabaseProperties dbProperties;
     private SynchronizerState _state;
     private boolean _stopped = false;
     private MessageProducer _jmsProducer;
@@ -35,12 +39,12 @@ class ConfigurationSynchronizer implements Runnable {
     /**
      * Creates a new synchronizer object.
      */
-    ConfigurationSynchronizer(Connection localDatabaseConnection,
-                              Connection masterDatabaseConnection,
-                              Session jmsSession,
-                              MessageProducer jmsProducer) {
+    public ConfigurationSynchronizer(Connection localDatabaseConnection,
+                                     DatabaseProperties prop,
+                                     Session jmsSession,
+                                     MessageProducer jmsProducer) {
         _localDatabaseConnection = localDatabaseConnection;
-        _masterDatabaseConnection = masterDatabaseConnection;
+        dbProperties = prop;
         _jmsSession = jmsSession;
         _jmsProducer = jmsProducer;
         _state = readSynchronizationState();
@@ -78,6 +82,7 @@ class ConfigurationSynchronizer implements Runnable {
     
     /**
      * Runs this synchronizer.
+     * ALTER PROFILE DEFAULT LIMIT IDLE_TIME 60;
      */
     @Override
     synchronized public void run() {
@@ -149,11 +154,14 @@ class ConfigurationSynchronizer implements Runnable {
             throw new IllegalStateException("Not in state SYNCHRONIZATION_STARTED");
         }
         
+        Connection masterDatabaseConnection = null;
         try {
-            ConfigReplicator.replicateConfiguration(_masterDatabaseConnection,
+            masterDatabaseConnection = AmsConnectionFactory.getConfigurationDB(dbProperties);
+            ConfigReplicator.replicateConfiguration(masterDatabaseConnection,
                                                     _localDatabaseConnection);
+            AmsConnectionFactory.closeConnection(masterDatabaseConnection);
         } catch (Exception e) {
-            Log.log(this, Log.FATAL, "could not replicateConfiguration", e);
+            Log.log(this, Log.FATAL, "Could not replicateConfiguration", e);
         }
         
         try {
