@@ -36,7 +36,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
-import org.csstudio.ams.dbAccess.DatabaseProperties;
+import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -118,7 +118,7 @@ public class DistributorStart implements IApplication,
         final String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER);
         final String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
 
-        DatabaseProperties dbProp = new DatabaseProperties(dbType, dbCon, user, pwd);
+        ConfigDbProperties dbProp = new ConfigDbProperties(dbType, dbCon, user, pwd);
         java.sql.Connection localDatabaseConnection = null;
         //java.sql.Connection masterDatabaseConnection = null;
         try {

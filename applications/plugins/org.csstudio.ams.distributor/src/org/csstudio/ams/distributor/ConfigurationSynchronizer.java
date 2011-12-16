@@ -13,7 +13,7 @@ import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
-import org.csstudio.ams.dbAccess.DatabaseProperties;
+import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.dbAccess.configdb.FlagDAO;
 
 /**
@@ -30,7 +30,7 @@ class ConfigurationSynchronizer implements Runnable {
     }
     
     private final Connection _localDatabaseConnection;
-    private final DatabaseProperties dbProperties;
+    private final ConfigDbProperties dbProperties;
     private SynchronizerState _state;
     private boolean _stopped = false;
     private MessageProducer _jmsProducer;
@@ -40,7 +40,7 @@ class ConfigurationSynchronizer implements Runnable {
      * Creates a new synchronizer object.
      */
     public ConfigurationSynchronizer(Connection localDatabaseConnection,
-                                     DatabaseProperties prop,
+                                     ConfigDbProperties prop,
                                      Session jmsSession,
                                      MessageProducer jmsProducer) {
         _localDatabaseConnection = localDatabaseConnection;
