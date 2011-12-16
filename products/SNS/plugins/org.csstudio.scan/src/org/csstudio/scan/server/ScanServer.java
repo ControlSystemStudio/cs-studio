@@ -82,6 +82,13 @@ public interface ScanServer extends Remote
      *  @throws RemoteException on error in remote access
      */
     public ScanInfo getScanInfo(long id) throws RemoteException;
+
+    /** Query server for the commands in a scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @return {@link ScanCommand}s for that scan on the server or <code>null</code>
+     *  @throws RemoteException on error in remote access
+     */
+    public List<ScanCommand> getScanCommands(long id) throws RemoteException;
     
     /** Get serial of last logged sample.
      *  

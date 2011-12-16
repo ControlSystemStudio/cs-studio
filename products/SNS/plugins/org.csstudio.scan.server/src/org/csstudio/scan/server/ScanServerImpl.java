@@ -202,6 +202,16 @@ public class ScanServerImpl implements ScanServer
         return null;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public List<ScanCommand> getScanCommands(long id) throws RemoteException
+    {
+        final Scan scan = findScan(id);
+        if (scan != null)
+            return scan.getScanCommands();
+        return null;
+    }
+    
     /** @param id Scan ID
      *  @return {@link DataLogger} of scan or <code>null</code>
      */
