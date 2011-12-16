@@ -139,7 +139,7 @@ public class DeliverySystemApplication implements IApplication,
     public void bindService(final ISessionService sessionService) {
 
         try {
-            sessionService.connect("ams-test", "ams-test", "krynfs.desy.de");
+            sessionService.connect("ams-delivery-system", "ams", "krynfs.desy.de");
             xmppService = sessionService;
         } catch (final Exception e) {
             LOG.warn("XMPP connection is not available: {}", e.toString());
