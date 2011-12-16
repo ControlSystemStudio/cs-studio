@@ -18,3 +18,4 @@ Export-Package: net.coobird.thumbnailator,
 Bundle-ClassPath: .,
  lib/Thumbnailator-0.3.10.jar
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - BNL
+Bundle-ActivationPolicy: lazy
