@@ -38,7 +38,7 @@ import com.mysql.jdbc.Driver;
 
 public class AmsConnectionFactory {
 
-    public static Connection getConfigurationDB(DatabaseProperties prop) throws SQLException {
+    public static Connection getConfigurationDB(ConfigDbProperties prop) throws SQLException {
         
         if(prop.getDbType().toUpperCase().indexOf("ORACLE") > -1) {
             DriverManager.registerDriver(new OracleDriver());

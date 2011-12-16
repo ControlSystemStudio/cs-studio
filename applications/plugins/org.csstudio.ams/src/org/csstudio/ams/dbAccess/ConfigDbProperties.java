@@ -32,7 +32,7 @@ package org.csstudio.ams.dbAccess;
  * @version 1.0
  * @since 16.12.2011
  */
-public class DatabaseProperties {
+public class ConfigDbProperties implements IDatabaseProperties {
     
     private String dbType;
     
@@ -42,25 +42,29 @@ public class DatabaseProperties {
     
     private String dbPassword;
 
-    public DatabaseProperties(String type, String url, String user, String password) {
+    public ConfigDbProperties(String type, String url, String user, String password) {
         this.dbType = type;
         this.dbUrl = url;
         this.dbUser = user;
         this.dbPassword = password;
     }
 
+    @Override
     public String getDbType() {
         return dbType;
     }
 
+    @Override
     public String getDbUrl() {
         return dbUrl;
     }
 
+    @Override
     public String getDbUser() {
         return dbUser;
     }
 
+    @Override
     public String getDbPassword() {
         return dbPassword;
     }
