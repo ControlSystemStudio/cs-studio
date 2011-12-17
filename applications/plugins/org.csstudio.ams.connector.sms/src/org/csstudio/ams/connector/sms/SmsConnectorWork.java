@@ -47,6 +47,7 @@ import org.smslib.InboundBinaryMessage;
 import org.smslib.OutboundMessage;
 import org.smslib.Service;
 import org.smslib.StatusReportMessage;
+import org.smslib.desy.gateway.DatabaseGateway;
 import org.smslib.modem.SerialModemGateway;
 
 public class SmsConnectorWork extends Thread implements AmsConstants {
@@ -361,29 +362,30 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             }
             
             modemService = Service.getInstance();
-
-            for(int i = 0;i < modemCount;i++)
-            {
-                if(strComPort[i].length() > 0)
-                {
+            
+            modemCount = 1;
+            for(int i = 0;i < modemCount;i++) {
+                if(strComPort[i].length() > 0) {
                     Log.log(this, Log.INFO, "start initModem(" + strComPort[i] + ","
                             + iBaudRate[i] + ","
                             + strManufac[i] + ","
                             + strModel[i] + ")");
                     // modemService = new CSoftwareService(strComPort, iBaudRate, strManufac, strModel);
                     m = "modem." + strComPort[i].toLowerCase();
-                    SerialModemGateway modem = new SerialModemGateway(m , strComPort[i], iBaudRate[i], strManufac[i], strModel[i]);
+                    //SerialModemGateway modem = new SerialModemGateway(m , strComPort[i], iBaudRate[i], strManufac[i], strModel[i]);
+                    DatabaseGateway modem = new DatabaseGateway(m,
+                                                                "jdbc:derby://localhost/gateway",
+                                                                "APP",
+                                                                "APP");
                     modem.setInbound(true);
                     modem.setOutbound(true);
-                    modem.setSimPin(strSimPin[i]);
+                    // modem.setSimPin(strSimPin[i]);
                     // modem.setOutboundNotification(outboundNotification);
                     modemService.addGateway(modem);
                     modemInfo.addModemName(m, strPhoneNumber[i]);
                                         
                     sleep(2000);
-                }
-                else
-                {
+                } else {
                     Log.log(this, Log.WARN, "No COM port defined for modem " + (i + 1) + ".");
                 }
             }
