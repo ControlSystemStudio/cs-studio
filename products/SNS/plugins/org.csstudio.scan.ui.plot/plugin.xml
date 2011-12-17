@@ -17,7 +17,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:display">
+            locationURI="menu:scan">
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="icons/plot.gif"

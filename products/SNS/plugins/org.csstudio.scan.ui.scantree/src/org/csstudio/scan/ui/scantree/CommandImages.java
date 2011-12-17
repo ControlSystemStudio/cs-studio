@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.scantree;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -29,7 +30,7 @@ public class CommandImages
             // Construct image name for class name
             int sep = command_name.lastIndexOf('.');
             final String imagefile = "icons/" + command_name.substring(sep+1).toLowerCase() + ".gif";
-            final ImageDescriptor descriptor = Activator.getImageDescriptor(imagefile);
+            final ImageDescriptor descriptor = ScanUIActivator.getImageDescriptor(imagefile);
             if (descriptor == null)
                 return null;
             // Remember in registry

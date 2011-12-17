@@ -15,6 +15,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.scan.ui.scantree.ScanEditor"
+            contributorClass="org.csstudio.scan.ui.scantree.ScanEditorContributor"
             default="false"
             extensions="scn"
             icon="icons/scantree.gif"
@@ -56,6 +57,17 @@
                   tooltip="%NewScanTreeTT">
             </command>
          </toolbar>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:scan">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.new"
+               icon="icons/new_scantree.png"
+               label="%ScanTree"
+               style="push"
+               tooltip="%NewScanTreeTT">
+         </command>
       </menuContribution>
    </extension>
    <extension

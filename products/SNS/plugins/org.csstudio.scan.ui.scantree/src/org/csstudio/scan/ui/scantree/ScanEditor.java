@@ -158,10 +158,11 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         setDirty(true);
     }
     
-    /** @see ScanTreeGUIListener */
-    @Override
-    public void submitScan(final List<ScanCommand> commands)
+    /** Submit scan in GUI to server */
+    public void submitCurrentScan()
     {
+        final List<ScanCommand> commands = gui.getCommands();
+        
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
         if (sep > 0)

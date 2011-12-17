@@ -7,32 +7,31 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.actions;
 
-import org.csstudio.scan.ui.scantree.Activator;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.Messages;
-import org.csstudio.scan.ui.scantree.ScanTreeGUI;
-import org.csstudio.scan.ui.scantree.ScanTreeGUIListener;
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PlatformUI;
 
-/** Action that submits a scan to the server
+/** Action that submits scan from the current editor to the server
  *  @author Kay Kasemir
  */
-public class SubmitScanAction extends Action
+public class SubmitCurrentScanAction extends Action
 {
-    final private ScanTreeGUIListener listener;
-    final private ScanTreeGUI gui;
-    
-    public SubmitScanAction(final ScanTreeGUIListener listener,
-            final ScanTreeGUI gui)
+    public SubmitCurrentScanAction()
     {
         super(Messages.SubmitScan,
-                Activator.getImageDescriptor("icons/run.png")); //$NON-NLS-1$
-        this.listener = listener;
-        this.gui = gui;
+                ScanUIActivator.getImageDescriptor("icons/run.png")); //$NON-NLS-1$
     }
 
     @Override
     public void run()
     {
-        listener.submitScan(gui.getCommands());
+        final IEditorPart editor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (! (editor instanceof ScanEditor))
+            return;
+        final ScanEditor scan_edit = (ScanEditor) editor;
+        scan_edit.submitCurrentScan();
     }
 }
