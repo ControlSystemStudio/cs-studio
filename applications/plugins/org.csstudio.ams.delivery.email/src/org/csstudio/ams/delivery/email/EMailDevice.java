@@ -34,6 +34,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import org.csstudio.ams.delivery.BaseAlarmMessage;
+import org.csstudio.ams.delivery.IDeliveryDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 10.12.2011
  */
-public class EMailDevice {
+public class EMailDevice implements IDeliveryDevice {
     
     private static final Logger LOG = LoggerFactory.getLogger(EMailDevice.class);
 
@@ -103,7 +106,8 @@ public class EMailDevice {
         return false;
     }
 
-    public void closeEmail() {
+    @Override
+    public void stopDevice() {
         if (mailSession != null) {
             mailSession = null;
         }
@@ -123,28 +127,35 @@ public class EMailDevice {
         }
     }
     
-    public int sendEmailMsg(EMailAlarmMessage message) throws Exception {
+    @Override
+    public BaseAlarmMessage receiveMessage() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
+    @Override
+    public boolean sendMessage(BaseAlarmMessage msg) throws Exception {
+
+        EMailAlarmMessage message = (EMailAlarmMessage) msg;
         String text = message.getMessageText();
         final String emailadr = message.getMessageReceiver();
         final String userName = message.getReceiverName();
 
         LOG.info("sendEmailMsg(): -1- userName = " + userName + ", emailadr = " + emailadr + ", text = \"" + text + "\"");
 
-        int iErr = EMailDeliveryWorker.STAT_ERR_UNKNOWN;
+        boolean success = false;
         
         // Only for short net breaks
         for (int j = 1 ; j <= 5 ; j++) {
             if (sendEmail(message.getMailSubject(), text, emailadr, userName)) {
-                iErr = EMailDeliveryWorker.STAT_OK;
+                success = true;
                 break;
             } 
             
-            iErr = EMailDeliveryWorker.STAT_ERR_EMAIL_SEND;
             sleep(2000);
         }
 
-        return iErr;
+        return success;
     }
 
     private boolean sendEmail(final String subject, final String content,

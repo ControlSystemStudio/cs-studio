@@ -55,7 +55,7 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     
     private JmsAsyncConsumer amsConsumer;
     
-    private OutgoingMessageQueue messageQueue;
+    private OutgoingEMailQueue messageQueue;
     
     private EMailWorkerProperties emailProps;
     
@@ -69,7 +69,7 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     public EMailDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
         emailProps = new EMailWorkerProperties();
-        messageQueue = new OutgoingMessageQueue(emailProps);
+        messageQueue = new OutgoingEMailQueue(emailProps);
         mailDevice = new EMailDevice(emailProps);
         running = true;
         initJms();
@@ -99,9 +99,11 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
             
             for (EMailAlarmMessage o : outgoing) {
                 try {
-                    mailDevice.sendEmailMsg(o);
+                    mailDevice.sendMessage(o);
                 } catch (Exception e) {
                     LOG.error("Cannot send message: {}", o);
+                    messageQueue.addMessage(o);
+                    LOG.error("Re-Insert it into the message queue.");
                 }
             }
             
@@ -110,7 +112,7 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
         }
 
         closeJms();
-        mailDevice.closeEmail();
+        mailDevice.stopDevice();
         
         LOG.info(workerName + " is leaving.");
     }

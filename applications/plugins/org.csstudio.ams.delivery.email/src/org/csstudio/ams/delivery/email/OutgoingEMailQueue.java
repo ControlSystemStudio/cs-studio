@@ -25,13 +25,10 @@
 
 package org.csstudio.ams.delivery.email;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 import org.csstudio.ams.AmsConstants;
+import org.csstudio.ams.delivery.AbstractMessageQueue;
 import org.csstudio.ams.delivery.BaseAlarmMessage.Priority;
 import org.csstudio.ams.delivery.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.BaseAlarmMessage.Type;
@@ -45,43 +42,19 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 11.12.2011
  */
-public class OutgoingMessageQueue implements MessageListener {
+public class OutgoingEMailQueue extends AbstractMessageQueue<EMailAlarmMessage> {
     
-    private static final Logger LOG = LoggerFactory.getLogger(OutgoingMessageQueue.class);
-    
-    private ConcurrentLinkedQueue<EMailAlarmMessage> content;
+    private static final Logger LOG = LoggerFactory.getLogger(OutgoingEMailQueue.class);
     
     private EMailWorkerProperties props;
     
-    public OutgoingMessageQueue(EMailWorkerProperties properties) {
-        content = new ConcurrentLinkedQueue<EMailAlarmMessage>();
+    public OutgoingEMailQueue(EMailWorkerProperties properties) {
+        super();
         props = properties;
-    }
-
-    public synchronized ArrayList<EMailAlarmMessage> getCurrentContent() {
-        ArrayList<EMailAlarmMessage> result = new ArrayList<EMailAlarmMessage>(content);
-        content.removeAll(result);
-        return result;
     }
     
     @Override
-    public void onMessage(Message message) {
-        if (message instanceof MapMessage) {
-            LOG.info("Message received: {}", message);
-            EMailAlarmMessage o = convertMessage((MapMessage) message);
-            if (o != null) {
-                content.add(o);
-                synchronized (this) {
-                    notify();
-                }
-            }
-            acknowledge(message);
-        } else {
-            LOG.warn("Message is not a MapMessage object. Ignoring it...");
-        }
-    }
-    
-    private EMailAlarmMessage convertMessage(MapMessage message) {
+    protected EMailAlarmMessage convertMessage(MapMessage message) {
         
         EMailAlarmMessage result = null;
         String text;
@@ -126,13 +99,5 @@ public class OutgoingMessageQueue implements MessageListener {
         }
 
         return text.replace("$", "");
-    }
-
-    private void acknowledge(Message message) {
-        try {
-            message.acknowledge();
-        } catch (JMSException jmse) {
-            LOG.warn("Cannot acknowledge message: {}", message);
-        }
     }
 }
