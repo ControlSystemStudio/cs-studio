@@ -18,6 +18,11 @@
             id="org.csstudio.ams.application.deliverysystem.Stop"
             label="Stop">
       </command>
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.ListWorker"
+            id="org.csstudio.ams.application.deliverysystem.ListWorker"
+            label="List Delivery Worker">
+      </command>
    </extension>
 
 </plugin>

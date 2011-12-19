@@ -31,6 +31,7 @@ import org.csstudio.ams.application.deliverysystem.Activator;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.application.ApplicationHandle;
@@ -59,9 +60,9 @@ public class Stop implements IManagementCommand {
         + "(application.descriptor=" + Activator.PLUGIN_ID + "*))";
         
         // Get the application from the Application Admin Service
-        ServiceTracker tracker = null;
+        ServiceTracker<ApplicationHandle, IApplicationContext> tracker = null;
         try {
-            tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
+            tracker = new ServiceTracker<ApplicationHandle, IApplicationContext>(bundleContext, bundleContext.createFilter(serviceFilter), null);
             tracker.open();
         
             Object[] allServices = tracker.getServices();

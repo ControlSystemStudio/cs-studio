@@ -24,6 +24,9 @@
 package org.csstudio.ams.application.deliverysystem;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
+import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -40,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * This class controls all aspects of the application's execution
  */
 public class DeliverySystemApplication implements IApplication,
+                                                  RemotelyManageable,
                                                   IGenericServiceListener<ISessionService> {
     
     private static Logger LOG = LoggerFactory.getLogger(DeliverySystemApplication.class);
@@ -137,9 +141,15 @@ public class DeliverySystemApplication implements IApplication,
      */
     @Override
     public void bindService(final ISessionService sessionService) {
+        
+        ListWorker.staticInject(this);
+
+        String xmppServer = DeliverySystemPreference.XMPP_SERVER.getValue();
+        String xmppUser = DeliverySystemPreference.XMPP_USER.getValue();
+        String xmppPassword = DeliverySystemPreference.XMPP_PASSWORD.getValue();
 
         try {
-            sessionService.connect("ams-delivery-system", "ams", "krynfs.desy.de");
+            sessionService.connect(xmppUser, xmppPassword, xmppServer);
             xmppService = sessionService;
         } catch (final Exception e) {
             LOG.warn("XMPP connection is not available: {}", e.toString());
@@ -166,4 +176,18 @@ public class DeliverySystemApplication implements IApplication,
             lock.notify();
         }
 	}
+
+    @Override
+    public Collection<String> listDeliveryWorker() {
+        ArrayList<String> result = new ArrayList<String>();
+        for (AbstractDeliveryWorker o : deliveryWorker) {
+            result.add(o.getWorkerName());
+            if (o.isWorking()) {
+                result.add(" - working");
+            } else {
+                result.add(" - NOT working");
+            }
+        }
+        return result;
+    }
 }
