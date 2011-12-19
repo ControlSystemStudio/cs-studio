@@ -42,11 +42,13 @@ public abstract class AbstractDeliveryWorker implements Runnable {
      */
     public abstract void stopWorking();
     
-    public void setName(String name) {
+    public abstract boolean isWorking();
+    
+    public void setWorkerName(String name) {
         workerName = name;
     }
     
-    public String getName() {
+    public String getWorkerName() {
         return workerName;
     }
 }

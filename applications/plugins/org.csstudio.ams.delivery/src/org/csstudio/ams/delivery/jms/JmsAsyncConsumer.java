@@ -206,6 +206,20 @@ public class JmsAsyncConsumer {
         return false;
     }
 
+    public void closeSubscriber(String name) {
+        if (subscriber.containsKey(name)) {
+            MessageConsumer[] c = subscriber.get(name);
+            for(int i = 0;i < c.length;i++) {
+                try {
+                    c[i].close();
+                } catch (JMSException jmse) {
+                    LOG.warn("Cannot close JMS message consumer: " + c[i].toString());
+                }
+            }
+            subscriber.remove(name);
+        }
+    }
+    
     public void closeAll() {
         
         MessageConsumer[] c = null;
@@ -213,7 +227,7 @@ public class JmsAsyncConsumer {
         if(connection != null) {
             for(int i = 0;i < connectionCount;i++) {
                 if(connection[i] != null) {
-                    try{connection[i].stop();}catch(JMSException jmse){System.err.println(jmse.getMessage());}}
+                    try{connection[i].stop();}catch(JMSException jmse){/* Ignore me */}}
             }
         }
         
@@ -223,7 +237,7 @@ public class JmsAsyncConsumer {
             while(list.hasMoreElements()) {
                 c = list.nextElement();
                 for(int i = 0;i < c.length;i++) {
-                    try{c[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
+                    try{c[i].close();}catch(JMSException jmse){/* Ignore me */}
                 }
             }
             
@@ -234,14 +248,14 @@ public class JmsAsyncConsumer {
         for(int i = 0;i < connectionCount;i++) {
             if(session != null) {
                 if(session[i] != null)  {
-                    try{session[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
+                    try{session[i].close();}catch(JMSException jmse){/* Ignore me */}
                     session[i] = null;
                 }
             }
             
             if(connection != null) {
                 if(connection[i] != null) {
-                    try{connection[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
+                    try{connection[i].close();}catch(JMSException jmse){/* Ignore me */}
                     connection[i] = null;
                 }
             }

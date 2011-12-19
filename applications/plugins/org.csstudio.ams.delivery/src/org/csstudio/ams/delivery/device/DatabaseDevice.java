@@ -23,14 +23,12 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery;
+package org.csstudio.ams.delivery.device;
 
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import org.csstudio.ams.delivery.BaseAlarmMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,58 +39,66 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 18.12.2011
  */
-public abstract class AbstractMessageQueue<E> implements MessageListener {
+public class DatabaseDevice implements IDeliveryDevice {
     
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageQueue.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseDevice.class);
     
-    protected ConcurrentLinkedQueue<E> content;
+    protected String deviceId;
+    
+    protected Driver dbDriver;
+    
+    protected String dbUrl;
+    
+    protected String dbUser;
+    
+    protected String dbPassword;
+    
+    public DatabaseDevice(Driver driver, String id, String url, String user, String password) {
+        dbDriver = driver;
+        deviceId = id;
+        dbUrl = url;
+        dbUser = user;
+        dbPassword = password;
+        init();
+    }
 
-    protected AbstractMessageQueue() {
-        content = new ConcurrentLinkedQueue<E>();
-    }
-    
-    public synchronized ArrayList<E> getCurrentContent() {
-        ArrayList<E> result = new ArrayList<E>(content);
-        content.removeAll(result);
-        return result;
-    }
-    
-    public boolean addMessage(E e) {
-        return content.add(e);
-    }
-
-    public boolean isEmpty() {
-        return content.isEmpty();
-    }
-    
-    public boolean hasContent() {
-        return !content.isEmpty();
-    }
-    
-    @Override
-    public void onMessage(Message msg) {
-        if (msg instanceof MapMessage) {
-            LOG.info("Message received: {}", msg);
-            E o = convertMessage((MapMessage) msg);
-            if (o != null) {
-                content.add(o);
-                synchronized (this) {
-                    notify();
-                }
-            }
-            acknowledge(msg);
-        } else {
-            LOG.warn("Message is not a MapMessage object. Ignoring it...");
+    private void init() {
+        try {
+            DriverManager.registerDriver(dbDriver);
+        } catch (SQLException sqle) {
+            LOG.error("Cannot initialize DatabaseGateway.", sqle, deviceId);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean sendMessage(BaseAlarmMessage message) throws Exception {
+        // TODO Auto-generated method stub
+        return false;
+    }
     
-    protected abstract E convertMessage(MapMessage message);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BaseAlarmMessage receiveMessage() {
+        // TODO Auto-generated method stub
+        return null;
+    }
     
-    protected void acknowledge(Message message) {
-        try {
-            message.acknowledge();
-        } catch (JMSException jmse) {
-            LOG.warn("Cannot acknowledge message: {}", message);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stopDevice() {
+        if (dbDriver != null) {
+            try {
+                DriverManager.deregisterDriver(dbDriver);
+            } catch (SQLException e) {
+                // Ignore me
+            }
         }
     }
 }
