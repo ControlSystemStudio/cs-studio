@@ -63,15 +63,19 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     
     private boolean running;
     
+    /** This flag indicates if the thread should check its working state */
+    private boolean checkState;
+    
     /**
      * Constructor.
      */
     public EMailDeliveryWorker() {
-        workerName = this.getClass().getSimpleName();
+        setWorkerName(this.getClass().getSimpleName());
         emailProps = new EMailWorkerProperties();
         messageQueue = new OutgoingEMailQueue(emailProps);
         mailDevice = new EMailDevice(emailProps);
         running = true;
+        checkState = false;
         initJms();
     }
     
@@ -89,26 +93,29 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
             synchronized (messageQueue) {
                 try {
                     messageQueue.wait();
+                    checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
-                
+            }
+
+            while (messageQueue.hasContent()) {
                 outgoing = messageQueue.getCurrentContent();
                 LOG.info("zu senden: " + outgoing.size());
-            }
-            
-            for (EMailAlarmMessage o : outgoing) {
-                try {
-                    mailDevice.sendMessage(o);
-                } catch (Exception e) {
-                    LOG.error("Cannot send message: {}", o);
-                    messageQueue.addMessage(o);
-                    LOG.error("Re-Insert it into the message queue.");
+                
+                for (EMailAlarmMessage o : outgoing) {
+                    try {
+                        mailDevice.sendMessage(o);
+                    } catch (Exception e) {
+                        LOG.error("Cannot send message: {}", o);
+                        messageQueue.addMessage(o);
+                        LOG.error("Re-Insert it into the message queue.");
+                    }
                 }
+                
+                outgoing.clear();
+                outgoing = null;
             }
-            
-            outgoing.clear();
-            outgoing = null;
         }
 
         closeJms();
@@ -185,9 +192,25 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public void stopWorking() {
         running = false;
-        
         synchronized (messageQueue) {
             messageQueue.notify();
         }
+    }
+
+    @Override
+    public boolean isWorking() {
+        checkState = true;
+        synchronized (messageQueue) {
+            messageQueue.notify();
+        }
+        Object lock = new Object();
+        synchronized (lock) {
+            try {
+                lock.wait(250);
+            } catch (InterruptedException e) {
+                // Ignore me
+            }
+        }
+        return !checkState;
     }
 }

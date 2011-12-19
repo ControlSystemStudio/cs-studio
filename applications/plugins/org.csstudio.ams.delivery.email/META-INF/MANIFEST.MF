@@ -19,4 +19,5 @@ Bundle-ClassPath: .,
  libs/pop3.jar,
  libs/smtp.jar
 Import-Package: org.csstudio.ams.delivery,
+ org.csstudio.ams.delivery.device,
  org.csstudio.ams.delivery.jms

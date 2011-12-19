@@ -36,7 +36,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.csstudio.ams.delivery.BaseAlarmMessage;
-import org.csstudio.ams.delivery.IDeliveryDevice;
+import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +141,7 @@ public class EMailDevice implements IDeliveryDevice {
         final String emailadr = message.getMessageReceiver();
         final String userName = message.getReceiverName();
 
-        LOG.info("sendEmailMsg(): -1- userName = " + userName + ", emailadr = " + emailadr + ", text = \"" + text + "\"");
+        LOG.info("sendMessage(): userName = " + userName + ", emailadr = " + emailadr + ", text = \"" + text + "\"");
 
         boolean success = false;
         
