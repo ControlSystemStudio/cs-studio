@@ -83,8 +83,7 @@ public class IfGraterThen implements IRule {
      */
     @Override
     public String getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Vergleicht zwei Wert. Ist der erste Wert(Greater) größer als der zweiter (Smaller) wird true zurückgegeben sonst false";
     }
 
 }
