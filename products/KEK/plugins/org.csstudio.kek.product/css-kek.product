@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.0.0" useFeatures="true" includeLaunchers="true">
+<product name="Control System Studio for KEK" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.0.1" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
@@ -45,10 +45,8 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
    </plugins>
