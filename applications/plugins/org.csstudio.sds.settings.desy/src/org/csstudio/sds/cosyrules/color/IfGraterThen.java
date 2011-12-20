@@ -47,32 +47,29 @@ public class IfGraterThen implements IRule {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Object evaluate(final Object[] arguments) {
-        if ((arguments != null) && (arguments.length > 1)) {
+        if (arguments != null && arguments.length > 1) {
             double d1 = 0.0;
-            if (arguments[0] instanceof Double) {
-                d1 = ((Double) arguments[0]);
-            } else if (arguments[0] instanceof Long) {
-                d1 = ((Long) arguments[0]).doubleValue();
-            } else if ((arguments[0] instanceof String) && (arguments[1] instanceof String)) {
-                return ((String) arguments[0]).compareTo((String) arguments[1]) > 0;
+            if (arguments[0] instanceof Number) {
+                d1 = ((Number) arguments[0]).doubleValue();
             } else if (arguments[0] instanceof String) {
                 try {
-                    d1 = Double.parseDouble(((String) arguments[0]));
-                } catch (NumberFormatException e) {
+                    final String string = ((String) arguments[0]).replaceAll(",", ".");
+                    d1 = Double.parseDouble(string);
+                } catch (final NumberFormatException e) {
                     return false;
                 }
             }
 
             double d2 = 0.0;
-            if (arguments[1] instanceof Double) {
-                d2 = (Double) arguments[1];
-            } else if (arguments[1] instanceof Long) {
-                d2 = ((Long) arguments[1]).doubleValue();
+            if (arguments[1] instanceof Number) {
+                d2 = ((Number) arguments[1]).doubleValue();
             } else if (arguments[1] instanceof String) {
                 try {
-                    d2 = Double.parseDouble(((String) arguments[1]));
-                } catch (NumberFormatException e) {
+                    final String string = ((String) arguments[1]).replaceAll(",", ".");
+                    d2 = Double.parseDouble(string);
+                } catch (final NumberFormatException e) {
                     return false;
                 }
             }
