@@ -58,8 +58,8 @@ public class KBLogAveragedValueIterator implements KBLogValueIterator {
 	 * to calculate average value of a given time step. Thus, only IDoubleValue
 	 * and ILongValue can be treated as normal values. Moreover, even if the given
 	 * value is an instance of IDoubleValue, it can be treated as an abnormal value if 
-	 * it represents NaN or infinity. Without condition, non-numeric values (enum, array,
-	 * etc.) are considered as an abnormal value.
+	 * it represents NaN or infinity. Without condition, non-numeric values (e.g. array
+	 * are considered as an abnormal value.
 	 * 
 	 * @param value value
 	 * @return whether the given value represents normal value which can be processed while averaging. 
