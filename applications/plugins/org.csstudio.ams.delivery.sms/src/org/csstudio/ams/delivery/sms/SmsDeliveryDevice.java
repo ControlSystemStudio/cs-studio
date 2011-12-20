@@ -25,8 +25,18 @@
 
 package org.csstudio.ams.delivery.sms;
 
+import java.util.Collection;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+
 import org.csstudio.ams.delivery.BaseAlarmMessage;
-import org.csstudio.ams.delivery.IDeliveryDevice;
+import org.csstudio.ams.delivery.device.DeviceException;
+import org.csstudio.ams.delivery.device.IDeliveryDevice;
+import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
@@ -35,23 +45,64 @@ import org.csstudio.ams.delivery.IDeliveryDevice;
  * @version 1.0
  * @since 18.12.2011
  */
-public class SmsDeliveryDevice implements IDeliveryDevice {
+public class SmsDeliveryDevice implements IDeliveryDevice, MessageListener {
 
+    /** The static class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryDevice.class);
+    
+    /** The consumer is necessary to receive the device test messages */
+    private JmsAsyncConsumer amsConsumer;
+    
+    public SmsDeliveryDevice(JmsAsyncConsumer consumer) {
+        amsConsumer = consumer;
+        amsConsumer.addMessageListener("amsSubscriberSmsModemtest", this);
+    }
+    
     @Override
-    public boolean sendMessage(BaseAlarmMessage message) throws Exception {
+    public int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
         // TODO Auto-generated method stub
-        return false;
+        return 0;
     }
 
     @Override
-    public BaseAlarmMessage receiveMessage() {
+    public boolean deleteMessage(BaseAlarmMessage message) throws DeviceException {
         // TODO Auto-generated method stub
+        return false;
+    }
+    @Override
+    public boolean sendMessage(BaseAlarmMessage message) throws DeviceException {
+        return true;
+    }
+
+    @Override
+    public BaseAlarmMessage readMessage() {
         return null;
     }
 
     @Override
-    public void stopDevice() {
+    public void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
         // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    public void stopDevice() {
+        if (amsConsumer != null) {
+            amsConsumer.closeSubscriber("amsSubscriberSmsModemtest");
+        }
+    }
+
+    @Override
+    public void onMessage(Message msg) {
+        LOG.info("Message received: {}", msg);
+        acknowledge(msg);
+    }
+    
+    private void acknowledge(Message message) {
+        try {
+            message.acknowledge();
+        } catch (JMSException jmse) {
+            LOG.warn("Cannot acknowledge message: {}", message);
+        }
     }
 }

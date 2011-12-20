@@ -13,4 +13,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.csstudio.ams.delivery,
+ org.csstudio.ams.delivery.device,
  org.csstudio.ams.delivery.jms

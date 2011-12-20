@@ -64,15 +64,21 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
     
     private boolean running;
     
+    private boolean checkState;
+    
     /**
      * Constructor.
      */
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
         messageQueue = new OutgoingSmsQueue();
-        smsDevice = new SmsDeliveryDevice();
-        running = true;
+
+        // First create the JMS connections
         initJms();
+        
+        smsDevice = new SmsDeliveryDevice(amsConsumer);
+        running = true;
+        checkState = false;
     }
     
     /**
@@ -89,6 +95,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
             synchronized (messageQueue) {
                 try {
                     messageQueue.wait();
+                    checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
@@ -154,11 +161,11 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
             amsConsumer = new JmsAsyncConsumer("SmsConnectorWorkReceiverInternal",
                                                prefs.getString(AmsActivator.PLUGIN_ID,
                                                                AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1,
-                                                               "",
+                                                               "failover:(tcp://localhost:62616)",
                                                                null),
                                                prefs.getString(AmsActivator.PLUGIN_ID,
                                                                AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2,
-                                                               "",
+                                                               "failover:(tcp://localhost:64616)",
                                                                null));
            
             // Create first subscriber (default topic for the connector) 
@@ -251,5 +258,22 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
         synchronized (messageQueue) {
             messageQueue.notify();
         }
+    }
+
+    @Override
+    public boolean isWorking() {
+        checkState = true;
+        synchronized (messageQueue) {
+            messageQueue.notify();
+        }
+        Object lock = new Object();
+        synchronized (lock) {
+            try {
+                lock.wait(250);
+            } catch (InterruptedException e) {
+                // Ignore me
+            }
+        }
+        return !checkState;
     }
 }
