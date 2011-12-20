@@ -27,15 +27,20 @@ package org.csstudio.ams.delivery.email;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Properties;
 import javax.mail.Address;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.csstudio.ams.delivery.BaseAlarmMessage;
+import org.csstudio.ams.delivery.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +67,21 @@ public class EMailDevice implements IDeliveryDevice {
 
     public EMailWorkerProperties getMailProperties() {
         return props;
+    }
+
+    @Override
+    public BaseAlarmMessage readMessage() throws DeviceException {
+        throw new DeviceException("Not implemented yet!");
+    }
+
+    @Override
+    public void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+        throw new DeviceException("Not implemented yet!");
+    }
+
+    @Override
+    public boolean deleteMessage(BaseAlarmMessage message) throws DeviceException {
+        throw new DeviceException("Not implemented yet!");
     }
 
     private boolean initEmail() {
@@ -128,67 +148,76 @@ public class EMailDevice implements IDeliveryDevice {
     }
     
     @Override
-    public BaseAlarmMessage receiveMessage() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean sendMessage(BaseAlarmMessage msg) throws Exception {
+    public boolean sendMessage(BaseAlarmMessage msg) throws DeviceException {
 
         EMailAlarmMessage message = (EMailAlarmMessage) msg;
         String text = message.getMessageText();
-        final String emailadr = message.getMessageReceiver();
+        final String emailadr = message.getReceiverAddress();
         final String userName = message.getReceiverName();
 
         LOG.info("sendMessage(): userName = " + userName + ", emailadr = " + emailadr + ", text = \"" + text + "\"");
 
-        boolean success = false;
-        
-        // Only for short net breaks
-        for (int j = 1 ; j <= 5 ; j++) {
-            if (sendEmail(message.getMailSubject(), text, emailadr, userName)) {
-                success = true;
-                break;
-            } 
-            
-            sleep(2000);
+        boolean success = sendEmail(message.getMailSubject(), text, emailadr, userName);
+        if (success) {
+            msg.setMessageState(State.SENT);
+        } else {
+            msg.setMessageState(State.FAILED);
         }
-
+        
         return success;
     }
 
-    private boolean sendEmail(final String subject, final String content,
-            final String recAddr, final String recName)
-                    throws Exception {
+    @Override
+    public int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+        int count = 0;
+        for (BaseAlarmMessage o : msgList) {
+            if (sendMessage(o)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private boolean sendEmail(final String subject,
+                              final String content,
+                              final String recAddr,
+                              final String recName) throws DeviceException {
         
         LOG.info("Start sendEmail()");
 
         final javax.mail.Message msg = new MimeMessage(mailSession);
-        final Address sender = new InternetAddress(props.getMailSenderAdress());
-        msg.setFrom(sender);
-        final Address receiver = new InternetAddress(recAddr/*, recName*/);
-
-        msg.setRecipient(javax.mail.Message.RecipientType.TO, receiver);
-        msg.setSubject(subject);
-        msg.setContent(content, "text/plain");
-
+        Address sender;
+        try {
+            sender = new InternetAddress(props.getMailSenderAdress());
+            msg.setFrom(sender);
+            final Address receiver = new InternetAddress(recAddr/*, recName*/);
+            
+            msg.setRecipient(javax.mail.Message.RecipientType.TO, receiver);
+            msg.setSubject(subject);
+            msg.setContent(content, "text/plain");
+        } catch (AddressException ae) {
+            throw new DeviceException(ae.getMessage());
+        } catch (MessagingException me) {
+            throw new DeviceException(me.getMessage());
+        }
+        
+        boolean success = false;
         try{
             Transport.send(msg);
+            success = true;
+            LOG.info("Email sent to " + recName + " (" + recAddr + ")");
         } catch(final Exception e) {
+            // Only with exceptions at this line => email error
             LOG.error("Could not Transport.send(): {}", e);
-            return false; //only with exceptions at this line => email error
         }
-
-        LOG.info("Email sent to " + recName + " (" + recAddr + ")");
-        return true;
+        
+        return success;
     }
 
-    private void loadMailProps(final Properties mailProps) throws Exception
-    {
+    private void loadMailProps(final Properties mailProps) throws Exception {
+        
         InputStream input = null;
-        try
-        {
+        try {
             //If possible, one should try to avoid hard-coding a path in this
             //manner; in a web application, one should place such a file in
             //WEB-INF, and access it using ServletContext.getResourceAsStream.
@@ -199,14 +228,10 @@ public class EMailDevice implements IDeliveryDevice {
             //input = EMailConnectorWork.class.getResourceAsStream("/properties/MailServerConfig.txt");
             input = new ByteArrayInputStream(props.getMailServerConfig().getBytes());
             mailProps.load( input );
-        }
-        catch ( final Exception ex )
-        {
+        } catch ( final Exception ex ) {
             ex.printStackTrace();
             throw ex;
-        }
-        finally
-        {
+        } finally {
             try {
                 if (input != null) {
                     input.close();
