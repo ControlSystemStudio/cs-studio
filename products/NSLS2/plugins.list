@@ -1,6 +1,12 @@
+ch.qos.logback.slf4j
 com.google.common
+edu.msu.nscl.olog.api
 gov.bnl.channelfinder.api
 javax.annotation
+net.coobird.thumbnailator
+org.apache.commons.httpclient
+org.apache.jackrabbit
+org.apache.xerces
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.auth
@@ -30,6 +36,8 @@ org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.java
 org.csstudio.logbook
+org.csstudio.logbook.olog
+org.csstudio.logbook.ui
 org.csstudio.logging
 org.csstudio.logging.ui
 org.csstudio.nsls2.product
@@ -94,3 +102,4 @@ org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.widgets
 org.csstudio.workspace
+org.slf4j.api
