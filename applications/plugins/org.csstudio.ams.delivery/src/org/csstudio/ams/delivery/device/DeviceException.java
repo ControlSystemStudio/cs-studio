@@ -25,22 +25,30 @@
 
 package org.csstudio.ams.delivery.device;
 
-import java.util.Collection;
-import org.csstudio.ams.delivery.BaseAlarmMessage;
-
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 17.12.2011
+ * @since 19.12.2011
  */
-public interface IDeliveryDevice {
-    
-    boolean sendMessage(BaseAlarmMessage message) throws DeviceException;
-    int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException;
-    BaseAlarmMessage readMessage() throws DeviceException;
-    void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException;
-    boolean deleteMessage(BaseAlarmMessage message) throws DeviceException;
-    void stopDevice();
+public class DeviceException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public DeviceException() {
+        super();
+    }
+
+    public DeviceException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DeviceException(String message) {
+        super(message);
+    }
+
+    public DeviceException(Throwable cause) {
+        super(cause);
+    }
 }

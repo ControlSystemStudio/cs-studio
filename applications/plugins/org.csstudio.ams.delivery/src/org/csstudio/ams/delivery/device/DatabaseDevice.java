@@ -25,9 +25,14 @@
 
 package org.csstudio.ams.delivery.device;
 
+import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.csstudio.ams.delivery.BaseAlarmMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,24 +75,190 @@ public class DatabaseDevice implements IDeliveryDevice {
         }
     }
 
+    @Override
+    public boolean deleteMessage(BaseAlarmMessage msg) throws DeviceException {
+        
+        Connection con = null;
+        PreparedStatement query = null;
+        boolean success = false;
+        
+        String sql = "DELETE FROM Gateway WHERE cFromGateway = ? AND cReceiverAddress = ? AND cMessageText = ?";
+        try {
+            con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            query = con.prepareStatement(sql);
+            query.setString(1, msg.getDeviceId());
+            query.setString(2, msg.getReceiverAddress());
+            query.setString(3, msg.getMessageText());
+            query.execute();
+            success = (query.getUpdateCount() == 1);
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (query != null) {
+                try{query.close();}catch(SQLException e) {
+                    // Ignore me
+                }
+            }
+            if (con != null) {
+                try{con.close();}catch(SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+        
+        return success;
+    }
+
+    private boolean sendMessage(Connection con, BaseAlarmMessage msg) throws DeviceException {
+        
+        boolean success = false;
+        String sql = "INSERT INTO Gateway (cFromGateway,cReceiverAddress,cMessageText) VALUES (?,?,?)";
+        PreparedStatement query = null;
+        
+        try {
+            query = con.prepareStatement(sql);
+            query.setString(1, msg.getDeviceId());
+            query.setString(2, msg.getReceiverAddress());
+            query.setString(3, msg.getMessageText());
+            query.execute();
+            success = true;
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (query != null) {
+                try { query.close(); } catch (SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+        
+        return success;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean sendMessage(BaseAlarmMessage message) throws Exception {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean sendMessage(BaseAlarmMessage message) throws DeviceException {
+        Connection con = null;
+        boolean success = false;
+        
+        try {
+            con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            success = sendMessage(con, message);
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (con != null) {
+                try{con.close();}catch(SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+        
+        return success;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public BaseAlarmMessage receiveMessage() {
-        // TODO Auto-generated method stub
-        return null;
+    public int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+        
+        Connection con = null;
+        int cnt = 0;
+
+        try {
+            con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            for (BaseAlarmMessage msg : msgList) {
+                if (sendMessage(con, msg)) cnt++;
+            }
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (con != null) {
+                try{con.close();}catch(SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+            
+        return cnt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public BaseAlarmMessage readMessage() throws DeviceException {
+        throw new DeviceException("Not implemented yet.");
     }
     
+    @Override
+    public void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+        
+        Connection con = null;
+
+        try {
+            con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            ArrayList<BaseAlarmMessage> msg = readMessages(con);
+            msgList.addAll(msg);
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (con != null) {
+                try{con.close();}catch(SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+    }
+
+    public ArrayList<BaseAlarmMessage> readMessages(Connection con) throws DeviceException {
+        
+        String sql = "SELECT * FROM Gateway WHERE cMessageText LIKE '%MODEMTEST%'";
+        
+        ArrayList<BaseAlarmMessage> msg = new ArrayList<BaseAlarmMessage>();
+        
+        PreparedStatement query = null;
+        ResultSet rs = null;
+        
+        try {
+            query = con.prepareStatement(sql);
+            rs = query.executeQuery();
+            while (rs.next()) {
+                String addr = rs.getString("cReceiverAddress");
+                String text = rs.getString("cMessageText");
+                String gw = rs.getString("cFromGateway");
+                                
+                BaseAlarmMessage o = new BaseAlarmMessage(System.currentTimeMillis(),
+                                                          BaseAlarmMessage.Priority.NORMAL,
+                                                          addr,
+                                                          text,
+                                                          BaseAlarmMessage.State.NEW,
+                                                          BaseAlarmMessage.Type.IN,
+                                                          gw,
+                                                          false);
+                msg.add(o);
+            }
+        } catch (SQLException sqle) {
+            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+        } finally {
+            if (rs != null) {
+                try { rs.close(); } catch (SQLException e) {
+                    // Ignore me
+                }
+            }
+            if (query != null) {
+                try { query.close(); } catch (SQLException e) {
+                    // Ignore me
+                }
+            }
+        }
+
+        return msg;
+    }
+
     /**
      * {@inheritDoc}
      */

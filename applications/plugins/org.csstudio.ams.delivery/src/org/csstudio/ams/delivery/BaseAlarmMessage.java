@@ -38,6 +38,8 @@ public class BaseAlarmMessage implements Serializable {
     /** Default serial version id */
     private static final long serialVersionUID = -1L;
     
+    private static final int MAX_FAILED_TRIES = 3;
+    
     /** Timestamp of the JMS message */
     protected long messageTimestamp;
     
@@ -47,8 +49,8 @@ public class BaseAlarmMessage implements Serializable {
      */
     protected Priority priority;
 
-    /** Cell phone number of the receiver */
-    protected String messageReceiver;
+    /** Address (phone number, mail address, ...) of the receiver */
+    protected String receiverAddress;
     
     /** Text of the message */
     protected String messageText;
@@ -70,13 +72,13 @@ public class BaseAlarmMessage implements Serializable {
 
     
     public BaseAlarmMessage(long timestamp, Priority p,
-                            String receiver, String text,
+                            String address, String text,
                             State state, Type type,
                             String device, boolean test) {
         
         this.messageTimestamp = timestamp;
         this.priority = p;
-        this.messageReceiver = receiver;
+        this.receiverAddress = address;
         this.messageText = text;
         this.messageState = state;
         this.messageType = type;
@@ -94,7 +96,7 @@ public class BaseAlarmMessage implements Serializable {
         StringBuffer result = new StringBuffer();
         result.append("DeviceMessage{");
         result.append(this.messageTimestamp + ",");
-        result.append(this.messageReceiver + ",");
+        result.append(this.receiverAddress + ",");
         result.append(this.messageText + ",");
         result.append(this.messageState + ",");
         result.append(this.messageType + ",");
@@ -136,12 +138,12 @@ public class BaseAlarmMessage implements Serializable {
         return this.priority;
     }
 
-    public String getMessageReceiver() {
-        return messageReceiver;
+    public String getReceiverAddress() {
+        return receiverAddress;
     }
 
-    public void setMessageReceiver(String r) {
-        this.messageReceiver = r;
+    public void setReceiverAddress(String r) {
+        this.receiverAddress = r;
     }
 
     public State getMessageState() {
@@ -149,13 +151,14 @@ public class BaseAlarmMessage implements Serializable {
     }
 
     public void setMessageState(State state) {
+        this.messageState = state;
         if(messageState == State.FAILED) {
-            if(++this.failCount >= 3) {
+            if(++this.failCount >= MAX_FAILED_TRIES) {
                 messageState = State.BAD;
             }
+        } else if (messageState == State.SENT) {
+            failCount = 0;
         }
-        
-        this.messageState = state;
     }
 
     public Type getMessageType() {
@@ -164,6 +167,10 @@ public class BaseAlarmMessage implements Serializable {
 
     public void setMessageType(Type type) {
         this.messageType = type;
+    }
+    
+    public int getFailCount() {
+        return failCount;
     }
     
     public boolean isDeviceTest() {
