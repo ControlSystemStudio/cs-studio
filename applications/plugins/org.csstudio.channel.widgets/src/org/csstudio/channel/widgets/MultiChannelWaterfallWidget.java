@@ -2,6 +2,9 @@ package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,8 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.swt.widgets.Composite;
@@ -52,16 +53,16 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 			return;
 		}
 		
-		final ChannelQuery query = ChannelQuery.Builder.query(inputText)
+		ChannelQuery query = ChannelQuery.Builder.query(inputText)
 				.create();
-		query.addChannelQueryListener(new ChannelQueryListener() {
+		query.execute(new ChannelQueryListener() {
 
 			@Override
-			public void getQueryResult() {
+			public void queryExecuted(Result result) {
 				List<String> channelNames = null;
-				Exception ex = query.getLastException();
+				Exception ex = result.exception;
 				if (ex == null) {
-					Collection<Channel> channels = query.getResult();
+					Collection<Channel> channels = result.channels;
 					if (channels != null && !channels.isEmpty()) {
 						// Sort if you can
 						try {
@@ -119,7 +120,6 @@ public class MultiChannelWaterfallWidget extends WaterfallWidget {
 			}
 
 		});
-		query.execute();
 
 	}
 

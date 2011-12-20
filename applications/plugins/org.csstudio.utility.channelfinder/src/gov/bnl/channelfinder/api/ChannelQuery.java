@@ -63,6 +63,7 @@ public class ChannelQuery {
 		private String query = null;
 		private ChannelFinderClient client = CFClientManager.getClient();
 		private Executor queryExecutor = defaultQueryExecutor;
+		private Result result = null;
 
 		private Builder(String query) {
 			if (query == null)
@@ -81,6 +82,11 @@ public class ChannelQuery {
 			this.client = client;
 			return this;
 		}
+		
+		public Builder result(Collection<Channel> channels, Exception exception) {
+			result = new Result(exception, channels);
+			return this;
+		}
 
 		public Builder on(Executor executor) {
 			if (executor == null)
@@ -90,15 +96,16 @@ public class ChannelQuery {
 		}
 
 		public ChannelQuery create() {
-			return new ChannelQuery(this.query, this.client, this.queryExecutor);
+			return new ChannelQuery(this.query, this.client, this.queryExecutor, this.result);
 		}
 	}
 
-	private ChannelQuery(String query, ChannelFinderClient client, Executor queryExecutor) {
+	private ChannelQuery(String query, ChannelFinderClient client, Executor queryExecutor, Result result) {
 		super();
 		this.query = query;
 		this.client = client;
 		this.queryExecutor = queryExecutor;
+		this.result = result;
 	}
 
 	public void addChannelQueryListener(ChannelQueryListener listener) {

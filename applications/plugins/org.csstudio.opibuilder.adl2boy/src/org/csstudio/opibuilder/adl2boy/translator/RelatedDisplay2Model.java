@@ -99,12 +99,12 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
 																	// the
 																	// display
-				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, true);
+				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 1);
 			} else { // don't replace the display
-				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, false);
+				odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 0);
 			}
 		} else { // policy not present go to default
-			odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, false); // don't
+			odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 0); // don't
 																				// replace
 																				// the
 																				// display

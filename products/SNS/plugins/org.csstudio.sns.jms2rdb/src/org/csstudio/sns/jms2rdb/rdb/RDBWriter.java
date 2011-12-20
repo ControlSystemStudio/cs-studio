@@ -92,7 +92,8 @@ public class RDBWriter
         if (sql.select_next_message_id != null)
             next_message_id_statement =
                 connection.prepareStatement(sql.select_next_message_id);
-        else if (rdb_util.getDialect() == Dialect.PostgreSQL)
+
+        if (rdb_util.getDialect() == Dialect.PostgreSQL)
 			insert_message_statement =
         				connection.prepareStatement(sql.insert_message_id_datum_type_name_severity);
         else // MySQL, other RDB that supports RETURN_GENERATED_KEYS
@@ -354,6 +355,12 @@ public class RDBWriter
                 throw new Exception("Cannot obtain next message ID");
             }
             result.close();
+        }
+        else // Oracle
+        {
+            final int rows = insert_message_statement.executeUpdate();
+            if (rows != 1)
+                throw new Exception("Inserted " + rows + " instead of 1 Message");
         }
 
         final Logger logger = Activator.getLogger();

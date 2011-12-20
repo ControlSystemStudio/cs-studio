@@ -9,7 +9,8 @@ import java.util.List;
 
 public class ChannelTreeByPropertyNode {
 	
-	// The model that contains the node
+	// The model that contains the node, used to access all data
+	// common to all nodes
 	private ChannelTreeByPropertyModel model;
 	
 	// Channels represented by this node and down
@@ -24,9 +25,12 @@ public class ChannelTreeByPropertyNode {
 	// to last node,
 	// null for leaf
 	private final List<String> childrenNames;
+	// Parent of the node, or null if root
+	private final ChannelTreeByPropertyNode parentNode;
 
 	ChannelTreeByPropertyNode(ChannelTreeByPropertyModel model, ChannelTreeByPropertyNode parentNode, String displayName) {
 		this.model = model;
+		this.parentNode = parentNode;
 		
 		// Calculate depth
 		if (parentNode == null) {
@@ -107,6 +111,36 @@ public class ChannelTreeByPropertyNode {
 	
 	public List<Channel> getNodeChannels() {
 		return Collections.unmodifiableList(nodeChannels);
+	}
+	
+	public ConfigurableWidget getConfigurableWidget() {
+		return model.getWidget();
+	}
+	
+	/**
+	 * True if the node represents a sub-query and not a single channel.
+	 * @return
+	 */
+	public boolean isSubQuery() {
+		int index = depth - 1;
+		// We are at the channel level
+		if (index >= model.properties.size())
+			return false;
+		
+		return true;
+	}
+	
+	public String getSubQuery() {
+		// If it's not a sub-query, return the channel name (i.e. the display name)
+		if (!isSubQuery()) {
+			return getDisplayName();
+		}
+		
+		if (parentNode == null) {
+			return model.query;
+		}
+		
+		return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
 	}
 
 }

@@ -4,7 +4,39 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.eclipse.ui.popup.any?after=css">
+            locationURI="popup:org.eclipse.ui.popup.any?before=org.csstudio.ui.menu.popup.processvariable">
+         <menu
+               icon="icons/channel-query-16.png"
+               id="org.csstudio.ui.menu.popup.channelquery"
+               label="Channel Query">
+            <visibleWhen>
+            <or>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="gov.bnl.channelfinder.api.ChannelQuery">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
+            </visibleWhen>
+            <separator name="main"/>
+         </menu>
          <menu
                icon="icons/channel.png"
                id="org.csstudio.ui.menu.popup.channel"
