@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Unit tests foor org.csstudio.archive.reader.kblog
+Bundle-SymbolicName: org.csstudio.archive.reader.kblog.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: KEK, Cosylab
+Fragment-Host: org.csstudio.archive.reader.kblog;bundle-version="0.1.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.8.1"
