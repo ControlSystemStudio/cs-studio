@@ -1,10 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2008-2009 SWTChart project. All rights reserved. 
- * 
- * This code is distributed under the terms of the Eclipse Public License v1.0
- * which is available at http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
-
 package org.csstudio.swt.xygraph.linearscale;
 
 import java.math.BigDecimal;
@@ -17,7 +10,7 @@ import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
 /**
- * Linear Scale tick labels. Part of code of this class is from SWTChart which is available at http://www.swtchart.org/
+ * Linear Scale tick labels.
  * @author Xihui Chen
  */
 public class LinearScaleTickLabels extends Figure {
@@ -511,8 +504,6 @@ public class LinearScaleTickLabels extends Figure {
         }
         	
         
-        // gridStepHint --> mantissa * 10 ** exponent
-        // e.g. 724.1 --> 7.241 * 10 ** 2
         double mantissa = gridStepHint;
         int exponent = 0;
         if (mantissa < 1) {
@@ -528,22 +519,17 @@ public class LinearScaleTickLabels extends Figure {
             }
         }
 
-        // calculate the grid step with hint.
         BigDecimal gridStep;
-        if (mantissa > 7.5) {
-            // gridStep = 10.0 * 10 ** exponent
-            gridStep = BigDecimal.TEN.multiply(pow(10, exponent));
-        } else if (mantissa > 3.5) {
-            // gridStep = 5.0 * 10 ** exponent
-            gridStep = new BigDecimal(new Double(5).toString()).multiply(pow(
+        if (mantissa > 7.5) {            
+            gridStep = BigDecimal.TEN.multiply(pow(10, exponent)); // 10.0 * 10 ** exponent 
+        } else if (mantissa > 3.5) {           
+            gridStep = new BigDecimal(new Double(5).toString()).multiply(pow(  // 5.0 * 10 ** exponent
                     10, exponent));
-        } else if (mantissa > 1.5) {
-            // gridStep = 2.0 * 10 ** exponent
-            gridStep = new BigDecimal(new Double(2).toString()).multiply(pow(
+        } else if (mantissa > 1.5) {            
+            gridStep = new BigDecimal(new Double(2).toString()).multiply(pow( // 2.0 * 10 ** exponent
                     10, exponent));
-        } else {
-            // gridStep = 1.0 * 10 ** exponent
-            gridStep = pow(10, exponent);
+        } else {            
+            gridStep = pow(10, exponent); // 1.0 * 10 ** exponent
         }
         if(minBigger)
         	gridStep = gridStep.negate();

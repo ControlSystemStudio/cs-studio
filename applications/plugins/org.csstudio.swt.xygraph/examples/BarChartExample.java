@@ -1,21 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2010 Oak Ridge National Laboratory.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- ******************************************************************************/
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 
+/**Bar Chart Example
+ * @author Xihui Chen
+ *
+ */
 public class BarChartExample {
 	public static void main(String[] args) {
 		final Shell shell = new Shell();
@@ -27,7 +23,7 @@ public class BarChartExample {
 		
 		//create a new XY Graph.
 		XYGraph xyGraph = new XYGraph();
-		xyGraph.setTitle("Area Chart");
+		xyGraph.setTitle("Bar and Area Chart");
 		//set it as the content of LightwightSystem
 		lws.setContents(xyGraph);
 		
@@ -47,7 +43,7 @@ public class BarChartExample {
 				xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider);			
 		
 		//set trace property
-		trace.setTraceType(TraceType.AREA);
+		trace.setTraceType(TraceType.BAR);
 		trace.setLineWidth(15);
 		trace.setAreaAlpha(200);
 		trace.setTraceColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_BLUE) );
@@ -65,10 +61,11 @@ public class BarChartExample {
 				xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider2);			
 		
 		//set trace property
-		trace2.setPointStyle(PointStyle.XCROSS);
 		trace2.setPointSize(6);
 		trace2.setAreaAlpha(150);
 		trace2.setTraceType(TraceType.AREA);
+		trace2.setTraceColor(XYGraphMediaFactory.getInstance().getColor(XYGraphMediaFactory.COLOR_RED) );
+
 		//trace2.setLineWidth(5);
 		//add the trace to xyGraph
 		xyGraph.addTrace(trace2);	

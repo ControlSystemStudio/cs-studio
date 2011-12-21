@@ -25,7 +25,7 @@ public enum ZoomType{
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
 		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),
-		        XYGraphMediaFactory.getInstance().getImage("images//RubberbandZoomCursor.png"),
+		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoomCursor.png"),
 				XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM, SWT.CURSOR_CROSS),
 				
 		/** Zoom via 'cursors' for horizontal start/end position */		
