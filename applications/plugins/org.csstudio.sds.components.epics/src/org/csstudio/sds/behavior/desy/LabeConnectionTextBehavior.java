@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,34 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id: LabelAlarmBehavior.java,v 1.4.2.16 2010/08/27 07:29:34 jhatje Exp $
- */
 package org.csstudio.sds.behavior.desy;
+
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
-import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
- *
- * Default DESY-Behavior for the {@link LabelModel} widget with Connection state and Alarms.
+ * Default DESY-Behavior for the {@link LabelModel} widget with Connection state
  *
  * @author hrickens
  * @author $Author: jhatje $
  * @version $Revision: 1.4.2.16 $
- * @since 26.03.2010
+ * @since 19.04.2010
  */
-public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
+public class LabeConnectionTextBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
+    private boolean _defTransparent;
 
     /**
      * Constructor.
      */
-    public LabelAlarmBehavior() {
+    public LabeConnectionTextBehavior() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_PERMISSSION_ID);
     }
@@ -57,9 +54,8 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        if(widget.getValueType()==TextTypeEnum.TEXT) {
-            widget.setJavaType(String.class);
-        }
+        _defTransparent = widget.getTransparent();
+        widget.setJavaType(String.class);
     }
 
     /**
@@ -69,8 +65,9 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
-        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
+        final boolean isTransparent = _defTransparent
+                && hasValue(anyData.getParentChannel());
         model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
@@ -78,14 +75,17 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
+        final boolean isTransparent = isConnected(anyDataChannel) && _defTransparent
+                && hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
     @Override
-    protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
+        // Nothing to do;
     }
 
-  }
+}

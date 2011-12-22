@@ -24,6 +24,7 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -55,6 +56,9 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
         _defTransparent = widget.getTransparent();
+        if(widget.getValueType()==TextTypeEnum.TEXT) {
+            widget.setJavaType(String.class);
+        }
     }
 
     /**

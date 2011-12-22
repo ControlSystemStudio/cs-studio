@@ -22,6 +22,7 @@ import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
@@ -57,6 +58,9 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     @Override
     protected void doInitialize(final TextInputModel widget) {
         super.doInitialize(widget);
+        if(widget.getValueType()==TextTypeEnum.TEXT) {
+            widget.setJavaType(String.class);
+        }
         widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
                                 BorderStyleEnum.LOWERED.getIndex());
         _defTransparent = widget.getBooleanProperty(TextInputModel.PROP_TRANSPARENT);
