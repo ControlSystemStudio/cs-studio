@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 18.12.2011
  */
-public class DatabaseDevice implements IDeliveryDevice {
+public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
     
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseDevice.class);
     

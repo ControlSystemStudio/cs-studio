@@ -26,7 +26,6 @@
 package org.csstudio.ams.delivery.device;
 
 import java.util.Collection;
-import org.csstudio.ams.delivery.BaseAlarmMessage;
 
 /**
  * TODO (mmoeller) : 
@@ -35,12 +34,12 @@ import org.csstudio.ams.delivery.BaseAlarmMessage;
  * @version 1.0
  * @since 17.12.2011
  */
-public interface IDeliveryDevice {
+public interface IDeliveryDevice<T> {
     
-    boolean sendMessage(BaseAlarmMessage message) throws DeviceException;
-    int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException;
-    BaseAlarmMessage readMessage() throws DeviceException;
-    void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException;
-    boolean deleteMessage(BaseAlarmMessage message) throws DeviceException;
+    boolean sendMessage(T message) throws DeviceException;
+    int sendMessages(Collection<T> msgList) throws DeviceException;
+    T readMessage() throws DeviceException;
+    void readMessages(Collection<T> msgList) throws DeviceException;
+    boolean deleteMessage(T message) throws DeviceException;
     void stopDevice();
 }
