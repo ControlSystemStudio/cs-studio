@@ -24,5 +24,17 @@
             label="List Delivery Worker">
       </command>
    </extension>
+   <extension
+         id="AmsDeliverySystemProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
+            name="AmsDeliverySystem">
+         <property
+               name="appName"
+               value="AmsDeliverySystem">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
