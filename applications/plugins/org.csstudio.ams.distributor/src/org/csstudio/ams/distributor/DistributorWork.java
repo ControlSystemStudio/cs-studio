@@ -139,14 +139,13 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	}
 
 	@Override
-    public void run()
-	{
-		int iErr = ErrorState.STAT_OK.getStateNumber();
+    public void run() {
+		
+	    int iErr = ErrorState.STAT_OK.getStateNumber();
 		Log.log(this, Log.INFO, "start distributor work");
         bStop = false;
 
-		while(bStop == false)
-		{
+		while(bStop == false) {
 			try {
 				sleep(1);
 
@@ -188,13 +187,14 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
                         }
                     }
                 }
-			}
-			catch(final Exception e)
-			{
+			} catch(final Exception e) {
 				Log.log(this, Log.FATAL, e);
 			}
 		}
 
+		closeJmsExternal();
+		closeJmsInternal();
+		
         Log.log(this, Log.INFO, "Distributor is leaving.");
 	}
 
@@ -329,21 +329,14 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					.getPreferenceStore();
 
 			final Hashtable<String, String> properties = new Hashtable<String, String>();
-			properties
-					.put(
-							Context.INITIAL_CONTEXT_FACTORY,
-							storeAct
-									.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
-			properties
-					.put(
-							Context.PROVIDER_URL,
-							storeAct
-									.getString(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
+			properties.put(Context.INITIAL_CONTEXT_FACTORY,
+						   storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
+			properties.put(Context.PROVIDER_URL,
+							storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
 			extContext = new InitialContext(properties);
 
-			extFactory = (ConnectionFactory) extContext
-					.lookup(storeAct
-							.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
+			extFactory = (ConnectionFactory) extContext.
+			        lookup(storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
 			// ADDED BY: Markus Moeller, 25.05.2007
@@ -565,7 +558,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	    Log.log(this, Log.DEBUG, "Enter workOnMessage()");
 	    try {
 			if (!(message instanceof MapMessage)) {
-                Log.log(this, Log.WARN, "got unknown message " + message);
+                Log.log(this, Log.WARN, "Got unknown message " + message);
             } else {
 				final MapMessage msg = (MapMessage) message;
 				Utils.logMessage("DistributorWork receives MapMessage", msg);
@@ -577,13 +570,13 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					iErr = distributeMessage(msg);
 					if (iErr == ErrorState.STAT_FALSE.getStateNumber()) {
 						Log.log(this, Log.WARN,
-								"could not distributeMessage, handle as O.K.");
+								"Could not distributeMessage, handle as O.K.");
 						return ErrorState.STAT_OK.getStateNumber(); // handle as O.K.
 					}
 				}
 			}
 		} catch (final JMSException e) {
-			Log.log(this, Log.FATAL, "could not workOnMessage", e);
+			Log.log(this, Log.FATAL, "Could not workOnMessage", e);
 			return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
 		}
 
@@ -593,14 +586,19 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		{ // and if no instanceof MapMessage, too
 			if (!acknowledge(message)) {
                 // session
+			    Log.log(this, Log.DEBUG, "Acknowledge of message failed.");
 				return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
             }
 		}
+		
+		Log.log(this, Log.DEBUG, "Leaving workOnMessage()");
 		return iErr;
 	}
 
 	private int distributeMessage(final MapMessage msg) throws Exception {
-		try {
+		
+	    Log.log(this, Log.DEBUG, "Enter distributeMessage()");
+	    try {
 			final int iFilterId = Integer.parseInt(msg.getString(MSGPROP_FILTERID));
 			final FilterTObject filter = FilterDAO.select(localAppDb, iFilterId);
 
@@ -682,6 +680,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					}
 				}// else
 			}// while
+			
+			Log.log(this, Log.DEBUG, "Leaving distributeMessage()");
 			return iWorked;
 		} catch (final JMSException e) {
 			Log.log(this, Log.FATAL, "failed to sendMessage", e);

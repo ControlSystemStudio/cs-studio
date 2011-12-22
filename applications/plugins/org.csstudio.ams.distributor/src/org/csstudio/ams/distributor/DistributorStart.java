@@ -177,14 +177,12 @@ public class DistributorStart implements IApplication,
             synchronizer.stop();
             synchronizerThread.join();
 
-
             for (final Connection receiverConnection : receiverConnections) {
                 receiverConnection.close();
             }
             senderConnection.close();
         } catch (final SQLException e) {
             Log.log(this, Log.FATAL, "Could not connect to the database servers", e);
-            return IApplication.EXIT_OK;
         } finally {
             AmsConnectionFactory.closeConnection(localDatabaseConnection);
         }
