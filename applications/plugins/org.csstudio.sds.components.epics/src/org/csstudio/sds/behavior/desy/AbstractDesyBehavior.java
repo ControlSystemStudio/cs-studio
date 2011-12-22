@@ -16,9 +16,7 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.csstudio.sds.eventhandling.AbstractBehavior;
@@ -231,7 +229,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 model.setPropertyValue(propertyId, anyData.getMetaData().getName());
                 break;
             case DOUBLE:
-                model.setPropertyValue(propertyId, anyData.stringValue());
+//                model.setPropertyValue(propertyId, anyData.stringValue());
+                model.setPropertyValue(propertyId, anyData.doubleValue());
                 break;
             case EXP:
                 model.setPropertyValue(propertyId, anyData.stringValue());
@@ -240,14 +239,10 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 model.setPropertyValue(propertyId, anyData.stringValue());
                 break;
             case TEXT:
-                final int prec = anyData.getMetaData().getPrecision();
-                final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
-                numberFormat.setGroupingUsed(false);
-                numberFormat.setMinimumFractionDigits(prec);
-                numberFormat.setMaximumFractionDigits(prec);
-                final double doubleValue = anyData.doubleValue();
-                final String valueToString = numberFormat.format(doubleValue);
-                model.setPropertyValue(propertyId, valueToString);
+                // TODO (hrickens): The CA Gateway sent wrong formated floating point.
+                // when the gateway sent the correct string, the stringValue can sent 1by1.
+                final String stringValue = anyData.stringValue();
+                model.setPropertyValue(propertyId, stringValue);
                 break;
             default:
                 break;

@@ -114,7 +114,7 @@ public class CAJPrecisionHeadlessTest {
     }
 
     @Test(timeout = 5000)
-    public void testSDSLabelDoublePrecision() throws Exception {
+    public void testSDSLabelBehaviorDoublePrecision() throws Exception {
         final String recordName = "DALPrecisionTest1";
         final String behaviorId = "behavior.desy.label.connectiondefault";
 
@@ -131,7 +131,7 @@ public class CAJPrecisionHeadlessTest {
     }
 
     @Test(timeout = 5000)
-    public void testSDSLabelTextPrecision() throws Exception {
+    public void testSDSLabelBehaviorTextPrecision() throws Exception {
         final String recordName = "DALPrecisionTest1";
         final String behaviorId = "behavior.desy.label.connectiondefault";
 
@@ -148,7 +148,7 @@ public class CAJPrecisionHeadlessTest {
     }
 
     @Test(timeout = 5000)
-    public void testSDSLabelExpPrecision() throws Exception {
+    public void testSDSLabelBehaviorExpPrecision() throws Exception {
         final String recordName = "DALPrecisionTest1";
         final String behaviorId = "behavior.desy.label.connectiondefault";
 
@@ -166,7 +166,7 @@ public class CAJPrecisionHeadlessTest {
     }
 
     @Test(timeout = 5000)
-    public void testSDSLabelHexPrecision() throws Exception {
+    public void testSDSLabelBehaviorHexPrecision() throws Exception {
         final String recordName = "DALPrecisionTest1";
         final String behaviorId = "behavior.desy.label.connectiondefault";
 
@@ -184,7 +184,7 @@ public class CAJPrecisionHeadlessTest {
     }
 
     @Test(timeout = 5000)
-    public void testSDSLabelAliasPrecision() throws Exception {
+    public void testSDSLabelBehaviorAliasPrecision() throws Exception {
         final String recordName = "DALPrecisionTest1";
         final String behaviorId = "behavior.desy.label.connectiondefault";
 
@@ -200,11 +200,40 @@ public class CAJPrecisionHeadlessTest {
                      stringValue);
     }
 
+    @Test(timeout = 5000)
+    public void testSDSLabelAliasPrecision() throws Exception {
+        final String recordName = "DALPrecisionTest1";
+        final LabelModel labelModel = buildLabelModel(recordName, null);
+        labelModel.setPropertyValue(AbstractTextTypeWidgetModel.PROP_TEXT_TYPE, TextTypeEnum.ALIAS.getIndex());
+        labelModel.setJavaType(String.class);
+        buildConnection(null, labelModel);
+
+    }
+
+
     /**
      * @param behaviorId
      * @param labelModel
      * @throws InterruptedException
      */
+    private void buildConnection(final LabelModel labelModel) throws InterruptedException {
+
+
+//        ConnectionUtilNew.connectDynamizedProperties(labelModel.getPropertyInternal(name), labelModel.getMainPvAdress(), false, labelModel.get, labelModel.getRoot().getRuntimeContext());
+//
+//        final IProcessVariableAddress mainPv = labelModel.getMainPvAdress();
+//        final Class<?> javaType = labelModel.getJavaType();
+//        System.err.println("javaType: "+javaType.getSimpleName());
+//        final RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
+//                                                     mainPv.getProperty(),
+//                                                     null,
+//                                                     null);
+//        final ConnectionParameters connectionParameters = new ConnectionParameters(remoteInfo,
+//                                                                                   javaType);
+//
+//        new SinglePropertyReadConnector(connectionParameters, javaType, "");
+
+    }
     private void buildConnection(final String behaviorId, final LabelModel labelModel) throws InterruptedException {
         final AbstractBehavior behavior = SdsPlugin.getDefault().getBehaviourService()
                 .getBehavior(behaviorId, labelModel.getTypeID());
@@ -215,6 +244,7 @@ public class CAJPrecisionHeadlessTest {
                                                      mainPv.getProperty(),
                                                      null,
                                                      null);
+        System.err.println("javaType: "+javaType.getSimpleName());
         final ConnectionParameters connectionParameters = new ConnectionParameters(remoteInfo,
                                                                                    javaType);
         if (behavior != null) {
@@ -245,7 +275,9 @@ public class CAJPrecisionHeadlessTest {
         final LabelModel labelModel = new LabelModel();
         labelModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "${Invalid}");
         labelModel.setPrimarPv(recordName);
-        labelModel.setPropertyValue(AbstractWidgetModel.PROP_BEHAVIOR, behaviorId);
+        if(behaviorId!=null&&!behaviorId.isEmpty()) {
+            labelModel.setPropertyValue(AbstractWidgetModel.PROP_BEHAVIOR, behaviorId);
+        }
         displayModel.addWidget(labelModel);
         return labelModel;
     }
