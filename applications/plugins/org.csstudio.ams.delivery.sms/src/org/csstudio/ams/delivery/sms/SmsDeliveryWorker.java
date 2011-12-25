@@ -27,10 +27,9 @@ package org.csstudio.ams.delivery.sms;
 
 import java.util.ArrayList;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.Log;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
-import org.csstudio.ams.delivery.jms.JmsSender;
+import org.csstudio.ams.delivery.service.JmsSender;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.eclipse.core.runtime.Platform;
@@ -55,7 +54,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
 
     private JmsAsyncConsumer amsConsumer;
     
-    /** --- Sender --- */
     private JmsSimpleProducer amsPublisherReply;
 
     private OutgoingSmsQueue messageQueue;
@@ -126,7 +124,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
     
     private boolean initJms() {
         
-        boolean result = false;
+        boolean success = false;
         
         IPreferencesService prefs = Platform.getPreferencesService();
         String factoryClass = prefs.getString(AmsActivator.PLUGIN_ID,
@@ -145,17 +143,16 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
         amsPublisherReply = new JmsSimpleProducer("SmsConnectorWorkSenderInternal", url,
                                                   factoryClass, topic);
         if (amsPublisherReply == null) {
-            Log.log(this, Log.FATAL, "Could not create amsPublisherReply");
+            LOG.error("Could not create amsPublisherReply");
             return false;
         }
 
         try {
             
-            String value = prefs.getString(AmsActivator.PLUGIN_ID,
-                                           AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE,
-                                           "false",
-                                           null);
-            final boolean durable = Boolean.parseBoolean(value);
+            final boolean durable = prefs.getBoolean(AmsActivator.PLUGIN_ID,
+                                                     AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE,
+                                                     false,
+                                                     null);
 
             // Create the redundant receiver
             amsConsumer = new JmsAsyncConsumer("SmsConnectorWorkReceiverInternal",
@@ -169,7 +166,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
                                                                null));
            
             // Create first subscriber (default topic for the connector) 
-            result = amsConsumer.createRedundantSubscriber(
+            success = amsConsumer.createRedundantSubscriber(
                     "amsSubscriberSms",
                     prefs.getString(AmsActivator.PLUGIN_ID,
                                     AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR,
@@ -180,43 +177,28 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
                                     "SUB_AMS_CON_SMS",
                                     null),
                     durable);
-            if(result == false) {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberSms");
+            if(success == false) {
+                LOG.error("Could not create amsSubscriberSms");
                 return false;
             }
             
-            // Create second subscriber (topic for the modem test) 
-            result = amsConsumer.createRedundantSubscriber(
-                    "amsSubscriberSmsModemtest",
-                    prefs.getString(AmsActivator.PLUGIN_ID,
-                                    AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST,
-                                    "T_AMS_CON_DEVICETEST",
-                                    null),
-                    prefs.getString(AmsActivator.PLUGIN_ID,
-                                    AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST,
-                                    "SUB_AMS_CON_SMS_DEVICETEST",
-                                    null),
-                    durable);
-            if(result == false) {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberSmsModemtest");
-                return false;
-            }
-
+            amsConsumer.addMessageListener("amsSubscriberSms", messageQueue);
+            
             // Create third subscriber (topic for message management)
             // TODO: Replace constant with preference entry 
-            result = amsConsumer.createRedundantSubscriber(
+            success = amsConsumer.createRedundantSubscriber(
                     "amsConnectorManager",
                     MANAGE_COMMAND_TOPIC,
                     MANAGE_COMMAND_TOPIC_SUB,
                     durable);
-            if(result == false)  {
-                Log.log(this, Log.FATAL, "could not create amsConnectorManager");
+            if(success == false)  {
+                LOG.error("Could not create amsConnectorManager");
                 return false;
             }
 
             return true;
         } catch(Exception e) {
-            Log.log(this, Log.FATAL, "could not init internal Jms", e);
+            LOG.error("Could not init internal Jms", e);
             
             JmsSender sender = new JmsSender("SmsConnectorAlarmSender",
                                              prefs.getString(AmsActivator.PLUGIN_ID,
@@ -228,12 +210,12 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker {
                 if(sender.sendMessage("alarm",
                                       "SmsConnectorWork: Cannot init internal Jms [" + e.getMessage() + "]",
                                       "MAJOR") == false) {
-                    Log.log(this, Log.ERROR, "Cannot send alarm message.");
+                    LOG.error("Cannot send alarm message.");
                 }  else {
-                    Log.log(this, Log.INFO, "Alarm message sent.");
+                    LOG.info("Alarm message sent.");
                 }
             } else {
-                Log.log(this, Log.WARN, "Alarm message sender is NOT connected.");
+                LOG.warn("Alarm message sender is NOT connected.");
             }
             
             sender.closeAll();
