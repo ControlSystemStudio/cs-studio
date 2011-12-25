@@ -53,6 +53,28 @@ public class EMailAlarmMessage extends BaseAlarmMessage {
         this.mailSubject = subject;
     }
 
+    /**
+     * Overwrites the method <code>toString()</code> from Object. Creates a nice string containg the content
+     * of this e-mail message.
+     */
+    @Override
+    public String toString()  {
+        StringBuffer result = new StringBuffer();
+        result.append("EMailAlarmMessage {");
+        result.append(this.messageTimestamp + ",");
+        result.append(this.receiverAddress + ",");
+        result.append(this.receiverName + ",");
+        result.append(this.mailSubject + ",");
+        result.append(this.messageText + ",");
+        result.append(this.messageState + ",");
+        result.append("Failed:" + this.failCount + ",");
+        result.append(this.messageType + ",");
+        result.append(this.priority + ",");
+        result.append(this.deviceId + ",");
+        result.append("Test message:" + this.deviceTest + "}");
+        return result.toString();
+    }
+
     public String getReceiverName() {
         return receiverName;
     }

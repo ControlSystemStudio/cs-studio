@@ -28,6 +28,8 @@ package org.csstudio.ams.delivery.email;
 import java.util.ArrayList;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
+import org.csstudio.ams.delivery.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -85,8 +87,6 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public void run() {
         
-        ArrayList<EMailAlarmMessage> outgoing = null;
-        
         LOG.info(workerName + " is running.");
                 
         while(running) {
@@ -99,17 +99,29 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
                 }
             }
 
+            int sent = 0;
             while (messageQueue.hasContent()) {
-                outgoing = messageQueue.getCurrentContent();
-                LOG.info("zu senden: " + outgoing.size());
                 
-                for (EMailAlarmMessage o : outgoing) {
-                    try {
-                        mailDevice.sendMessage(o);
-                    } catch (Exception e) {
-                        LOG.error("Cannot send message: {}", o);
-                        messageQueue.addMessage(o);
-                        LOG.error("Re-Insert it into the message queue.");
+                // Get all messages and remove them
+                ArrayList<EMailAlarmMessage> outgoing = messageQueue.getCurrentContent();
+                LOG.info("Number of messages to send: " + outgoing.size());
+                
+                try {
+                    sent = mailDevice.sendMessages(outgoing);
+                    LOG.info("{} of {} messages sent.", sent, outgoing.size());
+                } catch (DeviceException de) {
+                    LOG.error("[*** DeviceException ***]: {}", de.getMessage());
+                }
+                
+                if (sent < outgoing.size()) {
+                    LOG.warn("Re-inserting {} messages into the message queue.", (outgoing.size() - sent));
+                    for (EMailAlarmMessage o : outgoing) {
+                        if (o.getMessageState() == State.FAILED) {
+                            messageQueue.addMessage(o);
+                        } else {
+                            // TODO: Handle the messages with the state BAD!
+                            LOG.warn("Dicarding message: {}", o);
+                        }
                     }
                 }
                 

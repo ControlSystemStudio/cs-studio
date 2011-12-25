@@ -37,8 +37,6 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import org.csstudio.ams.delivery.BaseAlarmMessage;
 import org.csstudio.ams.delivery.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
@@ -52,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 10.12.2011
  */
-public class EMailDevice implements IDeliveryDevice {
+public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
     
     private static final Logger LOG = LoggerFactory.getLogger(EMailDevice.class);
 
@@ -70,17 +68,17 @@ public class EMailDevice implements IDeliveryDevice {
     }
 
     @Override
-    public BaseAlarmMessage readMessage() throws DeviceException {
+    public EMailAlarmMessage readMessage() throws DeviceException {
         throw new DeviceException("Not implemented yet!");
     }
 
     @Override
-    public void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+    public void readMessages(Collection<EMailAlarmMessage> msgList) throws DeviceException {
         throw new DeviceException("Not implemented yet!");
     }
 
     @Override
-    public boolean deleteMessage(BaseAlarmMessage message) throws DeviceException {
+    public boolean deleteMessage(EMailAlarmMessage message) throws DeviceException {
         throw new DeviceException("Not implemented yet!");
     }
 
@@ -148,9 +146,8 @@ public class EMailDevice implements IDeliveryDevice {
     }
     
     @Override
-    public boolean sendMessage(BaseAlarmMessage msg) throws DeviceException {
+    public boolean sendMessage(EMailAlarmMessage message) throws DeviceException {
 
-        EMailAlarmMessage message = (EMailAlarmMessage) msg;
         String text = message.getMessageText();
         final String emailadr = message.getReceiverAddress();
         final String userName = message.getReceiverName();
@@ -159,18 +156,18 @@ public class EMailDevice implements IDeliveryDevice {
 
         boolean success = sendEmail(message.getMailSubject(), text, emailadr, userName);
         if (success) {
-            msg.setMessageState(State.SENT);
+            message.setMessageState(State.SENT);
         } else {
-            msg.setMessageState(State.FAILED);
+            message.setMessageState(State.FAILED);
         }
         
         return success;
     }
 
     @Override
-    public int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+    public int sendMessages(Collection<EMailAlarmMessage> msgList) throws DeviceException {
         int count = 0;
-        for (BaseAlarmMessage o : msgList) {
+        for (EMailAlarmMessage o : msgList) {
             if (sendMessage(o)) {
                 count++;
             }
