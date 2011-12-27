@@ -362,7 +362,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             
             modemService = Service.getInstance();
             
-            modemCount = 1;
             for(int i = 0;i < modemCount;i++) {
                 if(strComPort[i].length() > 0) {
                     Log.log(this, Log.INFO, "start initModem(" + strComPort[i] + ","
