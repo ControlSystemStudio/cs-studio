@@ -48,8 +48,7 @@ public class BaseAlarmMessageUnitTest {
                                                     "Take my picnic basket!",
                                                     State.NEW,
                                                     Type.OUT,
-                                                    "NULL",
-                                                    false);
+                                                    "NULL");
         
         out.setMessageState(State.FAILED);
         Assert.assertEquals(1, out.getFailCount());
@@ -64,5 +63,15 @@ public class BaseAlarmMessageUnitTest {
         out.setMessageState(State.SENT);
         Assert.assertEquals(State.SENT, out.getMessageState());
         Assert.assertEquals(0, out.getFailCount());
+        
+        out = new BaseAlarmMessage(System.currentTimeMillis(),
+                                   Priority.NORMAL,
+                                   "Yogi.Baer@Jellystone-Park.us",
+                                   " DEVICE_TEST{1234,device.1}",
+                                   State.NEW,
+                                   Type.OUT,
+                                   "NULL");
+        
+        Assert.assertTrue(out.isDeviceTest());
     }
 }
