@@ -29,8 +29,8 @@ import java.util.Vector;
  * @author Markus Moeller
  *
  */
-public class ModemTestStatus
-{
+public class ModemTestStatus {
+    
     /** Vector object that contains the names of all available modems */
     private Vector<String> gateway;
     
@@ -44,33 +44,29 @@ public class ModemTestStatus
     private long timeOut;
     
     /** Flag that indicates whether or not the current test is active */
-    private boolean active;
+    private boolean isActive;
     
     public static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
     
-    public ModemTestStatus()
-    {
+    public ModemTestStatus() {
         gateway = new Vector<String>();
         badModem = new Vector<String>();
         
         reset();
     }
     
-    public void reset()
-    {
+    public void reset() {
         gateway.clear();
         badModem.clear();
         checkId = "";
         timeOut = 0;
-        active = false;
+        isActive = false;
     }
     
-    public void checkAndRemove(String content)
-    {
+    public void checkAndRemove(String content) {
         String text = null;
         
-        for(String name : gateway)
-        {
+        for(String name : gateway) {
             text = SMS_TEST_TEXT;
             text = text.replaceAll("\\$CHECKID", checkId);
             text = text.replaceAll("\\$GATEWAYID", name);
@@ -83,19 +79,15 @@ public class ModemTestStatus
         }
     }
     
-    public void moveGatewayIdToBadModems()
-    {
-        for(String name : gateway)
-        {
-            if(badModem.contains(name) == false)
-            {
+    public void moveGatewayIdToBadModems() {
+        for(String name : gateway) {
+            if(badModem.contains(name) == false) {
                 badModem.add(name);
             }
         }
     }
     
-    public boolean isTestAnswer(String text)
-    {
+    public boolean isTestAnswer(String text) {
         return (text.startsWith("[MODEMTEST{"));
     }
     
@@ -108,21 +100,11 @@ public class ModemTestStatus
         return checkId;
     }
     
-    /**
-     * @param checkId - The check id to set
-     */
-    public void setCheckId(String checkId)
-    {
-        this.checkId = checkId;
+    public void setCheckId(String id) {
+        this.checkId = id;
     }
     
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    public boolean containsGatewayId(String name)
-    {
+    public boolean containsGatewayId(String name) {
         return gateway.contains(name);
     }
     
@@ -138,12 +120,8 @@ public class ModemTestStatus
         }
     }
     
-    /**
-     * @param gateway the gateway to set
-     */
-    public void addGatewayId(String gateway)
-    {
-        this.gateway.add(gateway);
+    public void addGatewayId(String id) {
+        this.gateway.add(id);
     }
     
     public int getGatewayCount()
@@ -173,9 +151,8 @@ public class ModemTestStatus
         return badModem.size();
     }
 
-    public void setTimeOut(long timeOut)
-    {
-        this.timeOut = timeOut;
+    public void setTimeOut(long timeout) {
+        this.timeOut = timeout;
     }
     
     public long getTimeOut()
@@ -183,23 +160,20 @@ public class ModemTestStatus
         return timeOut;
     }
 
-    public boolean isTimeOut()
-    {
+    public boolean isTimeOut() {
         return (System.currentTimeMillis() > timeOut);
     }
     
     /**
      * @return the active
      */
-    public boolean isActive()
-    {
-        return active;
+    public boolean isActive() {
+        return isActive;
     }
     /**
      * @param active the active to set
      */
-    public void setActive(boolean active)
-    {
-        this.active = active;
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }

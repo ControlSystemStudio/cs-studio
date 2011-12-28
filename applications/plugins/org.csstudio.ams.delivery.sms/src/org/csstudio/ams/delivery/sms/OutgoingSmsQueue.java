@@ -64,8 +64,7 @@ public class OutgoingSmsQueue extends AbstractMessageQueue<SmsAlarmMessage> {
                                            text,
                                            State.NEW,
                                            Type.OUT,
-                                           "NONE",
-                                           false);
+                                           "NONE");
         } catch (JMSException jmse) {
             LOG.warn("[*** JMSException ***]: convertMessage(): {}", jmse.getMessage());
         }

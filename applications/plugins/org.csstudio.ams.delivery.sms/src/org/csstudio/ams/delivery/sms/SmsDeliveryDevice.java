@@ -25,22 +25,29 @@
 
 package org.csstudio.ams.delivery.sms;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
+import javax.jms.MapMessage;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.delivery.device.DeviceException;
+import org.csstudio.ams.delivery.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
-import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
-import org.csstudio.ams.delivery.service.JmsSender;
+import org.csstudio.ams.delivery.device.IReadableDevice;
+import org.csstudio.ams.delivery.jms.JmsProperties;
+import org.csstudio.ams.delivery.jms.JmsSender;
+import org.csstudio.ams.delivery.service.Environment;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smslib.InboundMessage;
+import org.smslib.InboundMessage.MessageClasses;
+import org.smslib.OutboundMessage;
 import org.smslib.Service;
+import org.smslib.Message.MessageEncodings;
 import org.smslib.modem.SerialModemGateway;
 
 /**
@@ -50,82 +57,229 @@ import org.smslib.modem.SerialModemGateway;
  * @version 1.0
  * @since 18.12.2011
  */
-public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>, MessageListener {
+public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
+                                          IReadableDevice<InboundMessage> {
 
     /** The static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryDevice.class);
     
     private static final int MAX_MODEM_NUMBER = 3;
     
-    /** The consumer is necessary to receive the device test messages */
-    private JmsAsyncConsumer amsConsumer;
+    /** Text for the test SMS */
+    private static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
+
+    private JmsProperties jmsProps;
     
     private Service modemService;
     
     /** This class contains all modem ids (names) */
     private ModemInfoContainer modemInfo;
 
-    /** Status information of the current modem test */
-    private ModemTestStatus testStatus;
-
     /** Reading period (in ms) for the modem */
     private long readWaitingPeriod;
 
-    public SmsDeliveryDevice(final JmsAsyncConsumer consumer) {
-        amsConsumer = consumer;
+    public SmsDeliveryDevice(ModemInfoContainer deviceInfo, JmsProperties jms) {
         modemService = null;
-        initJmsForModemTest();
+        modemInfo = deviceInfo;
+        jmsProps = jms;
         initModem();
+    }
+        
+    @Override
+    public boolean deleteMessage(InboundMessage message) {
+        
+        boolean success = false;
+        try {
+            success = modemService.deleteMessage(message);
+        } catch (Exception e) {
+            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+        }
+
+        return success;
     }
     
     @Override
-    public int sendMessages(Collection<SmsAlarmMessage> msgList) throws DeviceException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    public boolean deleteMessage(SmsAlarmMessage message) throws DeviceException {
-        // TODO Auto-generated method stub
-        return false;
-    }
-    @Override
-    public boolean sendMessage(SmsAlarmMessage message) throws DeviceException {
-        return true;
-    }
-
-    @Override
-    public SmsAlarmMessage readMessage() {
-        return null;
-    }
-
-    @Override
-    public void readMessages(Collection<SmsAlarmMessage> msgList) throws DeviceException {
-        // TODO Auto-generated method stub
+    public int sendMessages(Collection<SmsAlarmMessage> msgList) {
         
+        int sent = 0;
+        
+        for (SmsAlarmMessage o : msgList) {
+            if (sendMessage(o)) {
+                sent++;
+            }
+        }
+        
+        return sent;
+    }
+    
+    @Override
+    public boolean sendMessage(SmsAlarmMessage message) {
+        
+        boolean success = false;
+        
+        OutboundMessage msg = new OutboundMessage(message.getReceiverAddress(), message.getMessageText());
+        msg.setEncoding(MessageEncodings.ENC7BIT);
+        // Changed by Markus Moeller, 2009-01-30
+        // To avoid restarts of the modems
+        // msg.setStatusReport(true);
+        msg.setStatusReport(false);
+        msg.setValidityPeriod(8);
+        
+        // Total number of outbound messages since restart
+        int totalOutBefore = modemService.getOutboundMessageCount();
+        
+        // TODO: Eventuell die Liste aller Modems und ihre Zustände ausgeben
+        try {
+            LOG.info("Try to send SMS...");
+            modemService.sendMessage(msg);
+            int totalOutAfter = modemService.getOutboundMessageCount();
+            if (totalOutBefore < totalOutAfter) {
+                LOG.info("SMS sent to: '{}' with text: '{}'", message.getReceiverAddress(), message.getMessageText());
+                message.setMessageState(State.SENT);
+                success = true;
+            } else {
+                success = false;
+                message.setMessageState(State.FAILED);
+
+                // If no modems are defined, return true anyhow
+                if(modemInfo.getModemCount() == 0) {
+                    success = true;
+                    message.setMessageState(State.SENT);
+                }
+            }
+            LOG.info("Number of sent SMS: {}", totalOutAfter);
+        } catch(Exception e) {
+            LOG.error("[*** {} ***]: Could not send message: {}", e.getClass().getSimpleName(), e.getMessage());
+        }
+
+        return success;
+    }
+
+    public void sendDeviceTestMessage(ModemTestStatus testStatus) {
+        
+        OutboundMessage outMsg = null;
+        String name = null;
+        String number = null;
+        String text = null;
+        
+        LOG.info("Number of modems to test: {}", modemInfo.getModemCount());
+        for(int i = 0;i < modemInfo.getModemCount();i++) {
+            name = modemInfo.getModemName(i);
+            if(name != null) {
+                number = modemInfo.getPhoneNumber(name);
+
+                text = SMS_TEST_TEXT;
+                text = text.replaceAll("\\$CHECKID", testStatus.getCheckId());
+                text = text.replaceAll("\\$GATEWAYID", name);
+                
+                outMsg = new OutboundMessage(number, text);
+                outMsg.setEncoding(MessageEncodings.ENC7BIT);
+                outMsg.setStatusReport(false);
+                outMsg.setValidityPeriod(8);
+                
+                try {
+                    LOG.info("Sending to modem '{}': {}", name, text);
+                    if(modemService.sendMessage(outMsg, name)) {
+                        testStatus.addGatewayId(name);
+                    }
+                } catch(Exception e) {
+                    LOG.warn("Could not send SMS test message to modem '{}'.", name);
+                    testStatus.addBadModem(name);
+                }
+                
+                outMsg = null;
+            }
+        }
+        
+        if(testStatus.getGatewayCount() > 0) {
+            testStatus.setActive(true);
+            testStatus.setTimeOut(System.currentTimeMillis() + 120000); // 2 minutes
+        } else {
+            sendTestAnswer(testStatus.getCheckId(), "No modem could send the test SMS.", "MAJOR", "ERROR");
+            testStatus.reset();
+        }
+    }
+
+    public void sendTestAnswer(String checkId, String text, String severity, String value) {
+        
+        JmsSimpleProducer producer = new JmsSimpleProducer("SmsDeliveryDevice@"
+                                                           + Environment.getInstance().getHostName(),
+                                                           jmsProps.getJmsUrl(),
+                                                           jmsProps.getJmsFactoryClass(),
+                                                           jmsProps.getJmsTopic());
+        
+        try {
+            
+            MapMessage mapMessage = producer.createMapMessage();
+            mapMessage.setString("TYPE", "event");
+            mapMessage.setString("EVENTTIME", producer.getCurrentDateAsString());
+            mapMessage.setString("TEXT", text);
+            mapMessage.setString("SEVERITY", severity);
+            mapMessage.setString("VALUE", value);
+            mapMessage.setString("CLASS", checkId);
+            mapMessage.setString("HOST", Environment.getInstance().getHostName());
+            mapMessage.setString("USER", Environment.getInstance().getUserName());
+            mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
+            mapMessage.setString("APPLICATION-ID", "SmsConnector");
+            mapMessage.setString("DESTINATION", "AmsSystemMonitor");
+            
+            producer.sendMessage(mapMessage);
+        } catch(JMSException jmse) {
+            LOG.error("Answer message could NOT be sent: {}", jmse.getMessage());
+        }
+    }
+
+    /**
+     * Reads the oldest message from any storage location.
+     */
+    @Override
+    public InboundMessage readMessage() {
+        
+        ArrayList<InboundMessage> msgList = new ArrayList<InboundMessage>();
+        try {
+            modemService.readMessages(msgList, MessageClasses.ALL);
+        } catch (Exception e) {
+            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+        }
+        
+        InboundMessage result = null;
+        if (msgList.size() > 0) {
+            long timeStamp = System.currentTimeMillis();
+            for (InboundMessage o : msgList) {
+                if (o.getDate().getTime() <= timeStamp) {
+                    result = o;
+                    timeStamp = o.getDate().getTime();
+                }
+            }
+        }
+    
+        return result;
+    }
+
+    @Override
+    public int readMessages(Collection<InboundMessage> msgList) {
+        
+        int read = 0;
+        try {
+            read = modemService.readMessages(msgList, MessageClasses.ALL);
+        } catch (Exception e) {
+            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+        }
+        
+        return read;
     }
 
     @Override
     public void stopDevice() {
-        if (amsConsumer != null) {
-            amsConsumer.closeSubscriber("amsSubscriberSmsModemtest");
+        if (modemService != null) {
+            try {
+                modemService.stopService();
+            } catch (Exception e) {
+                LOG.warn("[*** {} ***]: {}", e.getClass().getSimpleName(), e.getMessage());
+            }
         }
     }
 
-    @Override
-    public void onMessage(Message msg) {
-        LOG.info("Message received: {}", msg);
-        acknowledge(msg);
-    }
-    
-    private void acknowledge(Message message) {
-        try {
-            message.acknowledge();
-        } catch (JMSException jmse) {
-            LOG.warn("Cannot acknowledge message: {}", message);
-        }
-    }
-    
     private boolean initModem() {
         
         String[] strComPort = null;
@@ -210,8 +364,7 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>, Mess
             }
             
             modemService = Service.getInstance();
-
-            modemCount = 1;
+            
             for(int i = 0;i < modemCount;i++) {
                 if(strComPort[i].length() > 0) {
                     LOG.info("Start initModem(" + strComPort[i] + ","
@@ -274,38 +427,6 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>, Mess
         }
         
         return result;
-    }
-    
-    private boolean initJmsForModemTest() {
-        
-        boolean success = false;
-        
-        IPreferencesService prefs = Platform.getPreferencesService();
-        
-        final boolean durable = prefs.getBoolean(AmsActivator.PLUGIN_ID,
-                                                 AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE,
-                                                 false,
-                                                 null);
-
-        // Create second subscriber (topic for the modem test) 
-        success = amsConsumer.createRedundantSubscriber(
-                "amsSubscriberSmsDeviceTest",
-                prefs.getString(AmsActivator.PLUGIN_ID,
-                                AmsPreferenceKey.P_JMS_AMS_TOPIC_CONNECTOR_DEVICETEST,
-                                "T_AMS_CON_DEVICETEST",
-                                null),
-                prefs.getString(AmsActivator.PLUGIN_ID,
-                                AmsPreferenceKey.P_JMS_AMS_TSUB_SMS_CONNECTOR_DEVICETEST,
-                                "SUB_AMS_CON_SMS_DEVICETEST",
-                                null),
-                durable);
-        if(success) {
-            amsConsumer.addMessageListener("amsSubscriberSmsDeviceTest", this);
-        } else {
-            LOG.error("Could not create amsSubscriberSmsDeviceTest");
-        }
-
-        return success;
     }
     
     private void sleep(long ms) {

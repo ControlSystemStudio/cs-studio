@@ -25,46 +25,51 @@
 
 package org.csstudio.ams.delivery.sms;
 
-import org.csstudio.ams.delivery.BaseAlarmMessage;
+import javax.jms.MapMessage;
+import org.csstudio.ams.delivery.jms.AbstractMessageContent;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.12.2011
+ * @since 27.12.2011
  */
-public class SmsAlarmMessage extends BaseAlarmMessage {
+public class DeviceTestMessageContent extends AbstractMessageContent {
 
-    private static final long serialVersionUID = 1L;
+    private boolean deviceTestRequest;
     
-    public SmsAlarmMessage(long timestamp,
-                           Priority p,
-                           String receiver,
-                           String text,
-                           State state,
-                           Type type,
-                           String device) {
-        super(timestamp, p, receiver, text, state, type, device);
+    public DeviceTestMessageContent(MapMessage jmsMsg) {
+        super(jmsMsg);
+        deviceTestRequest = false;
+        if (content.containsKey("NAME")) {
+            if (content.get("NAME").contains("AMS_SYSTEM_CHECK")) {
+                deviceTestRequest = true;
+            }
+        }
     }
     
-    /**
-     * Overwrites the method <code>toString()</code> from Object. Creates a nice string containg the content
-     * of this alarm message.
-     */
-    @Override
-    public String toString()  {
-        StringBuffer result = new StringBuffer();
-        result.append("SmsAlarmMessage {");
-        result.append(this.messageTimestamp + ",");
-        result.append(this.receiverAddress + ",");
-        result.append(this.messageText + ",");
-        result.append(this.messageState + ",");
-        result.append("Failed:" + this.failCount + ",");
-        result.append(this.messageType + ",");
-        result.append(this.priority + ",");
-        result.append(this.deviceId + ",");
-        result.append("Test message:" + this.deviceTest + "}");
-        return result.toString();
+    public boolean isDeviceTestRequest() {
+        return deviceTestRequest;
+    }
+    
+    public String getDestination() {
+        String result = null;
+        if (content.containsKey("DESTINATION")) {
+            result = content.get("DESTINATION");
+        } else {
+            result = "";
+        }
+        return result;
+    }
+    
+    public String getCheckId() {
+        String result = null;
+        if (content.containsKey("CLASS")) {
+            result = content.get("CLASS");
+        } else {
+            result = "";
+        }
+        return result;
     }
 }
