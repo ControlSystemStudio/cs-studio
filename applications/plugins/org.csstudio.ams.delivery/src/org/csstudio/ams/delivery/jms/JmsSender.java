@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.ams.delivery.service;
+package org.csstudio.ams.delivery.jms;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,6 +42,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.csstudio.ams.delivery.service.AlarmMessage;
+import org.csstudio.ams.delivery.service.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

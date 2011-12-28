@@ -74,17 +74,16 @@ public class BaseAlarmMessage implements Serializable {
     public BaseAlarmMessage(long timestamp, Priority p,
                             String address, String text,
                             State state, Type type,
-                            String device, boolean test) {
+                            String device) {
         
         this.messageTimestamp = timestamp;
         this.priority = p;
         this.receiverAddress = address;
-        this.messageText = text;
+        setMessageText(text);
         this.messageState = state;
         this.messageType = type;
         this.deviceId = device;
         this.failCount = 0;
-        this.deviceTest = test;
     }
 
     /**
@@ -112,7 +111,13 @@ public class BaseAlarmMessage implements Serializable {
     }
 
     public void setMessageText(String t) {
-        messageText = t;
+        if (t != null) {
+            messageText = t.trim();
+            deviceTest = (messageText.contains("DEVICE_TEST{") ? true : false);
+        } else {
+            messageText = "";
+            deviceTest = false;
+        }
     }
 
     /**

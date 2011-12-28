@@ -25,17 +25,17 @@
 
 package org.csstudio.ams.delivery.device;
 
-import java.util.Collection;
-
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 17.12.2011
+ * @since 27.12.2011
  */
-public interface IDeliveryDevice<T> {
-    boolean sendMessage(T message);
-    int sendMessages(Collection<T> msgList);
-    void stopDevice();
+public class DeviceTestThread extends Thread {
+    
+    @Override
+    public void run() {
+        
+    }
 }

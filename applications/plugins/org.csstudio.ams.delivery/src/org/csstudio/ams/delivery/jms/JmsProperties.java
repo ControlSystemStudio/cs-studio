@@ -23,19 +23,38 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.device;
-
-import java.util.Collection;
+package org.csstudio.ams.delivery.jms;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 17.12.2011
+ * @since 27.12.2011
  */
-public interface IDeliveryDevice<T> {
-    boolean sendMessage(T message);
-    int sendMessages(Collection<T> msgList);
-    void stopDevice();
+public class JmsProperties {
+    
+    private String jmsFactoryClass;
+    
+    private String jmsUrl;
+    
+    private String jmsTopic;
+
+    public JmsProperties(String factoryClass, String url, String topic) {
+        this.jmsFactoryClass = factoryClass;
+        this.jmsUrl = url;
+        this.jmsTopic = topic;
+    }
+
+    public String getJmsFactoryClass() {
+        return jmsFactoryClass;
+    }
+
+    public String getJmsUrl() {
+        return jmsUrl;
+    }
+
+    public String getJmsTopic() {
+        return jmsTopic;
+    }
 }

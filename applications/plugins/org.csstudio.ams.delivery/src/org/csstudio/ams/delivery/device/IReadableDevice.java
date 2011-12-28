@@ -32,10 +32,10 @@ import java.util.Collection;
  * 
  * @author mmoeller
  * @version 1.0
- * @since 17.12.2011
+ * @since 28.12.2011
  */
-public interface IDeliveryDevice<T> {
-    boolean sendMessage(T message);
-    int sendMessages(Collection<T> msgList);
-    void stopDevice();
+public interface IReadableDevice<T> {
+    T readMessage();
+    int readMessages(Collection<T> msgList);
+    boolean deleteMessage(T message);
 }

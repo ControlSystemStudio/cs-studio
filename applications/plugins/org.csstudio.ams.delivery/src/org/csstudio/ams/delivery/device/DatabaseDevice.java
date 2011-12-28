@@ -44,7 +44,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 18.12.2011
  */
-public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
+public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage>,
+                                       IReadableDevice<BaseAlarmMessage> {
     
     private static final Logger LOG = LoggerFactory.getLogger(DatabaseDevice.class);
     
@@ -76,7 +77,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
     }
 
     @Override
-    public boolean deleteMessage(BaseAlarmMessage msg) throws DeviceException {
+    public boolean deleteMessage(BaseAlarmMessage msg) {
         
         Connection con = null;
         PreparedStatement query = null;
@@ -92,7 +93,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
             query.execute();
             success = (query.getUpdateCount() == 1);
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (query != null) {
                 try{query.close();}catch(SQLException e) {
@@ -109,7 +110,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
         return success;
     }
 
-    private boolean sendMessage(Connection con, BaseAlarmMessage msg) throws DeviceException {
+    private boolean sendMessage(Connection con, BaseAlarmMessage msg) {
         
         boolean success = false;
         String sql = "INSERT INTO Gateway (cFromGateway,cReceiverAddress,cMessageText) VALUES (?,?,?)";
@@ -123,7 +124,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
             query.execute();
             success = true;
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (query != null) {
                 try { query.close(); } catch (SQLException e) {
@@ -139,7 +140,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
      * {@inheritDoc}
      */
     @Override
-    public boolean sendMessage(BaseAlarmMessage message) throws DeviceException {
+    public boolean sendMessage(BaseAlarmMessage message) {
         Connection con = null;
         boolean success = false;
         
@@ -147,7 +148,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
             con = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
             success = sendMessage(con, message);
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (con != null) {
                 try{con.close();}catch(SQLException e) {
@@ -163,7 +164,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
      * {@inheritDoc}
      */
     @Override
-    public int sendMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+    public int sendMessages(Collection<BaseAlarmMessage> msgList) {
         
         Connection con = null;
         int cnt = 0;
@@ -174,7 +175,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
                 if (sendMessage(con, msg)) cnt++;
             }
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (con != null) {
                 try{con.close();}catch(SQLException e) {
@@ -190,12 +191,12 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
      * {@inheritDoc}
      */
     @Override
-    public BaseAlarmMessage readMessage() throws DeviceException {
-        throw new DeviceException("Not implemented yet.");
+    public BaseAlarmMessage readMessage() {
+        return null;
     }
     
     @Override
-    public void readMessages(Collection<BaseAlarmMessage> msgList) throws DeviceException {
+    public int readMessages(Collection<BaseAlarmMessage> msgList) {
         
         Connection con = null;
 
@@ -204,7 +205,7 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
             ArrayList<BaseAlarmMessage> msg = readMessages(con);
             msgList.addAll(msg);
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (con != null) {
                 try{con.close();}catch(SQLException e) {
@@ -212,9 +213,11 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
                 }
             }
         }
+        
+        return msgList.size();
     }
 
-    public ArrayList<BaseAlarmMessage> readMessages(Connection con) throws DeviceException {
+    public ArrayList<BaseAlarmMessage> readMessages(Connection con) {
         
         String sql = "SELECT * FROM Gateway WHERE cMessageText LIKE '%MODEMTEST%'";
         
@@ -237,12 +240,11 @@ public class DatabaseDevice implements IDeliveryDevice<BaseAlarmMessage> {
                                                           text,
                                                           BaseAlarmMessage.State.NEW,
                                                           BaseAlarmMessage.Type.IN,
-                                                          gw,
-                                                          false);
+                                                          gw);
                 msg.add(o);
             }
         } catch (SQLException sqle) {
-            throw new DeviceException("[*** SQLException ***]: " + sqle.getMessage());
+            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
         } finally {
             if (rs != null) {
                 try { rs.close(); } catch (SQLException e) {
