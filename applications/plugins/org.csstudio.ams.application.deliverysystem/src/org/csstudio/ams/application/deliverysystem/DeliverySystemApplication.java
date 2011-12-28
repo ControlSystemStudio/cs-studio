@@ -25,6 +25,9 @@ package org.csstudio.ams.application.deliverysystem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
@@ -51,17 +54,14 @@ public class DeliverySystemApplication implements IApplication,
     /** The ECF service */
     private ISessionService xmppService;
 
-    private ArrayList<AbstractDeliveryWorker> deliveryWorker;
-    
-    private ArrayList<Thread> deliveryThreads;
+    private Hashtable<AbstractDeliveryWorker, Thread> deliveryWorker;
     
     private Object lock;
     
     private boolean running;
     
     public DeliverySystemApplication() {
-        deliveryWorker = new ArrayList<AbstractDeliveryWorker>();
-        deliveryThreads = new ArrayList<Thread>();
+        deliveryWorker = new Hashtable<AbstractDeliveryWorker, Thread>();
         lock = new Object();
         running = true;
     }
@@ -89,10 +89,9 @@ public class DeliverySystemApplication implements IApplication,
                     AbstractDeliveryWorker worker =
                             (AbstractDeliveryWorker) confElements[i]
                                     .createExecutableExtension("class");
-                    deliveryWorker.add(worker);
                     Thread thread = new Thread(worker);
                     thread.start();
-                    deliveryThreads.add(thread);
+                    deliveryWorker.put(worker, thread);
                 } catch (CoreException ce) {
                     LOG.error("*** CoreException *** : ", ce);
                     running = false;
@@ -116,8 +115,13 @@ public class DeliverySystemApplication implements IApplication,
             }
         }
         
-        for (AbstractDeliveryWorker o : deliveryWorker) {
-            o.stopWorking();
+        Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
+        while (worker.hasMoreElements()) {
+            AbstractDeliveryWorker w = worker.nextElement();
+            Thread thread = deliveryWorker.get(w);
+            LOG.info("Stopping worker: {}", w.getWorkerName());
+            w.stopWorking();
+            thread.join(5000);
         }
         
         if (xmppService != null) {
@@ -180,12 +184,14 @@ public class DeliverySystemApplication implements IApplication,
     @Override
     public Collection<String> listDeliveryWorker() {
         ArrayList<String> result = new ArrayList<String>();
-        for (AbstractDeliveryWorker o : deliveryWorker) {
+        Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
+        while (worker.hasMoreElements()) {
+            AbstractDeliveryWorker o = worker.nextElement();
             result.add(o.getWorkerName());
             if (o.isWorking()) {
-                result.add(" - working");
+                result.add("\t- working\n");
             } else {
-                result.add(" - NOT working");
+                result.add("\t- NOT working\n");
             }
         }
         return result;
