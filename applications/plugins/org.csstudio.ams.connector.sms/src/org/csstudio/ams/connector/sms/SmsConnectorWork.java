@@ -1072,25 +1072,21 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
         // The CMessage parent object has a toString() method which displays
         // all of its contents. Useful for debugging, but for a real world
         // application you should use the necessary getXXX methods.
-        for (int i = 0; i < msgList.size(); i++)
-        {
+        for (int i = 0; i < msgList.size(); i++) {
+            
             InboundMessage smsMsg = msgList.get(i);
             String text = null;
             
             // BEWARE: We can get an InboundBinaryMessage and will run into problems
             //         if we want to get the message text. The getText() method
             //         of InboundBinaryMessage just throws an exception!!!!!!!
-            if(smsMsg instanceof InboundBinaryMessage)
-            {
+            if(smsMsg instanceof InboundBinaryMessage) {
                 text = "[InboundBinaryMessage] Cannot read the content.";
-            }
-            else
-            {
+            } else {
                 text = smsMsg.getText();
             }
             
-            if(smsMsg.getType() == MessageTypes.STATUSREPORT)
-            {
+            if(smsMsg.getType() == MessageTypes.STATUSREPORT) {
                 StatusReportMessage smsStat = (StatusReportMessage)smsMsg;
                 Log.log(this, Log.INFO, "receive statusReport message: '" + text 
                         + "' originator/deliveryStatus/date/dateOrg/dateRec/smscRef = " 
@@ -1118,12 +1114,9 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
 
 
             // Have a look at the current check status
-            if(testStatus.isActive())
-            {
-                if(testStatus.isTimeOut() == false)
-                {
-                    if(testStatus.isTestAnswer(text))
-                    {
+            if(testStatus.isActive()) {
+                if(testStatus.isTimeOut() == false) {
+                    if(testStatus.isTestAnswer(text)) {
                         Log.log(this, Log.INFO, "Self test SMS");
                         Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
                         testStatus.checkAndRemove(text);
@@ -1163,81 +1156,6 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
                 
                 continue;
             }
-            
-//            if(testStatus.isTestAnswer(text))
-//            {
-//                Log.log(this, Log.INFO, "Self test SMS");
-//                //TODO:
-//                // Handle incoming test SMS
-//                if(testStatus.isActive())
-//                {
-//                    Log.log(this, Log.INFO, "Self test is active");
-//                    
-//                    if(testStatus.isTimeOut() == false)
-//                    {
-//                        Log.log(this, Log.INFO, "Gateways waiting for answer: " + testStatus.getGatewayCount());
-//                        testStatus.checkAndRemove(text);
-//                        Log.log(this, Log.INFO, "Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
-//                        if((testStatus.getGatewayCount() == 0))
-//                        {
-//                            if(testStatus.getBadModemCount() == 0)
-//                            {
-//                                Log.log(this, Log.INFO, "All modems are working fine.");
-//                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "All modems are working fine.", "NO_ALARM", "OK");
-//                            }
-//                            else
-//                            {
-//                                String list = "";
-//                                for(String name : testStatus.getBadModems())
-//                                {
-//                                    list = list + name + " ";
-//                                }
-//                                
-//                                Log.log(this, Log.WARN, "Modems not working properly: " + list);
-//                                this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
-//                            }
-//                            
-//                            Log.log(this, Log.INFO, "Reset current test.");
-//                            testStatus.reset();
-//                        }
-//                    }
-//                    else
-//                    {
-//                        Log.log(this, Log.WARN, "Current test timed out.");
-//                        Log.log(this, Log.INFO, "Remaining gateways: " + testStatus.getGatewayCount());
-//                        Log.log(this, Log.INFO, "Bad gateways before moving: " + testStatus.getBadModemCount());
-//                        testStatus.moveGatewayIdToBadModems();
-//                        Log.log(this, Log.INFO, "Remaining gateways after moving: " + testStatus.getGatewayCount());
-//                        Log.log(this, Log.INFO, "Bad gateways after moving: " + testStatus.getBadModemCount());
-//                        if(testStatus.getBadModemCount() == modemInfo.getModemCount())
-//                        {
-//                            Log.log(this, Log.ERROR, "No modem is working properly.");
-//                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "No modem is working properly.", "MAJOR", "ERROR");
-//                        }
-//                        else
-//                        {
-//                            String list = "";
-//                            for(String name : testStatus.getBadModems())
-//                            {
-//                                list = list + name + " ";
-//                            }
-//                            
-//                            Log.log(this, Log.WARN, "Modems, not working properly: " + list);
-//                            this.sendTestAnswer(testStatus.getAnswerEventTime(), "Modems, not working properly: " + list, "MINOR", "WARN");
-//                        }
-//                        
-//                        Log.log(this, Log.INFO, "Reset current test.");
-//                        testStatus.reset();
-//                    }
-//                }
-//                
-//                if(!deleteMessage((InboundMessage)msgList.get(i)))
-//                {
-//                    return SmsConnectorStart.STAT_ERR_MODEM;
-//                }
-//                
-//                continue;
-//            }
             
             // Reply_Message-Format: "<ChainIdAndPos>*<ConfirmCode>"
             // Example: "12345001*123"
