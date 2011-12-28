@@ -30,15 +30,12 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Properties;
 import javax.mail.Address;
-import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import org.csstudio.ams.delivery.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,21 +62,6 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
 
     public EMailWorkerProperties getMailProperties() {
         return props;
-    }
-
-    @Override
-    public EMailAlarmMessage readMessage() throws DeviceException {
-        throw new DeviceException("Not implemented yet!");
-    }
-
-    @Override
-    public void readMessages(Collection<EMailAlarmMessage> msgList) throws DeviceException {
-        throw new DeviceException("Not implemented yet!");
-    }
-
-    @Override
-    public boolean deleteMessage(EMailAlarmMessage message) throws DeviceException {
-        throw new DeviceException("Not implemented yet!");
     }
 
     private boolean initEmail() {
@@ -146,7 +128,7 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
     }
     
     @Override
-    public boolean sendMessage(EMailAlarmMessage message) throws DeviceException {
+    public boolean sendMessage(EMailAlarmMessage message) {
 
         String text = message.getMessageText();
         final String emailadr = message.getReceiverAddress();
@@ -165,7 +147,7 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
     }
 
     @Override
-    public int sendMessages(Collection<EMailAlarmMessage> msgList) throws DeviceException {
+    public int sendMessages(Collection<EMailAlarmMessage> msgList) {
         int count = 0;
         for (EMailAlarmMessage o : msgList) {
             if (sendMessage(o)) {
@@ -178,12 +160,13 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
     private boolean sendEmail(final String subject,
                               final String content,
                               final String recAddr,
-                              final String recName) throws DeviceException {
+                              final String recName) {
         
         LOG.info("Start sendEmail()");
 
         final javax.mail.Message msg = new MimeMessage(mailSession);
-        Address sender;
+        Address sender = null;
+        boolean success = false;
         try {
             sender = new InternetAddress(props.getMailSenderAdress());
             msg.setFrom(sender);
@@ -192,21 +175,13 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
             msg.setRecipient(javax.mail.Message.RecipientType.TO, receiver);
             msg.setSubject(subject);
             msg.setContent(content, "text/plain");
-        } catch (AddressException ae) {
-            throw new DeviceException(ae.getMessage());
-        } catch (MessagingException me) {
-            throw new DeviceException(me.getMessage());
-        }
-        
-        boolean success = false;
-        try{
+            
             Transport.send(msg);
             success = true;
-            LOG.info("Email sent to " + recName + " (" + recAddr + ")");
+            LOG.info("E-Mail sent to " + recName + " (" + recAddr + ")");
         } catch(final Exception e) {
-            // Only with exceptions at this line => email error
-            LOG.error("Could not Transport.send(): {}", e);
-        }
+            LOG.error("[*** {} ***]: {}", e.getClass().getSimpleName(), e.getMessage());
+        } 
         
         return success;
     }

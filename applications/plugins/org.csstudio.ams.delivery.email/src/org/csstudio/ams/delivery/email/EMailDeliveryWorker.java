@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
@@ -106,13 +105,8 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
                 ArrayList<EMailAlarmMessage> outgoing = messageQueue.getCurrentContent();
                 LOG.info("Number of messages to send: " + outgoing.size());
                 
-                try {
-                    sent = mailDevice.sendMessages(outgoing);
-                    LOG.info("{} of {} messages sent.", sent, outgoing.size());
-                } catch (DeviceException de) {
-                    LOG.error("[*** DeviceException ***]: {}", de.getMessage());
-                }
-                
+                sent = mailDevice.sendMessages(outgoing);
+                LOG.info("{} of {} messages sent.", sent, outgoing.size());
                 if (sent < outgoing.size()) {
                     LOG.warn("Re-inserting {} messages into the message queue.", (outgoing.size() - sent));
                     for (EMailAlarmMessage o : outgoing) {
@@ -130,10 +124,10 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
             }
         }
 
-        closeJms();
         mailDevice.stopDevice();
+        closeJms();
         
-        LOG.info(workerName + " is leaving.");
+        LOG.info("{} is leaving.", workerName);
     }
     
     private boolean initJms() {

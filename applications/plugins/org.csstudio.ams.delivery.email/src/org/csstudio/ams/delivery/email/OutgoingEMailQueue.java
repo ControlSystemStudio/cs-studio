@@ -80,7 +80,6 @@ public class OutgoingEMailQueue extends AbstractMessageQueue<EMailAlarmMessage> 
                                            State.NEW,
                                            Type.OUT,
                                            "NONE",
-                                           false,
                                            userName,
                                            mySubject);
         } catch (JMSException jmse) {

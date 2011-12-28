@@ -46,9 +46,9 @@ public class EMailAlarmMessage extends BaseAlarmMessage {
     public EMailAlarmMessage(long timestamp, Priority p,
                              String address, String text,
                              State state, Type type,
-                             String device, boolean test,
+                             String device,
                              String name, String subject) {
-        super(timestamp, p, address, text, state, type, device, test);
+        super(timestamp, p, address, text, state, type, device);
         this.receiverName = name;
         this.mailSubject = subject;
     }
