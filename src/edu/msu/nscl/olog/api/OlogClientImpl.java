@@ -268,12 +268,12 @@ public class OlogClientImpl implements OlogClient {
 									return true;
 								}
 							}, sslContext));
-				}
-				this.username = ifNullReturnPreferenceValue(this.username,
-						"username", "username");
-				this.password = ifNullReturnPreferenceValue(this.password,
-						"password", "password");
+				}				
 			}
+			this.username = ifNullReturnPreferenceValue(this.username,
+					"username", "username");
+			this.password = ifNullReturnPreferenceValue(this.password,
+					"password", "password");
 			return new OlogClientImpl(this.ologURI, this.ologJCRURI,
 					this.clientConfig, this.withHTTPAuthentication,
 					this.username, this.password, this.executor);
