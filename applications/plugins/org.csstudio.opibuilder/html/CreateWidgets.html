@@ -19,6 +19,8 @@ some basic knowledge in Java and Eclipse plugin. The BOY widget figure is drawn 
 to learn the basics of <a href = http://help.eclipse.org/galileo/index.jsp?topic=/org.eclipse.draw2d.doc.isv/guide/guide.html>Draw2d</a>.     
 </p>
 
+<p>The code of this example is availabe in BOY Examples->Miscellaneous->CustomizedWidget.</p>
+
 <h3>2. Concepts</h3>
 <p>All BOY widgets should rely on the MVC (Model-View-Controller) pattern to separate 
 responsibilities among their single components.
@@ -43,7 +45,7 @@ PV value.</p>
 <p>The widget plugin will need to have BOY plugin (org.csstudio.opibuilder) as dependecy, 
 so you need to have BOY plugin and its dependent CSS plugins installed in your 
 Eclipse environment. You can simply copy BOY plugin and its dependencies from
-your CSS plugin folder to your Eclipse plugin folder. If you are a CSS developer, you just need to
+your CSS plugin folder to your Eclipse <code>dropin</code> folder. If you are a CSS developer, you just need to
 import these plugins into your workspace from your Mercurial repository.</p>
 
 <h4>3.2 Creating a new plugin</h4>
@@ -72,6 +74,11 @@ a new property to the model’s property set. The signature of the addProperty(..)
 The supported property types are described at <a href = "script/PropertyType.html">here</a>. 
 You can also create your own property type by extending 
 <code>org.csstudio.opibuilder.properties.AbstractWidgetProperty</code>.
+
+<p><b>Note:</b> There is a convention between property id and property name, which means the 
+property id should be lower case of property name and the space in property name should be replaced with 
+underscore. For example, the property id of <code>PV Name</code> is <code>pv_name</code>. With this 
+convention, user can easily guess the property id in script.</p>
 
 <p>
 The <code>class org.csstudio.opibuilder.model.AbstractPVWidgetModel</code> is the base class of all widgets that have the 
@@ -306,10 +313,15 @@ category name, but this is not recommended.</p></li>
 <li>icon<p>The icon of the widget.</p></li>
 <li>model_class<p>The model of the widget.</p></li>
 <li>editpart_class<p>The editpart class of the widget.</p></li>
+<li>onlineHelpHtml <p>The online help html file.</p></li>
 <li>description<p>The description of the widget, which will be displayed as the tooltip.</p></li>
 </ul>
 
-<h4>3.7 Integrate the widget into CSS</h4>
+<h4>3.7 Hook widget help with BOY online help</h4>
+<p>You can hook up the widget's help page with BOY online help from toc anchor
+<code>../org.csstudio.opibuilder/toc.xml#thirdPartyWidgets</code>.</p>
+
+<h4>3.8 Integrate the widget into CSS</h4>
 <p>If you are a CSS developer, now your have finished the plugin project. 
 You can integrate it into CSS by including this plugin into your CSS build.</p>
 <p>Here we will discuss how to add this widget to an existing CSS.</p>
@@ -327,7 +339,7 @@ Simple Bar Graph widget in you CSS BOY palette! You can test it by setting
 <p>*This project zip file can be found at BOY Examples->Miscellaneous->CustomizedWidgetExample.zip. You can import it into your Eclipse
  workspace by selecting <code>File->Import...->Existing Project into workspace</code>.</p>
 
-<h4>3.8 Resources</h4>
+<h4>3.9 Resources</h4>
 <p>There are lots of exist resources come with BOY, such as <code>linear scale</code>, 
 <code>round scale</code>, <code>AbstractBoolFigure</code>, <code>AbstractScaledWidgetFigure</code> and so on.
 They are included in the plugins of <code>org.csstudio.swt.widgets</code> and <code>org.csstudio.swt.xygraph</code>. 
@@ -385,7 +397,16 @@ Here is the result of this example:
 <img alt = "Popup Menu Example" src = "img/PopupMenuExample.PNG">
 </p>
 
-<h4>4.2 Customized Graphical Feedback</h4>
+<h4>4.2 Create BOY widget based on native SWT widget</h4>
+<p>To use SWT widgets in BOY, you need to subclass <code>org.csstudio.opibuilder.widgets.AbstractSWTWidgetFigure</code> for
+the figure. The model and editpart are same as regular BOY widgets. For an SWT widget, there are few drawbacks:</p> <ul>
+<li>You cannot change its order. Its order is always on top.</li>
+<li>You cannot hide part of the widget in grouping container.
+</li></ul>
+<p>Please see BOY Combo widget or Web Browser widget as examples.</p>
+
+
+<h4>4.3 Customized Graphical Feedback</h4>
 <p>
 If you need some special behavior on the widget in editing mode, for example, keep the size of 
 the widget in fixed ratio when user is resizing it, you can create you own customized graphical feedback by

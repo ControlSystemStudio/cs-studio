@@ -7,18 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -29,7 +30,6 @@ import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IActionFilter;
 
 /**The editpart for the root display.
@@ -45,6 +45,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		// disallows the removal of this edit part from its parent
 		installEditPolicy(EditPolicy.COMPONENT_ROLE,
 				new RootComponentEditPolicy());
+		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 	}
 	
 	@Override
@@ -64,7 +65,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	protected void registerPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler backColorHandler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
+					IFigure figure) {		
+				figure.setBackgroundColor(((OPIColor)newValue).getSWTColor());
 				getViewer().getControl().setBackground(
 						CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 				return false;
@@ -142,10 +144,16 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			@Override
 			protected void paintFigure(Graphics graphics) {
 				super.paintFigure(graphics);
+				if(OPIBuilderPlugin.isRAP()){
+					if(!getBackgroundColor().getRGB().equals(CustomMediaFactory.COLOR_WHITE)){
+						graphics.setBackgroundColor(getBackgroundColor());
+						graphics.fillRectangle(getBounds());
+					}
+				}
 				if(getExecutionMode() == ExecutionMode.EDIT_MODE && 
 						((DisplayModel)getModel()).isShowEditRange()){
 					graphics.pushState();
-					graphics.setLineStyle(SWT.LINE_DASH);
+					graphics.setLineStyle(SWTConstants.LINE_DASH);
 					graphics.setForegroundColor(ColorConstants.black);
 					graphics.drawRectangle(
 							new Rectangle(new Point(0, 0), getWidgetModel().getSize()));
@@ -153,7 +161,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 				}
 			}
 		};
-		f.setBorder(new MarginBorder(3));
+//		f.setBorder(new MarginBorder(3));		
 		f.setLayoutManager(new FreeformLayout());
 		
 		return f;
@@ -165,9 +173,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		figure.repaint();
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
-	public Object getAdapter(Class key) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 		if(key == IActionFilter.class)
 			return new IActionFilter(){
 

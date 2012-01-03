@@ -57,19 +57,15 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
     protected void doProcessConnectionStateChange(final W widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        AnyData anyData = anyDataChannel.getData();
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR, determineColorBySeverity(severity, _defColor));
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, SeverityUtil
-                                   .determineBorderStyleBySeverity(severity).getIndex());
-            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, SeverityUtil
-                                   .determineBorderWidthBySeverity(severity));
+        final AnyData anyData = anyDataChannel.getData();
+        final Severity severity = anyData.getSeverity();
+        if(severity != null) {
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
+                                    determineColorBySeverity(severity, _defColor));
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
+                                    determineBorderStyleBySeverity(severity).getIndex());
+            widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH,
+                                    determineBorderWidthBySeverity(severity));
         }
     }
 

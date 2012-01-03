@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.preferenceservice.declaration;
 
 public enum PreferenceServiceFilterKeys implements HoldsAPreferenceId {
@@ -16,7 +17,8 @@ public enum PreferenceServiceFilterKeys implements HoldsAPreferenceId {
 		this._description = description;
 	}
 
-	public String getDescription() {
+	@Override
+    public String getDescription() {
 		return this._description;
 	}
 
@@ -24,8 +26,8 @@ public enum PreferenceServiceFilterKeys implements HoldsAPreferenceId {
 		return this._key;
 	}
 
-	public String getPreferenceStoreId() {
+	@Override
+    public String getPreferenceStoreId() {
 		return this._key;
 	}
-
 }

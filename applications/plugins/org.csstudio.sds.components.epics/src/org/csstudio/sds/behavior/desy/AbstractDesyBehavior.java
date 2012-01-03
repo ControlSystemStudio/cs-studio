@@ -22,8 +22,9 @@ import java.util.Map;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.csstudio.sds.util.ColorAndFontUtil;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.context.ConnectionState;
+import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.Severity;
 
 /**
@@ -38,10 +39,12 @@ import org.epics.css.dal.simple.Severity;
  */
 public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extends
         AbstractBehavior<W> {
-    private static final String YELLOW = ColorAndFontUtil.toHex(255, 168, 222);
-    private static final String GREEN = ColorAndFontUtil.toHex(120, 120, 120);
-    private static final String RED = ColorAndFontUtil.toHex(255, 9, 163);
-    private static final String WHITE = ColorAndFontUtil.toHex(255, 255, 255);
+    private static final String YELLOW = "${Minor}";
+    private static final String ININTIAL = "${Initial}";
+    private static final String GREEN = "${NoAlarm}";
+    private static final String RED = "${Major}";
+    private static final String PINK = "${VerbAbbr}";
+    private static final String INVALID = "${Invalid}";
 
     private final Map<ConnectionState, String> colorsByConnectionState = new HashMap<ConnectionState, String>();
     private final Map<ConnectionState, BorderStyleEnum> borderStyleByConnectionState = new HashMap<ConnectionState, BorderStyleEnum>();
@@ -52,175 +55,69 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * Constructor.
      */
     public AbstractDesyBehavior() {
-        initConnectionStateColors();
-        initConnectionStateBorderColors();
-        initConnectionStateBorderStyle();
-        initConnectionStateBorderWidth();
+        initConnectionState();
     }
 
     /**
-     * Fill the map with the DESY default border width for the Connection states
+     * Fill the maps with the DESY default values for the Connection states.<br>
+     * Defaults<br>
+     * - border width<br>
+     * - border style<br>
+     * - border color<br>
+     * - color (mostly used for background color)<br>
      */
-    // CHECKSTYLE:OFF
-    private void initConnectionStateBorderWidth() {
-        for (ConnectionState cs : ConnectionState.values()) {
+    // CHECKSTYLE OFF: CyclomaticComplexity
+    private void initConnectionState() {
+        for (final ConnectionState cs : ConnectionState.values()) {
             switch (cs) {
                 case CONNECTED:
-                    borderWidthByConnectionState.put(cs, 0);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
+                    break;
+                case OPERATIONAL:
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
                     break;
                 case CONNECTING:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case INITIAL:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case CONNECTION_FAILED:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case CONNECTION_LOST:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case DESTROYED:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case DISCONNECTED:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case DISCONNECTING:
-                    borderWidthByConnectionState.put(cs, 1);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case READY:
-                    borderWidthByConnectionState.put(cs, 0);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, ININTIAL, ININTIAL);
                     break;
                 default:
-                    borderWidthByConnectionState.put(cs, 0);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, INVALID, INVALID);
                     break;
             }
         }
-    }// CHECKSTYLE:ON
+    }// CHECKSTYLE ON: CyclomaticComplexity
 
     /**
-     * Fill the map with the DESY default border style for the Connection states
+     * @param cs
      */
-    // CHECKSTYLE:OFF
-    private void initConnectionStateBorderStyle() {
-        for (ConnectionState cs : ConnectionState.values()) {
-            switch (cs) {
-                case CONNECTED:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.NONE);
-                    break;
-                case CONNECTING:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case INITIAL:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case CONNECTION_FAILED:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case CONNECTION_LOST:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case DESTROYED:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case DISCONNECTED:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case DISCONNECTING:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.DASH_DOT);
-                    break;
-                case READY:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.NONE);
-                    break;
-                default:
-                    borderStyleByConnectionState.put(cs, BorderStyleEnum.NONE);
-                    break;
-            }
-        }
-    }// CHECKSTYLE:ON
+    private void addConnectionStates(final ConnectionState cs, final Integer borderWidth, final BorderStyleEnum borderStyle, final String borderColor, final String color) {
+        borderWidthByConnectionState.put(cs, borderWidth);
+        borderStyleByConnectionState.put(cs, borderStyle);
+        borderColorsByConnectionState.put(cs, borderColor);
+        colorsByConnectionState.put(cs, color);
+    }
 
-    /**
-     * Fill the map with the DESY default border colors for the Connection states
-     */
-    // CHECKSTYLE:OFF
-    private void initConnectionStateBorderColors() {
-        for (ConnectionState cs : ConnectionState.values()) {
-            switch (cs) {
-                case CONNECTED:
-                    borderColorsByConnectionState.put(cs, GREEN);
-                    break;
-                case CONNECTING:
-                    borderColorsByConnectionState.put(cs, YELLOW);
-                    break;
-                case INITIAL:
-                    borderColorsByConnectionState.put(cs, YELLOW);
-                    break;
-                case CONNECTION_FAILED:
-                    borderColorsByConnectionState.put(cs, RED);
-                    break;
-                case CONNECTION_LOST:
-                    borderColorsByConnectionState.put(cs, RED);
-                    break;
-                case DESTROYED:
-                    borderColorsByConnectionState.put(cs, RED);
-                    break;
-                case DISCONNECTED:
-                    borderColorsByConnectionState.put(cs, RED);
-                    break;
-                case DISCONNECTING:
-                    borderColorsByConnectionState.put(cs, RED);
-                    break;
-                case READY:
-                    borderColorsByConnectionState.put(cs, GREEN);
-                    break;
-                default:
-                    borderColorsByConnectionState.put(cs, WHITE);
-                    break;
-            }
-        }
-    }// CHECKSTYLE:ON
-
-    /**
-     * Fill the map with the DESY default colors for the Connection states
-     */
-    // CHECKSTYLE:OFF
-    private void initConnectionStateColors() {
-        for (ConnectionState cs : ConnectionState.values()) {
-            switch (cs) {
-                case CONNECTED:
-                    colorsByConnectionState.put(cs, GREEN);
-                    break;
-                case CONNECTING:
-                    colorsByConnectionState.put(cs, YELLOW);
-                    break;
-                case INITIAL:
-                    colorsByConnectionState.put(cs, YELLOW);
-                    break;
-                case CONNECTION_FAILED:
-                    colorsByConnectionState.put(cs, RED);
-                    break;
-                case CONNECTION_LOST:
-                    colorsByConnectionState.put(cs, RED);
-                    break;
-                case DESTROYED:
-                    colorsByConnectionState.put(cs, RED);
-                    break;
-                case DISCONNECTED:
-                    colorsByConnectionState.put(cs, RED);
-                    break;
-                case DISCONNECTING:
-                    colorsByConnectionState.put(cs, RED);
-                    break;
-                case READY:
-                    colorsByConnectionState.put(cs, GREEN);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }// CHECKSTYLE:ON
-
+    // CHECKSTYLE ON: CyclomaticComplexity
     /**
      * Give a DESY default Border style for the given {@link ConnectionState}
      *
@@ -241,8 +138,15 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      */
 
     protected final String determineBackgroundColor(final ConnectionState connectionState) {
-        return connectionState != null ? colorsByConnectionState.get(connectionState)
-                : colorsByConnectionState.get(ConnectionState.INITIAL);
+        final ConnectionState tempConnectionState = connectionState != null ? connectionState : ConnectionState.INITIAL;
+        return getColorsByConnectionState(tempConnectionState);
+    }
+
+    private String getColorsByConnectionState(final ConnectionState connectionState) {
+        if(colorsByConnectionState.containsKey(connectionState)) {
+            return colorsByConnectionState.get(connectionState);
+        }
+        return ININTIAL;
     }
 
     /**
@@ -251,7 +155,6 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Border color for the given {@link ConnectionState}
      */
-
     protected final String determineBorderColor(final ConnectionState connectionState) {
         return connectionState != null ? borderColorsByConnectionState.get(connectionState)
                 : borderColorsByConnectionState.get(ConnectionState.INITIAL);
@@ -263,10 +166,29 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Border width for the given {@link ConnectionState}
      */
-
     protected final Integer determineBorderWidth(final ConnectionState connectionState) {
         return connectionState != null ? borderWidthByConnectionState.get(connectionState)
                 : borderWidthByConnectionState.get(ConnectionState.INITIAL);
+    }
+
+    /**
+     * Give a DESY default Border width for the given {@link Severity}
+     *
+     * @param severity The Severity
+     * @return the DESY default Border width for the given {@link Severity}
+     */
+    protected static BorderStyleEnum determineBorderStyleBySeverity(final Severity severity) {
+        return severity!=null&&(severity.isOK()||severity.isInvalid())?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
+    }
+
+    /**
+     * Give a DESY default Border width for the given {@link Severity}
+     *
+     * @param connectionState The Severity
+     * @return the DESY default Border width for the given {@link Severity}
+     */
+    protected static int determineBorderWidthBySeverity(final Severity severity) {
+        return severity!=null&&(severity.isOK()||severity.isInvalid())?0:3;
     }
 
     /**
@@ -285,20 +207,46 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 if (defColor != null) {
                     return defColor;
                 }
-                color = ColorAndFontUtil.toHex(0, 216, 0);
+                color = GREEN;
             } else if (severity.isMinor()) {
                 // .. yellow
-                color = ColorAndFontUtil.toHex(251, 243, 74);
+                color = YELLOW;
             } else if (severity.isMajor()) {
                 // .. red
-                color = ColorAndFontUtil.toHex(253, 0, 0);
+                color = RED;
             } else {
                 // .. white
-                color = ColorAndFontUtil.toHex(255, 255, 255);
+                color = INVALID;
             }
         }
 
         return color;
+    }
+
+    public static void handleValueType(final AbstractWidgetModel model, final TextTypeEnum textTypeEnum, final String propertyId, final AnyData anyData) {
+        switch (textTypeEnum) {
+            case ALIAS:
+                model.setPropertyValue(propertyId, anyData.getMetaData().getName());
+                break;
+            case DOUBLE:
+//                model.setPropertyValue(propertyId, anyData.stringValue());
+                model.setPropertyValue(propertyId, anyData.doubleValue());
+                break;
+            case EXP:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case HEX:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case TEXT:
+                // TODO (hrickens): The CA Gateway sent wrong formated floating point.
+                // when the gateway sent the correct string, the stringValue can sent 1by1.
+                final String stringValue = anyData.stringValue();
+                model.setPropertyValue(propertyId, stringValue);
+                break;
+            default:
+                break;
+        }
     }
 
 }

@@ -1,60 +1,58 @@
 
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.jms2ora.database.DatabaseLayer;
-import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
-import org.csstudio.alarm.jms2ora.util.ApplicState;
-import org.csstudio.alarm.jms2ora.util.Hostname;
-import org.csstudio.alarm.jms2ora.util.MessageContent;
-import org.csstudio.alarm.jms2ora.util.MessageContentCreator;
-import org.csstudio.alarm.jms2ora.util.JmsMessageReceiver;
-import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.statistic.Collector;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
+import org.csstudio.alarm.jms2ora.service.IMessageWriter;
+import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
+import org.csstudio.alarm.jms2ora.util.MessageConverter;
+import org.csstudio.alarm.jms2ora.util.StatisticCollector;
+import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>StoreMessages</code> gets all messages from the topics <b>ALARM and LOG</b> and stores them into the
  * database.
- * 
+ *
  * Steps:
- * 
+ *
  * 1. Read all message properties from the database and store them into a hash table
  * 2. Create a receiver and set the asynchronous message receiving.
  * 3. Wait for messages
  * 4. If a message is received, process it. If the processing fails, store the message in a file.
- * 
+ *
  * Message processing:
- * 
+ *
  * 1. Check for the EVENTTIME property
  *    Set the property EVENTTIME to the current date, if the message does not contain it.
  * 2. Create a hash table with the following entries:
@@ -63,399 +61,264 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * 3. Create an entry in the table MESSAGE and return the ID for the entry
  * 4. With the ID from step 3 create the entries in the table MESSAGE_CONTENT
  * 5. If the last step fails, delete all created entries in MESSAGE and MESSAGE_CONTENT
- * 
+ *
+ *
+ * TODO:    Auslagern von bestimmten Funktionen in eigenstaendige Klassen
+ *          - Die Properties der Datenbanktabellen
+ *
  * @author  Markus Moeller
  * @version 2.0.0
  */
+public class MessageProcessor extends Thread implements IMessageProcessor {
 
-/*
- * TODO:    Auslagern von bestimmten Funktionen in eigenständige Klassen
- *          - Die Properties der Datenbanktabellen
- */
 
-public class MessageProcessor extends Thread implements MessageListener {
-    
-    /** The object instance of this class */
-    private static MessageProcessor instance = null;
-    
-    /** Queue for received messages */
-    private ConcurrentLinkedQueue<MessageContent> messages;
-    
-    /** Object for database handling */
-    private DatabaseLayer dbLayer;
-    
-    /** Object that creates the MessageContent objects */
-    private MessageContentCreator contentCreator;
-    
-    /** Array of message receivers */
-    private JmsMessageReceiver[] receivers;
-            
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages;
-    
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector emptyMessages;
+    /** Time to sleep in ms */
+    private static long SLEEPING_TIME = 15000;
 
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector discardedMessages;
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
-    /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector storedMessages;
+    /** The Database writer service */
+    private IMessageWriter writerService;
 
-    /** The logger */
-    private Logger logger;
-    
-    /** Array with JMS server URLs */
-    private String[] urlList;
-    
-    /** Array with topic names */
-    private String[] topicList;
-    
+    /** The Persistence writer service */
+    private IPersistenceHandler persistenceService;
+
+    /** Queue for processed messages */
+    private final ConcurrentLinkedQueue<ArchiveMessage> archiveMessages;
+
+    /** A container for all Collector objects */
+    private final StatisticCollector collector;
+
+    private final MessageConverter messageConverter;
+
+    /** The object holds the last processing time of the messages */
+    private LocalTime nextProcessingTime;
+
     /** Indicates if the application was initialized or not */
-    private boolean initialized;
-    
+    private final boolean initialized;
+
     /** Indicates whether or not the application should stop */
     private boolean running;
 
     /** Indicates whether or not this thread stopped clean */
     private boolean stoppedClean;
-    
-    private Jms2OraApplication parent;
-    
-    /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 15000 ;
 
-    public final long RET_ERROR = -1;
-    public static final int CONSOLE = 1;
-    
     /**
-     * A nice private constructor...
+     * The constructor
      *
-     */    
-    private MessageProcessor() {
-        
-        // Create the logger
-        logger = CentralLogger.getInstance().getLogger(this);
-        
-        this.setName("MessageProcessor-Thread");
-        
-        messages = new ConcurrentLinkedQueue<MessageContent>();
-        
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String url = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_URL, "", null);
-        String user = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_USER, "", null);
-        String password = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_PASSWORD, "", null);
+     * Oh, really
+     */
+    public MessageProcessor() throws ServiceNotAvailableException {
 
-        dbLayer = new DatabaseLayer(url, user, password);
+        collector = new StatisticCollector();
+        messageConverter = new MessageConverter(this, collector);
 
-        // Instantiate MessageContentCreator that uses its own database layer
-        // IMPORTANT: Do not let it use the database layer created above
-        contentCreator = new MessageContentCreator(url, user, password);
-        
-        receivedMessages = new Collector();
-        receivedMessages.setApplication(VersionInfo.NAME);
-        receivedMessages.setDescriptor("Received messages");
-        receivedMessages.setContinuousPrint(false);
-        receivedMessages.setContinuousPrintCount(1000.0);
-        
-        emptyMessages = new Collector();
-        emptyMessages.setApplication(VersionInfo.NAME);
-        emptyMessages.setDescriptor("Filtered messages");
-        emptyMessages.setContinuousPrint(false);
-        emptyMessages.setContinuousPrintCount(1000.0);
-        
-        discardedMessages = new Collector();
-        discardedMessages.setApplication(VersionInfo.NAME);
-        discardedMessages.setDescriptor("Discarded messages");
-        discardedMessages.setContinuousPrint(false);
-        discardedMessages.setContinuousPrintCount(1000.0);
-        
-        storedMessages = new Collector();
-        storedMessages.setApplication(VersionInfo.NAME);
-        storedMessages.setDescriptor("Stored messages");
-        storedMessages.setContinuousPrint(false);
-        storedMessages.setContinuousPrintCount(1000.0);
-        
-        String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
-        String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
-        
+        nextProcessingTime = new LocalTime();
+        nextProcessingTime = nextProcessingTime.plusMinutes(5);
+
+        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
+
+        try {
+            writerService = Jms2OraPlugin.getDefault().getMessageWriterService();
+            if (writerService.isServiceReady()) {
+                LOG.info("Message writer service available.");
+            } else {
+                LOG.error("Message writer service is NOT available.");
+                throw new ServiceNotAvailableException("Database writer service not available.");
+            }
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error(e.getMessage());
+            throw new ServiceNotAvailableException("Database writer service not available: " + e.getMessage());
+        }
+
+        try {
+            persistenceService = Jms2OraPlugin.getDefault().getPersistenceWriterService();
+        } catch (final OsgiServiceUnavailableException e) {
+            LOG.error(e.getMessage());
+            throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
+        }
+
         running = true;
         stoppedClean = false;
-        
-        if((urls.length() > 0) && (topics.length() > 0)) {
-            
-            urlList = urls.split(",");
-            topicList = topics.split(",");
-            
-            for(int i = 0;i < urlList.length;i++) {
-                logger.info("[" + urlList[i] + "]");
-            }
-            
-            for(int i = 0;i < topicList.length;i++) {
-                logger.info("[" + topicList[i] + "]");
-            }
-            
-            receivers = new JmsMessageReceiver[urlList.length];
-            
-            String hostName = Hostname.getInstance().getHostname();
-            
-            for(int i = 0;i < urlList.length;i++) {
-                
-                try {
-                    receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
-                    receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
-                    initialized = true;
-                } catch(Exception e) {
-                    logger.error("*** Exception *** : " + e.getMessage());
-                    initialized = false;
-                }
-            }
-            
-            initialized = (initialized == true) ? true : false;
-        } else {
-            initialized = false;
-        }
+        initialized = false;
+
+        this.setName("MessageProcessor-Thread");
     }
 
-    public static synchronized MessageProcessor getInstance() {
-        
-        if(instance == null) {
-            instance = new MessageProcessor();
-        }
-        
-        return instance;
-    }
-    
     /**
-     * <code>executeMe</code> is the main method of the class StoreMessages.
-     *
+     * {@inheritDoc}
      */
-    
-    public void run() {
-        
-        MessageContent content = null;
-        ReturnValue result;
-        
-        logger.info("Started " + VersionInfo.getAll());        
-        logger.info("Waiting for messages...");
-        
-        while(running) {
-            
-            parent.setStatus(ApplicState.WORKING);
+    @Override
+    public final synchronized void putArchiveMessage(@Nonnull final ArchiveMessage m) {
+        archiveMessages.add(m);
+    }
 
-            while(!messages.isEmpty() && running) {
-                
-                content = messages.poll();
-                result = processMessage(content);
-                if((result != ReturnValue.PM_RETURN_OK)
-                        && (result != ReturnValue.PM_RETURN_DISCARD)
-                        && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
-                    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+
+        Vector<ArchiveMessage> storeMe;
+        boolean success;
+
+        LOG.info("Started " + VersionInfo.getAll());
+        LOG.info("Waiting for messages...");
+
+        while(running) {
+
+            final LocalTime now = new LocalTime();
+
+            if ((now.isAfter(nextProcessingTime) || archiveMessages.size() >= 1000) && running) {
+
+                storeMe = this.getMessagesToArchive();
+
+                success = writerService.writeMessage(storeMe);
+                if(!success) {
+
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    MessageFileHandler.getInstance().writeMessageContentToFile(content);
-                    logger.warn(result.getErrorMessage() + ": Could not store the message in the database. Message is written on disk.");
-                } else {
-                    
-                    if(result != ReturnValue.PM_RETURN_OK) {
-                        
-                        logger.info(result.getErrorMessage());
-                        if(result == ReturnValue.PM_RETURN_DISCARD) {
-                            discardedMessages.incrementValue();
-                        } else if(result == ReturnValue.PM_RETURN_EMPTY) {
-                            emptyMessages.incrementValue();
-                        }
-                    } else {
-                        storedMessages.incrementValue();
-                        logger.debug(result.getErrorMessage());
-                    }
+                    persistenceService.writeMessages(storeMe);
+                    LOG.warn("Could not store the message in the database. Message is written on disk.");
                 }
-                
-                // logger.debug(statistic.toString());
-                logger.debug(createStatisticString());
-                
-                // IMPORTANT: Refresh the current state, otherwise Jms2Ora will restart if many messages
-                // are stored in the queue and state switching does not happen while storing all
-                // the messages.
-                parent.setStatus(ApplicState.WORKING);
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(createStatisticString());
+                }
+
+                nextProcessingTime = nextProcessingTime.plusMinutes(5);
             }
 
             if(running) {
-                
-                parent.setStatus(ApplicState.SLEEPING);
-                
-                synchronized(this) {
+
+                synchronized (this) {
                     try {
                         wait(SLEEPING_TIME);
-                    } catch(InterruptedException ie) {
-                        logger.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
+                    } catch(final InterruptedException ie) {
+                        LOG.error("[*** InterruptedException ***]: run(): wait(): " + ie.getMessage());
                         running = false;
-                    }               
+                    }
                 }
-                
-                logger.debug("Waked up...");
+
+                LOG.debug("Waked up...");
             }
         }
-        
-        parent.setStatus(ApplicState.LEAVING);
-        
-        closeAllReceivers();
-        
+
         // Process the remaining messages
-        logger.info("Remaining messages: " + messages.size() + " -> Processing...");
-        
+        LOG.info("Remaining messages: " + this.getCompleteQueueSize() + " -> Processing...");
+
         int writtenToDb = 0;
         int writtenToHd = 0;
-        
-        while(!messages.isEmpty()) {
-            
-            content = messages.poll();
-            
-            result = processMessage(content);
-            if((result != ReturnValue.PM_RETURN_OK)
-                    && (result != ReturnValue.PM_RETURN_DISCARD)
-                    && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
-                
+
+        if (true/* TODO: messageAcceptor.getQueueSize() > 0*/) {
+
+         // TODO: storeMe = messageAcceptor.getCurrentMessages();
+         // TODO: success = writerService.writeMessage(storeMe);
+            success = true;
+            if(!success) {
+
                 // Store the message in a file, if it was not possible to write it to the DB.
-                MessageFileHandler.getInstance().writeMessageContentToFile(content);
-                
+                // TODO: persistenceService.writeMessages(storeMe);
+
                 writtenToHd++;
+
             } else {
                 writtenToDb++;
             }
-            
-            content = null;
         }
-        
-        stoppedClean = true;
-        
-        logger.info("Remaining messages stored in the database: " + writtenToDb);
-        logger.info("Remaining messages stored on disk:         " + writtenToHd);
-        
-        parent.setStatus(ApplicState.STOPPED);
 
-        logger.info("executeMe() : ** DONE **");
+        if (writerService != null) {
+            writerService.close();
+        }
+
+        stoppedClean = true;
+
+        LOG.info("Remaining messages stored in the database: " + writtenToDb);
+        LOG.info("Remaining messages stored on disk:         " + writtenToHd);
     }
 
-    public boolean stoppedClean() {
+    public final boolean stoppedClean() {
         return stoppedClean;
     }
-    
-    public void onMessage(Message message) {
-        
-        MessageContent content = null;
-        
-        logger.debug("onMessage(): " + message.toString());
-        
-        if(message instanceof MapMessage) {
-            content = contentCreator.convertMapMessage((MapMessage)message);
-            messages.add(content);
-            receivedMessages.incrementValue();
 
-            synchronized(this) {
-                notify();
-            }
-        } else {
-            logger.info("Received a non MapMessage object. Discarded...");
-        }        
-    }
+    @Nonnull
+    public final ReturnValue processMessages() {
 
-    public ReturnValue processMessage(MessageContent content) {
-        
-        long typeId = 0;
-        long msgId = 0;
-        ReturnValue result = ReturnValue.PM_RETURN_OK;
+        final ReturnValue result = ReturnValue.PM_RETURN_OK;
 
-        if(content.discard()) {
-            return ReturnValue.PM_RETURN_DISCARD;
-        }
+        //writerService.writeMessage(archiveMessages.);
 
-        if(!content.hasContent()) {
-            return ReturnValue.PM_RETURN_EMPTY;
-        }
-                
-        // Create an entry in the table MESSAGE
-        // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
-        msgId = dbLayer.createMessageEntry(typeId, content);
-        if(msgId == RET_ERROR) {
-            logger.error("createMessageEntry(): No message entry created in database.");
-            return ReturnValue.PM_ERROR_DB;
-        }
-        
-        if(dbLayer.createMessageContentEntries(msgId, content) == false) {
-            
-            logger.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
-            dbLayer.deleteMessage(msgId);
-            result = ReturnValue.PM_ERROR_DB;
-        } else {
-            result = ReturnValue.PM_RETURN_OK;
-        }
-        
         return result;
     }
-    
 
-    public String createDatabaseNameFromRecord(String record) {
-        
+    /**
+     *
+     * @return Vector object that contains the messages in the queue
+     */
+    @CheckForNull
+    public final Vector<ArchiveMessage> getMessagesToArchive() {
+        Vector<ArchiveMessage> result = null;
+        if (!archiveMessages.isEmpty()) {
+            result = new Vector<ArchiveMessage>(archiveMessages);
+            archiveMessages.removeAll(result);
+        }
+        return result;
+    }
+
+    @Nonnull
+    public final String createDatabaseNameFromRecord(@Nonnull final String record) {
+
         String result = null;
-        
+
         if(record.indexOf(':') != -1) {
             result = record.substring(0, record.indexOf(':')).toUpperCase();
         }
-        
+
         return result;
     }
-    
+
     /**
      * <code>isInitialized</code>
-     * 
+     *
      * @return true, if the initialization was successfull ; false, if it was not
      */
-    
-    public boolean isInitialized() {
+    public final boolean isInitialized() {
         return initialized;
     }
-        
-    public int getNumberOfQueuedMessages() {
-        
-        if(messages != null) {
-            return messages.size();
-        } else {
-            return 0;
-        }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final int getArchiveMessageQueueSize() {
+        return archiveMessages.size();
     }
-    
-    public void closeAllReceivers() {
-        
-        logger.info("closeAllReceivers(): Closing all receivers.");
-        
-        if(receivers != null) {
-            for(int i = 0;i < receivers.length;i++) {
-                receivers[i].stopListening();
-            }
-        }
+
+    /**
+     * Returns the sum of the RawMessage queue size and the ArchiveMessage queue size.
+     *
+     * @return The sum of both message queues
+     */
+    public final int getCompleteQueueSize() {
+        return messageConverter.getQueueSize() + archiveMessages.size();
     }
-    
-    public void setParent(Jms2OraApplication parent) {
-        this.parent = parent;
-    }
-    
-    public synchronized void stopWorking() {
-        contentCreator.stopWorking();
+
+    public final synchronized void stopWorking() {
         running = false;
-        
         this.notify();
     }
-    
-    public String createStatisticString() {
-        
-        StringBuffer result = new StringBuffer();
-        
+
+    @Nonnull
+    public final String createStatisticString() {
+
+        final StringBuffer result = new StringBuffer();
+
         result.append("Statistic:\n\n");
-        result.append("Received Messages:  " + receivedMessages.getActualValue().getValue() + "\n");
-        result.append("Stored Messages:    " + storedMessages.getActualValue().getValue() + "\n");
-        result.append("Discarded Messages: " + discardedMessages.getActualValue().getValue() + "\n");
-        result.append("Filtered Messages:     " + emptyMessages.getActualValue().getValue() + "\n");
-        
+        result.append("Received Messages:  " + collector.getReceivedMessageCount() + "\n");
+        result.append("Stored Messages:    " + collector.getStoredMessagesCount() + "\n");
+        result.append("Discarded Messages: " + collector.getDiscardedMessagesCount() + "\n");
+        result.append("Filtered Messages:  " + collector.getFilteredMessagesCount() + "\n");
+
         return result.toString();
     }
 }

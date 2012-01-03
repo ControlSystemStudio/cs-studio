@@ -34,6 +34,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Pattern;
@@ -215,11 +216,15 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		}
 		
 		public Thumb() {
-			setCursor(Cursors.HAND);
-			
+			setCursor(Cursors.HAND);			
 			ThumbDragger thumbDragger = new ThumbDragger();
 			addMouseMotionListener(thumbDragger);	
 			addMouseListener(thumbDragger);
+		}
+		
+		@Override
+		public void setEnabled(boolean value) {
+			super.setEnabled(value);							
 		}
 		
 		@Override
@@ -378,8 +383,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	 * @param value
 	 */
 	public void manualSetValue(double value){
-		setValue(
-				value < minimum ? minimum : (value > maximum ? maximum : value));
+		setValue(getCoercedValue(value));
 	}
 
 	@Override
@@ -409,6 +413,12 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	public void setBulbColor(Color color) {
 		bulb.setBulbColor(color);
 	}
+	
+	@Override
+	public void setCursor(Cursor cursor) {
+		super.setCursor(cursor);
+		thumb.setCursor(cursor);
+	}
 	/**
 	 * @param effect3D the effect3D to set
 	 */
@@ -421,6 +431,9 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
+		if(value)
+			thumb.setCursor(Cursors.HAND);
+		//the disabled cursor should be controlled by widget controller.
 		repaint();
 	}
 	

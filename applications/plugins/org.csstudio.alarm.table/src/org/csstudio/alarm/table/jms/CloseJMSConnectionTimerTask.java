@@ -23,7 +23,9 @@ package org.csstudio.alarm.table.jms;
 
 import java.util.TimerTask;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -37,12 +39,14 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 15.05.2008
  */
 public class CloseJMSConnectionTimerTask extends TimerTask {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(CloseJMSConnectionTimerTask.class);
 
 	private long _lastDBAcccessInMillisec;
 	
-	private SendMapMessage _sender;
+	private final SendMapMessage _sender;
 	
-	private long _closeThresholdInMillisec = 5 * 1000;
+	private final long _closeThresholdInMillisec = 5 * 1000;
 	
 	public CloseJMSConnectionTimerTask(SendMapMessage sender) {
 		_sender = sender;
@@ -53,18 +57,17 @@ public class CloseJMSConnectionTimerTask extends TimerTask {
 		long lastConnectionPeriod = System.currentTimeMillis() - _lastDBAcccessInMillisec;
 		if (lastConnectionPeriod > _closeThresholdInMillisec) {
 				try {
-					CentralLogger.getInstance().debug(this, "TimerTask stops JMS Connection");
+					LOG.debug("TimerTask stops JMS Connection");
 					_sender.stopSender();
 					this.cancel();
 				} catch (Exception e) {
-					CentralLogger.getInstance().error(this, 
-							"Close JMS Connection error: " + e.getMessage());
+					LOG.error("Close JMS Connection error: ", e);
 				}
 		}
 	}
 
 	public void set_lastDBAcccessInMillisec(long acccessInMillisec) {
-		CentralLogger.getInstance().debug(this, "Reset time of JMS Close Connection Timer Task");
+		LOG.debug("Reset time of JMS Close Connection Timer Task");
 		_lastDBAcccessInMillisec = acccessInMillisec;
 	}
 

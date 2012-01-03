@@ -41,13 +41,13 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void initializeDefaultPreferences()
-	{
-		IEclipsePreferences node = new DefaultScope().getNode(VoicemailConnectorPlugin.PLUGIN_ID);
+	public final void initializeDefaultPreferences() {
+		
+	    IEclipsePreferences node = new DefaultScope().getNode(VoicemailConnectorPlugin.PLUGIN_ID);
 
 		node.put(VoicemailConnectorPreferenceKey.P_VM_SERVICE, "localhost");
 		node.put(VoicemailConnectorPreferenceKey.P_VM_PORT, "1001");
-	    node.put(VoicemailConnectorPreferenceKey.P_MARY_HOST, "krykpcsms.desy.de");
+	    node.put(VoicemailConnectorPreferenceKey.P_MARY_HOST, "krykmarytts.desy.de");
 	    node.put(VoicemailConnectorPreferenceKey.P_MARY_PORT, "59125");
 	    node.put(VoicemailConnectorPreferenceKey.P_MARY_DEFAULT_LANGUAGE, "TEXT_DE");
 	    node.put(VoicemailConnectorPreferenceKey.P_XMPP_SERVER, "server.where.ever");

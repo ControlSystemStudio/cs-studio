@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.util.SchemaService;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -97,6 +98,7 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 		}
 		
 		GroupingContainerModel groupingContainerModel = new GroupingContainerModel();
+		SchemaService.getInstance().applySchema(groupingContainerModel);
 		// the parent should be the widget with minimum nested depth
 		AbstractContainerModel parent = minDepthWidget.getParent();		
 		

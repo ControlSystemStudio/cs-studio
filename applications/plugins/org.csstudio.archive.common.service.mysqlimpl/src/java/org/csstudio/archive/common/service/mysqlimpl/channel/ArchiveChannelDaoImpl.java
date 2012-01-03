@@ -21,10 +21,13 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
+import java.io.Serializable;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,28 +41,36 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.channel.ArchiveChannelId;
+import org.csstudio.archive.common.service.channel.ArchiveLimitsChannel;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystem;
 import org.csstudio.archive.common.service.controlsystem.ArchiveControlSystemId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
+import org.csstudio.archive.common.service.mysqlimpl.batch.BatchQueueHandlerSupport;
+import org.csstudio.archive.common.service.mysqlimpl.channel.UpdateDisplayInfoBatchQueueHandler.ArchiveChannelDisplayInfo;
 import org.csstudio.archive.common.service.mysqlimpl.controlsystem.ArchiveControlSystemDaoImpl;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandler;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
-import org.csstudio.archive.common.service.mysqlimpl.types.ArchiveTypeConversionSupport;
+import org.csstudio.archive.common.service.util.ArchiveTypeConversionSupport;
+import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
+import org.csstudio.domain.desy.epics.typesupport.EpicsSystemVariableSupport;
 import org.csstudio.domain.desy.system.ControlSystemType;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.Limits;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.MapMaker;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 
@@ -71,59 +82,80 @@ import com.google.inject.Inject;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
+    public static final String TAB = "channel";
+    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+    private static final String LST_TAB = "last_sample";
+
     private static final String EXC_MSG = "Channel table access failed.";
 
-    private static final Timestamp DEFAULT_ZERO_TIMESTAMP = new Timestamp(0L);
+    private static final String WHERE_SET_PLACEHOLDER = "<SET_CLAUSE>";
+
     /**
      * Archive channel configuration cache.
      */
-    private final Map<String, IArchiveChannel> _channelCacheByName = Maps.newHashMap();
-    private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById = Maps.newHashMap();
-
-    public static final String TAB = "channel";
-    private static final String CS_TAB = ArchiveControlSystemDaoImpl.TAB;
+    private final Map<String, IArchiveChannel> _channelCacheByName =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
+    private final Map<ArchiveChannelId, IArchiveChannel> _channelCacheById =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     private final String _selectChannelPrefix =
-        "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + TAB + ".last_sample_time, " +
-                    TAB + ".display_high, " + TAB + ".display_low, " +
+        "SELECT " + TAB + ".id, " + TAB + ".name, " + TAB + ".datatype, " + TAB + ".group_id, " + LST_TAB + ".time, " +
+                    TAB + ".enabled, " + TAB + ".display_high, " + TAB + ".display_low, " +
                  CS_TAB + ".id, " + CS_TAB + ".name, " + CS_TAB + ".type " +
-                "FROM " + getDatabaseName() + "." + TAB + ", " + getDatabaseName() + "." + CS_TAB;
-    private final String _selectChannelSuffix = "AND " + TAB + ".control_system_id=" + CS_TAB + ".id";
+                "FROM " + getDatabaseName() + "." + TAB + ", " +
+                          getDatabaseName() + "." + CS_TAB + ", " +
+                          getDatabaseName() + "." + LST_TAB;
+    private final String _selectChannelSuffix = " AND " + TAB + ".control_system_id=" + CS_TAB + ".id" +
+                                                " AND " + TAB + ".id=" + LST_TAB + ".channel_id";
 
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
-    private final String _selectChannelByNameStmt = _selectChannelPrefix + " WHERE " + TAB + ".name=? " + _selectChannelSuffix;
-    private final String _selectChannelByIdStmt =   _selectChannelPrefix + " WHERE " + TAB + ".id=? " + _selectChannelSuffix;
-    private final String _selectChannelsByGroupId = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
+    private final String _selectChannelByNamesStmt = _selectChannelPrefix + " WHERE " + TAB + ".name in " + WHERE_SET_PLACEHOLDER + _selectChannelSuffix;
+    private final String _selectChannelsByIdsStmt =   _selectChannelPrefix + " WHERE " + TAB + ".id in " + WHERE_SET_PLACEHOLDER + _selectChannelSuffix;
+    private final String _selectChannelsByGroupIdStmt = _selectChannelPrefix + " WHERE " + TAB + ".group_id=? " + _selectChannelSuffix +
                                                     " ORDER BY " + TAB + ".name";
     private final String _selectMatchingChannelsStmt = _selectChannelPrefix + " WHERE " + TAB + ".name REGEXP ? " + _selectChannelSuffix;
-    private final String _selectCountAllChannelsStmt = "SELECT count(*) from " + getDatabaseName() + "." + TAB;
+
+    private final String _createChannelsStmt = "INSERT INTO " + getDatabaseName() + "." + TAB +
+                                               " (name, datatype, group_id, control_system_id, enabled, display_high, display_low)" +
+                                               " VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    private final String _deleteChannelStmt= "DELETE FROM " + getDatabaseName() + "." + TAB +
+                                             " WHERE name=?";
+    private final String _updateChannelEnabledStmt = "UPDATE " + getDatabaseName() + "." + TAB +
+                                                     " SET enabled=? WHERE name=?";
+    private final String _updateChannelDatatypeStmt = "UPDATE " + getDatabaseName() + "." + TAB +
+                                                      " SET datatype=? WHERE id=?";
 
     /**
      * Constructor.
+     * @throws ArchiveDaoException
      */
     @Inject
     public ArchiveChannelDaoImpl(@Nonnull final ArchiveConnectionHandler handler,
                                  @Nonnull final PersistEngineDataManager persister) {
         super(handler, persister);
+
+        ArchiveTypeConversionSupport.install();
+        EpicsSystemVariableSupport.install();
+
+        BatchQueueHandlerSupport.installHandlerIfNotExists(new UpdateDisplayInfoBatchQueueHandler(getDatabaseName()));
     }
 
     @Nonnull
     private IArchiveChannel readChannelFromResultIntoCache(@Nonnull final ResultSet result)
                                                            throws SQLException,
-                                                                  ClassNotFoundException,
-                                                                  ArchiveDaoException,
                                                                   TypeSupportException {
-        // id, name, datatype, group_id, last_sample_time
         final ArchiveChannelId id = new ArchiveChannelId(result.getLong(TAB + ".id"));
         final String name = result.getString(TAB + ".name");
         final String datatype = result.getString(TAB + ".datatype");
         final long groupId = result.getLong(TAB + ".group_id");
-        final Timestamp lastSampleTime = result.getTimestamp(TAB + ".last_sample_time");
+        final long lastSampleTime = result.getLong(LST_TAB + ".time");
 
-        final TimeInstant time = lastSampleTime.after(DEFAULT_ZERO_TIMESTAMP) ?
-                                 TimeInstantBuilder.fromMillis(lastSampleTime.getTime()) :
+        final TimeInstant time = lastSampleTime > 0L ?
+                                 TimeInstantBuilder.fromNanos(lastSampleTime) :
                                  null;
+        final boolean isEnabled = result.getBoolean(TAB + ".enabled");
 
         String dispHi = result.getString(TAB + ".display_high");
         dispHi = Strings.isNullOrEmpty(dispHi) ? null : dispHi;
@@ -144,6 +176,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                                   new ArchiveChannelGroupId(groupId),
                                                                   time,
                                                                   cs,
+                                                                  isEnabled,
                                                                   dispLo,
                                                                   dispHi);
 
@@ -154,10 +187,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         return channel;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    private Collection<IArchiveChannel> retrieveChannelsBy(@Nonnull final Set<String> names)
-                                                           throws ArchiveDaoException {
-
+    public Set<IArchiveChannel> retrieveChannelsByNames(@Nonnull final Set<String> names) throws ArchiveDaoException {
         final Set<String> foundChannelNames = Sets.newHashSet();
         final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
 
@@ -174,7 +209,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         names.removeAll(foundChannelNames);
 
         try {
-            foundChannels.addAll(retrieveUncachedChannelsBy(names));
+
+            foundChannels.addAll(retrieveUncachedChannelsByNames(names));
+
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         }
@@ -185,71 +222,103 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public IArchiveChannel retrieveChannelBy(@Nonnull final String name) throws ArchiveDaoException {
+    @Nonnull
+    public Set<IArchiveChannel> retrieveChannelsByIds(@Nonnull final Set<ArchiveChannelId> ids) throws ArchiveDaoException {
 
-        final Collection<IArchiveChannel> channels = retrieveChannelsBy(Sets.newHashSet(name));
-        if (!channels.isEmpty()) {
-            return channels.iterator().next();
+        final Set<ArchiveChannelId> foundChannelIds = Sets.newHashSet();
+        final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(ids.size());
+
+        for (final ArchiveChannelId id : ids) {
+            final IArchiveChannel channel = _channelCacheById.get(id);
+            if (channel != null) {
+                foundChannels.add(channel);
+                foundChannelIds.add(channel.getId());
+            }
         }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
-
-        final IArchiveChannel channel = _channelCacheById.get(id);
-        if (channel != null) {
-            return channel;
+        if (foundChannels.size() == ids.size()) {
+            return foundChannels;
         }
+        ids.removeAll(foundChannelIds);
+
         try {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectChannelByIdStmt);
-            stmt.setInt(1, id.intValue());
-            return retrieveUncachedChannelBy(stmt);
+
+            foundChannels.addAll(retrieveUncachedChannelsByIds(ids));
+
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         }
-        return null;
+        return foundChannels;
     }
 
     @Nonnull
-    private Set<IArchiveChannel> retrieveUncachedChannelsBy(@Nonnull final Set<String> names)
-                                                          throws ArchiveConnectionException,
-                                                                 SQLException,
-                                                                 ClassNotFoundException,
-                                                                 ArchiveDaoException,
-                                                                 TypeSupportException {
+    private Set<IArchiveChannel> retrieveUncachedChannelsByNames(@Nonnull final Set<String> names)
+    throws ArchiveConnectionException, SQLException, TypeSupportException {
 
-        final Set<IArchiveChannel> foundChannels = Sets.newHashSetWithExpectedSize(names.size());
-        for (final String name : names) {
-            final PreparedStatement stmt = getConnection().prepareStatement(_selectChannelByNameStmt);
-            stmt.setString(1, name);
-            final IArchiveChannel channel = retrieveUncachedChannelBy(stmt);
-            if (channel != null) {
-                foundChannels.add(channel);
-            }
+        if (names.isEmpty()) {
+            return Collections.emptySet();
         }
-        return foundChannels;
+        final String nameSetClause = "('" + Joiner.on("', '").join(names) + "')";
+        final String stmtStr = _selectChannelByNamesStmt.replaceFirst(WHERE_SET_PLACEHOLDER, nameSetClause);
+
+        return retrieveUncachedChannelsByStatementString(stmtStr);
+    }
+
+    @Nonnull
+    private Set<IArchiveChannel> retrieveUncachedChannelsByIds(@Nonnull final Set<ArchiveChannelId> ids)
+    throws ArchiveConnectionException, SQLException, TypeSupportException {
+
+        if (ids.isEmpty()) {
+            return Collections.emptySet();
+        }
+        final Collection<String> idsAsStrings =
+            Collections2.transform(ids, new Function<ArchiveChannelId, String>() {
+                @Override
+                @Nonnull
+                public String apply(@Nonnull final ArchiveChannelId input) {
+                    return input.asString();
+                }
+
+        });
+        final String nameSetClause = "(" + Joiner.on(", ").join(idsAsStrings) + ")";
+        final String stmtStr = _selectChannelsByIdsStmt.replaceFirst(WHERE_SET_PLACEHOLDER, nameSetClause);
+
+        return retrieveUncachedChannelsByStatementString(stmtStr);
     }
 
 
     @CheckForNull
-    private IArchiveChannel retrieveUncachedChannelBy(@Nonnull final PreparedStatement stmt)
-                                                    throws SQLException, ClassNotFoundException, ArchiveDaoException, TypeSupportException
-                                                     {
+    private Set<IArchiveChannel> retrieveUncachedChannelsByStatement(@Nonnull final PreparedStatement stmt) throws SQLException, TypeSupportException {
+
+        ResultSet rs = null;
+        Set<IArchiveChannel> channels = Collections.emptySet();
         try {
-            final ResultSet result = stmt.executeQuery();
-            if (result != null && result.next()) {
-                return readChannelFromResultIntoCache(result);
+            rs = stmt.executeQuery();
+            if (rs == null) {
+                return channels;
+            }
+            channels = Sets.newHashSet();
+            while (rs.next()) {
+                channels.add(readChannelFromResultIntoCache(rs));
             }
         } finally {
-            closeStatement(stmt, "Closing of statement: '" + stmt.toString() + "' failed.");
+            closeSqlResources(rs, stmt, null, "in ResultSet by retrieval of yet uncached channels.");
         }
-        return null;
+        return channels;
+    }
+
+
+    @CheckForNull
+    private Set<IArchiveChannel> retrieveUncachedChannelsByStatementString(@Nonnull final String stmtStr)
+    throws SQLException, ArchiveConnectionException, TypeSupportException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(stmtStr);
+            return retrieveUncachedChannelsByStatement(stmt);
+        } finally {
+            closeSqlResources(null, stmt, conn, "in ResultSet by retrieval of yet uncached channels.");
+        }
     }
 
 
@@ -264,23 +333,17 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         if (!filteredList.isEmpty()) {
             return new ArrayList<IArchiveChannel>(filteredList);
         }
-        // Nothing yet in the cache? Ask the database:
+        Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            stmt = getConnection().prepareStatement(_selectChannelsByGroupId);
+            conn = createConnection();
+            stmt = conn.prepareStatement(_selectChannelsByGroupIdStmt);
             stmt.setInt(1, groupId.intValue());
-
-            final List<IArchiveChannel> channels = Lists.newArrayList();
-            final ResultSet result = stmt.executeQuery();
-            while (result.next()) {
-                channels.add(readChannelFromResultIntoCache(result));
-            }
-            return channels;
-
+            return retrieveUncachedChannelsByStatement(stmt);
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectChannelsByGroupId + " failed.");
+            closeSqlResources(null, stmt, conn, "Closing of connection failed for " + _selectChannelsByGroupIdStmt);
         }
         return Collections.emptyList();
     }
@@ -301,19 +364,48 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      * {@inheritDoc}
      */
     @Override
-    public <V extends Comparable<? super V>> void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
-                                                                      @Nonnull final V displayLow,
-                                                                      @Nonnull final V displayHigh) throws ArchiveDaoException {
-        String updateDisplayRangesStmt;
+    public <V extends Comparable<? super V> & Serializable>
+    void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
+                             @Nonnull final V displayLow,
+                             @Nonnull final V displayHigh) throws ArchiveDaoException {
         try {
-            updateDisplayRangesStmt = "UPDATE " + getDatabaseName() + "." + TAB +
-            " SET display_high=" + ArchiveTypeConversionSupport.toArchiveString(displayHigh) +
-            ", display_low=" + ArchiveTypeConversionSupport.toArchiveString(displayLow) +
-            " WHERE " + getDatabaseName() + "." + TAB + ".id=" + id.asString();
-
-            getEngineMgr().submitStatementToBatch(updateDisplayRangesStmt);
+            final ArchiveChannelDisplayInfo info =
+                new ArchiveChannelDisplayInfo(id,
+                                              ArchiveTypeConversionSupport.toArchiveString(displayHigh),
+                                              ArchiveTypeConversionSupport.toArchiveString(displayLow));
+            getEngineMgr().submitToBatch(Collections.singleton(info));
+            updateCache(id, displayLow, displayHigh);
         } catch (final TypeSupportException e) {
-            handleExceptions(EXC_MSG + " Display ranges could not be written.", e);
+            throw new ArchiveDaoException("Update display failed. No type support found for " + displayLow.getClass().getName(), e);
+        }
+    }
+
+    private <V extends Comparable<? super V> & Serializable>
+    void updateCache(@Nonnull final ArchiveChannelId id, @Nonnull final V low, @Nonnull final V high) {
+        final IArchiveChannel channel = _channelCacheById.get(id);
+        if (channel != null) {
+            final IArchiveChannel updatedChannel =
+                new ArchiveLimitsChannel<V>(channel, low, high);
+            _channelCacheById.put(updatedChannel.getId(), updatedChannel);
+            _channelCacheByName.put(updatedChannel.getName(), updatedChannel);
+        }
+
+    }
+
+    @SuppressWarnings("unused")
+    private void clearCache(@Nonnull final ArchiveChannelId id) {
+        final IArchiveChannel channel = _channelCacheById.get(id);
+        removeFromCaches(channel);
+    }
+    @SuppressWarnings("unused")
+    private void clearCache(@Nonnull final String name) {
+        final IArchiveChannel channel = _channelCacheByName.get(name);
+        removeFromCaches(channel);
+    }
+    private void removeFromCaches(@CheckForNull final IArchiveChannel channel) {
+        if (channel != null) {
+            _channelCacheByName.remove(channel.getName());
+            _channelCacheById.remove(channel.getId());
         }
     }
 
@@ -326,9 +418,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     public <V extends Comparable<? super V>>
     Limits<V> retrieveDisplayRanges(@Nonnull final String channelName) throws ArchiveDaoException {
 
-        final IArchiveChannel channel = retrieveChannelBy(channelName);
-        if (channel != null) {
-            return (Limits<V>) channel.getDisplayLimits();
+        final Set<IArchiveChannel> channels = retrieveChannelsByNames(Sets.newHashSet(channelName));
+        if (!channels.isEmpty()) {
+            return (Limits<V>) channels.iterator().next().getDisplayLimits();
         }
         return null;
     }
@@ -346,58 +438,153 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     @Nonnull
     public Collection<IArchiveChannel> retrieveChannelsByNamePattern(@Nonnull final Pattern pattern)
                                                                      throws ArchiveDaoException {
-        final int numOfChannels = retrieveNumberOfChannels();
-        if (_channelCacheByName.size() < numOfChannels) {
-
-            PreparedStatement stmt = null;
-            try {
-                stmt = getConnection().prepareStatement(_selectMatchingChannelsStmt);
-                stmt.setString(1, pattern.toString());
-
-                final ResultSet result = stmt.executeQuery();
-                while (result.next()) {
-                    readChannelFromResultIntoCache(result);
-                }
-            } catch (final Exception e) {
-                handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
-            } finally {
-                closeStatement(stmt, "Closing of statement: '" + _selectMatchingChannelsStmt + "' failed.");
-            }
-        }
-        return createMatchingChannelsCollection(_channelCacheByName, pattern);
-    }
-
-    @Nonnull
-    private Collection<IArchiveChannel> createMatchingChannelsCollection(@Nonnull final Map<String, IArchiveChannel> channelCacheByName,
-                                                                         @Nonnull final Pattern pattern) {
-        final Collection<IArchiveChannel> allChannels = channelCacheByName.values();
-
-        final Collection<IArchiveChannel> matchingChannels =
-            Collections2.filter(allChannels, new Predicate<IArchiveChannel>() {
-                @Override
-                public boolean apply(@Nonnull final IArchiveChannel channel) {
-                    final boolean matches = pattern.matcher(channel.getName()).matches();
-                    return matches;
-                }
-            });
-        return matchingChannels;
-    }
-
-
-    private int retrieveNumberOfChannels() throws ArchiveDaoException {
-
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
-            stmt = getConnection().prepareStatement(_selectCountAllChannelsStmt);
-            final ResultSet result = stmt.executeQuery();
-            if (result.next()) {
-                return result.getInt(1);
+            conn = createConnection();
+            stmt = conn.prepareStatement(_selectMatchingChannelsStmt);
+            stmt.setString(1, pattern.toString());
+            result = stmt.executeQuery();
+            final List<IArchiveChannel> list = Lists.newArrayList();
+            while (result.next()) {
+                list.add(readChannelFromResultIntoCache(result));
             }
+            return list;
         } catch (final Exception e) {
             handleExceptions(EXC_MSG + ": Number of channels could not be determined.", e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectCountAllChannelsStmt + " failed.");
+            closeSqlResources(result, stmt, conn, _selectMatchingChannelsStmt);
         }
-        return 0;
+        return Collections.emptyList();
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<IArchiveChannel> createChannels(@Nonnull final Collection<IArchiveChannel> channels)
+                                                      throws ArchiveDaoException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        Collection<IArchiveChannel> notAddedChannels = Collections.emptyList();
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_createChannelsStmt);
+            for (final IArchiveChannel chan : channels) {
+                stmt.setString(1, chan.getName());
+                stmt.setString(2, chan.getDataType());
+                stmt.setInt(3, chan.getGroupId().intValue());
+                stmt.setInt(4, chan.getControlSystem().getId().intValue());
+                stmt.setBoolean(5, chan.isEnabled());
+                final Limits<?> limits = chan.getDisplayLimits();
+                stmt.setString(6, limits != null ? String.valueOf(limits.getHigh()) : null);
+                stmt.setString(7, limits != null ? String.valueOf(limits.getLow()) : null);
+
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } catch (final BatchUpdateException e) {
+            notAddedChannels = createNotAddedChannels(channels, e);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG + ": Channel creation failed.", e);
+        } finally {
+            closeSqlResources(null, stmt, conn, _createChannelsStmt);
+        }
+        return notAddedChannels;
+    }
+
+    @Nonnull
+    private Collection<IArchiveChannel> createNotAddedChannels(@Nonnull final Collection<IArchiveChannel> channels,
+                                                               @Nonnull final BatchUpdateException e) {
+        final List<IArchiveChannel> notAddedChannels = Lists.newArrayList();
+        final int[] updateCounts = e.getUpdateCounts();
+        int i = 0;
+        for (final IArchiveChannel chan : channels) {
+            if (updateCounts[i] == Statement.EXECUTE_FAILED) {
+                notAddedChannels.add(chan);
+            }
+            i++;
+        }
+        return notAddedChannels;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public DeleteResult deleteChannel(@Nonnull final String name) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_deleteChannelStmt);
+            stmt.setString(1, name);
+            final int deleted = stmt.executeUpdate();
+            if (deleted == 1) {
+                return DeleteResult.succeeded("Deletion of channel '" + name + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return DeleteResult.failed("Deletion of channel failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, conn, _deleteChannelStmt);
+        }
+        return DeleteResult.failed("Deletion of channel failed. Number of updated rows != 1.");
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public UpdateResult updateChannelEnabledFlag(@Nonnull final String name, final boolean isEnabled) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_updateChannelEnabledStmt);
+            stmt.setBoolean(1, isEnabled);
+            stmt.setString(2, name);
+            final int updated = stmt.executeUpdate();
+            if (updated == 1) {
+                return UpdateResult.succeeded("Update of enabled flag for channel '" + name + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return UpdateResult.failed("Update of enabled flag for channel '" + name + "' failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, conn, _deleteChannelStmt);
+        }
+        return UpdateResult.failed("Channel '" + name + "' has not been updated, doesn't it exist?");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public UpdateResult updateChannelDatatype(@Nonnull final ArchiveChannelId id,
+                                              @Nonnull final String datatype) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_updateChannelDatatypeStmt);
+            stmt.setString(1, datatype);
+            stmt.setInt(2, id.intValue());
+            final int updated = stmt.executeUpdate();
+            if (updated == 1) {
+                return UpdateResult.succeeded("Update of datatype for channel '" + id.asString() + "' succeeded.");
+            }
+        } catch (final Exception e) {
+            return UpdateResult.failed("Update of datatype for channel '" + id.asString() + "' failed:\n" + e.getMessage());
+        } finally {
+            closeSqlResources(null, stmt, conn, _deleteChannelStmt);
+        }
+        return UpdateResult.failed("Channel '" + id.asString() + "' has not been updated, doesn't it exist?");
+    }
+
 }

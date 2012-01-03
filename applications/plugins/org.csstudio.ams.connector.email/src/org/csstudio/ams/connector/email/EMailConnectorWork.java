@@ -1,128 +1,123 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- 
+
 package org.csstudio.ams.connector.email;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Properties;
+
 import javax.jms.MapMessage;
 import javax.jms.Message;
-// import javax.jms.Topic;
-// import javax.jms.TopicSubscriber;
 import javax.mail.Address;
 import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class EMailConnectorWork extends Thread implements AmsConstants
-{
-    private EMailConnectorStart         ecs                 = null;
-    
-    private javax.mail.Session          mailSession         = null;
-    private EMailConnectorProperties    props               = null;
+public class EMailConnectorWork extends Thread implements AmsConstants {
 
-    private JmsRedundantReceiver        amsReceiver  = null;
-    // private Context                     amsContext          = null;
-    // private ConnectionFactory           amsFactory          = null;
-    // private Connection                  amsConnection       = null;
-    // private javax.jms.Session           amsSession          = null;
-    
-    // CHANGED BY: Markus Möller, 28.06.2007
-    // private TopicSubscriber             amsSubscriberEmail  = null;
-    // private MessageConsumer             amsSubscriberEmail  = null;
-    
-    private boolean bStop = false;
-    private boolean bStoppedClean = false;
+    private final EMailConnectorStart ecs;
+    private Session mailSession;
+    private EMailConnectorProperties props;
+    private JmsRedundantReceiver amsReceiver;
+    private boolean bStop;
+    private boolean bStoppedClean;
 
-    public EMailConnectorWork(EMailConnectorStart ecs)
-    {
-        this.ecs = ecs;
+    public EMailConnectorWork(final EMailConnectorStart starterClass) {
+        ecs = starterClass;
+        mailSession = null;
+        props = null;
+        amsReceiver = null;
+        bStop = false;
+        bStoppedClean = false;
     }
-    
-    public void run()
-    {
+
+    public EMailConnectorProperties getMailProperties() {
+        return props;
+    }
+
+    @Override
+    public void run() {
+
         boolean bInitedEmail = false;
         boolean bInitedJms = false;
         int iErr = EMailConnectorStart.STAT_OK;
-        Log.log(this, Log.INFO, "start email connector work");
+        Log.log(this, Log.INFO, "Start EMailConnectorWork");
         bStop = false;
-        
-        while(bStop == false)
-        {
-            try
-            {
-                if (!bInitedEmail)
-                {
+
+        while(bStop == false) {
+
+            try {
+                if (!bInitedEmail) {
                     bInitedEmail = initEmail();
-                    if (!bInitedEmail)
-                    {
+                    if (!bInitedEmail) {
                         iErr = EMailConnectorStart.STAT_ERR_EMAIL;
                         ecs.setStatus(iErr);                                    // set it for not overwriting with next error
                     }
                 }
 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
-                    if (!bInitedJms)
-                    {
+                    if (!bInitedJms) {
                         iErr = EMailConnectorStart.STAT_ERR_JMSCON;
                         ecs.setStatus(iErr);                                    // set it for not overwriting with next error
                     }
                 }
 
-                sleep(100);
+                sleep(1);
 
-                if (bInitedEmail && bInitedJms)
-                {
+                if (bInitedEmail && bInitedJms) {
                     iErr = EMailConnectorStart.STAT_OK;
-                    if (ecs.getStatus() == EMailConnectorStart.STAT_INIT)
+                    if (ecs.getStatus() == EMailConnectorStart.STAT_INIT) {
                         ecs.setStatus(EMailConnectorStart.STAT_OK);
+                    }
 
-                    Log.log(this, Log.DEBUG, "runs");
-                    
                     Message message = null;
                     try
                     {
                         message = amsReceiver.receive("amsSubscriberEmail");
                     }
-                    catch(Exception e)
+                    catch(final Exception e)
                     {
                         Log.log(this, Log.FATAL, "could not receive from internal jms", e);
                         iErr = EMailConnectorStart.STAT_ERR_JMSCON;
                     }
                     if (message != null)
+                     {
                         iErr = sendEmailMsg(message);                           // send 1 Email, other in the next run
-                    
+                    }
+
 //                  if (iErr == EMailConnectorStart.STAT_OK)
 //                      iErr = readEmailMsg(10);                                // later if reply and changeStat are needed
-                    
+
                     if (iErr == EMailConnectorStart.STAT_ERR_EMAIL_SEND)
                     {
                         closeEmail();
@@ -145,7 +140,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                 // set status in every loop
                 ecs.setStatus(iErr);                                            // set error status, can be OK if no error
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 ecs.setStatus(EMailConnectorStart.STAT_ERR_UNKNOWN);
                 Log.log(this, Log.FATAL, e);
@@ -156,7 +151,7 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                 bInitedJms = false;
             }
         }
-        
+
         closeJms();
         closeEmail();
         bStoppedClean = true;
@@ -171,10 +166,10 @@ public class EMailConnectorWork extends Thread implements AmsConstants
     {
         bStop = true;
     }
-    
+
     /**
      * Returns the shutdown state.
-     * 
+     *
      * @return True, if the shutdown have occured clean otherwise false
      */
     public boolean stoppedClean()
@@ -188,20 +183,21 @@ public class EMailConnectorWork extends Thread implements AmsConstants
         {
             props = new EMailConnectorProperties();
 
-            Properties mailProps = new Properties();
+            final Properties mailProps = new Properties();
             loadMailProps(mailProps);
-            
+
             javax.mail.Authenticator auth = null;
             if (props.getMailAuthUser() != null && props.getMailAuthUser().length() > 0)
             {
                 auth = new javax.mail.Authenticator(){
+                    @Override
                     public PasswordAuthentication getPasswordAuthentication()
                     {
-                        return new PasswordAuthentication(props.getMailAuthUser()
-                                , props.getMailAuthPassword());
+                        return new PasswordAuthentication(getMailProperties().getMailAuthUser()
+                                , getMailProperties().getMailAuthPassword());
                     }};
             }
-            
+
             for (int i = 1 ; i <= 3 ; i++)
             {
                 try
@@ -210,11 +206,13 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                             + "' user=" + props.getMailAuthUser() + ") try=" + i);
                     mailSession = javax.mail.Session.getDefaultInstance(mailProps, auth);
                     if (mailSession != null)
+                     {
                         return true;                                            // initEmail done
+                    }
 
                     Log.log(this, Log.WARN, "Email initialization failed. try=" + i);
                 }
-                catch (Exception e)
+                catch (final Exception e)
                 {
                     Log.log(this, Log.WARN, "Email initialization failed. try=" + i);
                 }
@@ -222,13 +220,13 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                 sleep(5000);
             }
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Log.log(this, Log.FATAL, "could not init email", e);
         }
         return false;
     }
-    
+
     public void closeEmail()
     {
         if (mailSession != null)
@@ -241,23 +239,23 @@ public class EMailConnectorWork extends Thread implements AmsConstants
         }
         Log.log(this, Log.INFO, "Email communication closed.");
     }
-    
+
     private boolean initJms()
     {
         boolean result = false;
 
         try
         {
-            IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
-            
-            boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
+            final IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
+
+            final boolean durable = Boolean.parseBoolean(storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
             /*
             Hashtable<String, String> properties = new Hashtable<String, String>();
-            
-            properties.put(Context.INITIAL_CONTEXT_FACTORY, 
+
+            properties.put(Context.INITIAL_CONTEXT_FACTORY,
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_CONNECTION_FACTORY_CLASS));
-            properties.put(Context.PROVIDER_URL, 
+            properties.put(Context.PROVIDER_URL,
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_PROVIDER_URL_1));
             amsContext = new InitialContext(properties);
 
@@ -267,33 +265,33 @@ public class EMailConnectorWork extends Thread implements AmsConstants
 
             // ADDED BY: Markus M�ller, 25.05.2007
             amsConnection.setClientID("EMailConnectorWorkInternal");
-            
+
             amsSession = amsConnection.createSession(false, javax.jms.Session.CLIENT_ACKNOWLEDGE);
 
             amsConnection.start();
             */
-            
-            // CHANGED BY: Markus Möller, 25.05.2007
+
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR));
             */
-            
-            // CHANGED BY: Markus Möller, 28.06.2007
+
+            // CHANGED BY: Markus Moeller, 28.06.2007
             /*
             amsSubscriberEmail = amsSession.createDurableSubscriber(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)),
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TSUB_EMAIL_CONNECTOR));
             */
-            
+
             /*
             amsSubscriberEmail = amsSession.createConsumer(amsSession.createTopic(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR)));
             */
-            
-            String url1 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1);
-			String url2 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2);
+
+            final String url1 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1);
+			final String url2 = storeAct.getString(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2);
 			Log.log(this, Log.INFO, "Connecting for urls: "+url1+" and "+url2);
 			amsReceiver = new JmsRedundantReceiver("EMailConnectorWorkReceiverInternal", url1,
                     url2);
@@ -314,10 +312,10 @@ public class EMailConnectorWork extends Thread implements AmsConstants
                 Log.log(this, Log.FATAL, "could not create amsSubscriberEmail");
                 return false;
             }
-            
+
             return true;
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             Log.log(this, Log.FATAL, "could not init internal Jms", e);
         }
@@ -340,110 +338,116 @@ public class EMailConnectorWork extends Thread implements AmsConstants
         if (amsContext != null){try{amsContext.close();amsContext=null;}
         catch (NamingException e){Log.log(this, Log.WARN, e);}}
         */
-        
+
         if(amsReceiver != null)
         {
             amsReceiver.closeAll();
         }
-        
+
         Log.log(this, Log.INFO, "jms internal communication closed");
     }
-    
-    private boolean acknowledge(Message msg)
+
+    private boolean acknowledge(final Message msg)
     {
         try
         {
             msg.acknowledge();
             return true;
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             Log.log(this, Log.FATAL, "could not acknowledge", e);
         }
         return false;
     }
-    
-    private int sendEmailMsg(Message message) throws Exception
-    {
-        if (!(message instanceof MapMessage))
-        {
+
+    private int sendEmailMsg(final Message message) throws Exception {
+
+        if (!(message instanceof MapMessage)) {
             Log.log(this, Log.WARN, "got unknown message " + message);
-            if (!acknowledge(message))                                          // deletes all received messages of the session
+            if (!acknowledge(message)) {
                 return EMailConnectorStart.STAT_ERR_JMSCON;
+            }
             return EMailConnectorStart.STAT_OK;
         }
-        else
+
+        final MapMessage msg = (MapMessage) message;
+        String text = msg.getString(MSGPROP_RECEIVERTEXT);
+        final String emailadr = msg.getString(MSGPROP_RECEIVERADDR);
+        final String userName = msg.getString(MSGPROP_SUBJECT_USERNAME);
+
+        Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): -1- userName="+userName+", emailadr="+emailadr+", text="+text+"\"");
+
+        final String mySubject = props.getMailSubject();
+        String myContent = props.getMailContent();
+        myContent = myContent.replaceAll("%N", userName);
+
+        // Sometimes it happens that the placeholder (e.g. $VALUE$, $HOST$, ...)
+        // for the alarm message properties are still present.
+        // The dollar sign of this placeholders have to be deleted because they cause an
+        // IllegalArgumentException when calling method replaceAll()
+        text = cleanTextString(text);
+
+        myContent = myContent.replaceAll("%AMSG", text);
+
+        Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): -2- userName="+userName+", emailadr="+emailadr+", text="+text+"\"");
+        Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): myContent="+myContent);
+
+        int iErr = EMailConnectorStart.STAT_ERR_UNKNOWN;
+        for (int j = 1 ; j <= 5 ; j++)                                      //only for short net breaks
         {
-            MapMessage msg = (MapMessage) message;
-            String text = msg.getString(MSGPROP_RECEIVERTEXT);
-            String emailadr = msg.getString(MSGPROP_RECEIVERADDR);
-            String userName = msg.getString(MSGPROP_SUBJECT_USERNAME);
-            
-            Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): -1- userName="+userName+", emailadr="+emailadr+", text="+text+"\"");
-            
-            String mySubject = props.getMailSubject();
-            String myContent = props.getMailContent();
-            myContent = myContent.replaceAll("%N", userName);
-            myContent = myContent.replaceAll("%AMSG", text);
-
-            Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): -2- userName="+userName+", emailadr="+emailadr+", text="+text+"\"");
-            Log.log(Log.INFO, "EMailConnectorWork.sendEmailMsg(): myContent="+myContent);
-            
-            int iErr = EMailConnectorStart.STAT_ERR_UNKNOWN;
-            for (int j = 1 ; j <= 5 ; j++)                                      //only for short net breaks
+            if (sendEmail(mySubject, myContent, emailadr, userName))
             {
-                if (sendEmail(mySubject, myContent, emailadr, userName))
-                {
-                    if (acknowledge(message))                                   // deletes all received messages of the session
-                        return EMailConnectorStart.STAT_OK;
+                if (acknowledge(message)) {
+                    return EMailConnectorStart.STAT_OK;
+                }
 
-                    iErr = EMailConnectorStart.STAT_ERR_JMSCON;
-                }
-                else
-                {
-                    iErr = EMailConnectorStart.STAT_ERR_EMAIL_SEND;
-                }
-                
-                sleep(2000);
+                iErr = EMailConnectorStart.STAT_ERR_JMSCON;
             }
-            
-            return iErr;
+            else
+            {
+                iErr = EMailConnectorStart.STAT_ERR_EMAIL_SEND;
+            }
+
+            sleep(2000);
         }
+
+        return iErr;
     }
-    
-    private boolean sendEmail(String subject, 
-            String content, 
-            String recAddr, 
-            String recName) throws Exception
+
+    private boolean sendEmail(final String subject,
+            final String content,
+            final String recAddr,
+            final String recName) throws Exception
     {
         Log.log(this, Log.INFO, "start sendEmail");
 
-        javax.mail.Message msg = new MimeMessage(mailSession);
-        Address sender = new InternetAddress(props.getMailSenderAdress());
+        final javax.mail.Message msg = new MimeMessage(mailSession);
+        final Address sender = new InternetAddress(props.getMailSenderAdress());
         msg.setFrom(sender);
-        Address receiver = new InternetAddress(recAddr/*, recName*/);
+        final Address receiver = new InternetAddress(recAddr/*, recName*/);
 
         msg.setRecipient(javax.mail.Message.RecipientType.TO, receiver);
         msg.setSubject(subject);
         msg.setContent(content, "text/plain");
-        
+
         try{
             Transport.send(msg);
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             Log.log(this, Log.INFO, "could not Transport.send()", e);
             return false;                                                       //only with exceptions at this line => email error
         }
-        
+
         Log.log(this, Log.INFO, "Email sent to " + recName + " (" + recAddr + ")");
         return true;
     }
-    
-    private void loadMailProps(Properties mailProps) throws Exception
+
+    private void loadMailProps(final Properties mailProps) throws Exception
     {
         InputStream input = null;
-        try 
+        try
         {
             //If possible, one should try to avoid hard-coding a path in this
             //manner; in a web application, one should place such a file in
@@ -456,20 +460,34 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             input = new ByteArrayInputStream(props.getMailServerConfig().getBytes());
             mailProps.load( input );
         }
-        catch ( Exception ex )
+        catch ( final Exception ex )
         {
             ex.printStackTrace();
             throw ex;
         }
-        finally 
+        finally
         {
             try {
-                if (input != null)
+                if (input != null) {
                     input.close();
-            }   
-            catch ( Exception ex ){}
+                }
+            } catch (final Exception ex) {
+                // Can be ignored
+            }
         }
     }
+
+    private String cleanTextString(final String text) {
+
+        if (text == null) {
+            return "";
+        } else if (text.length() == 0) {
+            return "";
+        }
+
+        return text.replace("$", "");
+    }
+
 /*
     private void dummyConnect(String pop3Host, String user, String password) throws Exception
     //for gmx.de or web.de accounts
@@ -499,9 +517,9 @@ public class EMailConnectorWork extends Thread implements AmsConstants
             System.out.println(folder + " is empty");
         else
             System.out.println(folder + " totalMessages = " + totalMessages);
-        
+
         folder.close(true);
         store.close();
     }
-*/  
+*/
 }

@@ -21,21 +21,19 @@
  */
 package org.csstudio.archive.common.engine.model;
 
+import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.common.engine.ArchiveEnginePreference;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
-import org.csstudio.archive.common.service.util.DataRescueException;
-import org.csstudio.domain.desy.calc.CumulativeAverageCache;
+import org.csstudio.domain.desy.calc.AverageWithExponentialDecayCache;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.task.AbstractTimeMeasuredRunnable;
@@ -55,13 +53,20 @@ import com.google.common.collect.Lists;
 final class WriteWorker extends AbstractTimeMeasuredRunnable {
 
     private static final Logger WORKER_LOG = LoggerFactory.getLogger(WriteWorker.class);
+    /**
+     * See configuration of this logger - if log4j is used - see log4j.properties
+     */
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
 
     private final String _name;
-    private final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> _channels;
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _channels;
 
     private final long _periodInMS;
     /** Average number of values per write run */
-    private final CumulativeAverageCache _avgWriteCount = new CumulativeAverageCache();
+    private final AverageWithExponentialDecayCache _avgWriteCount =
+        new AverageWithExponentialDecayCache(0.9);
+
 
     private final IServiceProvider _provider;
 
@@ -72,11 +77,13 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
      */
     public WriteWorker(@Nonnull final IServiceProvider provider,
                        @Nonnull final String name,
-                       @Nonnull final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> channels,
+                       @Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels,
                        final long periodInMS) {
         _provider = provider;
         _name = name;
+
         _channels = channels;
+
         _periodInMS = periodInMS;
 
         WORKER_LOG.info("{} created with period {}ms", _name, periodInMS);
@@ -88,13 +95,11 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
     @Override
     public void measuredRun() {
         try {
-            WORKER_LOG.info("WRITE TO SERVICE: {} at {}", _name, TimeInstantBuilder.fromNow().formatted());
+            WORKER_LOG.info("WRITER RUN: {}", _name);
 
-            List<IArchiveSample<Object, ISystemVariable<Object>>> samples = Collections.emptyList();
+            final long written = collectSampleFromBuffersAndWriteToService(_channels);
 
-            samples = collectSamplesFromBuffers(_channels);
-
-            final long written = writeSamples(_provider,  samples);
+            WORKER_LOG.info("WRITER WRITTEN: {}", written);
 
             _lastWriteTime = TimeInstantBuilder.fromNow();
             _avgWriteCount.accumulate(Double.valueOf(written));
@@ -102,53 +107,63 @@ final class WriteWorker extends AbstractTimeMeasuredRunnable {
         } catch (final ArchiveServiceException e) {
             WORKER_LOG.error("Exception within service impl. Data rescue should be handled there.", e);
         } catch (final Throwable t) {
-            WORKER_LOG.error("Unknown throwable. Thread {} is terminated", _name);
+            WORKER_LOG.error("Unknown throwable in thread {}\n{}:", _name, t.toString());
             t.printStackTrace();
+            EMAIL_LOG.info("Unknown throwable in thread {}.\n{}", _name, t.getMessage());
         }
+    }
+
+
+    private long collectSampleFromBuffersAndWriteToService(@Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> channels)
+    throws ArchiveServiceException {
+
+        long written = 0;
+
+        final LinkedList<IArchiveSample<Serializable, ISystemVariable<Serializable>>> bufferSamples =
+            Lists.newLinkedList();
+
+        for (final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel : channels) {
+
+            final SampleBuffer<Serializable, ISystemVariable<Serializable>, IArchiveSample<Serializable, ISystemVariable<Serializable>>> buffer =
+                channel.getSampleBuffer();
+
+            if (buffer.isEmpty()) {
+                continue;
+            }
+            buffer.updateStats();
+
+            buffer.drainTo(bufferSamples);
+
+            written += writeSamples(_provider,  bufferSamples);
+
+            bufferSamples.clear();
+        }
+        return written;
     }
 
     private long writeSamples(@Nonnull final IServiceProvider provider,
-                              @Nonnull final List<IArchiveSample<Object, ISystemVariable<Object>>> samples)
-                              throws ArchiveServiceException {
+                              @Nonnull final List<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples) throws ArchiveServiceException {
 
+        IArchiveEngineFacade service;
         try {
-            final IArchiveEngineFacade service = provider.getEngineFacade();
-            service.writeSamples(samples);
+            service = provider.getEngineFacade();
         } catch (final OsgiServiceUnavailableException e) {
-            try {
-                ArchiveEngineSampleRescuer.with(samples).to(ArchiveEnginePreference.DATA_RESCUE_DIR.getValue()).rescue();
-            } catch (final DataRescueException e1) {
-                WORKER_LOG.error("Data rescue to file system failed!: {}", e1.getMessage());
-                throw new ArchiveServiceException("Data rescue failed.", e1);
-            }
+            EMAIL_LOG.error("Archive service unavailable: {}\nRescue serialized samples", e.getMessage());
+            ArchiveEngineSampleRescuer.with(samples).rescue();
+            return 0;
         }
-
+        // when there's a service, the service impl handles the rescue of data
+        service.writeSamples(samples);
         return samples.size();
-    }
-
-    @Nonnull
-    private LinkedList<IArchiveSample<Object, ISystemVariable<Object>>>
-    collectSamplesFromBuffers(@Nonnull final Collection<ArchiveChannel<Object, ISystemVariable<Object>>> channels) {
-
-        final LinkedList<IArchiveSample<Object, ISystemVariable<Object>>> allSamples = Lists.newLinkedList();
-
-        for (final ArchiveChannel<Object, ISystemVariable<Object>> channel : channels) {
-            final SampleBuffer<Object, ISystemVariable<Object>, IArchiveSample<Object, ISystemVariable<Object>>> buffer =
-                channel.getSampleBuffer();
-
-            buffer.updateStats();
-            buffer.drainTo(allSamples);
-        }
-        return allSamples;
     }
 
     public long getPeriodInMS() {
         return _periodInMS;
     }
 
-    @Nonnull
-    protected CumulativeAverageCache getAvgWriteCount() {
-        return _avgWriteCount;
+    @CheckForNull
+    protected Double getAvgWriteCount() {
+        return _avgWriteCount.getValue();
     }
 
     @CheckForNull

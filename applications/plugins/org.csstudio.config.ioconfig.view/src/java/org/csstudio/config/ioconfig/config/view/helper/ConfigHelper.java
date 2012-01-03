@@ -46,12 +46,10 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.tools.UserName;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.auth.security.SecurityFacade;
-import org.csstudio.auth.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -72,6 +70,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -96,8 +96,8 @@ public final class ConfigHelper {
 
         @Override
         public void keyPressed(@Nonnull final KeyEvent e) {
-            Spinner spinner = (Spinner) e.widget;
-            if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
+            final Spinner spinner = (Spinner) e.widget;
+            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                 _modifyListener.doIt();
                 spinner.setSelection(spinner.getSelection());
                 // _modifyListener.modifyText(new ModifyEvent(new Event()));
@@ -125,18 +125,26 @@ public final class ConfigHelper {
      */
     private static final class SpinnerModifyListener implements ModifyListener {
         private final ProfiBusTreeView _profiBusTreeView;
-        private final AbstractNodeDBO _node;
+        private final AbstractNodeDBO<?,?> _node;
         private final Spinner _indexSpinner;
         private boolean _doIt = true;
         private int _lastValue;
 
         protected SpinnerModifyListener(@Nonnull final ProfiBusTreeView profiBusTreeView,
-                                      @Nonnull final AbstractNodeDBO node,
-                                      @Nonnull final Spinner indexSpinner) {
+                                        @Nonnull final AbstractNodeDBO<?,?> node,
+                                        @Nonnull final Spinner indexSpinner) {
             _profiBusTreeView = profiBusTreeView;
             _node = node;
             _indexSpinner = indexSpinner;
             _lastValue = indexSpinner.getSelection();
+        }
+
+        public void doIt() {
+            _doIt = true;
+        }
+
+        public void doItNot() {
+            _doIt = false;
         }
 
         public int getLastvalue() {
@@ -147,8 +155,8 @@ public final class ConfigHelper {
         public void modifyText(@Nullable final ModifyEvent e) {
             if (_doIt) {
                 // TODO: Hier gibt es noch ein GDI Object leak.
-                short index = (short) _indexSpinner.getSelection();
-                
+                final short index = (short) _indexSpinner.getSelection();
+
                 try {
                     _node.moveSortIndex(index);
                     if (_node.getParent() != null) {
@@ -157,21 +165,15 @@ public final class ConfigHelper {
                         _profiBusTreeView.refresh();
                     }
                     _lastValue = index;
-                } catch (PersistenceException e1) {
+                } catch (final PersistenceException e1) {
                     DeviceDatabaseErrorDialog.open(null, "Can't move node!", e1);
-                    CentralLogger.getInstance().error(this, e1);
+                    LOG.error("Can't move node!", e1);
                 }
             }
         }
-
-        public void doIt() {
-            _doIt = true;
-        }
-
-        public void doItNot() {
-            _doIt = false;
-        }
     }
+
+    protected static final Logger LOG = LoggerFactory.getLogger(ConfigHelper.class);
 
     /**
      * The standard Date format.
@@ -186,21 +188,140 @@ public final class ConfigHelper {
     }
 
     /**
-     * @param head
-     *            Headline for the Tab.
-     * @param tabFolder
-     *            The Tab Folder to add the Tab Item.
-     * @param size
-     *            the number of column
-     * @return Tab Item Composite.
+     * Put a Text file into a String.
+     *
+     * @param file
+     *            the Text file.
+     * @return the Text of the File.
+     * @throws IOException
      */
     @Nonnull
-    public static Composite getNewTabItem(@Nonnull final String head,
-                                          @Nonnull final TabFolder tabFolder,
-                                          final int size,
-                                          final int minWidthSize,
-                                          final int minHeight) {
-        return getNewTabItem(head, tabFolder, size, null, minWidthSize, minHeight);
+    public static String file2String(@Nonnull final File file) throws IOException {
+        StringBuilder text = new StringBuilder();
+        BufferedReader br = null;
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(file);
+            br = new BufferedReader(fileReader);
+            String tmp;
+            while ( (tmp = br.readLine()) != null) {
+                text = text.append(tmp + "\r\n");
+            }
+        } catch (final FileNotFoundException e1) {
+            throw e1;
+        } catch (final IOException e2) {
+            throw e2;
+        } finally {
+            if(br!=null) {
+                br.close();
+            }
+            if(fileReader!=null) {
+                fileReader.close();
+            }
+        }
+
+
+        return text.toString();
+    }
+
+    @CheckForNull
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node) {
+        return getImageFromNode(node, -1, -1);
+    }
+
+    // CHECKSTYLE OFF: CyclomaticComplexity
+    @CheckForNull
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node, final int width, final int height) {
+        Image image = null;
+        if (node != null) {
+            final NodeImageDBO icon = node.getIcon();
+            if (icon != null) {
+                final ByteArrayInputStream bais = new ByteArrayInputStream(icon.getImageBytes());
+                image = new Image(null, bais);
+                // Get Default Image
+            } else if (node instanceof FacilityDBO) {
+                image =  getImageMaxSize("icons/css.gif", width, height);
+            } else if (node instanceof FacilityDBO) {
+                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
+            } else if (node instanceof IocDBO) {
+                image =  getImageMaxSize("icons/Buskopan.bmp", width, height);
+            } else if (node instanceof ProfibusSubnetDBO) {
+                image =  getImageMaxSize("icons/Profibus2020.bmp", width, height);
+            } else if (node instanceof MasterDBO) {
+                image =  getImageMaxSize("icons/ProfibusMaster2020.bmp", width, height);
+            } else if (node instanceof SlaveDBO) {
+                image =  getImageMaxSize("icons/sie80a6n.bmp", width, height);
+            } else if (node instanceof ModuleDBO) {
+                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
+            } else if (node instanceof ChannelDBO) {
+                final ChannelDBO channel = (ChannelDBO) node;
+                image =  getChannelImage(channel.isInput(), channel.isDigital(), width, height);
+            }
+        }
+        return image;
+    }
+    // CHECKSTYLE ON: CyclomaticComplexity
+
+    @Nonnull
+    public static Image getImageMaxSize(@Nonnull final String imagePath, final int width, final int height) {
+        final ImageData imageData = CustomMediaFactory.getInstance()
+        .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, imagePath).getImageData();
+        if (width > 0 && height > 0) {
+            int width2 = imageData.width;
+            int height2 = imageData.height;
+
+            if (width2 > width && height2 > height) {
+                width2 = width;
+                height2 = height;
+            }
+
+            return new Image(null, imageData.scaledTo(width2, height2));
+        }
+        return new Image(null, imageData);
+    }
+
+    /**
+     *
+     * @param parent
+     *            The Parent composite.
+     * @param node
+     *            The Node that index the Spinner modify.
+     * @param modifyListener
+     *            The ModifyListener to set the Save dirty bit.
+     * @param label
+     *            Label text for Spinner
+     * @param profiBusTreeView
+     *            IO Config TreeViewer.
+     * @param max TODO
+     * @return the Sort Index Spinner.
+     */
+    @Nonnull
+    public static Spinner getIndexSpinner(@Nonnull final Composite parent,
+                                          @Nonnull final AbstractNodeDBO<?,?> node,
+                                          @Nonnull final ModifyListener modifyListener,
+                                          @Nonnull final String label,
+                                          @Nonnull final ProfiBusTreeView profiBusTreeView, final int max) {
+        final int min = 0;
+
+        // Label
+        final Label slotIndexLabel = new Label(parent, SWT.NONE);
+        slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
+        slotIndexLabel.setText(label);
+        // Spinner
+        final Spinner indexSpinner = new Spinner(parent, SWT.WRAP);
+        indexSpinner.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
+        indexSpinner.setMinimum(min);
+        indexSpinner.setMaximum(max);
+        indexSpinner.setSelection(node.getSortIndex());
+        indexSpinner.setData((short) node.getSortIndex());
+        indexSpinner.addModifyListener(modifyListener);
+        final SpinnerModifyListener spinnerModifyListener = new SpinnerModifyListener(profiBusTreeView,
+                                                                                      node,
+                                                                                      indexSpinner);
+        final SpinnerKeyListener keyListener = new SpinnerKeyListener(spinnerModifyListener);
+        indexSpinner.addKeyListener(keyListener);
+        indexSpinner.addModifyListener(spinnerModifyListener);
+        return indexSpinner;
     }
 
     @Nonnull
@@ -213,16 +334,16 @@ public final class ConfigHelper {
         final TabItem item = new TabItem(tabFolder, SWT.NONE,0);
         item.setText(head);
 
-        GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
-        ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder, SWT.H_SCROLL
-                | SWT.V_SCROLL);
+        final GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
+        final ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder, SWT.H_SCROLL
+                                                                          | SWT.V_SCROLL);
         scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         scrolledComposite.setExpandVertical(true);
         scrolledComposite.setExpandHorizontal(true);
         fillDefaults.numColumns(1);
         scrolledComposite.setLayout(fillDefaults.create());
 
-        Composite comp = new Composite(scrolledComposite, SWT.NONE);
+        final Composite comp = new Composite(scrolledComposite, SWT.NONE);
         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         // _mainComposite.setLayout(fillDefaults.create());
 
@@ -261,40 +382,21 @@ public final class ConfigHelper {
     }
 
     /**
-     * Put a Text file into a String.
-     *
-     * @param file
-     *            the Text file.
-     * @return the Text of the File.
-     * @throws IOException 
+     * @param head
+     *            Headline for the Tab.
+     * @param tabFolder
+     *            The Tab Folder to add the Tab Item.
+     * @param size
+     *            the number of column
+     * @return Tab Item Composite.
      */
     @Nonnull
-    public static String file2String(@Nonnull final File file) throws IOException {
-        StringBuilder text = new StringBuilder();
-        BufferedReader br = null;
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(file);
-            br = new BufferedReader(fileReader);
-            String tmp;
-            while ( (tmp = br.readLine()) != null) {
-                text = text.append(tmp + "\r\n");
-            }
-        } catch (FileNotFoundException e1) {
-            throw e1;
-        } catch (IOException e2) {
-            throw e2;
-        } finally {
-            if(br!=null) {
-                br.close();
-            }
-            if(fileReader!=null) {
-                fileReader.close();
-            }
-        }
-        
-        
-        return text.toString();
+    public static Composite getNewTabItem(@Nonnull final String head,
+                                          @Nonnull final TabFolder tabFolder,
+                                          final int size,
+                                          final int minWidthSize,
+                                          final int minHeight) {
+        return getNewTabItem(head, tabFolder, size, null, minWidthSize, minHeight);
     }
 
     /**
@@ -310,115 +412,11 @@ public final class ConfigHelper {
      */
     @Nonnull
     public static String getUserName() {
-        User user = SecurityFacade.getInstance().getCurrentUser();
-        if (user != null) {
-            return user.getUsername();
-        }
-        return "unknown";
+        return UserName.getUserName();
     }
 
-    /**
-     *
-     * @param parent
-     *            The Parent composite.
-     * @param node
-     *            The Node that index the Spinner modify.
-     * @param modifyListener
-     *            The ModifyListener to set the Save dirty bit.
-     * @param label
-     *            Label text for Spinner
-     * @param profiBusTreeView
-     *            IO Config TreeViewer.
-     * @return the Sort Index Spinner.
-     */
-    @Nonnull
-    public static Spinner getIndexSpinner(@Nonnull final Composite parent,
-                                          @Nonnull final AbstractNodeDBO node,
-                                          @Nonnull final ModifyListener modifyListener,
-                                          @Nonnull final String label,
-                                          @Nonnull final ProfiBusTreeView profiBusTreeView) {
-        int min = 0;
-        int max = 99;
-
-        // Label
-        Label slotIndexLabel = new Label(parent, SWT.NONE);
-        slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
-        slotIndexLabel.setText(label);
-        // Spinner
-        final Spinner indexSpinner = new Spinner(parent, SWT.WRAP);
-        indexSpinner.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
-        indexSpinner.setMinimum(min);
-        indexSpinner.setMaximum(max);
-        indexSpinner.setSelection(node.getSortIndex());
-        indexSpinner.setData((short) node.getSortIndex());
-        indexSpinner.addModifyListener(modifyListener);
-        SpinnerModifyListener spinnerModifyListener = new SpinnerModifyListener(profiBusTreeView,
-                                                                                node,
-                                                                                indexSpinner);
-        SpinnerKeyListener keyListener = new SpinnerKeyListener(spinnerModifyListener);
-        indexSpinner.addKeyListener(keyListener);
-        indexSpinner.addModifyListener(spinnerModifyListener);
-        return indexSpinner;
-    }
-
-    @CheckForNull 
-    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO node) {
-        return getImageFromNode(node, -1, -1);
-    }
-
-    // CHECKSTYLE OFF: CyclomaticComplexity
-    @CheckForNull
-    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO node, final int width, final int height) {
-        Image image = null;
-        if (node != null) {
-            NodeImageDBO icon = node.getIcon();
-            if (icon != null) {
-                ByteArrayInputStream bais = new ByteArrayInputStream(icon.getImageBytes());
-                image = new Image(null, bais);
-            // Get Default Image
-            } else if (node instanceof FacilityDBO) {
-                image =  getImageMaxSize("icons/css.gif", width, height);
-            } else if (node instanceof FacilityDBO) {
-                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
-            } else if (node instanceof IocDBO) {
-                image =  getImageMaxSize("icons/Buskopan.bmp", width, height);
-            } else if (node instanceof ProfibusSubnetDBO) {
-                image =  getImageMaxSize("icons/Profibus2020.bmp", width, height);
-            } else if (node instanceof MasterDBO) {
-                image =  getImageMaxSize("icons/ProfibusMaster2020.bmp", width, height);
-            } else if (node instanceof SlaveDBO) {
-                image =  getImageMaxSize("icons/sie80a6n.bmp", width, height);
-            } else if (node instanceof ModuleDBO) {
-                image =  getImageMaxSize("icons/3055555W.bmp", width, height);
-            } else if (node instanceof ChannelDBO) {
-                ChannelDBO channel = (ChannelDBO) node;
-                image =  getChannelImage(channel.isInput(), channel.isDigital(), width, height);
-            }
-        }
-        return image;
-    }
- // CHECKSTYLE ON: CyclomaticComplexity
 
     @Nonnull
-    public static Image getImageMaxSize(@Nonnull final String imagePath, final int width, final int height) {
-        ImageData imageData = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, imagePath).getImageData();
-        if ((width > 0) && (height > 0)) {
-            int width2 = imageData.width;
-            int height2 = imageData.height;
-
-            if ((width2 > width) && (height2 > height)) {
-                width2 = width;
-                height2 = height;
-            }
-
-            return new Image(null, imageData.scaledTo(width2, height2));
-        }
-        return new Image(null, imageData);
-    }
-
-    // CHECKSTYLE OFF: CyclomaticComplexity
-    @Nonnull 
     private static Image getChannelImage(final boolean isInput, final boolean isDigital, final int width, final int height) {
         Image image = null;
         // DI
@@ -431,11 +429,10 @@ public final class ConfigHelper {
         } else if (!isInput && !isDigital) {
             image = getImageMaxSize("icons/Output_red16.png", width, height);
             // AO
-        } else if (!isInput && isDigital) {
+        } else {
             image = getImageMaxSize("icons/Output_green16.png", width, height);
         }
 
         return image;
     }
-   // CHECKSTYLE ON: CyclomaticComplexity
 }

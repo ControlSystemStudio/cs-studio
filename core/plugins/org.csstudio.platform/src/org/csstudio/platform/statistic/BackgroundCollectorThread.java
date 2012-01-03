@@ -19,45 +19,53 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.platform.statistic;
+package org.csstudio.platform.statistic;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Logger;
 
-public class BackgroundCollectorThread extends Thread{
-	
-	private int	timeout	= 0;
-	private boolean runForever	= true;
-	static final double MB = 1024.0*1024.0;
-	
-	BackgroundCollectorThread (  final int timeout) {
-		this.timeout = timeout;
-		CentralLogger.getInstance().info(this, "BackgroundCollectorThread started");
-		this.start();
-	}
-	
-public final void run() {
-	
-	while (runForever) {
-		
-		BackgroundCollector.getInstance().getMemoryAvailableApplication().setValue( new Double(Runtime.getRuntime().freeMemory()/MB));
-		BackgroundCollector.getInstance().getMemoryUsedApplication().setValue( new Double(Runtime.getRuntime().totalMemory()/MB));
-		BackgroundCollector.getInstance().getMemoryUsedSystem().setValue( new Double(Runtime.getRuntime().maxMemory()/MB));
-//		TODO: find out how to fill these!
-//		before uncommenting: enable instanciating in BackgroundCollector!!
-//		BackgroundCollector.getInstance().getCpuUsedApplication().setValue
-//		BackgroundCollector.getInstance().getCpuUsedSystem().setValue
-		
-			try {
-				Thread.sleep(this.timeout);
+import org.csstudio.platform.CSSPlatformPlugin;
 
-			} catch (InterruptedException e) {
-				// TODO: handle exception
-			} finally {
-				//clean up
-			}
-		}		
-		CentralLogger.getInstance().info(this, "BackgroundCollectorThread stopped");
-		
-	}
 
+public class BackgroundCollectorThread extends Thread {
+    
+    private static final Logger LOG = Logger.getLogger(CSSPlatformPlugin.ID);
+    private int timeout = 0;
+    private final boolean runForever = true;
+    static final double MB = 1024.0 * 1024.0;
+    
+    BackgroundCollectorThread(final int timeout) {
+        this.timeout = timeout;
+        LOG.info("BackgroundCollectorThread started");
+        this.start();
+    }
+    
+    @Override
+    public final void run() {
+        
+        while (runForever) {
+            
+            BackgroundCollector.getInstance().getMemoryAvailableApplication()
+                    .setValue(new Double(Runtime.getRuntime().freeMemory() / MB));
+            BackgroundCollector.getInstance().getMemoryUsedApplication()
+                    .setValue(new Double(Runtime.getRuntime().totalMemory() / MB));
+            BackgroundCollector.getInstance().getMemoryUsedSystem()
+                    .setValue(new Double(Runtime.getRuntime().maxMemory() / MB));
+            //		TODO: find out how to fill these!
+            //		before uncommenting: enable instanciating in BackgroundCollector!!
+            //		BackgroundCollector.getInstance().getCpuUsedApplication().setValue
+            //		BackgroundCollector.getInstance().getCpuUsedSystem().setValue
+            
+            try {
+                Thread.sleep(this.timeout);
+                
+            } catch (InterruptedException e) {
+                // TODO: handle exception
+            } finally {
+                //clean up
+            }
+        }
+//        LOG.info("BackgroundCollectorThread stopped");
+        
+    }
+    
 }

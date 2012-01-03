@@ -21,7 +21,8 @@
  */
 package org.csstudio.archive.common.service.sample;
 
-import javax.annotation.CheckForNull;
+import java.io.Serializable;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -30,14 +31,18 @@ import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.system.ISystemVariable;
 
 /**
- * TODO (bknerr) : find a better abstraction for this object (@see {@link IArchiveMinMaxSample}).
+ * TODO (bknerr) : find a better abstraction for this object
+ * (@see {@link IArchiveMinMaxSample}).
+ *
+ * The min max information has to be related to an time interval. This abstraction is
+ * due to the IValue stuff of Kasemir.
  *
  * @author bknerr
  * @since 11.01.2011
  * @param <V> the data value type
  * @param <T> the css value type
  */
-public class ArchiveMinMaxSample<V,
+public class ArchiveMinMaxSample<V extends Serializable,
                                  T extends ISystemVariable<V>>
                                 extends ArchiveSample<V, T>
                                 implements IArchiveMinMaxSample<V, T> {
@@ -53,28 +58,18 @@ public class ArchiveMinMaxSample<V,
     public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
                                @Nonnull final T data,
                                @Nullable final IAlarm alarm,
-                               @Nullable final V min,
-                               @Nullable final V max) {
+                               @Nonnull final V min,
+                               @Nonnull final V max) {
         super(channelId, data, alarm);
         _minimum = min;
         _maximum = max;
-    }
-    /**
-     * Constructor.
-     */
-    public ArchiveMinMaxSample(@Nonnull final ArchiveChannelId channelId,
-                               @Nonnull final T data,
-                               @Nonnull final IAlarm alarm) {
-        super(channelId, data, alarm);
-        _minimum = null;
-        _maximum = null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public V getMinimum() {
         return _minimum;
     }
@@ -83,7 +78,7 @@ public class ArchiveMinMaxSample<V,
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public V getMaximum() {
         return _maximum;
     }

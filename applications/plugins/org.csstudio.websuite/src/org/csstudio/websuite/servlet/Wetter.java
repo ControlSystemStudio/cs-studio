@@ -1,14 +1,17 @@
 
 package org.csstudio.websuite.servlet;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.regex.Pattern;
-import javax.servlet.*;
-import javax.servlet.http.*;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.csstudio.websuite.WebSuiteActivator;
 import org.csstudio.websuite.internal.PreferenceConstants;
 import org.csstudio.websuite.utils.LocalProperty;
@@ -16,6 +19,8 @@ import org.csstudio.websuite.utils.Utility;
 import org.csstudio.websuite.utils.ValueReader;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The eLogbook is storing logbook entries as well as images from screen dumps
@@ -34,8 +39,6 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * (C) DESY Hamburg 2003
  *
  * @author Matthias Clausen DESY/MKS-2
- * @param 
- * @return
  * @version 1.5.9
  *
  * The TopWindowStatistic servlet
@@ -48,14 +51,14 @@ public class Wetter extends HttpServlet {
     private static final long serialVersionUID = 1420715721544267590L;
 
     /** Precompiled Pattern object for checking the precision */
-    private Pattern numberPattern = Pattern.compile("\\d+");
+    private Pattern numberPattern;
     
     /** Class that reads the value from the control system */
     private ValueReader valueReader;
 
     /** Private logger for this class */
-    private Logger logger;
-
+    private static final Logger LOG = LoggerFactory.getLogger(Wetter.class);
+    
     /** The URL of the EPICS web application */
     private String epicsWebApp;
     
@@ -73,7 +76,7 @@ public class Wetter extends HttpServlet {
         
         super.init(config);
         
-        logger = CentralLogger.getInstance().getLogger(this);
+        numberPattern = Pattern.compile("\\d+");
         valueReader = new ValueReader();
         
         IPreferencesService ps = Platform.getPreferencesService();
@@ -151,7 +154,7 @@ public class Wetter extends HttpServlet {
             InetAddress localhost = InetAddress.getLocalHost();
             localHostName = localhost.getHostName();
         } catch (Exception ex) {
-            logger.error("Error reading local host name \n" + ex);
+            LOG.error("Error reading local host name \n",  ex);
             localHostName = "could not be defined";
         }
         

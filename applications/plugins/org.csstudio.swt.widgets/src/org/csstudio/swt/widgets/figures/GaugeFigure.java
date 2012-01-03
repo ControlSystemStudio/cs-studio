@@ -42,15 +42,15 @@ import org.eclipse.swt.widgets.Display;
  */
 public class GaugeFigure extends AbstractRoundRampedFigure {
 
-	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
-	private final static Color BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
 			new RGB(100, 100, 100)); 
-	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GRAY); 
-	private final static Color DEFAULT_NEEDLE_COLOR = CustomMediaFactory.getInstance().getColor(
+	private final Color DEFAULT_NEEDLE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_RED);
-	private final static Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
+	private final Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
 			new FontData("Arial", 12, SWT.BOLD));
 	private final static int BORDER_WIDTH = 2;
 	
@@ -208,7 +208,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		return effect3D;
 	}
 	
-	static class Needle extends Polygon {
+	class Needle extends Polygon {
 		public Needle() {
 			setBackgroundColor(DEFAULT_NEEDLE_COLOR);
 		}
@@ -328,10 +328,17 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 						new Point(center.x, center.y + NeedleCenter.DIAMETER/2 - 3), 2);
 	
 				double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);
-				if(value > maximum)
-					valuePosition += 10;
-				else if(value < minimum)
-					valuePosition -=10;
+				if(maximum > minimum){
+					if(value > maximum)
+						valuePosition += 10;
+					else if(value < minimum)
+						valuePosition -=10;
+				}else{
+					if(value > minimum)
+						valuePosition -= 10;
+					else if(value < maximum)
+						valuePosition +=10;
+				}
 				needlePoints.setPoint(
 						RotationUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
 				needlePoints.setPoint(

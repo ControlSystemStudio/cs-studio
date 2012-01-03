@@ -55,336 +55,327 @@ import org.eclipse.swt.widgets.Text;
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
  * between {@link ActionButtonModel} and {@link RefreshableActionButtonFigure}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
-	/**
-	 * The actual figure will be surrounded with a small frame that can be used
-	 * to drag the figure around (even if the cell editor is activated).
-	 */
-	private static final int FRAME_WIDTH = 1;
+    /**
+     * The actual figure will be surrounded with a small frame that can be used
+     * to drag the figure around (even if the cell editor is activated).
+     */
+    private static final int FRAME_WIDTH = 1;
 
-	/**
-	 * The input field will be slightly brighter than the actual figure so it
-	 * can be easily recognized.
-	 */
-	private static final int INPUT_FIELD_BRIGHTNESS = 10;
+    /**
+     * The input field will be slightly brighter than the actual figure so it
+     * can be easily recognized.
+     */
+    private static final int INPUT_FIELD_BRIGHTNESS = 10;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 
-		final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
-		buttonFigure.setTextValue(determineLabel(null));
-		buttonFigure.setFont(getModelFont(ActionButtonModel.PROP_FONT));
-		buttonFigure.setTextAlignment(model.getTextAlignment());
-		buttonFigure.setEnabled(getExecutionMode().equals(
-				ExecutionMode.RUN_MODE)
-				&& model.isAccesible());
-		buttonFigure.setStyle(model.isToggleButton());
-		return buttonFigure;
-	}
+        final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
+        buttonFigure.setTextValue(determineLabel(null));
+        buttonFigure.setFont(getModelFont(ActionButtonModel.PROP_FONT));
+        buttonFigure.setTextAlignment(model.getTextAlignment());
+        buttonFigure.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE)
+                && model.isAccesible());
+        buttonFigure.setStyle(model.isToggleButton());
+        buttonFigure.setSelected(model.isPressed());
+        return buttonFigure;
+    }
 
-	/**
-	 * Returns the Figure of this EditPart.
-	 * 
-	 * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
-	 *         of this EditPart
-	 */
-	protected RefreshableActionButtonFigure getCastedFigure() {
-		return (RefreshableActionButtonFigure) getFigure();
-	}
+    /**
+     * Returns the Figure of this EditPart.
+     *
+     * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
+     *         of this EditPart
+     */
+    protected RefreshableActionButtonFigure getCastedFigure() {
+        return (RefreshableActionButtonFigure) getFigure();
+    }
 
-	/**
-	 * Returns the casted model. This is just for convenience.
-	 * 
-	 * @return the casted {@link ActionButtonModel}
-	 */
-	@Override
-	protected ActionButtonModel getCastedModel() {
-		return (ActionButtonModel) getModel();
-	}
+    /**
+     * Returns the casted model. This is just for convenience.
+     *
+     * @return the casted {@link ActionButtonModel}
+     */
+    @Override
+    protected ActionButtonModel getCastedModel() {
+        return (ActionButtonModel) getModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void performRequest(final Request req) {
-		Object type = req.getType();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void performRequest(final Request req) {
+        final Object type = req.getType();
 
-		// entering a value is only allowed in run mode and when the widget is
-		// enabled
-		if ((type != null)
-				&& (type.equals(RequestConstants.REQ_OPEN) || type
-						.equals(RequestConstants.REQ_DIRECT_EDIT))) {
-			if ((getExecutionMode() == ExecutionMode.RUN_MODE)
-					&& getCastedModel().isAccesible()) {
-				super.performRequest(req);
-			} else if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
-				performEditTextValue();
-			}
-		}
+        // entering a value is only allowed in run mode and when the widget is
+        // enabled
+        if (type != null
+                && (type.equals(RequestConstants.REQ_OPEN) || type
+                        .equals(RequestConstants.REQ_DIRECT_EDIT))) {
+            if (getExecutionMode() == ExecutionMode.RUN_MODE && getCastedModel().isAccesible()) {
+                super.performRequest(req);
+            } else if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+                performEditTextValue();
+            }
+        }
 
-	}
+    }
 
-	/**
-	 * Configures a listener for performing a {@link AbstractWidgetActionModel}.
-	 * 
-	 * @param figure
-	 *            The figure of the widget
-	 */
-	private void configureButtonListener(
-			final RefreshableActionButtonFigure buttonFigure) {
-		buttonFigure.addChangeListener(new ChangeListener() {
-			public void handleStateChanged(final ChangeEvent event) {
-				final String propertyName = event.getPropertyName();
-				if (propertyName.equalsIgnoreCase(ButtonModel.PRESSED_PROPERTY)) {
-//					System.out.println("Button pressed");
-				}
-				CentralLogger.getInstance().debug(this,
-						"ChangeEvent received, event.property=" + propertyName);
+    /**
+     * Configures a listener for performing a {@link AbstractWidgetActionModel}.
+     *
+     * @param figure
+     *            The figure of the widget
+     */
+    private void configureButtonListener(final RefreshableActionButtonFigure buttonFigure) {
+        buttonFigure.addChangeListener(new ChangeListener() {
+            @Override
+            public void handleStateChanged(final ChangeEvent event) {
+                final String propertyName = event.getPropertyName();
+                CentralLogger.getInstance().debug(this,
+                                                  "ChangeEvent received, event.property="
+                                                          + propertyName);
 
-				// If the display is not in run mode or the button is not armed,
-				// don't do anything.
-				if ((getExecutionMode() != ExecutionMode.RUN_MODE)
-						|| !buttonFigure.getModel().isArmed()) {
-					return;
-				}
+                // If the display is not in run mode or the button is not armed,
+                // don't do anything.
+                if (getExecutionMode() != ExecutionMode.RUN_MODE
+                        || !buttonFigure.getModel().isArmed()) {
+                    return;
+                }
 
-				// If the button is a toggle button, the property that changes
-				// when the toggle state changes is SELECTED_PROPERTY. For a
-				// standard button, the PRESSED_PROPERTY is used, which reflects
-				// mouse down/up events. The action index is then selected based
-				// on whether the button is selected/deselected, or
-				// pressed/released, respectively.
-				//
-				// Note: we must use the same change listener because whether a
-				// button is a toggle button can change dynamically.
-				int actionIndex = -1;
-				final ActionButtonModel widget = (ActionButtonModel) getWidgetModel();
-				if (widget.isToggleButton()) {
-					if (ButtonModel.SELECTED_PROPERTY.equals(propertyName)) {
-						if (buttonFigure.getModel().isSelected()) {
-							actionIndex = widget.getChoosenPressedActionIndex();
-							CentralLogger.getInstance().debug(
-									this,
-									"toggle=true, selected=true => using pressed action index: "
-											+ actionIndex);
-						} else {
-							actionIndex = widget
-									.getChoosenReleasedActionIndex();
-							CentralLogger.getInstance().debug(
-									this,
-									"toggle=true, selected=false => using released action index: "
-											+ actionIndex);
-						}
-					}
-				} else {
-					if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)) {
-						if (buttonFigure.getModel().isPressed()) {
-							actionIndex = widget.getChoosenPressedActionIndex();
-							CentralLogger.getInstance().debug(
-									this,
-									"toggle=false, pressed=true => using pressed action index: "
-											+ actionIndex);
-						} else {
-							actionIndex = widget
-									.getChoosenReleasedActionIndex();
-							CentralLogger.getInstance().debug(
-									this,
-									"toggle=false, pressed=false => using released action index: "
-											+ actionIndex);
-						}
-					}
-				}
+                // If the button is a toggle button, the property that changes
+                // when the toggle state changes is SELECTED_PROPERTY. For a
+                // standard button, the PRESSED_PROPERTY is used, which reflects
+                // mouse down/up events. The action index is then selected based
+                // on whether the button is selected/deselected, or
+                // pressed/released, respectively.
+                //
+                // Note: we must use the same change listener because whether a
+                // button is a toggle button can change dynamically.
+                int actionIndex = -1;
+                final ActionButtonModel widget = (ActionButtonModel) getWidgetModel();
+                if (widget.isToggleButton()) {
+                    if (ButtonModel.SELECTED_PROPERTY.equals(propertyName)) {
+                        widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_STATE,
+                                                buttonFigure.isSelected());
 
-				List<AbstractWidgetActionModel> actions = widget
-						.getActionData().getWidgetActions();
+                        if (buttonFigure.isSelected()) {
+                            actionIndex = widget.getChoosenPressedActionIndex();
+                            CentralLogger.getInstance().debug(this,
+                                                              "toggle=true, selected=true => using pressed action index: "
+                                                                      + actionIndex);
+                        } else {
+                            actionIndex = widget.getChoosenReleasedActionIndex();
+                            CentralLogger.getInstance().debug(this,
+                                                              "toggle=true, selected=false => using released action index: "
+                                                                      + actionIndex);
+                        }
+                    }
+                } else {
+                    if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)) {
+                        if (buttonFigure.getModel().isPressed()) {
+                            actionIndex = widget.getChoosenPressedActionIndex();
+                            CentralLogger.getInstance().debug(this,
+                                                              "toggle=false, pressed=true => using pressed action index: "
+                                                                      + actionIndex);
+                        } else {
+                            actionIndex = widget.getChoosenReleasedActionIndex();
+                            CentralLogger.getInstance().debug(this,
+                                                              "toggle=false, pressed=false => using released action index: "
+                                                                      + actionIndex);
+                        }
+                    }
+                }
 
-				// If an action should be used and there is only a single
-				// action, use that action.
-				if ((actionIndex >= 0) && (actions.size() == 1)) {
-					actionIndex = 0;
-				}
+                final List<AbstractWidgetActionModel> actions = widget.getActionData().getWidgetActions();
 
-				if ((actionIndex >= 0) && (actionIndex < actions.size())) {
-					final AbstractWidgetActionModel action = actions
-							.get(actionIndex);
+                // If an action should be used and there is only a single
+                // action, use that action.
+                if (actionIndex >= 0 && actions.size() == 1) {
+                    actionIndex = 0;
+                }
 
-					// The actual action can now be run asynchronously, because
-					// all required data has been retrieved from the model.
-					Display.getCurrent().asyncExec(new Runnable() {
-						public void run() {
-							CentralLogger.getInstance().debug(this,
-									"Performing widget action: " + action);
-							WidgetActionHandlerService.getInstance()
-									.performAction(widget, action);
-						}
-					});
-				}
-			}
-		});
-	}
+                if (actionIndex >= 0 && actionIndex < actions.size()) {
+                    final AbstractWidgetActionModel action = actions.get(actionIndex);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();
-		//
-		RefreshableActionButtonFigure buttonFigure = getCastedFigure();
-		this.configureButtonListener(buttonFigure);
+                    // The actual action can now be run asynchronously, because
+                    // all required data has been retrieved from the model.
+                    Display.getCurrent().asyncExec(new Runnable() {
+                        @Override
+                        public void run() {
+                            CentralLogger.getInstance()
+                                    .debug(this, "Performing widget action: " + action);
+                            WidgetActionHandlerService.getInstance().performAction(widget, action);
+                        }
+                    });
+                }
+            }
+        });
+    }
 
-		// label
-		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure rabFigure = getCastedFigure();
-				rabFigure.setTextValue(determineLabel(null));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+        //
+        final RefreshableActionButtonFigure buttonFigure = getCastedFigure();
+        this.configureButtonListener(buttonFigure);
 
-		// font
-		setPropertyChangeHandler(ActionButtonModel.PROP_FONT,
-				new FontChangeHandler<RefreshableActionButtonFigure>() {
-					@Override
-					protected void doHandle(
-							final RefreshableActionButtonFigure rabFigure,
-							final Font font) {
-						rabFigure.setFont(font);
-					}
-				});
+        // label
+        final IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                final RefreshableActionButtonFigure rabFigure = getCastedFigure();
+                rabFigure.setTextValue(determineLabel(null));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
 
-		// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
-				rabFigure.setTextAlignment((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT,
-				alignmentHandler);
+        // font
+        setPropertyChangeHandler(ActionButtonModel.PROP_FONT,
+                                 new FontChangeHandler<RefreshableActionButtonFigure>() {
+                                     @Override
+                                     protected void doHandle(final RefreshableActionButtonFigure rabFigure,
+                                                             final Font font) {
+                                         rabFigure.setFont(font);
+                                     }
+                                 });
 
-		// button style
-		IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
-				rabFigure.setStyle((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON,
-				buttonStyleHandler);
+        // text alignment
+        final IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+                rabFigure.setTextAlignment((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 
-		// IWidgetPropertyChangeHandler actionDataHandler = new
-		// IWidgetPropertyChangeHandler() {
-		//
-		// @Override
-		// public boolean handleChange(final Object oldValue, final Object
-		// newValue, final IFigure refreshableFigure) {
-		// RefreshableActionButtonFigure rabFigure =
-		// (RefreshableActionButtonFigure) refreshableFigure;
-		// System.out.println("Test Toggle Button");
-		// return false;
-		// }
-		// };
-		// setPropertyChangeHandler(ActionButtonModel.PROP_ACTIONDATA,
-		// buttonStyleHandler);
-	}
+        // button style
+        final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+                rabFigure.setStyle((Boolean) newValue);
+                rabFigure.setSelected((Boolean) newValue && getCastedModel().isPressed());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean forceDisabledInEditMode() {
-		return true;
-	}
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON, buttonStyleHandler);
 
-	private void performEditTextValue() {
-		CellEditor cellEditor = createCellEditor2();
-		locateCellEditor(cellEditor);
-		cellEditor.activate();
-		cellEditor.setFocus();
-	}
+        // button toggle state
+        final IWidgetPropertyChangeHandler toggleButtonPressedHandler = new IWidgetPropertyChangeHandler() {
 
-	private CellEditor createCellEditor2() {
-		final CellEditor result = new TextCellEditor((Composite) getViewer()
-				.getControl());
+            @Override
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+                rabFigure.setSelected(getCastedModel().isToggleButton() && (Boolean) newValue);
 
-		// init cell editor...
-		String currentValue = "N/A"; //$NON-NLS-1$
-		currentValue = getWidgetModel().getStringProperty(
-				ActionButtonModel.PROP_LABEL);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_STATE, toggleButtonPressedHandler);
 
-		result.setValue(currentValue);
-		final Text text = (Text) result.getControl();
-		// input text
-		text.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
-					getWidgetModel().setPropertyValue(
-							ActionButtonModel.PROP_LABEL, text.getText());
-					result.deactivate();
-					result.dispose();
-				} else if (e.keyCode == SWT.ESC) {
-					result.deactivate();
-					result.dispose();
-				}
+    }
 
-			}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean forceDisabledInEditMode() {
+        return true;
+    }
 
-		});
+    private void performEditTextValue() {
+        final CellEditor cellEditor = createCellEditor2();
+        locateCellEditor(cellEditor);
+        cellEditor.activate();
+        cellEditor.setFocus();
+    }
 
-		text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
-		text.setFont(getModelFont(ActionButtonModel.PROP_FONT));
+    private CellEditor createCellEditor2() {
+        final CellEditor result = new TextCellEditor((Composite) getViewer().getControl());
 
-		// calculate background color
-		RGB backgroundRgb = getModelColor(
-				AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
+        // init cell editor...
+        String currentValue = "N/A"; //$NON-NLS-1$
+        currentValue = getWidgetModel().getStringProperty(ActionButtonModel.PROP_LABEL);
 
-		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
-		int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
-		int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
+        result.setValue(currentValue);
+        final Text text = (Text) result.getControl();
+        // input text
+        text.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+                    getWidgetModel().setPropertyValue(ActionButtonModel.PROP_LABEL, text.getText());
+                    result.deactivate();
+                    result.dispose();
+                } else if (e.keyCode == SWT.ESC) {
+                    result.deactivate();
+                    result.dispose();
+                }
 
-		Color backgroundColor = CustomMediaFactory.getInstance().getColor(
-				new RGB(red, green, blue));
+            }
 
-		text.setBackground(backgroundColor);
-		text.selectAll();
+        });
 
-		return result;
-	}
+        text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+        text.setFont(getModelFont(ActionButtonModel.PROP_FONT));
 
-	/**
-	 * Locate the given cell editor .
-	 * 
-	 * @param cellEditor
-	 *            A cell editor.
-	 */
-	private void locateCellEditor(final CellEditor cellEditor) {
-		Rectangle rect = ActionButtonEditPart.this.figure.getBounds().getCopy();
-		rect.x = rect.x + FRAME_WIDTH;
-		rect.y = rect.y + FRAME_WIDTH;
-		rect.height = rect.height - (FRAME_WIDTH * 1);
-		rect.width = rect.width - (FRAME_WIDTH * 1);
-		getFigure().translateToAbsolute(rect);
+        // calculate background color
+        final RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
-		cellEditor.getControl().setBounds(rect.x, rect.y, rect.width,
-				rect.height);
-		cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
-		cellEditor.getControl().setVisible(true);
-	}
+        final int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
+        final int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
+        final int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
+
+        final Color backgroundColor = CustomMediaFactory.getInstance()
+                .getColor(new RGB(red, green, blue));
+
+        text.setBackground(backgroundColor);
+        text.selectAll();
+
+        return result;
+    }
+
+    /**
+     * Locate the given cell editor .
+     *
+     * @param cellEditor
+     *            A cell editor.
+     */
+    private void locateCellEditor(final CellEditor cellEditor) {
+        final Rectangle rect = ActionButtonEditPart.this.figure.getBounds().getCopy();
+        rect.x = rect.x + FRAME_WIDTH;
+        rect.y = rect.y + FRAME_WIDTH;
+        rect.height = rect.height - FRAME_WIDTH * 1;
+        rect.width = rect.width - FRAME_WIDTH * 1;
+        getFigure().translateToAbsolute(rect);
+
+        cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
+        cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
+        cellEditor.getControl().setVisible(true);
+    }
 
 }

@@ -7,84 +7,84 @@
   <SLAVE_CONFIGURATION>
     <SLAVE_TABLE Station_1="5" Station_2="10" Station_3="11" Station_4="12" Station_5="13" Station_6="20" Station_7="21" Station_8="22" Station_9="23" Station_10="24" Station_11="25" Station_12="26" />
     <SLAVE fdl_add="5">
-      <SLAVE_PARA_SET slave_para_len="82" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="82" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="52" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="11" ident_number="0xb756" group_ident="0">0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x00,0xCB,0x43,0xC3,0x7F,0x00,0x01,0x00,0x00,0x00,0x00,0x80, 0x21, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00,0x23, 0x01, 0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="10">0x00,0x10,0x10,0x10,0x10,0x10,0x10,0x10</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="10">
-      <SLAVE_PARA_SET slave_para_len="46" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="46" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="20" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="11" ident_number="0x5861" group_ident="0">0x00,0x01,0x00,0x37,0x00,0x13,0x00,0x00,0x10,0x01,0x11</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="6">0xc1, 0x80, 0x8c, 0x02</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="11">
-      <SLAVE_PARA_SET slave_para_len="46" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="46" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="20" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="11" ident_number="0x5861" group_ident="0">0x00,0x01,0x00,0x37,0x00,0x13,0x00,0x00,0x10,0x01,0x11</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="6">0xc1, 0x80, 0x8c, 0x02</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="12">
-      <SLAVE_PARA_SET slave_para_len="46" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="46" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="20" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="11" ident_number="0x5861" group_ident="0">0x00,0x01,0x00,0x37,0x00,0x13,0x00,0x00,0x10,0x01,0x11</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="6">0xc1, 0x80, 0x8c, 0x02</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="13">
-      <SLAVE_PARA_SET slave_para_len="46" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="46" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="20" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="11" ident_number="0x5861" group_ident="0">0x00,0x01,0x00,0x37,0x00,0x13,0x00,0x00,0x10,0x01,0x11</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="6">0xc1, 0x80, 0x8c, 0x02</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="20">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="21">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="22">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="23">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="24">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="25">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />
       <SLAVE_USER_DATA slave_user_data_len="2" />
     </SLAVE>
     <SLAVE fdl_add="26">
-      <SLAVE_PARA_SET slave_para_len="44" sl_flag="192" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
+      <SLAVE_PARA_SET slave_para_len="44" sl_flag="128" slave_type="0" reserved="0,0,0,0,0,0,0,0,0,0,0,0" />
       <SLAVE_PRM_DATA prm_data_len="12" station_status="136" watchdog_fact_1="100" watchdog_fact_2="10" min_tsdr="200" ident_number="0x8079" group_ident="0">0x00,0x00,0x00</SLAVE_PRM_DATA>
       <SLAVE_CFG_DATA cfg_data_len="12">0xC7,0x84,0x89,0x08,0x05,0x08,0x05,0x05,0x05,0x0A</SLAVE_CFG_DATA>
       <SLAVE_AAT_DATA slave_aat_len="2" />

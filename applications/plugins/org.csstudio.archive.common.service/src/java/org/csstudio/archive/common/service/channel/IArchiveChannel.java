@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.controlsystem.IArchiveControlSystem;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.Limits;
 
@@ -36,7 +36,7 @@ import org.csstudio.domain.desy.types.Limits;
  * @author bknerr
  * @since 09.11.2010
  */
-public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
+public interface IArchiveChannel extends IIdentifiable<ArchiveChannelId> {
 
     @Nonnull
     String getName();
@@ -44,10 +44,10 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
     @Nonnull
     ArchiveChannelGroupId getGroupId();
 
-    @Nonnull
+    @CheckForNull
     TimeInstant getLatestTimestamp();
 
-    @Nonnull
+    @CheckForNull
     String getDataType();
 
     @Nonnull
@@ -55,4 +55,6 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
 
     @CheckForNull
     Limits<?> getDisplayLimits();
+
+    boolean isEnabled();
 }

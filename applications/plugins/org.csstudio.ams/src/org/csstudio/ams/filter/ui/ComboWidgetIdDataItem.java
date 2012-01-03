@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -22,6 +23,7 @@
  /**
  * 
  */
+
 package org.csstudio.ams.filter.ui;
 
 import org.csstudio.ams.dbAccess.ItemInterface;
@@ -33,6 +35,7 @@ import org.eclipse.swt.widgets.Combo;
  * Use instances of this type as content of the data list added to combo widget 
  * ({@link Combo#setData(Object)}) to add ids to items.
  */
+@SuppressWarnings("hiding")
 public class ComboWidgetIdDataItem implements ItemInterface {
 	private final int id;
 	private final String text;
@@ -43,7 +46,7 @@ public class ComboWidgetIdDataItem implements ItemInterface {
 	 * @param id A id value -- duplicates possible.
 	 * @param text The String representation.
 	 */
-	public ComboWidgetIdDataItem(int id, String text) {
+    public ComboWidgetIdDataItem(int id, String text) {
 		this.id = id;
 		this.text = text;
 	}
@@ -51,14 +54,16 @@ public class ComboWidgetIdDataItem implements ItemInterface {
 	/**
 	 * Gets the id associated with this instance.
 	 */
-	public int getID() {
+	@Override
+    public int getID() {
 		return id;
 	}
 
 	/**
 	 * Gets the String associated with this instance.
 	 */
-	public String toString() {
+	@Override
+    public String toString() {
 		return text == null ? "" : text;
 	}
 }

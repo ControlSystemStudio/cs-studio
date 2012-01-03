@@ -17,7 +17,7 @@ import org.jdom.Element;
  * @author Xihui Chen
  *
  */
-public class UnchangableStringProperty extends AbstractWidgetProperty {
+public class UnchangableStringProperty extends StringProperty {
 	
 	
 	/**String Property Constructor. The property value type is {@link String}. This
@@ -34,13 +34,9 @@ public class UnchangableStringProperty extends AbstractWidgetProperty {
 		super(prop_id, description, category, defaultValue);		
 	}
 
-	@Override
-	public Object checkValue(Object value) {
-		return null;
-	}
 
 	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
+	protected PropertyDescriptor createPropertyDescriptor() {		
 		return new TextPropertyDescriptor(prop_id, description){
 			@Override
 			public CellEditor createPropertyEditor(Composite parent) {
@@ -50,14 +46,9 @@ public class UnchangableStringProperty extends AbstractWidgetProperty {
 	}
 	
 	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
-		
+	public boolean configurableByRule() {
+		return false;
 	}
 	
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		return propElement.getValue();
-	}
 
 }

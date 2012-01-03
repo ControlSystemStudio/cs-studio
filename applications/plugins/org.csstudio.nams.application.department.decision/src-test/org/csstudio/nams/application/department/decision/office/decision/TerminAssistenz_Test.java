@@ -10,6 +10,7 @@ import java.util.Timer;
 import junit.framework.Assert;
 
 import org.csstudio.nams.common.DefaultExecutionService;
+import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
@@ -39,8 +40,8 @@ public class TerminAssistenz_Test extends
 	public void testAssistenz() throws UnknownHostException,
 			InterruptedException {
 		final Eingangskorb<Terminnotiz> assistenzEingangskorb = new StandardAblagekorb<Terminnotiz>();
-		final StandardAblagekorb<Terminnotiz> sachbearbeitersKorb = new StandardAblagekorb<Terminnotiz>();
-		final Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
+		final StandardAblagekorb<Ablagefaehig> sachbearbeitersKorb = new StandardAblagekorb<Ablagefaehig>();
+		final Map<String, Eingangskorb<Ablagefaehig>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Ablagefaehig>>();
 		sachbearbeiterKoerbe.put("test", sachbearbeitersKorb);
 		final Timer timer = new Timer("TerminAssistenz");
 
@@ -67,7 +68,7 @@ public class TerminAssistenz_Test extends
 
 		assistenz.beendeArbeit();
 
-		final Terminnotiz ausDemKorb = sachbearbeitersKorb
+		final Ablagefaehig ausDemKorb = sachbearbeitersKorb
 				.entnehmeAeltestenEingang();
 		Assert.assertNotNull(ausDemKorb);
 		Assert.assertEquals(terminnotiz, ausDemKorb);
@@ -79,8 +80,8 @@ public class TerminAssistenz_Test extends
 	@Override
 	protected TerminAssistenz getNewInstanceOfClassUnderTest() {
 		final Eingangskorb<Terminnotiz> korb = new StandardAblagekorb<Terminnotiz>();
-		final Map<String, Eingangskorb<Terminnotiz>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Terminnotiz>>();
-		sachbearbeiterKoerbe.put("test", new StandardAblagekorb<Terminnotiz>());
+		final Map<String, Eingangskorb<Ablagefaehig>> sachbearbeiterKoerbe = new HashMap<String, Eingangskorb<Ablagefaehig>>();
+		sachbearbeiterKoerbe.put("test", new StandardAblagekorb<Ablagefaehig>());
 		return new TerminAssistenz(new DefaultExecutionService(), korb,
 				sachbearbeiterKoerbe, new Timer("TerminAssistenz"));
 	}

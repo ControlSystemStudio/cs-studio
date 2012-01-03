@@ -27,7 +27,6 @@ import java.util.Collection;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
@@ -38,59 +37,58 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
  * @since 18.01.2011
  */
 public class ModuleStatistcCounter {
-    
+
     private Integer _moduleCount = 0;
     private Integer _totalChannelsCount = 0;
     private Integer _usedChannelsCount = 0;
-    
-    
+
+
     /**
      * Constructor.
      * @param gsdModule
      */
     public ModuleStatistcCounter() {
-        // constructor 
+        // constructor
     }
-    
+
+    /**
+     * @param module
+     */
+    public void addModule(@Nonnull final ModuleDBO module) {
+        _moduleCount++;
+        final Collection<ChannelStructureDBO> channelStructs = module.getChildrenAsMap().values();
+        for (final ChannelStructureDBO channelStructure : channelStructs) {
+            final Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
+            for (final ChannelDBO channel : channels) {
+                _totalChannelsCount++;
+                final String ioName = channel.getIoName();
+                if(ioName != null &&  !ioName.isEmpty()) {
+                    _usedChannelsCount++;
+                }
+            }
+        }
+    }
+
     @Nonnull
     public Integer getModuleCount() {
         return _moduleCount;
     }
-    
+
     @Nonnull
     public Integer getTotalChannelsCount() {
         return _totalChannelsCount;
-    }
-    
-    @Nonnull
-    public Integer getUsedChannelsCount() {
-        return _usedChannelsCount;
     }
 
     @Nonnull
     public Integer getUnusedChannelsCount() {
         return _totalChannelsCount-_usedChannelsCount;
     }
-    
-    /**
-     * @param module
-     * @throws PersistenceException 
-     */
-    public void addModule(@Nonnull ModuleDBO module) throws PersistenceException {
-        _moduleCount++;
-        Collection<ChannelStructureDBO> channelStructs = module.getChildrenAsMap().values();
-        for (ChannelStructureDBO channelStructure : channelStructs) {
-            Collection<ChannelDBO> channels = channelStructure.getChildrenAsMap().values();
-            for (ChannelDBO channel : channels) {
-                _totalChannelsCount++;
-                String ioName = channel.getIoName();
-                if(ioName != null &&  !ioName.isEmpty()) {
-                    _usedChannelsCount++;                    
-                }
-            }
-        }
+
+    @Nonnull
+    public Integer getUsedChannelsCount() {
+        return _usedChannelsCount;
     }
-    
-    
-    
+
+
+
 }

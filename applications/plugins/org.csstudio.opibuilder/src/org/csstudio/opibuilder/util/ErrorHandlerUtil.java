@@ -4,7 +4,6 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * The utility class help to handle exceptions.
@@ -25,8 +24,11 @@ public class ErrorHandlerUtil {
             message, exception); //$NON-NLS-1$	
 		if(writeToConsole)
 			ConsoleService.getInstance().writeError(message + "\n" + exception);
-		if(popErrorDialog)
-			MessageDialog.openError(Display.getDefault().getActiveShell(), "Error",	message);		
+		if(popErrorDialog){
+			if(DisplayUtils.getDisplay() != null)
+				MessageDialog.openError(
+						DisplayUtils.getDisplay().getActiveShell(), "Error",	message);
+		}
 	}
 	
 	

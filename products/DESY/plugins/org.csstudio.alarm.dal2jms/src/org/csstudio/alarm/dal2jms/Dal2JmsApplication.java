@@ -28,7 +28,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.dal2jms.preferences.Preference;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -42,6 +41,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.Bundle;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The alarm handler is connected and the application waits for the stop command being sent via remote command.
@@ -53,8 +54,7 @@ import org.remotercp.service.connection.session.ISessionService;
  */
 public class Dal2JmsApplication implements IApplication, IGenericServiceListener<ISessionService> {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(Dal2JmsApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Dal2JmsApplication.class);
 
     /*
      * Flag indicating the remote stop command
@@ -89,8 +89,7 @@ public class Dal2JmsApplication implements IApplication, IGenericServiceListener
             LOG.info("dal2jms headless application running");
             runServerUntilStopped(alarmService);
         } else {
-            LOG
-                    .error("dal2jms headless application could not be started. Alarm service must not be null.");
+            LOG.error("dal2jms headless application could not be started. Alarm service must not be null.");
         }
 
         LOG.info("dal2jms headless application stopped");
@@ -124,7 +123,7 @@ public class Dal2JmsApplication implements IApplication, IGenericServiceListener
         } catch (AlarmConnectionException e) {
             LOG.debug("dal2jms could not connect", e);
         } catch (IOException e) {
-            LOG.debug("dal2jms could not retrieve pv configuration file at " + filePath, e);
+            LOG.debug("dal2jms could not retrieve pv configuration file at {}", filePath, e);
         } finally {
             tryToDisconnect(connection);
         }
@@ -147,6 +146,7 @@ public class Dal2JmsApplication implements IApplication, IGenericServiceListener
     }
 
     
+    @Override
     public void bindService(ISessionService sessionService) {
         String username = Preference.XMPP_DAL2JMS_USER_NAME.getValue();
         String password = Preference.XMPP_DAL2JMS_PASSWORD.getValue();
@@ -155,11 +155,11 @@ public class Dal2JmsApplication implements IApplication, IGenericServiceListener
     	try {
 			sessionService.connect(username, password, server);
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+			CentralLogger.getInstance().warn("XMPP connection is not available, ", e);
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	service.disconnect();
     }

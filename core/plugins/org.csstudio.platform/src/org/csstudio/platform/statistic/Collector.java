@@ -95,25 +95,6 @@ public class Collector {
 		}
 	}
 
-	/*
-	 * TODO - delete !?
-	 * getInstance not necessary!
-	 * every collected entry needs it's own collector
-	 */
-	public synchronized static Collector getInstance() {
-		//
-		// get an instance of our sigleton
-		//
-		if ( thisCollector == null) {
-			thisCollector = new Collector();
-		}
-		/*
-		 * add entry to CollectorSupervisor
-		 */
-		CollectorSupervisor.getInstance().addCollector( thisCollector);
-		return thisCollector;
-	}
-
 	public void setValue ( final Double value) {
 		/*
 		 * set value

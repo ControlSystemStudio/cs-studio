@@ -7,25 +7,34 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
+import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
-import org.csstudio.apputil.args.IntegerOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.archive.common.engine.httpserver.EngineHttpServer;
 import org.csstudio.archive.common.engine.httpserver.EngineHttpServerException;
 import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.EngineModelException;
+import org.csstudio.archive.common.engine.model.EngineState;
 import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.csstudio.archive.common.engine.service.ServiceProvider;
-import org.csstudio.archive.common.engine.types.ArchiveEngineTypeSupport;
+import org.csstudio.domain.desy.epics.pvmanager.DesyJCADataSource;
+import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
 import org.csstudio.domain.desy.time.StopWatch;
 import org.csstudio.domain.desy.time.StopWatch.RunningStopWatch;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.epics.pvmanager.Notification;
+import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.PVManager;
+import org.epics.pvmanager.TypeSupport;
 import org.joda.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +44,8 @@ import org.slf4j.LoggerFactory;
  *  @author Kay Kasemir
  */
 public class ArchiveEngineApplication implements IApplication {
-    private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
-    /** HTTP Server port */
-    private int _port;
+    private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
 
     /** Request file */
     private String _engineName;
@@ -46,7 +53,8 @@ public class ArchiveEngineApplication implements IApplication {
     /** Engine model */
     private EngineModel _model;
 
-    private volatile boolean _run = true;
+    @GuardedBy("this")
+    private boolean _run = true;
 
     /** Obtain settings from preferences and command-line arguments
      *  @param args Command-line arguments
@@ -58,8 +66,6 @@ public class ArchiveEngineApplication implements IApplication {
         final ArgParser parser = new ArgParser();
         final BooleanOption helpOpt =
             new BooleanOption(parser, "-help", "Display Help");
-        final IntegerOption portOpt =
-            new IntegerOption(parser, "-port", "4812", "HTTP server port", 4812);
         final StringOption engineNameOpt =
             new StringOption(parser, "-engine", "demo_engine", "Engine config name", null);
         // Options handled by Eclipse,
@@ -87,7 +93,6 @@ public class ArchiveEngineApplication implements IApplication {
         }
 
         // Copy stuff from options into member vars.
-        _port = portOpt.get();
         _engineName = engineNameOpt.get();
         return true;
     }
@@ -100,40 +105,71 @@ public class ArchiveEngineApplication implements IApplication {
     public final Object start(@Nonnull final IApplicationContext context) {
 
         final IServiceProvider provider = new ServiceProvider();
+        LOG.info("DESY Archive Engine Version {} - START.", provider.getPreferencesService().getVersion());
 
         final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
             return EXIT_OK;
         }
-        // Install the type supports for the engine
-        ArchiveEngineTypeSupport.install();
 
-        LOG.info("DESY Archive Engine Version {}.", EngineModel.getVersion());
-        _run = true;
-        _model = new EngineModel(_engineName, provider);
-        final EngineHttpServer httpServer = startHttpServer(_model, _port);
-        if (httpServer == null) {
-            return EXIT_OK;
-        }
+        final DesyJCADataSource dataSource = configureJCADataSources();
+
+        EngineHttpServer httpServer = null;
         try {
-            while (_run) {
+            setRun(true);
+            _model = new EngineModel(_engineName, provider, dataSource);
 
-                configureAndRunEngine(_model, _port);
-
-                LOG.info("ArchiveEngine ending");
-
+            httpServer = startHttpServer(_model, provider);
+            if (httpServer == null) {
+                return EXIT_OK;
+            }
+            while (getRun()) {
+                configureAndRunEngine(_model);
                 stopEngineAndClearConfiguration(_model);
             }
         } catch (final EngineModelException e) {
             LOG.error("Archive engine model error - try to shutdown.", e);
         } catch (final InterruptedException e) {
             Thread.currentThread().interrupt();
+        } catch (final Throwable e) {
+            LOG.error("Unexpected throwable in application's main loop.", e);
         }
-
         return killEngineAndHttpServer(_model, httpServer);
     }
 
+    private synchronized boolean getRun() {
+        return _run;
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    private DesyJCADataSource configureJCADataSources() {
+        LOG.info("Configure JCA Datasource and setup PVManager.");
+        final DesyJCADataSource dataSource =
+            new DesyJCADataSource(JCALibrary.CHANNEL_ACCESS_JAVA, Monitor.LOG);
+        PVManager.setDefaultDataSource(dataSource);
+
+        TypeSupport.addTypeSupport(new NotificationSupport<EpicsSystemVariable>(EpicsSystemVariable.class) {
+            @Override
+            @Nonnull
+            public Notification<EpicsSystemVariable> prepareNotification(@CheckForNull final EpicsSystemVariable oldValue,
+                                                                         @CheckForNull final EpicsSystemVariable newValue) {
+                if (oldValue != null && newValue != null) {
+                    if (!oldValue.getData().equals(newValue.getData())) {
+                        return new Notification<EpicsSystemVariable>(true, newValue);
+                    }
+                    return new Notification<EpicsSystemVariable>(false, newValue);
+                } else if (oldValue == null && newValue == null) {
+                    return new Notification<EpicsSystemVariable>(false, null);
+                }
+                return new Notification<EpicsSystemVariable>(true, newValue);
+            }
+        });
+        return dataSource;
+    }
+
     private void stopEngineAndClearConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
+        LOG.info("Stopping engine.");
         model.stop();
         model.clearConfiguration();
     }
@@ -141,11 +177,15 @@ public class ArchiveEngineApplication implements IApplication {
     @Nonnull
     private Integer killEngineAndHttpServer(@Nonnull final EngineModel model,
                                    @Nonnull final EngineHttpServer httpServer) {
-        httpServer.stop();
+        if (httpServer != null) {
+            httpServer.stop();
+        }
         try {
-            model.stop();
+            if (model != null) {
+                model.stop();
+            }
         } catch (final EngineModelException e) {
-            LOG.error("Stopping the engine failed. System exit.", e);
+            LOG.error("Stopping of the engine failed. System exit.", e);
         }
         return EXIT_OK;
     }
@@ -153,14 +193,14 @@ public class ArchiveEngineApplication implements IApplication {
     /**
      * Run until model gets stopped via HTTPD or #stop()
      * @param model
+     * @param dataSource
      *
      * @throws EngineModelException
      * @throws InterruptedException
      */
-    private void configureAndRunEngine(@Nonnull final EngineModel model,
-                                       final int port) throws EngineModelException, InterruptedException {
+    private void configureAndRunEngine(@Nonnull final EngineModel model) throws EngineModelException, InterruptedException {
 
-        readEngineConfiguration(model, port);
+        readEngineConfiguration(model);
 
         LOG.info("Running, CA addr list: {}.", System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list"));
 
@@ -168,25 +208,28 @@ public class ArchiveEngineApplication implements IApplication {
 
         while (true) {
             Thread.sleep(1000);
-            if (model.getState() == EngineModel.State.SHUTDOWN_REQUESTED) {
-                _run = false;
+            if (model.getState() == EngineState.SHUTDOWN_REQUESTED) {
+                setRun(false);
                 break;
             }
-            if (model.getState() == EngineModel.State.RESTART_REQUESTED) {
+            if (model.getState() == EngineState.RESTART_REQUESTED) {
                 break;
             }
         }
     }
 
-    private void readEngineConfiguration(@Nonnull final EngineModel model,
-                                         final int port) throws EngineModelException {
+    private synchronized void setRun(final boolean run) {
+        _run = run;
+    }
+
+    private void readEngineConfiguration(@Nonnull final EngineModel model) throws EngineModelException {
         LOG.info("Reading configuration for engine '{}'.", model.getName());
         final RunningStopWatch watch = StopWatch.start();
-        model.readConfig(port);
+        model.readConfigurationAndSetupGroupsAndChannels();
         final long millis = watch.getElapsedTimeInMillis();
         LOG.info("Read configuration: {} channels in {}.",
                  model.getChannels().size(),
-                 TimeInstant.STD_DURATION_WITH_MILLIES_FMT.print(Period.millis((int) millis)));
+                 TimeInstant.STD_DURATION_WITH_MILLIS_FMT.print(Period.millis((int) millis)));
     }
 
     /**
@@ -195,19 +238,18 @@ public class ArchiveEngineApplication implements IApplication {
     @Override
     public void stop() {
         if (_model != null) {
-            _model.requestStop();
+            _model.requestShutdown();
         }
     }
 
     @CheckForNull
     private EngineHttpServer startHttpServer(@Nonnull final EngineModel model,
-                                             final int port) {
+                                             @Nonnull final IServiceProvider provider) {
         EngineHttpServer httpServer = null;
         try {
-            // Setup takes some time, but engine server should already respond.
-            httpServer = new EngineHttpServer(model, port);
+            httpServer = new EngineHttpServer(model, provider);
         } catch (final EngineHttpServerException e) {
-            LOG.error("Cannot start HTTP server on port {}: {}", port, e.getMessage());
+            LOG.error("Cannot start HTTP server on port {}: {}", provider, e.getMessage());
         }
         return httpServer;
     }

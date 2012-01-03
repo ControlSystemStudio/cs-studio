@@ -117,7 +117,7 @@ public interface IGraphicalFeedbackFactory {
 	 * @return the class type of a custom creation tool or null, if the default
 	 *         creation tool should be used
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	Class getCreationTool();
 
 	/**

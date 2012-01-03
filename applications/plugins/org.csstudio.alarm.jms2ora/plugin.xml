@@ -66,10 +66,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId"
-            name="Jms2Ora">
+            name="Jms2OraProduct">
          <property
                name="appName"
-               value="Jms2Ora">
+               value="Jms2OraProduct">
          </property>
       </product>
    </extension>

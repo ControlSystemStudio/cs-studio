@@ -24,6 +24,7 @@ package org.csstudio.archive.common.engine.service;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.engine.ArchiveEngineActivator;
+import org.csstudio.archive.common.engine.ArchiveEnginePreferencesService;
 import org.csstudio.archive.common.service.IArchiveEngineFacade;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
 
@@ -44,5 +45,14 @@ public class ServiceProvider implements IServiceProvider {
     @Nonnull
     public IArchiveEngineFacade getEngineFacade() throws OsgiServiceUnavailableException {
         return ArchiveEngineActivator.getDefault().getArchiveEngineService();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveEnginePreferencesService getPreferencesService() {
+        return ArchiveEngineActivator.getDefault().getPreferencesService();
     }
 }

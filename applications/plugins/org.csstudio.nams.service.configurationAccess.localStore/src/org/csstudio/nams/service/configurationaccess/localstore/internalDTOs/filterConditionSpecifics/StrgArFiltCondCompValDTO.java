@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics;
 
 import javax.persistence.EmbeddedId;
@@ -64,7 +65,8 @@ public class StrgArFiltCondCompValDTO implements
 		return this.pk.getFilterConditionRef();
 	}
 
-	public String getUniqueHumanReadableName() {
+	@Override
+    public String getUniqueHumanReadableName() {
 		return this.toString();
 	}
 
@@ -76,7 +78,8 @@ public class StrgArFiltCondCompValDTO implements
 		return result;
 	}
 
-	public boolean isInCategory(final int categoryDBId) {
+	@Override
+    public boolean isInCategory(final int categoryDBId) {
 		return false;
 	}
 

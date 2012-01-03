@@ -26,19 +26,22 @@ package org.csstudio.ams.systemmonitor;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import org.apache.log4j.Logger;
 import org.csstudio.ams.systemmonitor.check.AmsSystemCheck;
 import org.csstudio.ams.systemmonitor.check.CheckResult;
 import org.csstudio.ams.systemmonitor.check.SmsConnectorCheck;
 import org.csstudio.ams.systemmonitor.database.DatabaseHelper;
+import org.csstudio.ams.systemmonitor.file.FileCleaner;
 import org.csstudio.ams.systemmonitor.internal.PreferenceKeys;
+import org.csstudio.ams.systemmonitor.jmx.JmsSubscriptionCleaner;
 import org.csstudio.ams.systemmonitor.status.MonitorStatusHandler;
+import org.csstudio.ams.systemmonitor.util.CommandLine;
 import org.csstudio.ams.systemmonitor.util.CommonMailer;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * @author Markus Moeller
@@ -46,6 +49,9 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class AmsSystemMonitorApplication implements IApplication
 {
+    /** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(AmsSystemMonitorApplication.class);
+
     /** Status handler for the AMS system check */
     private MonitorStatusHandler amsStatusHandler;
     
@@ -64,55 +70,72 @@ public class AmsSystemMonitorApplication implements IApplication
     /** Simple version information */
     private VersionInfo version;
     
-    /** A nice logger */
-    private Logger logger;
-    
     private int allowedTimeout;
     
     /** Flag that indicates whether or not the application should run */
     private boolean running;
 
-    public AmsSystemMonitorApplication()
-    {
-        logger = CentralLogger.getInstance().getLogger(this);
-
+    public AmsSystemMonitorApplication() {
+        version = new VersionInfo();
+        running = true;
+    }
+    
+    private void initialize() {
+        
         // Retrieve the check interval
         IPreferencesService pref = Platform.getPreferencesService();
 
         allowedTimeout = pref.getInt(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_ALLOWED_TIMEOUT_COUNT, 2, null);
-        logger.info("Number of allowed timeouts: " + allowedTimeout);
+        LOG.info("Number of allowed timeouts: " + allowedTimeout);
         
         monitorStatusHandler = new MonitorStatusHandler("AmsMonitor Status", "amsMonitorStatus.ser", allowedTimeout);
         amsStatusHandler = new MonitorStatusHandler("AMS Status", "amsStatus.ser", allowedTimeout);
         
         long checkInterval = pref.getLong(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_CHECK_INTERVAL, -1, null);
-        if(checkInterval > 0)
-        {
+        if(checkInterval > 0) {
             // Assume minutes and convert it to ms
             checkInterval *= 60000;
-        }
-        else
-        {
-            logger.warn("Modem check interval '" + checkInterval + "' is invalid. Using default: 20 minutes");
+        } else {
+            LOG.warn("Modem check interval '" + checkInterval + "' is invalid. Using default: 20 minutes");
             checkInterval = 1200000;
         }
         
         modemStatusHandler = new MonitorStatusHandler("SmsConnector Status", "modemStatus.ser", checkInterval, allowedTimeout);
-
-        version = new VersionInfo();
-        running = true;
     }
     
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
      */
-    public Object start(IApplicationContext context) throws Exception
-    {
-        logger.info("AmsSystemMonitor started [" + version.toString() + "]");
+    @Override
+    public Object start(IApplicationContext context) throws Exception {
+        
+        LOG.info("AmsSystemMonitor started [" + version.toString() + "]");
+        
+        /* 
+         * Get the command line parameters
+         * At the moment we just have one parameter:
+         * 
+         * -startClean - Deletes the status handler and the subscription within the ActiveMQ-Server
+         */
+
+        String[] args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+        CommandLine cmdLine = new CommandLine(args);
+        if (cmdLine.exists("startClean")) {
+            
+            LOG.info("Application starts with parameter 'startClean'.");
+            JmsSubscriptionCleaner cleaner = new JmsSubscriptionCleaner();
+            cleaner.destroyAllSubscriptions();
+            cleaner = null;
+            
+            FileCleaner fileCleaner = new FileCleaner();
+            fileCleaner.deleteStatusHandlerFiles();
+            fileCleaner = null;
+        }
+        
+        initialize();
         
         monitorStatusHandler.beginCurrentCheck();
-        try
-        {
+        try {
             amsSystemCheck = new AmsSystemCheck("AmsSystemCheckSender", "AmsSystemCheckReceiver", "AmsSystemCheck");
             smsConnectorCheck = new SmsConnectorCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
             
@@ -124,18 +147,17 @@ public class AmsSystemMonitorApplication implements IApplication
             }
 
             monitorStatusHandler.resetErrorFlag();
-        }
-        catch(AmsSystemMonitorException asme)
-        {
-            logger.error("[*** AmsSystemMonitorException ***]: " + asme.getMessage());
+        } catch(AmsSystemMonitorException asme) {
+            LOG.error("[*** AmsSystemMonitorException ***]: " + asme.getMessage());
             monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
-            if(monitorStatusHandler.sendErrorSms())
-            {
+            if(monitorStatusHandler.sendErrorSms()) {
                 sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                 monitorStatusHandler.setSmsSent(true);
             }
             
             monitorStatusHandler.stopCurrentCheck();
+            amsSystemCheck.closeJms();
+            smsConnectorCheck.closeJms();
             return IApplication.EXIT_OK;
         }
         
@@ -144,6 +166,7 @@ public class AmsSystemMonitorApplication implements IApplication
         while(running)
         {
             this.checkSystem();
+            amsSystemCheck.closeJms();
             
             // If the first check was not successful, we need not to do the second check
             if(amsStatusHandler.getCurrentStatus() != CheckResult.OK)
@@ -151,17 +174,18 @@ public class AmsSystemMonitorApplication implements IApplication
                 // Force a modem check
                 modemStatusHandler.forceNextCheck();
                 modemStatusHandler.storeStatus();
-                
+                smsConnectorCheck.closeJms();
                 break;
             }
             
             this.checkSmsConnector();
+            smsConnectorCheck.closeJms();
             
             // Just one time
             running = false;
         }
         
-        logger.info("AmsSystemMonitor is stopping...");
+        LOG.info("AmsSystemMonitor is stopping...");
 
         return IApplication.EXIT_OK;
     }
@@ -181,7 +205,7 @@ public class AmsSystemMonitorApplication implements IApplication
                 amsStatusHandler.beginCurrentCheck();
                 
                 amsSystemCheck.doCheck(amsStatusHandler.getCurrentStatusEntry());
-                logger.info("AMS alarm chain is working.");
+                LOG.info("AMS alarm chain is working.");
     
                 amsStatusHandler.setCurrentStatus(CheckResult.OK);
                 amsStatusHandler.setSmsSent(false);
@@ -208,12 +232,12 @@ public class AmsSystemMonitorApplication implements IApplication
             {
                 if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT)
                 {
-                    logger.warn("Timeout!");
+                    LOG.warn("Timeout!");
     
                     // Set current status TIMEOUT
                     amsStatusHandler.setCurrentStatus(CheckResult.TIMEOUT);
                     
-                    logger.info("Number of timeouts: " + amsStatusHandler.getNumberOfTimeouts());
+                    LOG.info("Number of timeouts: " + amsStatusHandler.getNumberOfTimeouts());
                     if(amsStatusHandler.getNumberOfTimeouts() > allowedTimeout)
                     {
                         amsStatusHandler.setCurrentStatus(CheckResult.ERROR);
@@ -227,7 +251,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                        LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     // No effect here because the check of the AMS system will _always_ be done!
@@ -235,7 +259,7 @@ public class AmsSystemMonitorApplication implements IApplication
                 }
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR)
                 {
-                    logger.warn("AmsSystemMonitor does not work properly.");
+                    LOG.warn("AmsSystemMonitor does not work properly.");
     
                     monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     if(monitorStatusHandler.sendErrorSms())
@@ -245,7 +269,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                        LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     // No effect here
@@ -304,13 +328,13 @@ public class AmsSystemMonitorApplication implements IApplication
                 
                 monitorStatusHandler.resetErrorFlag();
                 
-                logger.info("GSM modem(s) is(are) working.");
+                LOG.info("GSM modem(s) is(are) working.");
             }
             catch(AmsSystemMonitorException asme)
             {
                 if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR)
                 {
-                    logger.warn("AmsSystemMonitor does not work properly.");
+                    LOG.warn("AmsSystemMonitor does not work properly.");
                     
                     monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     if(monitorStatusHandler.sendErrorSms())
@@ -320,7 +344,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                        LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     // No effect here
@@ -329,10 +353,10 @@ public class AmsSystemMonitorApplication implements IApplication
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT)
                 {
 
-                    logger.warn("Timeout!");
+                    LOG.warn("Timeout!");
                     modemStatusHandler.setCurrentStatus(CheckResult.TIMEOUT);
                     
-                    logger.info("Number of timeouts: " + modemStatusHandler.getNumberOfTimeouts());
+                    LOG.info("Number of timeouts: " + modemStatusHandler.getNumberOfTimeouts());
                     if(modemStatusHandler.getNumberOfTimeouts() > allowedTimeout)
                     {
                         modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
@@ -346,14 +370,14 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                        LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     modemStatusHandler.forceNextCheck();
                 }
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR)
                 {
-                    logger.warn("SmsConnector does not work properly.");
+                    LOG.warn("SmsConnector does not work properly.");
                     modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     
                     if(modemStatusHandler.sendErrorSms())
@@ -363,14 +387,14 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a SMS yet.");
+                        LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     modemStatusHandler.forceNextCheck();
                 }
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN)
                 {
-                    logger.warn("SmsConnector does not work properly.");
+                    LOG.warn("SmsConnector does not work properly.");
     
                     modemStatusHandler.setCurrentStatus(CheckResult.WARN);
                     
@@ -387,7 +411,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     }
                     else
                     {
-                        logger.info("AmsSystemMonitor does not send a warn mail yet.");
+                        LOG.info("AmsSystemMonitor does not send a warn mail yet.");
                     }
                     
                     modemStatusHandler.forceNextCheck();
@@ -396,10 +420,8 @@ public class AmsSystemMonitorApplication implements IApplication
 
             modemStatusHandler.stopCurrentCheck();
             monitorStatusHandler.stopCurrentCheck();
-        }
-        else
-        {
-            logger.info("No modem check now.");
+        } else {
+            LOG.info("No modem check now.");
         }
     }
 
@@ -413,9 +435,9 @@ public class AmsSystemMonitorApplication implements IApplication
         
         success = true;
         
-        logger.debug("sendWarnMail(): " + text);
+        LOG.debug("sendWarnMail(): " + text);
 
-        text = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
         
         IPreferencesService pref = Platform.getPreferencesService();
         
@@ -430,7 +452,7 @@ public class AmsSystemMonitorApplication implements IApplication
             for(int i = 0;i < list.length;i++)
             {
                 to = to + list[i] + ",";
-                logger.info("Mail to: " + list[i]);
+                LOG.info("Mail to: " + list[i]);
             }
             
             to = to.trim();
@@ -439,14 +461,14 @@ public class AmsSystemMonitorApplication implements IApplication
                 to = to.substring(0, to.length() - 1);
             }
             
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
         else
         {
             // We do not have any mail address. Use the emergency number from the preferences.
             to = pref.getString(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_EMERGENCY_MAIL, "", null);
-            logger.info("Mail to: " + to);
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            LOG.info("Mail to: " + to);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
                 
         return success;
@@ -462,8 +484,8 @@ public class AmsSystemMonitorApplication implements IApplication
         
         success = true;
         
-        logger.debug("sendErrorSms(): " + text);
-        text = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        LOG.debug("sendErrorSms(): " + text);
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
 
         IPreferencesService prefs = Platform.getPreferencesService();
 
@@ -483,27 +505,27 @@ public class AmsSystemMonitorApplication implements IApplication
                 for(int i = 0;i < list.length;i++)
                 {
                     list[i] = localPart.replaceAll("\\$\\{NUMBER\\}", list[i]) + "@" + domainPart;
-                    logger.info("SMS to: " + list[i]);
+                    LOG.info("SMS to: " + list[i]);
                 }
                 
-                success = (CommonMailer.sendMultiMail(server, from, list, subject, text) == 0);
+                success = (CommonMailer.sendMultiMail(server, from, list, subject, mailText) == 0);
             }
             else
             {
                 // We do not have any phone number. Use the emergency number from the preferences.
                 String emergency = prefs.getString(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_EMERGENCY_NUMBER, "", null);
                 to = localPart.replaceAll("\\$\\{NUMBER\\}", emergency) + "@" + domainPart;
-                logger.info("SMS to: " + to);
+                LOG.info("SMS to: " + to);
                 
-                success = CommonMailer.sendMail(server, from, to, subject, text);
+                success = CommonMailer.sendMail(server, from, to, subject, mailText);
             }
         }
         else 
         {
             to = localPart + "@" + domainPart;
-            logger.info("SMS to: " + to);
+            LOG.info("SMS to: " + to);
             
-            success = CommonMailer.sendMail(server, from, to, subject, text);
+            success = CommonMailer.sendMail(server, from, to, subject, mailText);
         }
         
         // Maybe we want to send the Alarm SMS a second time using the Old Alarm System (via James)
@@ -518,11 +540,11 @@ public class AmsSystemMonitorApplication implements IApplication
             {
                 for(int i = 0;i < list.length;i++)
                 {
-                    list[i] = "N:" + list[i] + " " + text;
-                    logger.info("SMS to: " + list[i]);
+                    list[i] = "N:" + list[i] + " " + mailText;
+                    LOG.info("SMS to: " + list[i]);
                 }
                 
-                success = (CommonMailer.sendMultiMail(server, from, "sms@krykmail.desy.de", list, text) == 0);
+                success = (CommonMailer.sendMultiMail(server, from, "sms@krykmail.desy.de", list, mailText) == 0);
             }
         }
         
@@ -532,7 +554,8 @@ public class AmsSystemMonitorApplication implements IApplication
     /* (non-Javadoc)
      * @see org.eclipse.equinox.app.IApplication#stop()
      */
-    public void stop()
-    {
+    @Override
+    public void stop() {
+        // Nothing to do
     }
 }

@@ -11,36 +11,30 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
   * Data model for Profibus-DP Subnet
-  * 
-  * Created by: Torsten Boeckmann 
+  *
+  * Created by: Torsten Boeckmann
   * Date: 07. Dezember 2005
-  *  
-  * last changed: @author $Author: hrickens $ 
+  *
+  * last changed: @author $Author: hrickens $
   * Revision: @version $Revision: 1.2 $
-  **/ 
+  **/
 @Entity
 @Table(name = "ddb_Profibus_Subnet")
 public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * Subnet baud rate.
-     */
+    /** Subnet baud rate. */
     private String _baudRate;
-    /**
-     * Slot time.
-     */
+    /** Slot time. */
     private int _slotTime;
-
-    /**
-     * Min. Station delay time.
-     */
+    /** Min. Station delay time. */
     private int _minTsdr;
     /** Max. Station delay time. */
     private int _maxTsdr;
@@ -72,13 +66,9 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     private short _slaveNumber;
     /** Number of subcriber at project. */
     private short _subscriber;
-    /**
-     * Quota of FDL, FMS or S7 communication at project.
-     */
+    /** Quota of FDL, FMS or S7 communication at project. */
     private String _quotaFdlFmsS7com;
-    /**
-     * Communication profil: DP, Standard, Universal (DP,FMS),User defined.
-     */
+    /** Communication profil: DP, Standard, Universal (DP,FMS),User defined. */
     private String _profil; //
 
     /**
@@ -91,33 +81,22 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     /**
      * The default Constructor.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
-        setParent(ioc);
-        ioc.addChild(this);
+        super(ioc);
     }
 
-    /**
-     *
-     * @return get the Baudrate
-     */
     @CheckForNull
     public String getBaudRate() {
         return _baudRate;
     }
 
-    /**
-     *
-     * @param baudRate
-     *            Set the Baudrate for the PBNet
-     */
     public void setBaudRate(@Nullable final String baudRate) {
         _baudRate = baudRate;
     }
 
     /**
-     *
      * @return the length of the CU-Line.
      */
     public float getCuLineLength() {
@@ -125,9 +104,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     }
 
     /**
-     *
-     * @param cuLineLength
-     *            Set the length of CU-Line.
+     * @param cuLineLength Set the length of CU-Line.
      */
     public void setCuLineLength(final float cuLineLength) {
         this._cuLineLength = cuLineLength;
@@ -380,7 +357,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     @Transient
     @Nonnull
-    public Set<MasterDBO> getProfibusDPMaster() {
+    public final Set<MasterDBO> getProfibusDPMaster() {
         return getChildren();
     }
 
@@ -391,7 +368,7 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     @ManyToOne // TODO (hrickens) [11.05.2011]: Wieso ist hier eine ManyToOne Beziehung? Die ist doch inder der getParent Methode.
     @Nonnull
     public IocDBO getIoc() {
-        return (IocDBO) getParent();
+        return getParent();
     }
 
     /**
@@ -410,25 +387,24 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      */
     @Transient
     @Nonnull
-    public String getEpicsAddressString() {
+    public final String getEpicsAddressString() {
         return "@"+getName();
     }
 
 
     @Transient
-    public void updateName(@Nonnull final String name) {
+    public final void updateName(@Nonnull final String name) {
         setName(name);
     }
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
-    @Nonnull 
-    public ProfibusSubnetDBO copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
-            IocDBO ioc = parent;
-            ProfibusSubnetDBO copy = new ProfibusSubnetDBO(ioc);
+    @Nonnull
+    public final ProfibusSubnetDBO copyParameter(@Nonnull final IocDBO parent) throws PersistenceException {
+            final ProfibusSubnetDBO copy = new ProfibusSubnetDBO(parent);
             copy.setDescription(getDescription());
             copy.setBaudRate(getBaudRate());
             copy.setCuLineLength(getCuLineLength());
@@ -455,10 +431,10 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
 
     @Override
     @Nonnull
-    public ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode) throws PersistenceException {
-        ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode);
-        for (MasterDBO node : getChildren()) {
-            MasterDBO childrenCopy = node.copyThisTo(copy);
+    public final ProfibusSubnetDBO copyThisTo(@Nonnull final IocDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
+        final ProfibusSubnetDBO copy = (ProfibusSubnetDBO) super.copyThisTo(parentNode, namePrefix);
+        for (final MasterDBO node : getChildren()) {
+            final MasterDBO childrenCopy = node.copyThisTo(copy, "Copy of ");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
@@ -469,8 +445,31 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
     @Override
     @Transient
     @Nonnull
-    public NodeType getNodeType() {
+    public final NodeType getNodeType() {
         return NodeType.SUBNET;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public final MasterDBO createChild() throws PersistenceException {
+        return new MasterDBO(this);
+    }
+
+    @Override
+    public final void accept(@Nonnull final INodeVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

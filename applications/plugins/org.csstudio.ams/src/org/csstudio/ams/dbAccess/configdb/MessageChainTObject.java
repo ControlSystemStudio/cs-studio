@@ -36,9 +36,10 @@ import java.util.Date;
 	sChainState			SMALLINT,	
 	PRIMARY KEY(iMessageChainID)
 */
-public class MessageChainTObject
-{
-	private int 	messageChainID;// PRIMARY KEY
+@SuppressWarnings("hiding")
+public class MessageChainTObject {
+	
+    private int 	messageChainID;// PRIMARY KEY
 	private int 	messageRef;
 	private int 	filterRef;
 	private int 	filterActionRef;
@@ -48,8 +49,9 @@ public class MessageChainTObject
 	private short 	chainState;
 	private String 	receiverAdress;
 
-	public MessageChainTObject()
-	{}
+	public MessageChainTObject() {
+	    // Nothing to do
+	}
 	
 	public MessageChainTObject(int messageChainID, 
 			int messageRef, 

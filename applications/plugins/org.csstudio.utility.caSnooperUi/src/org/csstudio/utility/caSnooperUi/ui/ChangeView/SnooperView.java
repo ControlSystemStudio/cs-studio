@@ -1,9 +1,7 @@
 package org.csstudio.utility.caSnooperUi.ui.ChangeView;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.caSnooperUi.parser.ChannelCollector;
 import org.csstudio.utility.caSnooperUi.parser.ChannelStructure;
 import org.csstudio.utility.caSnooperUi.parser.SnooperStringParser;
@@ -39,6 +37,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * view part of the caSnooper
@@ -47,6 +47,8 @@ import org.eclipse.ui.views.IViewRegistry;
  */
 public class SnooperView extends ViewPart{
 
+    private static final Logger LOG = LoggerFactory.getLogger(SnooperView.class);
+    
 	/**
 	 * The table viewer
 	 */
@@ -87,7 +89,7 @@ public class SnooperView extends ViewPart{
 	/**
 	 * Instance of MessageCollector
 	 */
-	private ChannelCollector msg = new ChannelCollector();
+	private final ChannelCollector msg = new ChannelCollector();
 	
 	/**
 	 * The Show Property View action.
@@ -119,7 +121,8 @@ public class SnooperView extends ViewPart{
 	 */
 	protected String lastSort;
 
-	public void createPartControl(Composite parent) {
+	@Override
+    public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 		
 		final Composite iocBar = new Composite(parent, SWT.NONE);
@@ -146,7 +149,8 @@ public class SnooperView extends ViewPart{
 		gridData.heightHint = 20;
 		gridData.verticalAlignment = SWT.TOP;
 		canvas.addPaintListener(new PaintListener() {
-		      public void paintControl(PaintEvent e) {
+		      @Override
+            public void paintControl(PaintEvent e) {
 		    	  if(snooperActive)
 		    		  e.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
 		    	  else
@@ -175,11 +179,13 @@ public class SnooperView extends ViewPart{
 		
 		startSnooping.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(final SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 				// ignore (not called by buttons)
 			}
 
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				//start the snooping with selected time period
 				snooperActive = true;
 				switch (combo.getSelectionIndex()){
@@ -210,11 +216,13 @@ public class SnooperView extends ViewPart{
 		
 		stopSnooping.addSelectionListener(new SelectionListener() {
 			
-			public void widgetDefaultSelected(final SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 				// ignore (not called by buttons)
 			}
 
-			public void widgetSelected(final SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				//stop the snooping and remove listener
 				if(snooperActive){
 					msg.stop();
@@ -277,7 +285,8 @@ public class SnooperView extends ViewPart{
 		column.addSelectionListener(new SelectionAdapter() {
 			//so the sort order is remembered this is local variable
 			private boolean sort;
-	        public void widgetSelected(SelectionEvent e) {
+	        @Override
+            public void widgetSelected(SelectionEvent e) {
 	        	sort = !sort;
 	        	tableViewer.setSorter(
 	        			new SnooperSorter(index,sort));
@@ -300,7 +309,8 @@ public class SnooperView extends ViewPart{
 		
 		// add menu items to the context menu when it is about to show
 		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(final IMenuManager manager) {
+			@Override
+            public void menuAboutToShow(final IMenuManager manager) {
 				SnooperView.this.fillContextMenu(manager);
 			}
 		});
@@ -316,7 +326,8 @@ public class SnooperView extends ViewPart{
 	
 	private void makeActions() {
 		_showPropertyViewAction = new Action() {
-			public void run() {
+			@Override
+            public void run() {
 				try {
 					getSite().getPage().showView(PROPERTY_VIEW_ID);
 				} catch (PartInitException e) {
@@ -335,7 +346,8 @@ public class SnooperView extends ViewPart{
 	
 	public void setMessage(final Object param){
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				if(!snooperActive){
 					if(param.equals("")){
 						text.setText("No snoops received");
@@ -349,8 +361,7 @@ public class SnooperView extends ViewPart{
 							text.setText((String)tmp[0]);
 						}
 						else
-							CentralLogger.getInstance().error(this,
-									"Incorrect data format received!"); 
+							LOG.error("Incorrect data format received!"); 
 					}
 				}
 				else
@@ -365,7 +376,8 @@ public class SnooperView extends ViewPart{
 	 */
 	public void processData(){
 		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				final ArrayList<ChannelStructure> entries = msg.getSnoops();
 				if(entries!=null){
 					tableViewer.setInput(entries);
@@ -378,7 +390,8 @@ public class SnooperView extends ViewPart{
 		t.start();
 	}
 	
-	public void setFocus() {
+	@Override
+    public void setFocus() {
 		tableViewer.getControl().setFocus();
 	}
 	
@@ -388,7 +401,8 @@ public class SnooperView extends ViewPart{
 	 */
 	class DataTimer implements Runnable{
 
-		public void run() {
+		@Override
+        public void run() {
 			while(!msg.isReady() && snooperActive){
 				try {
 					Thread.sleep(100);

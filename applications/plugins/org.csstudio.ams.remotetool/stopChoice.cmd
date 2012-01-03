@@ -1,7 +1,7 @@
 @echo off
 
 set JAVA_CMD=java.exe
-set LAUNCHER=org.eclipse.equinox.launcher_1.0.101.R34x_v20080819.jar
+set LAUNCHER=org.eclipse.equinox.launcher_1.1.1.R36x_v20101122_1400.jar
 set MAINCLASS=org.eclipse.equinox.launcher.Main
 set ECLIPSEAPPLIC=org.csstudio.ams.remotetool.AmsRemoteToolApplication
 
@@ -26,38 +26,38 @@ set /P AUSWAHL=Geben Sie die Nummer ein:
 if "%AUSWAHL%" == "" goto abfrage
 if NOT "%AUSWAHL%" == "1" goto app2
 set APPLICATIONNAME=ams-distributor
-goto stopapplication
+goto stopIt
 
 :app2
 if NOT "%AUSWAHL%" == "2" goto app3
 set APPLICATIONNAME=ams-message-minder
-goto stopapplication
+goto stopIt
 
 :app3
 if NOT "%AUSWAHL%" == "3" goto app4
 set APPLICATIONNAME=ams-department-decision
-goto stopapplication
+goto stopIt
 
 :app4
 if NOT "%AUSWAHL%" == "4" goto app5
 set APPLICATIONNAME=ams-mail-connector
-goto stopapplication
+goto stopIt
 
 :app5
 if NOT "%AUSWAHL%" == "5" goto app6
 set APPLICATIONNAME=ams-sms-connector
-goto stopapplication
+goto stopIt
 
 :app6
 if NOT "%AUSWAHL%" == "6" goto app7
 set APPLICATIONNAME=ams-jms-connector
-goto stopapplication
+goto stopIt
 
 :app7
 if NOT "%AUSWAHL%" == "7" goto abfrage
 set APPLICATIONNAME=ams-voicemail-connector
 
-:stopapplication
+:stopIt
 echo.
 echo Try to stop %APPLICATIONNAME%
 echo.

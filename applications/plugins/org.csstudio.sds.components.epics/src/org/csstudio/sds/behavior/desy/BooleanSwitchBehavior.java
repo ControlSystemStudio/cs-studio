@@ -21,31 +21,52 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.BooleanSwitchModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
-public class BooleanSwitchBehavior extends
-		AbstractDesyBehavior<BooleanSwitchModel> {
+public class BooleanSwitchBehavior extends AbstractDesyConnectionBehavior<BooleanSwitchModel> {
 
-	@Override
-	protected String[] doGetInvisiblePropertyIds() {
-		return new String[] { BooleanSwitchModel.PROP_VALUE};
-	}
+    private String _defOnColor;
+    private String _defOffColor;
 
-	@Override
-	protected void doInitialize(final BooleanSwitchModel widget) {
-	}
+    @Override
+    protected String[] doGetInvisiblePropertyIds() {
+        return new String[] {BooleanSwitchModel.PROP_VALUE};
+    }
 
-	@Override
-	protected void doProcessConnectionStateChange(final BooleanSwitchModel widget,
-			final AnyDataChannel anyDataChannel) {
-	}
+    @Override
+    protected void doInitialize(final BooleanSwitchModel widget) {
+        _defOnColor = widget.getColor(BooleanSwitchModel.PROP_ON_COLOR);
+        _defOffColor = widget.getColor(BooleanSwitchModel.PROP_OFF_COLOR);
+    }
 
-	@Override
-	protected void doProcessMetaDataChange(final BooleanSwitchModel widget,
-			final MetaData metaData) {
-	    if (metaData != null) {
+    @Override
+    protected void doProcessConnectionStateChange(final BooleanSwitchModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        String onColor;
+        String offColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                onColor = _defOnColor;
+                offColor = _defOffColor;
+            } else {
+                onColor = "${Invalid}";
+                offColor = "${Invalid}";
+            }
+        } else {
+            final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+            onColor = determineBackgroundColor(connectionState);
+            offColor = onColor;
+        }
+        widget.setPropertyValue(BooleanSwitchModel.PROP_ON_COLOR, onColor);
+        widget.setPropertyValue(BooleanSwitchModel.PROP_OFF_COLOR, offColor);
+    }
+
+    @Override
+    protected void doProcessMetaDataChange(final BooleanSwitchModel widget, final MetaData metaData) {
+        if(metaData != null) {
             switch (metaData.getAccessType()) {
                 case NONE:
                     widget.setPropertyValue(AbstractWidgetModel.PROP_CURSOR, CursorService
@@ -68,34 +89,33 @@ public class BooleanSwitchBehavior extends
                             .getInstance().availableCursors().get(0));
             }
         }
-	}
+    }
 
-	@Override
-	protected void doProcessValueChange(final BooleanSwitchModel model,
-			final AnyData anyData) {
-		// .. value (influenced by current value, depending on onTrue Value)
-		double value = anyData.doubleValue();
-		boolean b = value == model
-				.getDoubleProperty(BooleanSwitchModel.PROP_ON_STATE_VALUE);
-		model.setPropertyValue(BooleanSwitchModel.PROP_VALUE, b);
-	}
+    @Override
+    protected void doProcessValueChange(final BooleanSwitchModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+        // .. value (influenced by current value, depending on onTrue Value)
+        final double value = anyData.doubleValue();
+        final boolean b = value == model.getDoubleProperty(BooleanSwitchModel.PROP_ON_STATE_VALUE);
+        model.setPropertyValue(BooleanSwitchModel.PROP_VALUE, b);
+    }
 
-	@Override
-	protected Object doConvertOutgoingValue(final BooleanSwitchModel widgetModel,
-			final String propertyId, final Object value) {
-		if (propertyId.equals(BooleanSwitchModel.PROP_VALUE)) {
-			boolean currentValue = widgetModel
-					.getBooleanProperty(BooleanSwitchModel.PROP_VALUE);
-			double outgoingValue = widgetModel
-					.getDoubleProperty(BooleanSwitchModel.PROP_OFF_STATE_VALUE);
-			if (currentValue) {
-				outgoingValue = widgetModel
-						.getDoubleProperty(BooleanSwitchModel.PROP_ON_STATE_VALUE);
-			}
-			return outgoingValue;
-		} else {
-			return super.doConvertOutgoingValue(widgetModel, propertyId, value);
-		}
-	}
+    @Override
+    protected Object doConvertOutgoingValue(final BooleanSwitchModel widgetModel,
+                                            final String propertyId,
+                                            final Object value) {
+        if(propertyId.equals(BooleanSwitchModel.PROP_VALUE)) {
+            final boolean currentValue = widgetModel.getBooleanProperty(BooleanSwitchModel.PROP_VALUE);
+            double outgoingValue = widgetModel
+                    .getDoubleProperty(BooleanSwitchModel.PROP_OFF_STATE_VALUE);
+            if(currentValue) {
+                outgoingValue = widgetModel
+                        .getDoubleProperty(BooleanSwitchModel.PROP_ON_STATE_VALUE);
+            }
+            return outgoingValue;
+        } else {
+            return super.doConvertOutgoingValue(widgetModel, propertyId, value);
+        }
+    }
 
 }

@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench,
  org.eclipse.gef,
  org.csstudio.platform.ui;bundle-version="1.1.1",
- org.csstudio.platform.libs.jdom;bundle-version="1.0.0"
+ org.jdom;bundle-version="1.0.0",
+ org.slf4j;bundle-version="1.6.1"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

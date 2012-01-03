@@ -21,10 +21,15 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channelgroup;
 
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -37,6 +42,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 
@@ -49,11 +55,19 @@ import com.google.inject.Inject;
 public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IArchiveChannelGroupDao {
 
     private static final String EXC_MSG = "Channel group retrieval from archive failed.";
+    private static final String TAB = "channel_group";
+
+    private static final String NAME_SET = "<SET_CLAUSE>";
+
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     private final String _selectChannelGroupByEngineIdStmt =
         "SELECT id, name, engine_id, description FROM " +
-        getDatabaseName() + " .channel_group" +
-        " WHERE engine_id=? ORDER BY name";
+        getDatabaseName() + "." + TAB + " WHERE engine_id=? ORDER BY name";
+    private final String _createChannelGroupStmt = "INSERT INTO " + getDatabaseName() + "." + TAB +
+                                                   " (name, engine_id, description)" +
+                                                   " VALUES (?, ?, ?)";
+    private final String _deleteChannelGroupStmt = "DELETE FROM " + getDatabaseName() + "." + TAB +
+                                                   " WHERE name in (" + NAME_SET + ")";
 
     /**
      * Constructor.
@@ -72,12 +86,15 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
     public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId engId) throws ArchiveDaoException {
 
         final List<IArchiveChannelGroup> groups = Lists.newArrayList();
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
-            stmt =  getConnection().prepareStatement(_selectChannelGroupByEngineIdStmt);
+            conn = createConnection();
+            stmt =  conn.prepareStatement(_selectChannelGroupByEngineIdStmt);
             stmt.setInt(1, engId.intValue());
 
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
 
             while (result.next()) {
                 // id, name, enabling_channel_id
@@ -91,10 +108,79 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectChannelGroupByEngineIdStmt + " failed.");
+            closeSqlResources(result, stmt, conn, _selectChannelGroupByEngineIdStmt);
         }
         return groups;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveDaoException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        Collection<IArchiveChannelGroup> notAddedGroups = Collections.emptyList();
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_createChannelGroupStmt);
+            for (final IArchiveChannelGroup group : groups) {
+                stmt.setString(1, group.getName());
+                stmt.setInt(2, group.getEngineId().intValue());
+                stmt.setString(3, group.getDescription());
 
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        } catch (final BatchUpdateException e) {
+            notAddedGroups = createNotAddedGroups(groups, e);
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG + ": Group creation failed in DAO impl.", e);
+        } finally {
+            closeSqlResources(null, stmt, conn, _createChannelGroupStmt);
+        }
+        return notAddedGroups;
+    }
+
+    @Nonnull
+    private Collection<IArchiveChannelGroup> createNotAddedGroups(@Nonnull final Collection<IArchiveChannelGroup> groups,
+                                                                  @Nonnull final BatchUpdateException e) {
+        final List<IArchiveChannelGroup> notAddedGroups = Lists.newArrayList();
+        final int[] updateCounts = e.getUpdateCounts();
+        int i = 0;
+        for (final IArchiveChannelGroup group : groups) {
+            if (updateCounts[i] == Statement.EXECUTE_FAILED) {
+                notAddedGroups.add(group);
+            }
+            i++;
+        }
+        return notAddedGroups;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean deleteChannelGroups(@Nonnull final Set<String> names) throws ArchiveDaoException {
+        if (names.isEmpty()) {
+            return false;
+        }
+        final String nameClause = "'" + Joiner.on("','").join(names) + "'";
+        final String stmtStr = _deleteChannelGroupStmt.replaceFirst(NAME_SET, nameClause);
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(stmtStr);
+            final int update = stmt.executeUpdate();
+            return update == names.size();
+        } catch (final Exception e) {
+            handleExceptions(EXC_MSG + ": Group deletion failed in DAO impl.", e);
+        } finally {
+            closeSqlResources(null, stmt, conn, stmtStr);
+        }
+        return false;
+    }
 }

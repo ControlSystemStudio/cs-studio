@@ -21,6 +21,7 @@
 			        <topic href="html/widgets/LED.html" label="LED"></topic>
 			        <topic href="html/widgets/BoolSwitch.html" label="Boolean Switch"></topic>
 			        <topic href="html/widgets/BoolButton.html" label="Boolean Button"></topic>
+			        <topic href="html/widgets/ImageBoolIndicator.html" label="Image Boolean Indicator"></topic>
 			        <topic href="html/widgets/ImageBoolButton.html" label="Image Boolean Button"></topic>
 			     
 			     <topic href="html/widgets/TextUpdate.html" label="Text Update"></topic>

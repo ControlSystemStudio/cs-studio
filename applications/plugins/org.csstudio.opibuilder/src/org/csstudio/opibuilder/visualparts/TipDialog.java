@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.visualparts;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,7 +21,7 @@ public class TipDialog extends MessageDialog {
 	public TipDialog(Shell parentShell, String dialogTitle,
 			String dialogMessage) {
 		super(parentShell, dialogTitle, null, dialogMessage,
-				MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
+				MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
 	}
 
 	@Override

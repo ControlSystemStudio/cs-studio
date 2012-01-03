@@ -55,7 +55,12 @@ public class PreferencesHelper {
 	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";
 	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";
 	
-
+//WebOPI preferences
+	
+	public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
+	public static final String STARTUP_OPI = "startup_opi"; //$NON-NLS-1$
+	public static final String MOBILE_STARTUP_OPI = "mobile_startup_opi"; //$NON-NLS-1$
+	
 	private static final char ROW_SEPARATOR = '|'; 
 	private static final char ITEM_SEPARATOR = ','; 
 	private static final char MACRO_SEPARATOR = '='; 
@@ -64,7 +69,7 @@ public class PreferencesHelper {
 	 /** @param preferenceName Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
-    private static String getString(final String preferenceName)
+    protected static String getString(final String preferenceName)
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getString(OPIBuilderPlugin.PLUGIN_ID, preferenceName, null, null);
@@ -76,13 +81,9 @@ public class PreferencesHelper {
      */
     public static IPath getColorFilePath(){
     	String colorFilePath = getString(COLOR_FILE);
-    	if(colorFilePath != null){
-    		if(ResourceUtil.isURL(colorFilePath))
-    			return new URLPath(colorFilePath);
-    		else
-    			return new Path(colorFilePath);
-    	}
-    	return null;
+    	if(colorFilePath == null || colorFilePath.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(colorFilePath);
     }
 
 
@@ -91,13 +92,9 @@ public class PreferencesHelper {
      */
     public static IPath getFontFilePath(){
     	String fontFilePath = getString(FONT_FILE);
-    	if(fontFilePath != null){
-    		if(ResourceUtil.isURL(fontFilePath))
-    			return new URLPath(fontFilePath);
-    		else
-    			return new Path(fontFilePath);
-    	}
-    	return null;
+    	if(fontFilePath == null || fontFilePath.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(fontFilePath);
     }
 
 
@@ -106,13 +103,9 @@ public class PreferencesHelper {
      */
     public static IPath getProbeOPIPath(){
     	String probeOPIPath = getString(PROBE_OPI);
-    	if(probeOPIPath != null){
-    		if(ResourceUtil.isURL(probeOPIPath))
-    			return new URLPath(probeOPIPath);
-    		else
-    			return new Path(probeOPIPath);
-    	}
-    	return null;
+     	if(probeOPIPath == null || probeOPIPath.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(probeOPIPath);
     }
     
     /**Get the schema OPI path from preference store.
@@ -193,10 +186,7 @@ public class PreferencesHelper {
 			for(int i= 0; i<items.length; i++){
 				if(i == 0){
 					String urlString = items[i];
-					if(ResourceUtil.isURL(items[i])) 
-						path = new URLPath(items[i]);
-					else
-						path = new Path(urlString);
+					path = getAbsolutePathOnRepo(urlString);
 				}
 				else{
 					String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
@@ -278,6 +268,49 @@ public class PreferencesHelper {
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, URL_FILE_LOADING_TIMEOUT, 8000, null);
     }
+    
+    /**
+     * @return the absolute path of the startup opi. null if not configured.
+     */
+    public static IPath getStartupOPI(){
+    	String startOPI = getString(STARTUP_OPI);
+    	if(startOPI == null || startOPI.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(startOPI);
+    }
+    
+    /**
+     * @return the absolute path of the startup opi. null if not configured.
+     */
+    public static IPath getMobileStartupOPI(){
+    	String startOPI = getString(MOBILE_STARTUP_OPI);
+    	if(startOPI == null || startOPI.trim().isEmpty())
+    		return null;
+    	return getAbsolutePathOnRepo(startOPI);
+    }
 
+    public static IPath getOPIRepository(){
+    	String opiRepo = getString(OPI_REPOSITORY);
+    	if(opiRepo == null || opiRepo.trim().isEmpty())
+    		return null;
+    	return ResourceUtil.getPathFromString(opiRepo);       
+    }  
+   
+
+    /**Return the absolute path based on OPI Repository.
+	 * @param pathString
+	 * @return
+	 */
+	protected static IPath getAbsolutePathOnRepo(String pathString) {
+		IPath opiPath = ResourceUtil.getPathFromString(pathString);
+		if(opiPath == null)
+			return null;
+    	if(opiPath.isAbsolute())
+    		return opiPath;
+    	IPath repoPath = getOPIRepository();
+    	if(repoPath != null)
+    		opiPath = repoPath.append(opiPath);
+    	return opiPath;
+	}
 
 }

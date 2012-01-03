@@ -48,13 +48,13 @@ public final class Helper {
     private Helper() {
         // Constructor
     }
-    
+
     public static void writeDocumentFile(@Nonnull final File outFile, @Nonnull final IDocument document) throws PersistenceException,
-            IOException {
-        InputStream inputStream = document.getImageData();
-        byte[] buffer = new byte[8192];
+    IOException {
+        final InputStream inputStream = document.getImageData();
+        final byte[] buffer = new byte[8192];
         int bytesRead = 0;
-        FileOutputStream fileOutputStream = new FileOutputStream(outFile);
+        final FileOutputStream fileOutputStream = new FileOutputStream(outFile);
         while ((bytesRead = inputStream.read(buffer)) > 0) {
             fileOutputStream.write(buffer, 0, bytesRead);
         }
@@ -62,4 +62,5 @@ public final class Helper {
         inputStream.close();
         fileOutputStream.close();
     }
+    
 }

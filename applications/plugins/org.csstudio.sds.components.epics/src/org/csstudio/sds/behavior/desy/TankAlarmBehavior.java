@@ -22,6 +22,7 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.TankModel;
+import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
@@ -36,6 +37,8 @@ import org.epics.css.dal.simple.AnyDataChannel;
  */
 public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> {
 
+    private String _defFillBackColor;
+
     /**
      * Constructor.
      */
@@ -49,12 +52,21 @@ public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> 
      * {@inheritDoc}
      */
     @Override
+    protected void doInitialize(final TankModel widget) {
+        super.doInitialize(widget);
+        _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     protected void doProcessValueChange( final TankModel model, final AnyData anyData) {
         // .. fill level (influenced by current value)
         super.doProcessValueChange(model, anyData);
         // .. fill color (influenced by severity)
         model.setPropertyValue(TankModel.PROP_FILL_COLOR,
-                determineColorBySeverity(anyData.getSeverity(), null));
+                               determineColorBySeverity(anyData.getSeverity(), null));
     }
 
     /**
@@ -62,10 +74,23 @@ public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> 
      */
     @Override
     protected void doProcessConnectionStateChange( final TankModel widget,final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
-        widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
-
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String determineBackgroundColor;
+        String determineFillColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = _defFillBackColor;
+                determineFillColor = determineColorBySeverity(anyDataChannel.getData().getSeverity(), null);
+            } else {
+                determineBackgroundColor = "${Invalid}";
+                determineFillColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+            determineFillColor = determineBackgroundColor;
+        }
+        widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
+        widget.setPropertyValue(TankModel.PROP_FILL_COLOR, determineFillColor);
     }
 
 }

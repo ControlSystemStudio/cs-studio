@@ -24,15 +24,15 @@ package org.csstudio.dct.treemodelexporter;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.dct.export.IExporter;
 import org.csstudio.dct.model.IProject;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.ContentModelExporter;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.runtime.FileLocator;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * DCT Treemodel exporter called via extension point from DCT.
@@ -44,8 +44,8 @@ import org.osgi.framework.Bundle;
  */
 public class Exporter implements IExporter {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(Exporter.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(Exporter.class);
+    
     /**
      * {@inheritDoc}
      */

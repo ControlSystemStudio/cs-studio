@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="DeliverySystemApplication"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.Stop"
+            id="org.csstudio.ams.application.deliverysystem.Stop"
+            label="Stop">
+      </command>
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.ListWorker"
+            id="org.csstudio.ams.application.deliverysystem.ListWorker"
+            label="List Delivery Worker">
+      </command>
+   </extension>
+   <extension
+         id="AmsDeliverySystemProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
+            name="AmsDeliverySystem">
+         <property
+               name="appName"
+               value="AmsDeliverySystem">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.script.ScriptService.ScriptType;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -23,10 +24,8 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Xihui Chen
  *
  */
-public class ScriptData implements IAdaptable {
-	
-	public static String SCRIPT_EXTENSION = "js"; //$NON-NLS-1$
-	
+public class ScriptData implements IAdaptable {	
+
 	/**
 	 * The path of the script.
 	 */
@@ -51,6 +50,14 @@ public class ScriptData implements IAdaptable {
 	 * Stop to execute the script if error is detected in script.
 	 */
 	private boolean stopExecuteOnError = false;
+	
+	private ScriptType scriptType;
+	
+	private boolean isEmbedded = false;
+	
+	private String scriptText;
+	
+	private String scriptName;
 	
 	
 	public ScriptData() {
@@ -113,6 +120,10 @@ public class ScriptData implements IAdaptable {
 		copy.setCheckConnectivity(checkConnectivity);
 		copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
 		copy.setStopExecuteOnError(stopExecuteOnError);
+		copy.setEmbedded(isEmbedded);
+		copy.setScriptName(scriptName);
+		copy.setScriptText(scriptText);
+		copy.setScriptType(scriptType);
 		for(PVTuple pv : pvList){
 			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
 		}
@@ -120,7 +131,7 @@ public class ScriptData implements IAdaptable {
 	}
 
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
@@ -130,16 +141,23 @@ public class ScriptData implements IAdaptable {
 				}
 				
 				public String getLabel(Object o) {
+					if(isEmbedded)
+						return getScriptName();
 					return path.toString();
 				}
 				
 				public ImageDescriptor getImageDescriptor(Object object) {
 					String icon;
-					if(path != null && !path.isEmpty() 
+					if(isEmbedded){
+						if(getScriptType() == ScriptType.PYTHON )
+							icon = "icons/pyEmbedded.gif";
+						else
+							icon = "icons/jsEmbedded.gif";						
+					}else if(path != null && !path.isEmpty() 
 							&& path.getFileExtension().equals(ScriptService.PY)){
-						icon = "icons/python_file.gif";
+						icon = "icons/python_file.gif"; //$NON-NLS-1$
 					}else
-						icon = "icons/js.gif";
+						icon = "icons/js.gif"; //$NON-NLS-1$
 					return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
 							OPIBuilderPlugin.PLUGIN_ID, icon);
 				}
@@ -180,6 +198,62 @@ public class ScriptData implements IAdaptable {
 	 */
 	public boolean isStopExecuteOnError() {
 		return stopExecuteOnError;
+	}
+
+	/**
+	 * @return the scriptType
+	 */
+	public ScriptType getScriptType() {
+		return scriptType;
+	}
+
+	/**
+	 * @param scriptType the scriptType to set
+	 */
+	public void setScriptType(ScriptType scriptType) {
+		this.scriptType = scriptType;
+	}
+
+	/**
+	 * @return the isEmbedded
+	 */
+	public boolean isEmbedded() {
+		return isEmbedded;
+	}
+
+	/**
+	 * @param isEmbedded the isEmbedded to set
+	 */
+	public void setEmbedded(boolean isEmbedded) {
+		this.isEmbedded = isEmbedded;
+	}
+
+	/**
+	 * @return the scriptText
+	 */
+	public String getScriptText() {
+		return scriptText;
+	}
+
+	/**
+	 * @param scriptText the scriptText to set
+	 */
+	public void setScriptText(String scriptText) {
+		this.scriptText = scriptText;
+	}
+
+	/**
+	 * @return the scriptName
+	 */
+	public String getScriptName() {
+		return scriptName;
+	}
+
+	/**
+	 * @param scriptName the scriptName to set
+	 */
+	public void setScriptName(String scriptName) {
+		this.scriptName = scriptName;
 	}
 
 	

@@ -27,12 +27,10 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
 
 /**The editpart of a combo.
  *
@@ -55,32 +53,14 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		final ComboModel model = getWidgetModel();
 		updatePropSheet(model.isItemsFromPV());
-		ComboFigure comboFigure = new ComboFigure(
-				(Composite) getViewer().getControl(), getWidgetModel().getParent());
-		comboFigure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
+		ComboFigure comboFigure = new ComboFigure(this);
 		combo = comboFigure.getCombo();
-		//select the combo when mouse down
-		combo.addMouseListener(new org.eclipse.swt.events.MouseAdapter(){
-			@Override
-			public void mouseDown(org.eclipse.swt.events.MouseEvent e) {
-				getViewer().select(ComboEditPart.this);
-			}
-		});
-		//update tooltip
-		combo.addMouseMoveListener(new MouseMoveListener(){
-			public void mouseMove(org.eclipse.swt.events.MouseEvent e) {
-				combo.setToolTipText(getWidgetModel().getTooltip());
-			}
-		});
-
+		
 		List<String> items = getWidgetModel().getItems();
 
 		updateCombo(items);
 
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-
-		//hook the context menu to combo
-		combo.setMenu(getViewer().getContextMenu().createContextMenu(getViewer().getControl()));
 
 		return comboFigure;
 	}
@@ -195,9 +175,9 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 						combo.setText(stringValue);
 					else
 						combo.deselectAll();
-					
-					if(getWidgetModel().isBorderAlarmSensitve())
-							autoSizeWidget((ComboFigure) refreshableFigure);
+//					
+//					if(getWidgetModel().isBorderAlarmSensitve())
+//							autoSizeWidget((ComboFigure) refreshableFigure);
 				}
 
 				return true;

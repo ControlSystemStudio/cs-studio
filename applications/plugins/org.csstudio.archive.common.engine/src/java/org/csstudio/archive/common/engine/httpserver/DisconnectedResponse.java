@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
 
@@ -19,7 +19,15 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  * Provide web page with list of disconnected channels
  *  @author Kay Kasemir
  */
-class DisconnectedResponse extends AbstractResponse {
+class DisconnectedResponse extends AbstractChannelResponse {
+
+    private static String URL_BASE_PAGE;
+    private static String URL_DISC_CHANNEL_ACTION;
+    static {
+        URL_DISC_CHANNEL_ACTION = "disconnected";
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_DISC_CHANNEL_ACTION;
+    }
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -46,7 +54,7 @@ class DisconnectedResponse extends AbstractResponse {
     private int createTableRows(@Nonnull final HTMLWriter html) {
         int disconnected = 0;
         for (final ArchiveGroup group : getModel().getGroups()) {
-            for (final ArchiveChannel<?,?> channel : group.getChannels()) {
+            for (final ArchiveChannelBuffer<?, ?> channel : group.getChannels()) {
                 if (channel.isConnected()) {
                     continue;
                 }
@@ -54,11 +62,25 @@ class DisconnectedResponse extends AbstractResponse {
                 html.tableLine(new String[]
                                           {
                                            Integer.toString(disconnected),
-                                           HTMLWriter.makeLink("channel?name=" + channel.getName(), channel.getName()),
-                                           HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+                                           ShowChannelResponse.linkTo(channel.getName()),
+                                           ShowGroupResponse.linkTo(group.getName()),
                                           } );
             }
         }
         return disconnected;
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+
+    @Nonnull
+    public static String linkTo(@Nonnull final String linkText) {
+        return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return linkTo(baseUrl());
     }
 }

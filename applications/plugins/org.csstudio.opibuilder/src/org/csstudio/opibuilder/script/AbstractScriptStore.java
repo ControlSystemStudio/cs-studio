@@ -26,6 +26,7 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The script store help to store the compiled script for afterward executions.
@@ -66,7 +67,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 		this.editPart = editpart;
 		this.pvArray = pvArray;
 		
-		if(!(scriptData instanceof RuleScriptData)){
+		if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){			
 			absoluteScriptPath = scriptData.getPath();
 			if(!absoluteScriptPath.isAbsolute()){
 				absoluteScriptPath = ResourceUtil.buildAbsolutePath(
@@ -82,7 +83,9 @@ public abstract class AbstractScriptStore implements IScriptStore{
 
 		if(scriptData instanceof RuleScriptData){
 			compileString(((RuleScriptData)scriptData).getScriptString());
-		}else{			
+		}else if(scriptData.isEmbedded())
+			compileString(scriptData.getScriptText());
+		else{			
 			//read file
 			InputStream inputStream = ResourceUtil.pathToInputStream(absoluteScriptPath, false);
 			BufferedReader reader = new BufferedReader(
@@ -159,7 +162,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	 * @param editpart
 	 * @param pvArray
 	 */
-	protected abstract void initScriptEngine();
+	protected abstract void initScriptEngine() throws Exception ;
 	
 	/**Compile string with script engine.
 	 * @param string
@@ -180,7 +183,8 @@ public abstract class AbstractScriptStore implements IScriptStore{
 	protected abstract void execScript(final PV triggerPV) throws Exception;
 	
 	private void executeScriptInUIThread(final PV triggerPV) {
-		UIBundlingThread.getInstance().addRunnable(new Runnable() {
+		Display display = editPart.getRoot().getViewer().getControl().getDisplay();
+		UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 			public void run() {
 				if ((!scriptData.isStopExecuteOnError() || !errorInScript) && !unRegistered) {
 					try {

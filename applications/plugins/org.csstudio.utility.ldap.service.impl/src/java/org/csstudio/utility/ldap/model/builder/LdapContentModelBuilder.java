@@ -64,7 +64,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         implements ILdapContentModelBuilder<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapContentModelBuilder.class);
-    
+
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
     private final NameParser _parser;
@@ -73,10 +73,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Constructor.
      * @param searchResult the search result to build the model from
      * @param objectClassRoot the model type
-     * @param nameParser 
+     * @param nameParser
      */
     public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final ILdapSearchResult searchResult, 
+                                   @Nonnull final ILdapSearchResult searchResult,
                                    @Nonnull final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
@@ -86,9 +86,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
     /**
      * Constructor for builder that enriches an already existing model.
      * @param model the already filled model
-     * @param nameParser 
+     * @param nameParser
      */
-    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model, 
+    public LdapContentModelBuilder(@Nonnull final ContentModel<T> model,
                                    @Nonnull final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
@@ -110,14 +110,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         // Generate new model only if there isn't any model set
         final ContentModel<T> model = getModel();
 
-        try {
-            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
-                                                 : model,
-                                   _searchResult,
-                                   _parser);
-        } catch (final InvalidNameException e) {
-            throw new CreateContentModelException("Error creating content model from LDAP.", e);
-        }
+        return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
+                                             : model,
+                               _searchResult,
+                               _parser);
 
     }
 
@@ -125,12 +121,12 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Adds a given search result to the current LDAP content model.
      *
      * @param searchResult the search result .
-     * @param parser 
+     * @param parser
      * @return the enriched model
      */
     @Nonnull
     private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final ILdapSearchResult searchResult, 
+                                            @Nullable final ILdapSearchResult searchResult,
                                             @Nonnull final NameParser parser) {
 
         if (searchResult != null) {

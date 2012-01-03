@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -15,10 +16,9 @@ import java.util.List;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
+import org.csstudio.opibuilder.properties.UnsavableListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.jdom.Element;
 
 /**The model which could contain children.
  * @author Xihui Chen
@@ -48,53 +48,11 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 
 	public AbstractContainerModel() {
 		super();
-		childrenProperty = new AbstractWidgetProperty(
-				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList){
-			@Override
-			public Object checkValue(Object value) {
-				if(value instanceof List)
-					return value;
-				return null;
-			}
+		childrenProperty = new UnsavableListProperty(
+				PROP_CHILDREN, "children", WidgetPropertyCategory.Behavior, childrenList);
 
-			@Override
-			protected PropertyDescriptor createPropertyDescriptor() {
-				return null;
-			}
-
-			@Override
-			public void writeToXML(Element propElement) { /* NOP */ }
-
-			@Override
-			public Object readValueFromXML(Element propElement) {
-				return null;
-			}
-		};
-
-		selectionProperty = new AbstractWidgetProperty(
-				PROP_SELECTION, "selection", WidgetPropertyCategory.Behavior, null){
-
-			@Override
-			public Object checkValue(Object value) {
-				if(value instanceof List)
-					return value;
-				return null;
-			}
-
-			@Override
-			protected PropertyDescriptor createPropertyDescriptor() {
-				return null;
-			}
-
-			@Override
-			public void writeToXML(Element propElement) { /* NOP */ }
-
-			@Override
-			public Object readValueFromXML(Element propElement) {
-				return null;
-			}
-
-		};
+		selectionProperty = new UnsavableListProperty(
+				PROP_SELECTION, "selection", WidgetPropertyCategory.Behavior, null);
 	}
 
 	/**add child to the end of the children list.
@@ -170,6 +128,20 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 
 	public List<AbstractWidgetModel> getChildren() {
 		return childrenList;
+	}
+	
+	/**
+	 * @return all descendants of this container.
+	 */
+	public List<AbstractWidgetModel> getAllDescendants(){
+		List<AbstractWidgetModel> allDescendants = new ArrayList<AbstractWidgetModel>();
+		allDescendants.addAll(childrenList);
+		for(AbstractWidgetModel widget : childrenList){
+			if(widget instanceof AbstractContainerModel){
+				allDescendants.addAll(((AbstractContainerModel) widget).getAllDescendants());
+			}
+		}
+		return allDescendants;
 	}
 
 	public AbstractWidgetModel getChildByName(String name){

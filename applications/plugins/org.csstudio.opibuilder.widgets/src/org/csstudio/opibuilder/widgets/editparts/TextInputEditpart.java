@@ -24,8 +24,8 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
-import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
 import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextInputFigure;
@@ -36,9 +36,11 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
@@ -50,6 +52,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextInputEditpart extends TextUpdateEditPart {
 
+	private static final char SPACE = ' ';
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
 
@@ -175,9 +178,14 @@ public class TextInputEditpart extends TextUpdateEditPart {
 						}
 					}
 
-					try {
-						setPVValue(AbstractPVWidgetModel.PROP_PVNAME,
-								parseString(text));
+					try {						
+						Object result;
+						if(getWidgetModel().getFormat() != FormatEnum.STRING
+								&& text.trim().indexOf(SPACE)!=-1){
+							result = parseStringArray(text.split(" +"));//StringSplitter.splitIgnoreInQuotes(text.trim(), SPACE, true));
+						}else
+							result = parseString(text);
+						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
 					} catch (Exception e) {
 						String msg = NLS
 								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
@@ -300,12 +308,29 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 
 	}
+	
+	public DragTracker getDragTracker(Request request) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			return new SelectEditPartTracker(this) {				
+				@Override
+				protected boolean handleButtonUp(int button) {
+					if (button == 1) {
+						//make widget in edit mode by single click
+						performOpen();
+					}
+					return super.handleButtonUp(button);
+				}
+			};
+		}else
+			return super.getDragTracker(request);
+	}
 
 	@Override
 	public void performRequest(Request request) {
 		if (getFigure().isEnabled()
-				&& (request.getType() == RequestConstants.REQ_DIRECT_EDIT || request
-						.getType() == RequestConstants.REQ_OPEN))
+				&&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
+				getExecutionMode() != ExecutionMode.RUN_MODE)||
+				request.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}
 
@@ -317,6 +342,27 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	@Override
 	protected int getUpdateSuppressTime() {
 		return -1;
+	}
+	
+	private Object parseStringArray(final String[] texts) throws ParseException{		
+		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
+				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))){
+			double[] result = new double[texts.length];
+			for (int i = 0; i < texts.length; i++) {
+				Object o = parseString(texts[i]);
+				if (o instanceof Number)
+					result[i] = ((Number) o).doubleValue();
+				else
+					throw new ParseException(texts[i] + " cannot be parsed as a number!", i);
+			}
+			return result;
+		}
+		if(pvValue instanceof IStringValue && ((IStringValue)pvValue).getValues().length>1){
+			return texts;
+		}
+		
+		return parseString(texts[0]);
 	}
 
 	/**
@@ -423,8 +469,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	private double parseDouble(final String text, final boolean coerce)
 			throws ParseException {
 		DecimalFormat format = new DecimalFormat();
-
-		double value = format.parse(text).doubleValue();
+		
+		double value = format.parse(text.replace('e', 'E')).doubleValue(); //$NON-NLS-1$ //$NON-NLS-2$
 		if (coerce) {
 			double min = getWidgetModel().getMinimum();
 			double max = getWidgetModel().getMaximum();
@@ -443,7 +489,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			valueText = text.substring(2);
 		}
 		if (valueText.contains(" ")) { //$NON-NLS-1$
-			valueText = valueText.substring(0, valueText.indexOf(' '));
+			valueText = valueText.substring(0, valueText.indexOf(SPACE));
 		}
 		long i = Long.parseLong(valueText, 16);
 		if (coerce) {

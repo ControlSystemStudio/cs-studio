@@ -290,7 +290,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 *            the create request
 	 * @return the type identification
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private String determineTypeIdFromRequest(final CreateRequest request) {
 		Class newObject = (Class) request.getNewObjectType();
 		AbstractWidgetModel instance;
@@ -521,7 +521,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		/**
 		 * {@inheritDoc}
 		 */
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		protected List createSelectionHandles() {
 			// get default handles
@@ -547,5 +547,13 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			return handleList;
 
 		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
+		return new Dimension(1, 1);
 	}
 }

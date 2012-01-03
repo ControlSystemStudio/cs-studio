@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,13 +20,13 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.connector.email;
+
+package org.csstudio.ams.connector.email;
 
 import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class EMailConnectorProperties
-{
+public class EMailConnectorProperties {
 	private String mailSenderAdress = null;
 	private String mailAuthUser = null;
 	private String mailAuthPassword = null;
@@ -33,8 +34,7 @@ public class EMailConnectorProperties
 	private String mailContent = null;
 	private String mailServerConfig = null;
 
-	public EMailConnectorProperties()
-	{
+	public EMailConnectorProperties() {
 		IPreferenceStore store = EMailConnectorPlugin.getDefault().getPreferenceStore();
 		mailSenderAdress = store.getString(EMailConnectorPreferenceKey.P_MAILSENDERADRESS);
 		mailAuthUser = store.getString(EMailConnectorPreferenceKey.P_MAILAUTHUSER);
@@ -67,5 +67,4 @@ public class EMailConnectorProperties
 	public String getMailSubject() {
 		return mailSubject;
 	}
-	
 }

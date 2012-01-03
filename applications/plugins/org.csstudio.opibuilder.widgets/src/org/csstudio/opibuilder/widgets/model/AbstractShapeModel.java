@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 
+import org.csstudio.opibuilder.datadefinition.LineStyle;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
@@ -17,7 +18,6 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
@@ -26,55 +26,6 @@ import org.eclipse.swt.graphics.RGB;
  * @author Xihui Chen
  */
 public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
-	
-	/**The line sytle:
-	 * 0: Solid,
-	 * 1: Dash,
-	 * 2: Dot,
-	 * 3: DashDot,
-	 * 4: DashDotDot.
-	 * @author Xihui Chen
-	 *
-	 */
-	public enum LineStyle {
-		SOLID("Solid", SWT.LINE_SOLID),
-		DASH("Dash", SWT.LINE_DASH),
-		DOT("Dot", SWT.LINE_DOT),
-		DASH_DOT("DashDot", SWT.LINE_DASHDOT),
-		Dash_DOTDOT("DashDotDot", SWT.LINE_DASHDOTDOT);
-				
-		String description;
-		int style;
-		LineStyle(String description, int style){
-			this.description = description;
-			this.style = style;
-		}
-		
-		/**
-		 * @return SWT line style {SWT.LINE_SOLID,
-			SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT }
-		 */
-		public int getStyle() {
-			return style;
-		}
-		
-		@Override
-		public String toString() {
-			return description;
-		}
-		
-		public static String[] stringValues(){
-			String[] sv = new String[values().length];
-			int i=0;
-			for(LineStyle p : values())
-				sv[i++] = p.toString();
-			return sv;
-		}
-	}
-
-	
-	
-	
 	/**
 	 * Width of the line.
 	 */

@@ -38,8 +38,9 @@ import org.csstudio.auth.security.IAuthorizationProvider;
 import org.csstudio.auth.security.Right;
 import org.csstudio.auth.security.RightSet;
 import org.csstudio.auth.security.User;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Preferences;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -49,6 +50,8 @@ import org.eclipse.core.runtime.Preferences;
  * @author Joerg Rathlev
  */
 public class LdapAuthorizationReader implements IAuthorizationProvider {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(LdapAuthorizationReader.class);
 
 	/**
 	 * Map of the rights associated with actions.
@@ -58,7 +61,8 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	/* (non-Javadoc)
 	 * @see org.csstudio.platform.internal.ldapauthorization.IAuthorizationProvider#getRights(org.csstudio.platform.security.User)
 	 */
-	public RightSet getRights(User user) {
+	@Override
+    public RightSet getRights(User user) {
 		String username = user.getUsername();
 		// If the user was authenticated via Kerberos, the username may be a
 		// fully qualified name (name@EXAMPLE.COM). We only want the first
@@ -84,8 +88,8 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				rights.addRight(parseSearchResult(r));
 			}
 		} catch (NamingException e) {
-			CentralLogger.getInstance().error(this,
-					"Error reading authorization for user: " + user, e);
+			LOG.error("Error reading authorization for user: {}", user,
+					e);
 		}
 		return rights;
 	}
@@ -110,7 +114,8 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 	 * 
 	 * <p>Syntax errors in configuration files are ignored.</p>
 	 */
-	public RightSet getRights(String actionId) {
+	@Override
+    public RightSet getRights(String actionId) {
 		synchronized (this) {
 			if (actionsrights == null) {
 				loadActionRightsFromLdap();
@@ -153,12 +158,11 @@ public class LdapAuthorizationReader implements IAuthorizationProvider {
 				rights.addRight(new Right(role, group));
 			}
 			
-			CentralLogger.getInstance().debug(this, "Authorization " +
-					"information successfully loaded from LDAP directory.");
+			LOG.debug("Authorization information successfully loaded from LDAP directory.");
 			
 		} catch (NamingException e) {
-			CentralLogger.getInstance().error(this,
-					"Error loading authorization information from LDAP directory.", e);
+			LOG.error("Error loading authorization information from LDAP directory.",
+					e);
 		}
 	}
 	

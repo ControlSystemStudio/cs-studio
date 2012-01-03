@@ -75,11 +75,13 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 		graphics.pushState();	
 		Rectangle figureBounds = getBounds();
 		if(!transparent){
-			graphics.setBackgroundColor(getBackgroundColor());
+			if(isEnabled())
+				graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillPolygon(getPoints());
 		}
 		if(getFill() > 0){		
-			graphics.setBackgroundColor(getForegroundColor());		
+			if(isEnabled())
+				graphics.setBackgroundColor(getForegroundColor());		
 			if(horizontalFill){
 				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));			
 				graphics
@@ -147,7 +149,8 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 	@Override
 	protected void outlineShape(Graphics g) {
 		g.pushState();
-		g.setForegroundColor(lineColor);
+		if(isEnabled())
+			g.setForegroundColor(lineColor);
 		super.outlineShape(g);
 		g.popState();
 	}

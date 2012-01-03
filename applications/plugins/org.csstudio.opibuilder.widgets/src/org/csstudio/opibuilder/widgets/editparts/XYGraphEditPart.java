@@ -339,10 +339,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					axis.setDateEnabled(false);
 					axis.setAutoFormat(true);
 					break;
+				}else if((Integer)newValue == 8){
+					axis.setDateEnabled(true);
+					axis.setAutoFormat(true);
+				}else {
+					String format = XYGraphModel.TIME_FORMAT_ARRAY[(Integer)newValue];
+					axis.setDateEnabled(true);
+					axis.setFormatPattern(format);
 				}
-				String format = XYGraphModel.TIME_FORMAT_ARRAY[(Integer)newValue];
-				axis.setDateEnabled(true);
-				axis.setFormatPattern(format);
 				break;
 			case SCALE_FONT:
 				axis.setFont(((OPIFont)newValue).getSWTFont());
@@ -354,9 +358,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				axis.setYAxis((Boolean)newValue);
 				break;
 			case SCALE_FORMAT:
-				if(((String)newValue).trim().equals("")) //$NON-NLS-1$
-					axis.setAutoFormat(true);
-				else{
+				if(((String)newValue).trim().equals("")){ //$NON-NLS-1$
+					if(!axis.isDateEnabled())
+						axis.setAutoFormat(true);
+				}else{
 					axis.setAutoFormat(false);
 					try {
 						axis.setFormatPattern((String)newValue);
@@ -434,7 +439,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 					//which means that it cannot be ignored.
 					getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
 						public void propertyChange(final PropertyChangeEvent evt) {
-							UIBundlingThread.getInstance().addRunnable(new Runnable() {
+							UIBundlingThread.getInstance().addRunnable(
+									getViewer().getControl().getDisplay(), new Runnable() {
 								public void run() {
 									handler.handleChange(
 											evt.getOldValue(), evt.getNewValue(), getFigure());

@@ -21,7 +21,9 @@
  */
 package org.csstudio.platform.ui.internal.workbench;
 
-import org.csstudio.platform.logging.CentralLogger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.csstudio.platform.ui.util.ImageUtil;
 import org.eclipse.core.resources.IContainer;
@@ -44,6 +46,8 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter
 {
+    private static final Logger LOG = Logger.getLogger(CSSPlatformUiPlugin.ID);
+    
     /** Get the sub-folders or files of a given IResource.
      *  @see IWorkbenchAdapter#getChildren(Object)
 	 */
@@ -69,7 +73,7 @@ public final class ResourcesWorkbenchAdapter extends WorkbenchAdapter
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().error(this, ex);
+            LOG.log(Level.FINE,"",ex);
         }
         return new Object[0];
     }

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.PointlistPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -42,7 +42,7 @@ public class PointListProperty extends AbstractWidgetProperty {
 	 * @param description the description of the property,
 	 * which will be shown as the property name in property sheet.
 	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
+	 * @param defaultValue the default value when the widget is first created. cannot be null.
 	 */
 	public PointListProperty(String prop_id, String description,
 			WidgetPropertyCategory category, PointList defaultValue) {
@@ -53,7 +53,7 @@ public class PointListProperty extends AbstractWidgetProperty {
 	@Override
 	public Object checkValue(Object value) {
 		if(value == null)
-			return null;
+			return new PointList();
 		PointList acceptableValue = null;
 		if(value instanceof PointList){
 			acceptableValue = (PointList)value;			
@@ -64,7 +64,9 @@ public class PointListProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new PointlistPropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getPointlistPropertyDescriptor(prop_id, description);
 	}
 
 	@Override

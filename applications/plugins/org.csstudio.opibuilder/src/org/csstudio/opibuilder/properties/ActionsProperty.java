@@ -14,7 +14,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.support.ActionsPropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
@@ -42,7 +42,9 @@ public class ActionsProperty extends AbstractWidgetProperty {
 	/**
 	 * XML ATTRIBUTE name <code>HOOK</code>.
 	 */
-	public static final String XML_ATTRIBUTE_HOOK = "hook"; //$NON-NLS-1$
+	public static final String XML_ATTRIBUTE_HOOK_FIRST = "hook"; //$NON-NLS-1$
+	
+	public static final String XML_ATTRIBUTE_HOOK_ALL = "hook_all"; //$NON-NLS-1$
 
 	private boolean showHookOption;
 
@@ -86,21 +88,25 @@ public class ActionsProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new ActionsPropertyDescriptor(prop_id, description, showHookOption);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getActionsPropertyDescriptor(
+				prop_id, description, showHookOption);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public ActionsInput readValueFromXML(Element propElement) {
 		ActionsInput result = new ActionsInput();
-		result.setHookUpToWidget(Boolean.parseBoolean(propElement.getAttributeValue(XML_ATTRIBUTE_HOOK)));
+		result.setHookUpFirstActionToWidget(Boolean.parseBoolean(propElement.getAttributeValue(XML_ATTRIBUTE_HOOK_FIRST)));
+		if(propElement.getAttribute(XML_ATTRIBUTE_HOOK_ALL) != null)
+			result.setHookUpAllActionsToWidget(Boolean.parseBoolean(propElement.getAttributeValue(XML_ATTRIBUTE_HOOK_ALL)));
 		for(Object oe : propElement.getChildren(XML_ELEMENT_ACTION)){
 			Element se = (Element)oe;
 			AbstractWidgetAction action = WidgetActionFactory.createWidgetAction(
 					ActionType.parseAction(se.getAttributeValue(XML_ATTRIBUTE_ACTION_TYPE)));
 			if(action != null){
-				List children = se.getChildren();
-				Iterator iterator = children.iterator();
+				List<?> children = se.getChildren();
+				Iterator<?> iterator = children.iterator();
 				Set<String> propIdSet = action.getAllPropertyIDs();
 				while (iterator.hasNext()) {
 					Element subElement = (Element) iterator.next();
@@ -128,7 +134,9 @@ public class ActionsProperty extends AbstractWidgetProperty {
 	@Override
 	public void writeToXML(Element propElement) {
 		ActionsInput actionsInput = (ActionsInput)getPropertyValue();
-		propElement.setAttribute(XML_ATTRIBUTE_HOOK, "" + actionsInput.isHookedUpToWidget());
+		propElement.setAttribute(XML_ATTRIBUTE_HOOK_FIRST, "" + actionsInput.isFirstActionHookedUpToWidget()); ////$NON-NLS-1$
+		propElement.setAttribute(XML_ATTRIBUTE_HOOK_ALL, "" + actionsInput.isHookUpAllActionsToWidget()); ////$NON-NLS-1$
+		
 		for(AbstractWidgetAction action : actionsInput.getActionsList()){
 				Element actionElement = new Element(XML_ELEMENT_ACTION);
 				actionElement.setAttribute(XML_ATTRIBUTE_ACTION_TYPE,

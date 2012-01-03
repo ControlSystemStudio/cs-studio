@@ -14,12 +14,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.remotercp.common;bundle-version="1.0.0",
  org.eclipse.ecf.identity;bundle-version="3.1.100",
  org.remotercp.service.connection;bundle-version="1.0.0",
- org.csstudio.platform.libs.log4j;bundle-version="1.2.16",
- org.csstudio.remote;bundle-version="1.0.0"
-Bundle-ClassPath: libs/comm.jar,
+ org.csstudio.remote;bundle-version="1.0.0",
+ org.remotercp.util;bundle-version="1.0.0",
+ org.apache.log4j;bundle-version="1.2.16"
+Bundle-ClassPath: .,
  libs/mail.jar,
- libs/commons-net-2.0.jar,
  libs/jsmpp-2.1.0.jar,
- libs/smslib-3.4.6.jar,
- .
+ libs/comm.jar,
+ libs/commons-net-3.0.1.jar,
+ libs/derbyclient.jar,
+ libs/smslib-3.5.1.jar
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

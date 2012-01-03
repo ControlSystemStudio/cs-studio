@@ -1,4 +1,4 @@
-package org.csstudio.cagateway.jmsmessage;
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,6 +21,8 @@ package org.csstudio.cagateway.jmsmessage;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+package org.csstudio.cagateway.jmsmessage;
+
 import java.text.SimpleDateFormat;
 
 import javax.jms.DeliveryMode;
@@ -32,11 +34,10 @@ import javax.jms.Session;
 
 import org.csstudio.cagateway.PreferenceProperties;
 import org.csstudio.cagateway.preferences.CAGatewayPreference;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Helper class to generate a JMS message.
@@ -54,13 +55,14 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public enum JmsMessage {
 
+
     INSTANCE;
 
 	public static final String SEVERITY_NO_ALARM 	= "NO_ALARM";
 	public static final String SEVERITY_MINOR 		= "MINOR";
 	public static final String SEVERITY_MAJOR 		= "MAJOR";
 	public static final String SEVERITY_INVALID 	= "INVALID";
-	
+
 	public static final String STATUS_NO_ALARM 		= "NO_ALARM";
 	public static final String STATUS_HIHI_ALARM	= "HIHI_ALARM";
 	public static final String STATUS_HIGH_ALARM 	= "HIGH_ALARM";
@@ -80,8 +82,10 @@ public enum JmsMessage {
 	public static final int	JMS_MESSAGE_TYPE_ALARM		= 1;
 	public static final int	JMS_MESSAGE_TYPE_LOG		= 2;
 	public static final int	JMS_MESSAGE_TYPE_PUT_LOG	= 3;
-	
+
 	private ISharedConnectionHandle _sharedSenderConnection;
+
+	private static final Logger LOG = LoggerFactory.getLogger(JmsMessage.class);
 
 	private JmsMessage () {
 		/*
@@ -145,13 +149,13 @@ public enum JmsMessage {
 		catch(final JMSException jmse)
         {
 //			InterconnectionServer.getInstance().countJmsSendMessageErrorAndReconnectIfTooManyErrors();
-			CentralLogger.getInstance().debug(this,"IocChangeState : send ALARM message : *** EXCEPTION *** : " + jmse.getMessage());
+			LOG.debug("IocChangeState : send ALARM message : *** EXCEPTION *** : {}", jmse.getMessage());
         } finally {
         	if (session != null) {
         		try {
 					session.close();
 				} catch (final JMSException e) {
-					CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+					LOG.warn("Failed to close JMS session", e);
 				}
         	}
         }
@@ -213,7 +217,7 @@ public enum JmsMessage {
 		}
 	    catch(final JMSException jmse)
 	    {
-	    	CentralLogger.getInstance().debug(this,"IocChangeState : prepareJmsMessage : *** EXCEPTION *** : " + jmse.getMessage());
+	    	LOG.debug("IocChangeState : prepareJmsMessage : *** EXCEPTION *** : {}", jmse.getMessage());
 	    }
 		return message;
 	}

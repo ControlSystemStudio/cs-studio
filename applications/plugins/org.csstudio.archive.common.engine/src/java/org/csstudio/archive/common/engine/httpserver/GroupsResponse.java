@@ -13,16 +13,20 @@ import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.archive.common.engine.model.ArchiveChannel;
+import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
-import org.csstudio.archive.common.engine.model.BufferStats;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 
 /** Provide web page with basic info for all the groups.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 class GroupsResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/groups";
+    private static final String URL_BASE_DESC = Messages.HTTP_GROUPS;
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
@@ -43,11 +47,12 @@ class GroupsResponse extends AbstractResponse {
 
     private void openTableWithHeader(@Nonnull final HTMLWriter html) {
         html.openTable(1, new String[] {Messages.HTTP_COLUMN_GROUP,
-                                        Messages.HTTP_COLUMN_CHANNEL_COUNT,
-                                        Messages.HTTP_COLUMN_CONNECTED,
-                                        Messages.HTTP_COLUMN_RECEIVEDVALUES,
+                                        numOf(Messages.HTTP_COLUMN_CHANNELS),
+                                        numOf(Messages.HTTP_CONNECTED),
+                                        numOf(Messages.HTTP_COLUMN_RECEIVEDVALUES),
                                         Messages.HTTP_COLUMN_QUEUEAVG,
-                                        Messages.HTTP_COLUMN_QUEUEMAX});
+                                        Messages.HTTP_COLUMN_QUEUEMAX,
+                                        });
     }
 
     private void createGroupsTable(@Nonnull final HTMLWriter html) {
@@ -65,13 +70,14 @@ class GroupsResponse extends AbstractResponse {
             int maxQueueLength = 0;
             long numOfReceivedSamples = 0;
 
-            final Collection<ArchiveChannel<?, ?>> channels = group.getChannels();
-            for (final ArchiveChannel<?, ?> channel : channels) {
+            @SuppressWarnings("rawtypes")
+            final Collection<ArchiveChannelBuffer> channels = group.getChannels();
+            for (@SuppressWarnings("rawtypes") final ArchiveChannelBuffer channel : channels) {
                 if (channel.isConnected()) {
                     ++numOfConnectedChannels;
                 }
                 numOfReceivedSamples += channel.getReceivedValues();
-                final BufferStats stats = channel.getSampleBuffer().getBufferStats();
+                final SampleBufferStatistics stats = channel.getSampleBuffer().getBufferStats();
                 avgQueueLength += stats.getAverageSize();
                 maxQueueLength = Math.max(maxQueueLength, stats.getMaxSize());
             }
@@ -83,12 +89,14 @@ class GroupsResponse extends AbstractResponse {
             totalNumOfConnectedChannels += numOfConnectedChannels;
             totalNumOfReceivedSamples += numOfReceivedSamples;
 
-            html.tableLine(new String[] {HTMLWriter.makeLink("group?name=" + group.getName(), group.getName()),
+            html.tableLine(new String[] {
+                                         ShowGroupResponse.linkTo(group.getName()),
                                          Integer.toString(numOfChannels),
                                          createChannelConnectedTableEntry(numOfConnectedChannels, numOfChannels),
                                          Long.toString(numOfReceivedSamples),
                                          String.format("%.1f", avgQueueLength),
-                                         Integer.toString(maxQueueLength)});
+                                         Integer.toString(maxQueueLength),
+                                         });
         }
 
         closeTableWithSummaryRow(html,
@@ -121,4 +129,17 @@ class GroupsResponse extends AbstractResponse {
         html.closeTable();
     }
 
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
+    }
+
+    @Nonnull
+    public static String linkTo(@Nonnull final String linkText) {
+        return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return new Url(baseUrl()).link(URL_BASE_DESC);
+    }
 }

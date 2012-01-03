@@ -34,6 +34,10 @@
 		*/
 package org.csstudio.sds.model;
 
+import java.util.List;
+
+import org.csstudio.sds.cursorservice.AbstractCursor;
+
 /**
  * TODO (hrickens) :
  *
@@ -55,6 +59,21 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
     public static final String PROP_PRECISION = "precision"; //$NON-NLS-1$
 
     /**
+     * Constructor.
+     */
+    public AbstractTextTypeWidgetModel() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     */
+    public AbstractTextTypeWidgetModel(final List<AbstractCursor> cursorDescriptors) {
+        super(false, cursorDescriptors);
+    }
+
+
+    /**
      * Returns the type of the text (Double or String).
      *
      * @return The type of the text
@@ -62,9 +81,9 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
     public TextTypeEnum getValueType() {
         TextTypeEnum result = TextTypeEnum.TEXT;
 
-        int index = getArrayOptionProperty(PROP_TEXT_TYPE);
+        final int index = getArrayOptionProperty(PROP_TEXT_TYPE);
 
-        if ((index >= 0) && (index < TextTypeEnum.values().length)) {
+        if (index >= 0 && index < TextTypeEnum.values().length) {
             result = TextTypeEnum.values()[index];
         }
 
@@ -81,6 +100,13 @@ public abstract class AbstractTextTypeWidgetModel extends AbstractWidgetModel {
     }
 
     public abstract String getStringValueID();
+
+    /**
+     * Returns the transparent state of the background.
+     *
+     * @return True if the background is transparent, false otherwise
+     */
+    public abstract boolean getTransparent();
 
     public String getStringValue() {
         return getStringProperty(getStringValueID());

@@ -16,8 +16,8 @@ import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The handler help a widget to handle the pv connection event such as
@@ -44,12 +44,8 @@ public class ConnectionHandler {
 	/**
 	 * True if all PVs are connected.
 	 */
-	private boolean connected;
-	
-	/**
-	 * The original border of the figure when is was connected.
-	 */
-	private Border preBorder;
+	private boolean connected;	
+
 	
 	/**
 	 * The original tool tip when is was connected.
@@ -59,18 +55,22 @@ public class ConnectionHandler {
 	private IFigure figure;
 	
 	private AbstractWidgetModel widgetModel;
+	private Display display;
 	
 	private PVConnectionListener pvConnectionListener;
+	
+	private AbstractBaseEditPart editPart;
 	
 	/**
 	 * @param editpart the widget editpart to be handled.
 	 */
 	public ConnectionHandler(AbstractBaseEditPart editpart) {
+		this.editPart = editpart;
 		figure = editpart.getFigure();
 		widgetModel = editpart.getWidgetModel();
+		this.display = editpart.getViewer().getControl().getDisplay();
 		pvMap = new HashMap<String, PV>();
 		preTooltip = widgetModel.getRawTooltip();
-		preBorder = figure.getBorder();
 		connected = true;
 	}
 	
@@ -113,7 +113,6 @@ public class ConnectionHandler {
 	 */
 	protected void markWidgetAsDisconnected(PV pv){
 		if(connected){
-			preBorder = figure.getBorder();
 			preTooltip = widgetModel.getRawTooltip();
 		}
 		refreshModelTooltip();
@@ -123,7 +122,7 @@ public class ConnectionHandler {
 		//Making this task execute in UI Thread
 		//It will also delay the disconnect marking requested during widget activating
 		//to execute after widget is fully activated.
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+		UIBundlingThread.getInstance().addRunnable(display, new Runnable(){
 			public void run() {
 				figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder());
 				figure.repaint();
@@ -136,23 +135,24 @@ public class ConnectionHandler {
 	 */
 	protected void widgetConnectionRecovered(PV pv){		
 		
-		if(connected)
-			return;
-		
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				boolean allConnected = true;
-				refreshModelTooltip();
-				for(PV pv : pvMap.values()){
-					allConnected &= pv.isConnected();
+		if (connected)
+			return;		
+		boolean allConnected = true;
+		refreshModelTooltip();
+		for (PV pv2 : pvMap.values()) {
+			allConnected &= pv2.isConnected();
+		}
+		if (allConnected) {
+			connected = true;
+			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+				public void run() {
+
+					figure.setBorder(editPart.calculateBorder());
+
+					figure.repaint();
 				}
-				if(allConnected){
-					figure.setBorder(preBorder);
-					connected = true;
-				}				
-				figure.repaint();
-			}
-		});		
+			});
+		}
 	}
 
 	/**

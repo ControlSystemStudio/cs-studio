@@ -31,7 +31,8 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 11.04.2011
  */
-// CHECKSTYLE OFF: AbstractClassName Turned off since this class provides static access methods
+// CHECKSTYLE OFF: AbstractClassName
+// Turned off since this class provides static access methods
 public abstract class DataRescueResult {
 // CHECKSTYLE ON: AbstractClassName
 

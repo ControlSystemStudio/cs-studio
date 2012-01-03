@@ -27,9 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import de.desy.tine.alarmUtils.AlarmMonitor;
 import de.desy.tine.alarmUtils.AlarmMonitorHandler;
 import de.desy.tine.alarmUtils.TAlarmSystem;
@@ -40,30 +40,29 @@ import de.desy.tine.server.alarms.TAlarmMessage;
  * @author Markus Moeller
  *
  */
-public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
-{
-    /** */
-    private String context = null;
-
-    /** */
-    private Logger logger = null;
+public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler {
     
-    /** */
-    private TLink tineLink = null;
+    /** Class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(TineAlarmMonitor.class);
 
     /** */
-    private SimpleDateFormat dateFormat = null;
+    private String _context;
+
+    /** */
+    private TLink _tineLink;
+
+    /** */
+    private SimpleDateFormat dateFormat;
     
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages = null;
+    private Collector receivedMessages;
 
     /** */
-    private long lastTimeStamp = 0;
+    private long lastTimeStamp;
     
-    public TineAlarmMonitor(Observer observer, String context)
-    {
-        this.context = context;
-        logger = CentralLogger.getInstance().getLogger(TineAlarmMonitor.class);
+    public TineAlarmMonitor(Observer observer, String context) {
+        
+        this._context = context;
         this.addObserver(observer);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         
@@ -73,55 +72,52 @@ public class TineAlarmMonitor extends Observable implements AlarmMonitorHandler
         receivedMessages.setContinuousPrint(false);
         receivedMessages.setContinuousPrintCount(1000.0);
 
-        tineLink = TAlarmSystem.monitorAlarms(context, null, "ALL", 0, new AlarmMonitor(this));
+        _tineLink = TAlarmSystem.monitorAlarms(context, null, "ALL", 0, new AlarmMonitor(this));
+        lastTimeStamp = 0;
     }
     
-    public void close()
-    {
-        tineLink.close();
+    public void close() {
+        _tineLink.close();
     }
     
     /**
      * @see de.desy.tine.alarmUtils.AlarmMonitorHandler#alarmsHandler(de.desy.tine.alarmUtils.AlarmMonitor)
      */
-    public void alarmsHandler(AlarmMonitor alarmMonitor)
-    {
+    @Override
+    public void alarmsHandler(AlarmMonitor alarmMonitor) {
+        
         TAlarmMessage alarm = null;
         AlarmMessage am = null;
         Date date = null;
         
         TAlarmMessage[] ams = alarmMonitor.getLastAcquiredAlarms(0, true);
-        
-        if(ams != null)
-        {
+        if(ams != null) {
+            
             date = new Date(alarmMonitor.getLastAcquiredAlarmTime());
-            logger.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
+            LOG.debug("Anzahl: " + ams.length + " - Last Acquiried Alarm Time: " + dateFormat.format(date));
             date = null;
     
-            if(ams.length > 0)
-            {
-                alarm = ams[ams.length - 1];
+            if(ams.length > 0) {
                 
-                if(alarm.getTimeStamp() > this.lastTimeStamp)
-                {
+                alarm = ams[ams.length - 1];
+                if(alarm.getTimeStamp() > this.lastTimeStamp) {
+                    
                     this.lastTimeStamp = alarm.getTimeStamp();
                     
                     date = new Date(alarm.getTimeStamp());
-                    logger.debug(context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
+                    LOG.debug(_context + ": Neuer Alarm Timestamp: " + dateFormat.format(date));
                     
                     date = null;
                     
-                    am = new AlarmMessage(alarm, context);
+                    am = new AlarmMessage(alarm, _context);
                     receivedMessages.incrementValue();
                     
                     setChanged();
                     notifyObservers(am);
                 }
             }
-        }
-        else
-        {
-            logger.debug("No alarms");
+        } else {
+            LOG.debug("No alarms");
         }
     }
 }

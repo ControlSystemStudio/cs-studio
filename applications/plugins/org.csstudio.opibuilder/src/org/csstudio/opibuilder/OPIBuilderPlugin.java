@@ -15,8 +15,10 @@ import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.SchemaService;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -26,6 +28,7 @@ import org.osgi.framework.BundleContext;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("deprecation")
 public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -50,6 +53,9 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static OPIBuilderPlugin plugin;
 
+	private static boolean isRAP = SWT.getPlatform().startsWith("rap"); //$NON-NLS-1$;
+	
+	
 	private IPropertyChangeListener preferenceLisener;
 
 
@@ -57,7 +63,7 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public OPIBuilderPlugin() {
-		plugin = this;
+		plugin = this;		
 	}
 
 
@@ -71,57 +77,76 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		if(isRAP)
+			SingleSourceHelper.rapPluginStartUp();
+		
 		ScriptService.getInstance();
 		
 		if(PreferencesHelper.isDisplaySystemOutput()){
 			ConsoleService.getInstance().turnOnSystemOutput();
 		}
-		
-		//ConsoleService.getInstance().writeInfo("Welcome to Best OPI, Yet (BOY)!");
-		preferenceLisener = new IPropertyChangeListener(){
-			public void propertyChange(PropertyChangeEvent event) {
-				if(event.getProperty().equals(PreferencesHelper.COLOR_FILE))
-					MediaService.getInstance().reloadColorFile();
-				else if(event.getProperty().equals(PreferencesHelper.FONT_FILE))
-					MediaService.getInstance().reloadFontFile();				
-				else if(event.getProperty().equals(PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
-					GUIRefreshThread.getInstance().reSchedule();
-				else if(event.getProperty().equals(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)){
-					System.setProperty("org.csstudio.swt.widget.prohibit_advanced_graphics", //$NON-NLS-1$
-							PreferencesHelper.isAdvancedGraphicsDisabled() ? "true": "false"); //$NON-NLS-1$ //$NON-NLS-2$
-				}else if(event.getProperty().equals(PreferencesHelper.URL_FILE_LOADING_TIMEOUT))
-					System.setProperty("org.csstudio.swt.widget.url_file_load_timeout", //$NON-NLS-1$
-							Integer.toString(PreferencesHelper.getURLFileLoadingTimeout())); 				
-				else if(event.getProperty().equals(PreferencesHelper.SCHEMA_OPI)){
-					SchemaService.getInstance().reLoad();
+		if(!isRAP) {
+			preferenceLisener = new IPropertyChangeListener() {
+				public void propertyChange(PropertyChangeEvent event) {
+					if (event.getProperty()
+							.equals(PreferencesHelper.COLOR_FILE))
+						MediaService.getInstance().reloadColorFile();
+					else if (event.getProperty().equals(
+							PreferencesHelper.FONT_FILE))
+						MediaService.getInstance().reloadFontFile();
+					else if (event.getProperty().equals(
+							PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
+						GUIRefreshThread.getInstance(true).reLoadGUIRefreshCycle();
+					else if (event.getProperty().equals(
+							PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)) {
+						System.setProperty(
+								"org.csstudio.swt.widget.prohibit_advanced_graphics", //$NON-NLS-1$
+								PreferencesHelper.isAdvancedGraphicsDisabled() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+					} else if (event.getProperty().equals(
+							PreferencesHelper.URL_FILE_LOADING_TIMEOUT))
+						System.setProperty(
+								"org.csstudio.swt.widget.url_file_load_timeout", //$NON-NLS-1$
+								Integer.toString(PreferencesHelper
+										.getURLFileLoadingTimeout()));
+					else if (event.getProperty().equals(
+							PreferencesHelper.SCHEMA_OPI)) {
+						SchemaService.getInstance().reLoad();
+					} else if (event.getProperty().equals(
+							PreferencesHelper.DISPLAY_SYSTEM_OUTPUT)) {
+						if (PreferencesHelper.isDisplaySystemOutput())
+							ConsoleService.getInstance().turnOnSystemOutput();
+						else
+							ConsoleService.getInstance().turnOffSystemOutput();
+					}
 				}
-				else if(event.getProperty().equals(PreferencesHelper.DISPLAY_SYSTEM_OUTPUT)){
-					if(PreferencesHelper.isDisplaySystemOutput())
-						ConsoleService.getInstance().turnOnSystemOutput();
-					else
-						ConsoleService.getInstance().turnOffSystemOutput();
-				}				
-			}
 
-		};
+			};
 
-		getPluginPreferences().addPropertyChangeListener(preferenceLisener);
+			getPluginPreferences().addPropertyChangeListener(preferenceLisener);
+		}
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		ScriptService.getInstance().exit();
-		getPluginPreferences().removePropertyChangeListener(preferenceLisener);
+		if(!isRAP)
+			getPluginPreferences().removePropertyChangeListener(preferenceLisener);
 	}
 
 	/** @return Logger for plugin ID */
 	public static Logger getLogger()
 	{
 	    return logger;
+	}
+	
+	/**
+	 * @return true if this is running in RAP.
+	 */
+	public static boolean isRAP() {
+		return isRAP;
 	}
 }

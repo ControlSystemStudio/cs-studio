@@ -79,12 +79,23 @@ public class ThermometerConnectionBehavior extends MarkedWidgetDesyConnectionBeh
      */
     @Override
     protected void doProcessConnectionStateChange( final ThermometerModel widget,final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
-        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, fillColor);
-
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String determineBackgroundColor;
+        String determineFillColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = _defFillBackColor;
+                determineFillColor = _defFillColor;
+            } else {
+                determineBackgroundColor = "${Invalid}";
+                determineFillColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+            determineFillColor = determineBackgroundColor;
+        }
+        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
+        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineFillColor);
     }
 
 }

@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.nams.common.activatorUtils,
  org.csstudio.nams.service.configurationAccess.localStore,
  org.csstudio.nams.service.preferenceservice,
- org.csstudio.nams.common
+ org.csstudio.nams.common,
+ org.junit;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.nams.service.history.impl.confstore;x-friends:="org.csstudio.nams.testUtils.testSuites"

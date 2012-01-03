@@ -25,7 +25,6 @@ package org.csstudio.ams.connector.email;
 
 import java.net.InetAddress;
 import java.util.Hashtable;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -35,7 +34,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
@@ -43,7 +41,6 @@ import org.csstudio.ams.SynchObject;
 import org.csstudio.ams.Utils;
 import org.csstudio.ams.connector.email.internal.EMailConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
@@ -52,13 +49,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
-public class EMailConnectorStart implements IApplication, IGenericServiceListener<ISessionService>
-{
+public class EMailConnectorStart implements IApplication,
+                                            IGenericServiceListener<ISessionService> {
+    
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_EMAIL = 2;
     public final static int STAT_ERR_EMAIL_SEND = 3;
-    public final static int STAT_ERR_JMSCON = 4;                                // jms communication to ams internal jms partners
+    public final static int STAT_ERR_JMSCON = 4; // jms communication to ams internal jms partners
     public final static int STAT_ERR_UNKNOWN = 5;
 
     public final static long WAITFORTHREAD = 10000;
@@ -74,17 +72,17 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     
     private MessageProducer extPublisherStatusChange = null;
     
-    private SynchObject sObj = null;
+    private SynchObject sObj;
+    private ISessionService xmppService;
     private String managementPassword; 
     private int lastStatus = 0;
     private boolean bStop;
     private boolean restart;
     
-    public EMailConnectorStart()
-    {
+    public EMailConnectorStart() {
         _instance = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
-        
+        xmppService = null;
         IPreferencesService pref = Platform.getPreferencesService();
         managementPassword = pref.getString(AmsActivator.PLUGIN_ID, AmsPreferenceKey.P_AMS_MANAGEMENT_PASSWORD, "", null);
         if(managementPassword == null) {
@@ -92,51 +90,22 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         }
     }
 
-    public static EMailConnectorStart getInstance()
-    {
+    public static EMailConnectorStart getInstance() {
         return _instance;
     }
     
-    public void stop()
-    {
-        return;
-    }
-
     /**
-     * 
+     * {@inheritDoc}
      */
-    public synchronized void setRestart()
-    {
-        restart = true;
-        bStop = true;
-    }
-
-    /**
-     * 
-     */
-    public synchronized void setShutdown()
-    {
-        restart = false;
-        bStop = true;
-    }
-
-    /**
-     * 
-     * @return
-     */
-    public synchronized String getPassword()
-    {
-        return managementPassword;
-    }
-    
-    /**
-     * 
-     */
-    public Object start(IApplicationContext context) throws Exception
-    {
-        Log.log(this, Log.INFO, "start");
+    @Override
+    public Object start(IApplicationContext context) throws Exception {
+        
+        Log.log(this, Log.INFO, "Starting.");
         
         EMailConnectorPreferenceKey.showPreferences();
+        
+        // XMPP login
+        EMailConnectorPlugin.getDefault().addSessionServiceListener(this);
         
         EMailConnectorWork ecw = null;
         boolean bInitedJms = false;
@@ -145,35 +114,30 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         bStop = false;
         restart = false;
         
-        while(bStop == false)
-        {
-            try
-            {
-                if (ecw == null)
-                {
+        while(bStop == false) {
+            try {
+                if (ecw == null) {
                     ecw = new EMailConnectorWork(this);
                     ecw.start();
                 }
                 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
                 }
         
-                Log.log(this, Log.DEBUG, "run");
                 Thread.sleep(1000);
                 
                 SynchObject actSynch = new SynchObject(0, 0);
-                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN))        // if status has not changed in the last 5 minutes
-                {                                                               // every 5 minutes if blocked
+                // if status has not changed in the last 5 minutes
+                // every 5 minutes if blocked
+                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN)) {                                                               
                     Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 5 minutes.");
                 }
 
                 String statustext = "unknown";
-                if (actSynch.getStatus() != lastStatus)                         // if status value changed
-                {
-                    switch (actSynch.getStatus())
-                    {
+                // if status value changed
+                if (actSynch.getStatus() != lastStatus) {
+                    switch (actSynch.getStatus()) {
                         case STAT_INIT:
                             statustext = "init";
                             break;
@@ -190,20 +154,15 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
                     }
                     Log.log(this, Log.INFO, "set status to " + statustext + "(" + actSynch.getStatus() + ")");
                     lastStatus = actSynch.getStatus();
-                    if (bInitedJms)
-                    {
-                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime()))
-                        {
+                    if (bInitedJms) {
+                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime())) {
                             closeJms();
                             bInitedJms = false;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 Log.log(this, Log.FATAL, e);
-                
                 closeJms();
                 bInitedJms = false;
             }
@@ -211,25 +170,21 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
 
         Log.log(this, Log.INFO, "EMailConnectorStart is exiting now");
         
-        if(ecw != null)
-        {
+        if(ecw != null) {
             // Clean stop of the working thread
             ecw.stopWorking();
             
-            try
-            {
+            try {
                 ecw.join(WAITFORTHREAD);
+            } catch(InterruptedException ie) {
+                // Can be ignored
             }
-            catch(InterruptedException ie) { }
     
-            if(ecw.stoppedClean())
-            {
+            if(ecw.stoppedClean()) {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
                 
                 ecw = null;
-            }
-            else
-            {
+            } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 ecw.closeJms();
                 ecw.closeEmail();
@@ -237,12 +192,47 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
             }
         }
         
-        if(restart)
-            return EXIT_RESTART;
-        else
-            return EXIT_OK;
+        if (xmppService != null) {
+            xmppService.disconnect();
+        }
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if(restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        
+        return exitCode;
     }
 
+    @Override
+    public void stop() {
+        return;
+    }
+
+    /**
+     * 
+     */
+    public synchronized void setRestart() {
+        restart = true;
+        bStop = true;
+    }
+
+    /**
+     * 
+     */
+    public synchronized void setShutdown() {
+        restart = false;
+        bStop = true;
+    }
+
+    /**
+     * 
+     * @return The mangement password
+     */
+    public synchronized String getPassword() {
+        return managementPassword;
+    }
+    
     public int getStatus()
     {
         return sObj.getSynchStatus();
@@ -356,22 +346,24 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         return true;
     }
     
+    @Override
     public void bindService(ISessionService sessionService) {
-    	IPreferencesService pref = Platform.getPreferencesService();
+    	
+        IPreferencesService pref = Platform.getPreferencesService();
         String xmppUser = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_USER, "anonymous", null);
         String xmppPassword = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_PASSWORD, "anonymous", null);
         String xmppServer = pref.getString(EMailConnectorPlugin.PLUGIN_ID, EMailConnectorPreferenceKey.P_XMPP_SERVER, "krynfs.desy.de", null);
    	
     	try {
 			sessionService.connect(xmppUser, xmppPassword, xmppServer);
+			xmppService = sessionService;
 		} catch (Exception e) {
-			CentralLogger.getInstance().warn(this,
-					"XMPP connection is not available, " + e.toString());
+		    Log.log(this, Log.WARN, "XMPP connection is not available: " + e.getMessage());
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
-    	service.disconnect();
+    	// Nothing to do here
     }
-    
 }

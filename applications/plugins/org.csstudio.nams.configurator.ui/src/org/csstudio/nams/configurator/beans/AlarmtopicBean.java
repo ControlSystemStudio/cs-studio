@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.beans;
 
 import org.csstudio.nams.configurator.Messages;
@@ -62,7 +63,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 		return this.description;
 	}
 
-	public String getDisplayName() {
+	@Override
+    public String getDisplayName() {
 		return this.getHumanReadableName() != null ? this
 				.getHumanReadableName() : Messages.AlarmtopicBean_without_name;
 	}
@@ -71,7 +73,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 		return this.humanReadableName;
 	}
 
-	public int getID() {
+	@Override
+    public int getID() {
 		return this.getTopicID();
 	}
 
@@ -115,7 +118,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 				oldValue, this.getHumanReadableName());
 	}
 
-	public void setID(final int id) {
+	@Override
+    public void setID(final int id) {
 		this.setTopicID(id);
 	}
 
@@ -146,7 +150,8 @@ public class AlarmtopicBean extends AbstractConfigurationBean<AlarmtopicBean>
 		this.setTopicName(bean.getTopicName());
 	}
 
-	public void setDisplayName(String name) {
+	@Override
+    public void setDisplayName(String name) {
 		this.setHumanReadableName(name);
 	}
 }

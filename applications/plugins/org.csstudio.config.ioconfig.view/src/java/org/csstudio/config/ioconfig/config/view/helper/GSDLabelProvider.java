@@ -61,9 +61,8 @@ public class GSDLabelProvider extends LabelProvider implements IFontProvider, IC
     @CheckForNull
     public Color getForeground(@Nullable final Object element) {
         if (element instanceof GSDFileDBO) {
-            GSDFileDBO file = (GSDFileDBO) element;
-            if ( ( (_gSDFileType == GSDFileTypes.Master) && file.isMasterNonHN())
-                    || ( (_gSDFileType == GSDFileTypes.Slave) && file.isSlaveNonHN())) {
+            final GSDFileDBO file = (GSDFileDBO) element;
+            if ( isSameType(file)) {
                 return null;
             }
             if (file.isMasterNonHN() || file.isSlaveNonHN()) {
@@ -71,6 +70,11 @@ public class GSDLabelProvider extends LabelProvider implements IFontProvider, IC
             }
         }
         return _red;
+    }
+
+    private boolean isSameType(@Nonnull final GSDFileDBO file) {
+        return ( (_gSDFileType == GSDFileTypes.Master) && file.isMasterNonHN())
+                || ( (_gSDFileType == GSDFileTypes.Slave) && file.isSlaveNonHN());
     }
     
 }

@@ -46,7 +46,7 @@ public class GridLayoutModel extends AbstractLayoutModel {
 		addProperty(new IntegerProperty(PROP_GRID_GAP, "Grid Gap", 
 				WidgetPropertyCategory.Display, 2, 0, 100));
 		
-		setPropertyVisible(PROP_FONT, false);
+		removeProperty(PROP_FONT);
 	
 	}
 

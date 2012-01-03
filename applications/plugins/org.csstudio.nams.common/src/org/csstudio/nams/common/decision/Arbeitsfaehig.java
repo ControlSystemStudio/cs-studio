@@ -1,6 +1,8 @@
+
 /**
  * 
  */
+
 package org.csstudio.nams.common.decision;
 
 /**
@@ -21,7 +23,7 @@ public interface Arbeitsfaehig {
 	/**
 	 * Ist gerade am arbeiten
 	 * 
-	 * @return
+	 * @return True or False
 	 */
 	public boolean istAmArbeiten();
 }

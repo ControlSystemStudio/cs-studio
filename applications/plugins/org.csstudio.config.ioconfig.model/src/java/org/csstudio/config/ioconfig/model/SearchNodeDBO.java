@@ -44,42 +44,42 @@ public class SearchNodeDBO extends DBClass {
     private String _epicsAddressString;
     private String _ioName;
     private Integer _parentId;
-
-    @Column(name = "parent_id", nullable=true)
-    @CheckForNull
-    public Integer getParentId() {
-        return _parentId;
-    }
-    public void setParentId(@Nonnull Integer parentId) {
-        _parentId = parentId;
-    }
-    @CheckForNull
-    public String getName() {
-        return _name;
-    }
-    public void setName(@Nonnull String name) {
-        _name = name;
-    }
-    public void setEpicsAddressString(@Nonnull String epicsAddressString) {
-        _epicsAddressString = epicsAddressString;
-    }
+    
     @CheckForNull
     public String getEpicsAddressString() {
         return _epicsAddressString;
-    }
-    public void setEpicsaddressstring(@Nonnull String epicsAddressString) {
-        _epicsAddressString = epicsAddressString;
     }
     @CheckForNull
     public String getIoName() {
         return _ioName;
     }
-    public void setIoName(@Nonnull String ioName) {
+    @CheckForNull
+    public String getName() {
+        return _name;
+    }
+    @Column(name = "parent_id", nullable=true)
+    @CheckForNull
+    public Integer getParentId() {
+        return _parentId;
+    }
+    public void setEpicsaddressstring(@Nonnull final String epicsAddressString) {
+        _epicsAddressString = epicsAddressString;
+    }
+    public void setEpicsAddressString(@Nonnull final String epicsAddressString) {
+        _epicsAddressString = epicsAddressString;
+    }
+    public void setIoName(@Nonnull final String ioName) {
         _ioName = ioName;
+    }
+    public void setName(@Nonnull final String name) {
+        _name = name;
+    }
+    public void setParentId(@Nonnull final Integer parentId) {
+        _parentId = parentId;
     }
     
     
     
     
-
+    
 }

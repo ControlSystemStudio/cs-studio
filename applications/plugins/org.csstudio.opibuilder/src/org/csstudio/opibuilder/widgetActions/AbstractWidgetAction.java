@@ -76,8 +76,8 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 		for(AbstractWidgetProperty p : propertyMap.values())
 			propArray[i++] = p;
 		return propArray;
-	}
-	
+	}	
+
 	
 	public Object getPropertyValue(Object id) {
 		Assert.isTrue(propertyMap.containsKey(id));
@@ -91,8 +91,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	
 	
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
 				

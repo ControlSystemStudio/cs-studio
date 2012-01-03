@@ -30,18 +30,18 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 		final MeterModel model = getWidgetModel();
 
 		MeterFigure xMeter = new MeterFigure();
-		
-		initializeCommonFigureProperties(xMeter, model);		
+
+		initializeCommonFigureProperties(xMeter, model);
 		xMeter.setNeedleColor((model.getNeedleColor()));
 		xMeter.setGradient(model.isRampGradient());
-		
+
 		return xMeter;
 
 	}
-	
+
 	@Override
 	public MeterModel getWidgetModel() {
-		return (MeterModel)getModel();
+		return (MeterModel) getModel();
 	}
 
 	/**
@@ -50,35 +50,41 @@ public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		registerCommonPropertyChangeHandlers();
-		
-		//needle Color
+
+		// needle Color
 		IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				MeterFigure xMeter = (MeterFigure) refreshableFigure;
 				xMeter.setNeedleColor(((OPIColor) newValue).getSWTColor());
 				return false;
 			}
 		};
-		setPropertyChangeHandler(MeterModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
-		
-		
-		
-		//Ramp gradient
+		setPropertyChangeHandler(MeterModel.PROP_NEEDLE_COLOR,
+				needleColorColorHandler);
+
+		// Ramp gradient
 		IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
+					final Object newValue, final IFigure refreshableFigure) {
 				MeterFigure xMeter = (MeterFigure) refreshableFigure;
 				xMeter.setGradient((Boolean) newValue);
 				return false;
 			}
 		};
-		setPropertyChangeHandler(MeterModel.PROP_RAMP_GRADIENT, gradientHandler);	
-		
-		
-		
+		setPropertyChangeHandler(MeterModel.PROP_RAMP_GRADIENT, gradientHandler);
+
+		// Show Value Label
+		IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				MeterFigure xMeter = (MeterFigure) refreshableFigure;
+				xMeter.setValueLabelVisibility((Boolean) newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(MeterModel.PROP_SHOW_VALUE_LABEL, valueLabelHandler);
+
 	}
 
 }

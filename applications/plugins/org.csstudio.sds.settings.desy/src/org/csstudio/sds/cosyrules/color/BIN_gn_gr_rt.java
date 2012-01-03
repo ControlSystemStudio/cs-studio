@@ -56,20 +56,24 @@ public class BIN_gn_gr_rt implements IRule {
         if (arguments != null) {
 
          // check for gn (green)
-            if ((arguments.length >= 1) && compare(arguments[0], arguments[1])) {
-                return ColorAndFontUtil.toHex(30, 187, 0);
+            if (arguments.length >= 1 && compare(arguments[0], arguments[1])) {
+                return "${Gruen}";
             }
             // check for gr (gray)
-            if ((arguments.length >= 2) && compare(arguments[0], arguments[2])) {
-                return ColorAndFontUtil.toHex(90, 90, 90);
+            if (arguments.length >= 2 && compare(arguments[0], arguments[2])) {
+                return "${Schwarz}";
             }
             // check for rt  (red)
-            if ((arguments.length >= 3) && compare(arguments[0], arguments[3])) {
-                return ColorAndFontUtil.toHex(253, 0, 0);
+            if (arguments.length >= 3 && compare(arguments[0], arguments[3])) {
+                return "${Rot}";
             }
             // check for gb (yellow)
-            if ((arguments.length >= 4) && compare(arguments[0], arguments[4])) {
-                return ColorAndFontUtil.toHex(251, 243, 74);
+            if (arguments.length >= 4 && compare(arguments[0], arguments[4])) {
+                return "${Gelb}";
+            }
+            // check for gb (blue)
+            if (arguments.length >= 4 && compare(arguments[0], arguments[5])) {
+                return "${Blau}";
             }
         }
         return ColorAndFontUtil.toHex(138, 43, 226);
@@ -81,9 +85,9 @@ public class BIN_gn_gr_rt implements IRule {
      * @return
      */
     private boolean compare(final Object object1, final Object object2) {
-        if ( (object1 instanceof Number) && (object2 instanceof Number)) {
-            Number value1 = (Number) object1;
-            Number value2 = (Number) object2;
+        if ( object1 instanceof Number && object2 instanceof Number) {
+            final Number value1 = (Number) object1;
+            final Number value2 = (Number) object2;
             return value1.doubleValue() == value2.doubleValue();
         }
         if (object1 instanceof Number) {
@@ -93,7 +97,7 @@ public class BIN_gn_gr_rt implements IRule {
             return compareNo2Obj((Number) object2, object1);
         }
 
-        return (object1 != null) && object1.toString().equals(object2.toString());
+        return object1 != null && object1.toString().equals(object2.toString());
     }
 
     /**
@@ -103,11 +107,11 @@ public class BIN_gn_gr_rt implements IRule {
      */
     private boolean compareNo2Obj(final Number no1, final Object object2) {
         if (object2 instanceof String) {
-            String val2 = (String) object2;
+            final String val2 = (String) object2;
             try {
-                Double double2 = new Double(val2);
+                final Double double2 = new Double(val2);
                 return double2 == no1.doubleValue();
-            }catch (NumberFormatException e) {
+            }catch (final NumberFormatException e) {
                 return false;
             }
         }
@@ -119,7 +123,7 @@ public class BIN_gn_gr_rt implements IRule {
      */
     @Override
     public String getDescription() {
-        return "Vergleicht den Wert mit den Werten für grün, grau, rot und gelb. Ist der Wert gleich einer der drei Werte wird die Entsprechende Farbe angezeit";
+        return "Vergleicht den Wert mit den Werten für grün, grau, rot, gelb und blau. Ist der Wert gleich einer der drei Werte wird die Entsprechende Farbe angezeit";
     }
 
 }

@@ -22,6 +22,8 @@
 package org.csstudio.domain.desy.typesupport;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,9 +32,14 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.epics.pvmanager.TypeSupport;
+
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * Type conversion necessary as long as there are these other classes around.
@@ -47,29 +54,21 @@ import org.epics.pvmanager.TypeSupport;
 public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T> {
     // CHECKSTYLE ON : AbstractClassName
 
-    private static final Pattern COLLECTION_PATTERN =
-        Pattern.compile("^(ArrayList|HashSet|LinkedHashSet|LinkedList|TreeSet|Vector|Stack)<(.+)>$");
+    private static final List<String> BASIC_TYPE_PACKAGES =
+        Lists.newArrayList("java.lang", "java.util", "java.util.concurrent");
+
+    @SuppressWarnings("rawtypes")
+    private static Map<String, Class> CLASSNAME2TYPE = Maps.newConcurrentMap();
+
+    private static boolean INSTALLED;
 
     /**
-     * Helper enum to dispatch which group to match for Pattern {@link COLLECTION_PATTERN}.
-     * The index is the parameter that is used in the {@link Matcher#group(int)}.
-     *
-     * @author bknerr
-     * @since Mar 30, 2011
+     * Constructor.
      */
-    private enum TypeLiteralGroup {
-        COLL(1),
-        COLL_ELEM(2);
-        private int _index;
-        private TypeLiteralGroup(final int i) {
-            _index = i;
-        }
-        public int getIndex() {
-            return _index;
-        }
+    protected BaseTypeConversionSupport(@Nonnull final Class<T> type) {
+        super(type, BaseTypeConversionSupport.class);
     }
 
-    private static boolean INSTALLED = false;
     public static void install() {
         if (INSTALLED) {
             return;
@@ -78,12 +77,6 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
         TypeSupport.addTypeSupport(new StringBaseTypeConversionSupport());
 
         INSTALLED = true;
-    }
-    /**
-     * Constructor.
-     */
-    protected BaseTypeConversionSupport(@Nonnull final Class<T> type) {
-        super(type, BaseTypeConversionSupport.class);
     }
 
     @Nonnull
@@ -98,98 +91,125 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
 
     /**
      * Tries to create a {@link Class} object for the given dataType string, iteratively
-     * over the given array of package names.
+     * over the given array of package names (basic package names are appended
+     * @see {@link #BASIC_TYPE_PACKAGES}).
      *
      * Note that the utilized <code>Class.forName(package + class)</code> does only work when a
-     * class loader buddy is registered for this package. Unless it is a basic package like
-     * "java.lang" or "java.util" you have to add in the manifest.mf of the plugin that exports the
-     * passed package(s) the line "Eclipse-RegisterBuddy: org.csstudio.domain.desy".
-     *
-     * This method does not propagate a ClassNotFoundException but return <code>null</code>, if
-     * class creation is not possible.
+     * class loader buddy is registered for the passed packages. You have to add in the manifest.mf
+     * of the plugin that exports the passed package(s) the line
+     * "Eclipse-RegisterBuddy: org.csstudio.domain.desy".
      *
      * @param <T>
      * @param datatype the name of the class
-     * @param packages the array of package names to try
+     * @param addPackages the list of additional (non-basic) package names to try first
      * @return a {@link Class} object or <code>null</code>.
-     * @throws TypeSupportException
+     * @throws TypeSupportException if class object creation failed
      */
-    @SuppressWarnings("unchecked")
     @Nonnull
-    public static <T> Class<T> createTypeClassFromString(@Nonnull final String datatype,
-                                                         @Nonnull final String... packages) throws TypeSupportException {
-        Class<T> typeClass = null;
-        for (final String pkg : packages) {
+    public static Class<?> createBaseTypeClassFromString(@Nonnull final String datatype,
+                                                         @Nonnull final String... addPackages) throws TypeSupportException {
+        final String baseType = datatype.trim().replaceFirst("\\s*<(.+)>$", "");
+
+        final Iterable<String> allPackages = Iterables.concat(Arrays.asList(addPackages),
+                                                              BASIC_TYPE_PACKAGES);
+
+        Class<?> typeClass = getClassTypeFromCache(baseType, allPackages);
+        if (typeClass == null) {
+            typeClass = createClassTypeForNameAndUpdateCache(baseType, allPackages);
+        }
+        if (typeClass == null) {
+            throw new TypeSupportException("Class object for base datatype of " + datatype +
+                                           " could not be created from packages:\n" +
+                                           Iterables.toString(allPackages), null);
+        }
+        return typeClass;
+    }
+
+    /**
+     * Checks whether for the given class name and packages a class type has already been created.
+     * @param baseType the simple class name as string
+     * @param allPackages the candidate packages to check for
+     * @return the class object for the class named after package.baseType or <code>null</code>
+     */
+    @SuppressWarnings("rawtypes")
+    @Nonnull
+    private static Class getClassTypeFromCache(@Nonnull final String baseType,
+                                               @Nonnull final Iterable<String> allPackages) {
+        for (final String pkg : allPackages) {
+            final String fullClassNameCandidate = pkg + "." + baseType;
+            if (CLASSNAME2TYPE.containsKey(fullClassNameCandidate)) {
+                return CLASSNAME2TYPE.get(fullClassNameCandidate);
+            }
+        }
+        return null;
+    }
+    /**
+     * Tries to create a class object from the simple (baseType) string and any of packages.
+     *
+     * @param <T>
+     * @param baseType the simple name of the class
+     * @param allPackages the candidate packages from which to load to class
+     * @return the class object
+     */
+    @CheckForNull
+    private static Class<?> createClassTypeForNameAndUpdateCache(@Nonnull final String baseType,
+                                                                 @Nonnull final Iterable<String> allPackages) {
+        for (final String pkg : allPackages) {
             try {
-                typeClass = (Class<T>) Class.forName(pkg + "." + datatype);
-                break;
+                final String fullClassName = pkg + "." + baseType;
+                final Class<?> typeClass = Class.forName(fullClassName);
+                CLASSNAME2TYPE.put(fullClassName, typeClass);
+                return typeClass;
                 // CHECKSTYLE OFF: EmptyBlock
             } catch (final ClassNotFoundException e) {
                 // Ignore
                 // CHECKSTYLE ON: EmptyBlock
             }
         }
-        if (typeClass == null) {
-            throw new TypeSupportException("Class object for datatype " + datatype +
-                                           " could not be created from packages:\n" +
-                                           Arrays.asList(packages), null);
-        }
-        return typeClass;
-    }
-
-    /**
-     * Tries to create a {@link Class} object for the element type for a generic {@link java.util.Collection},
-     * such as {@code Set<Byte>} as {@code datatype} shall return {@code Class<Byte>}.<br/>
-     * Recognised patterns for collection describing strings are {@code Collection<*>}, {@code List<*>}, {@code Set<*>}, and
-     * {@code Vector<*>}!
-     *
-     * @param <T>
-     * @param datatype the string for the generic collection type, e.g. List&lt;Double&gt;.
-     * @param packages the packages to try for the element type, e.g. typically "java.lang".
-     * @return the class object or <code>null</code>
-     * @throws TypeSupportException
-     */
-    @CheckForNull
-    public static <T> Class<T> createTypeClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                    @Nonnull final String... packages) throws TypeSupportException {
-        return createClassFromString(TypeLiteralGroup.COLL_ELEM, datatype, packages);
-    }
-    @CheckForNull
-    public static <T> Class<T> createCollectionClassFromMultiScalarString(@Nonnull final String datatype,
-                                                                          @Nonnull final String... packages) throws TypeSupportException {
-        return createClassFromString(TypeLiteralGroup.COLL, datatype, packages);
-    }
-
-    @CheckForNull
-    private static <T> Class<T> createClassFromString(@Nonnull final TypeLiteralGroup typeGroup,
-                                                      @Nonnull final String datatype,
-                                                      @Nonnull final String... packages) throws TypeSupportException {
-        final Matcher m = COLLECTION_PATTERN.matcher(datatype);
-        if (m.matches()) {
-            final String elementType = m.group(typeGroup.getIndex()); // e.g. Byte from List<Byte>
-            return createTypeClassFromString(elementType, packages);
-        }
         return null;
-
     }
 
     /**
-     * Checks whether the given String parameter describes a data type for which a to Double conversion
-     * has been registered.
+     * Parses a generic type name in String form for the first nested element.
+     * Typically used to extract to element types of collections...
+     * @param fullGenericTypeName the full generic type name as string, e.g. "ArrayList&lt;Foo&lt;...&gt;&gt;"
+     * @return the string of the first nested element, e.g. "Foo" from the example above
+     * @throws TypeSupportException if the given string was not in a 'generic' form
+     */
+    @Nonnull
+    public static String parseForFirstNestedGenericType(@Nonnull final String fullGenericTypeName) throws TypeSupportException {
+
+        final Pattern p = Pattern.compile("^\\s*[^<> ]+\\s*[<]\\s*([^<> ]+).+\\s*$");
+        final Matcher m = p.matcher(fullGenericTypeName);
+        if (m.matches()) {
+            return m.group(1);
+        }
+        throw new TypeSupportException("First nested base type of generic expression not found in " + fullGenericTypeName, null);
+    }
+
+    /**
+     * Checks whether the given String parameter can be loaded as class object for which a toDouble
+     * conversion has been registered. Basic packages to load classes from are
+     * {@link BaseTypeConversionSupport#BASIC_TYPE_PACKAGES}. Additional packages can be provided.
+     *
      * @param <T> the type of the described datatype
      * @param dataType the describing string (a class name)
-     * @param scalarPackages the packages from which the class object shall be created
+     * @param additionalPackages the packages from which the class object shall be created.
      * @return true if this dataType is convertible to Double
      * @throws TypeSupportException
      */
-    public static <T> boolean isDataTypeConvertibleToDouble(@Nonnull final String dataType,
-                                                            @Nonnull final String... scalarPackages) throws TypeSupportException {
-        final Class<T> typeClass = createTypeClassFromString(dataType, scalarPackages);
+    public static boolean isDataTypeConvertibleToDouble(@Nonnull final String dataType,
+                                                        @Nonnull final String... additionalPackages) throws TypeSupportException {
+        final Class<?> typeClass = createBaseTypeClassFromString(dataType, additionalPackages);
         if (typeClass == null) {
-            throw new TypeSupportException("Class object for data type " + dataType +
-                                           " could not be loaded from package java.lang!", null);
+            throw new TypeSupportException("Type is not convertible to " + Double.class.getSimpleName() + "." +
+                                           dataType + " could not be loaded as class object from packages.", null);
         }
-        return isDataTypeConvertibleToDouble(typeClass);
+        try {
+            return isDataTypeConvertibleToDouble(typeClass);
+        } catch (final TypeSupportException e) {
+            throw new TypeSupportException("No type support registered for toDouble conversion of data type " + dataType, e);
+        }
     }
     /**
      * Checks whether the given parameter is a type for which a to Double conversion
@@ -231,6 +251,31 @@ public abstract class BaseTypeConversionSupport<T> extends AbstractTypeSupport<T
                                                               typeClass);
         return support.convertToDouble(value);
     }
+
+
+    /**
+     * Tries to convert the system variable's data to {@link Double} and returns <code>null</code>
+     * if a type support for conversion is not possible or the return value is {@link Double#NaN}.
+     * @param <T> the data type
+     * @param <V> the system variable type
+     * @param sysVar the system variable
+     * @return a double value or <code>null</code>
+     */
+    @CheckForNull
+    public static <T, V extends ISystemVariable<T>>
+    Double createDoubleFromValueOrNull(@Nonnull final V sysVar) {
+        Double newValue = null;
+        try {
+            newValue = BaseTypeConversionSupport.toDouble(sysVar.getData());
+        } catch (final TypeSupportException e) {
+            return null; // not convertible. Type support missing.
+        }
+        if (newValue.equals(Double.NaN)) {
+            return null; // not convertible, no data reduction possible
+        }
+        return newValue;
+    }
+
 
     /**
      * To be overridden for types that are convertible to {@link java.lnag.Double}

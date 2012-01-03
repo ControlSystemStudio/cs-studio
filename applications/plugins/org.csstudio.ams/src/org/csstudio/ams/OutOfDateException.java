@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,26 +20,29 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams;
 
-public class OutOfDateException extends Exception
-{
-	private static final long serialVersionUID = -7810714341100259637L;
+package org.csstudio.ams;
+
+public class OutOfDateException extends Exception {
+	
+    /** Generated serial version id */
+    private static final long serialVersionUID = -7810714341100259637L;
 	
 	/**
 	 * Constructor of OutOfDateException.
 	 * 
 	 * @param arg	String
 	 */
-	public OutOfDateException(String arg)
-	{super(arg);}
+	public OutOfDateException(String arg) {
+	    super(arg);
+	}
 	
 	/**
 	 * Constructor of OutOfDateException.
 	 * 
 	 * @param arg	Throwable
 	 */
-	public OutOfDateException(Throwable arg)
-	{super(arg);}
-
+	public OutOfDateException(Throwable arg) {
+	    super(arg);
+	}
 }

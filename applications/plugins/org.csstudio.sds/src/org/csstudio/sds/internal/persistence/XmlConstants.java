@@ -70,6 +70,11 @@ public final class XmlConstants {
 	public static final String XML_LAYER = "layer"; //$NON-NLS-1$
 	
 	/**
+     * XML tag name <code>layerName</code>.
+     */
+    public static final String XML_LAYER_ID = "layer_id"; //$NON-NLS-1$
+	
+	/**
 	 * XML tag name <code>layerName</code>.
 	 */
 	public static final String XML_LAYER_NAME = "layer_name"; //$NON-NLS-1$

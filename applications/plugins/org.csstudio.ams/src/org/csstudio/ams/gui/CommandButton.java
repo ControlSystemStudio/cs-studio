@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.gui;
+
+package org.csstudio.ams.gui;
 
 import java.io.InputStream;
 
@@ -32,8 +34,8 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class CommandButton extends Button 
-{
+public class CommandButton extends Button {
+    
     public static final int NEW = 0;
     public static final int SAVE = 1;
     public static final int DELETE = 2;
@@ -52,8 +54,7 @@ public class CommandButton extends Button
     
     
 
-    private static String[]    paths = new String[]
-    {
+    private static String[] paths = new String[] {
     	"document_new.png", "disk_blue.png", "delete2.png",
         "element_previous.png", "navigate_right.png", "navigate_left.png",
         "navigate_up.png", "navigate_down.png", "navigate_up2.png", "navigate_down2.png",
@@ -62,29 +63,29 @@ public class CommandButton extends Button
     
     private static Image[] icons = new Image[paths.length];
 
-
     private int type = 0;
 
     /**
      * Creates a new CommandButton object.
      *
+     * @param parent DOCUMENT ME!
      * @param type DOCUMENT ME!
-     * @param language DOCUMENT ME!
      */
-    public CommandButton(Composite parent, int type)
-    {
+    public CommandButton(Composite parent, int type) {
     	super(parent, SWT.PUSH | SWT.BORDER);
 
     	this.type = type;
     	setImage(getImage(type));
     }
     
-    public int getType()
-    {
+    public int getType() {
     	return type;
     }
     
-    protected void checkSubclass() {}    
+    @Override
+    protected void checkSubclass() {
+        // Nothing to do here?
+    }    
 
 
     public synchronized static Image getImage(int id)

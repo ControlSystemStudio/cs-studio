@@ -27,45 +27,41 @@ package org.csstudio.ams.systemmonitor;
  * @author Markus Moeller
  *
  */
-public class VersionInfo
-{
+public class VersionInfo {
+    
     private String applicationName;
     private String version;
     private String build;
     
-    public VersionInfo()
-    {
-        applicationName = "AmsSystemMonitor";
-        version = "1.0.0 RC";
-        build = "2009-10-15 12:00";
+    public VersionInfo() {
+        applicationName = "AmsSystemMonitor ";
+        version = "1.1.1 ";
+        build = "2011-12-06 17:00";
     }
 
     /**
      * @return the applicationName
      */
-    public String getApplicationName()
-    {
+    public String getApplicationName() {
         return applicationName;
     }
 
     /**
      * @return the version
      */
-    public String getVersion()
-    {
+    public String getVersion() {
         return version;
     }
 
     /**
      * @return the build
      */
-    public String getBuild()
-    {
+    public String getBuild() {
         return build;
     }
     
-    public String toString()
-    {
-        return applicationName + " " + version + " (BUILD " + build + ")";
+    @Override
+    public String toString() {
+        return applicationName + version + " (BUILD " + build + ")";
     }
 }

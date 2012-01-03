@@ -53,6 +53,8 @@ public class ScriptsInput {
 			return "no script attached";
 		}
 		if(scriptList.size() == 1){
+			if(scriptList.get(0).isEmbedded())
+				return scriptList.get(0).getScriptName();
 			return scriptList.get(0).getPath().toString();
 		}
 		return scriptList.size() + " scripts attached";

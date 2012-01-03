@@ -21,7 +21,9 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.channel;
 
+import java.io.Serializable;
 import java.util.Collection;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
@@ -31,6 +33,8 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.common.service.UpdateResult;
 import org.csstudio.domain.desy.types.Limits;
 
 /**
@@ -41,20 +45,18 @@ import org.csstudio.domain.desy.types.Limits;
  */
 public interface IArchiveChannelDao {
 
-    /**
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
-     * @throws ArchiveChannelDaoException when the retrieval fails
-     */
-    @CheckForNull
-    IArchiveChannel retrieveChannelBy(@Nonnull final String name) throws ArchiveDaoException;
+    @Nonnull
+    Collection<IArchiveChannel> retrieveChannelsByNames(@Nonnull final Set<String> names) throws ArchiveDaoException;
+
+    @Nonnull
+    Collection<IArchiveChannel> retrieveChannelsByIds(@Nonnull final Set<ArchiveChannelId> id) throws ArchiveDaoException;
 
     /**
      * @param pattern the regular expression the channel names have to match
      * @return the channels matching the reg exp
      * @throws ArchiveChannelDaoException when the retrieval fails
      */
-    @CheckForNull
+    @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByNamePattern(@Nonnull final Pattern pattern) throws ArchiveDaoException;
 
     /**
@@ -65,15 +67,9 @@ public interface IArchiveChannelDao {
     @Nonnull
     Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveDaoException;
 
-    /**
-     * @param id the channel id
-     * @return the cached or freshly retrieved channel
-     */
-    @CheckForNull
-    IArchiveChannel retrieveChannelById(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
 
-    <V extends Comparable<? super V>>
+    <V extends Comparable<? super V> & Serializable>
     void updateDisplayRanges(@Nonnull final ArchiveChannelId id,
                              @Nonnull final V displayLow,
                              @Nonnull final V displayHigh) throws ArchiveDaoException;
@@ -82,4 +78,34 @@ public interface IArchiveChannelDao {
     <V extends Comparable<? super V>>
     Limits<V> retrieveDisplayRanges(@Nonnull final String channelName) throws ArchiveDaoException;
 
+    /**
+     * Tries to create all the channels specified in the parameter collection, returns a collection
+     * of those channels that could <em>not</em> be created.
+     * @param channels the channels to be created
+     * @return empty list on success, otherwise those channels that could not be created
+     * @throws ArchiveDaoException
+     */
+    @Nonnull
+    Collection<IArchiveChannel> createChannels(@Nonnull Collection<IArchiveChannel> channels) throws ArchiveDaoException;
+
+    /**
+     * Delete the channel with the given name.
+     *
+     * Note, that it's possible to delete a channel which is still referenced by samples or channel
+     * status leading to an inconsistent archive state. Unfortunately, these tables are not allowed
+     * to have foreign keys due to partitioning - mysql cannot have foreign keys and partitioning in
+     * one table. Hence, we have to check this programmatically a priori in the upper archive
+     * service layer.
+     *
+     * @return the delete result
+     */
+    @Nonnull
+    DeleteResult deleteChannel(@Nonnull final String name);
+
+    @Nonnull
+    UpdateResult updateChannelEnabledFlag(@Nonnull final String name, final boolean isEnabled);
+
+    @Nonnull
+    UpdateResult updateChannelDatatype(@Nonnull final ArchiveChannelId id,
+                                       @Nonnull final String datatype);
 }

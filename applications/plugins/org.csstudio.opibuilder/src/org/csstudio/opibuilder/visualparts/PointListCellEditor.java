@@ -21,6 +21,7 @@
  */
 package org.csstudio.opibuilder.visualparts;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -440,8 +441,12 @@ public final class PointListCellEditor extends AbstractDialogCellEditor {
 		 */
 		private void removePoint() {
 			if (_viewer.getList().getSelectionIndices().length>0) {
-				for (int i : _viewer.getList().getSelectionIndices()) {
-					_pointList.remove(i);
+				int[] selectedIndices = _viewer.getList().getSelectionIndices();
+				Arrays.sort(selectedIndices);
+				int i=0;
+				for (int s : selectedIndices) {
+					_pointList.remove(s - i);
+					i++;
 				}
 				this.setInput();
 			}

@@ -20,21 +20,13 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.domain.desy.epics.typesupport;
-import java.util.List;
+import java.util.Collection;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.data.values.IStringValue;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.epics.types.EpicsMetaData;
-import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
-
-import com.google.common.collect.Lists;
 
 /**
  * IStringIValue conversion support
@@ -54,31 +46,29 @@ final class IStringValueConversionTypeSupport extends
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     @Nonnull
-    protected EpicsSystemVariable<?> convertToSystemVariable(@Nonnull final String name,
-                                                             @Nonnull final IStringValue value,
-                                                             @Nullable final EpicsMetaData metaData) throws TypeSupportException {
-
+    protected Object toData(@Nonnull final IStringValue value,
+                            @Nonnull final Class<?> elemClass,
+                            @CheckForNull final Class<? extends Collection> collClass) throws TypeSupportException {
         final String[] values = value.getValues();
-        if (values == null || values.length == 0) {
-            throw new TypeSupportException("IStringValue doesn't have any values. Conversion failed.", null);
+        if (values == null) {
+            throw new TypeSupportException("IValue values array is null! Conversion failed.", null);
+        }
+        final AbstractIValueDataToTargetTypeSupport<?> support =
+            checkForPlausibilityAndGetSupport(elemClass,
+                                              collClass,
+                                              values.length);
+
+        if (values.length == 1) {
+            return support.fromStringValue(values[0]);
         }
 
-        final EpicsAlarm alarm = EpicsIValueTypeSupport.toEpicsAlarm(value.getSeverity(),
-                                                                     value.getStatus().toUpperCase());
-        final TimeInstant timestamp = BaseTypeConversionSupport.toTimeInstant(value.getTime());
-        if (values.length == 1) {
-            return new EpicsSystemVariable<String>(name,
-                                                   values[0],
-                                                   ControlSystem.EPICS_DEFAULT,
-                                                   timestamp,
-                                                   alarm);
+        final Collection coll = instantiateCollection(collClass);
+        for (final String val : values) {
+            coll.add(support.fromStringValue(val));
         }
-        return new EpicsSystemVariable<List<String>>(name,
-                                                    Lists.newArrayList(values),
-                                                    ControlSystem.EPICS_DEFAULT,
-                                                    timestamp,
-                                                    alarm);
+        return coll;
     }
 }

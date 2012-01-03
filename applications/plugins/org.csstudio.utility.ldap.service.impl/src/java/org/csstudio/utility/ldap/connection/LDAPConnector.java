@@ -52,8 +52,8 @@ import org.slf4j.LoggerFactory;
 public class LDAPConnector {
 
     private static final Logger LOG = LoggerFactory.getLogger(LDAPConnector.class);
-    
-    private InitialLdapContext _ctx = null;
+
+    private InitialLdapContext _ctx;
 
     private Map<String, String> _contextPrefs = Collections.emptyMap();
 
@@ -139,7 +139,7 @@ public class LDAPConnector {
 
         final Hashtable<Object, String> env = new Hashtable<Object, String>(contextPrefs);
 
-        env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+        env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 
         return new InitialLdapContext(env, null);
     }

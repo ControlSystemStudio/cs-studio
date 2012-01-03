@@ -23,16 +23,18 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
+import org.epics.css.dal.DynamicValueCondition;
+import org.epics.css.dal.DynamicValueState;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: $
  * @version $Revision: 1.7 $
@@ -40,139 +42,173 @@ import static org.junit.Assert.*;
  */
 public class AlarmBorderWidthTest {
 
-	private AlarmBorderWidth _alarmBorderWidth;
+    private AlarmBorderWidth _alarmBorderWidth;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		_alarmBorderWidth = new AlarmBorderWidth();
-		
-	}
-	
-	@Test
-	public void longArgument() throws Exception {
-		Object[] out;
-		Object evaluate;
-		
-		out = new Object[] {-1l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {0l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {1l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {2l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {3l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-	}
-	
-	@Test
-	public void doubleArgument() throws Exception {
-		Object[] out;
-		Object evaluate;
-		
-		out = new Object[] {-1d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {0.000000001d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {0.99999999999999d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {2.d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {3.d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-	}
-	
-	@Test
-	public void stringArgument() throws Exception {
-		Object[] out;
-		Object evaluate;
-		
-		out = new Object[] {"yXxcGDS"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {"NORMAL"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {"WARNING"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {"ALARM"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {"ERROR"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-	}
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        _alarmBorderWidth = new AlarmBorderWidth();
 
-	@Test
-	public void miscArgument() throws Exception {
-		Object[] out;
-		Object evaluate;
-		
-		out = new Object[] {0l, 0.d, "Normal"};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(0, evaluate);
-		
-		out = new Object[] {1.d, "WARNING", 1l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {"ALARM", 2l, 2.d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		
-		out = new Object[] {0.d, "WARNING", 0l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		
-		out = new Object[] {0.d, "NORMAL", 1l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-		
-		out = new Object[] {0.d, "ERROR", 1l};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
+    }
 
-		out = new Object[] {1.d, "NORMAL", 0l, 0.d, "NORMAL", 1l, 1.d, "WARNING", 0l, "NORMAL", 0.d};
-		evaluate = _alarmBorderWidth.evaluate(out);
-		assertEquals(3, evaluate);
-	}
-	
-	
-	
-	@Test
-	public void testDescription() {
-		String description = _alarmBorderWidth.getDescription();
-		assertNotNull(description);
-		assertTrue(description.length()>0);
-	}
+    @Test
+    public void longArgument() throws Exception {
+        Object[] out;
+        Object evaluate;
 
+        out = new Object[] { -1l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 0l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { 1l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 2l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 3l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+    }
+
+    @Test
+    public void doubleArgument() throws Exception {
+        Object[] out;
+        Object evaluate;
+
+        out = new Object[] { -1d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 0.000000001d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { 0.99999999999999d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 2.d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 3.d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+    }
+
+    @Test
+    public void stringArgument() throws Exception {
+        Object[] out;
+        Object evaluate;
+
+        out = new Object[] { "yXxcGDS" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { "NORMAL" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { "WARNING" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { "ALARM" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { "ERROR" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+    }
+
+    @Test
+    public void dynamicValueStateArgument() throws Exception {
+        Object[] out;
+        Object evaluate;
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.NO_VALUE) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.NORMAL) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.WARNING) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.ALARM) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.ERROR) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+    }
+
+    @Test
+    public void miscArgument() throws Exception {
+        Object[] out;
+        Object evaluate;
+
+        out = new Object[] { 0l, 0.d, "NORMAL" };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { 1.d, "WARNING", 1l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { new DynamicValueCondition(DynamicValueState.NORMAL) };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(0, evaluate);
+
+        out = new Object[] { "ALARM", 2l, 2.d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { DynamicValueState.ALARM };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 0.d, "WARNING", 0l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 0.d, "NORMAL", 1l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 0.d, "ERROR", 1l };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { DynamicValueState.WARNING };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+
+        out = new Object[] { 1.d, "NORMAL", 0l, 0.d, "NORMAL", 1l, 1.d, "WARNING", 0l, "NORMAL",
+                0.d };
+        evaluate = _alarmBorderWidth.evaluate(out);
+        assertEquals(3, evaluate);
+    }
+
+    @Test
+    public void testDescription() {
+        final String description = _alarmBorderWidth.getDescription();
+        assertNotNull(description);
+        assertTrue(description.length() > 0);
+    }
 
 }

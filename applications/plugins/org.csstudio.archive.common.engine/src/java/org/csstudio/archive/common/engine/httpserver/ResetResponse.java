@@ -18,11 +18,16 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  *  @author Kay Kasemir
  */
 class ResetResponse extends AbstractResponse {
+
+    private static final String URL_BASE_PAGE = "/reset";
+
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    ResetResponse(@Nonnull final EngineModel model) {
-        super(model);
+    ResetResponse(@Nonnull final EngineModel model,
+                  @Nonnull final String adminParamKey,
+                  @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     @Override
@@ -35,5 +40,10 @@ class ResetResponse extends AbstractResponse {
         getModel().resetStats();
 
         html.close();
+    }
+
+    @Nonnull
+    public static String baseUrl() {
+        return URL_BASE_PAGE;
     }
 }

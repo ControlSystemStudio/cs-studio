@@ -197,13 +197,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.auth.ui"
          download-size="0"
          install-size="0"
@@ -335,35 +328,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.logbook.olog"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.logbook.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="edu.msu.nscl.olog.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.coobird.thumbnailator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jackrabbit"
+         id="gov.bnl.channelfinder.api"
          download-size="0"
          install-size="0"
          version="0.0.0"

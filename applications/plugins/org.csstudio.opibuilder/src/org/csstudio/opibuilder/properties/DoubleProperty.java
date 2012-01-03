@@ -22,7 +22,7 @@
 
 package org.csstudio.opibuilder.properties;
 
-import org.csstudio.opibuilder.properties.support.DoublePropertyDescriptor;
+import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
@@ -118,7 +118,9 @@ public final class DoubleProperty extends AbstractWidgetProperty {
 
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new DoublePropertyDescriptor(prop_id, description);
+		if(PropertySSHelper.getIMPL() == null)
+			return null;
+		return PropertySSHelper.getIMPL().getDoublePropertyDescriptor(prop_id, description);
 	}
 
 	@Override

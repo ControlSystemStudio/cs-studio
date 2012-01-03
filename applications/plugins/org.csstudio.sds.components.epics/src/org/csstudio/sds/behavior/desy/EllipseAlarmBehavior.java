@@ -20,9 +20,10 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -33,7 +34,7 @@ import org.epics.css.dal.simple.Severity;
  * @version $Revision: 1.3 $
  * @since 20.04.2010
  */
-public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidgetModel> {
+public class EllipseAlarmBehavior extends AbstractDesyConnectionBehavior<AbstractWidgetModel> {
 
     /**
      * Constructor.
@@ -43,9 +44,8 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
     }
 
     /**
@@ -54,7 +54,7 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
     @Override
     protected void doInitialize(final AbstractWidgetModel widget) {
         super.doInitialize(widget);
-        widget.setPropertyValue(EllipseModel.PROP_FILL, 0);
+        widget.setPropertyValue(EllipseModel.PROP_FILL, 100);
     }
 
     /**
@@ -62,18 +62,26 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
      */
     @Override
     protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
-//        super.doProcessValueChange(model, anyData);
-        model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineColorBySeverity(anyData.getSeverity(), null));
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-        }
+        super.doProcessValueChange(model, anyData);
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineColorBySeverity(anyData.getSeverity(), null));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? determineColorBySeverity(anyDataChannel
+                                                                                                               .getData()
+                                                                                                               .getSeverity(),
+                                                                                                       null)
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
+
+    }
 
 
     @Override

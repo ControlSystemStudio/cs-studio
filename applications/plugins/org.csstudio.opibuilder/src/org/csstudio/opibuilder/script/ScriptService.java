@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.osgi.util.NLS;
 
@@ -23,7 +22,33 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class ScriptService {
+	public enum ScriptType{
+		JAVASCRIPT("JavaScript"),
+		PYTHON("Python/Jython Script");
 
+		private ScriptType(String description) {
+			 this.description = description;
+		}
+		private String description;
+
+		@Override
+		public String toString() {
+			return description;
+		}
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(ScriptType p : values())
+				sv[i++] = p.toString();
+			return sv;
+		}
+	}
+
+	public static final String DEFAULT_JS_HEADER = 
+			"importPackage(Packages.org.csstudio.opibuilder.scriptUtil);\n"; //$NON-NLS-1$
+	public static final String DEFAULT_PYTHONSCRIPT_HEADER = 
+			"from org.csstudio.opibuilder.scriptUtil import PVUtil\n"; //$NON-NLS-1$
+	
 	public static final String PVS = "pvs"; //$NON-NLS-1$
 
 	public static final String WIDGET = "widget"; //$NON-NLS-1$
@@ -66,8 +91,8 @@ public class ScriptService {
 	 * @throws Exception
 	 */
 	public void registerScript(final ScriptData scriptData, final AbstractBaseEditPart editpart, final PV[] pvArray){
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
+//		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+//			public void run() {
 				try {
 					scriptMap.put(scriptData, ScriptStoreFactory.getScriptStore(scriptData, editpart, pvArray));
 				}catch (Exception e) {
@@ -78,8 +103,8 @@ public class ScriptService {
 					ConsoleService.getInstance().writeError(errorInfo);
                     OPIBuilderPlugin.getLogger().log(Level.WARNING, errorInfo, e);
 				}
-			}
-		});
+//			}
+//		});
 
 	}
 

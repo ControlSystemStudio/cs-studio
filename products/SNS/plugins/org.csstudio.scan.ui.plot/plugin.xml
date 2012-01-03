@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="org.csstudio"
+            class="org.csstudio.scan.ui.plot.ScanPlotView"
+            icon="icons/plot.gif"
+            id="org.csstudio.scan.ui.plot.view"
+            name="%ScanPlot"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:scan">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="icons/plot.gif"
+               label="%ScanPlot"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.scan.ui.plot.view">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

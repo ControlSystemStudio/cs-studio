@@ -21,16 +21,10 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.notification;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.EMAIL_ADDRESS;
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.SMTP_HOST;
-
-import java.io.IOException;
-
 import javax.annotation.Nonnull;
 
-import org.slf4j.Logger;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.NotificationType;
-import org.csstudio.email.EMailSender;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -42,32 +36,24 @@ import org.slf4j.LoggerFactory;
 public final class ArchiveNotifications {
 
     /**
+     * See configuration of this logger - if log4j is used - see log4j.properties
+     */
+    private static final Logger EMAIL_LOG =
+        LoggerFactory.getLogger("ErrorPerEmailLogger");
+
+
+    /**
      * Constructor.
      */
     private ArchiveNotifications() {
         // Don't instantiate
     }
 
-    private static final Logger LOG =
-            LoggerFactory.getLogger(ArchiveNotifications.class);
 
     public static void notify(@Nonnull final NotificationType type,
                               @Nonnull final String additionalBodyText) {
 
-        final String prefMailHost = SMTP_HOST.getValue();
-        final String prefEmailReceiver = EMAIL_ADDRESS.getValue();
-
-        EMailSender mailer;
-        try {
-            mailer = new EMailSender(prefMailHost,
-                                     "DontReply@MySQLArchiver",
-                                     prefEmailReceiver,
-                                     type.getSubject());
-            mailer.addText(type.getText() + additionalBodyText);
-            mailer.close();
-        } catch (final IOException e) {
-            LOG.error("Email notification for " + type.name() + " failed.");
-        }
+        EMAIL_LOG.info("" + type.getFullInfo() + ":\n" + additionalBodyText);
     }
 
 }

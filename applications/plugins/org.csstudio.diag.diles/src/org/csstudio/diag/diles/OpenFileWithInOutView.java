@@ -1,12 +1,10 @@
 package org.csstudio.diag.diles;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorDescriptor;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IObjectActionDelegate;
@@ -16,9 +14,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OpenFileWithInOutView implements IObjectActionDelegate {
 
+    private static final Logger LOG = LoggerFactory.getLogger(OpenFileWithInOutView.class);
+    
 	private IStructuredSelection _selection;
 	private static Integer inOutViewID = 0;
 
@@ -44,15 +46,13 @@ public class OpenFileWithInOutView implements IObjectActionDelegate {
 						page);
 				// open editor if it is not open.
 				if (editorReference == null) {
-					CentralLogger.getInstance().debug(this,
-							"editor is not open");
+					LOG.debug("editor is not open");
 					try {
 						IEditorPart openEditor = page.openEditor(
 								new FileEditorInput(file), desc.getId());
 						openInOutViewForEditor(page, openEditor);
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this,
-								"Can not open diles editor! " + e.getMessage());
+						LOG.error("Can not open diles editor! ", e);
 					}
 				// open view if the editor is already open
 				} else {
@@ -60,8 +60,7 @@ public class OpenFileWithInOutView implements IObjectActionDelegate {
 					try {
 						openInOutViewForEditor(page, editor);
 					} catch (PartInitException e) {
-						CentralLogger.getInstance().error(this,
-								"Can not open diles editor! " + e.getMessage());
+						LOG.error("Can not open diles editor! ", e);
 					}
 				}
 			}
@@ -72,26 +71,18 @@ public class OpenFileWithInOutView implements IObjectActionDelegate {
 			IEditorPart openEditor) throws PartInitException {
 		if (openEditor instanceof DilesEditor) {
 			DilesEditor dilesEditor = (DilesEditor) openEditor;
-			CentralLogger.getInstance().debug(this,
-					"check if it is a diles editor, open in/out view");
+			LOG.debug("check if it is a diles editor, open in/out view");
 			IViewPart view = page.showView(InOutView.ID, (inOutViewID++)
 					.toString(), IWorkbenchPage.VIEW_ACTIVATE);
 			if (view instanceof InOutView) {
 				InOutView inOutView = (InOutView) view;
 				dilesEditor.setInOutView(inOutView);
 			} else {
-				CentralLogger
-						.getInstance()
-						.error(this,
-								"Cannot set input to In/out view because view is of unknown type");
+				LOG.error("Cannot set input to In/out view because view is of unknown type");
 			}
 
 		} else {
-			CentralLogger
-					.getInstance()
-					.error(this,
-							"Cannot set input to In/out view because editor is of unknown type");
-
+			LOG.error("Cannot set input to In/out view because editor is of unknown type");
 		}
 	}
 

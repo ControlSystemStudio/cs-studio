@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;

@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
@@ -58,7 +59,7 @@ static class SpinnerEditCommand extends Command	{
 	
 	public void execute() {
 		oldText = label.getText();
-		label.setText(newText);
+		label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);
 	}
 	
 	public void undo() {

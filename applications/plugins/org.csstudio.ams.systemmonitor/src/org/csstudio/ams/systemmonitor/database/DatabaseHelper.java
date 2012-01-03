@@ -39,10 +39,10 @@ import org.csstudio.ams.dbAccess.configdb.UserTObject;
  * @author Markus Moeller
  *
  */
-public class DatabaseHelper
-{
-    public static String[] getPhoneNumbers(final String groupNames)
-    {
+public class DatabaseHelper {
+    
+    public static String[] getPhoneNumbers(final String groupNames) {
+        
         StringTokenizer token = null;
         Connection connection = null;
         ArrayList<UserGroupKey> groupKey = null;

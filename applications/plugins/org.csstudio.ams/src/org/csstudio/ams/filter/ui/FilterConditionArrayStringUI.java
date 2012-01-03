@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter.ui;
+
+package org.csstudio.ams.filter.ui;
 
 import java.sql.Connection;
 import java.text.DateFormat;
@@ -98,8 +100,8 @@ public class FilterConditionArrayStringUI extends FilterConditionUI
 		arrayValues.add(new FilterConditionArrayStringValuesTObject(-1, ""));
 	}
 
-	public String getDisplayName()
-	{
+	@Override
+    public String getDisplayName() {
 		return Messages.FilterConditionArrayStringUI_DisplayName;
 	}
 
@@ -138,9 +140,8 @@ public class FilterConditionArrayStringUI extends FilterConditionUI
                     tmpValues.add(new FilterConditionArrayStringValuesTObject(item.getFilterConditionRef(),item.getCompValue()));
                 }
 
-			}
-			catch(final Exception ex)
-			{
+			} catch(final Exception ex) {
+			    // Can be ignored
 			}
 		}
 		tmpValues.add(new FilterConditionArrayStringValuesTObject(-1, ""));
@@ -181,15 +182,16 @@ public class FilterConditionArrayStringUI extends FilterConditionUI
                 }
 
 			}
-			catch(final Exception ex)
-			{
+			catch(final Exception ex) {
+			 // Can be ignored
 			}
 		}
 		condition.getArrayStringValues().removeAll(condition.getArrayStringValues());
 		condition.getArrayStringValues().addAll(tmpValues);
 	}
 
-	public void reset()
+	@Override
+    public void reset()
 	{
 		cboKeyValue.deselectAll();
 		cboKeyValueType.deselectAll();

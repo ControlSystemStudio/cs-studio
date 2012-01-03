@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,30 +20,33 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.gui;
+
+package org.csstudio.ams.gui;
 
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 
-public class VerifyInput implements VerifyListener
-{
-	private String validChars = null;
+@SuppressWarnings("hiding")
+public class VerifyInput implements VerifyListener {
 	
-	public VerifyInput(String validChars)
-	{
+    private String validChars = null;
+	
+    public VerifyInput(String validChars) {
 		this.validChars = validChars;
 	}
 	
-	public void verifyText(VerifyEvent e)
-	{
-		switch(e.keyCode)
-		{
-		case 0:
-		case 8:
-		case 127:
-			return;
+	@Override
+    public void verifyText(VerifyEvent e) {
+		
+	    switch(e.keyCode) {
+		    case 0:
+		    case 8:
+		    case 127:
+		        return;
 		}
-		if(validChars != null && validChars.indexOf(e.character) == -1)
-			e.doit = false;
+		
+		if((validChars != null) && (validChars.indexOf(e.character) == -1)) {
+		    e.doit = false;
+		}
 	}
 }

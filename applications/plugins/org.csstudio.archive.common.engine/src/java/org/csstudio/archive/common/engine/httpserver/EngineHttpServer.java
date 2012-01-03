@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 
 import org.csstudio.archive.common.engine.ArchiveEngineActivator;
 import org.csstudio.archive.common.engine.model.EngineModel;
+import org.csstudio.archive.common.engine.service.IServiceProvider;
 import org.eclipse.equinox.http.jetty.JettyConfigurator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -32,8 +33,7 @@ import org.slf4j.LoggerFactory;
 public class EngineHttpServer {
     private static final String EX_MSG = "Engine HTTP server could not be instantiated.";
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(EngineHttpServer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EngineHttpServer.class);
 
     private String _pid;
 
@@ -41,34 +41,27 @@ public class EngineHttpServer {
 
     /** Construct and start the server
      *  @param model Model to serve
-     *  @param port TCP port
+     *  @param provider TCP port
      * @throws EngineHttpServerException
      * @throws InvalidSyntaxException
      * @throws
      *  @throws Exception on error
      */
     public EngineHttpServer(@Nonnull final EngineModel model,
-                            final int port) throws EngineHttpServerException {
+                            @Nonnull final IServiceProvider provider) throws EngineHttpServerException {
         final BundleContext context =
             ArchiveEngineActivator.getDefault().getBundle().getBundleContext();
         HttpService httpService;
         try {
+            final Integer port = model.getHttpPort();
+            if (port == null) {
+                throw new EngineHttpServerException("Port is not present in model. HTTP server couldn't be started.", null);
+            }
             httpService = createHttpService(context, port);
 
-            final HttpContext httpContext = httpService.createDefaultHttpContext();
-            httpService.registerResources("/", "/webroot", httpContext);
+            createContextAndRegisterServlets(model, provider, httpService);
 
-            httpService.registerServlet("/main", new MainResponse(model), null, httpContext);
-            httpService.registerServlet("/groups", new GroupsResponse(model), null, httpContext);
-            httpService.registerServlet("/disconnected", new DisconnectedResponse(model), null, httpContext);
-            httpService.registerServlet("/group", new GroupResponse(model), null, httpContext);
-            httpService.registerServlet("/channel", new ChannelResponse(model), null, httpContext);
-            httpService.registerServlet("/channels", new ChannelListResponse(model), null, httpContext);
-            httpService.registerServlet("/environment", new EnvironmentResponse(model), null, httpContext);
-            httpService.registerServlet("/restart", new RestartResponse(model), null, httpContext);
-            httpService.registerServlet("/reset", new ResetResponse(model), null, httpContext);
-            httpService.registerServlet("/stop", new StopResponse(model), null, httpContext);
-            httpService.registerServlet("/debug", new DebugResponse(model), null, httpContext);
+            LOG.info("Engine HTTP Server port: {}", port);
 
         } catch (final InvalidSyntaxException e) {
             throw new EngineHttpServerException(EX_MSG, e);
@@ -79,8 +72,107 @@ public class EngineHttpServer {
         } catch (final Exception e) {
             throw new EngineHttpServerException(EX_MSG, e);
         }
-        LOG.info("Engine HTTP Server port " + port);
     }
+
+
+    private void createContextAndRegisterServlets(@Nonnull final EngineModel model,
+                                                  @Nonnull final IServiceProvider provider,
+                                                  @Nonnull final HttpService httpService) throws NamespaceException, ServletException {
+        final HttpContext httpContext = httpService.createDefaultHttpContext();
+        httpService.registerResources("/", "/webroot", httpContext);
+
+        registerEngineAdministrationServlets(model, provider, httpService, httpContext);
+
+        registerGroupsServlets(model, provider, httpService, httpContext);
+
+        registerChannelServlets(model, provider, httpService, httpContext);
+
+        registerDebugAndInfoServlets(model, provider, httpService, httpContext);
+    }
+
+
+    private void registerDebugAndInfoServlets(@Nonnull final EngineModel model,
+                                              @Nonnull final IServiceProvider provider,
+                                              @Nonnull final HttpService httpService,
+                                              @Nonnull final HttpContext httpContext)
+                                              throws ServletException,
+                                                     NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        httpService.registerServlet(EnvironmentResponse.baseUrl(),
+                                    new EnvironmentResponse(model), null, httpContext);
+        httpService.registerServlet(HelpResponse.baseUrl(),
+                                    new HelpResponse(model, adminParamKey), null, httpContext);
+    }
+
+
+    private void registerEngineAdministrationServlets(@Nonnull final EngineModel model,
+                                                      @Nonnull final IServiceProvider provider,
+                                                      @Nonnull final HttpService httpService,
+                                                      @Nonnull final HttpContext httpContext) throws ServletException,
+                                                                                    NamespaceException {
+        final String version = provider.getPreferencesService().getVersion();
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
+        httpService.registerServlet(MainResponse.baseUrl(), new MainResponse(model, version),
+                                    null, httpContext);
+        httpService.registerServlet(RestartResponse.baseUrl(), new RestartResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(ResetResponse.baseUrl(), new ResetResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+    }
+
+
+    private void registerGroupsServlets(@Nonnull final EngineModel model,
+                                        @Nonnull final IServiceProvider provider,
+                                        @Nonnull final HttpService httpService,
+                                        @Nonnull final HttpContext httpContext) throws ServletException,
+                                                                                       NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
+        httpService.registerServlet(GroupsResponse.baseUrl(),
+                                    new GroupsResponse(model), null, httpContext);
+        httpService.registerServlet(ShowGroupResponse.baseUrl(),
+                                    new ShowGroupResponse(model), null, httpContext);
+        httpService.registerServlet(StartGroupResponse.baseUrl(),
+                                    new StartGroupResponse(model), null, httpContext);
+        httpService.registerServlet(StopGroupResponse.baseUrl(), new StopGroupResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(AddGroupResponse.baseUrl(),
+                                    new AddGroupResponse(model), null, httpContext);
+    }
+
+
+    private void registerChannelServlets(@Nonnull final EngineModel model,
+                                         @Nonnull final IServiceProvider provider,
+                                         @Nonnull final HttpService httpService,
+                                         @Nonnull final HttpContext httpContext)
+                                         throws ServletException,
+                                                NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
+        httpService.registerServlet(ChannelListResponse.baseUrl(),
+                                    new ChannelListResponse(model), null, httpContext);
+        httpService.registerServlet(DisconnectedResponse.baseUrl(),
+                                    new DisconnectedResponse(model), null, httpContext);
+        httpService.registerServlet(ShowChannelResponse.baseUrl(),
+                                    new ShowChannelResponse(model), null, httpContext);
+        httpService.registerServlet(StartChannelResponse.baseUrl(),
+                                    new StartChannelResponse(model), null, httpContext);
+        httpService.registerServlet(StopChannelResponse.baseUrl(), new StopChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(AddChannelResponse.baseUrl(),
+                                    new AddChannelResponse(model), null, httpContext);
+        httpService.registerServlet(RemoveChannelResponse.baseUrl(), new RemoveChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+    }
+
 
     /** Stop the server */
     public void stop() {
@@ -99,7 +191,7 @@ public class EngineHttpServer {
         // Create a custom HttpService
         // avoid the auto-started instance
         final Dictionary<String, Object> dictionary = new Hashtable<String, Object>();
-        dictionary.put("http.port", new Integer(port));
+        dictionary.put("http.port", Integer.valueOf(port));
         dictionary.put("other.info", _pid);
 
         JettyConfigurator.startServer(_pid, dictionary);

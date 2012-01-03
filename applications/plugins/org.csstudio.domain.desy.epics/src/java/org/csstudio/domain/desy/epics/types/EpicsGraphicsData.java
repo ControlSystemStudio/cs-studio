@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.epics.types;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.epics.alarm.IAlarmLimits;
-import org.csstudio.domain.desy.types.IDisplayLimits;
 import org.csstudio.domain.desy.types.Limits;
 
 /**
@@ -46,12 +45,12 @@ import org.csstudio.domain.desy.types.Limits;
  * @since Mar 3, 2011
  * @param <V> graphics data originating from epics
  */
-public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisplayLimits<V>,
+public class EpicsGraphicsData<V extends Comparable<? super V>> implements IOperatingRangeLimits<V>,
                                                                            IAlarmLimits<V> {
 
     private final Limits<V> _alarmLimits;
     private final Limits<V> _warnLimits;
-    private final Limits<V> _displayLimits;
+    private final Limits<V> _operatingRange;
 
 
     /**
@@ -59,10 +58,10 @@ public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisp
      */
     public EpicsGraphicsData(@Nonnull final Limits<V> aLimits,
                              @Nonnull final Limits<V> wLimits,
-                             @Nonnull final Limits<V> dLimits) {
+                             @Nonnull final Limits<V> oLimits) {
         _alarmLimits = aLimits;
         _warnLimits = wLimits;
-        _displayLimits = dLimits;
+        _operatingRange = oLimits;
     }
 
     /**
@@ -106,8 +105,8 @@ public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisp
      */
     @Override
     @Nonnull
-    public V getDisplayHigh() {
-        return _displayLimits.getHigh();
+    public V getHighOperatingRange() {
+        return _operatingRange.getHigh();
     }
 
     /**
@@ -115,7 +114,7 @@ public class EpicsGraphicsData<V extends Comparable<? super V>> implements IDisp
      */
     @Override
     @Nonnull
-    public V getDisplayLow() {
-        return _displayLimits.getLow();
+    public V getLowOperatingRange() {
+        return _operatingRange.getLow();
     }
 }

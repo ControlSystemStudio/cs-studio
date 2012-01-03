@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.csstudio"
+            class="org.csstudio.utility.displaybrowser.ui.SearchView"
+            icon="icons/DisplayBrowser.gif"
+            id="org.csstudio.utility.displaybrowser.ui.SearchView"
+            name="Display Browser"
+            restorable="true">
+      </view>
+      <category
+            id="org.csstudio"
+            name="CSS">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.utility.displayBrowser.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.utility.displaybrowser.ui.ShowDisplayBrowser"
+               icon="icons/DisplayBrowser.gif"
+               id="org.csstudio.utility.displayBrowser.ShowDisplayBrowser"
+               label="Display Browser"
+               menubarPath="css/utility/"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.csstudio.utility.displayBrowser.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.utility.displaybrowser.PVpopupAction"
+               enablesFor="1"
+               icon="icons/DisplayBrowser.gif"
+               id="org.csstudio.utility.displayBrowser.PVpopupAction"
+               label="Display Browser"
+               menubarPath="org.csstudio.popmenu/content"
+               tooltip="Send selected PV to the Display Browser">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

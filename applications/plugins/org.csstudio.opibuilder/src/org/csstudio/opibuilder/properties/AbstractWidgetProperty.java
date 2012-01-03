@@ -38,6 +38,11 @@ public abstract class AbstractWidgetProperty {
 	
 	protected boolean visibleInPropSheet;
 	
+	/**
+	 * If this property will be saved to opi xml file.
+	 */
+	private boolean isSavable = true;
+	
 	protected ExecutionMode executionMode = ExecutionMode.EDIT_MODE;
 	
 	protected AbstractWidgetModel widgetModel;
@@ -143,6 +148,20 @@ public abstract class AbstractWidgetProperty {
 		pcsDelegate.removePropertyChangeListener(listener);
 	}
 
+	/**If the property should be saved to xml file.
+	 * @return the isSavable
+	 */
+	public boolean isSavable() {
+		return isSavable;
+	}
+
+	/**Set to true if the property should be saved to xml file.
+	 * @param isSavable the isSavable to set
+	 */
+	public void setSavable(boolean isSavable) {
+		this.isSavable = isSavable;
+	}
+
 	public final void setCategory(WidgetPropertyCategory category) {
 		this.category = category;
 	}
@@ -222,7 +241,8 @@ public abstract class AbstractWidgetProperty {
 	private void createPropertyDescriptor(final boolean visibleInPropSheet){
 		if(visibleInPropSheet){
 			propertyDescriptor = createPropertyDescriptor();
-			propertyDescriptor.setCategory(category.toString());
+			if(propertyDescriptor != null)
+				propertyDescriptor.setCategory(category.toString());
 		}
 		else
 			propertyDescriptor = null;

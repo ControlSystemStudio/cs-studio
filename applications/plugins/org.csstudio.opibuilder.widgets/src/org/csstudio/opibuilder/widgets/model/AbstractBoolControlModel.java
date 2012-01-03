@@ -8,9 +8,11 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure.ShowConfirmDialog;
 
 /**
  * Abstract model for boolean controls.
@@ -60,8 +62,8 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", 
 				WidgetPropertyCategory.Behavior, DEFAULT_TOGGLE_BUTTON));
-		addProperty(new BooleanProperty(PROP_CONFIRM_DIALOG, "Show Confirm Dialog", 
-				WidgetPropertyCategory.Behavior, false));
+		addProperty(new ComboProperty(PROP_CONFIRM_DIALOG, "Show Confirm Dialog", 
+				WidgetPropertyCategory.Behavior, ShowConfirmDialog.stringValues(), 0));
 		addProperty(new StringProperty(PROP_PASSWORD, "Password", 
 				WidgetPropertyCategory.Behavior, ""));		
 		addProperty(new StringProperty(PROP_CONFIRM_TIP, "Confirm Message", 
@@ -93,8 +95,8 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 	/**
 	 * @return true if the confirm dialog should be shown, false otherwise
 	 */
-	public boolean isShowConfirmDialog() {
-		return (Boolean) getProperty(PROP_CONFIRM_DIALOG).getPropertyValue();
+	public ShowConfirmDialog getShowConfirmDialog() {
+		return ShowConfirmDialog.values()[(Integer)getPropertyValue(PROP_CONFIRM_DIALOG)];
 	}
 	
 	/**

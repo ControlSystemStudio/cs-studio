@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="DesyArchiveEngine" id="org.csstudio.archive.common.engine.engine" application="org.csstudio.archive.engine2.application" useFeatures="false" includeLaunchers="true">
+<product name="DesyArchiveEngine" uid="archiveEngineId" id="org.csstudio.archive.common.engine.product" application="org.csstudio.archive.common.engine.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
+      <programArgs>-consoleLog -engine KryoEngineAll -pluginCustomization plugin_customization.ini</programArgs>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
 
-   <launcher name="DesyArchiveEngine">
+   <launcher name="mysql-archiver">
       <solaris/>
       <win useIco="false">
          <bmp/>
@@ -21,50 +22,55 @@
    </launcher>
 
    <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
+      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
    <plugins>
       <plugin id="com.google.common"/>
+      <plugin id="com.google.inject"/>
+      <plugin id="com.google.protobuf"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.mysql.jdbc"/>
       <plugin id="javax.annotation"/>
+      <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="org.apache.commons.el"/>
       <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.jasper"/>
+      <plugin id="org.apache.log4j"/>
+      <plugin id="org.apache.tools.ant"/>
+      <plugin id="org.apache.tools.ant.junit"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.common.engine"/>
-      <plugin id="org.csstudio.archive.common.engine.test" fragment="true"/>
+      <plugin id="org.csstudio.archive.common.engine.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.archive.common.requesttype"/>
-      <plugin id="org.csstudio.archive.common.requesttype.test" fragment="true"/>
       <plugin id="org.csstudio.archive.common.service"/>
-      <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.common.service.mysqlimpl"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.data.test" fragment="true"/>
+      <plugin id="org.csstudio.domain.common"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.domain.desy.epics"/>
-      <plugin id="org.csstudio.domain.desy.epics.test" fragment="true"/>
-      <plugin id="org.csstudio.domain.desy.test" fragment="true"/>
-      <plugin id="org.csstudio.logging"/>
-      <plugin id="org.csstudio.logging.test" fragment="true"/>
+      <plugin id="org.csstudio.domain.desy.softioc"/>
+      <plugin id="org.csstudio.email"/>
+      <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.hibernate"/>
-      <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
-      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
-      <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.remote"/>
-      <plugin id="org.csstudio.remote.test" fragment="true"/>
       <plugin id="org.csstudio.testsuite"/>
       <plugin id="org.csstudio.utility.httpd"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>
-      <plugin id="org.csstudio.utility.pv.simu"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
-      <plugin id="org.csstudio.utility.pvmanager.epics"/>
       <plugin id="org.csstudio.workspace"/>
+      <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -85,10 +91,15 @@
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.auth"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
+      <plugin id="org.eclipse.core.variables"/>
+      <plugin id="org.eclipse.debug.core"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
       <plugin id="org.eclipse.equinox.preferences"/>
@@ -96,8 +107,15 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jdt.core"/>
+      <plugin id="org.eclipse.jdt.debug"/>
+      <plugin id="org.eclipse.jdt.junit.core"/>
+      <plugin id="org.eclipse.jdt.junit.runtime"/>
+      <plugin id="org.eclipse.jdt.launching"/>
       <plugin id="org.eclipse.jface"/>
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.osgi"/>
@@ -122,18 +140,29 @@
       <plugin id="org.eclipse.swt.photon.qnx.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.carbon" fragment="true"/>
       <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.hamcrest.core"/>
+      <plugin id="org.jdom"/>
       <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
+      <plugin id="org.mockito"/>
       <plugin id="org.mortbay.jetty.server"/>
       <plugin id="org.mortbay.jetty.util"/>
       <plugin id="org.slf4j"/>
+      <plugin id="org.slf4j-log4j12"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.csstudio.archive.common.service.mysqlimpl" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="-1" />
+   </configurations>
 
 </product>

@@ -126,7 +126,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     }
 
     /**
-     * Constructor to generate document whit basic information. 
+     * Constructor to generate document whit basic information.
      * @param subject set the Subject.
      * @param desc set the long description.
      * @param keywords set the keywords.
@@ -137,39 +137,95 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         setKeywords(keywords);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(@CheckForNull final DocumentDBO other) {
+        final String id = getId();
+        if(id==null) {
+            return 1;
+        }
+        if(other==null) {
+            return -1;
+        }
+        final String otherID = other.getId();
+        if(otherID==null) {
+            return -1;
+        }
+        return id.compareTo(otherID);
+    }
+
+    @Override
+    public boolean equals(@CheckForNull final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DocumentDBO other = (DocumentDBO) obj;
+        if (_id == null) {
+            if (other._id != null) {
+                return false;
+            }
+        } else if (!_id.equals(other._id)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @CheckForNull
+    @Column(length = 30)
+    public String getAccountname() {
+        return _accountname;
+    }
+
+    @Override
+    @Column(name = "CREATED_DATE")
+    @CheckForNull
+    public Date getCreatedDate() {
+        return _createdDate;
+    }
+
+    @Override
+    @Column(name = "DELETE_DATE")
+    @CheckForNull
+    public Date getDeleteDate() {
+        return _deleteDate;
+    }
+
+    @Override
+    @Column(length = 4000)
+    @Nonnull
+    public String getDesclong() {
+        return _desclong;
+    }
+
+
+    @Override
+    @CheckForNull
+    public Date getEntrydate() {
+        return _entrydate;
+    }
+
+    @Override
+    @CheckForNull
+    @Column(length = 30)
+    public String getErroridentifyer() {
+        return _erroridentifyer;
+    }
+
     @Override
     @Id
     @Column(length = 100)
     @CheckForNull
     public String getId() {
         return _id;
-    }
-
-    /**
-     * 
-     * @param id set the Document Id key.
-     */
-    public void setId(@Nonnull final String id) {
-        _id = id;
-    }
-
-    /**
-     * @return the File mime type
-     */
-    @Override
-    @CheckForNull
-    @Column(name = "MIME_TYPE", length = 10)
-    public String getMimeType() {
-        return _mimeType;
-    }
-
-    /**
-     * 
-     * @param mimeType
-     *            set the MIME type of this Document.
-     */
-    public void setMimeType(@Nonnull final String mimeType) {
-        _mimeType = mimeType;
     }
 
     /**
@@ -189,161 +245,11 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     public InputStream getImageData() throws PersistenceException {
         try {
             return _image.getBinaryStream();
-        } catch (SQLException e) {
-            PersistenceException persistenceException = new PersistenceException(e);
+        } catch (final SQLException e) {
+            final PersistenceException persistenceException = new PersistenceException(e);
             persistenceException.setStackTrace(e.getStackTrace());
             throw persistenceException;
         }
-    }
-    
-    
-    /**
-     * The Documentation File. The Name is historic conditional on Data Base.
-     * @param image Set the Documentation File.
-     */
-    public void setImage(@Nonnull final Blob image) {
-        _image = image;
-    }
-
-    @Transient
-    public void setImage(@Nonnull byte[] imageAsByteArray) {
-        _image = Hibernate.createBlob(imageAsByteArray);
-    }
-    
-    @Override
-    @Column(name = "CREATED_DATE")
-    @CheckForNull
-    public Date getCreatedDate() {
-        return _createdDate;
-    }
-
-    /**
-     * 
-     * @param createdDate set the create date of the document.
-     */
-    public void setCreatedDate(@Nonnull final Date createdDate) {
-        _createdDate = createdDate;
-    }
-
-    @Override
-    @CheckForNull
-    @Column(length = 30)
-    public String getAccountname() {
-        return _accountname;
-    }
-
-    public void setAccountname(@Nonnull final String accountname) {
-        _accountname = accountname;
-    }
-
-    @Override
-    @CheckForNull
-    public Date getEntrydate() {
-        return _entrydate;
-    }
-
-    public void setEntrydate(@Nonnull final Date entrydate) {
-        _entrydate = entrydate;
-    }
-
-    @Override
-    @CheckForNull
-    @Column(length = 16)
-    public String getLogseverity() {
-        return _logseverity;
-    }
-
-    public void setLogseverity(@Nonnull final String logseverity) {
-        _logseverity = logseverity;
-    }
-
-    @Override
-    @Column(name = "LINK_ID", length = 100)
-    @CheckForNull
-    public String getLinkId() {
-        return _linkId;
-    }
-
-    public void setLinkId(@Nonnull final String linkId) {
-        _linkId = linkId;
-    }
-
-    @Override
-    @Column(length = 200)
-    @CheckForNull
-    public String getSubject() {
-        return _subject;
-    }
-
-    public void setSubject(@Nonnull String subject) {
-        _subject = subject;
-        Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
-    }
-
-    @Override
-    @Column(length = 4000)
-    @Nonnull
-    public String getDesclong() {
-        return _desclong;
-    }
-
-    public void setDesclong(@Nonnull String desclong) {
-        _desclong = desclong;
-    }
-
-    @Override
-    @Column(name = "Link_Forward", length = 200)
-    @Nonnull
-    public String getLinkForward() {
-        return _linkForward;
-    }
-
-    public void setLinkForward(@Nonnull String linkForward) {
-        _linkForward = linkForward;
-    }
-
-    @Override
-    @CheckForNull
-    @Column(length = 30)
-    public String getErroridentifyer() {
-        return _erroridentifyer;
-    }
-
-    public void setErroridentifyer(@Nonnull String erroridentifyer) {
-        _erroridentifyer = erroridentifyer;
-    }
-
-    @Override
-    @Column(name = "DELETE_DATE")
-    @CheckForNull
-    public Date getDeleteDate() {
-        return _deleteDate;
-    }
-
-    public void setDeleteDate(@Nonnull Date deleteDate) {
-        _deleteDate = deleteDate;
-    }
-
-    @Override
-    @Column(name = "UPDATE_DATE")
-    @Nonnull
-    public Date getUpdateDate() {
-        return _updateDate;
-    }
-
-    public void setUpdateDate(@Nonnull Date updateDate) {
-        _updateDate = updateDate;
-    }
-
-    @Override
-    @Column(length = 30)
-    @Nonnull
-    public String getLocation() {
-        return _location;
-    }
-
-    public void setLocation(@Nonnull String location) {
-        _location = location;
     }
 
     @Override
@@ -353,65 +259,154 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
         return _keywords;
     }
 
-    public void setKeywords(@Nonnull String keywords) {
-        _keywords = keywords;
+    @Override
+    @Column(name = "Link_Forward", length = 200)
+    @Nonnull
+    public String getLinkForward() {
+        return _linkForward;
+    }
+
+    @Override
+    @Column(name = "LINK_ID", length = 100)
+    @CheckForNull
+    public String getLinkId() {
+        return _linkId;
+    }
+
+    @Override
+    @Column(length = 30)
+    @Nonnull
+    public String getLocation() {
+        return _location;
+    }
+
+    @Override
+    @CheckForNull
+    @Column(length = 16)
+    public String getLogseverity() {
+        return _logseverity;
     }
 
     /**
-     * {@inheritDoc}
+     * @return the File mime type
      */
     @Override
-    public int compareTo(@CheckForNull DocumentDBO other) {
-        String id = getId();
-        if(id==null) {
-            return 1;
-        }
-        if(other==null) {
-            return -1;
-        }
-        String otherID = other.getId();
-        if(otherID==null) {
-            return -1;
-        }
-        return id.compareTo(otherID);
+    @CheckForNull
+    @Column(name = "MIME_TYPE", length = 10)
+    public String getMimeType() {
+        return _mimeType;
     }
 
-    
-    
-    /**
-     * {@inheritDoc}
-     */
+    @Override
+    @Column(length = 200)
+    @CheckForNull
+    public String getSubject() {
+        return _subject;
+    }
+
+    @Override
+    @Column(name = "UPDATE_DATE")
+    @Nonnull
+    public Date getUpdateDate() {
+        return _updateDate;
+    }
+
     @Override
     public int hashCode() {
-        final int prime = 31;
+        final int prime = 73;
         int result = 1;
-        result = prime * result + ( (_id == null) ? 0 : _id.hashCode());
+        result = prime * result + ( _id == null ? 0 : _id.hashCode());
         return result;
     }
 
+    public void setAccountname(@Nonnull final String accountname) {
+        _accountname = accountname;
+    }
+
     /**
-     * {@inheritDoc}
+     *
+     * @param createdDate set the create date of the document.
      */
-    @Override
-    public boolean equals(@CheckForNull Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        DocumentDBO other = (DocumentDBO) obj;
-        if (_id == null) {
-            if (other._id != null) {
-                return false;
-            }
-        } else if (!_id.equals(other._id)) {
-            return false;
-        }
-        return true;
+    public void setCreatedDate(@Nonnull final Date createdDate) {
+        _createdDate = createdDate;
+    }
+
+    public void setDeleteDate(@Nonnull final Date deleteDate) {
+        _deleteDate = deleteDate;
+    }
+
+    public void setDesclong(@Nonnull final String desclong) {
+        _desclong = desclong;
+    }
+
+    public void setEntrydate(@Nonnull final Date entrydate) {
+        _entrydate = entrydate;
+    }
+
+    public void setErroridentifyer(@Nonnull final String erroridentifyer) {
+        _erroridentifyer = erroridentifyer;
+    }
+
+    /**
+     *
+     * @param id set the Document Id key.
+     */
+    public void setId(@Nonnull final String id) {
+        _id = id;
+    }
+
+    /**
+     * The Documentation File. The Name is historic conditional on Data Base.
+     * @param image Set the Documentation File.
+     */
+    public void setImage(@Nonnull final Blob image) {
+        _image = image;
+    }
+
+    @SuppressWarnings("deprecation")
+    @Transient
+    public void setImage(@Nonnull final byte[] imageAsByteArray) {
+        _image = Hibernate.createBlob(imageAsByteArray);
+    }
+
+    public void setKeywords(@Nonnull final String keywords) {
+        _keywords = keywords;
+    }
+
+    public void setLinkForward(@Nonnull final String linkForward) {
+        _linkForward = linkForward;
+    }
+
+    public void setLinkId(@Nonnull final String linkId) {
+        _linkId = linkId;
+    }
+
+    public void setLocation(@Nonnull final String location) {
+        _location = location;
+    }
+
+    public void setLogseverity(@Nonnull final String logseverity) {
+        _logseverity = logseverity;
+    }
+
+    /**
+     *
+     * @param mimeType
+     *            set the MIME type of this Document.
+     */
+    public void setMimeType(@Nonnull final String mimeType) {
+        _mimeType = mimeType;
+    }
+
+
+
+    public void setSubject(@Nonnull final String subject) {
+        _subject = subject;
+        Diagnose.addNewLine(_subject+"\t"+this.getClass().getSimpleName());
+    }
+
+    public void setUpdateDate(@Nonnull final Date updateDate) {
+        _updateDate = updateDate;
     }
 
     /**
@@ -420,7 +415,7 @@ public class DocumentDBO implements Comparable<DocumentDBO>, IDocument {
     @Override
     @Nonnull
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         sb.append(getSubject()).append(".").append(getMimeType()).append(" : ").append(getDesclong());
         return sb.toString();
     }

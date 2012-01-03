@@ -28,22 +28,77 @@ import org.eclipse.swt.widgets.MessageBox;
  *
  */
 public class AbstractBoolControlFigure extends AbstractBoolFigure {
+	
+	public enum ShowConfirmDialog{
+		NO("No"),
+		Both("Both"),
+		PUSH("Push"),
+		RELEASE("Release");
+		
+		String description;
+		
+		private ShowConfirmDialog(String desc) {
+			this.description = desc;
+		}
+		
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(ShowConfirmDialog p : values())
+				sv[i++] = p.toString();
+			return sv;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+	}
 
 	class ButtonPresser extends MouseListener.Stub {
 		private boolean canceled = false;
 			public void mousePressed(MouseEvent me) {
 				if (me.button != 1)
 					return;
+				boolean isOpen = false;
 				if(runMode){
- 					if(toggle){
-						if(openConfirmDialog())
-							fireManualValueChange(!booleanValue);
+ 					if(toggle){ 						
+ 						switch (showConfirmDialog) {
+						case Both:
+							isOpen = true;
+							break;
+						case NO:
+							isOpen = false;
+							break;
+						case PUSH:
+							isOpen = !booleanValue;
+							break;
+						case RELEASE:
+							isOpen = booleanValue;
+							break;
+						default:
+							break;
+						}
+ 						if(!isOpen || (isOpen && openConfirmDialog()))
+ 								fireManualValueChange(!booleanValue);
 					}						
 					else{
-						if(openConfirmDialog()){
+ 						switch (showConfirmDialog) {
+						case Both:
+						case PUSH:
+						case RELEASE:
+							isOpen = true;
+							break;
+						case NO:
+							isOpen = false;
+							break;						
+						default:
+							break;
+						}
+						if(!isOpen || (isOpen && openConfirmDialog())){
 							canceled = false;
 							fireManualValueChange(true);	
-							if(showConfirmDialog)
+							if(isOpen)
 								Display.getCurrent().timerExec(100, new Runnable(){
 									public void run() {
 										fireManualValueChange(false);
@@ -52,7 +107,8 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 						}else
 							canceled = true;
 					}
-					me.consume();
+ 					if(!isOpen || !SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+ 						me.consume();
 					repaint();
 				}
 			}
@@ -67,10 +123,11 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 			}			
 	}
 	
-	protected boolean toggle = false;
+	protected boolean toggle = false;	
 	
-	protected boolean showConfirmDialog = false;
+	protected ShowConfirmDialog showConfirmDialog = ShowConfirmDialog.Both;
 	
+
 	protected String password = "";
 	
 	protected String confirmTip = "Are you sure you want to do this?";
@@ -142,10 +199,18 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 	public boolean isRunMode() {
 		return runMode;
 	}
-	/**
+	/**{@link Deprecated} use {@link #getShowConfirmDialog()}
 	 * @return the showConfirmDialog
 	 */
+	@Deprecated
 	public boolean isShowConfirmDialog() {
+		return showConfirmDialog != ShowConfirmDialog.NO;
+	}
+	
+	/**
+	 * @return the condition when confirm dialog should be shown.
+	 */
+	public ShowConfirmDialog getShowConfirmDialog() {
 		return showConfirmDialog;
 	}
 	/**
@@ -155,41 +220,45 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 		return toggle;
 	}
 
-	/**open a confirm dialog.
-	 * @return false if user canceled, true if user pressed OK or no confirm dialog needed. 
+	/**
+	 * open a confirm dialog.
+	 * 
+	 * @return false if user canceled, true if user pressed OK or no confirm
+	 *         dialog needed.
 	 */
 	private boolean openConfirmDialog() {
-		//confirm & password input dialog
-		if(showConfirmDialog && runMode){
-			if(password == null || password.equals("")){
-				MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(), 
-						SWT.ICON_QUESTION | SWT.YES | SWT.NO |SWT.CANCEL);
-				mb.setMessage(confirmTip);
-				mb.setText("Confirm Dialog");				
-				int val = mb.open();
-				if(val == SWT.NO || val == SWT.CANCEL)
-					return false;					
-			}else {
-				InputDialog  dlg = new InputDialog(Display.getCurrent().getActiveShell(),
-						"Password Input Dialog", "Please input the password", "", 
-						new IInputValidator(){
-							public String isValid(String newText) {
-								if (newText.equals(password))
-									return null;
-								else 
-									return "Password error!";
-							}					
-						}){@Override
-						protected int getInputTextStyle() {
-							return SWT.SINGLE | SWT.PASSWORD;
-						}};
-				dlg.setBlockOnOpen(true);
-				int val = dlg.open();
-				if(val == Window.CANCEL)
-					return false;	
-			}			
+		// confirm & password input dialog
+		if (password == null || password.equals("")) {
+			MessageBox mb = new MessageBox(Display.getCurrent()
+					.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
+					| SWT.CANCEL);
+			mb.setMessage(confirmTip);
+			mb.setText("Confirm Dialog");
+			int val = mb.open();
+			if (val == SWT.YES)
+				return true;
+		} else {
+			InputDialog dlg = new InputDialog(Display.getCurrent()
+					.getActiveShell(), "Password Input Dialog",
+					"Please input the password", "", new IInputValidator() {
+						public String isValid(String newText) {
+							if (newText.equals(password))
+								return null;
+							else
+								return "Password error!";
+						}
+					}) {
+				@Override
+				protected int getInputTextStyle() {
+					return SWT.SINGLE | SWT.PASSWORD;
+				}
+			};
+			dlg.setBlockOnOpen(true);
+			int val = dlg.open();
+			if (val == Window.OK)
+				return true;
 		}
-		return true;
+		return false;
 	}
 
 	/**
@@ -215,13 +284,18 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 	
 	
 	
-	/**
+	/**Deprecated. Use {@link #setShowConfirmDialog(ShowConfirmDialog)}
 	 * @param showConfirmDialog the showConfirmDialog to set
 	 */
+	@Deprecated
 	public void setShowConfirmDialog(boolean showConfirmDialog) {
-		this.showConfirmDialog = showConfirmDialog;
+		this.showConfirmDialog = ShowConfirmDialog.Both;
 	}
 
+	public void setShowConfirmDialog(ShowConfirmDialog showConfirm) {
+		this.showConfirmDialog = showConfirm;
+	}
+	
 	/**
 	 * @param toggle the toggle to set
 	 */

@@ -39,11 +39,8 @@ import com.google.common.collect.ImmutableSet;
  */
 public enum DesyArchiveRequestType implements IArchiveRequestType {
     RAW("Raw values."),
-    AVG_PER_MINUTE("Averaged over the time period of one minute.",
-                   RequestTypeParameters.NUM_OF_BINS,
-                   RequestTypeParameters.PRECISION),
-    AVG_PER_HOUR("Averaged over the time period of one hour.",
-                 RequestTypeParameters.NUM_OF_BINS);
+    AVG_PER_MINUTE("Averaged over the time period of one minute."),
+    AVG_PER_HOUR("Averaged over the time period of one hour.");
 
     static {
         AVG_PER_MINUTE._nextLowerOrderRequestType = RAW;
@@ -51,25 +48,14 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     }
 
     private final IArchiveRequestType _delegate;
-    private DesyArchiveRequestType _nextLowerOrderRequestType = null;
+    private DesyArchiveRequestType _nextLowerOrderRequestType;
 
     /**
      * Constructor.
      */
     private DesyArchiveRequestType(@Nonnull final String desc) {
         // Unfortunately enums cannot extend an abstract class, hence the delegator pattern.
-        _delegate = new AbstractArchiveRequestType("f", desc) {
-            // EMPTY
-        };
-    }
-
-    /**
-     * Constructor.
-     */
-    private DesyArchiveRequestType(@Nonnull final String desc,
-                                   @Nonnull final IArchiveRequestTypeParameter<?>... params) {
-        // Unfortunately enums cannot extend an abstract class, hence delegator pattern.
-        _delegate = new AbstractArchiveRequestType("f", desc, params) {
+        _delegate = new AbstractArchiveRequestType(name(), desc) {
             // EMPTY
         };
     }
@@ -134,7 +120,7 @@ public enum DesyArchiveRequestType implements IArchiveRequestType {
     }
 
     @Nonnull
-    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) throws RequestTypeParameterException {
+    public static DesyArchiveRequestType valueOf(@Nonnull final IArchiveRequestType other) {
 
         if (other instanceof DesyArchiveRequestType) {
             return (DesyArchiveRequestType) other;

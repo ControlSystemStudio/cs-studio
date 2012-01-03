@@ -46,10 +46,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.connector.voicemail.VoicemailConnector"
-            name="AmsVoicemailConnector">
+            name="AmsVoicemailConnectorProduct">
          <property
                name="appName"
-               value="AmsVoicemailConnector">
+               value="AmsVoicemailConnectorProduct">
          </property>
       </product>
    </extension>

@@ -28,18 +28,16 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -61,6 +59,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -68,21 +68,20 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision: 1.2 $
  * @since 21.05.2010
  */
-public class SubnetEditor extends AbstractNodeEditor {
+public class SubnetEditor extends AbstractNodeEditor<ProfibusSubnetDBO> {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.subnet";
-    
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(SubnetEditor.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(SubnetEditor.class);
 
     /**
      * An array with all kinds of Baudrates.
      */
     private static final Baudrates[] DB_BAUDRATES = new Baudrates[] {Baudrates.DP_KBAUD_9_6,
-            Baudrates.DP_KBAUD_19_2, Baudrates.DP_KBAUD_45_45, Baudrates.DP_KBAUD_93_75,
-            Baudrates.DP_KBAUD_187_5, Baudrates.DP_KBAUD_500, Baudrates.DP_KBAUD_750,
-            Baudrates.DP_MBAUD_1_5, Baudrates.DP_MBAUD_3, Baudrates.DP_MBAUD_6,
-            Baudrates.DP_MBAUD_12 };
+                                                                     Baudrates.DP_KBAUD_19_2, Baudrates.DP_KBAUD_45_45, Baudrates.DP_KBAUD_93_75,
+                                                                     Baudrates.DP_KBAUD_187_5, Baudrates.DP_KBAUD_500, Baudrates.DP_KBAUD_750,
+                                                                     Baudrates.DP_MBAUD_1_5, Baudrates.DP_MBAUD_3, Baudrates.DP_MBAUD_6,
+                                                                     Baudrates.DP_MBAUD_12, };
 
     /**
      * The Profibus Subnet Object.
@@ -164,9 +163,70 @@ public class SubnetEditor extends AbstractNodeEditor {
      * {@inheritDoc}
      */
     @Override
+    public final void cancel() {
+        super.cancel();
+
+        // Cancel General
+
+        getNameWidget().setText((String) getNameWidget().getData());
+        resetSelection(_facilityViewer.getCombo());
+
+        getIndexSpinner().setSelection(((Short) getIndexSpinner().getData()));
+
+
+        // Net Setting
+        _subnet.setHsa(Short.valueOf(_hSAddress.getItem(_hSAddress.getSelectionIndex())));
+        _hSAddress.setText( ((Integer) _hSAddress.getData()).toString());
+
+        _baudList.getCombo().select((Integer) _baudList.getCombo().getData());
+
+        // -- Busparameter
+        resetString(_maxTsdr);
+        resetString(_tslotInit);
+        resetString(_minTsdr);
+        resetString(_tset);
+        resetString(_tqui);
+        resetSelection(_gapCombo);
+
+        _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
+                                                                        .getSelectionIndex()))); // repeater Number ???
+
+        resetSelection(_retrayCombo);
+        resetString(_ttr);
+        resetString(_watchdog);
+
+        // Document
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(@Nonnull final Composite parent) {
+        super.createPartControl(parent);
+        _subnet = getNode();
+        // No Subnet, create a new one.
+        if (_subnet == null) {
+            newNode();
+            _subnet.setTtr(750000);
+            _subnet.setWatchdog(1000);
+        }
+        // Headline for the different Tab's.
+        final String[] heads = {"General", "Net Settings" };
+        netSetting(heads[1]);
+        general(heads[0]);
+        selecttTabFolder(0);
+        getTabFolder().pack();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
-        Date now = new Date();
+        final Date now = new Date();
         boolean updateChildrens = false;
 
         // Store General
@@ -184,8 +244,8 @@ public class SubnetEditor extends AbstractNodeEditor {
 
         _subnet.setUpdatedOn(now);
 
-        String facility = (String) ((StructuredSelection) _facilityViewer.getSelection())
-                .getFirstElement();
+        final String facility = (String) ((StructuredSelection) _facilityViewer.getSelection())
+        .getFirstElement();
         _subnet.setProfil(facility);
         _facilityViewer.getCombo().setData(_facilityViewer.getCombo().getSelectionIndex());
 
@@ -198,8 +258,8 @@ public class SubnetEditor extends AbstractNodeEditor {
         _hSAddress.setData(_hSAddress.getSelectionIndex());
 
         _subnet.setBaudRate( ((Baudrates) _baudList.getElementAt(_baudList.getCombo()
-                .getSelectionIndex())).getVal()
-                + "");
+                                                                 .getSelectionIndex())).getVal()
+                                                                 + "");
         _baudList.getCombo().setData(_baudList.getCombo().getSelectionIndex());
         // -- Busparameter
         _subnet.setSlotTime(Integer.parseInt(_tslotInit.getText()));
@@ -221,7 +281,7 @@ public class SubnetEditor extends AbstractNodeEditor {
         _gapCombo.setData(_gapCombo.getItem(_gapCombo.getSelectionIndex()));
 
         _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
-                .getSelectionIndex()))); // repeater Number ???
+                                                                        .getSelectionIndex()))); // repeater Number ???
         _retrayCombo.setData(_retrayCombo.getItem(_retrayCombo.getSelectionIndex()));
 
         _subnet.setTtr(Long.parseLong(_ttr.getText()));
@@ -232,70 +292,52 @@ public class SubnetEditor extends AbstractNodeEditor {
 
         // update header
         getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
         getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
 
         // Document
-        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+        final Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
         _subnet.setDocuments(docs);
 
-        
+
         try {
             if (updateChildrens) {
                 _subnet.update();
             }
             save();
-        } catch (PersistenceException e) {
-            LOG.error(e);
+        } catch (final PersistenceException e) {
+            LOG.error("Can't save Subnet! Database error.", e);
             DeviceDatabaseErrorDialog.open(null, "Can't save Subnet! Database error.", e);
         }
     }
 
     /**
-     *
+     * @param parent
+     *            The Parent Composite.
      */
-    private void updateChildens() {
-        // TODO Auto-generated method stub
+    private void bottom(@Nonnull final Composite parent) {
+        final GridDataFactory gdf = GridDataFactory.fillDefaults();
 
-    }
+        final Group bottomGroup = new Group(parent, SWT.NONE);
+        bottomGroup.setLayout(new GridLayout(3, false));
+        bottomGroup.setLayoutData(gdf.create());
+        bottomGroup.setText("Busparameter");
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void cancel() {
-        super.cancel();
-
-        // Cancel General
-
-        getNameWidget().setText((String) getNameWidget().getData());
-        resetSelection(_facilityViewer.getCombo());
-        
-        getIndexSpinner().setSelection(((Short) getIndexSpinner().getData()));
-        
-
-        // Net Setting
-        _subnet.setHsa(Short.valueOf(_hSAddress.getItem(_hSAddress.getSelectionIndex())));
-        _hSAddress.setText( ((Integer) _hSAddress.getData()).toString());
-
-        _baudList.getCombo().select((Integer) _baudList.getCombo().getData());
-
-        // -- Busparameter
-        resetString(_maxTsdr);
-        resetString(_tslotInit);
-        resetString(_minTsdr);
-        resetString(_tset);
-        resetString(_tqui);
-        resetSelection(_gapCombo);
-
-        _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
-                .getSelectionIndex()))); // repeater Number ???
-
-        resetSelection(_retrayCombo);
-        resetString(_ttr);
-        resetString(_watchdog);
-
-        // Document
+        // Left side
+        final Composite left = new Composite(bottomGroup, SWT.NONE);
+        left.setLayoutData(gdf.create());
+        left.setLayout(new GridLayout(3, true));
+        left(left);
+        // Separator
+        new Label(bottomGroup, SWT.VERTICAL | SWT.SEPARATOR).setLayoutData(new GridData(SWT.FILL,
+                                                                                        SWT.FILL,
+                                                                                        false,
+                                                                                        false));
+        // Rigth Side
+        final Composite rigth = new Composite(bottomGroup, SWT.NONE);
+        rigth.setLayoutData(gdf.create());
+        rigth.setLayout(new GridLayout(3, true));
+        rigth(rigth);
 
     }
 
@@ -304,27 +346,27 @@ public class SubnetEditor extends AbstractNodeEditor {
      *            is TabHead Text
      */
     private void general(@Nonnull final String head) {
-        InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences prefNode = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
+        final InstanceScope instanceScope = new InstanceScope();
+        final IEclipsePreferences prefNode = instanceScope.getNode(IOConfigActivator.PLUGIN_ID);
 
-        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
+        final Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
         comp.setLayout(new GridLayout(4, false));
 
-        Group gName = new Group(comp, SWT.NONE);
+        final Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
         gName.setLayout(new GridLayout(4, false));
 
-        Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
+        final Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
         setText(nameText, _subnet.getName(), 255);
         nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         setNameWidget(nameText);
 
         _facilityViewer = new ComboViewer(gName);
         _facilityViewer.setContentProvider(new ArrayContentProvider());
-        String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
+        final String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
         _facilityViewer.setInput(facilities);
-        if ( (_subnet.getProfil() == null) || _subnet.getProfil().isEmpty()) {
+        if ( _subnet.getProfil() == null || _subnet.getProfil().isEmpty()) {
             _facilityViewer.getCombo().select(0);
             _facilityViewer.getCombo().setData(0);
         } else {
@@ -337,218 +379,9 @@ public class SubnetEditor extends AbstractNodeEditor {
                                                      _subnet,
                                                      getMLSB(),
                                                      "Index",
-                                                     getProfiBusTreeView()));
+                                                     getProfiBusTreeView(), 99));
 
         makeDescGroup(comp, 3);
-    }
-
-    /**
-     * @param headline
-     *            is TabHead Text
-     */
-    private void netSetting(@Nonnull final String headline) {
-        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 1, 470, 350);
-
-        Group topGroup = new Group(comp, SWT.NONE);
-        topGroup.setLayout(new GridLayout(1, false));
-        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-
-        bottom(comp);
-        GridLayoutFactory glf = GridLayoutFactory.fillDefaults();
-        glf.numColumns(2);
-        GridDataFactory gdf = GridDataFactory.fillDefaults();
-        final Composite buttonComp = new Composite(topGroup, SWT.NONE);
-        buttonComp.setLayout(glf.create());
-        buttonComp.setLayoutData(gdf.create());
-        final Composite buttonComp2 = new Composite(topGroup, SWT.NONE);
-        buttonComp2.setLayout(glf.create());
-        buttonComp2.setLayoutData(gdf.create());
-
-        Label adressLabel = new Label(buttonComp, SWT.NONE);
-        adressLabel.setText("Highest Profibus Station:");
-
-        _hSAddress = new Combo(buttonComp, SWT.SINGLE | SWT.RIGHT);
-        _hSAddress.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
-        for (int i = 1; i <= 126; i++) {
-            _hSAddress.add("" + i);
-        }
-        setCombo(_hSAddress, Short.toString(_subnet.getHsa()));
-
-        Label baudLabel = new Label(buttonComp2, SWT.NONE);
-        baudLabel.setText("Baudrate: ");
-
-        /**
-         * --- DP BAUDRATES ----
-         */
-        _baudList = new ComboViewer(buttonComp2, SWT.SINGLE | SWT.V_SCROLL | SWT.RIGHT);
-        _baudList.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
-        _baudList.add(DB_BAUDRATES);
-        // Default is 1,5 MBit
-        _baudList.getCombo().select(7);
-        for (int i = 0; i < DB_BAUDRATES.length; i++) {
-            if ( ( (_subnet.getBaudRate() != null) && _subnet.getBaudRate().equals(Integer
-                    .toString(DB_BAUDRATES[i].getVal())))) {
-                _baudList.getCombo().select(i);
-                break;
-            }
-        }
-        _baudList.getCombo().setData(_baudList.getCombo().getSelectionIndex());
-        _baudList.addSelectionChangedListener(new ISelectionChangedListener() {
-            @Override
-            public void selectionChanged(@Nullable final SelectionChangedEvent event) {
-                boolean b = ((Integer) _baudList.getCombo().getData()) != _baudList.getCombo()
-                        .getSelectionIndex();
-                setSavebuttonEnabled("SubNetBaud", b);
-            }
-        });
-    }
-
-    /**
-     * @param parent
-     *            The Parent Composite.
-     */
-    private void bottom(@Nonnull final Composite parent) {
-        GridDataFactory gdf = GridDataFactory.fillDefaults();
-
-        Group bottomGroup = new Group(parent, SWT.NONE);
-        bottomGroup.setLayout(new GridLayout(3, false));
-        bottomGroup.setLayoutData(gdf.create());
-        bottomGroup.setText("Busparameter");
-
-        // Left side
-        Composite left = new Composite(bottomGroup, SWT.NONE);
-        left.setLayoutData(gdf.create());
-        left.setLayout(new GridLayout(3, true));
-        left(left);
-        // Separator
-        new Label(bottomGroup, SWT.VERTICAL | SWT.SEPARATOR).setLayoutData(new GridData(SWT.FILL,
-                                                                                        SWT.FILL,
-                                                                                        false,
-                                                                                        false));
-        // Rigth Side
-        Composite rigth = new Composite(bottomGroup, SWT.NONE);
-        rigth.setLayoutData(gdf.create());
-        rigth.setLayout(new GridLayout(3, true));
-        rigth(rigth);
-
-    }
-
-    /**
-     * @param rigth
-     *            The Parent Group.
-     */
-    private void rigth(@Nonnull final Composite rigth) {
-        Control[] control = new Control[2];
-
-        // tslot
-        Label front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Tslot: ");
-        _tslot = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
-        _tslot.setEditable(false);
-        _tslot.setText(_subnet.getSlotTime() + "");
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // tid2
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Tid2: ");
-        _tid2 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
-        _tid2.setEditable(false);
-        _tid2.setText(_subnet.getMaxTsdr() + "");
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // Trdy
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Trdy: ");
-        _trdy = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
-        _trdy.setEditable(false);
-        _trdy.setText(_subnet.getMinTsdr() + "");
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // tid1
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Tid1: ");
-        _tid1 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
-        _tid1.setEditable(false);
-        _tid1.setText(_subnet.getTset() + "");
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // ttr
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Ttr: ");
-        _ttr = ProfibusHelper.getTextField(rigth,
-                                           true,
-                                           _subnet.getTtr() + "",
-                                           Ranges.TTR,
-                                           ProfibusHelper.VL_TYP_U32);
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-        control[0] = _ttr;
-
-        // ttr in ms
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("=");
-        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000)
-                + "");
-        new Label(rigth, SWT.NONE).setText("ms");
-
-        // ttr Typisch
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Ttr Typisch: ");
-        ProfibusHelper.getTextField(rigth, _subnet.getMinTsdr() + "");
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // Watchdog
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("Watchdog: ");
-        _watchdog = ProfibusHelper.getTextField(rigth,
-                                                true,
-                                                _subnet.getWatchdog() + "",
-                                                Ranges.WATCHDOG,
-                                                ProfibusHelper.VL_TYP_U16);
-        control[1] = _watchdog;
-        new Label(rigth, SWT.NONE).setText("[t_Bit]");
-
-        // ttr in ms
-        front = new Label(rigth, SWT.NONE);
-        front.setAlignment(SWT.RIGHT);
-        front.setText("=");
-        _watchdog2 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
-        _watchdog2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-        _watchdog2.setEditable(false);
-        _watchdog2.setText(Integer.toString(Integer.parseInt(_watchdog.getText()) / 10));
-        new Label(rigth, SWT.NONE).setText("ms");
-
-        _ttr.addModifyListener(getMLSB());
-        _ttr.addModifyListener(new ModifyListener() {
-
-            @Override
-            public void modifyText(@Nullable final ModifyEvent e) {
-                ttr2.setText(Float.toString(Integer.parseInt(_ttr.getText()) / 1000f));
-            }
-
-        });
-
-        _watchdog.addModifyListener(getMLSB());
-        _watchdog.addModifyListener(new ModifyListener() {
-            @Override
-            public void modifyText(@Nonnull final ModifyEvent e) {
-                _watchdog2.setText(Float.toString(Integer.parseInt(_watchdog.getText()) / 10f));
-            }
-        });
-
-        for (Control children : rigth.getChildren()) {
-            if (children instanceof Label) {
-                children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-            }
-        }
-        rigth.setTabList(control);
     }
 
     /**
@@ -561,7 +394,7 @@ public class SubnetEditor extends AbstractNodeEditor {
         front.setAlignment(SWT.RIGHT);
         front.setText("Tslot_Init: ");
         String val;
-        long min = Ranges.TSLOT_INIT.getMin();
+        final long min = Ranges.TSLOT_INIT.getMin();
         if (_subnet.getSlotTime() < min) {
             val = Ranges.TSLOT_INIT.getDefault() + "";
         } else {
@@ -647,7 +480,7 @@ public class SubnetEditor extends AbstractNodeEditor {
         for (long i = Ranges.GAP_RANGE.getMin(); i <= Ranges.GAP_RANGE.getMax(); i++) {
             _gapCombo.add(i + "");
         }
-        if ( (1 <= _subnet.getGap()) && (_subnet.getGap() <= _gapCombo.getItemCount())) {
+        if ( 1 <= _subnet.getGap() && _subnet.getGap() <= _gapCombo.getItemCount()) {
             _gapCombo.select(_subnet.getGap() - 1);
         } else {
             // default GAP is 10 (index 9)
@@ -668,8 +501,8 @@ public class SubnetEditor extends AbstractNodeEditor {
         for (int i = 1; i <= 8; i++) {
             _retrayCombo.add(i + "");
         }
-        if ( (1 <= _subnet.getRepeaterNumber())
-                && (_subnet.getRepeaterNumber() <= _retrayCombo.getItemCount())) {
+        if ( 1 <= _subnet.getRepeaterNumber()
+                && _subnet.getRepeaterNumber() <= _retrayCombo.getItemCount()) {
             _retrayCombo.select(_subnet.getRepeaterNumber() - 1);
         } else {
             _retrayCombo.select(0);
@@ -679,7 +512,7 @@ public class SubnetEditor extends AbstractNodeEditor {
 
         new Label(left, SWT.NONE).setText("");
 
-        for (Control children : left.getChildren()) {
+        for (final Control children : left.getChildren()) {
             if (children instanceof Label) {
                 children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
             }
@@ -688,23 +521,180 @@ public class SubnetEditor extends AbstractNodeEditor {
     }
 
     /**
-     * {@inheritDoc}
+     * @param headline is TabHead Text
      */
-    @Override
-    public void createPartControl(@Nonnull final Composite parent) {
-        super.createPartControl(parent);
-        _subnet = (ProfibusSubnetDBO) getNode();
-        // No Subnet, create a new one.
-        if (_subnet == null) {
-            newNode();
-            _subnet.setTtr(750000);
-            _subnet.setWatchdog(1000);
+    private void netSetting(@Nonnull final String headline) {
+        final Composite comp = ConfigHelper.getNewTabItem(headline, getTabFolder(), 1, 470, 350);
+
+        final Group topGroup = new Group(comp, SWT.NONE);
+        topGroup.setLayout(new GridLayout(1, false));
+        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+
+        bottom(comp);
+        final GridLayoutFactory glf = GridLayoutFactory.fillDefaults();
+        glf.numColumns(2);
+        final GridDataFactory gdf = GridDataFactory.fillDefaults();
+        final Composite buttonComp = new Composite(topGroup, SWT.NONE);
+        buttonComp.setLayout(glf.create());
+        buttonComp.setLayoutData(gdf.create());
+        final Composite buttonComp2 = new Composite(topGroup, SWT.NONE);
+        buttonComp2.setLayout(glf.create());
+        buttonComp2.setLayoutData(gdf.create());
+
+        final Label adressLabel = new Label(buttonComp, SWT.NONE);
+        adressLabel.setText("Highest Profibus Station:");
+
+        _hSAddress = new Combo(buttonComp, SWT.SINGLE | SWT.RIGHT);
+        _hSAddress.setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
+        for (int i = 1; i <= 126; i++) {
+            _hSAddress.add("" + i);
         }
-        // Headline for the different Tab's.
-        String[] heads = {"General", "Net Settings" };
-        netSetting(heads[1]);
-        general(heads[0]);
-        selecttTabFolder(0);
-        getTabFolder().pack();
+        setCombo(_hSAddress, Short.toString(_subnet.getHsa()));
+
+        final Label baudLabel = new Label(buttonComp2, SWT.NONE);
+        baudLabel.setText("Baudrate: ");
+
+        //--- DP BAUDRATES ----
+        _baudList = new ComboViewer(buttonComp2, SWT.SINGLE | SWT.V_SCROLL | SWT.RIGHT);
+        _baudList.getCombo().setLayoutData(new GridData(SWT.RIGHT, SWT.FILL, true, false, 1, 1));
+        _baudList.add(DB_BAUDRATES);
+        // Default is 1,5 MBit
+        _baudList.getCombo().select(7);
+        for (int i = 0; i < DB_BAUDRATES.length; i++) {
+            if ( _subnet.getBaudRate() != null && _subnet.getBaudRate().equals(Integer
+                                                                               .toString(DB_BAUDRATES[i].getVal()))) {
+                _baudList.getCombo().select(i);
+                break;
+            }
+        }
+        _baudList.getCombo().setData(_baudList.getCombo().getSelectionIndex());
+        _baudList.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(@Nullable final SelectionChangedEvent event) {
+                final boolean b = (Integer) _baudList.getCombo().getData() != _baudList.getCombo()
+                .getSelectionIndex();
+                setSavebuttonEnabled("SubNetBaud", b);
+            }
+        });
+    }
+
+    /**
+     * @param rigth
+     *            The Parent Group.
+     */
+    private void rigth(@Nonnull final Composite rigth) {
+        final Control[] control = new Control[2];
+
+        // tslot
+        Label front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Tslot: ");
+        _tslot = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
+        _tslot.setEditable(false);
+        _tslot.setText(_subnet.getSlotTime() + "");
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // tid2
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Tid2: ");
+        _tid2 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
+        _tid2.setEditable(false);
+        _tid2.setText(_subnet.getMaxTsdr() + "");
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // Trdy
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Trdy: ");
+        _trdy = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
+        _trdy.setEditable(false);
+        _trdy.setText(_subnet.getMinTsdr() + "");
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // tid1
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Tid1: ");
+        _tid1 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
+        _tid1.setEditable(false);
+        _tid1.setText(_subnet.getTset() + "");
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // ttr
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Ttr: ");
+        _ttr = ProfibusHelper.getTextField(rigth,
+                                           true,
+                                           _subnet.getTtr() + "",
+                                           Ranges.TTR,
+                                           ProfibusHelper.VL_TYP_U32);
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+        control[0] = _ttr;
+
+        // ttr in ms
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("=");
+        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000f)
+                                                      + "");
+//        final Text ttr2 = ProfibusHelper.getTextField(rigth, Float.valueOf(_subnet.getTtr() / 1000)
+//                                                      + "");
+        new Label(rigth, SWT.NONE).setText("ms");
+
+        // ttr Typisch
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Ttr Typisch: ");
+        ProfibusHelper.getTextField(rigth, _subnet.getMinTsdr() + "");
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // Watchdog
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("Watchdog: ");
+        _watchdog = ProfibusHelper.getTextField(rigth,
+                                                true,
+                                                _subnet.getWatchdog() + "",
+                                                Ranges.WATCHDOG,
+                                                ProfibusHelper.VL_TYP_U16);
+        control[1] = _watchdog;
+        new Label(rigth, SWT.NONE).setText("[t_Bit]");
+
+        // ttr in ms
+        front = new Label(rigth, SWT.NONE);
+        front.setAlignment(SWT.RIGHT);
+        front.setText("=");
+        _watchdog2 = new Text(rigth, SWT.SINGLE | SWT.RIGHT);
+        _watchdog2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+        _watchdog2.setEditable(false);
+        _watchdog2.setText(Integer.toString(Integer.parseInt(_watchdog.getText()) / 10));
+        new Label(rigth, SWT.NONE).setText("ms");
+
+        _ttr.addModifyListener(getMLSB());
+        _ttr.addModifyListener(new ModifyListener() {
+
+            @Override
+            public void modifyText(@Nullable final ModifyEvent e) {
+                ttr2.setText(Float.toString(Integer.parseInt(_ttr.getText()) / 1000f));
+            }
+
+        });
+
+        _watchdog.addModifyListener(getMLSB());
+        _watchdog.addModifyListener(new ModifyListener() {
+            @Override
+            public void modifyText(@Nonnull final ModifyEvent e) {
+                _watchdog2.setText(Float.toString(Integer.parseInt(_watchdog.getText()) / 10f));
+            }
+        });
+
+        for (final Control children : rigth.getChildren()) {
+            if (children instanceof Label) {
+                children.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+            }
+        }
+        rigth.setTabList(control);
     }
 }

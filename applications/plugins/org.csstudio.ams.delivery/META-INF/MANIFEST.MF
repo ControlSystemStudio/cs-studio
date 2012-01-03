@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AMS Delivery
+Bundle-SymbolicName: org.csstudio.ams.delivery;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.ams.delivery.Activator
+Bundle-Vendor: Markus Moeller <Markus.Moeller@desy.de>
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.jms;bundle-version="1.1.1",
+ org.slf4j;bundle-version="1.6.1"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.ams.delivery,
+ org.csstudio.ams.delivery.device,
+ org.csstudio.ams.delivery.jms,
+ org.csstudio.ams.delivery.service

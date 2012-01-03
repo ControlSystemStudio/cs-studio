@@ -5,17 +5,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DisplayRunner implements Runnable {
 
-	private List<IResource> displays = new ArrayList<IResource>();
-	private List<IResource> runningDisplays = new ArrayList<IResource>();
+    private static final Logger LOG = LoggerFactory.getLogger(DisplayRunner.class);
+    
+	private final List<IResource> displays = new ArrayList<IResource>();
+	private final List<IResource> runningDisplays = new ArrayList<IResource>();
 
 	public DisplayRunner(IResource[] members) {
 		for (IResource iResource : members) {
@@ -60,9 +63,10 @@ public class DisplayRunner implements Runnable {
 
 	private void openDisplay(IResource iResource) {
 		final IPath iPath = iResource.getFullPath();
-		CentralLogger.getInstance().debug(this, "open: " + iPath);
+		LOG.debug("open: {}", iPath);
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				RunModeService.getInstance().openDisplayShellInRunMode(iPath);
 			}
 		});
@@ -71,9 +75,10 @@ public class DisplayRunner implements Runnable {
 
 	private void closeDisplay(IResource iResource) {
 		final IPath iPath = iResource.getFullPath();
-		CentralLogger.getInstance().debug(this, "close: " + iPath);
+		LOG.debug("close: {}", iPath);
 		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-			public void run() {
+			@Override
+            public void run() {
 				RunModeService.getInstance().closeDisplayShellInRunMode(iPath);
 			}
 		});

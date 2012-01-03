@@ -72,6 +72,7 @@ public final class WidgetsService {
 			String typeId = element.getAttribute("typeId"); //$NON-NLS-1$
 			String name = element.getAttribute("name"); //$NON-NLS-1$
 			String icon = element.getAttribute("icon"); //$NON-NLS-1$
+			String onlineHelpHtml = element.getAttribute("onlineHelpHtml"); ////$NON-NLS-1$
 			String pluginId = element.getDeclaringExtension()
 					.getNamespaceIdentifier();
 			String description = element.getAttribute("description");
@@ -91,7 +92,7 @@ public final class WidgetsService {
 				}
 				list.add(typeId);
 				allWidgetDescriptorsMap.put(typeId, new WidgetDescriptor(
-						element, typeId, name, description, icon, category, pluginId));
+						element, typeId, name, description, icon, category, pluginId, onlineHelpHtml));
 			}
 		}
 

@@ -22,9 +22,12 @@
 
 package org.csstudio.opibuilder.visualparts;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory;
@@ -74,11 +77,14 @@ public class ActionsInputDialog extends HelpTrayDialog {
 	
 	private TableViewer propertiesViewer;
 		
-	private List<AbstractWidgetAction> actionsList;
-	private boolean hookedUpToWidget;
+	private LinkedList<AbstractWidgetAction> actionsList;
+	private boolean hookedUpFirstActionToWidget;
+	private boolean hookedUpAllActionsToWidget;
+
 	private boolean showHookOption = true;
 	private ActionsInput actionsInput;
-	private String title;	
+	private String title;
+	private Button hookFirstCheckBox;	
 
 	public ActionsInputDialog(Shell parentShell, 
 			ActionsInput actionsInput, String dialogTitle, boolean showHookOption) {
@@ -86,14 +92,16 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.actionsInput = actionsInput.getCopy();
 		this.actionsList = this.actionsInput.getActionsList();
-		hookedUpToWidget = actionsInput.isHookedUpToWidget();
+		hookedUpFirstActionToWidget = actionsInput.isFirstActionHookedUpToWidget();
+		hookedUpAllActionsToWidget = actionsInput.isHookUpAllActionsToWidget();
 		title = dialogTitle;
 		this.showHookOption = showHookOption;
 	}
 	
 	public ActionsInput getOutput() {
 		ActionsInput actionsInput = new ActionsInput(actionsList);
-		actionsInput.setHookUpToWidget(hookedUpToWidget);
+		actionsInput.setHookUpFirstActionToWidget(hookedUpFirstActionToWidget);
+		actionsInput.setHookUpAllActionsToWidget(hookedUpAllActionsToWidget);
 		return actionsInput;
 	}
 	
@@ -141,7 +149,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		final Composite mainComposite = new Composite(parent_Composite, SWT.None);			
 		mainComposite.setLayout(new GridLayout(2, false));
 		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.heightHint = 200;
+		gridData.heightHint = 250;
 		mainComposite.setLayoutData(gridData);
 		final Composite leftComposite = new Composite(mainComposite, SWT.None);
 		leftComposite.setLayout(new GridLayout(1, false));
@@ -188,21 +196,34 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		this.createLabel(rightComposite, "Properties:");
 		
 		propertiesViewer = createPropertiesViewer(rightComposite);
-		if(showHookOption){
-			Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
-			bottomComposite.setLayout(new GridLayout(1, false));
-			bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-			
-			final Button checkBox = new Button(bottomComposite, SWT.CHECK);
-			checkBox.setSelection(hookedUpToWidget);
-			checkBox.setText("Hook the first action to the mouse click event on widget.");
-			checkBox.addSelectionListener(new SelectionAdapter(){
+		Composite bottomComposite = new Composite(mainComposite, SWT.NONE);
+		bottomComposite.setLayout(new GridLayout(1, false));
+		bottomComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		if(showHookOption){			
+			hookFirstCheckBox = new Button(bottomComposite, SWT.CHECK);			
+			hookFirstCheckBox.setSelection(hookedUpFirstActionToWidget);
+			hookFirstCheckBox.setText("Hook the first action to the mouse click event on widget.");
+			hookFirstCheckBox.setEnabled(!hookedUpAllActionsToWidget);
+			hookFirstCheckBox.addSelectionListener(new SelectionAdapter(){
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					hookedUpToWidget = checkBox.getSelection();
+					hookedUpFirstActionToWidget = hookFirstCheckBox.getSelection();
 				}
 			});
 		}
+		
+		final Button hookAllCheckBox = new Button(bottomComposite, SWT.CHECK);
+		hookAllCheckBox.setSelection(hookedUpAllActionsToWidget);
+		hookAllCheckBox.setText("Hook all actions to the mouse click event on widget.");
+		hookAllCheckBox.addSelectionListener(new SelectionAdapter(){
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				hookedUpAllActionsToWidget = hookAllCheckBox.getSelection();
+				if(hookFirstCheckBox != null)
+					hookFirstCheckBox.setEnabled(!hookedUpAllActionsToWidget);
+			}
+		});
+		
 		if(actionsList.size() > 0){
 			refreshActionsViewer(actionsList.get(0));
 		}
@@ -230,7 +251,7 @@ public class ActionsInputDialog extends HelpTrayDialog {
 		tvColumn.setEditingSupport(editingSupport);
 		
 		
-		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setContentProvider(new WidgetPropertiesContentProvider());
 		viewer.setLabelProvider(new PropertiesLabelProvider());		
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -508,8 +529,23 @@ public class ActionsInputDialog extends HelpTrayDialog {
 	}
 
 	
+	final static class WidgetPropertiesContentProvider extends
+			ArrayContentProvider {
+		@Override
+		public Object[] getElements(Object inputElement) {
+			if (inputElement instanceof AbstractWidgetProperty[]) {
+				AbstractWidgetProperty[] oldProperties = (AbstractWidgetProperty[]) inputElement;
+				List<AbstractWidgetProperty> newPropertiesList = new ArrayList<AbstractWidgetProperty>();
+				for (AbstractWidgetProperty property : oldProperties) {
+					if (property.isVisibleInPropSheet())
+						newPropertiesList.add(property);
+				}
 
-	
+				return newPropertiesList.toArray();
+			}
+			return super.getElements(inputElement);
+		}
+	}
 
 	
 

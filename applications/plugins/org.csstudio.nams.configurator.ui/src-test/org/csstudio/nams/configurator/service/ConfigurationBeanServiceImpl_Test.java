@@ -1,10 +1,9 @@
+
 package org.csstudio.nams.configurator.service;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
 import junit.framework.TestCase;
-
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterGruppenDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.Configuration;

@@ -34,7 +34,7 @@ import org.csstudio.ams.systemmonitor.status.MonitorStatusEntry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-public class AmsSystemCheck extends ACheckProcessor
+public class AmsSystemCheck extends AbstractCheckProcessor
 {
     public AmsSystemCheck(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
     {
@@ -52,17 +52,17 @@ public class AmsSystemCheck extends ACheckProcessor
         long currentTime = 0;
         boolean success = false;
 
-        logger.info("Starting check of AMS System.");
+        LOG.info("Starting check of AMS System.");
         
         IPreferencesService pref = Platform.getPreferencesService();
         long amsWaitTime = pref.getLong(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_AMS_WAIT_TIME, -1, null);
         if(amsWaitTime == -1)
         {
-            logger.warn("The waiting time for the AMS system check is not valid. Using default: 30 sec.");
+            LOG.warn("The waiting time for the AMS system check is not valid. Using default: 30 sec.");
             amsWaitTime = 30000;
         }
         
-        logger.info("Waiting time for the AMS system check: " + amsWaitTime + " ms");
+        LOG.info("Waiting time for the AMS system check: " + amsWaitTime + " ms");
         
         messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SYSTEM, currentStatusEntry);
         // checkTimeStamp = convertDateStringToLong(messageContent.get("EVENTTIME"));
@@ -73,19 +73,18 @@ public class AmsSystemCheck extends ACheckProcessor
             success = amsPublisher.sendMessage(messageContent);
             if(success)
             {
-                logger.info("Message sent.");
+                LOG.info("Message sent.");
             }
             else
             {
-                logger.error("Message could NOT be sent.");
+                LOG.error("Message could NOT be sent.");
                 
-                closeJms();
                 throw new AmsSystemMonitorException("Message could NOT be sent.", AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
             }
         }
         else
         {
-            logger.info("A new message has NOT been sent. Looking for an old check message.");
+            LOG.info("A new message has NOT been sent. Looking for an old check message.");
         }
         
         waitObject = new Object();
@@ -99,7 +98,7 @@ public class AmsSystemCheck extends ACheckProcessor
             if(message != null)
             {
                 // Compare the incoming message with the sent message
-                logger.info("Message received.");
+                LOG.info("Message received.");
                 
                 if(message instanceof MapMessage)
                 {
@@ -111,32 +110,29 @@ public class AmsSystemCheck extends ACheckProcessor
                     }
                     else
                     {
-                        logger.warn("Received message is NOT equal.");
+                        LOG.warn("Received message is NOT equal.");
                     }
                 }
                 else
                 {
-                    logger.warn("Message is not a MapMessage object: " + message.getClass().getName());
+                    LOG.warn("Message is not a MapMessage object: " + message.getClass().getName());
                 }
                 
                 acknowledge(message);
             }
             
-            synchronized(waitObject)
-            {
-                try
-                {
+            synchronized(waitObject) {
+                try {
                     waitObject.wait(1000);
+                } catch(InterruptedException ie) {
+                    // Can be ignored
                 }
-                catch(InterruptedException ie) {}
             }
             
             currentTime = System.currentTimeMillis();
         
         }while((success == false) && (currentTime <= endTime));
     
-        closeJms();
-        
         if(!success)
         {
             // Timeout?
@@ -145,5 +141,10 @@ public class AmsSystemCheck extends ACheckProcessor
                 throw new AmsSystemMonitorException("Timeout! Sent message could not be received.", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
         }
+    }
+    
+    @Override
+    public void closeJms() {
+        super.closeJms();
     }
 }

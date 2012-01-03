@@ -19,8 +19,6 @@ package org.csstudio.alarm.table.preferences;
 
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -36,6 +34,8 @@ import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Executes action after mouse double click according to columns and MouseActionDescription.
@@ -47,9 +47,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class TopicTableEditorMouseListener extends MouseAdapter {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(TopicTableEditorMouseListener.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(TopicTableEditorMouseListener.class);
+    
 	private final TableEditor _editor;
 	private final Table _table;
 	private final PreferenceTopicTableEditor _preferenceTopicTableEditor;
@@ -130,8 +129,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
                     break;
 
                 default:
-                    LOG.error("Mouse action " + columnDescription.getMouseActionDescription()
-                            + " not handled after double clicking column " + column);
+                    LOG.error("Mouse action {} not handled after double clicking column {}", columnDescription.getMouseActionDescription(), column);
 
             }
 		}
@@ -144,7 +142,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         } else {
             item.setText(column, "false");
         }
-        LOG.debug("text of column " + column + ": " + text);
+        LOG.debug("text of column {}: {}",column, text);
     }
 
     private void openFontDialogue(@Nonnull final TableItem item, final int column) {
@@ -156,14 +154,13 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
             fontDialog.setFontList(font);
             font[0] = fontDialog.open();
         } catch (final Exception e) {
-            LOG.error("Error creating font " + e.getMessage());
+            LOG.error("Error creating font ",e);
         }
         item.setText(column, font[0].getName() + "," + font[0].getStyle()
                 + "," + font[0].getHeight());
-        LOG.debug("text of column " + column + ": Name " + font[0].getName()
-                        + " style " + font[0].getStyle() + " height "
-                        + font[0].getHeight() + " string "
-                        + font[0].toString());
+        
+        Object[] args = new Object[] {column, font[0].getName(), font[0].getStyle(), font[0].getHeight(), font[0].toString()};
+        LOG.debug("text of column {}: Name {} style {} height {} string {}", args);
     }
 
     private void editString(@Nonnull final TableItem item, final int column) {
@@ -189,6 +186,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         // any time it's modified
         final int col = column;
         text.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(@Nonnull final ModifyEvent event) {
                 // Set the text of the editor's control back into the cell
                 item.setText(col, text.getText());
@@ -217,7 +215,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 						.parseInt(fontDataString[1]));
 			}
 		} catch (final Exception e) {
-		    LOG.error("Cannot create font, " + e.getMessage());
+		    LOG.error("Cannot create font, ", e);
 		}
 		if (font[0] == null) {
 			font = JFaceResources.getDefaultFont().getFontData();

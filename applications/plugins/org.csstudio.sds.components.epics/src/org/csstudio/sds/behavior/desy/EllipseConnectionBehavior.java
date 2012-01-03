@@ -24,7 +24,6 @@ import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -37,8 +36,6 @@ import org.epics.css.dal.simple.Severity;
  */
 public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<AbstractWidgetModel> {
 
-    private String _defColor;
-
     /**
      * Constructor.
      */
@@ -47,8 +44,6 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
-        addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
         addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
     }
 
@@ -58,24 +53,7 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
     @Override
     protected void doInitialize(final AbstractWidgetModel widget) {
         super.doInitialize(widget);
-        _defColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
-//        super.doProcessValueChange(model, anyData);
-//        model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND, determineColorBySeverity(anyData.getSeverity(), null));
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-        }
+        widget.setPropertyValue(EllipseModel.PROP_FILL, 100);
     }
 
     /**
@@ -85,12 +63,23 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
     protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        if (connectionState!=ConnectionState.CONNECTED) {
-            widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor(connectionState));
-        } else {
-            widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _defColor);
-        }
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? widget
+                .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND)
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+//        // this is only to make the test easier!
+//        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, model
+//                        .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+
     }
 
     @Override

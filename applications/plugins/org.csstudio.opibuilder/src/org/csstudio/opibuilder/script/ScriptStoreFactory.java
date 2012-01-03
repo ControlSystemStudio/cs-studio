@@ -1,11 +1,16 @@
 package org.csstudio.opibuilder.script;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.script.ScriptService.ScriptType;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
+import org.eclipse.swt.widgets.Display;
 import org.mozilla.javascript.Context;
 import org.python.util.PythonInterpreter;
 
@@ -17,9 +22,9 @@ public class ScriptStoreFactory {
 	
 	private static boolean pythonInterpreterInitialized = false;
 	
-	private static boolean jsEngineInitialized = false;
 	
-	private static Context scriptContext;
+	private static Map<Display, Context> displayContextMap = 
+			new HashMap<Display, Context>();
 	
 	public static void initPythonInterpreter() throws Exception{
 		if(pythonInterpreterInitialized)
@@ -34,16 +39,34 @@ public class ScriptStoreFactory {
 		pythonInterpreterInitialized = true;
 	}	
 	
-	public static void initJSEngine() {
-		scriptContext = Context.enter();
-		jsEngineInitialized = true;
-
+	/**
+	 * Must be called in UI Thread.
+	 * @throws Exception 
+	 */
+	private static void initJSEngine() throws Exception {
+		Context scriptContext = Context.enter();
+		final Display display = Display.getCurrent();
+		displayContextMap.put(display, scriptContext);
+		SingleSourceHelper.rapAddDisplayDisposeListener(display, new Runnable() {
+			
+			public void run() {
+				displayContextMap.remove(display);
+			}
+		});
 	}
 
+	/**This method must be called in UI Thread!
+	 * @param scriptData
+	 * @param editpart
+	 * @param pvArray
+	 * @return
+	 * @throws Exception
+	 */
 	public static AbstractScriptStore getScriptStore(
 			ScriptData scriptData, AbstractBaseEditPart editpart, PV[] pvArray) throws Exception{
-		
-		if(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null){
+		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
+		if(!scriptData.isEmbedded() && 
+				(scriptData.getPath() == null || scriptData.getPath().getFileExtension() == null)){
 			if(scriptData instanceof RuleScriptData){
 				if(!jsEngineInitialized)
 					initJSEngine();
@@ -52,7 +75,14 @@ public class ScriptStoreFactory {
 			else
 				throw new RuntimeException("No Script Engine for this type of script");
 		}
-		String fileExt = scriptData.getPath().getFileExtension().trim().toLowerCase();
+		String fileExt = ""; //$NON-NLS-1$
+		if(scriptData.isEmbedded()){
+			if(scriptData.getScriptType() == ScriptType.JAVASCRIPT)
+				fileExt = ScriptService.JS;
+			else if (scriptData.getScriptType() == ScriptType.PYTHON)
+				fileExt = ScriptService.PY;				
+		}else
+			fileExt= scriptData.getPath().getFileExtension().trim().toLowerCase();
 		if(fileExt.equals(ScriptService.JS)){ //$NON-NLS-1$
 			if(!jsEngineInitialized)
 				initJSEngine();
@@ -69,16 +99,20 @@ public class ScriptStoreFactory {
 	
 	/**This method must be executed in UI Thread!
 	 * @return the script context.
+	 * @throws Exception 
 	 */
-	public static Context getJavaScriptContext() {
+	public static Context getJavaScriptContext() throws Exception {
+		Display display = Display.getCurrent();
+		boolean jsEngineInitialized = displayContextMap.containsKey(display);
 		if(!jsEngineInitialized)
 			initJSEngine();		
-		return scriptContext;
+		return displayContextMap.get(display);
 	}
 	
 	public static void exit(){
+		boolean jsEngineInitialized = displayContextMap.containsKey(Display.getCurrent());
 		if(jsEngineInitialized)
-			UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			UIBundlingThread.getInstance().addRunnable(Display.getCurrent(), new Runnable(){
 				public void run() {
 					Context.exit();
 				}

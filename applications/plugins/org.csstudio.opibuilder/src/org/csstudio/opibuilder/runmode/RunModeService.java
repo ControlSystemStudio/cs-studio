@@ -13,11 +13,13 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
@@ -30,11 +32,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.internal.WorkbenchPage;
 
 /**The service for running of OPI.
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("restriction")
 public class RunModeService {
 
 	public enum TargetWindow{
@@ -108,7 +112,10 @@ public class RunModeService {
 				IWorkbenchWindow targetWindow = null;
 				switch (target) {
 				case NEW_WINDOW:
-					targetWindow = createNewWindow(windowBounds);
+					if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+						SingleSourceHelper.rapOpenOPIInNewWindow(path);
+					else
+						targetWindow = createNewWindow(windowBounds);
 					break;
 				case RUN_WINDOW:
 					if(runWorkbenchWindow == null){
@@ -157,7 +164,8 @@ public class RunModeService {
 						targetWindow.getShell().forceFocus();						
 						targetWindow.getActivePage().openEditor(
 								runnerInput, OPIRunner.ID); //$NON-NLS-1$
-						targetWindow.getShell().moveAbove(null);
+						if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+							targetWindow.getShell().moveAbove(null);
 					} catch (PartInitException e) {
 						OPIBuilderPlugin.getLogger().log(Level.WARNING,
 						        "Failed to run OPI " + path.lastSegment(), e);
@@ -195,7 +203,8 @@ public class RunModeService {
 						}
 					}
 					
-					if(!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
+					//Open a new view					
+					if(position != Position.DETACHED && !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
 						if(MessageDialog.openQuestion(window.getShell(), "Switch to OPI Runtime Perspective", 
 								"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
 								"\nDo you want to switch to it now?"))
@@ -204,15 +213,18 @@ public class RunModeService {
 							} catch (WorkbenchException e) {
 								ErrorHandlerUtil.handleError(
 										"Faile to switch to OPI Runtime perspective", e, false, true);
-							}
-							
+							}							
 					}
 					
-					//Open a new view
+					
+					String secondID =  OPIView.createNewInstance() + position.name();
 					IViewPart opiView = page.showView(
-							OPIView.ID, OPIView.createNewInstance() + position.name(), IWorkbenchPage.VIEW_ACTIVATE);
+							OPIView.ID,secondID, IWorkbenchPage.VIEW_ACTIVATE);					
 					if(opiView instanceof OPIView){
 						((OPIView)opiView).setOPIInput(runnerInput);
+						if(position == Position.DETACHED)
+							((WorkbenchPage)page).detachView(
+									page.findViewReference(OPIView.ID, secondID));
 					}
 				} catch (PartInitException e) {
 					ErrorHandlerUtil.handleError(NLS.bind("Failed to run OPI {1} in view.", path), e);

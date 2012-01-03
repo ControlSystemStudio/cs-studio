@@ -73,7 +73,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 
@@ -115,8 +115,8 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
     /**
      * 
      */
-    public AlarmChainManagerView()
-    {
+    public AlarmChainManagerView() {
+        // Nothing to do here?
     }
 
     /**
@@ -223,8 +223,8 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
      * 
      */
     @Override
-    public void setFocus()
-    {
+    public void setFocus() {
+     // Nothing to do here?
     }
     
     private String prepareMessageNumber(int iChainID, int iChainPos) throws Exception
@@ -250,6 +250,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
     /**
      * 
      */
+    @Override
     public void widgetSelected(SelectionEvent event)
     {
         if(event.getSource() instanceof CommandButton)
@@ -351,6 +352,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
         }
     }
 
+    @Override
     public void selectionChanged(SelectionChangedEvent event)
     {
         if(event.getSource() instanceof TableViewer)
@@ -373,7 +375,10 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
         }   
     }
 
-    public void widgetDefaultSelected(SelectionEvent e) { }
+    @Override
+    public void widgetDefaultSelected(SelectionEvent e) {
+        // Nothing to do here?
+    }
 
     private List<MessageChainTObject> getTableData()
     {
@@ -450,7 +455,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
                         
             amsSenderSession = amsSenderConnection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
             
-            // CHANGED BY: Markus M�ller, 25.05.2007
+            // CHANGED BY: Markus Moeller, 25.05.2007
             /*
             amsPublisherReply = amsSession.createProducer((Topic)amsContext.lookup(
                     storeAct.getString(org.csstudio.ams.internal.SampleService.P_JMS_AMS_TOPIC_REPLY)));
@@ -499,6 +504,7 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
     {
         DateFormat df = DateFormat.getDateTimeInstance();
         
+        @Override
         public String getColumnText(Object obj, int index)
         {
             MessageChainTObject item = (MessageChainTObject)obj;
@@ -528,13 +534,13 @@ public class AlarmChainManagerView extends ViewPart implements AmsConstants, Sel
             }
         }
 
-        public Image getColumnImage(Object element, int columnIndex)
-        {
+        @Override
+        public Image getColumnImage(Object element, int columnIndex) {
             return null;
         }
     }
     
-    class NameSorter extends ViewerSorter
-    {
+    class NameSorter extends ViewerSorter {
+        // Nothing to do here?
     }
 }

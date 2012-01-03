@@ -39,7 +39,7 @@ public class TypeSupportException extends Exception {
      * @param msg the describing message
      * @param e the wrapped exception, may be <code>null</code>
      */
-	public TypeSupportException(@Nonnull final String msg, @Nullable final Exception e) {
-		super(msg, e);
-	}
+    public TypeSupportException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }

@@ -7,16 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
-import org.csstudio.opibuilder.properties.FilePathProperty;
-import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -26,10 +21,10 @@ import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.widgets.Display;
 import org.python.core.PyCode;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
@@ -39,21 +34,12 @@ import org.python.util.PythonInterpreter;
  * @author Xihui Chen
  *
  */
-public class ExecutePythonScriptAction extends AbstractWidgetAction {
+public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
-	public static final String PROP_PATH = "path";//$NON-NLS-1$
 	private PyCode code;
 	private PythonInterpreter interpreter;
 	private DisplayEditpart displayEditpart;
-	private AbstractBaseEditPart widgetEditPart;
-
-	@Override
-	protected void configureProperties() {
-		addProperty(new FilePathProperty(
-				PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
-				new String[]{"py"}));
-
-	}
+	private AbstractBaseEditPart widgetEditPart;	
 
 	@Override
 	public ActionType getActionType() {
@@ -62,11 +48,11 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 
 	@Override
 	public void run() {
-		if(code == null){
+		if(code == null){			
 			//read file
 			IPath absolutePath = getAbsolutePath();
 			//Add the path of script to python module search path
-			if(absolutePath != null && !absolutePath.isEmpty()){
+			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
 				try {
 					ScriptStoreFactory.initPythonInterpreter();
 				} catch (Exception e) {
@@ -98,12 +84,14 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 			}
 		}
 		
-		Job job = new Job("Load Python Script") {
+		Job job = new Job("Execute Python Script") {
 
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + getAbsolutePath(),
-						IProgressMonitor.UNKNOWN);
+				String taskName = isEmbedded()?"Execute Python Script" : 
+					"Connecting to " + getAbsolutePath();
+				monitor.beginTask(taskName,
+						IProgressMonitor.UNKNOWN);				
 				runTask();
 				monitor.done();
 				return Status.OK_STATUS;
@@ -114,23 +102,22 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 	}
 	
 	public void runTask() {
+		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
+
 		try {
 			if(code == null){
-				//read file
-				IPath absolutePath = getAbsolutePath();				
-				
-				InputStream inputStream = ResourceUtil.pathToInputStream(absolutePath, false);
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(inputStream));				
-				
+											
 				//compile
-				code = interpreter.compile(reader); //$NON-NLS-1$
-				inputStream.close();
-				reader.close();
+				if(isEmbedded())
+					code = interpreter.compile(getScriptText());
+				else{
+					code = interpreter.compile(getReader()); //$NON-NLS-1$
+					closeReader();
+				}
 			}
 
 
-			UIBundlingThread.getInstance().addRunnable(new Runnable() {
+			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
 				public void run() {
 
@@ -152,23 +139,15 @@ public class ExecutePythonScriptAction extends AbstractWidgetAction {
 		}
 	}
 
-	private IPath getPath(){
-		return (IPath)getPropertyValue(PROP_PATH);
-	}
-
-	private IPath getAbsolutePath(){
-		//read file
-		IPath absolutePath = getPath();
-		if(!getPath().isAbsolute()){
-    		absolutePath =
-    			ResourceUtil.buildAbsolutePath(getWidgetModel(), getPath());
-    	}
-		return absolutePath;
+	
+	@Override
+	protected String getFileExtension() {
+		return ScriptService.PY;
 	}
 
 	@Override
-	public String getDefaultDescription() {
-		return super.getDefaultDescription() + " " + getPath(); //$NON-NLS-1$
+	protected String getScriptHeader() {
+		return ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
 	}
 
 }

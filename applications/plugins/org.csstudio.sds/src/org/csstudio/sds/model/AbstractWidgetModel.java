@@ -286,12 +286,17 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	private Class _javaType;
 
+    private final List<AbstractCursor> _cursorDescriptors;
+
+    public AbstractWidgetModel() {
+        this(false);
+    }
 
 	/**
 	 * Standard constructor. Creates a not rotatable widget
 	 */
-	public AbstractWidgetModel() {
-		this(false);
+	public AbstractWidgetModel(final boolean isRotatable) {
+		this(isRotatable, CursorService.getInstance().availableCursors());
 	}
 
 	/**
@@ -300,8 +305,9 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * @param isRotatable
 	 *            true if this widget is rotatable
 	 */
-	public AbstractWidgetModel(final boolean isRotatable) {
-		_propertyChangeSupport = new PropertyChangeSupport(this);
+	public AbstractWidgetModel(final boolean isRotatable, final List<AbstractCursor> cursorDescriptors) {
+		_cursorDescriptors = cursorDescriptors;
+        _propertyChangeSupport = new PropertyChangeSupport(this);
 		_propertyMap = new LinkedHashMap<String, WidgetProperty>();
 		_tempRemovedPropertyMap = new HashMap<String, WidgetProperty>();
 		_isRotatable = isRotatable;
@@ -356,15 +362,9 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		addBooleanProperty(PROP_ENABLED, "Enabled", WidgetPropertyCategory.BEHAVIOR, DEFAULT_ENABLED, false);
 		addStringProperty(PROP_PERMISSSION_ID, "Permission ID", WidgetPropertyCategory.BEHAVIOR, "", false);
 		// Cursor
-		List<AbstractCursor> cursorDescriptors = CursorService.getInstance().availableCursors();
+		final List<AbstractCursor> cursorDescriptors = getCursorDescriptors();
 		addOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,
 		                  cursorDescriptors.toArray(new IOption[cursorDescriptors.size()]), "cursor.default", false);
-//		List<String> cursorTextDescriptors = new ArrayList<String>();
-//		for (AbstractCursor abstractCursor : cursorDescriptors) {
-//            cursorTextDescriptors.add(abstractCursor.getTitle());
-//        }
-//		int index = cursorDescriptors.indexOf(CursorService.getInstance().findCursor("cursor.default"));
-//		addArrayOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,cursorTextDescriptors.toArray(new String[0]), index, false);
 		// Rotation
 		if (isRotatable) {
 			addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false);
@@ -381,6 +381,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		hideProperty(PROP_ACCESS_GRANTED, getTypeID());
 		hideProperty(PROP_WRITE_ACCESS_GRANTED, getTypeID());
 	}
+
+    /**
+     * @return
+     */
+    private List<AbstractCursor> getCursorDescriptors() {
+        return _cursorDescriptors;
+    }
 
 	/**
 	 * Returns the default tooltip for this model.
@@ -414,7 +421,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            the id of the master
 	 */
 	public final void hideProperty(final String propertyID, final String masterId) {
-		WidgetProperty property = getPropertyInternal(propertyID);
+		final WidgetProperty property = getPropertyInternal(propertyID);
 		if (property != null) {
 			property.hide(masterId);
 		}
@@ -432,7 +439,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            the id of the master
 	 */
 	public final void showProperty(final String propertyID, final String masterId) {
-		WidgetProperty property = getPropertyInternal(propertyID);
+		final WidgetProperty property = getPropertyInternal(propertyID);
 		if (property != null) {
 			property.show(masterId);
 		}
@@ -495,14 +502,14 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * @return The {@link ActionData}
 	 */
 	public ActionData getActionData() {
-		ActionData result = new ActionData();
-		ActionData ownData = getActionDataProperty(PROP_ACTIONDATA);
-		for (AbstractWidgetActionModel action : ownData.getWidgetActions()) {
+		final ActionData result = new ActionData();
+		final ActionData ownData = getActionDataProperty(PROP_ACTIONDATA);
+		for (final AbstractWidgetActionModel action : ownData.getWidgetActions()) {
 			result.addAction(action);
 		}
 		if (this.getParent() != null) {
-			ActionData parentData = this.getParent().getActionData();
-			for (AbstractWidgetActionModel action : parentData.getWidgetActions()) {
+			final ActionData parentData = this.getParent().getActionData();
+			for (final AbstractWidgetActionModel action : parentData.getWidgetActions()) {
 				result.addAction(action);
 			}
 		}
@@ -550,7 +557,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *         enabled
 	 */
 	public final boolean isEnabledRecursive() {
-		boolean result = isAccesible() && (getParent() != null ? getParent().isAccesible() : true);
+		final boolean result = isAccesible() && (getParent() != null ? getParent().isAccesible() : true);
 		return result;
 	}
 
@@ -656,9 +663,9 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * @return the IDs of all visible properties
 	 */
 	public final synchronized Set<String> getVisiblePropertyIds() {
-		Set<String> result = new LinkedHashSet<String>();
+		final Set<String> result = new LinkedHashSet<String>();
 
-		for (WidgetProperty property : _properties) {
+		for (final WidgetProperty property : _properties) {
 			if (property.isVisible()) {
 				result.add(property.getId());
 			}
@@ -685,63 +692,63 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public final synchronized String getStringProperty(final String propertyId) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof StringProperty)) {
+		if (property != null && property instanceof StringProperty) {
 			return property.getPropertyValue();
 		}
 		throw new IllegalArgumentException("No String property [" + propertyId + "] registered.");
 	}
 
 	public final synchronized ActionData getActionDataProperty(final String propertyId) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof ActionDataProperty)) {
+		if (property != null && property instanceof ActionDataProperty) {
 			return property.getPropertyValue();
         }
 		throw new IllegalArgumentException("No ActionData property [" + propertyId + "] registered.");
 	}
 
 	public final synchronized int getIntegerProperty(final String propertyId) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof IntegerProperty)) {
+		if (property != null && property instanceof IntegerProperty) {
 			return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Integer property [" + propertyId + "] registered.");
 	}
 
-	public final synchronized double getDoubleProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+	public synchronized double getDoubleProperty(final String propertyId) {
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof DoubleProperty)) {
+        if ( property != null && property instanceof DoubleProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Double property [" + propertyId + "] registered.");
 	}
 
     public final synchronized String getTooltipProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof TooltipProperty)) {
+        if ( property != null && property instanceof TooltipProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
     }
 
-	public final synchronized boolean getBooleanProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+	public synchronized boolean getBooleanProperty(final String propertyId) {
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof BooleanProperty)) {
+        if ( property != null && property instanceof BooleanProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Boolean property [" + propertyId + "] registered.");
     }
 
     public final synchronized int getArrayOptionProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof ArrayOptionProperty)) {
+        if ( property != null && property instanceof ArrayOptionProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No ArrayOption property [" + propertyId
@@ -749,54 +756,54 @@ public abstract class AbstractWidgetModel implements IAdaptable {
     }
 
 	public final synchronized Map<String, String> getStringMapProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof StringMapProperty)) {
+        if ( property != null && property instanceof StringMapProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No StringMap property [" + propertyId + "] registered.");
     }
 
     public final synchronized String getOptionProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof OptionProperty)) {
+        if ( property != null && property instanceof OptionProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Option property [" + propertyId + "] registered.");
     }
 
     public final synchronized IPath getResourceProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof ResourceProperty)) {
+        if ( property != null && property instanceof ResourceProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Resource property [" + propertyId + "] registered.");
 	}
 
 	public final synchronized PointList getPointlistProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof PointlistProperty)) {
+        if ( property != null && property instanceof PointlistProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
 	}
 
     public final synchronized double[] getDoubleArrayProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof DoubleArrayProperty)) {
+        if ( property != null && property instanceof DoubleArrayProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
 	}
 
     public final synchronized String getBehaviorProperty(final String propertyId) {
-        WidgetProperty property = _propertyMap.get(propertyId);
+        final WidgetProperty property = _propertyMap.get(propertyId);
 
-        if ( (property != null) && (property instanceof BehaviorProperty)) {
+        if ( property != null && property instanceof BehaviorProperty) {
             return property.getPropertyValue();
         }
         throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
@@ -806,7 +813,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                         final WidgetPropertyCategory category,
 	                                         final String[] options, final int defaultValue,
 	                                         final boolean before, final String... relative) {
-		ArrayOptionProperty property = new ArrayOptionProperty(description, category, options, defaultValue);
+		final ArrayOptionProperty property = new ArrayOptionProperty(description, category, options, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -815,7 +822,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                       final WidgetPropertyCategory category,
 	                                       final Map<String, String> defaultValue,
 	                                       final boolean before, final String... relative) {
-		StringMapProperty property = new StringMapProperty(description, category, defaultValue);
+		final StringMapProperty property = new StringMapProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -824,7 +831,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                    final WidgetPropertyCategory category,
 	                                    final IOption[] options, final String defaultValue,
 	                                    final boolean before, final String... relative) {
-		OptionProperty property = new OptionProperty(description, category, options, defaultValue);
+		final OptionProperty property = new OptionProperty(description, category, options, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -833,7 +840,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                      final WidgetPropertyCategory category,
 	                                      final IPath defaultValue, final String[] fileExtensions,
 	                                      final boolean before, final String... relative) {
-		ResourceProperty property = new ResourceProperty(description, category, defaultValue, fileExtensions);
+		final ResourceProperty property = new ResourceProperty(description, category, defaultValue, fileExtensions);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -842,7 +849,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                       final WidgetPropertyCategory category,
 	                                       final PointList defaultValue,
 	                                       final boolean before, final String... relative) {
-		PointlistProperty property = new PointlistProperty(description, category, defaultValue);
+		final PointlistProperty property = new PointlistProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -851,26 +858,26 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                         final WidgetPropertyCategory category,
 	                                         final double[] defaultValue,
 	                                         final boolean before, final String... relative) {
-		DoubleArrayProperty property = new DoubleArrayProperty(description, category, defaultValue);
+		final DoubleArrayProperty property = new DoubleArrayProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
 
 	private void addBehaviorProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final String... after) {
-		BehaviorProperty property = new BehaviorProperty(description, category, defaultValue);
+		final BehaviorProperty property = new BehaviorProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, false, after);
 	}
 
 	private void addTooltipProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final String... after) {
-		TooltipProperty property = new TooltipProperty(description, category, defaultValue, this);
+		final TooltipProperty property = new TooltipProperty(description, category, defaultValue, this);
 		property.setId(id);
 		doAddProperty(property, false, after);
 	}
 
 	private void addActionDataProperty(final String id, final String description, final WidgetPropertyCategory category, final ActionData defaultValue,
 			final String... after) {
-		ActionDataProperty property = new ActionDataProperty(description, category, defaultValue);
+		final ActionDataProperty property = new ActionDataProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, false, after);
 	}
@@ -879,7 +886,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                     final WidgetPropertyCategory category,
 	                                     final boolean defaultValue,
 	                                     final boolean before, final String... relative) {
-		BooleanProperty property = new BooleanProperty(description, category, defaultValue);
+		final BooleanProperty property = new BooleanProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -888,7 +895,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                     final WidgetPropertyCategory category,
 	                                     final int defaultValue, final int min, final int max,
 	                                     final boolean before, final String... relative) {
-		IntegerProperty property = new IntegerProperty(description, category, defaultValue, min, max);
+		final IntegerProperty property = new IntegerProperty(description, category, defaultValue, min, max);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -906,7 +913,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                    final double defaultValue,
 	                                    final double min, final double max,
 	                                    final boolean before, final String... relative) {
-		DoubleProperty property = new DoubleProperty(description, longDescription, category, defaultValue, min, max);
+		final DoubleProperty property = new DoubleProperty(description, longDescription, category, defaultValue, min, max);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -924,13 +931,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public final void addStringProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final boolean before, final String... relative) {
-		StringProperty property = new StringProperty(description, category, defaultValue);
+		final StringProperty property = new StringProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
 
 	public final void addColorProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final boolean before, final String... relative) {
-		ColorProperty property = new ColorProperty(description, category, defaultValue);
+		final ColorProperty property = new ColorProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -939,7 +946,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	                                  final WidgetPropertyCategory category,
 	                                  final String defaultValue, final boolean before,
 	                                  final String... relative) {
-		FontProperty property = new FontProperty(description, category, defaultValue);
+		final FontProperty property = new FontProperty(description, category, defaultValue);
 		property.setId(id);
 		doAddProperty(property, before, relative);
 	}
@@ -949,15 +956,15 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 		int index = _properties.size();
 
-        if ( (relative != null) && (relative.length > 0)) {
+        if ( relative != null && relative.length > 0) {
             int pos = 0;
             if (!before) {
               pos=1;
             }
-            for (String pId : relative) {
-                WidgetProperty p = _propertyMap.get(pId);
+            for (final String pId : relative) {
+                final WidgetProperty p = _propertyMap.get(pId);
 
-                if ( (p != null) && _properties.contains(p)) {
+                if ( p != null && _properties.contains(p)) {
                     index = _properties.indexOf(p) + pos;
                 }
             }
@@ -973,10 +980,10 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		assert _properties.contains(property);
 	}
 
-	public final String getColor(final String propertyId) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+	public String getColor(final String propertyId) {
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof ColorProperty)) {
+		if (property != null && property instanceof ColorProperty) {
 			return property.getPropertyValue();
 		}
 		throw new IllegalArgumentException("No color property [" + propertyId + "] registered.");
@@ -1015,10 +1022,10 @@ public abstract class AbstractWidgetModel implements IAdaptable {
         }
     }
 
-	public final void setColor(final String propertyId, final String hexOrVariable) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+	public void setColor(final String propertyId, final String hexOrVariable) {
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof ColorProperty)) {
+		if (property != null && property instanceof ColorProperty) {
 			property.setPropertyValue(hexOrVariable);
 		} else {
 			throw new IllegalArgumentException("No color property [" + propertyId + "] registered.");
@@ -1026,18 +1033,18 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public final String getFont(final String propertyId) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof FontProperty)) {
+		if (property != null && property instanceof FontProperty) {
 			return property.getPropertyValue();
 		}
 		throw new IllegalArgumentException("No font property [" + propertyId + "] registered.");
 	}
 
 	public final void setFont(final String propertyId, final FontData font) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
-		if ((property != null) && (property instanceof FontProperty)) {
+		if (property != null && property instanceof FontProperty) {
 			property.setPropertyValue(font);
 		} else {
 			throw new IllegalArgumentException("No font property [" + propertyId + "] registered.");
@@ -1083,7 +1090,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            the value
 	 */
 	public synchronized void setPropertyValue(final String propertyID, final Object value) {
-		WidgetProperty property = _propertyMap.get(propertyID);
+		final WidgetProperty property = _propertyMap.get(propertyID);
 		if (property != null) {
 			if (!PROP_ACCESS_GRANTED.equals(propertyID) || grantAccessCall) {
 				// ignore setting of PROP_ACCESS_GRANTED if the property was
@@ -1102,7 +1109,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            the value
 	 */
 	public synchronized void setPropertyManualValue(final String propertyID, final Object manualValue) {
-		WidgetProperty property = _propertyMap.get(propertyID);
+		final WidgetProperty property = _propertyMap.get(propertyID);
 		if (property != null) {
 			if (!PROP_ACCESS_GRANTED.equals(propertyID) || grantAccessCall) {
 				// ignore setting of PROP_ACCESS_GRANTED if the property was
@@ -1121,7 +1128,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            The new description of the property.
 	 */
 	public synchronized void setPropertyDescription(final String propertyID, final String description) {
-		WidgetProperty property = _propertyMap.get(propertyID);
+		final WidgetProperty property = _propertyMap.get(propertyID);
 
 		if (property != null) {
 			property.setDescription(description);
@@ -1140,8 +1147,8 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		assert name != null;
 		assert value != null;
 
-		Map<String, String> aliases = new HashMap<String, String>();
-		for (String key : getAliases().keySet()) {
+		final Map<String, String> aliases = new HashMap<String, String>();
+		for (final String key : getAliases().keySet()) {
 			aliases.put(key, getAliases().get(key));
 		}
 		aliases.put(name, value);
@@ -1194,11 +1201,11 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 */
 	public final Map<String, String> getAllInheritedAliases() {
 
-		Map<String, String> result = new HashMap<String, String>();
+		final Map<String, String> result = new HashMap<String, String>();
 
 		if (getParent() != null) {
 			// get aliases from parent
-			Map<String, String> inheritedAliases = getParent().getAllInheritedAliases();
+			final Map<String, String> inheritedAliases = getParent().getAllInheritedAliases();
 
 			// put them into the result list first
 			result.putAll(inheritedAliases);
@@ -1206,7 +1213,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 			// put our own aliases at last
 			result.putAll(getAliases());
 		} else {
-			Map<String, String> myAliases = getAliases();
+			final Map<String, String> myAliases = getAliases();
 
 			if (myAliases != null) {
 				result.putAll(myAliases);
@@ -1239,7 +1246,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            The dynamics descriptor.
 	 */
 	public final synchronized void setDynamicsDescriptor(final String propertyID, final DynamicsDescriptor dynamicsDescriptor) {
-		WidgetProperty p = _propertyMap.get(propertyID);
+		final WidgetProperty p = _propertyMap.get(propertyID);
 
 		if (p != null) {
 			p.setDynamicsDescriptor(dynamicsDescriptor);
@@ -1248,7 +1255,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 			// together with the current value of the property - do never send
 			// the dynamics descriptor itself as value, because it is not
 			// compatible to the expected data type for that property
-			Object propertyValue = getPropertyInternal(propertyID).getPropertyValue();
+			final Object propertyValue = getPropertyInternal(propertyID).getPropertyValue();
 			firePropertyChangeEvent(propertyID, propertyValue, propertyValue);
 		}
 	}
@@ -1263,7 +1270,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	public final synchronized DynamicsDescriptor getDynamicsDescriptor(final String propertyID) {
 		DynamicsDescriptor result = null;
 
-		WidgetProperty p = _propertyMap.get(propertyID);
+		final WidgetProperty p = _propertyMap.get(propertyID);
 
 		if (p != null) {
 			result = p.getDynamicsDescriptor();
@@ -1312,7 +1319,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		assert isAncestorReachable(ancestor) : "Ancestor (" + ancestor + ") is not reachable from " + this;
 		int result = getIntegerProperty(PROP_POS_X);
 		ContainerModel parent = this.getParent();
-		while ((parent != null) && !parent.equals(ancestor)) {
+		while (parent != null && !parent.equals(ancestor)) {
 			result = result + parent.getX();
 			parent = parent.getParent();
 		}
@@ -1331,7 +1338,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		assert isAncestorReachable(ancestor) : "Ancestor (" + ancestor + ") is not reachable from " + this;
 		int result = getIntegerProperty(PROP_POS_Y);
 		ContainerModel parent = this.getParent();
-		while ((parent != null) && !parent.equals(ancestor)) {
+		while (parent != null && !parent.equals(ancestor)) {
 			result = result + parent.getY();
 			parent = parent.getParent();
 		}
@@ -1487,7 +1494,8 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public final Object getAdapter(final Class adapter) {
 		return Platform.getAdapterManager().getAdapter(this, adapter);
 	}
@@ -1530,7 +1538,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public final void addPropertyChangeListener(final String propertyId, final IPropertyChangeListener listener) {
-		WidgetProperty property = _propertyMap.get(propertyId);
+		final WidgetProperty property = _propertyMap.get(propertyId);
 
 		if (property != null) {
 			property.addPropertyChangeListener(listener);
@@ -1549,13 +1557,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	public void saveState() {
 		state = new HashMap<String, Object>();
-		for (String key : _propertyMap.keySet()) {
+		for (final String key : _propertyMap.keySet()) {
 			state.put(key, _propertyMap.get(key).getPropertyValue());
 		}
 	}
 
 	public void restoreState() {
-		for (String key : state.keySet()) {
+		for (final String key : state.keySet()) {
 			setPropertyValue(key, state.get(key));
 		}
 	}
@@ -1571,7 +1579,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 *            The new value of the property.
 	 */
 	protected final void firePropertyChangeEvent(final String propertyName, final Object oldValue, final Object newValue) {
-		PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
+		final PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
 		_propertyChangeSupport.firePropertyChange(evt);
 	}
 
@@ -1601,18 +1609,18 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	public IProcessVariableAddress getMainPvAdress() {
 
-		String raw = getPrimaryPV();
+		final String raw = getPrimaryPV();
 
-        if ((raw != null) && (raw.length() > 0)) {
-			Map<String, String> aliases = getAllInheritedAliases();
+        if (raw != null && raw.length() > 0) {
+			final Map<String, String> aliases = getAllInheritedAliases();
 
 			try {
-				String channelName = ChannelReferenceValidationUtil.createCanonicalName(raw, aliases);
+				final String channelName = ChannelReferenceValidationUtil.createCanonicalName(raw, aliases);
 
-				IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
+				final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
 				return pv;
 
-			} catch (ChannelReferenceValidationException e) {
+			} catch (final ChannelReferenceValidationException e) {
 				return null;
 			}
 		}
@@ -1621,32 +1629,32 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public List<IProcessVariableAddress> getAllPvAdresses() {
-		Set<IProcessVariableAddress> result = new HashSet<IProcessVariableAddress>();
+		final Set<IProcessVariableAddress> result = new HashSet<IProcessVariableAddress>();
 
-		Map<String, String> aliases = getAllInheritedAliases();
+		final Map<String, String> aliases = getAllInheritedAliases();
 
 		// add the main pv
-		IProcessVariableAddress mainPv = getMainPvAdress();
+		final IProcessVariableAddress mainPv = getMainPvAdress();
 		if (mainPv != null) {
 			result.add(mainPv);
 		}
 
 		// collect pvs from dynamic descriptors
-		for (WidgetProperty wp : _propertyMap.values()) {
-			DynamicsDescriptor dd = wp.getDynamicsDescriptor();
+		for (final WidgetProperty wp : _propertyMap.values()) {
+			final DynamicsDescriptor dd = wp.getDynamicsDescriptor();
 
 			if (dd != null) {
-				for (ParameterDescriptor pd : dd.getInputChannels()) {
+				for (final ParameterDescriptor pd : dd.getInputChannels()) {
 
 					try {
-						String channelName = ChannelReferenceValidationUtil.createCanonicalName(pd.getChannel(), aliases);
+						final String channelName = ChannelReferenceValidationUtil.createCanonicalName(pd.getChannel(), aliases);
 
-						IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
+						final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
 
 						if (pv != null) {
 							result.add(pv);
 						}
-					} catch (ChannelReferenceValidationException e) {
+					} catch (final ChannelReferenceValidationException e) {
 		                   // we do nothing
 					}
 
@@ -1658,24 +1666,24 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	public Set<IProcessVariableAddress> getPvAdressesWithWriteAccess() {
-		Set<IProcessVariableAddress> result = new HashSet<IProcessVariableAddress>();
+		final Set<IProcessVariableAddress> result = new HashSet<IProcessVariableAddress>();
 
-		Map<String, String> aliases = getAllInheritedAliases();
+		final Map<String, String> aliases = getAllInheritedAliases();
 
 		// collect pvs from dynamic descriptors
-		for (WidgetProperty wp : _propertyMap.values()) {
-			DynamicsDescriptor dd = wp.getDynamicsDescriptor();
+		for (final WidgetProperty wp : _propertyMap.values()) {
+			final DynamicsDescriptor dd = wp.getDynamicsDescriptor();
 
-			if ((dd != null) && (dd.getOutputChannel() != null)) {
+			if (dd != null && dd.getOutputChannel() != null) {
 				try {
-					String channelName = ChannelReferenceValidationUtil.createCanonicalName(dd.getOutputChannel().getChannel(), aliases);
+					final String channelName = ChannelReferenceValidationUtil.createCanonicalName(dd.getOutputChannel().getChannel(), aliases);
 
-					IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
+					final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
 
 					if (pv != null) {
 						result.add(pv);
 					}
-				} catch (ChannelReferenceValidationException e) {
+				} catch (final ChannelReferenceValidationException e) {
 					// we do nothing
 				}
 			}
@@ -1684,8 +1692,8 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	private boolean hasOutputChannel() {
-		for (WidgetProperty property : _propertyMap.values()) {
-			DynamicsDescriptor dynamicsDescriptor = property.getDynamicsDescriptor();
+		for (final WidgetProperty property : _propertyMap.values()) {
+			final DynamicsDescriptor dynamicsDescriptor = property.getDynamicsDescriptor();
 
 			// a dynamics descriptor must not exist
 			if (dynamicsDescriptor != null) {

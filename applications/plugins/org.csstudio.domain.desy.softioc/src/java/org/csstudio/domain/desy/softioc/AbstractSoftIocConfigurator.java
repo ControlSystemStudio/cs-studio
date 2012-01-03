@@ -23,21 +23,21 @@ import javax.annotation.Nonnull;
 import com.google.common.collect.Sets;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Abstract configurator for Soft IOC setup.
+ *
  * @author bknerr
  * @since 27.05.2011
  */
-public class AbstractSoftIocConfigurator  implements ISoftIocConfigurator {
-    
-    protected final File _exeFilePath;
-    protected final File _cmdCfgFilePath;
+public abstract class AbstractSoftIocConfigurator  implements ISoftIocConfigurator {
+
+    private final File _exeFilePath;
+    private final File _cmdCfgFilePath;
     private Set<File> _dbFiles;
 
     /**
      * Constructor.
      */
-    public AbstractSoftIocConfigurator(@Nonnull final File executable, 
+    public AbstractSoftIocConfigurator(@Nonnull final File executable,
                                        @Nonnull final File cmds) {
         _exeFilePath = executable;
         _cmdCfgFilePath = cmds;
@@ -80,5 +80,5 @@ public class AbstractSoftIocConfigurator  implements ISoftIocConfigurator {
         _dbFiles = Sets.newHashSet(dbFiles);
         return this;
     }
-    
+
 }

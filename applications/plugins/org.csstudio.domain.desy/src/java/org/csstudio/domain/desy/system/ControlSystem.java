@@ -37,8 +37,6 @@ import com.google.common.collect.MapMaker;
  */
 public final class ControlSystem implements Serializable {
 
-    private static final long serialVersionUID = 3883445164802010609L;
-
     public static final ControlSystem EPICS_DEFAULT =
         new ControlSystem("EpicsDefault",
                           ControlSystemType.EPICS_V3);
@@ -49,6 +47,8 @@ public final class ControlSystem implements Serializable {
         new ControlSystem("TangoDefault",
                           ControlSystemType.TANGO);
 
+    private static final long serialVersionUID = 3883445164802010609L;
+
     /**
      * There will be few control systems, but many entities referring to them.
      * Use flyweight pattern.
@@ -56,21 +56,21 @@ public final class ControlSystem implements Serializable {
     private static final ConcurrentMap<String, ControlSystem> CS_CACHE =
         new MapMaker().initialCapacity(3).softValues().makeMap();
     static {
-        CS_CACHE.put(EPICS_DEFAULT.getId(), EPICS_DEFAULT);
-        CS_CACHE.put(DOOCS_DEFAULT.getId(), DOOCS_DEFAULT);
-        CS_CACHE.put(TANGO_DEFAULT.getId(), TANGO_DEFAULT);
+        CS_CACHE.put(EPICS_DEFAULT.getName(), EPICS_DEFAULT);
+        CS_CACHE.put(DOOCS_DEFAULT.getName(), DOOCS_DEFAULT);
+        CS_CACHE.put(TANGO_DEFAULT.getName(), TANGO_DEFAULT);
     }
 
-    private final String _id;
+    private final String _name;
     private final ControlSystemType _type;
 
     /**
      * Constructor.
      */
-    private ControlSystem(@Nonnull final String id,
+    private ControlSystem(@Nonnull final String name,
                           @Nonnull final ControlSystemType type) {
 
-        _id = id;
+        _name = name;
         _type = type;
     }
 
@@ -81,7 +81,7 @@ public final class ControlSystem implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ( _id == null ? 0 : _id.hashCode());
+        result = prime * result + ( _name == null ? 0 : _name.hashCode());
         result = prime * result + ( _type == null ? 0 : _type.hashCode());
         return result;
     }
@@ -95,15 +95,15 @@ public final class ControlSystem implements Serializable {
             return false;
         }
         final ControlSystem other = (ControlSystem) obj;
-        if (!_id.equals(other._id) || !_type.equals(other._type)) {
+        if (!_name.equals(other._name) || !_type.equals(other._type)) {
                 return false;
         }
         return true;
     }
 
     @Nonnull
-    public String getId() {
-        return _id;
+    public String getName() {
+        return _name;
     }
 
     @Nonnull

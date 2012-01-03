@@ -18,13 +18,13 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  *
@@ -54,25 +54,33 @@ public class SimpleSliderAlarmBehavior extends AbstractDesyAlarmBehavior<SimpleS
     @Override
     protected void doInitialize(final SimpleSliderModel widget) {
         super.doInitialize(widget);
-        _defColor = widget.getColor(BargraphModel.PROP_COLOR_FOREGROUND);
+        _defColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
 
     @Override
     protected void doProcessValueChange(final SimpleSliderModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
         // .. update slider value
         model.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
-        Severity severity = anyData.getSeverity();
-        if (severity != null) {
-            if (severity.isInvalid()) {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                model.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
-            model.setPropertyValue(SimpleSliderModel.PROP_COLOR_FOREGROUND,
-                                   determineColorBySeverity(severity, _defColor));
-            model.setPropertyValue(SimpleSliderModel.PROP_COLOR_BACKGROUND,
-                                   determineColorBySeverity(severity, _defColor));
-        }
+//        Severity severity = anyData.getSeverity();
+//        if (severity != null) {
+//            _defColor = determineColorBySeverity(severity, null);
+//            model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND,_defColor);
+//        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final SimpleSliderModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? _defColor
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
     }
 
     @Override

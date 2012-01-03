@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.messaging.impl.jms;
 
 import org.csstudio.nams.service.messaging.declaration.MessagingService;
@@ -6,11 +7,11 @@ import org.csstudio.nams.service.messaging.extensionPoint.MessagingServiceFactor
 public class MessagingServiceFactoryImpl implements MessagingServiceFactory {
 
 	public MessagingServiceFactoryImpl() {
-
+	    // Nothing to do here
 	}
 
-	public MessagingService createService() {
+	@Override
+    public MessagingService createService() {
 		return new JMSMessagingServiceImpl();
 	}
-
 }

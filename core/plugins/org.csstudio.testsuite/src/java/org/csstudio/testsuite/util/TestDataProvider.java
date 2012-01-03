@@ -24,20 +24,26 @@
 package org.csstudio.testsuite.util;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.common.SiteId;
+import org.csstudio.domain.common.resource.CssResourceLocator;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
 
 
 /**
@@ -58,27 +64,32 @@ import org.slf4j.LoggerFactory;
  */
 public final class TestDataProvider {
 
+
+    public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
+
     private static final Logger LOG = LoggerFactory.getLogger(TestDataProvider.class);
-    
+
+    private static final String HOST_PROPERTIES_FILE_NAME = "host.properties";
+    private static final String HOST_PROPERTIES_ROOT_NS = "root";
+    private static final String HOST_PROPERTIES_NS_SEP = ".";
+
     private static final String CONFIGURATION_FILE_SUFFIX = "TestConfiguration.ini";
 
     private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";
 
-    public static final TestDataProvider EMPTY_PROVIDER = new TestDataProvider();
+    private static final String EMPTY_PROVIDER_PLUGIN = "<emptyProvider>";
 
     private static TestDataProvider INSTANCE;
-
     private static Properties PROPERTIES = new Properties();
-
     private final String _pluginId;
 
     /**
      * Constructor.
      */
     private TestDataProvider() {
-        _pluginId = "<emptyProvider>";
+        _pluginId = EMPTY_PROVIDER_PLUGIN;
     }
-    
+
     /**
      * Constructor.
      */
@@ -86,27 +97,57 @@ public final class TestDataProvider {
         _pluginId = pluginId;
     }
 
-    /**
-     * @param pluginId
-     * @param testConfigFileName
-     * @throws IOException
-     */
-    private static void loadProperties(@Nonnull final String pluginId,
-                                       @Nonnull final String testConfigFileName)
-        throws IOException {
+    private static void loadProperties(@Nonnull final String pluginId)
+        throws IOException, BundleException {
 
-        openStreamAndLoadProps(pluginId, testConfigFileName);
-        final String secretFile = findSensitiveDataFile();
-        if (secretFile != null) {
-            openStreamAndLoadProps(pluginId, secretFile);
+        findAndLoadGeneralProperties(pluginId);
+        findAndLoadGeneralSecretProperties(pluginId);
+        findAndLoadHostSpecificProperties();
+    }
+
+    private static void findAndLoadGeneralProperties(@Nonnull final String pluginId)
+                                                     throws IOException, BundleException {
+        final String testConfigFileName = createSiteSpecificName();
+        final URL resource = locateResource(pluginId, testConfigFileName);
+        if (resource != null) {
+            openStreamAndLoadProps(resource);
         }
     }
 
-    /**
-     * @param pluginId
-     * @param fileName
-     * @return
-     */
+    private static void findAndLoadGeneralSecretProperties(@Nonnull final String pluginId)
+                                                           throws IOException, BundleException {
+        final String secretFile = findSensitiveDataFile();
+        if (secretFile != null) {
+            final URL resource = locateResource(pluginId, secretFile);
+            if (resource != null) {
+                openStreamAndLoadProps(resource);
+            }
+        }
+    }
+
+    private static void findAndLoadHostSpecificProperties() {
+        try {
+            final File configFile =
+                CssResourceLocator.locateSiteSpecificResource(HOST_PROPERTIES_FILE_NAME);
+            final URL resource = configFile.toURI().toURL();
+            openStreamAndLoadProps(resource);
+        } catch (final IOException e) {
+            LOG.warn("Host specific properties file could not be found: ", e);
+        }
+    }
+
+    private static void openStreamAndLoadProps(@Nonnull final URL resource) throws IOException {
+        InputStream openStream = null;
+        try {
+            openStream =  resource.openStream();
+            PROPERTIES.load(openStream);
+        } finally {
+            if (openStream != null) {
+                openStream.close();
+            }
+        }
+    }
+
     @CheckForNull
     private static String findSensitiveDataFile() {
 
@@ -119,57 +160,52 @@ public final class TestDataProvider {
         return null;
     }
 
-    /**
-     * @param pluginId
-     * @param testConfigFileName
-     * @throws IOException
-     */
-    private static void openStreamAndLoadProps(@Nonnull final String pluginId,
-                                               @Nonnull final String testConfigFileName)
-        throws IOException {
-
-        InputStream openStream = null;
-        try {
-            final URL resource = locateResource(pluginId, testConfigFileName);
-            openStream =  resource.openStream();
-            PROPERTIES.load(openStream);
-        } finally {
-            if (openStream != null) {
-                openStream.close();
-            }
-        }
-    }
-
-    /**
-     * @param pluginId
-     * @param testConfigFileName
-     * @return
-     * @throws MalformedURLException
-     * @throws FileNotFoundException
-     */
-    @Nonnull
+    @CheckForNull
     private static URL locateResource(@Nonnull final String pluginId,
                                       @Nonnull final String testConfigFileName) throws MalformedURLException,
-                                                                                       FileNotFoundException {
-        final Bundle bundle = Platform.getBundle(pluginId);
+                                                                                       BundleException {
+        Bundle bundle = Platform.getBundle(pluginId);
         URL resource = null;
         if (bundle == null) {
             LOG.warn("Bundle could not be located. Try to find config file via current working dir.");
 
             final String curDir = System.getProperty("user.dir");
             final File configFile = new File(curDir + File.separator + testConfigFileName);
-            resource = configFile.toURI().toURL();
-        } else {
+            resource = configFile.exists() ? configFile.toURI().toURL() : null;
+        }  else {
+            bundle = whenFragmentReturnHostBundle(bundle);
             resource = bundle.getResource(testConfigFileName);
         }
 
         if (resource == null) {
-            throw new FileNotFoundException("Test configuration file for plugin " + pluginId +
-                                            " and file name " + testConfigFileName +
-            " does not exist");
+            LOG.warn("Test configuration file for plugin " + pluginId +
+                     " and file name " + testConfigFileName +
+                     " does not exist");
         }
         return resource;
     }
+
+    @Nonnull
+    public static Bundle whenFragmentReturnHostBundle(@Nonnull final Bundle bundle) throws BundleException {
+        String host =
+            (String) bundle.getHeaders().get(org.osgi.framework.Constants.FRAGMENT_HOST);
+        if (!Strings.isNullOrEmpty(host)) {
+            final String[] hostAndVersion = host.split(";");
+            if (hostAndVersion.length > 0) {
+                host = hostAndVersion[0];
+            }
+            if (!Strings.isNullOrEmpty(host)) {
+                final Bundle hostBundle = Platform.getBundle(host);
+                if (hostBundle == null) {
+                    throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
+                }
+                return hostBundle;
+            }
+            throw new BundleException("Host bundle for " + bundle.getSymbolicName() + " could not be found.");
+        }
+        return bundle;
+    }
+
 
     /**
      * Retrieve test config property from file
@@ -182,50 +218,76 @@ public final class TestDataProvider {
     }
 
     /**
+     * Retrieve host specific property from file.
+     * Searches for keys with namespaces from {@link InetAddress#getHostName()} or if empty for
+     * {@link InetAddress#getHostAddress()} in host.properties file. If both are not present
+     * the host property with namespace {@link HOST_PROPERTIES_ROOT_NS} is checked as default.
+     *
+     * @param key the describing key for the host specific property
+     * @return the property object the property under namespace + "/" + key
+     * @throws UnknownHostException
+     */
+    @CheckForNull
+    public Object getHostProperty(@Nonnull final String key) {
 
+        InetAddress localHost;
+        try {
+            localHost = InetAddress.getLocalHost();
+            Object object = PROPERTIES.get(localHost.getHostName() + HOST_PROPERTIES_NS_SEP + key);
+            if (object == null) {
+                object = PROPERTIES.get(localHost.getHostAddress() + HOST_PROPERTIES_NS_SEP + key);
+            }
+            if (object == null) {
+                object = PROPERTIES.get(HOST_PROPERTIES_ROOT_NS + HOST_PROPERTIES_NS_SEP + key);
+            }
+            return object;
+        } catch (final UnknownHostException e) {
+            LOG.warn("Local host could not be resolved for host property retrieval.", e);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the lazily created instance of the test data provider.
      * @param pluginId id of the plugin in which the tests and their config file reside
      * @return the instance of the data provider
      * @throws TestProviderException
      */
     @Nonnull
     public static TestDataProvider getInstance(@Nonnull final String pluginId)
-        throws TestProviderException {
-
-        String testConfigFileName = "";
+                                               throws TestProviderException {
         try {
             synchronized (TestDataProvider.class) {
                 if (INSTANCE == null) {
                     INSTANCE = new TestDataProvider(pluginId);
-                    testConfigFileName = createSiteSpecificName();
-                    loadProperties(pluginId, testConfigFileName);
+                    loadProperties(pluginId);
+                } else if (!pluginId.equals(INSTANCE._pluginId)) {
+                    PROPERTIES.clear();
+                    loadProperties(pluginId);
                 }
-            }
-
-            if (!INSTANCE._pluginId.equals(pluginId)) {
-                TestDataProvider.PROPERTIES.clear();
-                testConfigFileName = createSiteSpecificName();
-                loadProperties(pluginId, testConfigFileName);
             }
             return INSTANCE;
 
         } catch (final IOException e) {
-            throw new TestProviderException("Test config file " + testConfigFileName + " couldn't be found or opened.", e);
+            throw new TestProviderException("Test config file for plugin " + pluginId + " couldn't be found or opened.", e);
+        } catch (final BundleException e) {
+            throw new TestProviderException("Bundle or host bundle for " + pluginId + " couldn't be found or opened.", e);
         }
     }
 
     @Nonnull
     private static String createSiteSpecificName() {
 
-        final String siteProp = System.getProperty("siteId");
+        final String siteProp = System.getProperty(SiteId.JVM_ARG_KEY);
         if (siteProp == null) {
-            throw new IllegalArgumentException("There isn't any jvm arg -DsiteId=xxx configured. Please do so in your launch configuration.");
+            throw new IllegalArgumentException("There isn't any jvm arg -D" + SiteId.JVM_ARG_KEY + "=xxx configured. Please do so in your launch configuration.");
         }
 
         SiteId site;
         try {
             site = SiteId.valueOf(siteProp);
         } catch (final IllegalArgumentException e) {
-            throw new IllegalArgumentException("The site enum type for jvm arg -DsiteId="+ siteProp +" is unknown. ", e);
+            throw new IllegalArgumentException("The site for jvm arg -D" + SiteId.JVM_ARG_KEY + "="+ siteProp +" is not present in " + SiteId.class.getName(), e);
         }
 
         final String testConfigFileName = site.getPrefix() + CONFIGURATION_FILE_SUFFIX;

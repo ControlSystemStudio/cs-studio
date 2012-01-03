@@ -29,26 +29,24 @@ import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
-import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
+import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.statistic.ProfibusStatisticGenerator;
-import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Create a Statistic from the selected Facility and put it on a File. 
- * 
+ * Create a Statistic from the selected Facility and put it on a File.
+ *
  * @author Rickens Helge
  * @author $Author: $
  * @since 14.01.2011
@@ -56,67 +54,64 @@ import org.eclipse.swt.widgets.MessageBox;
  */
 public class CreateStatisticAction extends Action {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(CreateWinModAction.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CreateStatisticAction.class);
 
-    private ProfiBusTreeView _pbtv;
+    private final ProfiBusTreeView _pbtv;
 
     /**
      * Constructor.
      */
-    public CreateStatisticAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
+    public CreateStatisticAction(@Nullable final String text, @Nonnull final ProfiBusTreeView pbtv) {
         super(text);
         _pbtv = pbtv;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void run() {
         final String filterPathKey = "FilterPath";
-        IEclipsePreferences pref = new DefaultScope().getNode(IOConifgActivator.PLUGIN_ID);
+        final IEclipsePreferences pref = new DefaultScope().getNode(IOConfigActivator.PLUGIN_ID);
         String filterPath = pref.get(filterPathKey, "");
-        DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
+        final DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
         dDialog.setFilterPath(filterPath);
         filterPath = dDialog.open();
-        File path = new File(filterPath);
+        final File path = new File(filterPath);
         pref.put(filterPathKey, filterPath);
-        Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
-        //TODO: work with Multiselection
-        if (selectedNode instanceof FacilityDBO) {
-            FacilityDBO facility = (FacilityDBO) selectedNode;
-            LOG.info("Create Statitic for Facility: " + facility);
-            makeFiles(path, facility);
+        final StructuredSelection selectedNodes = _pbtv.getSelectedNodes();
+        if (selectedNodes != null) {
+            final Object selectedNode = selectedNodes.getFirstElement();
+            //TODO: work with Multiselection
+            if (selectedNode instanceof FacilityDBO) {
+                final FacilityDBO facility = (FacilityDBO) selectedNode;
+                LOG.info("Create Statitic for Facility: " + facility);
+                makeFiles(path, facility);
+            }
         }
     }
-    
+
     private void makeFiles(@Nonnull final File path, @Nonnull final FacilityDBO facility) {
-        ProfibusStatisticGenerator cfg = new ProfibusStatisticGenerator();
-        try {
-            cfg.setFacility(facility);
-            File txtFile = new File(path, facility.getName() + ".txt");
-            makeStatisticFile(cfg, txtFile);
-        } catch (PersistenceException e) {
-            LOG.error("Database Error! Files not created!", e);
-            DeviceDatabaseErrorDialog.open(null, "Can't create statistic file! Database error.", e);
-        }
+        final ProfibusStatisticGenerator cfg = new ProfibusStatisticGenerator();
+        cfg.setFacility(facility);
+        final File txtFile = new File(path, facility.getName() + ".txt");
+        makeStatisticFile(cfg, txtFile);
     }
 
     /**
      * @param cfg
      * @param statisticFile
      */
-    private void makeStatisticFile(ProfibusStatisticGenerator cfg, File statisticFile) throws PersistenceException {
+    private void makeStatisticFile(@Nonnull final ProfibusStatisticGenerator cfg, @Nonnull final File statisticFile) {
         if (statisticFile.exists()) {
-            MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
-                    | SWT.YES | SWT.NO);
+            final MessageBox box = new MessageBox(Display.getDefault().getActiveShell(), SWT.ICON_WARNING
+                                                  | SWT.YES | SWT.NO);
             box.setMessage("The file " + statisticFile.getName() + " exist! Overwrite?");
-            int erg = box.open();
+            final int erg = box.open();
             if (erg == SWT.YES) {
                 try {
                     cfg.getStatisticFile(statisticFile);
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     openCanCreateFileDialog(statisticFile.getName());
                 }
             }
@@ -124,7 +119,7 @@ public class CreateStatisticAction extends Action {
             try {
                 statisticFile.createNewFile();
                 cfg.getStatisticFile(statisticFile);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 openCanCreateFileDialog(statisticFile.getName());
             }
         }
@@ -133,9 +128,9 @@ public class CreateStatisticAction extends Action {
     /**
      * @param name
      */
-    private void openCanCreateFileDialog(@Nonnull String fileName) {
-        MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
-                                             SWT.ICON_WARNING | SWT.ABORT);
+    private void openCanCreateFileDialog(@Nonnull final String fileName) {
+        final MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
+                                                   SWT.ICON_WARNING | SWT.ABORT);
         abortBox.setMessage("The file " + fileName + " can not created!");
         abortBox.open();
     }

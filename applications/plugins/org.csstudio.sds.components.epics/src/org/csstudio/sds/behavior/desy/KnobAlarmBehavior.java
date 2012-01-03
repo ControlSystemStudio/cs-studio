@@ -52,9 +52,19 @@ public class KnobAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<KnobModel> 
      */
     @Override
     protected void doProcessConnectionStateChange( final KnobModel widget, final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, fillColor);
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String determineFillColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineFillColor = _defFillColor;
+            } else {
+                determineFillColor = "${Invalid}";
+            }
+        } else {
+            determineFillColor = determineBackgroundColor(connectionState);
+        }
+        widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, determineFillColor);
 
     }
 

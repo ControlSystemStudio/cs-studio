@@ -32,15 +32,15 @@ import javax.annotation.Nonnull;
 
 import javazoom.jl.player.Player;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.Bundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of the alarm sound service.
@@ -52,9 +52,8 @@ import org.osgi.framework.Bundle;
  */
 public final class AlarmSoundService implements IAlarmSoundService {
 
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			AlarmSoundService.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(AlarmSoundService.class);
+    
 	private Map<String, String> _severityToSoundfile;
 
 	// Buffer for one sound. The String denotes the path, relative (contained in
@@ -134,20 +133,18 @@ public final class AlarmSoundService implements IAlarmSoundService {
 
 	@Override
 	public void playAlarmSound(@Nonnull final String severityAsString) {
-		LOG.debug("playAlarmSound for severity " + severityAsString);
+		LOG.debug("playAlarmSound for severity {}", severityAsString);
 
 		// Guard
 		if (!isMappingDefinedForSeverity(severityAsString)) {
-			LOG.debug("No mapping defined for severity " + severityAsString);
+			LOG.debug("No mapping defined for severity {}", severityAsString);
 			return;
 		}
 
 		if (_queue.offer(getMp3Path(severityAsString))) {
-			LOG.debug("sound for severity " + severityAsString
-					+ " has been queued");
+			LOG.debug("sound for severity {} has been queued", severityAsString);
 		} else {
-			LOG.debug("sound for severity " + severityAsString
-					+ " has been ignored");
+			LOG.debug("sound for severity {} has been ignored", severityAsString);
 		}
 	}
 
@@ -168,9 +165,9 @@ public final class AlarmSoundService implements IAlarmSoundService {
 	@Override
 	public void playAlarmSoundFromResource(@Nonnull String path) {
 		if (_queue.offer(path)) {
-			LOG.debug("sound from " + path + " has been queued");
+			LOG.debug("sound from {} has been queued", path );
 		} else {
-			LOG.debug("sound from " + path + " has been ignored");
+			LOG.debug("sound from {} has been ignored", path );
 		}
 	}
 

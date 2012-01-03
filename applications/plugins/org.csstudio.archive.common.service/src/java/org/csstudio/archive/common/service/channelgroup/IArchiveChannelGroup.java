@@ -21,10 +21,11 @@
  */
 package org.csstudio.archive.common.service.channelgroup;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.common.service.engine.ArchiveEngineId;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.IIdentifiable;
 
 /**
  * Read only interface of an channel group in the archive.
@@ -32,7 +33,7 @@ import org.csstudio.domain.desy.common.id.Identifiable;
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId>{
+public interface IArchiveChannelGroup extends IIdentifiable<ArchiveChannelGroupId>{
 
     /**
      * @return the channel group name
@@ -43,7 +44,7 @@ public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId
     /**
      * @return the channel group description
      */
-    @Nonnull
+    @CheckForNull
     String getDescription();
 
     /**

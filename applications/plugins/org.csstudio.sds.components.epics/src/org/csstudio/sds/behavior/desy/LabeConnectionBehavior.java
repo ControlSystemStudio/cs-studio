@@ -21,9 +21,12 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+
+import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -36,13 +39,14 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
+    private boolean _defTransparent;
 
     /**
      * Constructor.
      */
     public LabeConnectionBehavior() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
-        addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_PERMISSSION_ID);
     }
 
     /**
@@ -51,7 +55,8 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        _defTransparent = widget.getTransparent();
+        if(widget.getValueType()==TextTypeEnum.TEXT) {
             widget.setJavaType(String.class);
         }
     }
@@ -63,14 +68,27 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-
+        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
+        final boolean isTransparent = _defTransparent
+                && hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
-	@Override
-	protected void doProcessMetaDataChange(LabelModel widget, MetaData metaData) {
-		// TODO Auto-generated method stub
-		
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final LabelModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final boolean isTransparent = isConnected(anyDataChannel) && _defTransparent
+                && hasValue(anyDataChannel);
+        widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
+    }
+
+    @Override
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
+        // Nothing to do;
+    }
 
 }

@@ -32,24 +32,26 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class Restart implements IManagementCommand
-{
+public class Restart implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
+        
         String param = (String)parameters.get("Password");
         String password = MessageMinderStart.getInstance().getPassword();
         
-        if((param == null) && (password.length() > 0))
-        {
+        if(param == null) {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 
         if(password.length() > 0) {
-            if(param.compareTo(password) != 0)
-            {
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
+        }
+
+        if(password.length() > 0) {
+            if(param.compareTo(password) != 0) {
                 return CommandResult.createFailureResult("\nInvalid password");
             }
         }

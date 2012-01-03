@@ -18,15 +18,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figureparts.RapArrowButton;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.OPITimer;
+import org.csstudio.swt.widgets.util.RapButtonModel;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
-import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.ButtonBorder;
+import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.Clickable;
@@ -48,6 +50,7 @@ import org.eclipse.draw2d.Orientable;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBarLayout;
+import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -192,7 +195,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	protected Clickable createDefaultDownButton() {
-		Button buttonDown = new ArrowButton();
+		Button buttonDown = new RapArrowButton();
 		buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
 		return buttonDown;
 	}
@@ -221,7 +224,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	protected Clickable createDefaultUpButton() {
-		Button buttonUp = new ArrowButton();
+		Button buttonUp = new RapArrowButton();
 		buttonUp.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
 		return buttonUp;
 	}
@@ -243,7 +246,18 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0 
 	 */
 	protected Clickable createPageUp() {
-		final Clickable clickable = new Clickable();
+		final Clickable clickable = new Clickable(){
+			@Override
+			protected ButtonModel createDefaultModel() {
+				if(SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+					if (isStyle(STYLE_TOGGLE))
+						return new ToggleModel();
+					else
+						return new RapButtonModel();
+				}			
+				return super.createDefaultModel();	
+			}
+		};
 		clickable.setOpaque(true);
 		clickable.setBackgroundColor(COLOR_TRACK);
 		clickable.setRequestFocusEnabled(false);
@@ -402,11 +416,12 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 
 	private void initLabelTimer(){
 		if(labelTimer == null){
+			final Display display = Display.getCurrent();
 			labelTimer = new OPITimer();
 			timerTask = new Runnable() {
 				
 				public void run() {
-					Display.getDefault().asyncExec(new Runnable() {
+					display.asyncExec(new Runnable() {
 						
 						public void run() {
 							label.setVisible(false);
@@ -761,6 +776,5 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         	else
         		formatPattern = DEFAULT_DECIMAL_FORMAT;	
 		decimalFormat = new DecimalFormat(formatPattern);
-	}
-	
+	}	
 }

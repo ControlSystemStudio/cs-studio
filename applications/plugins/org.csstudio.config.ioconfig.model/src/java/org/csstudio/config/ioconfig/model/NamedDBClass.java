@@ -91,7 +91,7 @@ public class NamedDBClass extends DBClass {
     }
     @Transient
     public void setSortIndex(@Nonnull final Integer sortIndex) {
-        _sortIndex = sortIndex.shortValue();
+        setSortIndex(sortIndex.shortValue());
     }
 
     /**
@@ -100,7 +100,7 @@ public class NamedDBClass extends DBClass {
     @Override
     @Nonnull
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        final StringBuffer sb = new StringBuffer();
         if (getSortIndex() != null) {
             sb.append(getSortIndex());
         }
@@ -119,7 +119,7 @@ public class NamedDBClass extends DBClass {
         final int prime = 31;
         int result = 1;
         result = prime * result + getId();
-        result = prime * result + ( (_sortIndex == null) ? 0 : _sortIndex.hashCode());
+        result = prime * result + ( _sortIndex == null ? 0 : _sortIndex.hashCode());
         return result;
     }
 
@@ -127,7 +127,7 @@ public class NamedDBClass extends DBClass {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(@CheckForNull Object obj) {
+    public boolean equals(@CheckForNull final Object obj) {
         if(this == obj) {
             return true;
         }
@@ -137,19 +137,13 @@ public class NamedDBClass extends DBClass {
         if(getClass() != obj.getClass()) {
             return false;
         }
-        NamedDBClass other = (NamedDBClass) obj;
+        final NamedDBClass other = (NamedDBClass) obj;
         if(getId() != other.getId()) {
             return false;
         }
         if(_sortIndex == null) {
-            if(other._sortIndex != null) {
-                return false;
-            }
-        } else if(!_sortIndex.equals(other._sortIndex)) {
-            return false;
+            return other._sortIndex == null;
         }
-        return true;
+        return _sortIndex.equals(other._sortIndex);
     }
-    
-    
 }

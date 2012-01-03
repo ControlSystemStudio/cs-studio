@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.service.history.declaration;
 
 import org.csstudio.nams.common.decision.Vorgangsmappe;

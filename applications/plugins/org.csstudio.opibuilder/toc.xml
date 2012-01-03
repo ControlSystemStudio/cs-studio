@@ -31,9 +31,12 @@
      <topic href="html/widgets/Image.html" label="Image"></topic>
      <topic href="html/widgets/BooleanWidgets.html" label="Boolean Widgets">
         <topic href="html/widgets/LED.html" label="LED"></topic>
+        <topic href="html/widgets/ImageBoolIndicator.html" label="Image Boolean Indicator">
+        </topic>
         <topic href="html/widgets/BoolSwitch.html" label="Boolean Switch"></topic>
         <topic href="html/widgets/BoolButton.html" label="Boolean Button"></topic>
         <topic href="html/widgets/ImageBoolButton.html" label="Image Boolean Button"></topic>
+        <anchor id="booleanWidgets"/>
      </topic>
      <topic href="html/widgets/TextUpdate.html" label="Text Update"></topic>
      <topic href="html/widgets/ScaledWidgets.html" label="Scaled Widgets">
@@ -68,6 +71,7 @@
      </topic> 
      <topic href="html/widgets/WebBrowser.html" label="Web Brower"></topic>
      <topic href="html/widgets/GridLayout.html" label="Grid Layout"></topic>
+     <anchor id="thirdPartyWidgets"/>
      
   </topic>
   <topic label="Color and Font" href="html/ColorFont.html"></topic>
@@ -88,6 +92,8 @@
      </topic>
      <topic href="html/script/PropertyType.html" label="Property Type">
      </topic>
+     <topic href="html/script/CreateCustomScriptUtil.html" label="Creating Custom ScriptUtil">
+     </topic>
      <topic href="html/script/ScriptUtil.html" label="Script Utililty APIs">
         <topic href="html/script/ScriptUtil/PVUtil.html" label="PVUtil">
         </topic>
@@ -100,6 +106,8 @@
         <topic href="html/script/ScriptUtil/FileUtil.html" label="FileUtil">
         </topic>
         <topic href="html/script/ScriptUtil/WidgetUtil.html" label="WidgetUtil">
+        </topic>
+        <topic href="html/script/ScriptUtil/GUIUtil.html" label="GUIUtil">
         </topic>
      </topic>
   </topic>

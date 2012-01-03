@@ -9,15 +9,13 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
-import org.csstudio.email.EMailSender;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
-import org.csstudio.opibuilder.actions.SendEMailAction;
-import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WorkbenchWindowService;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
@@ -26,13 +24,12 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
@@ -60,7 +57,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 	 */
 	@Override
 	public void buildContextMenu(final IMenuManager menu) {
-		addSettingPropertiesAction(menu);
+		if(!SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			addSettingPropertiesAction(menu);
 		addWidgetActionToMenu(menu);
 		GEFActionConstants.addStandardActionGroups(menu);
 		
@@ -68,22 +66,17 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		
 		ActionRegistry actionRegistry =
 			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
-		
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+		if(!SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
+			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 				WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
+		}
+		
 		//actionRegistry.getAction(CompactModeAction.ID));
 
 		// ELog and EMail actions may not be available
-		IAction action = actionRegistry.getAction(SendToElogAction.ID);
-		if (action != null)
-			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-		action = actionRegistry.getAction(SendEMailAction.ID);
-		if (action != null)
-			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
+		SingleSourceHelper.appendRCPRuntimeActionsToMenu(actionRegistry, menu);
 
 //		MenuManager cssMenu = new MenuManager("CSS", "css");
 //		cssMenu.add(new Separator("additions")); //$NON-NLS-1$
@@ -102,15 +95,20 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 				AbstractWidgetModel widget = editPart.getWidgetModel();
 				
 				//add menu Open, Open in New Tab and Open in New Window
-				AbstractWidgetAction hookedAction = editPart.getHookedAction();
-				if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
-					menu.add(new OpenRelatedDisplayAction(
-							(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+				List<AbstractWidgetAction> hookedActions = editPart.getHookedActions();
+
+				if(hookedActions != null && hookedActions.size() == 1){
+					AbstractWidgetAction hookedAction = hookedActions.get(0);
+					if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
+						menu.add(new OpenRelatedDisplayAction(
+								(AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+					}
 				}
+					
 				
 				ActionsInput ai = widget.getActionsInput();
 				if(ai != null){

@@ -38,9 +38,10 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.Repository;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author hrickens
@@ -48,15 +49,40 @@ import org.csstudio.platform.logging.CentralLogger;
  * @version $Revision: 1.3 $
  * @since 27.08.2009
  */
-public class LogbookDocumentService implements DocumentService {
+public class LogbookDocumentService implements IDocumentService {
+    
+    private static final Logger LOG = LoggerFactory.getLogger(LogbookDocumentService.class);
+    
+    private boolean canOpenDocument(@CheckForNull final File createTempFile) {
+        return createTempFile != null && createTempFile.isFile()
+        && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
+    }
+    
+    /**
+     * Get all Document from a Node.
+     * @throws PersistenceException
+     */
+    @Nonnull
+    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
+        final List<IDocument> docList = new ArrayList<IDocument>();
+        AbstractNodeDBO<?, ?> load = Repository.load(AbstractNodeDBO.class, nodeId);
+        while (load != null) {
+            final Set<DocumentDBO> documents = load.getDocuments();
+            if(documents != null) {
+                docList.addAll(documents);
+            }
+            load = load.getParent();
+        }
+        return docList;
+    }
     
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     public void openDocument(@Nonnull final String id) throws PersistenceException {
-        DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
+        final DocumentDBO firstElement = Repository.load(DocumentDBO.class, id);
         if(firstElement != null) {
             File createTempFile = null;
             try {
@@ -67,40 +93,17 @@ public class LogbookDocumentService implements DocumentService {
                 createTempFile = File.createTempFile("ddbDoc", "." + mimeType);
                 Helper.writeDocumentFile(createTempFile, firstElement);
                 if( canOpenDocument(createTempFile)) {
-                        CentralLogger.getInstance().debug(this, "Desktop unterstützt Open!");
-                        Desktop.getDesktop().open(createTempFile);
+                    LOG.debug("Desktop unterstützt Open!");
+                    Desktop.getDesktop().open(createTempFile);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 throw new PersistenceException(e);
             }
         }
-    }
-
-    private boolean canOpenDocument(@CheckForNull File createTempFile) {
-        return (createTempFile != null) && createTempFile.isFile()
-                && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
     }
     
     @Override
     public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
         // TODO Implement save Document as File!
-    }
-    
-    /**
-     * Get all Document from a Node.
-     * @throws PersistenceException 
-     */
-    @Nonnull
-    List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
-        List<IDocument> docList = new ArrayList<IDocument>();
-        AbstractNodeDBO<?, ?> load = Repository.load(AbstractNodeDBO.class, nodeId);
-        while (load != null) {
-            Set<DocumentDBO> documents = load.getDocuments();
-            if(documents != null) {
-                docList.addAll(documents);
-            }
-            load = load.getParent();
-        }
-        return docList;
     }
 }

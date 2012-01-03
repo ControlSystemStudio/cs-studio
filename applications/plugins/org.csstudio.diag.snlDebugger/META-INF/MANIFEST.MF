@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.utility.IOC-Socket-Communication,
  org.eclipse.help,
- org.csstudio.platform.libs.jdom;bundle-version="1.1.0",
+ org.jdom;bundle-version="1.1.0",
  org.csstudio.auth;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

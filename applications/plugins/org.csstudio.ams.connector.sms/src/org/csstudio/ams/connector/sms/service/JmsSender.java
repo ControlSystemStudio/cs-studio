@@ -25,8 +25,8 @@
 package org.csstudio.ams.connector.sms.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -41,8 +41,7 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import org.apache.log4j.Logger;
+import org.csstudio.ams.Log;
 
 /**
  * @author Markus Moeller
@@ -58,7 +57,6 @@ public class JmsSender
     private Session session = null;
     private Destination dest = null;
     private MessageProducer sender = null;
-    private Logger logger;
     private String clientId;
     private String jmsUrl;
     private String jmsTopic;
@@ -69,7 +67,6 @@ public class JmsSender
         clientId = clientid;
         jmsUrl = url;
         jmsTopic = topic;
-        logger = Logger.getLogger(JmsSender.class);
         connected = false;
         properties = new Hashtable<String, String>();
         
@@ -97,7 +94,7 @@ public class JmsSender
             // Create a session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
             
-            dest = (Destination)session.createTopic(jmsTopic);
+            dest = session.createTopic(jmsTopic);
             
             // Create a message producer
             sender = session.createProducer(dest);
@@ -107,13 +104,13 @@ public class JmsSender
         catch(NamingException ne)
         {
             connected = false;
-            logger.error(" *** NamingException *** : " + ne.getMessage());
+            Log.log(this, Log.ERROR, " *** NamingException *** : " + ne.getMessage());
             closeAll();
         }
         catch(JMSException jmse)
         {
             connected = false;
-            logger.error(" *** JMSException *** : " + jmse.getMessage());
+            Log.log(this, Log.ERROR, " *** JMSException *** : " + jmse.getMessage());
             closeAll();
         }       
     }
@@ -167,18 +164,18 @@ public class JmsSender
                 clearMessage(message);
                 message = null;
                 
-                logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
+                Log.log(this, Log.INFO, " JmsSender.sendMessage(): *** JMS DONE ***.");
                 
                 result = true;
             }
             else
             {
-                logger.warn(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
+                Log.log(this, Log.WARN, " JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
             }
         }
         catch(JMSException jmse)
         {
-            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
+            Log.log(this, Log.ERROR, " JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
             
             return false;
         }
@@ -203,18 +200,18 @@ public class JmsSender
                 clearMessage(message);
                 message = null;
                 
-                logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
+                Log.log(this, Log.INFO, " JmsSender.sendMessage(): *** JMS DONE ***.");
                 
                 result = true;
             }
             else
             {
-                logger.warn(" JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
+                Log.log(this, Log.WARN, " JmsSender.sendMessage(): *** JMS NOT DONE *** : MapMessage not created.");
             }
         }
         catch(JMSException jmse)
         {
-            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
+            Log.log(this, Log.ERROR, " JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());
             
             return false;
         }
@@ -242,7 +239,7 @@ public class JmsSender
                     {
                         name = iter.next();
                         
-                        logger.debug(name + " = " + messages[i].getValue(name));
+                        Log.log(this, Log.DEBUG, name + " = " + messages[i].getValue(name));
                         
                         // TODO: Check whether or not the key names are valid
                         //       Use only valid names
@@ -258,33 +255,29 @@ public class JmsSender
                 }
                 else
                 {
-                    logger.warn(" JmsSender.sendMessage(): MapMessage object was not created.");
+                    Log.log(this, Log.WARN, " JmsSender.sendMessage(): MapMessage object was not created.");
                 }
             }
             
-            logger.info(" JmsSender.sendMessage(): *** JMS DONE ***.");
+            Log.log(this, Log.INFO, " JmsSender.sendMessage(): *** JMS DONE ***.");
         }
         catch(JMSException jmse)
         {
-            logger.error(" JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());            
+            Log.log(this, Log.ERROR, " JmsSender.sendMessage(): *** JMSException *** : " + jmse.getMessage());            
         }
 
         return result;
     }
 
-    public MapMessage createMapMessage()
-    {
+    public MapMessage createMapMessage() {
+        
         MapMessage message = null;
         
-        if(session != null)
-        {
-            try
-            {
+        if(session != null) {
+            try {
                 message = session.createMapMessage();
-            }
-            catch(JMSException jmse)
-            {
-                message = null;
+            } catch(JMSException jmse) {
+                // Can be ignored
             }
         }
         
@@ -327,20 +320,21 @@ public class JmsSender
             message.clearBody();
             message.clearProperties();
         }
-        catch(JMSException e) { }
+        catch(JMSException e) {
+            // Can be ignored
+        }
     }
     
     public void closeAll()
     {
-        if(sender!=null){try{sender.close();}catch(Exception e){}sender=null;}
+        if(sender!=null){try{sender.close();}catch(Exception e){/*Can be ignored*/}sender=null;}
         dest = null;
-        if(session!=null){try{session.close();}catch(Exception e){}session=null;}
-        if(connection!=null){try{connection.stop();}catch(Exception e){}}
-        if(connection!=null){try{connection.close();}catch(Exception e){}connection=null;}
+        if(session!=null){try{session.close();}catch(Exception e){/*Can be ignored*/}session=null;}
+        if(connection!=null){try{connection.stop();}catch(Exception e){/*Can be ignored*/}}
+        if(connection!=null){try{connection.close();}catch(Exception e){/*Can be ignored*/}connection=null;}
         factory = null;
-        if(context!=null){try{context.close();}catch(Exception e){}context=null;}
-        if(properties != null)
-        {
+        if(context!=null){try{context.close();}catch(Exception e){/*Can be ignored*/}context=null;}
+        if(properties != null) {
             properties.clear();
             properties = null;
         }
@@ -365,6 +359,6 @@ public class JmsSender
     {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-        return format.format(GregorianCalendar.getInstance().getTime());
+        return format.format(Calendar.getInstance().getTime());
     }
 }

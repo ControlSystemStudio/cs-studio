@@ -393,7 +393,7 @@
            name="RunAsView">
      </command>
      <command
-           defaultHandler="org.csstudio.sds.ui.internal.actions.MoveWidegtlHandler"
+           defaultHandler="org.csstudio.sds.ui.internal.actions.MoveWidgetHandler"
            id="org.csstudio.sds.ui.moveWidgetCommand"
            name="Move Widget">
      </command>
@@ -530,6 +530,12 @@
               id="org.csstudio.sds.ui.internal.layers.ToggleLayerVisibilityAction"
               label="Toggle Visiblity"
               menubarPath="additions"/>
+        <action
+              class="org.csstudio.sds.ui.internal.layers.RenameLayerAction"
+              id="org.csstudio.sds.ui.RenameLayerAction"
+              label="Rename"
+              menubarPath="additions">
+        </action>
      </viewerContribution>
   </extension>
     <extension

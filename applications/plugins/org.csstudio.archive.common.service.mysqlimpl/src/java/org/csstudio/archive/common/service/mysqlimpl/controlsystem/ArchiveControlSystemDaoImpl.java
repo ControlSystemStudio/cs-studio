@@ -21,8 +21,10 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.controlsystem;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -37,7 +39,8 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.desy.system.ControlSystemType;
 
-import com.google.common.collect.Maps;
+import com.google.common.base.Joiner;
+import com.google.common.collect.MapMaker;
 import com.google.inject.Inject;
 
 /**
@@ -48,16 +51,23 @@ import com.google.inject.Inject;
  */
 public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements IArchiveControlSystemDao {
 
+    public static final String TAB = "control_system";
+    public static final String COL_ID = "id";
+    public static final String COL_NAME = "name";
+    public static final String COL_TYPE = "type";
+
     private static final String RETRIEVAL_FAILED = "Control system retrieval from archive failed.";
 
-    public static final String TAB = "control_system";
+    private final String _selectCSByIdStmt =
+        "SELECT " + Joiner.on(",").join(COL_ID, COL_NAME, COL_TYPE) + " FROM " + getDatabaseName() +
+        "." + TAB + " WHERE " + COL_ID + "=?";
+    private final String _selectCSByNameStmt =
+        "SELECT " + Joiner.on(",").join(COL_ID, COL_NAME, COL_TYPE) + " FROM " + getDatabaseName() +
+        "." + TAB + " WHERE " + COL_NAME + "=?";
 
-    private final String _selectCSByIdStmt = "SELECT name,type FROM " +
-                                             getDatabaseName() +
-                                             "." + TAB + " WHERE id=?";
 
-
-    private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById = Maps.newHashMap();
+    private final Map<ArchiveControlSystemId, IArchiveControlSystem> _cacheById =
+        new MapMaker().concurrencyLevel(2).weakKeys().makeMap();
 
     /**
      * Constructor.
@@ -78,26 +88,79 @@ public class ArchiveControlSystemDaoImpl extends AbstractArchiveDao implements I
         if (cs != null) {
             return cs;
         }
+        Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet result = null;
         try {
-            stmt = getConnection().prepareStatement(_selectCSByIdStmt);
+            conn = createConnection();
+            stmt = conn.prepareStatement(_selectCSByIdStmt);
             stmt.setLong(1, id.longValue());
-            final ResultSet result = stmt.executeQuery();
+            result = stmt.executeQuery();
             if (result.next()) {
-                final String name = result.getString("name");
-                final String type = result.getString("type");
-                cs = new ArchiveControlSystem(name,
-                                              Enum.valueOf(ControlSystemType.class, type));
-
+                cs = createControlSystemFromQueryResult(result);
                 _cacheById.put(id, cs);
                 return cs;
             }
         } catch (final Exception e) {
             handleExceptions(RETRIEVAL_FAILED, e);
         } finally {
-            closeStatement(stmt, "Closing of statement " + _selectCSByIdStmt + " failed.");
+            closeSqlResources(result, stmt, conn, _selectCSByIdStmt);
         }
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveControlSystem retrieveControlSystemByName(@Nonnull final String name) throws ArchiveDaoException {
+        IArchiveControlSystem cs = getFromCache(name);
+        if (cs != null) {
+            return cs;
+        }
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet result = null;
+        try {
+            conn = createConnection();
+            stmt = conn.prepareStatement(_selectCSByNameStmt);
+            stmt.setString(1, name);
+            result = stmt.executeQuery();
+            if (result.next()) {
+                cs = createControlSystemFromQueryResult(result);
+                _cacheById.put(cs.getId(), cs);
+                return cs;
+            }
+        } catch (final Exception e) {
+            handleExceptions(RETRIEVAL_FAILED, e);
+        } finally {
+            closeSqlResources(result, stmt, conn, _selectCSByNameStmt);
+        }
+        return null;
+    }
+
+    @CheckForNull
+    private IArchiveControlSystem getFromCache(@Nonnull final String name) {
+        for (final IArchiveControlSystem cs : _cacheById.values()) {
+            if (cs.getName().equals(name)) {
+                return cs;
+            }
+        }
+        return null;
+    }
+
+    @Nonnull
+    private IArchiveControlSystem createControlSystemFromQueryResult(@Nonnull final ResultSet result) throws SQLException {
+
+        final ArchiveControlSystemId resultId = new ArchiveControlSystemId(result.getInt(COL_ID));
+        final String name = result.getString(COL_NAME);
+        final String type = result.getString(COL_TYPE);
+
+        final IArchiveControlSystem cs =
+            new ArchiveControlSystem(resultId,
+                                     name,
+                                     Enum.valueOf(ControlSystemType.class, type));
+        return cs;
+    }
 }

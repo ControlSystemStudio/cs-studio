@@ -29,7 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.types.EpicsSystemVariable;
-import org.csstudio.domain.desy.system.ControlSystem;
 import org.csstudio.domain.desy.system.IAlarmSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
@@ -79,45 +78,9 @@ final class DoubleSystemVariableSupport extends EpicsSystemVariableSupport<Doubl
                                                  @Nonnull final Double min,
                                                  @Nonnull final Double max) throws TypeSupportException {
         return createMinMaxDoubleValueFromNumber(sysVar.getTimestamp(),
-                                                 (EpicsAlarm)sysVar.getAlarm(),
+                                                 (EpicsAlarm) sysVar.getAlarm(),
                                                  sysVar.getData(),
                                                  min,
                                                  max);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Double> createEpicsVariable(@Nonnull final String name,
-                                                              @Nonnull final Double value,
-                                                              @Nonnull final ControlSystem system,
-                                                              @Nonnull final TimeInstant timestamp) {
-        return new  EpicsSystemVariable<Double>(name, value, system, timestamp, EpicsAlarm.UNKNOWN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    protected EpicsSystemVariable<Collection<Double>> createCollectionEpicsVariable(@Nonnull final String name,
-                                                                                    @Nonnull final Class<?> typeClass,
-                                                                                    @Nonnull final Collection<Double> values,
-                                                                                    @Nonnull final ControlSystem system,
-                                                                                    @Nonnull final TimeInstant timestamp) throws TypeSupportException {
-        try {
-            @SuppressWarnings("unchecked")
-            final Collection<Double> newCollection = (Collection<Double>) typeClass.newInstance();
-            for (final Double v : values) {
-                newCollection.add(v);
-            }
-            return new EpicsSystemVariable<Collection<Double>>(name, newCollection, system, timestamp, EpicsAlarm.UNKNOWN);
-        } catch (final InstantiationException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        } catch (final IllegalAccessException e) {
-            throw new TypeSupportException("Collection type could not be instantiated from Class<?> object.", e);
-        }
     }
 }

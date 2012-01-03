@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.TitleBarBorder;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 
 /**
@@ -56,7 +56,7 @@ public WidgetFrameBorder(String label) {
  */
 protected void createBorders() {
 	inner = new TitleBarBorder();
-	outer = new VersatileLineBorder(ColorConstants.black, 1, SWT.LINE_SOLID);
+	outer = new VersatileLineBorder(ColorConstants.black, 1, SWTConstants.LINE_SOLID);
 }
 
 /**

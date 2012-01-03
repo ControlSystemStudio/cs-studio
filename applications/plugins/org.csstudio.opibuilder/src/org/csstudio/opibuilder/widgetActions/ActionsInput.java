@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgetActions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.ActionsProperty;
@@ -20,24 +19,26 @@ import org.csstudio.opibuilder.properties.ActionsProperty;
  */
 public class ActionsInput {
 
-	private List<AbstractWidgetAction> actionsList;
+	private LinkedList<AbstractWidgetAction> actionsList;
 	
-	private boolean hookUpToWidget = false;
+	private boolean hookUpFirstActionToWidget = false;
+	
+	private boolean hookUpAllActionsToWidget = false;
 	
 	private AbstractWidgetModel widgetModel;
 	
-	public ActionsInput(List<AbstractWidgetAction> actionsList) {
+	public ActionsInput(LinkedList<AbstractWidgetAction> actionsList) {
 		this.actionsList = actionsList;
 	}
 	
 	public ActionsInput() {
-		actionsList = new ArrayList<AbstractWidgetAction>();
+		actionsList = new LinkedList<AbstractWidgetAction>();
 	}
 
 	/**
 	 * @return the scriptList
 	 */
-	public List<AbstractWidgetAction> getActionsList() {
+	public LinkedList<AbstractWidgetAction> getActionsList() {
 		return actionsList;
 	}
 	
@@ -55,23 +56,24 @@ public class ActionsInput {
 			copy.getActionsList().add(data.getCopy());
 		}
 		copy.setWidgetModel(widgetModel);
-		copy.setHookUpToWidget(hookUpToWidget);
+		copy.setHookUpFirstActionToWidget(hookUpFirstActionToWidget);
+		copy.setHookUpAllActionsToWidget(hookUpAllActionsToWidget);
 		return copy;
 	}
 
 	/**
 	 * @param hookWithWidget the hookWithWidget to set
 	 */
-	public void setHookUpToWidget(boolean hookWithWidget) {
-		this.hookUpToWidget = hookWithWidget;
+	public void setHookUpFirstActionToWidget(boolean hookWithWidget) {
+		this.hookUpFirstActionToWidget = hookWithWidget;
 	}
 
 	/**
 	 * @return the hookWithWidget true if the first action is hooked with the widget's click,
 	 * which means click on the widget will activate the first action in the list.
 	 */
-	public boolean isHookedUpToWidget() {
-		return hookUpToWidget;
+	public boolean isFirstActionHookedUpToWidget() {
+		return hookUpFirstActionToWidget;
 	}
 	
 	@Override
@@ -99,6 +101,14 @@ public class ActionsInput {
 	 */
 	public AbstractWidgetModel getWidgetModel() {
 		return widgetModel;
+	}
+
+	public boolean isHookUpAllActionsToWidget() {
+		return hookUpAllActionsToWidget;
+	}
+
+	public void setHookUpAllActionsToWidget(boolean hookUpAllActionsToWidget) {
+		this.hookUpAllActionsToWidget = hookUpAllActionsToWidget;
 	}
 	
 	

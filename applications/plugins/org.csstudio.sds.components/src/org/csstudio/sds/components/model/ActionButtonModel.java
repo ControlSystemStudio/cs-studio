@@ -38,161 +38,219 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * @version $Revision: 1.46 $
  *
  */
-public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
-	/**
-	 * The ID of the label property.
-	 */
-	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
-	/**
-	 * The ID of the font property.
-	 */
-	public static final String PROP_FONT = "font"; //$NON-NLS-1$
-	/**
-	 * The ID of the text alignment property.
-	 */
-	public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
-	/**
-	 * The ID of the ActionData property.
-	 */
-	public static final String PROP_ACTION_PRESSED_INDEX = "action_pressed_index"; //$NON-NLS-1$
-	/**
-	 * The ID of the ActionData property.
-	 */
-	public static final String PROP_ACTION_RELEASED_INDEX = "action_released_index"; //$NON-NLS-1$
-	/**
-	 * The ID of the ToggelButton property.
-	 */
-	public static final String PROP_TOGGLE_BUTTON = "toggleButton"; //$NON-NLS-1$
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.ActionButton"; //$NON-NLS-1$
+public class ActionButtonModel extends AbstractTextTypeWidgetModel {
+    /**
+     * The ID of the label property.
+     */
+    public static final String PROP_LABEL = "label"; //$NON-NLS-1$
+    /**
+     * The ID of the font property.
+     */
+    public static final String PROP_FONT = "font"; //$NON-NLS-1$
+    /**
+     * The ID of the text alignment property.
+     */
+    public static final String PROP_TEXT_ALIGNMENT = "textAlignment"; //$NON-NLS-1$
+    /**
+     * The ID of the ActionData property.
+     */
+    public static final String PROP_ACTION_PRESSED_INDEX = "action_pressed_index"; //$NON-NLS-1$
+    /**
+     * The ID of the ActionData property.
+     */
+    public static final String PROP_ACTION_RELEASED_INDEX = "action_released_index"; //$NON-NLS-1$
+    /**
+     * The ID of the ToggleButton property.
+     */
+    public static final String PROP_TOGGLE_BUTTON = "toggleButton"; //$NON-NLS-1$
+    /**
+     * The ID of the ToggleState property.
+     */
+    public static final String PROP_TOGGLE_STATE = "toggleState"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.ActionButton"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 20;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 20;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 80;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 80;
 
-	/**
-	 * The default value of the Button style.
-	 */
-	private static final boolean DEFAULT_TOGGLE_BUTTON = false;
+    /**
+     * The default value of the Button style.
+     */
+    private static final boolean DEFAULT_TOGGLE_BUTTON = false;
 
-	/**
-	 * Standard constructor.
-	 */
-	public ActionButtonModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * The default value of the toggle state.
+     */
+    private static final boolean DEFAULT_TOGGLE_STATE = false;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * Standard constructor.
+     */
+    public ActionButtonModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-	    // Display
-		addStringProperty(PROP_LABEL, "Label Text", DISPLAY, "", true, PROP_TOOLTIP); //$NON-NLS-1$
-		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", DISPLAY, DEFAULT_TOGGLE_BUTTON,
-		                   false,PROP_LABEL);
-        addArrayOptionProperty(PROP_TEXT_TYPE, "Value Type", DISPLAY,
-                               TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex(),
-                               false, PROP_TOGGLE_BUTTON);
-        addIntegerProperty(PROP_PRECISION, "Decimal places", DISPLAY, 2, 0, 10,
-                           false,PROP_TEXT_TYPE);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        // Display
+        addStringProperty(PROP_LABEL, "Label Text", DISPLAY, "", true, PROP_TOOLTIP); //$NON-NLS-1$
+        addBooleanProperty(PROP_TOGGLE_BUTTON,
+                           "Toggle Button",
+                           DISPLAY,
+                           DEFAULT_TOGGLE_BUTTON,
+                           false,
+                           PROP_LABEL);
+        addBooleanProperty(PROP_TOGGLE_STATE,
+                           "Pressed",
+                           DISPLAY,
+                           DEFAULT_TOGGLE_STATE,
+                           false,
+                           PROP_TOGGLE_BUTTON);
 
-		// Format
-		addFontProperty(PROP_FONT, "Font", FORMAT, ColorAndFontUtil.toFontString("Arial", 8),
-		                false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
-		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", FORMAT,
-		                       TextAlignmentEnum.getDisplayNames(), TextAlignmentEnum.CENTER.getIndex(),
-		                       false, PROP_FONT);
+        addArrayOptionProperty(PROP_TEXT_TYPE,
+                               "Value Type",
+                               DISPLAY,
+                               TextTypeEnum.getDisplayNames(),
+                               TextTypeEnum.DOUBLE.getIndex(),
+                               false,
+                               PROP_TOGGLE_STATE);
+        addIntegerProperty(PROP_PRECISION,
+                           "Decimal places",
+                           DISPLAY,
+                           2,
+                           0,
+                           10,
+                           false,
+                           PROP_TEXT_TYPE);
 
-		// Action
-		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", ACTIONS, -1, -1,
-		                   Integer.MAX_VALUE, false, AbstractWidgetModel.PROP_ACTIONDATA);
-		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", ACTIONS, 0, -1,
-		                   Integer.MAX_VALUE,false, PROP_ACTION_PRESSED_INDEX);
+        // Format
+        addFontProperty(PROP_FONT,
+                        "Font",
+                        FORMAT,
+                        ColorAndFontUtil.toFontString("Arial", 8),
+                        false,
+                        PROP_COLOR_FOREGROUND); //$NON-NLS-1$
+        addArrayOptionProperty(PROP_TEXT_ALIGNMENT,
+                               "Text Alignment",
+                               FORMAT,
+                               TextAlignmentEnum.getDisplayNames(),
+                               TextAlignmentEnum.CENTER.getIndex(),
+                               false,
+                               PROP_FONT);
 
-		// .. hide properties
-		hideProperty(PROP_BORDER_COLOR, getTypeID());
-		hideProperty(PROP_BORDER_STYLE, getTypeID());
-		hideProperty(PROP_BORDER_WIDTH, getTypeID());
-	}
+        // Action
+        addIntegerProperty(PROP_ACTION_PRESSED_INDEX,
+                           "Action Index (pressed)",
+                           ACTIONS,
+                           -1,
+                           -1,
+                           Integer.MAX_VALUE,
+                           false,
+                           AbstractWidgetModel.PROP_ACTIONDATA);
+        addIntegerProperty(PROP_ACTION_RELEASED_INDEX,
+                           "Action Index (released)",
+                           ACTIONS,
+                           0,
+                           -1,
+                           Integer.MAX_VALUE,
+                           false,
+                           PROP_ACTION_PRESSED_INDEX);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append(createTooltipParameter(PROP_ACTIONDATA) + "\n");
-		buffer.append("Performed Action: ");
-		buffer.append(createTooltipParameter(PROP_ACTION_PRESSED_INDEX));
-		buffer.append(createTooltipParameter(PROP_ACTION_RELEASED_INDEX));
-		return buffer.toString();
-	}
+        // .. hide properties
+        hideProperty(PROP_BORDER_COLOR, getTypeID());
+        hideProperty(PROP_BORDER_STYLE, getTypeID());
+        hideProperty(PROP_BORDER_WIDTH, getTypeID());
+    }
 
-	/**
-	 * Return the index of the selected WidgetAction from the ActionData. The
-	 * Action is running when the button is released.
-	 *
-	 * @return The index
-	 */
-	public int getChoosenReleasedActionIndex() {
-		return getIntegerProperty(PROP_ACTION_RELEASED_INDEX);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        final StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append(createTooltipParameter(PROP_ACTIONDATA) + "\n");
+        buffer.append("Performed Action: ");
+        buffer.append(createTooltipParameter(PROP_ACTION_PRESSED_INDEX));
+        buffer.append(createTooltipParameter(PROP_ACTION_RELEASED_INDEX));
+        return buffer.toString();
+    }
 
-	/**
-	 * Return the index of the selected WidgetAction from the ActionData. The
-	 * Action is running when the button is pressed.
-	 *
-	 * @return The index
-	 */
-	public int getChoosenPressedActionIndex() {
-		return getIntegerProperty(PROP_ACTION_PRESSED_INDEX);
-	}
+    /**
+     * Return the index of the selected WidgetAction from the ActionData. The
+     * Action is running when the button is released.
+     *
+     * @return The index
+     */
+    public int getChoosenReleasedActionIndex() {
+        return getIntegerProperty(PROP_ACTION_RELEASED_INDEX);
+    }
 
-	/**
-	 * Return the label text.
-	 *
-	 * @return The label text.
-	 */
-	public String getLabel() {
-		return getStringProperty(PROP_LABEL);
-	}
+    /**
+     * Return the index of the selected WidgetAction from the ActionData. The
+     * Action is running when the button is pressed.
+     *
+     * @return The index
+     */
+    public int getChoosenPressedActionIndex() {
+        return getIntegerProperty(PROP_ACTION_PRESSED_INDEX);
+    }
 
-	/**
-	 * Returns the alignment for the text.
-	 *
-	 * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
-	 */
-	public int getTextAlignment() {
-		return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
-	}
+    /**
+     * Return the label text.
+     *
+     * @return The label text.
+     */
+    public String getLabel() {
+        return getStringProperty(PROP_LABEL);
+    }
 
-	/**
-	 * Returns whether the button is a toggle button.
-	 *
-	 * @return false = Push, true=Toggle
-	 */
-	public boolean isToggleButton() {
-		return getBooleanProperty(PROP_TOGGLE_BUTTON);
-	}
+    /**
+     * Returns the alignment for the text.
+     *
+     * @return int 0 = Center, 1 = Top, 2 = Bottom, 3 = Left, 4 = Right
+     */
+    public int getTextAlignment() {
+        return getArrayOptionProperty(PROP_TEXT_ALIGNMENT);
+    }
+
+    /**
+     * Returns whether the button is a toggle button.
+     *
+     * @return false = Push, true=Toggle
+     */
+    public boolean isToggleButton() {
+        return getBooleanProperty(PROP_TOGGLE_BUTTON);
+    }
+
+    /**
+     * Returns whether the button is a toggle button AND pressed.
+     *
+     * @return boolean
+     */
+    public boolean isPressed() {
+        return isToggleButton() && getBooleanProperty(PROP_TOGGLE_STATE);
+    }
 
     /**
      * {@inheritDoc}
@@ -200,5 +258,13 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
     @Override
     public String getStringValueID() {
         return PROP_LABEL;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean getTransparent() {
+        return false;
     }
 }

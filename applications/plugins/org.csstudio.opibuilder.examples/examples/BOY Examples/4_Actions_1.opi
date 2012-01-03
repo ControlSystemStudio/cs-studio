@@ -4,6 +4,8 @@
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
+  <wuid>6de85cb0:133c741370f:-7fd0</wuid>
+  <boy_version>2.0.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -22,7 +24,7 @@
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
+  <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
@@ -32,6 +34,7 @@
     <line_color>
       <color red="128" green="152" blue="255" />
     </line_color>
+    <wuid>6de85cb0:133c741370f:-7fcf</wuid>
     <scripts />
     <height>106</height>
     <anti_alias>true</anti_alias>
@@ -51,17 +54,18 @@
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>438</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>2</line_width>
     <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>207</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -70,6 +74,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fce</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>88</height>
@@ -96,7 +101,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>463</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -105,6 +110,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fcd</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>106</height>
@@ -131,7 +137,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>207</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -140,6 +146,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fcc</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -159,17 +166,18 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image>pictures/home-16x16.png</image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>562</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>main.opi</path>
         <macros>
@@ -185,6 +193,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fcb</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
@@ -211,7 +220,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>199</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -221,6 +230,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fca</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>79</height>
@@ -247,7 +257,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>113</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -257,11 +267,12 @@ $(pv_value)</tooltip>
     <crop_right>0</crop_right>
     <crop_left>0</crop_left>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fc9</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>23</height>
-    <stretch_to_fit>false</stretch_to_fit>
     <name>Image</name>
+    <stretch_to_fit>false</stretch_to_fit>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -284,7 +295,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>508</y>
     <tooltip />
     <x>451</x>
@@ -292,6 +303,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fc8</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
@@ -318,7 +330,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>454</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -328,6 +340,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fc7</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
@@ -354,7 +367,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -363,6 +376,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fc6</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -382,17 +396,18 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>550</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>4_Actions_2.opi</path>
         <macros>
@@ -408,6 +423,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fc5</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
@@ -434,7 +450,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -443,6 +459,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fc4</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
@@ -469,7 +486,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -478,6 +495,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fc3</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
@@ -504,7 +522,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>104</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -512,12 +530,24 @@ $(pv_value)</tooltip>
     <x>277</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fc2</wuid>
+    <scripts />
+    <height>44</height>
+    <name>Actions.html</name>
+    <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
@@ -525,33 +555,25 @@ $(pv_value)</tooltip>
     <border_style>0</border_style>
     <rules />
     <lock_children>true</lock_children>
-    <scripts />
-    <height>44</height>
     <border_width>1</border_width>
-    <name>Actions.html</name>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <transparent>true</transparent>
-    <show_scrollbar>false</show_scrollbar>
-    <y>485</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>scripts/openHelp.js</path>
+        <scriptText>importPackage(Packages.org.csstudio.opibuilder.scriptUtil);</scriptText>
+        <embedded>false</embedded>
         <description>Open Help</description>
       </action>
     </actions>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <x>577</x>
+    <y>485</y>
     <tooltip />
+    <x>577</x>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>6de85cb0:133c741370f:-7fc1</wuid>
       <auto_size>false</auto_size>
       <scripts />
       <height>22</height>
@@ -578,7 +600,7 @@ $(pv_value)</tooltip>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>11</y>
       <wrap_words>true</wrap_words>
       <tooltip />
@@ -590,6 +612,7 @@ $(pv_value)</tooltip>
       <arrow_length>20</arrow_length>
       <visible>true</visible>
       <fill_level>0.0</fill_level>
+      <wuid>6de85cb0:133c741370f:-7fc0</wuid>
       <rotation_angle>0.0</rotation_angle>
       <scripts />
       <arrows>0</arrows>
@@ -615,17 +638,18 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name>Default</opifont.name>
       </font>
-      <line_style>0</line_style>
       <width>120</width>
+      <line_style>0</line_style>
       <border_style>0</border_style>
       <rules />
+      <pv_value />
       <border_width>1</border_width>
       <line_width>1</line_width>
       <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>32</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -635,11 +659,12 @@ $(pv_value)</tooltip>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <visible>true</visible>
+      <wuid>6de85cb0:133c741370f:-7fbf</wuid>
       <auto_size>true</auto_size>
       <scripts />
       <height>44</height>
-      <stretch_to_fit>true</stretch_to_fit>
       <name>Image</name>
+      <stretch_to_fit>true</stretch_to_fit>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -662,7 +687,7 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>0</y>
       <tooltip />
       <x>8</x>
@@ -675,6 +700,7 @@ $(pv_value)</tooltip>
     <line_color>
       <color red="128" green="152" blue="255" />
     </line_color>
+    <wuid>6de85cb0:133c741370f:-7fbe</wuid>
     <scripts />
     <height>106</height>
     <anti_alias>true</anti_alias>
@@ -694,17 +720,18 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <line_style>0</line_style>
     <width>745</width>
+    <line_style>0</line_style>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <border_width>1</border_width>
     <line_width>2</line_width>
     <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>345</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -713,6 +740,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fbd</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
@@ -739,7 +767,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>337</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -749,6 +777,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fbc</wuid>
     <scripts />
     <height>33</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -768,17 +797,18 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>147</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>387</y>
-    <actions hook="true">
+    <y>363</y>
+    <actions hook="true" hook_all="false">
       <action type="OPEN_OPI_IN_VIEW">
         <path>widgets/1_1_Rectangle_Ellipse.opi</path>
         <macros>
@@ -790,11 +820,12 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>34</x>
+    <x>40</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fbb</wuid>
     <scripts />
     <height>33</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -814,17 +845,18 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>147</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>387</y>
-    <actions hook="true">
+    <y>410</y>
+    <actions hook="true" hook_all="false">
       <action type="OPEN_OPI_IN_VIEW">
         <path>widgets/1_3_Label.opi</path>
         <macros>
@@ -836,11 +868,12 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>212</x>
+    <x>40</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fba</wuid>
     <scripts />
     <height>33</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -860,17 +893,18 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>147</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>387</y>
-    <actions hook="true">
+    <y>363</y>
+    <actions hook="true" hook_all="false">
       <action type="OPEN_OPI_IN_VIEW">
         <path>widgets/1_4_Arc.opi</path>
         <macros>
@@ -882,11 +916,12 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>390</x>
+    <x>216</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fb9</wuid>
     <scripts />
     <height>33</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -906,17 +941,18 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>147</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>387</y>
-    <actions hook="true">
+    <y>410</y>
+    <actions hook="true" hook_all="false">
       <action type="OPEN_OPI_IN_VIEW">
         <path>widgets/1_5_Polyline_Polygon.opi</path>
         <macros>
@@ -928,11 +964,12 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>568</x>
+    <x>216</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fb8</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>88</height>
@@ -959,7 +996,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>463</y>
     <wrap_words>true</wrap_words>
     <tooltip />
@@ -968,6 +1005,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fb7</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
@@ -994,7 +1032,7 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>454</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -1004,6 +1042,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fb6</wuid>
     <scripts />
     <height>37</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1024,17 +1063,18 @@ Open in new Tab</text>
       <opifont.name>Default</opifont.name>
     </font>
     <width>266</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>222</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>2_OPI_Editor_Perspective.opi</path>
         <macros>
@@ -1050,6 +1090,7 @@ Open in new Tab</text>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fb5</wuid>
     <scripts />
     <height>82</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1070,17 +1111,18 @@ Replace</text>
       <opifont.name>Default</opifont.name>
     </font>
     <width>127</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>222</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>1_1_Start_Up.opi</path>
         <macros>
@@ -1096,6 +1138,7 @@ Replace</text>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>6de85cb0:133c741370f:-7fb4</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
@@ -1122,7 +1165,7 @@ Replace</text>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>199</y>
     <wrap_words>true</wrap_words>
     <tooltip>$(pv_name)
@@ -1132,6 +1175,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fb3</wuid>
     <scripts />
     <height>37</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -1145,26 +1189,27 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>Open widgets/2_1_LED.opi&#xD;
+    <text>Open widgets/1_6_Connection.opi&#xD;
 Open in new Window</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
     <width>266</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image />
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>267</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>widgets/2_1_LED.opi</path>
+        <path>widgets/1_6_Connection.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -1174,5 +1219,53 @@ Open in new Window</text>
     </actions>
     <tooltip />
     <x>180</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>6de85cb0:133c741370f:-7fb2</wuid>
+    <scripts />
+    <height>33</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_9</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Open OPI as Detached View</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>210</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image />
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>381</y>
+    <actions hook="true" hook_all="false">
+      <action type="OPEN_OPI_IN_VIEW">
+        <path>widgets/2_2_Text_Update.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <Position>4</Position>
+        <description />
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>431</x>
   </widget>
 </display>

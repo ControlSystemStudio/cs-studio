@@ -1,0 +1,30 @@
+# Simulated devices
+#
+#  softIoc -s -d simulation.db
+
+record(ai, "motor_x")
+{
+    field(INP,  "0")
+    field(PINI, "YES")
+}
+
+record(ai, "motor_y")
+{
+    field(INP,  "0")
+    field(PINI, "YES")
+}
+
+record(ai, "setpoint")
+{
+    field(INP,  "0")
+    field(PINI, "YES")
+}
+
+record(calc, "readback")
+{
+    field(INPA, "readback")
+    field(INPB, "setpoint")
+    field(CALC, "(A>B)?(A-0.1):((A<B)?(A+0.1):B)")
+    field(SCAN, ".1 second")
+    field(PREC, "2")
+}

@@ -18,9 +18,12 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.PolygonModel;
-import org.csstudio.sds.util.ColorAndFontUtil;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -39,8 +42,8 @@ public class PolygonAlarmBehavior extends AbstractDesyAlarmBehavior<PolygonModel
      */
     public PolygonAlarmBehavior() {
         // add Invisible Property Id here
-        addInvisiblePropertyId(PolygonModel.PROP_FILL);
-        addInvisiblePropertyId(PolygonModel.PROP_COLOR_FOREGROUND);
+        addInvisiblePropertyId(AbstractPolyModel.PROP_FILL);
+        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
 
     /**
@@ -49,23 +52,20 @@ public class PolygonAlarmBehavior extends AbstractDesyAlarmBehavior<PolygonModel
     @Override
     protected void doProcessValueChange(final PolygonModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
-        int arguments = -1;
-        if((anyData!=null)&&(anyData.numberValue()!=null)) {
-            arguments = anyData.numberValue().intValue();
-        }
-        if(arguments>=15) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(255,255,255));
-        } else if(arguments>=3) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(249,218,60));
-        } else if(arguments>=2) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(30,187,0));
-        } else if(arguments>=1) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(42,99,228));
-        } else if(arguments>=0) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, "#707070");
-        } else {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(0,0,0));
-        }
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromDigLogColorRule(anyData));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final PolygonModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        super.doProcessConnectionStateChange(widget, anyDataChannel);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String color = isConnected(anyDataChannel) ? getColorFromDigLogColorRule(anyDataChannel
+                .getData()) : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, color);
     }
 
     @Override

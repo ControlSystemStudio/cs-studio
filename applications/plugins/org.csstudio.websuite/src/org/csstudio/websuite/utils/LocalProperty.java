@@ -30,5 +30,5 @@ package org.csstudio.websuite.utils;
  */
 public class LocalProperty {
     
-    public static final String VERSION = "Version 1.1.0 (09.08.2010)";
+    public static final String VERSION = "Version 1.3.6 (2011-06-21)";
 }

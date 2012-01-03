@@ -34,7 +34,8 @@ import gov.aps.jca.dbr.TimeStamp;
 import java.util.GregorianCalendar;
 
 import org.csstudio.cagateway.jmsmessage.JmsMessage;
-import org.csstudio.platform.logging.CentralLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ttf.doocs.clnt.EqAdr;
 import ttf.doocs.clnt.EqCall;
@@ -51,7 +52,9 @@ import com.cosylab.epics.caj.cas.util.FloatingDecimalProcessVariable;
  * @author msekoranja
  */
 public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements Runnable{
-	
+
+    private static final Logger LOG = LoggerFactory.getLogger(DoocsFloatingPV.class);
+    
 	/**
 	 * Precision of decimal point.
 	 */
@@ -120,7 +123,7 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	/**
 	 * DOOCS device name
 	 */
-	private String doocsName;
+	private final String doocsName;
 	
 	/**
 	 * whether dooc readback was successful 
@@ -130,12 +133,12 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	/**
 	 * Archive Update Trigger
 	 */
-	private boolean archiveUpdateTrigger = false;
+	private final boolean archiveUpdateTrigger = false;
 	
 	/**
 	 * Display Update Trigger
 	 */
-	private boolean displayUpdateTrigger = false;
+	private final boolean displayUpdateTrigger = false;
 	
 	/**
 	 * Alarm Update Trigger
@@ -192,7 +195,7 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	{
 		value = 0;
 		timestamp = new TimeStamp();
-//		CentralLogger.getInstance().error( this, "caGateway DOOCS channel: " + doocsName + " initialize()");
+//		LOG.error( this, "caGateway DOOCS channel: " + doocsName + " initialize()");
 		checkForAlarms();
 		
 		Thread thread = new Thread(this, getName());
@@ -279,77 +282,88 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	 * Return <code>DBRType.INT</code> type as native type.
 	 * @see gov.aps.jca.cas.ProcessVariable#getType()
 	 */
-	public DBRType getType() {
+	@Override
+    public DBRType getType() {
 		return DBRType.DOUBLE;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getLowerAlarmLimit()
 	 */
-	public Number getLowerAlarmLimit() {
+	@Override
+    public Number getLowerAlarmLimit() {
 		return lowerAlarmValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getLowerCtrlLimit()
 	 */
-	public Number getLowerCtrlLimit() {
+	@Override
+    public Number getLowerCtrlLimit() {
 		return lowerControlValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getLowerDispLimit()
 	 */
-	public Number getLowerDispLimit() {
+	@Override
+    public Number getLowerDispLimit() {
 		return lowerDisplayValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getLowerWarningLimit()
 	 */
-	public Number getLowerWarningLimit() {
+	@Override
+    public Number getLowerWarningLimit() {
 		return lowerWarningValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getUnits()
 	 */
-	public String getUnits() {
+	@Override
+    public String getUnits() {
 		return GR.EMPTYUNIT;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getUpperAlarmLimit()
 	 */
-	public Number getUpperAlarmLimit() {
+	@Override
+    public Number getUpperAlarmLimit() {
 		return upperAlarmValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getUpperCtrlLimit()
 	 */
-	public Number getUpperCtrlLimit() {
+	@Override
+    public Number getUpperCtrlLimit() {
 		return upperControlValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getUpperDispLimit()
 	 */
-	public Number getUpperDispLimit() {
+	@Override
+    public Number getUpperDispLimit() {
 		return upperDisplayValue;
 	}
 
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#getUpperWarningLimit()
 	 */
-	public Number getUpperWarningLimit() {
+	@Override
+    public Number getUpperWarningLimit() {
 		return upperWarningValue;
 	}
 	
 	/**
 	 * @see com.cosylab.epics.caj.cas.util.FloatingDecimalProcessVariable#getPrecision()
 	 */
-	public short getPrecision() {
+	@Override
+    public short getPrecision() {
 		return precision;
 	}
 
@@ -358,11 +372,12 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	 * DBR is already filled-in by <code>com.cosylab.epics.caj.cas.util.NumericProcessVariable#read()</code> method.
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#readValue(gov.aps.jca.dbr.DBR, gov.aps.jca.cas.ProcessVariableReadCallback)
 	 */
-	protected synchronized CAStatus readValue(DBR value,
+	@Override
+    protected synchronized CAStatus readValue(DBR valueToRead,
 			ProcessVariableReadCallback asyncReadCallback) throws CAException {
 		
 		// it is always at least DBR_TIME_Int DBR
-		DBR_TIME_Double timeDBR = (DBR_TIME_Double)value;
+		DBR_TIME_Double timeDBR = (DBR_TIME_Double) valueToRead;
 
 		// set status and time
 		fillInStatusAndTime(timeDBR);
@@ -393,14 +408,15 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	 * Write value.
 	 * @see com.cosylab.epics.caj.cas.util.NumericProcessVariable#writeValue(gov.aps.jca.dbr.DBR, gov.aps.jca.cas.ProcessVariableWriteCallback)
 	 */
-	protected synchronized CAStatus writeValue(DBR value,
+	@Override
+    protected synchronized CAStatus writeValue(DBR valueToWrite,
 			ProcessVariableWriteCallback asyncWriteCallback) throws CAException {
 		
 		// TODO: MCL 2010-07-23
 		// add putLogging
 		
 		// it is always at least DBR_Int DBR
-		DBR_Double doubleDBR = (DBR_Double)value;
+		DBR_Double doubleDBR = (DBR_Double) valueToWrite;
 		
 		// check value
 		double val = doubleDBR.getDoubleValue()[0];
@@ -456,7 +472,8 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 	/**
 	 * @see java.lang.Runnable#run()
 	 */
-	public void run() {
+	@Override
+    public void run() {
 		
 		//ToDo: MCL replace by preference value
 		int maxDoocsErrorCount = 10;
@@ -473,7 +490,7 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		int errorCount = 0;
 		int totalErrorCount = 0;
 		
-//		CentralLogger.getInstance().info( this, "caGateway DOOCS create thread for: " + doocsName); 
+//		LOG.info( this, "caGateway DOOCS create thread for: " + doocsName); 
 		
 		/*
 		 * initialize meta data
@@ -495,21 +512,21 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 				if ( eq == null) {
 					eq = new EqCall();
 				}
+				
 				// necessary if in a loop
 				ed.init();
 				data.init();
 				
 		        data = eq.get(doocsAddr, ed);
 		        if (data.error() == 0) {
-		        	doocsReadOk = true;
-		        	value = data.get_double();
-//		        	System.out.println (doocsName + " - double = " + value);
-//		        	System.out.println (doocsName + " - float  = " + data.get_float());
 		        	
-		        	setDoubleValue(value);
+		            doocsReadOk = true;
+		        	value = data.get_double();
 		        	
 		        	status = Status.NO_ALARM;
 		        	severity = Severity.NO_ALARM;
+		        	
+		        	setDoubleValue(value);
 		        	
 		        	if ( errorCount > 0) {
 		        		errorCount--;
@@ -529,7 +546,8 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		        	 * after this we generate a message every 100th time
 		        	 */
 		        	if ( (totalErrorCount < maxDoocsErrorCount) || (totalErrorCount%modulusForTotalErrorCount == 0)) {
-		        		CentralLogger.getInstance().error( this, "caGateway DOOCS read-error: " + doocsName + " "  + data.get_string()+ " errorCount: " + errorCount + " total: " + totalErrorCount);
+		        	    Object[] args = new Object[] {doocsName, data.get_string(), errorCount, totalErrorCount};
+		        		LOG.error( "caGateway DOOCS read-error: {} {} errorCount: {} total: {}",args );
 		        	}		        	
 		        }
 		        /*
@@ -539,7 +557,7 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		         */
 		        if ( (errorCount > maxDoocsErrorCount) || (totalErrorCount > maxDoocsTotalErrorCount)) {
 		        	// add channel to black list
-		        	CentralLogger.getInstance().warn( this, "caGateway DOOCS error count > " + maxDoocsErrorCount + " stop and put " + name + " on blackList");
+		        	LOG.warn( "caGateway DOOCS error count > {} stop and put {} on blackList", maxDoocsErrorCount, name);
 		        	DoocsClient.getInstance().addToBlackList(name, new GregorianCalendar());
 		        	
 		        	// just in case we do not stop the first time ...
@@ -563,8 +581,8 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		return doocsReadOk;
 	}
 
-	public void setDoocsReadOk(boolean doocsReadOk) {
-		this.doocsReadOk = doocsReadOk;
+	public void setDoocsReadOk(boolean readOk) {
+		this.doocsReadOk = readOk;
 	}
 
 }

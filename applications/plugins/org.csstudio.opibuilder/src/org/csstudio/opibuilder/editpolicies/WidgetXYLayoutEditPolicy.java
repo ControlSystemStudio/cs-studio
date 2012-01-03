@@ -32,6 +32,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.ChangeGuideCommand;
 import org.csstudio.opibuilder.commands.CloneCommand;
+import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.commands.WidgetCreateCommand;
 import org.csstudio.opibuilder.commands.WidgetSetConstraintCommand;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -39,6 +40,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.GuideModel;
 import org.csstudio.opibuilder.util.GuideUtil;
 import org.csstudio.opibuilder.util.WidgetsService;
@@ -46,6 +48,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.PrecisionRectangle;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
@@ -92,6 +95,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(widgetModel.getTypeID());
+		
 		Command cmd = null;
 		if(feedbackFactory != null)
 			cmd = feedbackFactory.createChangeBoundsCommand(
@@ -99,7 +103,25 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if(cmd == null)
 			cmd = new WidgetSetConstraintCommand(
 					widgetModel, request, (Rectangle)constraint);
-
+		
+		List<ConnectionModel> allConnections = new ArrayList<ConnectionModel>(
+				part.getWidgetModel().getSourceConnections());
+		allConnections.addAll(part.getWidgetModel().getTargetConnections());
+		if(part.getWidgetModel() instanceof AbstractContainerModel){
+			for(AbstractWidgetModel d : 
+				((AbstractContainerModel)part.getWidgetModel()).getAllDescendants()){
+				allConnections.addAll(d.getSourceConnections());
+				allConnections.addAll(d.getTargetConnections());
+			}
+		}
+		if (allConnections.size() > 0) {
+			CompoundCommand reRouteCmd = new CompoundCommand();
+			for (ConnectionModel srcConn : allConnections) {
+				reRouteCmd.add(new SetWidgetPropertyCommand(srcConn,
+						ConnectionModel.PROP_POINTS, new PointList()));
+			}
+			cmd = cmd.chain(reRouteCmd);
+		}
 		// for guide support
 
 			if ((request.getResizeDirection() & PositionConstants.NORTH_SOUTH) != 0) {
@@ -172,6 +194,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		return null;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Command createAddCommand(EditPart child, Object constraint) {
 		if(!(child instanceof AbstractBaseEditPart) || !(constraint instanceof Rectangle))
@@ -366,6 +389,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 
 
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Command getCloneCommand(ChangeBoundsRequest request) {
 		CloneCommand clone = new CloneCommand((AbstractContainerModel)getHost().getModel());
@@ -400,8 +424,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 *
 	 * @return a list with all widget editpart that are currently selected
 	 */
-	@SuppressWarnings("unchecked")
-	private final List<AbstractBaseEditPart> sortSelectedWidgets(List selection) {
+	private final List<AbstractBaseEditPart> sortSelectedWidgets(List<?> selection) {
 		List<AbstractBaseEditPart> sameParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> differentParentWidgets = new ArrayList<AbstractBaseEditPart>();
 		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>();
@@ -449,6 +472,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	/* (non-Javadoc)
 	 * @see org.eclipse.gef.editpolicies.XYLayoutEditPolicy#getMinimumSizeFor(org.eclipse.gef.GraphicalEditPart)
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	protected Dimension getMinimumSizeFor(GraphicalEditPart child) {
 		if(child instanceof AbstractBaseEditPart){
@@ -467,7 +491,7 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		CompoundCommand resize = new CompoundCommand();
 		Command c;
 		GraphicalEditPart child;
-		List children = request.getEditParts();
+		List<?> children = request.getEditParts();
 
 		for (int i = 0; i < children.size(); i++) {
 			child = (GraphicalEditPart) children.get(i);

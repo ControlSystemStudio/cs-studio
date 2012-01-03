@@ -35,11 +35,10 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
  * @since 17.02.2011
  */
 public interface IArchiveControlSystemDao {
-    /**
-     * @param id
-     * @return
-     * @throws ArchiveStatusDaoException
-     */
+
     @CheckForNull
     IArchiveControlSystem retrieveControlSystemById(@Nonnull final ArchiveControlSystemId id) throws ArchiveDaoException;
+
+    @CheckForNull
+    IArchiveControlSystem retrieveControlSystemByName(@Nonnull final String name) throws ArchiveDaoException;
 }

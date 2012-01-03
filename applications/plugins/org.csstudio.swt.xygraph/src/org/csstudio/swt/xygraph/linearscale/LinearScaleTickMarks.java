@@ -1,21 +1,14 @@
-/*******************************************************************************
- * Copyright (c) 2008-2009 SWTChart project. All rights reserved. 
- * 
- * This code is distributed under the terms of the Eclipse Public License v1.0
- * which is available at http://www.eclipse.org/legal/epl-v10.html
- *******************************************************************************/
-
 package org.csstudio.swt.xygraph.linearscale;
 
 import java.util.ArrayList;
 
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.swt.SWT;
 
 /**
- * Linear scale tick marks. Part of code of this class is from SWTChart which is available at http://www.swtchart.org/
+ * Linear scale tick marks.
  * @author Xihui Chen
  */
 public class LinearScaleTickMarks extends Figure {   
@@ -39,11 +32,6 @@ public class LinearScaleTickMarks extends Figure {
     
     /**
      * Constructor.
-     * 
-     * @param chart
-     *            the chart
-     * @param style
-     *            the style
      * @param scale
      *            the scale
      */
@@ -128,7 +116,7 @@ public class LinearScaleTickMarks extends Figure {
     	
     	updateMinorTickParas();
         // draw tick marks
-        gc.setLineStyle(SWT.LINE_SOLID);
+        gc.setLineStyle(SWTConstants.LINE_SOLID);
         
         if(scale.isLogScaleEnabled()) {
         	ArrayList<Boolean> tickLabelVisibilities = 
@@ -232,7 +220,7 @@ public class LinearScaleTickMarks extends Figure {
             LabelSide tickLabelSide, int width, int height) {
     	updateMinorTickParas();
         // draw tick marks
-        gc.setLineStyle(SWT.LINE_SOLID);
+        gc.setLineStyle(SWTConstants.LINE_SOLID);
         int x = 0;
         int y = 0;
         if(scale.isLogScaleEnabled()) {

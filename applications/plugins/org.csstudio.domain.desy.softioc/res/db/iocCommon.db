@@ -64,3 +64,22 @@
 	record(calc,"$(APPL):CALC5_calc") {
 		field(DESC,"Reserve")
 	}
+		record(mbbi,"Rufbereitschaft")  {
+		field(ASG ,"KRYO")
+		field(FLNK,"Rufbereitschaft_calc")
+		field(ZRST,"k/A")
+		field(SVST,"Christian Gerke")
+		field(EIST,"S. Rettig-L.")
+		field(NIST,"B. Schoeneburg")
+		field(TEST,"Matth. Clausen")
+		field(ELST,"Zoltan Kakucs")
+	}
+	record(calc,"Rufbereitschaft_calc") {
+		field(FLNK,"Rufbereitschaft_mbbiD")
+		field(INPA,"Rufbereitschaft")
+		field(CALC,"1<<A")
+	}
+	record(mbbiDirect,"Rufbereitschaft_mbbiD") {
+		field(INP ,"Rufbereitschaft_calc")
+	}
+	

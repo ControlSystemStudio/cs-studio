@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.RGB;
 public class AlarmRepresentationScheme {
 
 	
+	public static final int ALARM_BORDER_WIDTH = 2;
 	public static final String MAJOR = "Major"; //$NON-NLS-1$
 	public static final String MINOR = "Minor"; //$NON-NLS-1$
 	public static final String INVALID = "Invalid"; //$NON-NLS-1$
@@ -45,16 +46,36 @@ public class AlarmRepresentationScheme {
 		return MediaService.getInstance().getColor(DISCONNECTED);
 	}
 	
-	public static Border getMajorBorder(){
-		return BorderFactory.createBorder(BorderStyle.LINE, 2, getMajorColor(), ""); //$NON-NLS-1$
+	public static Border getMajorBorder(BorderStyle borderStyle){
+		BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
+		return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMajorColor(), ""); //$NON-NLS-1$
+	}
+
+	private static BorderStyle getNewBorderStyle(BorderStyle borderStyle) {
+		BorderStyle newBorderStyle = BorderStyle.LINE;
+		switch (borderStyle) {
+		case DASH_DOT:
+		case DASH_DOT_DOT:
+		case DASHED:
+		case DOTTED:
+			newBorderStyle = borderStyle;
+			break;
+		default:
+			break;
+		}
+		return newBorderStyle;
 	}
 	
-	public static Border getMinorBorder(){
-		return BorderFactory.createBorder(BorderStyle.LINE, 2, getMinorColor(), ""); //$NON-NLS-1$
+	public static Border getMinorBorder(BorderStyle borderStyle){
+		BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
+
+		return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMinorColor(), ""); //$NON-NLS-1$
 	}
 	
-	public static Border getInvalidBorder(){
-		return BorderFactory.createBorder(BorderStyle.LINE, 2, getInValidColor(), ""); //$NON-NLS-1$
+	public static Border getInvalidBorder(BorderStyle borderStyle){
+		BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
+
+		return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getInValidColor(), ""); //$NON-NLS-1$
 	}
 	
 	public static Border getDisonnectedBorder(){

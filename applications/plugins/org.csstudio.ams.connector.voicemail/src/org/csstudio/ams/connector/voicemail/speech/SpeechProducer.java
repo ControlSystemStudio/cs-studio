@@ -41,7 +41,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import de.dfki.lt.mary.client.MaryClient;
 
 /**
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 public class SpeechProducer
@@ -195,7 +195,7 @@ public class SpeechProducer
             {
                 Log.log(this, Log.ERROR, " *** ParseException *** : " + e.getMessage());
                 
-                newText.append(" Übersetzungsfehler");
+                newText.append(" �bersetzungsfehler");
             }
             
             begin = ende;

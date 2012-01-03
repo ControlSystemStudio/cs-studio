@@ -47,12 +47,12 @@ public class WrappableToolbarLayout extends AbstractLayout {
 				height = h;			
 			return new Dimension(width, height);
 		}else{
-			int w =0;
+//			int w =0;
 			int maxH = 0;
 			for(Object child : container.getChildren()){
 				IFigure figure = (IFigure)child;
 				Dimension preferSize = figure.getPreferredSize();
-				w += preferSize.width;
+//				w += preferSize.width;
 				if(maxH < preferSize.height){
 						maxH = preferSize.height;
 				}				

@@ -21,7 +21,9 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.MetaData;
 
 /**
@@ -35,6 +37,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavior<SimpleSliderModel> {
 
+    private String _normalForegroundColor;
+
     /**
      * Constructor.
      */
@@ -44,12 +48,34 @@ public class SimpleSliderConnectionBehavior extends AbstractDesyConnectionBehavi
         addInvisiblePropertyId(SimpleSliderModel.PROP_MIN);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final SimpleSliderModel widget) {
+//        super.doInitialize(widget);
+        _normalForegroundColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+    }
+
     @Override
     protected void doProcessValueChange(final SimpleSliderModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. update slider value
         model.setPropertyValue(SimpleSliderModel.PROP_VALUE, anyData.doubleValue());
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessConnectionStateChange(final SimpleSliderModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? _normalForegroundColor
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
+    }
+
 
     @Override
     protected void doProcessMetaDataChange(final SimpleSliderModel widget, final MetaData meta) {
