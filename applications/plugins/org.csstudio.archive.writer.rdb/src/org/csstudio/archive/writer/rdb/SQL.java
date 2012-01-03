@@ -46,12 +46,14 @@ public class SQL
 
 	/** Initialize
 	 *  @param dialect RDB Dialect
-	 *  @param schema Scheme (May be "")
+	 *  @param schema Schema prefix (May be ""), not including "."
 	 */
 	public SQL(final Dialect dialect, String schema)
 	{
 		if (schema == null)
 			schema = "";
+		else if (schema.length() > 0)
+		    schema = schema + ".";
         channel_sel_by_name = "SELECT channel_id FROM " + schema + "channel WHERE name=?";
 
 		// 'enum_metadata' table

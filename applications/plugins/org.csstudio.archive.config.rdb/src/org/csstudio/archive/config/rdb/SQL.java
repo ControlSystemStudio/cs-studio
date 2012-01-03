@@ -47,8 +47,14 @@ public class SQL
     // 'sample' table
     final public String sel_last_sample_time_by_id;
 
-    public SQL(final Dialect dialect, final String schema)
+    /** Initialize
+     *  @param dialect RDB dialect
+     *  @param schema Schema prefix, does not include "."
+     */
+    public SQL(final Dialect dialect, String schema)
     {
+        if (schema.length() > 0)
+            schema = schema + ".";
 	    // 'smpl_eng' table
     	smpl_eng_list = "SELECT eng_id, name, descr, url FROM " + schema + "smpl_eng";
         smpl_eng_sel_by_name = "SELECT eng_id, descr, url FROM " + schema + "smpl_eng WHERE name=?";
