@@ -5,19 +5,23 @@ Bundle-SymbolicName: org.csstudio.platform.libs.jersey
 Bundle-Version: 1.1.5.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jersey.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.apache.commons.httpclient;bundle-version="3.1.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
- lib/jersey-client-1.1.5.1.jar,
- lib/jersey-core-1.1.5.1.jar,
- lib/jsr311-api-1.1.1.jar
+ lib/jsr311-api-1.1.1.jar,
+ lib/jersey-apache-client-1.6.jar,
+ lib/jersey-client-1.11.jar,
+ lib/jersey-core-1.11.jar
 Export-Package: com.sun.jersey.api.client,
  com.sun.jersey.api.client.async,
  com.sun.jersey.api.client.config,
  com.sun.jersey.api.client.filter,
  com.sun.jersey.api.representation,
  com.sun.jersey.api.uri,
+ com.sun.jersey.client.apache,
+ com.sun.jersey.client.apache.config,
  com.sun.jersey.client.impl,
  com.sun.jersey.client.impl.async,
  com.sun.jersey.client.urlconnection,

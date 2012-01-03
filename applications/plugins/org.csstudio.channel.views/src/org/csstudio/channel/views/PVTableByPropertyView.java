@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
+import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -39,7 +40,9 @@ public class PVTableByPropertyView extends ViewPart {
 	private IMemento memento = null;
 	
 	/** Memento tag */
-	private static final String MEMENTO_PVNAME = "PVName"; //$NON-NLS-1$
+	private static final String MEMENTO_QUERY = "ChannelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_ROW_PROPERTY = "RowProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_COLUMN_PROPERTY = "ColumnProperty"; //$NON-NLS-1$
 	
 	/**
 	 * The constructor.
@@ -66,8 +69,10 @@ public class PVTableByPropertyView extends ViewPart {
 		super.saveState(memento);
 		// Save the currently selected variable
 		if (combo.getText() != null) {
-			memento.putString(MEMENTO_PVNAME, combo.getText());
+			memento.putString(MEMENTO_QUERY, combo.getText());
 		}
+		memento.putString(MEMENTO_ROW_PROPERTY, tableWidget.getRowProperty());
+		memento.putString(MEMENTO_COLUMN_PROPERTY, tableWidget.getColumnProperty());		
 	}
 	
 	public void setPVName(String name) {
@@ -206,8 +211,14 @@ public class PVTableByPropertyView extends ViewPart {
 		});
 		name_helper.loadSettings();
 		
-		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setPVName(memento.getString(MEMENTO_PVNAME));
+		if (memento != null) {
+			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
+			tableWidget.setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
+			if (memento.getString(MEMENTO_QUERY) != null) {
+				setPVName(memento.getString(MEMENTO_QUERY));
+			}
 		}
+		
+		PopupMenuUtil.installPopupForView(tableWidget, getSite(), tableWidget);
 	}
 }

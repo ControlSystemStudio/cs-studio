@@ -3,6 +3,8 @@ package org.csstudio.channel.opiwidgets;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
@@ -27,8 +29,8 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 	 * @param swtWidget the SWT widget
 	 * @param selectionProvider a corresponding selection provider
 	 */
-	public AbstractChannelWidgetFigure(Composite composite, AbstractContainerModel parentModel) {
-		super(composite, parentModel);
+	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
+		super(editPart);
 	}
 	
 	protected T widget;
@@ -60,7 +62,21 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		return AdapterUtil.convert(getSelectionProvider().getSelection(), ChannelQuery.class);
 	}
 	
+	public ProcessVariable[] getSelectedProcessVariables() {
+		if (selectionProvider == null)
+			return null;
+		return AdapterUtil.convert(getSelectionProvider().getSelection(), ProcessVariable.class);
+	}
+	
 	public boolean isRunMode() {
 		return runmode;
+	}
+	
+	@Override
+	public void dispose() {
+		if(runmode) {
+			super.dispose();
+			getSWTWidget().dispose();
+		}
 	}
 }

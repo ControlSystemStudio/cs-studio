@@ -16,7 +16,10 @@
                   <iterate>
                      <adapt type="org.eclipse.core.resources.IResource"/>
                   </iterate>
-                  </with>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>

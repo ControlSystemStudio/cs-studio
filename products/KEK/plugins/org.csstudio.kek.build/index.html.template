@@ -50,12 +50,9 @@ that is appropriate for your operating system.
     As a user of Linux or Mac OS X, you probably
     already know what to do.
 </li>
-<li>Invoke the "css" application located in the
-    directory extracted from the ZIP file.
-</li>
-<li>You might have to adjust some of the preferences
-    accessible from the menu CSS/Preferences.
-    Contact your CSS administrator for details.
+<li>Invoke one of "css_kek_*" launchers in the directory extracted from
+    the ZIP file. These launchers set user preferences for the accelerator
+    you belong to. See <a href="http://www-linac.kek.jp/cont/epics/css/install_css_kek_public.pdf">this document</a> to know more details about how to install and launch CSS.
 </li>
 </ol>
 

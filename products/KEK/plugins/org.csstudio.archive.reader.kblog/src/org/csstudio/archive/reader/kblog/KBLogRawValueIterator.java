@@ -226,8 +226,8 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 								longArray[i] = Long.parseLong(strElements[i]);
 							}
 							return ValueFactory.createLongValue(time,
-									ValueFactory.createOKSeverity(),
-									"",
+									KBLogSeverityInstances.normal,
+									KBLogMessages.StatusNormal,
 									null,
 									Quality.Original,
 									longArray);
@@ -237,8 +237,8 @@ public class KBLogRawValueIterator implements KBLogValueIterator {
 								doubleArray[i] = Double.parseDouble(strElements[i]);
 							}
 							return ValueFactory.createDoubleValue(time,
-									ValueFactory.createOKSeverity(),
-									"",
+									KBLogSeverityInstances.normal,
+									KBLogMessages.StatusNormal,
 									null,
 									Quality.Original,
 									doubleArray);

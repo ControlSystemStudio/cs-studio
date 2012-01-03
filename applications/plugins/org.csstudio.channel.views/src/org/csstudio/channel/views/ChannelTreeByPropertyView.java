@@ -1,33 +1,19 @@
 package org.csstudio.channel.views;
 
 import gov.bnl.channelfinder.api.ChannelQuery;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
-import org.csstudio.channel.widgets.PropertyListDialog;
+import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -35,12 +21,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
@@ -148,6 +130,10 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		query.execute(channelQueryListener);
 		treeWidget.setChannelQuery(query);
 	}
+	
+	public void configure() {
+		treeWidget.openConfigurationDialog();
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -195,8 +181,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		btnProperties.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				PropertyListDialog dialog = new PropertyListDialog(treeWidget);
-				dialog.open(e);
+				configure();
 			}
 		});
 		name_helper.loadSettings();
@@ -208,55 +193,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			}
 		}
 		
-		MenuManager menuMgr = new MenuManager();
-		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		Menu menu = menuMgr.createContextMenu(treeWidget.getTree());
-		treeWidget.getTree().setMenu(menu);
-		final Tree tree = treeWidget.getTree();
-		ISelectionProvider provider = new ISelectionProvider() {
-			
-			private Map<ISelectionChangedListener, SelectionAdapter> map = new HashMap<ISelectionChangedListener, SelectionAdapter>();
-			
-			@Override
-			public void setSelection(ISelection selection) {
-				throw new UnsupportedOperationException("Not implemented");
-			}
-			
-			@Override
-			public void removeSelectionChangedListener(
-					ISelectionChangedListener listener) {
-				SelectionAdapter adapter = map.remove(listener);
-				if (adapter != null)
-					tree.removeSelectionListener(adapter);
-			}
-			
-			@Override
-			public ISelection getSelection() {
-				TreeItem[] selection = tree.getSelection();
-				Object[] data = new Object[selection.length];
-				for (int i = 0; i < data.length; i++) {
-					data[i] = selection[i].getData();
-				}
-				return new StructuredSelection(data);
-			}
-			
-			@Override
-			public void addSelectionChangedListener(final ISelectionChangedListener listener) {
-				final ISelectionProvider thisProvider = this;
-				SelectionAdapter adapter = new SelectionAdapter() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						listener.selectionChanged(new SelectionChangedEvent(thisProvider, getSelection()));
-					}
-					
-				};
-				map.put(listener, adapter);
-				tree.addSelectionListener(adapter);
-			}
-		};
-		getSite().registerContextMenu(menuMgr, provider);
-		getSite().setSelectionProvider(provider);
-
+		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
 	}
 }

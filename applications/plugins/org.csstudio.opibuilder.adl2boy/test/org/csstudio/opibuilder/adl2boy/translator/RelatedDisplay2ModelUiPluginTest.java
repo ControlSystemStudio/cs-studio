@@ -133,12 +133,13 @@ public class RelatedDisplay2ModelUiPluginTest extends TestCase {
 	private void validateOpenDisplayAction(OpenDisplayAction od,
 			String pathExpect, String labelExpect, String argsExpect,
 			boolean replaceExpect) {
+		String[] bString = {"false", "true"};
 		Path path = (Path) od.getPropertyValue(OpenDisplayAction.PROP_PATH);
 		assertTrue("FilePath " + path, path.toString().equals(pathExpect));
-		Boolean replace = (Boolean) od
+		Integer replace = (Integer) od
 				.getPropertyValue(OpenDisplayAction.PROP_REPLACE);
 		assertEquals("Replace display " + replace, new Boolean(replaceExpect),
-				replace);
+				new Boolean(bString[replace]));
 		String label = (String) od
 				.getPropertyValue(OpenDisplayAction.PROP_DESCRIPTION);
 		assertTrue(" TestLabel " + label, labelExpect.equals(label));

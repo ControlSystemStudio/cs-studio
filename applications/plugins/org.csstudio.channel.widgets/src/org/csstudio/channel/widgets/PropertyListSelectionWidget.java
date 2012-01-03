@@ -20,7 +20,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
-public class PropertyListSelectionWidget extends Composite {
+public class PropertyListSelectionWidget extends AbstractConfigurationComposite {
 	
 	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 	

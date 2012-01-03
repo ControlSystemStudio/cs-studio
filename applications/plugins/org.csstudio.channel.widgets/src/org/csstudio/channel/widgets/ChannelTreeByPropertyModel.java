@@ -9,12 +9,18 @@ import java.util.Collections;
 import java.util.List;
 
 class ChannelTreeByPropertyModel {
+
+	// Reference to the widget is used to return the configurable
+	// widget from the selection
+	private ChannelTreeByPropertyWidget widget;
+	
 	List<Channel> allChannels;
 	List<String> properties;
-	private ChannelTreeByPropertyNode root; 
+	private ChannelTreeByPropertyNode root;
 	final String query;
 	
-	public ChannelTreeByPropertyModel(String query, Collection<Channel> allChannels, List<String> properties) {
+	public ChannelTreeByPropertyModel(String query, Collection<Channel> allChannels, List<String> properties,
+			ChannelTreeByPropertyWidget widget) {
 		if (allChannels == null) {
 			allChannels = Collections.emptyList();
 		}
@@ -25,10 +31,15 @@ class ChannelTreeByPropertyModel {
 		this.properties = properties;
 		this.root = new ChannelTreeByPropertyNode(this, null, "");
 		this.query = query;
+		this.widget = widget;
 	}
 	
 	public ChannelTreeByPropertyNode getRoot() {
 		return root;
+	}
+	
+	public ChannelTreeByPropertyWidget getWidget() {
+		return widget;
 	}
 	
 	class Node {
