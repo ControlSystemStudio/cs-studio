@@ -166,8 +166,11 @@ public class WriteThread implements Runnable
                 // If there was an error before...
                 if (write_error)
                 {   // .. try to reconnect
-                    writer.close();
-                    writer = null;
+                    if (writer != null)
+                    {
+                        writer.close();
+                        writer = null;
+                    }
                     // If we get here, all is OK so far ...
                     write_error = false;
                     // .. and we continue to write.
