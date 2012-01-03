@@ -69,6 +69,10 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 					pv.close();
 					pv = null;
 				}
+				if (rowSelectionWriter != null) {
+					rowSelectionWriter.close();
+					rowSelectionWriter = null;
+				}
 			}
 		});
 		

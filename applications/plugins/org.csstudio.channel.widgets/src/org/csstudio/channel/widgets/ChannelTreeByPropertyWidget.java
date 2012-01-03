@@ -12,6 +12,8 @@ import java.util.List;
 import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -59,6 +61,18 @@ implements ConfigurableWidget {
 	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
+		
+		// Close PV on dispose
+		addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				if (selectionWriter != null) {
+					selectionWriter.close();
+					selectionWriter = null;
+				}
+			}
+		});
 		
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 0;
