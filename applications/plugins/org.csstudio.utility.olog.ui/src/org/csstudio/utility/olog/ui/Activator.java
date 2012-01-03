@@ -46,39 +46,48 @@ public class Activator extends AbstractUIPlugin {
 		preferenceListner = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				final IPreferencesService prefs = Platform.getPreferencesService();
+				final IPreferencesService prefs = Platform
+						.getPreferencesService();
 				OlogClientBuilder ologClientBuilder;
-				String url = prefs.getString(Activator.PLUGIN_ID,
+				String url = prefs.getString(
+						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_URL,
 						"http://localhost:8080/Olog/resources", null);
-				String jcr_url = prefs.getString(Activator.PLUGIN_ID,
+				String jcr_url = prefs.getString(
+						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_jcr_URL,
 						"http://localhost:8080/Olog/repository/olog", null);
-				ologClientBuilder = OlogClientBuilder.serviceURL(url).jcrURI(jcr_url);
-				if (prefs.getBoolean(Activator.PLUGIN_ID,
+				ologClientBuilder = OlogClientBuilder.serviceURL(url).jcrURI(
+						jcr_url);
+				if (prefs.getBoolean(
+						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
 						PreferenceConstants.Use_authentication, false, null)) {
 					ologClientBuilder
 							.withHTTPAuthentication(true)
 							.username(
-									prefs.getString(Activator.PLUGIN_ID,
-											PreferenceConstants.Username, "username",
-											null))
+									prefs.getString(
+											edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+											PreferenceConstants.Username,
+											"username", null))
 							.password(
-									SecureStorage.retrieveSecureStorage(
-											Activator.PLUGIN_ID,
-											PreferenceConstants.Password));
-				}else{
+									SecureStorage
+											.retrieveSecureStorage(
+													edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+													PreferenceConstants.Password));
+				} else {
 					ologClientBuilder.withHTTPAuthentication(false);
 				}
 				log.info("Creating Olog client : " + url);
 				try {
-					OlogClientManager.registerDefaultClient(ologClientBuilder.create());
+					OlogClientManager.registerDefaultClient(ologClientBuilder
+							.create());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		};
-		Activator.getDefault().getPreferenceStore()
+		edu.msu.nscl.olog.api.bundle.Activator.getDefault()
+				.getPreferenceStore()
 				.addPropertyChangeListener(preferenceListner);
 	}
 
@@ -91,7 +100,8 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		Activator.getDefault().getPreferenceStore()
+		edu.msu.nscl.olog.api.bundle.Activator.getDefault()
+				.getPreferenceStore()
 				.removePropertyChangeListener(preferenceListner);
 		super.stop(context);
 	}

@@ -23,8 +23,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 
 	public PreferencePage() {
 		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.PLUGIN_ID));
+		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
+				edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID));
 		setMessage("Olog Client Preferences");
 		setDescription("Olog preference page");
 	}
@@ -54,7 +54,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 		passwordField = new PasswordFieldEditor(PreferenceConstants.Password,
 				"user password:", getFieldEditorParent(), Activator.PLUGIN_ID);
 		addField(passwordField);
-		initialize();
 		enableAuthenticationFields();
 	}
 	
