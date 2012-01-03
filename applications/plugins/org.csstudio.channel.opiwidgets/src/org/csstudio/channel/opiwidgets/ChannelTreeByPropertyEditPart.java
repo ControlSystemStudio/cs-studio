@@ -16,8 +16,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 	 */
 	@Override
 	protected ChannelTreeByPropertyFigure doCreateFigure() {
-		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
-		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
+		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		registerPopup(figure.getSWTWidget());
 		return figure;

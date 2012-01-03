@@ -14,8 +14,7 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	 */
 	@Override
 	protected WaterfallFigure doCreateFigure() {
-		WaterfallFigure figure = new WaterfallFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
-		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
+		WaterfallFigure figure = new WaterfallFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
 		return figure;
 	}
