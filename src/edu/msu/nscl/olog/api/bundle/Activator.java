@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -12,15 +13,12 @@ import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 import edu.msu.nscl.olog.api.OlogClientManager;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "edu.msu.nscl.olog.api";
-	private static BundleContext context;
 
 	private static final Logger log = Logger.getLogger(PLUGIN_ID);
 
-	static BundleContext getContext() {
-		return context;
-	}
+	private static Activator plugin;
 
 	/*
 	 * (non-Javadoc)
@@ -29,13 +27,19 @@ public class Activator implements BundleActivator {
 	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
 	 * )
 	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
 		final IPreferencesService prefs = Platform.getPreferencesService();
 		log.info("Getting perferences"
 				+ prefs.getString(Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_URL, "", null));
+		initialize();
 		registerClients();
+	}
+
+	private void initialize() {
+		
 	}
 
 	private void registerClients() {
@@ -78,8 +82,13 @@ public class Activator implements BundleActivator {
 	 * @see
 	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+	}
+
+	public static AbstractUIPlugin getDefault() {
+		return plugin;
 	}
 
 }
