@@ -111,7 +111,7 @@ public class RDBArchiveWriter implements ArchiveWriter
      *  @param url RDB URL
      *  @param user .. user name
      *  @param password .. password
-     *  @param schema Schema/table prefix, ending in ".". May be empty
+     *  @param schema Schema/table prefix, not including ".". May be empty
      *  @param use_array_blob Use BLOB for array elements?
      *  @throws Exception on error, for example RDB connection error
      */

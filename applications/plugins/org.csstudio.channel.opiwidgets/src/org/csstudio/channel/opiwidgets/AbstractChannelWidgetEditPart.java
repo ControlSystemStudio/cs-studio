@@ -1,28 +1,57 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 
-public abstract class AbstractChannelWidgetEditPart extends AbstractWidgetEditPart {
+public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChannelWidgetFigure<?>,
+    Model extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart {
 	
-	protected void registerPopup(Control control) {
+	private void registerMouseListener(Control control) {
 		control.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseDown(org.eclipse.swt.events.MouseEvent e) {
+			public void mouseDown(MouseEvent e) {
 				getViewer().select(AbstractChannelWidgetEditPart.this);
 			}
 		});
-		control.setMenu(getViewer().getContextMenu().createContextMenu(getViewer().getControl()));
+		
+		if (control instanceof Composite) {
+			for (Control child : ((Composite) control).getChildren()) {
+				registerMouseListener(child);
+			}
+		}
+	}
+	
+	protected void registerPopup(final Control control) {
+		registerMouseListener(control);
+		Menu menu = getViewer().getContextMenu().createContextMenu(getViewer().getControl());
+		control.setMenu(menu);
 	}
 	
 	@Override
-	protected abstract AbstractChannelWidgetFigure<?> doCreateFigure();
+	protected abstract Figure doCreateFigure();
 	
 	@Override
-	public AbstractChannelWidgetFigure<?> getFigure() {
-		// TODO Auto-generated method stub
-		return (AbstractChannelWidgetFigure<?>) super.getFigure();
+	public Figure getFigure() {
+		@SuppressWarnings("unchecked")
+		Figure figure = (Figure) super.getFigure();
+		return figure;
 	}
+	
+	@Override
+	public Model getWidgetModel() {
+		@SuppressWarnings("unchecked")
+		Model widgetModel = (Model) super.getWidgetModel();
+		return widgetModel;
+	}
+	
+	@Override
+	public void deactivate() {
+		getFigure().getSWTWidget().dispose();		
+		super.deactivate();
+	}
+
 }

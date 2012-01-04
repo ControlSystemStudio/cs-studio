@@ -8,40 +8,18 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.widgets.Composite;
 
-public class ChannelTreeByPropertyEditPart extends AbstractChannelWidgetEditPart {
+public class ChannelTreeByPropertyEditPart
+extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeByPropertyModel> {
 	
 	/**
 	 * Create and initialize figure.
 	 */
 	@Override
-	protected AbstractChannelWidgetFigure<?> doCreateFigure() {
-		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure((Composite) getViewer().getControl(), getWidgetModel().getParent());
-		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
+	protected ChannelTreeByPropertyFigure doCreateFigure() {
+		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		registerPopup(figure.getSWTWidget().getTree());
+		registerPopup(figure.getSWTWidget());
 		return figure;
-	}
-	
-	@Override
-	public ChannelTreeByPropertyFigure getFigure() {
-		return (ChannelTreeByPropertyFigure) super.getFigure();
-	}
-	
-	/**Get the widget model.
-	 * It is recommended that all widget controller should override this method.
-	 *@return the widget model.
-	 */
-	@Override
-	public ChannelTreeByPropertyModel getWidgetModel() {
-		return (ChannelTreeByPropertyModel) super.getWidgetModel();
-	}
-	
-	private static ChannelTreeByPropertyWidget widgetOf(IFigure figure) {
-		return ((ChannelTreeByPropertyFigure) figure).getSWTWidget();
-	}
-	
-	private static boolean runMode(IFigure figure) {
-		return ((ChannelTreeByPropertyFigure) figure).isRunMode();
 	}
 	
 	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
@@ -50,6 +28,7 @@ public class ChannelTreeByPropertyEditPart extends AbstractChannelWidgetEditPart
 			widget.setSelectionPv(model.getSelectionPvName());
 		}
 		widget.setProperties(model.getTreeProperties());
+		widget.setConfigurable(model.getConfigurable());
 	}
 
 	@Override
@@ -59,7 +38,7 @@ public class ChannelTreeByPropertyEditPart extends AbstractChannelWidgetEditPart
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure figure) {
-				configure(widgetOf(figure), getWidgetModel(), runMode(figure));
+				configure(getFigure().getSWTWidget(), getWidgetModel(), getFigure().isRunMode());
 				return false;
 			}
 		};

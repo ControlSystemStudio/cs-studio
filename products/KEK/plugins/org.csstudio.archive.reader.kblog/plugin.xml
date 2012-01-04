@@ -15,7 +15,7 @@
             category="org.csstudio.platform.ui.css.applications.trends"
             class="org.csstudio.archive.reader.kblog.KBLogPreferencePage"
             id="org.csstudio.archive.reader.kblog.preferences"
-            name="%page.name">
+            name="%prefpage.name">
       </page>
    </extension>
 

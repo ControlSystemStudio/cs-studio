@@ -120,9 +120,10 @@ public class Application implements IApplication
             {
                 logger.info("Reading configuration '" + engine_name + "'");
                 BenchmarkTimer timer = new BenchmarkTimer();
-                ArchiveConfig config = ArchiveConfigFactory.getArchiveConfig();
+                ArchiveConfig config = null;
                 try
                 {
+                    config = ArchiveConfigFactory.getArchiveConfig();
                     model.readConfig(config, engine_name, port);
                 }
                 catch (final Exception ex)
@@ -132,7 +133,8 @@ public class Application implements IApplication
                 }
                 finally
                 {
-                	config.close();
+                    if (config != null)
+                        config.close();
                 }
                 timer.stop();
                 logger.info("Read configuration: " + model.getChannelCount() +

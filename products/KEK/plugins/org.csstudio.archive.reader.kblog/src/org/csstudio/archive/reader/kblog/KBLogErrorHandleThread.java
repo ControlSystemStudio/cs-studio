@@ -54,8 +54,7 @@ public class KBLogErrorHandleThread extends Thread {
 			
 			// Transfer the messages in the standard error to the CSS logging system.
 			while ((line = stderrReader.readLine()) != null) {
-				// TODO add a new preference not to show error messages to log 
-				Logger.getLogger(Activator.ID).log(Level.FINEST,
+				Logger.getLogger(Activator.ID).log(Level.FINE,
 						"Error message from " + kblogrdPath + " (" + commandId + "): " + line);
 			}
 		} catch (IOException ex) {
