@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.ams.delivery;
+package org.csstudio.ams.delivery.message;
 
 import java.io.Serializable;
 

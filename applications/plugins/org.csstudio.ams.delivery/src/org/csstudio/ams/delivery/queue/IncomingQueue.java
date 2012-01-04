@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,64 +23,53 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery;
+package org.csstudio.ams.delivery.queue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import javax.jms.Message;
-
-import org.csstudio.ams.delivery.message.BaseAlarmMessage.Priority;
-import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.message.BaseAlarmMessage.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 18.12.2011
+ * @since 03.01.2012
  */
-public class OutgoingMessageQueue<E> {
+public class IncomingQueue<E> {
     
-    private static final Logger LOG = LoggerFactory.getLogger(OutgoingMessageQueue.class);
-    
-    private ConcurrentLinkedQueue<E> content;
-    
-    public OutgoingMessageQueue() {
+    protected ConcurrentLinkedQueue<E> content;
+
+    public IncomingQueue() {
         content = new ConcurrentLinkedQueue<E>();
     }
-
-    public synchronized ArrayList<E> getCurrentContent() {
-        ArrayList<E> result = new ArrayList<E>(content);
-        content.removeAll(result);
+    
+    public List<E> getCurrentContent() {
+        List<E> result = null;
+        synchronized (content) {
+            result = Collections.synchronizedList(new ArrayList<E>(content));
+            content.removeAll(result);
+        }
         return result;
     }
     
-    public boolean addMessage(E e) {
+    public int size() {
+        return content.size();
+    }
+    
+    public synchronized boolean addMessage(E e) {
         return content.add(e);
     }
-        
-    
-    private String cleanTextString(final String text) {
 
-        if (text == null) {
-            return "";
-        } else if (text.length() == 0) {
-            return "";
-        }
-
-        return text.replace("$", "");
+    public synchronized E nextMessage() {
+        return content.poll();
     }
-
-    private void acknowledge(Message message) {
-        try {
-            message.acknowledge();
-        } catch (JMSException jmse) {
-            LOG.warn("Cannot acknowledge message: {}", message);
-        }
+    public boolean isEmpty() {
+        return content.isEmpty();
+    }
+    
+    public boolean hasContent() {
+        return !content.isEmpty();
     }
 }

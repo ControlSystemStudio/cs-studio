@@ -23,7 +23,7 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery;
+package org.csstudio.ams.delivery.queue;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;

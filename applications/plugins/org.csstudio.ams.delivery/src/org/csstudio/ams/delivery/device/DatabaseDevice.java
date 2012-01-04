@@ -33,7 +33,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.csstudio.ams.delivery.BaseAlarmMessage;
+
+import org.csstudio.ams.delivery.message.BaseAlarmMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
