@@ -34,5 +34,6 @@ public enum HeaderFields {
     VERSION,
     MODIFIED_ON,
     MODIFIED_BY,
-    DB_ID;
+    DB_ID,
+    KRYK_NO;
 }

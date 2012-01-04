@@ -33,6 +33,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
@@ -75,6 +76,7 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
      */
     private int _version;
     private String _description;
+    private String _krykNo="";
     private Set<C> _children = new HashSet<C>();
     private NodeImageDBO _icon;
     /**
@@ -236,6 +238,22 @@ public abstract class AbstractNodeDBO<P extends AbstractNodeDBO, C extends Abstr
     @Nonnull
     public void addDocument(@Nonnull final DocumentDBO document) {
         this._documents.add(document);
+    }
+
+    @Column(name = "INTERN_ID", nullable = false, length = 20)
+    @CheckForNull
+    public String getKrykNo() {
+        return _krykNo;
+    }
+
+    @Transient
+    @Nonnull
+    public String getKrykNoNH() {
+        return _krykNo == null ? "" : _krykNo;
+    }
+
+    public void setKrykNo(@Nullable final String krykNo) {
+        _krykNo = krykNo;
     }
 
     /**

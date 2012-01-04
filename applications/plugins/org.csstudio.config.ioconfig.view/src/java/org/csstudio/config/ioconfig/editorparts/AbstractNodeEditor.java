@@ -190,6 +190,15 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         if (descText != null && descText.getData() != null && descText.getData() instanceof String) {
             setDesc((String) descText.getData());
         }
+        final Text headerField = getHeaderField(HeaderFields.KRYK_NO);
+        if(headerField!=null) {
+            final Object data = headerField.getData();
+            String krykNo = "";
+            if (data instanceof String) {
+                krykNo = (String) data;
+            }
+            headerField.setText(krykNo);
+        }
         if (getNode() != null) {
             getNode().setDirty(false);
         }
@@ -238,6 +247,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         if (descText != null) {
             descText.setData(getDesc());
         }
+
+        final Text krykNoField = getHeaderField(HeaderFields.KRYK_NO);
+        final String krykNo = krykNoField.getText();
+        getNode().setKrykNo(krykNo);
+        krykNoField.setData(krykNo);
 
         // update Header
         getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
@@ -788,6 +802,13 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
 
         final Text dbIdText = getNewText(header, node.getId() + "");
         setHeaderField(HeaderFields.DB_ID, dbIdText);
+
+        getNewLabel(header, "Kryk No:");
+        final Text krykNoText = new Text(header, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+        krykNoText.setLayoutData(_TEXT_GRID_DATA.create());
+        krykNoText.setEditable(true);
+        setText(krykNoText, node.getKrykNoNH(), 20);
+        setHeaderField(HeaderFields.KRYK_NO, krykNoText);
 
         /**
          * GSD Version. The description field with the Version from GSD File.
