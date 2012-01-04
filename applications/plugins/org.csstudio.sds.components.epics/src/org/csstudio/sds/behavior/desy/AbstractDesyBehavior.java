@@ -19,6 +19,7 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.dal.util.GatewayUtil;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
@@ -241,12 +242,29 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
             case TEXT:
                 // TODO (hrickens): The CA Gateway sent wrong formated floating point.
                 // when the gateway sent the correct string, the stringValue can sent 1by1.
-                final String stringValue = anyData.stringValue();
+                String stringValue = anyData.stringValue();
+                if(GatewayUtil.hasGateway()) {
+                    stringValue = gatewayPrecisionBugHack(stringValue);
+                }
                 model.setPropertyValue(propertyId, stringValue);
                 break;
             default:
                 break;
         }
+    }
+
+    protected static String gatewayPrecisionBugHack(final String stringValue) {
+        String tmpValue = stringValue;
+        try {
+            Double.parseDouble(stringValue);
+            final int indexOf = stringValue.indexOf(".");
+            if(indexOf>0&&stringValue.length()-indexOf>4) {
+                tmpValue = stringValue.substring(0, stringValue.length()+1-indexOf);
+            }
+        } catch (final NumberFormatException nfe) {
+            // do default
+        }
+        return tmpValue;
     }
 
 }
