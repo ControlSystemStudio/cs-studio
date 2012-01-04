@@ -7,6 +7,10 @@
             file="toc.xml"
             primary="true">
       </toc>
+      <toc
+            file="changelog.xml"
+            primary="true">
+      </toc>
    </extension>
    <extension
          point="org.eclipse.core.runtime.adapters">
