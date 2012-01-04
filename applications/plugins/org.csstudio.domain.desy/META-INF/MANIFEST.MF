@@ -32,3 +32,4 @@ Export-Package: org.csstudio.domain.desy,
  org.csstudio.domain.desy.time,
  org.csstudio.domain.desy.types,
  org.csstudio.domain.desy.typesupport
+Bundle-ClassPath: .

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.domain.desy.ui.preferences.ControlSubnetPreferencPage"
+            id="org.csstudio.domain.desy.ui.preferences.ControlNetPreferencPage"
+            name="Control Subnet Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.domain.desy.ui.preferences.ControlSubnetPreferenceInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
