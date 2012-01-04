@@ -30,11 +30,11 @@ import java.util.Collection;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.delivery.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.csstudio.ams.delivery.device.IReadableDevice;
 import org.csstudio.ams.delivery.jms.JmsProperties;
 import org.csstudio.ams.delivery.jms.JmsSender;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.service.Environment;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -43,6 +43,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.OutboundMessage;
@@ -84,7 +85,11 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
         jmsProps = jms;
         initModem();
     }
-        
+    
+    public void setInboundMessageNotification(IInboundMessageNotification notification) {
+        modemService.setInboundMessageNotification(notification);
+    }
+    
     @Override
     public boolean deleteMessage(InboundMessage message) {
         

@@ -31,11 +31,14 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import org.csstudio.ams.AmsActivator;
+import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
-import org.csstudio.ams.delivery.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.action.AmsUserAction;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.jms.JmsProperties;
 import org.csstudio.ams.delivery.jms.JmsSender;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.message.BaseIncomingMessage;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
@@ -43,8 +46,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smslib.AGateway;
+import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundBinaryMessage;
 import org.smslib.InboundMessage;
+import org.smslib.Message.MessageTypes;
 
 /**
  * TODO (mmoeller) : 
@@ -53,7 +59,8 @@ import org.smslib.InboundMessage;
  * @version 1.0
  * @since 17.12.2011
  */
-public class SmsDeliveryWorker extends AbstractDeliveryWorker implements MessageListener {
+public class SmsDeliveryWorker extends AbstractDeliveryWorker implements MessageListener,
+                                                                         IInboundMessageNotification {
     
     private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryWorker.class);
     
@@ -87,7 +94,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
         outgoingQueue = new OutgoingSmsQueue();
-
+        
         // First create the JMS connections
         initJms();
         
@@ -108,6 +115,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                        null);
         
         smsDevice = new SmsDeliveryDevice(modemInfo, new JmsProperties(factoryClass, url, topic));
+        smsDevice.setInboundMessageNotification(this);
         
         readWaitingPeriod = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
                                           SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
@@ -144,10 +152,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 }
                 
                 outgoing = outgoingQueue.getCurrentContent();
-                LOG.info("Zu senden: " + outgoing.size());
             }
             
             if (outgoing.size() > 0) {
+                LOG.info("Zu senden: " + outgoing.size());
                 for (SmsAlarmMessage o : outgoing) {
                     if (smsDevice.sendMessage(o) == false) {
                         if (o.getMessageState() == State.FAILED) {
@@ -164,61 +172,128 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 outgoing.clear();
                 outgoing = null;
             }
-            
-            // Check modem test status first
-            if(testStatus.isActive()) {
-                LOG.info("Self test is active");
-                if(testStatus.isTimeOut()) {
-                    LOG.warn("Current test timed out.");
-                    LOG.debug("Remaining gateways: " + testStatus.getGatewayCount());
-                    LOG.debug("Bad gateways before moving: " + testStatus.getBadModemCount());
-                    testStatus.moveGatewayIdToBadModems();
-                    LOG.debug("Remaining gateways after moving: " + testStatus.getGatewayCount());
-                    LOG.debug("Bad gateways after moving: " + testStatus.getBadModemCount());
-                    if(testStatus.getBadModemCount() == modemInfo.getModemCount()) {
-                        LOG.error("No modem is working properly.");
-                        smsDevice.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
-                    } else {
-                        String list = "";
-                        for(String name : testStatus.getBadModems()) {
-                            list = list + name + " ";
+        }
+
+        smsDevice.stopDevice();
+        closeJms();
+        
+        LOG.info("{} is leaving.", workerName);
+    }
+    
+    private boolean processIncomingMessages(BaseIncomingMessage o) {
+        
+        boolean processed = false;
+        
+        if (!(o.getOriginalMessage() instanceof InboundBinaryMessage)) {
+            InboundMessage msg = (InboundMessage) o.getOriginalMessage();
+            AmsUserAction userAction = new AmsUserAction(msg.getText());
+            if (userAction.hasValidFormat()) {
+                MapMessage mapMsg = null;
+                try {
+                    mapMsg = amsPublisherReply.createMapMessage();
+                    if (userAction.isReplyAlarmAction()) {
+                        mapMsg.setString(AmsConstants.MSGPROP_MESSAGECHAINID_AND_POS,
+                                         userAction.getChainIdAsString());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_CONFIRMCODE,
+                                         userAction.getConfirmCode());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_REPLY_TYPE,
+                                         AmsConstants.MSG_REPLY_TYPE_SMS);
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_REPLY_ADRESS,
+                                         msg.getOriginator());
+                        
+                        LOG.info("Message parsed as alarm reply, start internal jms send");
+                    } else if (userAction.isChangeGroupAction()
+                               || userAction.isChangeUserAction()) {
+                        
+                        if(userAction.isChangeGroupAction()) {
+                            mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_ACTION, "group");
+                        } else {
+                            mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_ACTION, "user");
                         }
                         
-                        LOG.warn("Modems not working properly: " + list);
-                        smsDevice.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
+                        mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_GROUPNUM,
+                                         userAction.getGroupIdAsString());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_USERNUM,
+                                         userAction.getUserIdAsString());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_STATUS,
+                                         userAction.getStatusAsString());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_STATUSCODE,
+                                         userAction.getConfirmCode());
+
+                        mapMsg.setString(AmsConstants.MSGPROP_CHANGESTAT_REASON,
+                                         userAction.getReason());
+                        
+                        mapMsg.setString(AmsConstants.MSGPROP_REPLY_TYPE,
+                                         AmsConstants.MSG_REPLY_TYPE_SMS);
+                        mapMsg.setString(AmsConstants.MSGPROP_REPLY_ADRESS,
+                                         msg.getOriginator());
+                        
+                        LOG.info("Message parsed as change status, start internal jms send");
                     }
                     
-                    LOG.info("Reset current test.");
-                    testStatus.reset();
+                    amsPublisherReply.sendMessage(mapMsg);
+                    LOG.info("Send internal jms message done");
+                    processed = true;
+                } catch(Exception e) {
+                    LOG.error("[*** {} ***]: {}", e.getClass().getSimpleName(), e.getMessage());
                 }
+            } else {
+                LOG.warn("Incoming message is NOT a user action: {}", msg.getText());
             }
-            
-            ArrayList<InboundMessage> msgList = new ArrayList<InboundMessage>();
-            smsDevice.readMessages(msgList);
-            if (msgList.size() > 0) {
-                for (InboundMessage o : msgList) {
-                    if (!(o instanceof InboundBinaryMessage)) {
-                        if (!testStatus.isTestAnswer(o.getText())) {
-                            // No device test message
-                            msgList.remove(o);
-                        }
-                    } else {
-                        msgList.remove(o);
+        }
+        
+        return processed;
+    }
+    
+    private boolean checkDeviceTest(BaseIncomingMessage o) {
+        
+        boolean checked = false;
+        
+        // Check modem test status first
+        if(testStatus.isActive()) {
+            LOG.info("Self test is active");
+            if(testStatus.isTimeOut()) {
+                LOG.warn("Current test timed out.");
+                LOG.debug("Remaining gateways: " + testStatus.getGatewayCount());
+                LOG.debug("Bad gateways before moving: " + testStatus.getBadModemCount());
+                testStatus.moveGatewayIdToBadModems();
+                LOG.debug("Remaining gateways after moving: " + testStatus.getGatewayCount());
+                LOG.debug("Bad gateways after moving: " + testStatus.getBadModemCount());
+                if(testStatus.getBadModemCount() == modemInfo.getModemCount()) {
+                    LOG.error("No modem is working properly.");
+                    smsDevice.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
+                } else {
+                    String list = "";
+                    for(String name : testStatus.getBadModems()) {
+                        list = list + name + " ";
                     }
+                    
+                    LOG.warn("Modems not working properly: " + list);
+                    smsDevice.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
                 }
-            }
-            
-            // Maybe some messages are left
-            for (InboundMessage o : msgList) {
                 
+                LOG.info("Reset current test.");
+                testStatus.reset();
+            }
+        }
+        
+        if (!(o.getOriginalMessage() instanceof InboundBinaryMessage)) {
+            
+            InboundMessage msg = (InboundMessage) o.getOriginalMessage();
+            if (testStatus.isTestAnswer(msg.getText())) {
                 // Have a look at the current check status
                 if(testStatus.isActive()) {
-                    
                     if(testStatus.isTimeOut() == false) {
                         
                         LOG.info("Self test SMS");
                         LOG.info("Gateways waiting for answer: " + testStatus.getGatewayCount());
-                        testStatus.checkAndRemove(o.getText());
+                        testStatus.checkAndRemove(msg.getText());
                         LOG.info("Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
                         if((testStatus.getGatewayCount() == 0)) {
                             if(testStatus.getBadModemCount() == 0) {
@@ -245,17 +320,13 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                         }
                     }
                 }
-    
-                if (!smsDevice.deleteMessage(o)) {
-                    LOG.warn("Message cannot be deleted.");
-                }
             }
+            checked = true;
+        } else {
+            checked = true;
         }
-
-        smsDevice.stopDevice();
-        closeJms();
         
-        LOG.info("{} is leaving.", workerName);
+        return checked;
     }
     
     /**
@@ -289,6 +360,22 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         }
         
         acknowledge(msg);
+    }
+
+    @Override
+    public void process(AGateway gateway, MessageTypes msgType, InboundMessage msg) {
+        Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
+        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
+        BaseIncomingMessage inMsg = new BaseIncomingMessage(msg);
+        if (processIncomingMessages(inMsg) == false) {
+            checkDeviceTest(inMsg);
+        }
+
+        if (smsDevice.deleteMessage(msg)) {
+            LOG.info("Message is deleted.");
+        } else {
+            LOG.warn("Message cannot be deleted.");
+        }
     }
 
     private void acknowledge(Message message) {
@@ -449,10 +536,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         synchronized (outgoingQueue) {
             outgoingQueue.notify();
         }
-        Object lock = new Object();
-        synchronized (lock) {
+        Object localLock = new Object();
+        synchronized (localLock) {
             try {
-                lock.wait(250);
+                localLock.wait(250);
             } catch (InterruptedException e) {
                 // Ignore me
             }

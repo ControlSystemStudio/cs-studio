@@ -29,33 +29,24 @@ import java.util.Vector;
  * @author Markus Moeller
  *
  */
-public class ModemInfoContainer
-{
+public class ModemInfoContainer {
+    
     private Vector<ModemInfo> modemInfo;
      
-    public ModemInfoContainer()
-    {
+    public ModemInfoContainer() {
         modemInfo = new Vector<ModemInfo>();
     }
     
-    public int getModemCount()
-    {
+    public int getModemCount() {
         return modemInfo.size();
     }
     
-    /**
-     * 
-     * @param index
-     * @return String containg the modem id (name)
-     */
-    public String getModemName(int index)
-    {
+    public String getModemName(int index) {
+        
         String result = null;
                 
-        if(modemInfo.isEmpty() == false)
-        {
-            if((index >= 0) && (index < modemInfo.size()))
-            {
+        if(modemInfo.isEmpty() == false) {
+            if((index >= 0) && (index < modemInfo.size())) {
                 result = modemInfo.elementAt(index).getModemName();
             }
         }
@@ -63,62 +54,37 @@ public class ModemInfoContainer
         return result;
     }
     
-    /**
-     * 
-     * @param name
-     * @param phoneNumber
-     */
-    public void addModemName(String name, String phoneNumber)
-    {        
-        if((name != null) && (phoneNumber != null))
-        {
-            if((name.length() > 0) && (phoneNumber.length() > 0))
-            {
+    public void addModemName(String name, String phoneNumber) {        
+        if((name != null) && (phoneNumber != null)) {
+            if((name.length() > 0) && (phoneNumber.length() > 0)) {
                 modemInfo.add(new ModemInfo(name, phoneNumber));
             }
         }
     }
     
-    /**
-     * 
-     * @return
-     */
-    public String[] getModemNames()
-    {
+    public String[] getModemNames() {
+        
         String[] result = null;
         
-        if(modemInfo.size() > 0)
-        {
+        if(modemInfo.size() > 0) {
             result = new String[modemInfo.size()];
-            
-            for(int i = 0;i < modemInfo.size();i++)
-            {
+            for(int i = 0;i < modemInfo.size();i++) {
                 result[i] = modemInfo.get(i).getModemName();
             }
-        }
-        else
-        {
+        } else {
             result = new String[1];
         }
         
         return result;
     }
     
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    public String getPhoneNumber(String name)
-    {
+    public String getPhoneNumber(String name) {
+        
         String result = null;
 
-        if(containsModemName(name))
-        {
-            for(ModemInfo mi : modemInfo)
-            {
-                if(mi.getModemName().compareTo(name) == 0)
-                {
+        if(containsModemName(name)) {
+            for(ModemInfo mi : modemInfo) {
+                if(mi.getModemName().compareTo(name) == 0) {
                     result = mi.getPhoneNumber();
                     break;
                 }
@@ -128,19 +94,12 @@ public class ModemInfoContainer
         return result;
     }
     
-    /**
-     * 
-     * @param name
-     * @return
-     */
-    public boolean containsModemName(String name)
-    {
+    public boolean containsModemName(String name) {
+        
         boolean contains = false;
         
-        for(ModemInfo mi : modemInfo)
-        {
-            if(mi.getModemName().compareTo(name) == 0)
-            {
+        for(ModemInfo mi : modemInfo) {
+            if(mi.getModemName().compareTo(name) == 0) {
                 contains = true;
                 break;
             }

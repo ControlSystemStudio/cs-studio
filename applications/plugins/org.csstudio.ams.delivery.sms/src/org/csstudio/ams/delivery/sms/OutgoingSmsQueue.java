@@ -28,10 +28,10 @@ package org.csstudio.ams.delivery.sms;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.csstudio.ams.AmsConstants;
-import org.csstudio.ams.delivery.AbstractMessageQueue;
-import org.csstudio.ams.delivery.BaseAlarmMessage.Priority;
-import org.csstudio.ams.delivery.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.BaseAlarmMessage.Type;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.Priority;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.Type;
+import org.csstudio.ams.delivery.queue.AbstractMessageQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
