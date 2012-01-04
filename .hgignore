@@ -39,3 +39,10 @@ syntax: regexp
 ^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.settings$
 ^applications/plugins/org\.csstudio\.utility\.pvmanager\.jfreechart\.widgets/\.classpath$
+
+syntax: regexp
+^applications/plugins/net\.coobird\.thumbnailator/\.settings$
+syntax: regexp
+^applications/plugins/org\.apache\.jackrabbit/\.settings$
+syntax: regexp
+^applications/plugins/org\.csstudio\.utility\.olog\.ui/\.settings$
