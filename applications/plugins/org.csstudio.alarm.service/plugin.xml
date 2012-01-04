@@ -11,12 +11,6 @@
       </page>
    </extension>
    <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.csstudio.alarm.service.preferences.AlarmServicePreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="org.csstudio.auth.authorizationId">
       <id
             description="Administration of alarm configuration and database."
