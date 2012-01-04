@@ -45,6 +45,7 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 				for (int i = 0; i < node.getNodeChannels().size(); i++) {
 					pvs[i] = new ProcessVariable(node.getNodeChannels().get(i).getName());
 				}
+				return pvs;
 			} else if (adapterType == ConfigurableWidget.class) {
 				ConfigurableWidget widget = node.getConfigurableWidget();
 				if (widget.isConfigurable())
