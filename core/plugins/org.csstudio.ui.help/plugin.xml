@@ -11,6 +11,10 @@
             file="tocCore.xml"
             primary="true">
       </toc>
+      <toc
+            file="tocChangelog.xml"
+            primary="true">
+      </toc>
    </extension>
 
 </plugin>
