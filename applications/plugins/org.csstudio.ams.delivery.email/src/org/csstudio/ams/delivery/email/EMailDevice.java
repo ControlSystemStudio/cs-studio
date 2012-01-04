@@ -35,8 +35,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import org.csstudio.ams.delivery.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

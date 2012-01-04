@@ -25,7 +25,7 @@
 
 package org.csstudio.ams.delivery.email;
 
-import org.csstudio.ams.delivery.BaseAlarmMessage;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage;
 
 /**
  * TODO (mmoeller) : 
