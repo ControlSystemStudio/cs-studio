@@ -25,9 +25,10 @@
 
 package org.csstudio.ams.delivery;
 
-import org.csstudio.ams.delivery.BaseAlarmMessage.Priority;
-import org.csstudio.ams.delivery.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.BaseAlarmMessage.Type;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.Priority;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage.Type;
 import org.junit.Test;
 import org.junit.Assert;
 
