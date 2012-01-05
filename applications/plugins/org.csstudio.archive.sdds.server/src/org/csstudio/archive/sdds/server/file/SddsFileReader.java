@@ -80,12 +80,15 @@ public class SddsFileReader {
             littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
                                            ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN,
                                            false, null);
+            LOG.info("Assuming little endian files: {}", littleEndian);
             ignoreBigFiles = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
                                              ServerPreferenceKey.P_IGNORE_BIG_FILES,
                                              true, null);
+            LOG.info("Ignoring big files: {}", ignoreBigFiles);
             maxFileSize = pref.getLong(SddsServerActivator.PLUGIN_ID,
                                        ServerPreferenceKey.P_MAX_FILE_SIZE,
                                        5242880L, null);
+            LOG.info("Max. file size: {}", maxFileSize);
         } else {
             LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
             littleEndian = false;
