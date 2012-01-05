@@ -18,7 +18,9 @@ import org.eclipse.swt.widgets.Combo;
  * Decorates a Combo box to maintain the history.
  * <p>
  * Newly entered items are added to the top of the combo list, dropping last
- * items off the list when reaching a configurable maximum list size.
+ * items off the list when reaching a configurable maximum list size. If an item
+ * is selected/entered again, it will pop at the beginning of the list (so
+ * that continuously used items are not lost).
  * <p>
  * You must
  * <ul>
@@ -84,6 +86,8 @@ public abstract class ComboHistoryHelper {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String name = ComboHistoryHelper.this.combo.getText();
+				addEntry(name);
+				ComboHistoryHelper.this.combo.select(0);
 				newSelection(name);
 			}
 		});
@@ -109,10 +113,12 @@ public abstract class ComboHistoryHelper {
 		if (newEntry.trim().isEmpty())
 			return;
 		
-		// Avoid duplicates
-		for (int i = 0; i < combo.getItemCount(); ++i)
-			if (combo.getItem(i).equals(newEntry))
-				return;
+		// Remove if present, so that is
+		// re-added on top
+		int entry = -1;
+		while ((entry = combo.indexOf(newEntry)) != -1) {
+			combo.remove(entry);
+		}
 		
 		// Maybe remove oldest, i.e. bottom-most, entry
 		if (combo.getItemCount() >= max)
