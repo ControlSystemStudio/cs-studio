@@ -11,5 +11,12 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="tocChangelog.xml"
+            primary="false">
+      </toc>
+   </extension>
 
 </plugin>
