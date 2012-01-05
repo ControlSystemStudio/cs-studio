@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.csstudio.utility.channel.ChannelCommandHandler;
+import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -23,7 +23,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author shroffk
  * 
  */
-public class RemoveTagCommandHandler extends ChannelCommandHandler {
+public class RemoveTagCommandHandler extends AbstractAdaptedHandler<Channel> {
+	
+	public RemoveTagCommandHandler() {
+		super(Channel.class);
+	}
 
 	@Override
 	protected void execute(List<Channel> channels, ExecutionEvent event) {

@@ -4,13 +4,17 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 
 import java.util.List;
 
-import org.csstudio.utility.channel.ChannelQueryCommandHandler;
+import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class OpenChannelTreeByProperty extends ChannelQueryCommandHandler {
+public class OpenChannelTreeByProperty extends AbstractAdaptedHandler<ChannelQuery> {
+	
+	public OpenChannelTreeByProperty() {
+		super(ChannelQuery.class);
+	}
 	
 	@Override
 	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) {
