@@ -2,7 +2,7 @@ package org.csstudio.channel.widgets;
 
 import java.util.List;
 
-import org.csstudio.utility.channel.AbstractAdaptedHandler;
+import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 
 /**
