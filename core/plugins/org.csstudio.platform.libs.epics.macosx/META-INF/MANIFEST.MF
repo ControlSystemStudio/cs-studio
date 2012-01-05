@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: JNI bindings for Mac OS X
+Bundle-SymbolicName: org.csstudio.platform.libs.epics.macosx;singleton:=true
+Bundle-Version: 1.1.6.qualifier
+Fragment-Host: org.csstudio.platform.libs.epics;bundle-version="1.1.6"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Vendor: DESY/ORNL/SLAC
+Eclipse-PlatformFilter: (| (osgi.os=macosx))
+Bundle-NativeCode: 
+ lib/macosx/x86/libjca.jnilib; osname="mac os x"; processor=x86
