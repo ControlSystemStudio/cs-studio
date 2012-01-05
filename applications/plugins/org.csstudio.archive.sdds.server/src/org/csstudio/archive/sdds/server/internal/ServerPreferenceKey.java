@@ -38,6 +38,8 @@ public final class ServerPreferenceKey {
     public static final String P_SDDS_LITTLE_ENDIAN = "sddsLittleEndian";
     public static final String P_VALID_RECORD_BEFORE = "validRecordBefore";
     public static final String P_MAX_SAMPLES_PER_REQUEST = "maxSamplesPerRequest";
+    public static final String P_IGNORE_BIG_FILES = "ignoreBigFiles";
+    public static final String P_MAX_FILE_SIZE = "maxFileSize";
 
     private ServerPreferenceKey() {
         // Avoid instantiation

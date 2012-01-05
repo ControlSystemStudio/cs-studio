@@ -62,6 +62,10 @@ public class SddsFileReader {
     /** Indicates if byte order is little endian */
     private final boolean littleEndian;
 
+    private final long maxFileSize;
+
+    private final boolean ignoreBigFiles;
+
     /**
      * Constructor that gets a string containing the path to the data files.
      *
@@ -76,9 +80,19 @@ public class SddsFileReader {
             littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
                                            ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN,
                                            false, null);
+            ignoreBigFiles = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                             ServerPreferenceKey.P_IGNORE_BIG_FILES,
+                                             true, null);
+            maxFileSize = pref.getLong(SddsServerActivator.PLUGIN_ID,
+                                       ServerPreferenceKey.P_MAX_FILE_SIZE,
+                                       5242880L, null);
         } else {
             LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
             littleEndian = false;
+            LOG.warn("Cannot read if I should ignore big files. Use default: true.");
+            ignoreBigFiles = true;
+            LOG.warn("Cannot read max. file size. Use default: 5MB");
+            maxFileSize = 5242880L;
         }
     }
 
@@ -115,18 +129,19 @@ public class SddsFileReader {
                 final long fileLength = file.length();
                 LOG.debug(" " + filePaths[i] + " - Length: " + fileLength);
 
-                // If the file length is greater then 5MB DO NOT read it
-                if (fileLength <= 5242880L) {
-
-                    final SddsDataReader dataReader = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
-                    reader.add(dataReader);
-
-                    final Thread thread = new Thread(threadGroup, dataReader);
-                    readerThread.add(thread);
-                    thread.start();
-                } else {
+                // If the file length is greater then max. allowed file size
+                // AND the server have to ignore them
+                // THEN DO NOT read it
+                if (ignoreBigFiles && fileLength > maxFileSize) {
                     throw new SddsFileLengthException("File '" + filePaths[i] + "' too big to be read (" + fileLength + ")");
                 }
+
+                final SddsDataReader dataReader = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
+                reader.add(dataReader);
+
+                final Thread thread = new Thread(threadGroup, dataReader);
+                readerThread.add(thread);
+                thread.start();
             }
         }
 
