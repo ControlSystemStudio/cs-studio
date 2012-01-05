@@ -17,7 +17,7 @@ import org.csstudio.logbook.ILogbook;
 import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
-import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
+import edu.msu.nscl.olog.api.OlogClientManager;
 import edu.msu.nscl.olog.api.OlogException;
 
 /**
@@ -36,8 +36,7 @@ public class OlogLogbook implements ILogbook {
 
 	public OlogLogbook(String logbookName, String user, String password)
 			throws Exception {
-		client = OlogClientBuilder.serviceURL().username(user)
-				.password(password).withHTTPAuthentication(true).create();
+		client = OlogClientManager.getClient();
 		LogbookName = logbookName;
 		/* The maximum allowed size of logbook text entry MEDIUMTEXT */
 		MAX_TEXT_SIZE = 16777215;
