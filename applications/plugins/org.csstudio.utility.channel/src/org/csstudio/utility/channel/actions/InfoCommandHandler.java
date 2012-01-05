@@ -8,7 +8,7 @@ import gov.bnl.channelfinder.api.Channel;
 import java.util.Collection;
 import java.util.List;
 
-import org.csstudio.utility.channel.ChannelCommandHandler;
+import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -16,7 +16,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * 
  */
-public class InfoCommandHandler extends ChannelCommandHandler {
+public class InfoCommandHandler extends AbstractAdaptedHandler<Channel> {
+	
+	public InfoCommandHandler() {
+		super(Channel.class);
+	}
 
 	@Override
 	protected void execute(List<Channel> channels, ExecutionEvent event) {

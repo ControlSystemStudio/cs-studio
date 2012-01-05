@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.csstudio.utility.channel.ChannelCommandHandler;
+import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.csstudio.utility.channelfinder.Activator;
 import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -26,7 +26,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-public class AddTagCommandHandler extends ChannelCommandHandler {
+public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
+	
+	public AddTagCommandHandler() {
+		super(Channel.class);
+	}
 	
 	@Override
 	protected void execute(List<Channel> channels, ExecutionEvent event) {
