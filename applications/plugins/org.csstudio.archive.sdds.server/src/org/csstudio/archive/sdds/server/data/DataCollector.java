@@ -91,6 +91,7 @@ public class DataCollector {
 
         } catch (final SddsFileLengthException fle) {
             dataCollection = new RecordDataCollection(AapiServerError.CAN_T_OPEN_FILE);
+            LOG.error("[*** SddsFileLengthException ***]: {}", fle.getMessage());
         }
 
         return dataCollection;
