@@ -111,7 +111,7 @@ public class AmsUserAction {
         
         try {
             if (!parts[0].equals("#")) {
-                Long.parseLong(parts[0]);
+                chainId = Long.parseLong(parts[0]);
             } else {
                 // Indicates that all chain messages have to be answered
                 chainId = -1000L;
