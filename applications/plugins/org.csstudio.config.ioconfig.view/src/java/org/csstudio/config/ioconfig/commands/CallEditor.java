@@ -24,7 +24,7 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -39,7 +39,7 @@ public class CallEditor extends AbstractCallNodeEditor {
     public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";//$NON-NLS-1$
     
     @Override
-    protected final void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> obj,
+    protected final void openNodeEditor(@Nonnull final AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>,AbstractNodeSharedImpl<?,?>> obj,
                                         @Nonnull final IWorkbenchPage page) throws PartInitException {
         
         final NodeEditorInput input = new NodeEditorInput(obj);

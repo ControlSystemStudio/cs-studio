@@ -291,6 +291,27 @@ public class HibernateRepository implements IRepository {
         return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
 
+    @Override
+    @CheckForNull
+    public final ChannelDBO loadChannelWithInternId(@Nullable final String internId) throws PersistenceException {
+        final IHibernateCallback hibernateCallback = new IHibernateCallback() {
+            @SuppressWarnings("unchecked")
+            @Override
+            @CheckForNull
+            public ChannelDBO execute(@Nonnull final Session session) {
+                if (internId == null) {
+                    return null;
+                }
+                final Query createQuery = session.createQuery("select c from "
+                        + ChannelDBO.class.getName() + " c where c.intern_id like ?");
+                createQuery.setString(0, internId);
+                final ChannelDBO nodes = (ChannelDBO) createQuery.uniqueResult();
+                return nodes;
+            }
+        };
+        return _instance.doInDevDBHibernateLazy(hibernateCallback);
+    }
+
     /**
      * {@inheritDoc}
      */

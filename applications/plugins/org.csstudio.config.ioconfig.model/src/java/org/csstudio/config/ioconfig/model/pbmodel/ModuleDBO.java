@@ -36,7 +36,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.INodeWithPrototype;
@@ -55,7 +55,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Module")
-public class ModuleDBO extends AbstractNodeDBO<SlaveDBO, ChannelStructureDBO> implements
+public class ModuleDBO extends AbstractNodeSharedImpl<SlaveDBO, ChannelStructureDBO> implements
 INodeWithPrototype {
 
     private static final long serialVersionUID = 1L;

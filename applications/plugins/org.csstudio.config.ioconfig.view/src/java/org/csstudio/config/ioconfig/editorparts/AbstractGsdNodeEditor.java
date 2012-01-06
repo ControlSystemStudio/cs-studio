@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.GSDLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ShowFileSelectionListener;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
@@ -86,9 +86,9 @@ import org.slf4j.LoggerFactory;
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 20.04.2011
- * @param <T> {@link AbstractNodeDBO} to edited.
+ * @param <T> {@link AbstractNodeSharedImpl} to edited.
  */
-public abstract class AbstractGsdNodeEditor<T extends AbstractNodeDBO<?, ?>> extends AbstractNodeEditor<T> {
+public abstract class AbstractGsdNodeEditor<T extends AbstractNodeSharedImpl<?, ?>> extends AbstractNodeEditor<T> {
 
     /**
      * @author hrickens

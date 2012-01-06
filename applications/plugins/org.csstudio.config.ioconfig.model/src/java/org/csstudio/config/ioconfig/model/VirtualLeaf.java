@@ -33,20 +33,20 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
  * Virtual leaf node - flyweight pattern + nullobject pattern.
  * This node is - similar to {@link VirtualRoot} node - not actually part of the tree, but only
  * present to ensure the consistence of the methods of the 'real' tree nodes.
- * Tree traversal checks are performed against the singleton instances of {@link VirtualRoot} and 
- * {@link VirtualLeaf}. 
- * 
+ * Tree traversal checks are performed against the singleton instances of {@link VirtualRoot} and
+ * {@link VirtualLeaf}.
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> {
+public final class VirtualLeaf extends AbstractNodeSharedImpl<ChannelDBO, VirtualLeaf> {
 
     public static final VirtualLeaf INSTANCE = new VirtualLeaf();
     private static final long serialVersionUID = 1L;
 
-    
+
     /**
      * Constructor.
      */
@@ -62,7 +62,7 @@ public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> 
     public ChannelDBO getParent() {
         throw new UnsupportedOperationException(VirtualLeaf.class + " does not permit to ask for its parent node.");
     }
-    
+
     /**
      * have no nodeType
      */
@@ -71,13 +71,13 @@ public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> 
     public NodeType getNodeType() {
         return null;
     }
-    
+
     @Override
     @Nonnull
     protected VirtualLeaf copyParameter(@Nonnull final ChannelDBO parent) throws PersistenceException {
         return INSTANCE;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -86,7 +86,7 @@ public final class VirtualLeaf extends AbstractNodeDBO<ChannelDBO, VirtualLeaf> 
     public VirtualLeaf createChild() throws PersistenceException {
         throw new UnsupportedOperationException(VirtualLeaf.class + " does not permit to create child nodes");
     }
-    
+
     /**
      * {@inheritDoc}
      */

@@ -24,7 +24,7 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 
 /**
  * Node editor handler that implements node specific strategies for editors. 
@@ -42,7 +42,7 @@ public final class NodeEditorHandler {
     }
 
     @CheckForNull
-    public static String getEditorIdFor(@Nonnull final AbstractNodeDBO<?, ?> node) {
+    public static String getEditorIdFor(@Nonnull final AbstractNodeSharedImpl<?, ?> node) {
         node.accept(EditorIdNodeVisitor.INSTANCE);
         return EditorIdNodeVisitor.INSTANCE.getId();
     }

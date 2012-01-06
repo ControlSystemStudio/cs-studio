@@ -32,7 +32,7 @@ public interface IRepository {
      *            the Data class that save or update.
      * @return the Saved Data class.
      * @throws PersistenceException
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Nonnull
     <T extends DBClass> T saveOrUpdate(@Nonnull final T dbClass) throws PersistenceException;
@@ -43,7 +43,7 @@ public interface IRepository {
      * @param dbClass
      *            the Data class that update to DB
      * @return the Saved Data class.
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Nonnull
     <T extends DBClass> T update(@Nonnull final T dbClass) throws PersistenceException;
@@ -70,7 +70,7 @@ public interface IRepository {
      */
     @CheckForNull
     <T> T load(@Nonnull final Class<T> clazz,@Nonnull  Serializable id) throws PersistenceException;
- 
+
     /**
      * @param <T>
      *            ClassTyp of the Data class
@@ -85,7 +85,7 @@ public interface IRepository {
      *            the GSD File that save to DB
      * @return the Saved GSD File.
      */
-    @Nonnull 
+    @Nonnull
     GSDFileDBO save(@Nonnull final GSDFileDBO gsdFile) throws PersistenceException;
 
     /**
@@ -170,6 +170,14 @@ public interface IRepository {
      */
     @CheckForNull
     ChannelDBO loadChannel(@Nullable String ioName) throws PersistenceException;
+
+    /**
+     * Load the Channel selected by the INTERN_ID
+     * @param internId the selection INTERN_ID.
+     * @return The the selected Channel or null when not found!
+     */
+    @CheckForNull
+    ChannelDBO loadChannelWithInternId(@Nullable String internId) throws PersistenceException;
 
     /**
      * @param pvName

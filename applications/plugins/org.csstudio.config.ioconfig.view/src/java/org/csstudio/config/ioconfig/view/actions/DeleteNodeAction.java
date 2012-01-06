@@ -27,7 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -62,16 +62,16 @@ public class DeleteNodeAction extends Action {
                                                               "Delete Node",
                                                               message);
         if (openConfirm) {
-            AbstractNodeDBO<?, ?> parent = null;
+            NodeDBO<?, ?> parent = null;
             NamedDBClass dbClass = null;
             final Iterator<NamedDBClass> iterator = _profiBusTreeView.getSelectedNodes().iterator();
             while (iterator.hasNext()) {
                 dbClass = iterator.next();
                 if (dbClass instanceof FacilityDBO) {
                     deleteFacility(errMsg, errMsgHead, dbClass);
-                } else if (dbClass instanceof AbstractNodeDBO) {
+                } else if (dbClass instanceof NodeDBO) {
                     try {
-                        parent = ((AbstractNodeDBO<?, ?>) dbClass).delete();
+                        parent = ((NodeDBO<?, ?>) dbClass).delete();
                     } catch (final PersistenceException e) {
                         ProfibusHelper.openErrorDialog(_profiBusTreeView.getSite().getShell(),
                                                        errMsgHead,

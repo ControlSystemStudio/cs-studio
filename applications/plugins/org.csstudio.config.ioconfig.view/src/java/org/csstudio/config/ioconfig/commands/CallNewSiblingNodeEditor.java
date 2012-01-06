@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -40,9 +40,9 @@ import org.eclipse.ui.PartInitException;
  * @since 10.06.2010
  */
 public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
-    
+
     private static final String ID = "org.csstudio.config.ioconfig.commands.callNewSiblingEditor";//$NON-NLS-1$
-    
+
     /**
      * @param siblingNode
      * @param page
@@ -53,9 +53,9 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
      * @throws PersistenceException
      * @throws PartInitException
      */
-    private void performOpen(@Nonnull final AbstractNodeDBO<?,?> siblingNode,
+    private void performOpen(@Nonnull final AbstractNodeSharedImpl<?,?> siblingNode,
                              @Nonnull final IWorkbenchPage page,
-                             @Nonnull final AbstractNodeDBO<?,?> node,
+                             @Nonnull final AbstractNodeSharedImpl<?,?> node,
                              @Nonnull final String id,
                              @Nonnull final String name) throws PersistenceException, PartInitException {
         node.setSortIndexNonHibernate(siblingNode.getSortIndex() + 1);
@@ -63,19 +63,19 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
         final NodeEditorInput input = new NodeEditorInput(node, true);
         page.openEditor(input, id);
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PartInitException
      * @throws PersistenceException
      */
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>> siblingNode,
+    protected void openNodeEditor(@Nonnull final AbstractNodeSharedImpl<AbstractNodeSharedImpl<?, ?>, AbstractNodeSharedImpl<?, ?>> siblingNode,
                                   @Nonnull final IWorkbenchPage page) throws PartInitException,
                                   PersistenceException {
-        final AbstractNodeDBO<?,?> node = siblingNode.getParent().createChild();
+        final AbstractNodeSharedImpl<?,?> node = (AbstractNodeSharedImpl<?, ?>) siblingNode.getParent().createChild();
         final String id = NodeEditorHandler.getEditorIdFor(node);
-        
+
         if( node != null && id != null) {
             if(id.equals(ModuleEditor.ID)) {
                 performOpen(siblingNode, page, node, id, " ");
@@ -100,7 +100,7 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
             }
         }
     }
-    
+
     /**
      * @return
      */
@@ -108,5 +108,5 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
     public static String getEditorID() {
         return ID;
     }
-    
+
 }

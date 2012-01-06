@@ -21,20 +21,15 @@
 */
 package org.csstudio.config.ioconfig.model.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.INode;
-import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
-import org.csstudio.config.ioconfig.model.hibernate.Repository;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +40,11 @@ import org.slf4j.LoggerFactory;
  * @version $Revision: 1.2 $
  * @since 27.07.2010
  */
-public class ProcessVariable2IONameImplemation implements IProcessVariable2IONameService {
+public class InternId2IONameImplemation implements IInternId2IONameService {
 
     private static final Logger LOG = LoggerFactory
-            .getLogger(ProcessVariable2IONameImplemation.class);
-    
+            .getLogger(InternId2IONameImplemation.class);
+
     /**
      * {@inheritDoc}
      */
@@ -61,60 +56,40 @@ public class ProcessVariable2IONameImplemation implements IProcessVariable2IONam
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @CheckForNull
     public INode getNode(@Nonnull final String internId) throws PersistenceException {
-        final ArrayList<String> list = new ArrayList<String>();
-        list.add(internId);
-        final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(list);
-        if(pv2ioNameMatchers!=null) {
-            for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
-                ChannelDBO value;
-                try {
-                    value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
-                    return value;
-                } catch (final PersistenceException e) {
-                    LOG.error("Can't load Channel", e);
-                }
-            }
-        }
         return null;
     }
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
-     * @throws NodeNotFoundException 
+     * @throws PersistenceException
+     * @throws NodeNotFoundException
      */
     @Override
     @Nonnull
     public Map<String, INode> getNodes(@Nonnull final Collection<String> internId) throws PersistenceException, NodeNotFoundException {
-        final Map<String, INode> nodes = new HashMap<String, INode>();
-        final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(internId);
-        if (pv2ioNameMatchers != null && !pv2ioNameMatchers.isEmpty()) {
-            for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
-                ChannelDBO value;
-                value = Repository.loadChannel(pv2ioNameMatcher.getIoName());
-                if(value != null) {
-                    nodes.put(pv2ioNameMatcher.getEpicsName(), value);
-                } else {
-                    throw new NodeNotFoundException(NodeNotFoundException.State.DeviceDB);
-                }
-            }
-        } else {
-            throw new NodeNotFoundException(NodeNotFoundException.State.DCT);
-        }
-        return nodes;
+        return null;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public IDocument getDocuments(final String internId) throws PersistenceException {
+        return null;
     }
 
-    @CheckForNull
-    private List<PV2IONameMatcherModelDBO>
-            getPV2IONameMatchers(@Nonnull final Collection<String> pvName) throws PersistenceException {
-        List<PV2IONameMatcherModelDBO> matchers;
-        matchers = Repository.loadPV2IONameMatcher(pvName);
-        return matchers;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getProcessVariable(final String internId) throws PersistenceException {
+        return null;
     }
 
 }

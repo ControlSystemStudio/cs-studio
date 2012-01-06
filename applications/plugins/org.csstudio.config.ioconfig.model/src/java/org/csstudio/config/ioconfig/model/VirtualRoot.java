@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
-public final class VirtualRoot extends AbstractNodeDBO<VirtualRoot, FacilityDBO> {
+public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, FacilityDBO> {
     
     private static final long serialVersionUID = -296484498706601307L;
 

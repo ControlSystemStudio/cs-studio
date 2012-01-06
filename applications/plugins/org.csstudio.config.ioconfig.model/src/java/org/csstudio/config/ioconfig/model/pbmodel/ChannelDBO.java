@@ -36,7 +36,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
-public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
+public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, VirtualLeaf> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     private static final long serialVersionUID = 1L;

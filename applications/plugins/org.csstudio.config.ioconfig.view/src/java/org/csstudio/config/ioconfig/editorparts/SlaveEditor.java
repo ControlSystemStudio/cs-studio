@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.OverviewLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
@@ -514,7 +514,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
         _maxSize = parsedGsdFileModel.getMaxModule();
         setSlots();
         // Settings - USER PRM MODE
-        final ArrayList<AbstractNodeDBO<?,?>> nodes = new ArrayList<AbstractNodeDBO<?,?>>();
+        final ArrayList<AbstractNodeSharedImpl<?,?>> nodes = new ArrayList<AbstractNodeSharedImpl<?,?>>();
         nodes.add(_slave);
         nodes.addAll(_slave.getChildrenAsMap().values());
         _userPrmDataList.setInput(nodes);
@@ -918,7 +918,7 @@ public class SlaveEditor extends AbstractGsdNodeEditor<SlaveDBO> {
             }
         });
 
-        final ArrayList<AbstractNodeDBO<?,?>> children = new ArrayList<AbstractNodeDBO<?,?>>();
+        final ArrayList<AbstractNodeSharedImpl<?,?>> children = new ArrayList<AbstractNodeSharedImpl<?,?>>();
         final Collection<ModuleDBO> modules = _slave.getChildrenAsMap().values();
         for (final ModuleDBO module : modules) {
             children.add(module);

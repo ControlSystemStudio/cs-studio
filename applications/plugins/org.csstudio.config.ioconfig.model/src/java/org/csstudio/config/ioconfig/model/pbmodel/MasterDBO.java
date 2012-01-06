@@ -37,7 +37,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -54,7 +54,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 
 @Entity
 @Table(name = "ddb_Profibus_Master")
-public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
+public class MasterDBO extends AbstractNodeSharedImpl<ProfibusSubnetDBO, SlaveDBO> {
 
     private static final long serialVersionUID = 1L;
 
@@ -188,7 +188,7 @@ public class MasterDBO extends AbstractNodeDBO<ProfibusSubnetDBO, SlaveDBO> {
     public MasterDBO copyThisTo(@Nonnull final ProfibusSubnetDBO parentNode, @CheckForNull final String namePrefix) throws PersistenceException {
         final MasterDBO copy = (MasterDBO) super.copyThisTo(parentNode, namePrefix);
         for (final SlaveDBO node : getChildren()) {
-            final AbstractNodeDBO<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy, "Copy of");
+            final AbstractNodeSharedImpl<MasterDBO, ModuleDBO> childrenCopy = node.copyThisTo(copy, "Copy of");
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;

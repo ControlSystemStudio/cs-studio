@@ -39,7 +39,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "ddb_Facility")
-public class FacilityDBO extends AbstractNodeDBO<VirtualRoot, IocDBO> {
+public class FacilityDBO extends AbstractNodeSharedImpl<VirtualRoot, IocDBO> {
 
     private static final long serialVersionUID = 1L;
 

@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -38,11 +38,11 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class NodeEditorInput implements IEditorInput {
 
-    private final AbstractNodeDBO<?,?> _node;
+    private final AbstractNodeSharedImpl<?,?> _node;
     private final boolean _nevv;
 
 
-    public NodeEditorInput(@Nonnull final AbstractNodeDBO<?,?> node) {
+    public NodeEditorInput(@Nonnull final AbstractNodeSharedImpl<?,?> node) {
         _node = node;
         _nevv = false;
     }
@@ -50,13 +50,13 @@ public class NodeEditorInput implements IEditorInput {
     /**
      * Constructor.
      */
-    public NodeEditorInput(@Nonnull final AbstractNodeDBO<?,?> node, final boolean nevv) {
+    public NodeEditorInput(@Nonnull final AbstractNodeSharedImpl<?,?> node, final boolean nevv) {
         _node = node;
         _nevv = nevv;
     }
 
     @Nonnull
-    public AbstractNodeDBO<?,?> getNode() {
+    public AbstractNodeSharedImpl<?,?> getNode() {
         return _node;
     }
 

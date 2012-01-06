@@ -36,7 +36,7 @@ import javax.annotation.Nonnull;
 public interface INode {
 
     @CheckForNull
-    INode getParent();
+    INode getParentAsINode();
 
     @Nonnull
     Set<DocumentDBO> getDocuments();

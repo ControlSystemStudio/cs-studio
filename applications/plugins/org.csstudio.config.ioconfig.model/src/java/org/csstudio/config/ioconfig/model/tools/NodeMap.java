@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
 
 /**
  * @author hrickens
@@ -39,8 +39,8 @@ import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
  * @since 22.10.2009
  */
 public final class NodeMap {
-    
-    private static Map<Integer, AbstractNodeDBO<?,?>> _NODE_MAP = new HashMap<Integer, AbstractNodeDBO<?,?>>();
+
+    private static Map<Integer, NodeDBO<?,?>> _NODE_MAP = new HashMap<Integer, NodeDBO<?,?>>();
     private static int _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
     private static int _LOCAL_UPDATE;
     private static int _CHANNEL_CONFIG_COMPOSITE;
@@ -52,37 +52,37 @@ public final class NodeMap {
     public static void countAssembleEpicsAddressString() {
         _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING++;
     }
-    
+
     public static void countChannelConfigComposite() {
         _CHANNEL_CONFIG_COMPOSITE++;
     }
-    
+
     public static void countlocalUpdate() {
         _LOCAL_UPDATE++;
     }
-    
+
     @CheckForNull
-    public static AbstractNodeDBO<?,?> get(@Nonnull final Integer key) {
+    public static NodeDBO<?,?> get(@Nonnull final Integer key) {
         return _NODE_MAP.get(key);
     }
-    
+
     public static int getChannelConfigComposite() {
         return _CHANNEL_CONFIG_COMPOSITE;
     }
-    
+
     public static int getCountAssembleEpicsAddressString() {
         return _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
     }
-    
+
     public static int getLocalUpdate() {
         return _LOCAL_UPDATE;
     }
-    
+
     public static int getNumberOfNodes() {
         return _NODE_MAP.size();
     }
-    
-    public static void put(@Nonnull final Integer key, @Nonnull final AbstractNodeDBO<?,?> value) {
+
+    public static void put(@Nonnull final Integer key, @Nonnull final NodeDBO<?,?> value) {
         _NODE_MAP.put(key, value);
     }
 }

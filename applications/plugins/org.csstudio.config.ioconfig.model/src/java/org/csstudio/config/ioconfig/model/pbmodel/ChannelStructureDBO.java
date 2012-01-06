@@ -35,7 +35,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -51,7 +51,7 @@ import org.hibernate.annotations.BatchSize;
 @Entity
 @BatchSize(size=32)
 @Table(name = "ddb_Profibus_Channel_Structure")
-public class ChannelStructureDBO extends AbstractNodeDBO<ModuleDBO, ChannelDBO> {
+public class ChannelStructureDBO extends AbstractNodeSharedImpl<ModuleDBO, ChannelDBO> {
 
     private static final long serialVersionUID = 1L;
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");

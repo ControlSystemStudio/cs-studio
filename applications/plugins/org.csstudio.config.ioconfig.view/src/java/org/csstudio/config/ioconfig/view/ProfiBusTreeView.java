@@ -41,7 +41,7 @@ import org.csstudio.config.ioconfig.commands.CallNewFacilityEditor;
 import org.csstudio.config.ioconfig.commands.CallNewSiblingNodeEditor;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IOConfigActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -328,7 +328,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      * A Copy from a Node.
      */
-    private List<AbstractNodeDBO<?,?>> _copiedNodesReferenceList;
+    private List<AbstractNodeSharedImpl<?,?>> _copiedNodesReferenceList;
     /**
      * Select _copiedNodesReferenceList Nodes a Copied or moved
      */
@@ -663,7 +663,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * Generate a Action that reassemble the EPICS Address String for the selected {@link AbstractNodeDBO} and
+     * Generate a Action that reassemble the EPICS Address String for the selected {@link AbstractNodeSharedImpl} and
      * all Children.
      */
     private void makeAssembleEpicsAddressStringAction() {
@@ -671,8 +671,8 @@ public class ProfiBusTreeView extends Composite {
             @Override
             public void run() {
                 final Object selectedNode = getSelectedNodes().getFirstElement();
-                if (selectedNode instanceof AbstractNodeDBO) {
-                    final AbstractNodeDBO<?,?> node = (AbstractNodeDBO<?,?>) selectedNode;
+                if (selectedNode instanceof AbstractNodeSharedImpl) {
+                    final AbstractNodeSharedImpl<?,?> node = (AbstractNodeSharedImpl<?,?>) selectedNode;
                     try {
                         node.assembleEpicsAddressString();
                     } catch (final PersistenceException e) {
@@ -752,7 +752,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * Generate a Action that open the {@link AbstractNodeConfig} for the selected {@link AbstractNodeDBO}.
+     * Generate a Action that open the {@link AbstractNodeConfig} for the selected {@link AbstractNodeSharedImpl}.
      */
     private void makeEditNodeAction() {
         _editNodeAction = new Action() {
@@ -772,7 +772,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * Generate a Action that make a new Children {@link AbstractNodeDBO} and open the Config View.
+     * Generate a Action that make a new Children {@link AbstractNodeSharedImpl} and open the Config View.
      */
     private void makeNewChildrenNodeAction() {
         _newChildrenNodeAction = new Action() {
@@ -817,7 +817,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * Generate a Action that make a new Sibling {@link AbstractNodeDBO} and open the Config View.
+     * Generate a Action that make a new Sibling {@link AbstractNodeSharedImpl} and open the Config View.
      */
     private void makeNewNodeAction() {
         _newNodeAction = new Action() {
@@ -996,7 +996,7 @@ public class ProfiBusTreeView extends Composite {
     // CHECKSTYLE ON: CyclomaticComplexity
 
     @Nonnull
-    public List<AbstractNodeDBO<?,?>> getCopiedNodesReferenceList() {
+    public List<AbstractNodeSharedImpl<?,?>> getCopiedNodesReferenceList() {
         return _copiedNodesReferenceList;
     }
 
@@ -1052,7 +1052,7 @@ public class ProfiBusTreeView extends Composite {
         }
     }
 
-    protected final void setCopiedNodesReferenceList(@Nonnull final List<AbstractNodeDBO<?,?>> copiedNodesReferenceList) {
+    protected final void setCopiedNodesReferenceList(@Nonnull final List<AbstractNodeSharedImpl<?,?>> copiedNodesReferenceList) {
         _copiedNodesReferenceList = copiedNodesReferenceList;
     }
 

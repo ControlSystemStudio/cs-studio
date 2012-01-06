@@ -36,7 +36,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -405,7 +405,7 @@ public class MasterEditor extends AbstractGsdNodeEditor<MasterDBO> {
 
         int min = 0;
 
-        final TreeMap<Short, ? extends AbstractNodeDBO> map = (TreeMap<Short, ? extends AbstractNodeDBO>) _master
+        final TreeMap<Short, ? extends AbstractNodeSharedImpl> map = (TreeMap<Short, ? extends AbstractNodeSharedImpl>) _master
         .getChildrenAsMap();
         if(map.size() > 0) {
             min = map.lastKey();

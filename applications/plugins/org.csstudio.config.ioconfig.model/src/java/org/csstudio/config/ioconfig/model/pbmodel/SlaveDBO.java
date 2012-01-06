@@ -35,7 +35,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
-public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
+public class SlaveDBO extends AbstractNodeSharedImpl<MasterDBO, ModuleDBO> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SlaveDBO.class);
 
@@ -152,7 +152,7 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
         copy.setWdFact1(getWdFact1());
         copy.setWdFact2(getWdFact2());
         for (final ModuleDBO node : getChildren()) {
-            final AbstractNodeDBO<?, ?> childrenCopy = node.copyThisTo(copy, null);
+            final AbstractNodeSharedImpl<?, ?> childrenCopy = node.copyThisTo(copy, null);
             childrenCopy.setSortIndexNonHibernate(node.getSortIndex());
         }
         return copy;
