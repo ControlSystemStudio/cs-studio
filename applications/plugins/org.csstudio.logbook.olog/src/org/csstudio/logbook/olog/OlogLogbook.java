@@ -127,8 +127,8 @@ public class OlogLogbook implements ILogbook {
 			throws Exception {
 		Log returnLog = null;
 		try {
-			LogBuilder lb = LogBuilder.log("CSS Logbook Application")
-					.description(text).level("Info").in(logbook(LogbookName));
+			LogBuilder lb = LogBuilder.log()
+					.description(text).level("Info").appendToLogbook(logbook(LogbookName));
 			returnLog = client.set(lb);
 			return returnLog.getId().intValue();
 		} catch (OlogException e) {
