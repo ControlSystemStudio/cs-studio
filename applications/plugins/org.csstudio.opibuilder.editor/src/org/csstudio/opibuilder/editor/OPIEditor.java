@@ -64,7 +64,7 @@ import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunner;
-import org.csstudio.opibuilder.util.ConsoleService;
+import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -806,12 +806,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
-			String message = "Error happened when loading the OPI file!\n"
-				+ e.getMessage();
-			MessageDialog.openError(getSite().getShell(), "File Open Error",
-					message);
-            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message);
+			String message = "Error happened when loading the OPI file!\n";
+			ErrorHandlerUtil.handleError(message, e, true, true);
 			getEditorSite().getPage().closeEditor(this, false);
 		}
 		
