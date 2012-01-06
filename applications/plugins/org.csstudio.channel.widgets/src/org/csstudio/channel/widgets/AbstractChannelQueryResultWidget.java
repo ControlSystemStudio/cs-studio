@@ -4,42 +4,27 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelQueryListener;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.widgets.Composite;
 
 /**
- * Provides the basic infrastructure for a widget that works with a channel query.
+ * Provides the basic infrastructure for a widget that works with a channel query result.
  * Handles the basics for async communication.
  * 
  * @author carcassi
  */
-public abstract class AbstractChannelWidget extends Composite {
-	
-	private ChannelQuery channelQuery;
-	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+public abstract class AbstractChannelQueryResultWidget extends AbstractChannelQueryWidget {
 
-	public AbstractChannelWidget(Composite parent, int style) {
+	public AbstractChannelQueryResultWidget(Composite parent, int style) {
 		super(parent, style);
 	}
 	
-    public void addPropertyChangeListener( PropertyChangeListener listener ) {
-        changeSupport.addPropertyChangeListener( listener );
-    }
-
-    public void removePropertyChangeListener( PropertyChangeListener listener ) {
-    	changeSupport.removePropertyChangeListener( listener );
-    }
-	
-	public ChannelQuery getChannelQuery() {
-		return channelQuery;
-	}
-	
 	public void setChannelQuery(ChannelQuery channelQuery) {
-		ChannelQuery oldValue = this.channelQuery;
-		this.channelQuery = channelQuery;
+		// If new query is the same, don't change -- you would re-trigger the query for nothing
+		if (getChannelQuery() != null && getChannelQuery().equals(channelQuery))
+			return;
+		
+		ChannelQuery oldValue = getChannelQuery();
 		if (oldValue != null) {
 			oldValue.removeChannelQueryListener(queryListener);
 		}
@@ -47,7 +32,7 @@ public abstract class AbstractChannelWidget extends Composite {
 		if (channelQuery != null) {
 			channelQuery.execute(queryListener);
 		}
-		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
+		super.setChannelQuery(channelQuery);
 	}
 	
 	private final ChannelQueryListener queryListener = new ChannelQueryListener() {
@@ -58,7 +43,7 @@ public abstract class AbstractChannelWidget extends Composite {
 				
 				@Override
 				public void run() {
-					AbstractChannelWidget.this.queryExecuted(result);
+					AbstractChannelQueryResultWidget.this.queryExecuted(result);
 				}
 			});
 			
