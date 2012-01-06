@@ -3,7 +3,9 @@ package org.csstudio.channel.widgets;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 
 /**
  * Helper class to wrap a selection provider (e.g. a table, a tree, ...),
@@ -53,17 +55,26 @@ public abstract class AbstractSelectionProviderWrapper implements ISelectionProv
 	
 	@Override
 	public ISelection getSelection() {
-		return transform(wrappedProvider.getSelection());
+		ISelection selection = wrappedProvider.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			return transform((IStructuredSelection) wrappedProvider.getSelection());
+		} else {
+			return new StructuredSelection();
+		}
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
-		wrappedProvider.setSelection(reverseTransform(selection));
+		if (selection instanceof IStructuredSelection) {
+			wrappedProvider.setSelection(reverseTransform((IStructuredSelection) selection));
+		} else {
+			wrappedProvider.setSelection(new StructuredSelection());
+		}
 	}
 	
-	protected abstract ISelection transform(ISelection selection);
+	protected abstract ISelection transform(IStructuredSelection selection);
 	
-	protected ISelection reverseTransform(ISelection selection) {
+	protected ISelection reverseTransform(IStructuredSelection selection) {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
 }

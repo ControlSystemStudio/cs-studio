@@ -120,14 +120,13 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 				queryChannels();
 			}
 		});
+		
 		selectionProvider = new AbstractSelectionProviderWrapper(table, this) {
 			@Override
-			protected ISelection transform(ISelection selection) {
-				if (selection instanceof IStructuredSelection) {
-					VTableDisplayCell cell = (VTableDisplayCell) ((IStructuredSelection) selection).getFirstElement();
-					if (cell != null)
-						return new StructuredSelection(new PVTableByPropertyCell(cell, PVTableByPropertyWidget.this));
-				}
+			protected ISelection transform(IStructuredSelection selection) {
+				VTableDisplayCell cell = (VTableDisplayCell) selection.getFirstElement();
+				if (cell != null)
+					return new StructuredSelection(new PVTableByPropertyCell(cell, PVTableByPropertyWidget.this));
 				return new StructuredSelection();
 			}
 		};
