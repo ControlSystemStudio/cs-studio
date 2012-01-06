@@ -49,7 +49,7 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget {
 					String newValue = "";
 					if (event.getNewValue() != null)
 						newValue = ((ChannelQuery) event.getNewValue()).getQuery();
-					if (newValue.equals(combo.getText())) {
+					if (!newValue.equals(combo.getText())) {
 						combo.setText(newValue);
 					}
 				}
