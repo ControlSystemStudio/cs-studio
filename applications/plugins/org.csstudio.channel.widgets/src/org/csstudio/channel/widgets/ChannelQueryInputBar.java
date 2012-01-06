@@ -1,19 +1,26 @@
 package org.csstudio.channel.widgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import gov.bnl.channelfinder.api.ChannelQuery;
-
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 
-public class ChannelQueryInputBar extends AbstractChannelQueryWidget {
+public class ChannelQueryInputBar extends AbstractChannelQueryWidget 
+	implements ISelectionProvider {
 
 	private Combo combo;
 	
@@ -56,6 +63,13 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget {
 			}
 		});
 		
+		selectionProvider = new AbstractSelectionProviderWrapper(comboViewer, this) {
+			
+			@Override
+			protected ISelection transform(IStructuredSelection selection) {
+				return new StructuredSelection(getChannelQuery());
+			}
+		};
 		
 		name_helper.loadSettings();
 	}
@@ -64,4 +78,34 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget {
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
 	}
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		combo.setMenu(menu);
+	}
+	
+	private AbstractSelectionProviderWrapper selectionProvider;
+
+	@Override
+	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
+	}
+	
 }
