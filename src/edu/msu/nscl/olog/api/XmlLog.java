@@ -3,22 +3,27 @@
  * Copyright (c) 2010 Helmholtz-Zentrum Berlin fuer Materialien und Energie GmbH
  * Subject to license terms and conditions.
  */
-
 package edu.msu.nscl.olog.api;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import java.util.Date;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
  * Log object that can be represented as XML/JSON in payload data.
  *
  * @author Eric Berryman taken from Ralph Lange <Ralph.Lange@bessy.de>
  */
-
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name = "log")
 public class XmlLog {
+
     private Long id;
     private int version;
     private String owner;
@@ -28,13 +33,13 @@ public class XmlLog {
     private String md5Recent;
     private Date createdDate;
     private Date modifiedDate;
-    private String subject;
+//    private String subject;
     private String description;
-    private XmlProperties properties = new XmlProperties();
-    private XmlLogbooks logbooks = new XmlLogbooks();
-    private XmlTags tags = new XmlTags();
+    private Collection<XmlProperty> properties = new ArrayList<XmlProperty>();
+    private Collection<XmlLogbook> logbooks = new ArrayList<XmlLogbook>();
+    private Collection<XmlTag> tags = new ArrayList<XmlTag>();
     private XmlAttachments attachments = new XmlAttachments();
-  
+
     /** Creates a new instance of XmlLog */
     public XmlLog() {
     }
@@ -53,9 +58,9 @@ public class XmlLog {
      *
      * @param subject log subject
      */
-    public XmlLog(String subject) {
-        this.subject = subject;
-    }
+//    public XmlLog(String subject) {
+//        this.subject = subject;
+//    }
 
     /**
      * Creates a new instance of XmlLog.
@@ -63,8 +68,8 @@ public class XmlLog {
      * @param subject log subject
      * @param owner log owner
      */
-    public XmlLog(String subject, String owner) {
-        this.subject = subject;
+    public XmlLog(/*String subject, */String owner) {
+//        this.subject = subject;
         this.owner = owner;
     }
 
@@ -217,26 +222,26 @@ public class XmlLog {
      *
      * @return subject
      */
-    @XmlElement(name="subject")
-    public String getSubject() {
-        return subject;
-    }
+//    @XmlElement(name = "subject")
+//    public String getSubject() {
+//        return subject;
+//    }
 
     /**
      * Setter for log subject.
      *
      * @param subject the value to set
      */
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+//    public void setSubject(String subject) {
+//        this.subject = subject;
+//    }
 
-       /**
+    /**
      * Getter for log description.
      *
      * @return description
      */
-    @XmlElement(name="description")
+    @XmlElement(name = "description")
     public String getDescription() {
         return description;
     }
@@ -251,12 +256,31 @@ public class XmlLog {
     }
 
     /**
+     * Getter for MD5 entry.
+     *
+     * @return description
+     */
+    public String getMD5Entry() {
+        return md5Entry;
+    }
+
+    /**
+     * Setter for MD5 entry.
+     *
+     * @param description the value to set
+     */
+    public void setMD5Entry(String md5entry) {
+        this.md5Entry = md5entry;
+    }
+
+    /**
      * Getter for log's XmlProperties.
      *
      * @return properties XmlProperties
      */
-    @XmlElement(name = "properties")
-    public XmlProperties getXmlProperties() {
+    @XmlElementWrapper(name = "properties")
+    @XmlElement(name = "property")
+    public Collection<XmlProperty> getXmlProperties() {
         return properties;
     }
 
@@ -265,7 +289,7 @@ public class XmlLog {
      *
      * @param properties XmlProperties
      */
-    public void setXmlProperties(XmlProperties properties) {
+    public void setXmlProperties(Collection<XmlProperty> properties) {
         this.properties = properties;
     }
 
@@ -275,7 +299,7 @@ public class XmlLog {
      * @param property single XmlProperty
      */
     public void addXmlProperty(XmlProperty property) {
-        this.properties.addXmlProperty(property);
+        this.properties.add(property);
     }
 
     /**
@@ -283,8 +307,9 @@ public class XmlLog {
      *
      * @return XmlLogbooks
      */
-    @XmlElement(name = "logbooks")
-    public XmlLogbooks getXmlLogbooks() {
+    @XmlElementWrapper(name = "logbooks")
+    @XmlElement(name = "logbook")
+    public Collection<XmlLogbook> getXmlLogbooks() {
         return logbooks;
     }
 
@@ -293,7 +318,7 @@ public class XmlLog {
      *
      * @param logbooks XmlLogbooks
      */
-    public void setXmlLogbooks(XmlLogbooks logbooks) {
+    public void setXmlLogbooks(Collection<XmlLogbook> logbooks) {
         this.logbooks = logbooks;
     }
 
@@ -303,7 +328,7 @@ public class XmlLog {
      * @param logbook single XmlLogbook
      */
     public void addXmlLogbook(XmlLogbook logbook) {
-        this.logbooks.addXmlLogbook(logbook);
+        this.logbooks.add(logbook);
     }
 
     /**
@@ -311,8 +336,9 @@ public class XmlLog {
      *
      * @return XmlTags for this log
      */
-    @XmlElement(name = "tags")
-    public XmlTags getXmlTags() {
+    @XmlElementWrapper(name = "tags")
+    @XmlElement(name = "tag")
+    public Collection<XmlTag> getXmlTags() {
         return tags;
     }
 
@@ -321,7 +347,7 @@ public class XmlLog {
      *
      * @param tags XmlTags
      */
-    public void setXmlTags(XmlTags tags) {
+    public void setXmlTags(Collection<XmlTag> tags) {
         this.tags = tags;
     }
 
@@ -331,10 +357,10 @@ public class XmlLog {
      * @param tag
      */
     public void addXmlTag(XmlTag tag) {
-        this.tags.addXmlTag(tag);
+        this.tags.add(tag);
     }
 
-        /**
+    /**
      * Getter for the log's XmlAttachments.
      *
      * @return XmlAttachments for this log
@@ -369,9 +395,15 @@ public class XmlLog {
      * @return string representation
      */
     public static String toLog(XmlLog data) {
-        return data.getId()+"-v."+data.getVersion()+" : "+data.getSubject() + "(" + data.getOwner() + "):["
-                + XmlLogbooks.toLog(data.logbooks)
-                + XmlTags.toLog(data.tags)
+        XmlLogbooks xl = new XmlLogbooks();
+        xl.setLogbooks(data.logbooks);
+        
+        XmlTags xt = new XmlTags();
+        xt.setTags(data.tags);
+        
+        return data.getId() + "-v." + data.getVersion() + " : " + /*data.getSubject() +*/ "(" + data.getOwner() + "):["
+                + XmlLogbooks.toLog(xl)
+                + XmlTags.toLog(xt)
                 + XmlAttachments.toLog(data.attachments)
                 + "]\n";
     }
