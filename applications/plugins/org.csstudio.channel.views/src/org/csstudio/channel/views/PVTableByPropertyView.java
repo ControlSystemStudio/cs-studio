@@ -1,5 +1,6 @@
 package org.csstudio.channel.views;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
@@ -68,19 +70,19 @@ public class PVTableByPropertyView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (combo.getText() != null) {
-			memento.putString(MEMENTO_QUERY, combo.getText());
+		if (inputBar.getChannelQuery() != null) {
+			memento.putString(MEMENTO_QUERY, inputBar.getChannelQuery().getQuery());
 		}
 		memento.putString(MEMENTO_ROW_PROPERTY, tableWidget.getRowProperty());
 		memento.putString(MEMENTO_COLUMN_PROPERTY, tableWidget.getColumnProperty());		
 	}
 	
 	public void setPVName(String name) {
-		combo.setText(name);
+		inputBar.setChannelQuery(ChannelQuery.Builder.query(name).create());
 		changeQuery(name);
 	}
 	
-	private Combo combo;
+	private ChannelQueryInputBar inputBar;
 	private PVTableByPropertyWidget tableWidget;
 	private Combo columnProperty;
 	private Combo rowProperty;
@@ -102,17 +104,30 @@ public class PVTableByPropertyView extends ViewPart {
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
-		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
-		combo = comboViewer.getCombo();
+		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
+				Activator.getDefault().getDialogSettings(), "pvtablebyproperty.query");
 		FormData fd_combo = new FormData();
 		fd_combo.top = new FormAttachment(0, 10);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
-		combo.setLayoutData(fd_combo);
+		inputBar.setLayoutData(fd_combo);
+		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("channelQuery".equals(event.getPropertyName())) {
+					String queryText = null;
+					if (event.getNewValue() != null) {
+						queryText = ((ChannelQuery) event.getNewValue()).getQuery();
+					}
+					setPVName(queryText);
+				}
+			}
+		});
 		
 		tableWidget = new PVTableByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
-		fd_waterfallComposite.top = new FormAttachment(combo, 6);
+		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		tableWidget.setLayoutData(fd_waterfallComposite);
@@ -145,15 +160,6 @@ public class PVTableByPropertyView extends ViewPart {
 				}
 			}
 		});
-		
-		ComboHistoryHelper name_helper =
-			new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
-			@Override
-			public void newSelection(final String pv_name) {
-				changeQuery(pv_name);
-			}
-		};
 		
 		Label lblRow = new Label(parent, SWT.NONE);
 		fd_combo.right = new FormAttachment(lblRow, -6);
@@ -209,7 +215,6 @@ public class PVTableByPropertyView extends ViewPart {
 				
 			}
 		});
-		name_helper.loadSettings();
 		
 		if (memento != null) {
 			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
