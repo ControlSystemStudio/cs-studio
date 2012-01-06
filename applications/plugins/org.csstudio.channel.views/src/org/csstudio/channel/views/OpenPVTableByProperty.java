@@ -17,17 +17,12 @@ public class OpenPVTableByProperty extends AbstractAdaptedHandler<ChannelQuery> 
 	}
 	
 	@Override
-	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) {
-		try {
-			IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
-			if (queries.size() > 0) {
-				PVTableByPropertyView pvTable = (PVTableByPropertyView) page
-				.showView(PVTableByPropertyView.ID);
-				pvTable.setPVName(queries.get(0).getQuery());
-			}
-		} catch (PartInitException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
+		IWorkbenchPage page = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage();
+		if (queries.size() > 0) {
+			PVTableByPropertyView pvTable = (PVTableByPropertyView) page
+			.showView(PVTableByPropertyView.ID);
+			pvTable.setChannelQuery(queries.get(0));
 		}
 	}
 }

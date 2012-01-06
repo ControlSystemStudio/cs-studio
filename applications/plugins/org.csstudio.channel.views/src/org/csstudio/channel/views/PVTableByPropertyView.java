@@ -75,9 +75,9 @@ public class PVTableByPropertyView extends ViewPart {
 		memento.putString(MEMENTO_COLUMN_PROPERTY, tableWidget.getColumnProperty());		
 	}
 	
-	public void setPVName(String name) {
-		inputBar.setChannelQuery(ChannelQuery.Builder.query(name).create());
-		changeQuery(name);
+	public void setChannelQuery(ChannelQuery channelQuery) {
+		inputBar.setChannelQuery(channelQuery);
+		changeQuery(channelQuery);
 	}
 	
 	private ChannelQueryInputBar inputBar;
@@ -86,8 +86,8 @@ public class PVTableByPropertyView extends ViewPart {
 	private Combo rowProperty;
 	private Composite parent;
 	
-	private void changeQuery(String text) {
-		tableWidget.setChannelQuery(ChannelQuery.Builder.query(text).create());
+	private void changeQuery(ChannelQuery channelQuery) {
+		tableWidget.setChannelQuery(channelQuery);
 	}
 
 	@Override
@@ -113,11 +113,7 @@ public class PVTableByPropertyView extends ViewPart {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if ("channelQuery".equals(event.getPropertyName())) {
-					String queryText = null;
-					if (event.getNewValue() != null) {
-						queryText = ((ChannelQuery) event.getNewValue()).getQuery();
-					}
-					setPVName(queryText);
+					setChannelQuery((ChannelQuery) event.getNewValue());
 				}
 			}
 		});
@@ -214,7 +210,7 @@ public class PVTableByPropertyView extends ViewPart {
 			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
 			tableWidget.setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
 			if (memento.getString(MEMENTO_QUERY) != null) {
-				setPVName(memento.getString(MEMENTO_QUERY));
+				setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_QUERY)).create());
 			}
 		}
 		
