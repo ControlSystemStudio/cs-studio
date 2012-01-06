@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * @author carcassi
  * 
  */
-public class ChannelTreeByPropertyWidget extends AbstractChannelWidget
+public class ChannelTreeByPropertyWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget {
 	
 	private Tree tree;
