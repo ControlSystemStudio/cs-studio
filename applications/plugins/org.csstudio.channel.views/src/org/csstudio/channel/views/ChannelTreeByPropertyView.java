@@ -4,8 +4,11 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelQueryListener;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 
+import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
@@ -81,8 +84,8 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (combo.getText() != null) {
-			memento.putString(MEMENTO_QUERY, combo.getText());
+		if (inputBar.getChannelQuery() != null) {
+			memento.putString(MEMENTO_QUERY, inputBar.getChannelQuery().getQuery());
 			if (!treeWidget.getProperties().isEmpty()) {
 				StringBuilder sb = new StringBuilder();
 				for (String property : treeWidget.getProperties()) {
@@ -94,35 +97,13 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		}
 	}
 	
-	private void setQueryText(String text) {
-		if (text == null)
-			text = "";
-		combo.setText(text);
-		changeQuery(text);
-	}
-	
-	private Combo combo;
+	private ChannelQueryInputBar inputBar;
 	private ChannelTreeByPropertyWidget treeWidget;
 	private Composite parent;
 	private Button btnProperties;
 	
-	private void changeQuery(String text) {
-		ChannelQuery oldQuery = treeWidget.getChannelQuery();
-		if (text == null)
-			text = "";
-		text = text.trim();
-		
-		// Query is the same, do nothing
-		if (oldQuery != null && oldQuery.getQuery().equals(text)) {
-			return;
-		}
-		
-		ChannelQuery newQuery = ChannelQuery.Builder.query(text).create();
-		setChannelQuery(newQuery);
-	}
-	
 	public void setChannelQuery(ChannelQuery query) {
-		combo.setText(query.getQuery());
+		inputBar.setChannelQuery(query);
 		ChannelQuery oldQuery = treeWidget.getChannelQuery();
 		if (oldQuery != null) {
 			oldQuery.removeChannelQueryListener(channelQueryListener);
@@ -147,29 +128,29 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
-		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
-		combo = comboViewer.getCombo();
+		inputBar = new ChannelQueryInputBar(parent, SWT.NONE,
+				Activator.getDefault().getDialogSettings(), "channeltreebypropertyview.query");
 		FormData fd_combo = new FormData();
 		fd_combo.top = new FormAttachment(0, 15);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
-		combo.setLayoutData(fd_combo);
+		inputBar.setLayoutData(fd_combo);
+		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("channelQuery".equals(event.getPropertyName())) {
+					setChannelQuery((ChannelQuery) event.getNewValue());
+				}
+			}
+		});
 		
 		treeWidget = new ChannelTreeByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.top = new FormAttachment(combo, 6);
+		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
 		fd_waterfallComposite.right = new FormAttachment(100, -10);
 		treeWidget.setLayoutData(fd_waterfallComposite);
-		
-		ComboHistoryHelper name_helper =
-			new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
-			@Override
-			public void newSelection(final String pv_name) {
-				changeQuery(pv_name);
-			}
-		};
 		
 		btnProperties = new Button(parent, SWT.NONE);
 		fd_combo.right = new FormAttachment(btnProperties, -6);
@@ -184,15 +165,15 @@ public class ChannelTreeByPropertyView extends ViewPart {
 				configure();
 			}
 		});
-		name_helper.loadSettings();
 		
 		if (memento != null) {
-			setQueryText(memento.getString(MEMENTO_QUERY));
+			inputBar.setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_QUERY)).create());
 			if (memento.getString(MEMENTO_PROPERTIES) != null) {
 				treeWidget.setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
 			}
 		}
 		
 		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
+		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 	}
 }
