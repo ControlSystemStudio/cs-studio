@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.util;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,9 +15,8 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 
 public final class SchemaService {
@@ -24,8 +24,9 @@ public final class SchemaService {
 	private static SchemaService instance;
 
 	private Map<String, AbstractWidgetModel> schemaWidgetsMap;
+	
 
-	public SchemaService() {
+	private SchemaService() {
 		schemaWidgetsMap = new HashMap<String, AbstractWidgetModel>();
 		reLoad();
 	}
@@ -44,47 +45,63 @@ public final class SchemaService {
 		final IPath schemaOPI = PreferencesHelper.getSchemaOPIPath();
 		if (schemaOPI == null || schemaOPI.isEmpty()) {
 			return;
+		}		
+		if(Display.getCurrent() != null){ // in UI thread, show progress dialog
+			IRunnableWithProgress job = new IRunnableWithProgress() {
+				
+				@Override
+				public void run(IProgressMonitor monitor) throws InvocationTargetException,
+						InterruptedException {
+					monitor.beginTask("Connecting to " + schemaOPI,
+							IProgressMonitor.UNKNOWN);
+					loadSchema(schemaOPI);
+					monitor.done();
+				}
+			};
+			try {
+				new ProgressMonitorDialog(
+						Display.getCurrent().getActiveShell()).run(true, false, job);
+			} catch (Exception e) {
+				ErrorHandlerUtil.handleError("Failed to load schema", e);
+			} 
 		}
-		Job job = new Job("Load Schema File") {
-
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + schemaOPI,
-						IProgressMonitor.UNKNOWN);
-				try {
-					InputStream inputStream = ResourceUtil.pathToInputStream(
-							schemaOPI, false);
-					DisplayModel displayModel = new DisplayModel();
-					XMLUtil.fillDisplayModelFromInputStream(inputStream,
-							displayModel, Display.getDefault());
-					schemaWidgetsMap.put(displayModel.getTypeID(), displayModel);
-					loadModelFromContainer(displayModel);
-					if(!displayModel.getConnectionList().isEmpty()){
-						schemaWidgetsMap.put(
-								ConnectionModel.ID, displayModel.getConnectionList().get(0));
-					}
-				} catch (Exception e) {
-					String message = "Failed to load schema file: " + schemaOPI;
-					OPIBuilderPlugin.getLogger().log(Level.WARNING,
-							message, e);				
-					ConsoleService.getInstance().writeError(message + "\n" + e);//$NON-NLS-1$
-				}
-				monitor.done();
-				return Status.OK_STATUS;
-			}
-
-			private void loadModelFromContainer(AbstractContainerModel containerModel) {
-				for(AbstractWidgetModel model : containerModel.getChildren()){
-					schemaWidgetsMap.put(model.getTypeID(), model);
-					if(model instanceof AbstractContainerModel)
-							loadModelFromContainer((AbstractContainerModel) model);
-				}
-			}
-		};
-		job.schedule();
+		else
+			loadSchema(schemaOPI);
 
 	}
 
+	/**
+	 * @param schemaOPI
+	 */
+	public void loadSchema(final IPath schemaOPI) {
+		try {
+			InputStream inputStream = ResourceUtil.pathToInputStream(
+					schemaOPI, false);
+			DisplayModel displayModel = new DisplayModel();
+			XMLUtil.fillDisplayModelFromInputStream(inputStream,
+					displayModel, Display.getDefault());
+			schemaWidgetsMap.put(displayModel.getTypeID(), displayModel);
+			loadModelFromContainer(displayModel);
+			if(!displayModel.getConnectionList().isEmpty()){
+				schemaWidgetsMap.put(
+						ConnectionModel.ID, displayModel.getConnectionList().get(0));
+			}
+		} catch (Exception e) {
+			String message = "Failed to load schema file: " + schemaOPI;
+			OPIBuilderPlugin.getLogger().log(Level.WARNING,
+					message, e);				
+			ConsoleService.getInstance().writeError(message + "\n" + e);//$NON-NLS-1$
+		}
+	}
+	
+	private void loadModelFromContainer(AbstractContainerModel containerModel) {
+		for(AbstractWidgetModel model : containerModel.getChildren()){
+			schemaWidgetsMap.put(model.getTypeID(), model);
+			if(model instanceof AbstractContainerModel)
+					loadModelFromContainer((AbstractContainerModel) model);
+		}
+	}
+	
 	public void applySchema(AbstractWidgetModel widgetModel) {
 		if (schemaWidgetsMap.isEmpty())
 			return;

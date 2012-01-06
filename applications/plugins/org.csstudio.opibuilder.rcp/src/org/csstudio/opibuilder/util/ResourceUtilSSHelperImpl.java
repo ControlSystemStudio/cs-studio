@@ -72,9 +72,10 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
             // Could not open as local file.
             // Does it look like a URL?
             // Eclipse Path collapses "//" into "/", revert that:
+        	//"platform:/plugin/..." should not be converted. 
             urlString = path.toString();
-            if(!urlString.contains("://"))
-                urlString = urlString.replaceFirst(":/", "://");
+            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
+                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
             // Does it now look like a URL? If not, report the original local file problem
             if (! ResourceUtil.isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
