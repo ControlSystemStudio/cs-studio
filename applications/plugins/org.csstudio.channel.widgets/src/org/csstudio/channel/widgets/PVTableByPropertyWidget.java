@@ -120,6 +120,17 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 				queryChannels();
 			}
 		});
+		selectionProvider = new AbstractSelectionProviderWrapper(table, this) {
+			@Override
+			protected ISelection transform(ISelection selection) {
+				if (selection instanceof IStructuredSelection) {
+					VTableDisplayCell cell = (VTableDisplayCell) ((IStructuredSelection) selection).getFirstElement();
+					if (cell != null)
+						return new StructuredSelection(new PVTableByPropertyCell(cell, PVTableByPropertyWidget.this));
+				}
+				return new StructuredSelection();
+			}
+		};
 	}
 	
 	private void setLastException(Exception ex) {
@@ -352,48 +363,28 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			rowSelectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
 	}
+	
+	private AbstractSelectionProviderWrapper selectionProvider;
 
 	@Override
 	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
-		table.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				listener.selectionChanged(new SelectionChangedEvent(PVTableByPropertyWidget.this, getSelection()));
-			}
-			
-			@Override
-			public int hashCode() {
-				return listener.hashCode();
-			}
-			
-			@Override
-			public boolean equals(Object obj) {
-				return listener.equals(obj);
-			}
-		});
+		selectionProvider.addSelectionChangedListener(listener);
 	}
 
 	@Override
 	public ISelection getSelection() {
-		ISelection tableSelection = table.getSelection();
-		if (tableSelection instanceof IStructuredSelection) {
-			VTableDisplayCell cell = (VTableDisplayCell) ((IStructuredSelection) tableSelection).getFirstElement();
-			if (cell != null)
-				return new StructuredSelection(new PVTableByPropertyCell(cell, this));
-		}
-		return new StructuredSelection();
+		return selectionProvider.getSelection();
 	}
 
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
-		table.removeSelectionChangedListener(listener);
+		selectionProvider.removeSelectionChangedListener(listener);
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
-		throw new UnsupportedOperationException("Not implemented yet");		
+		selectionProvider.setSelection(selection);
 	}
 
 	public Collection<Channel> getChannelsAt(int row, int column) {
