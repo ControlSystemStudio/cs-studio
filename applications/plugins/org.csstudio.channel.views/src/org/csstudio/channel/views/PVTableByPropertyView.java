@@ -12,8 +12,6 @@ import java.util.List;
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -221,5 +219,6 @@ public class PVTableByPropertyView extends ViewPart {
 		}
 		
 		PopupMenuUtil.installPopupForView(tableWidget, getSite(), tableWidget);
+		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 	}
 }
