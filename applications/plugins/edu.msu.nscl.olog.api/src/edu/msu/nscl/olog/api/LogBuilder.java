@@ -14,25 +14,22 @@ import java.util.Set;
  * @author berryman
  */
 public class LogBuilder {
-	// required
-	private String subject;
-	// optional
 	private Long id;
-	private String description;
+	private StringBuilder description;
 	private String level;
 	private Date createdDate;
 	private Date modifiedDate;
 	private int version;
 	private Set<TagBuilder> tags = new HashSet<TagBuilder>();
 	private Set<LogbookBuilder> logbooks = new HashSet<LogbookBuilder>();
-	private Set<AttachmentBuilder> attachments = new HashSet<AttachmentBuilder>();
 	private Set<PropertyBuilder> properties = new HashSet<PropertyBuilder>();
+	@SuppressWarnings("deprecation")
+	private Set<AttachmentBuilder> attachments = new HashSet<AttachmentBuilder>();
 
 	public static LogBuilder log(Log log) {
 		LogBuilder logBuilder = new LogBuilder();
 		logBuilder.id = log.getId();
-		logBuilder.subject = log.getSubject();
-		logBuilder.description = log.getDescription();
+		logBuilder.description = new StringBuilder(log.getDescription());
 		logBuilder.level = log.getLevel();
 		logBuilder.createdDate = log.getCreatedDate();
 		logBuilder.modifiedDate = log.getModifiedDate();
@@ -61,9 +58,8 @@ public class LogBuilder {
 	// return logBuilder;
 	// }
 
-	public static LogBuilder log(String subject) {
+	public static LogBuilder log() {
 		LogBuilder logBuilder = new LogBuilder();
-		logBuilder.subject = subject;
 		return logBuilder;
 	}
 
@@ -73,7 +69,18 @@ public class LogBuilder {
 	}
 
 	public LogBuilder description(String description) {
-		this.description = description;
+		if(description != null)
+			this.description = new StringBuilder(description);
+		else if(description == null)
+			this.description = null;
+		return this;
+	}
+	
+	public LogBuilder appendDescription(String description) {
+		if(this.description == null)
+			this.description = new StringBuilder(description);
+		else if(this.description != null)
+			this.description.append("\n").append(description);
 		return this;
 	}
 
@@ -82,13 +89,33 @@ public class LogBuilder {
 		return this;
 	}
 
-	public LogBuilder with(TagBuilder tag) {
-		tags.add(tag);
+	public LogBuilder withTags(Set<TagBuilder> tags){
+		this.tags = tags;
 		return this;
 	}
+	
+	public LogBuilder withProperties(Set<PropertyBuilder> properties){
+		this.properties = properties;
+		return this;	
+	}
 
-	public LogBuilder in(LogbookBuilder logbook) {
-		logbooks.add(logbook);
+	public LogBuilder inLogbooks(Set<LogbookBuilder> logbooks){
+		this.logbooks = logbooks;
+		return this;
+	}
+	
+	public LogBuilder appendTag(TagBuilder tag) {
+		this.tags.add(tag);
+		return this;
+	}
+	
+	public LogBuilder appendProperty(PropertyBuilder property) {
+		this.properties.add(property);
+		return this;
+	}
+	
+	public LogBuilder appendToLogbook(LogbookBuilder logbook) {
+		this.logbooks.add(logbook);
 		return this;
 	}
 
@@ -104,11 +131,11 @@ public class LogBuilder {
 		return this;
 	}
 
+	@SuppressWarnings("deprecation")
 	XmlLog toXml() {
-		XmlLog xmlLog = new XmlLog(subject);
+		XmlLog xmlLog = new XmlLog();
 		xmlLog.setId(id);
-		xmlLog.setSubject(subject);
-		xmlLog.setDescription(description);
+		xmlLog.setDescription(description.toString());
 		xmlLog.setLevel(level);
 		xmlLog.setCreatedDate(createdDate);
 		xmlLog.setModifiedDate(modifiedDate);

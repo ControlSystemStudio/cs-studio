@@ -15,16 +15,11 @@ import java.util.Set;
 public class Log implements Comparable<Log> {
 	private final Long id;
 	private final String owner;
-	private final String subject;
 	private final String description;
 	private final String level;
 	private final Date createdDate;
 	private final Date modifiedDate;
 	private final int version;
-	// private final Set<Tag> tags;
-	// private final Set<Logbook> logbooks;
-	// private final Set<Attachment> attachments;
-	// private final Set<Property> properties;
 
 	private final Map<String, Tag> tags;
 	private final Map<String, Logbook> logbooks;
@@ -34,19 +29,18 @@ public class Log implements Comparable<Log> {
 	Log(XmlLog log) {
 		this.id = log.getId();
 		this.owner = log.getOwner();
-		this.subject = log.getSubject();
 		this.description = log.getDescription();
 		this.level = log.getLevel();
 		this.createdDate = log.getCreatedDate();
 		this.modifiedDate = log.getModifiedDate();
 		this.version = log.getVersion();
 		Map<String, Tag> newTags = new HashMap<String, Tag>();
-		for (XmlTag tag : log.getXmlTags().getTags()) {
+		for (XmlTag tag : log.getXmlTags()) {
 			newTags.put(tag.getName(), new Tag(tag));
 		}
 		this.tags = Collections.unmodifiableMap(newTags);
 		Map<String, Logbook> newLogbooks = new HashMap<String, Logbook>();
-		for (XmlLogbook logbook : log.getXmlLogbooks().getLogbooks()) {
+		for (XmlLogbook logbook : log.getXmlLogbooks()) {
 			newLogbooks.put(logbook.getName(), new Logbook(logbook));
 		}
 		this.logbooks = Collections.unmodifiableMap(newLogbooks);
@@ -57,7 +51,7 @@ public class Log implements Comparable<Log> {
 		}
 		this.attachments = Collections.unmodifiableMap(newAttachments);
 		Map<String, Property> newProperties = new HashMap<String, Property>();
-		for (XmlProperty property : log.getXmlProperties().getProperties()) {
+		for (XmlProperty property : log.getXmlProperties()) {
 			newProperties.put(property.getName(), new Property(property));
 		}
 		this.properties = Collections.unmodifiableMap(newProperties);
@@ -70,10 +64,6 @@ public class Log implements Comparable<Log> {
 
 	public String getOwner() {
 		return owner;
-	}
-
-	public String getSubject() {
-		return subject;
 	}
 
 	public String getDescription() {
@@ -236,8 +226,7 @@ public class Log implements Comparable<Log> {
 	 */
 	@Override
 	public String toString() {
-		return "Log#" + id + ":v." + version + " [subject=" + subject
-				+ ", description=" + description + "]";
+		return "Log#" + id + ":v." + version + " [ description=" + description + "]";
 	}
 
 }
