@@ -1,10 +1,10 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.widgets.Composite;
 
 public class PVTableByPropertyEditPart
 extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByPropertyModel> {
@@ -22,7 +22,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 	
 	private static void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(model.getChannelQuery());
+			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
 			widget.setRowSelectionPv(model.getRowSelectionPvName());
 		}
 		widget.setRowProperty(model.getRowProperty());

@@ -87,7 +87,7 @@ public class PVTableByPropertyView extends ViewPart {
 	private Composite parent;
 	
 	private void changeQuery(String text) {
-		tableWidget.setChannelQuery(text);
+		tableWidget.setChannelQuery(ChannelQuery.Builder.query(text).create());
 	}
 
 	@Override

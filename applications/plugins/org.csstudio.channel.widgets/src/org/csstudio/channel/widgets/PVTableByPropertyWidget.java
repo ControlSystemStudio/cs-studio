@@ -7,14 +7,11 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelUtil;
-import gov.bnl.channelfinder.api.ChannelQuery;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +27,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -48,14 +44,13 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 
-public class PVTableByPropertyWidget extends Composite implements ISelectionProvider {
+public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider {
 	
 	private static final int MAX_COLUMNS = 200;
 	private static final int MAX_CELLS = 50000;
 	
 	private VTableDisplay table;
 	private ErrorBar errorBar;
-	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	public PVTableByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
@@ -113,14 +108,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			}
 		});
 		
-		changeSupport.addPropertyChangeListener("channelQuery", new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				queryChannels();
-			}
-		});
-		
 		selectionProvider = new AbstractSelectionProviderWrapper(table, this) {
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
@@ -136,7 +123,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		errorBar.setException(ex);
 	}
 	
-	private String channelQuery;
 	private String rowProperty;
 	private String columnProperty;
 	
@@ -192,16 +178,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
 	}
 	
-	public String getChannelQuery() {
-		return channelQuery;
-	}
-	
-	public void setChannelQuery(String channelQuery) {
-		String oldValue = this.channelQuery;
-		this.channelQuery = channelQuery;
-		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
-	}
-	
 	public String getRowProperty() {
 		return rowProperty;
 	}
@@ -232,30 +208,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		Collection<Channel> oldChannels = this.channels;
 		this.channels = channels;
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
-	}
-	
-	private void queryChannels() {
-		setChannels(null);
-		ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.execute(new ChannelQueryListener() {
-			
-			@Override
-			public void queryExecuted(final Result result) {
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						Exception e = result.exception;
-						if (e == null) {
-							setChannels(result.channels);
-						} else {
-							errorBar.setException(e);
-						}
-					}
-				});
-				
-			}
-		});
 	}
 	
 	private void computeTableChannels() {
@@ -420,6 +372,21 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 
 	public List<String> getRowPropertyValues() {
 		return rowNames;
+	}
+
+	@Override
+	protected void queryCleared() {
+		setChannels(null);
+	}
+
+	@Override
+	protected void queryExecuted(Result result) {
+		Exception e = result.exception;
+		if (e == null) {
+			setChannels(result.channels);
+		} else {
+			errorBar.setException(e);
+		}
 	}
 	
 }
