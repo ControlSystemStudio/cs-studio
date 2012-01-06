@@ -141,12 +141,8 @@ public class PVTableByPropertyView extends ViewPart {
 						Collections.sort(propertyNames);
 						
 						// Save old selection
-						String oldRow = null;
-						if (rowProperty.getSelectionIndex() != -1)
-							oldRow = rowProperty.getItem(rowProperty.getSelectionIndex());
-						String oldColumn = null;
-						if (columnProperty.getSelectionIndex() != -1)
-							oldColumn = columnProperty.getItem(columnProperty.getSelectionIndex());
+						String oldRow = tableWidget.getRowProperty();
+						String oldColumn = tableWidget.getColumnProperty();
 						
 						// Change properties to select
 						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
