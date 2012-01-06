@@ -142,14 +142,6 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 			}
 		}
 	};
-	
-    public void addPropertyChangeListener( PropertyChangeListener listener ) {
-        changeSupport.addPropertyChangeListener( listener );
-    }
-
-    public void removePropertyChangeListener( PropertyChangeListener listener ) {
-    	changeSupport.removePropertyChangeListener( listener );
-    }
     
 	private void reconnect() {
 		if (pv != null) {
