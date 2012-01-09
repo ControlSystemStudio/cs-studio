@@ -71,7 +71,10 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 			
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
-				return new StructuredSelection(getChannelQuery());
+				if (getChannelQuery() != null)
+					return new StructuredSelection(getChannelQuery());
+				else
+					return new StructuredSelection();
 			}
 		};
 		
