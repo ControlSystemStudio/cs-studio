@@ -1,5 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -17,8 +19,8 @@ public abstract class AbstractChannelWidgetModel extends AbstractWidgetModel {
 	}
 
 	
-	public String getChannelQuery() {
-		return getCastedPropertyValue(CHANNEL_QUERY);
+	public ChannelQuery getChannelQuery() {
+		return ChannelQuery.Builder.query((String) getCastedPropertyValue(CHANNEL_QUERY)).create();
 	}
 
 }
