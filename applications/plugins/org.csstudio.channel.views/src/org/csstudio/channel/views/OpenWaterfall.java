@@ -1,5 +1,7 @@
 package org.csstudio.channel.views;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import java.util.List;
 
 import org.csstudio.csdata.ProcessVariable;
@@ -18,11 +20,11 @@ public class OpenWaterfall extends AbstractAdaptedHandler<ProcessVariable> {
 	}
 
 	@Override
-	protected void execute(List<ProcessVariable> queries, ExecutionEvent event)
+	protected void execute(List<ProcessVariable> pvs, ExecutionEvent event)
 			throws Exception {
-		if (!queries.isEmpty()) {
+		if (!pvs.isEmpty()) {
 			findView(WaterfallView.class, WaterfallView.ID)
-				.setPVName(queries.get(0).getName());
+				.setChannelQuery(ChannelQuery.Builder.query(pvs.get(0).getName()).create());
 		}
 	}
 

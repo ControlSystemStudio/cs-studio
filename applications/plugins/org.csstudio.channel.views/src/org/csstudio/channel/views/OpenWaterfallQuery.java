@@ -18,7 +18,7 @@ public class OpenWaterfallQuery extends AbstractAdaptedHandler<ChannelQuery> {
 	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
 		if (!queries.isEmpty()) {
 			findView(WaterfallView.class, WaterfallView.ID)
-				.setPVName(queries.get(0).getQuery());
+				.setChannelQuery(queries.get(0));
 		}
 	}
 }

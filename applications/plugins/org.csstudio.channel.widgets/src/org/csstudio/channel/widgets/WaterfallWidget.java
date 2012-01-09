@@ -1,15 +1,16 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
-
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
+import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
+import static org.epics.pvmanager.util.TimeDuration.hz;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import org.epics.pvmanager.util.TimeDuration;
 
 import com.swtdesigner.ResourceManager;
 
-public class WaterfallWidget extends Composite {
+public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	
 	private VImageDisplay imageDisplay;
 	private RangeWidget rangeWidget;
@@ -397,102 +398,78 @@ public class WaterfallWidget extends Composite {
 		return rangeWidget.isVisible();
 	}
 
-	private String inputText;
-
-	public String getInputText() {
-		return inputText;
-	}
-
-	public void setInputText(String inputText) {
-		if (this.inputText != null && this.inputText.equals(inputText)) {
-			return;
-		}
-
-		this.inputText = inputText;
-		queryChannels();
-	}
-
 	public void setSortProperty(String sortProperty) {
 		this.sortProperty = sortProperty;
 
-		queryChannels();
+		queryExecuted(result);
 	}
 
-	private void queryChannels() {
-		if (inputText == null) {
-			setWaveformPVName(null);
-			setScalarPVNames(null);
+	@Override
+	protected void queryCleared() {
+		setWaveformPVName(null);
+		setScalarPVNames(null);
+	}
+	
+	private Result result;
+
+	@Override
+	protected void queryExecuted(Result result) {
+		if (result == null)
 			return;
+		
+		this.result = result;
+		List<String> channelNames = null;
+		Exception ex = result.exception;
+		if (ex == null) {
+			Collection<Channel> channels = result.channels;
+			if (channels != null && !channels.isEmpty()) {
+				// Sort if you can
+				try {
+					List<Channel> sortedChannels = new ArrayList<Channel>(
+							channels);
+					Collections.sort(sortedChannels,
+							new Comparator<Channel>() {
+								@Override
+								public int compare(Channel o1,
+										Channel o2) {
+									return findProperty(o1).compareTo(
+											findProperty(o2));
+								}
+
+								public Double findProperty(
+										Channel channel) {
+									for (Property property : channel
+											.getProperties()) {
+										if (property.getName().equals(
+												getSortProperty())) {
+											return Double
+													.parseDouble(property
+															.getValue());
+										}
+									}
+									return null;
+								}
+							});
+					channels = sortedChannels;
+				} catch (Exception e) {
+					// Leave unsorted
+				}
+
+				channelNames = new ArrayList<String>();
+				for (Channel channel : channels) {
+					channelNames.add(channel.getName());
+				}
+			}
 		}
 		
-		ChannelQuery query = ChannelQuery.Builder.query(inputText)
-				.create();
-		query.execute(new ChannelQueryListener() {
+		final List<String> finalChannels = channelNames;
 
-			@Override
-			public void queryExecuted(Result result) {
-				List<String> channelNames = null;
-				Exception ex = result.exception;
-				if (ex == null) {
-					Collection<Channel> channels = result.channels;
-					if (channels != null && !channels.isEmpty()) {
-						// Sort if you can
-						try {
-							List<Channel> sortedChannels = new ArrayList<Channel>(
-									channels);
-							Collections.sort(sortedChannels,
-									new Comparator<Channel>() {
-										@Override
-										public int compare(Channel o1,
-												Channel o2) {
-											return findProperty(o1).compareTo(
-													findProperty(o2));
-										}
-
-										public Double findProperty(
-												Channel channel) {
-											for (Property property : channel
-													.getProperties()) {
-												if (property.getName().equals(
-														getSortProperty())) {
-													return Double
-															.parseDouble(property
-																	.getValue());
-												}
-											}
-											return null;
-										}
-									});
-							channels = sortedChannels;
-						} catch (Exception e) {
-							// Leave unsorted
-						}
-
-						channelNames = new ArrayList<String>();
-						for (Channel channel : channels) {
-							channelNames.add(channel.getName());
-						}
-					}
-				}
-				
-				final List<String> finalChannels = channelNames;
-
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						if (finalChannels == null || finalChannels.isEmpty()) {
-							setWaveformPVName(inputText);
-						} else if (finalChannels.size() == 1) {
-							setWaveformPVName(finalChannels.get(0));
-						} else
-							setScalarPVNames(finalChannels);
-					}
-				});
-			}
-
-		});
-
+		if (finalChannels == null || finalChannels.isEmpty()) {
+			setWaveformPVName(getChannelQuery().getQuery());
+		} else if (finalChannels.size() == 1) {
+			setWaveformPVName(finalChannels.get(0));
+		} else
+			setScalarPVNames(finalChannels);
 	}
 
 }

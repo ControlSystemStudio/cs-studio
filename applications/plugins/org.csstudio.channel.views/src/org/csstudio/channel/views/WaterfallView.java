@@ -64,17 +64,13 @@ public class WaterfallView extends ViewPart {
 		}
 	}
 	
-	public void setPVName(String name) {
-		inputBar.setChannelQuery(ChannelQuery.Builder.query(name).create());
-		resolveAndSetPVName(name);
+	public void setChannelQuery(ChannelQuery query) {
+		inputBar.setChannelQuery(query);
+		waterfallComposite.setChannelQuery(query);
 	}
 	
 	private ChannelQueryInputBar inputBar;
 	private WaterfallWidget waterfallComposite;
-	
-	private void resolveAndSetPVName(String text) {
-		waterfallComposite.setInputText(text);
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -99,7 +95,7 @@ public class WaterfallView extends ViewPart {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if ("channelQuery".equals(event.getPropertyName())) {
-					setPVName(((ChannelQuery) event.getNewValue()).getQuery());
+					setChannelQuery((ChannelQuery) event.getNewValue());
 				}
 			}
 		});
@@ -113,7 +109,7 @@ public class WaterfallView extends ViewPart {
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
 		
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setPVName(memento.getString(MEMENTO_PVNAME));
+			setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_PVNAME)).create());
 		}
 		
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);

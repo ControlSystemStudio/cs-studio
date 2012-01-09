@@ -1,5 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.ChannelQuery;
+
 import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -19,7 +21,7 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	
 	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
 		if (runMode)
-			widget.setInputText(model.getChannelQuery());
+			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
 		widget.setShowRange(model.isShowRange());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
 		widget.setPixelDuration(model.getPixelDuration());
