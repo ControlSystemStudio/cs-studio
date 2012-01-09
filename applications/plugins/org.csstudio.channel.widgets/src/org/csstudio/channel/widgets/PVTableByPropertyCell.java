@@ -30,7 +30,7 @@ public class PVTableByPropertyCell {
 				propertyValue = table.getColumnPropertyValues().get(cell.getColumn() - 1);
 			}
 			if (propertyName != null && propertyValue != null) {
-				query = table.getChannelQuery() + " " + propertyName
+				query = table.getChannelQuery().getQuery() + " " + propertyName
 						+ "=" + propertyValue;
 			}
 			column = true;
@@ -45,7 +45,7 @@ public class PVTableByPropertyCell {
 				propertyValue = table.getRowPropertyValues().get(cell.getRow());
 			}
 			if (propertyName != null && propertyValue != null) {
-				query = table.getChannelQuery() + " " + propertyName
+				query = table.getChannelQuery().getQuery() + " " + propertyName
 						+ "=" + propertyValue;
 			}
 			row = true;
