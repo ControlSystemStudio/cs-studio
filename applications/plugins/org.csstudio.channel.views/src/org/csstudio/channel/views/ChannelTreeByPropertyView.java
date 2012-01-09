@@ -11,9 +11,7 @@ import java.util.Arrays;
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -21,7 +19,6 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
@@ -99,7 +96,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	
 	private ChannelQueryInputBar inputBar;
 	private ChannelTreeByPropertyWidget treeWidget;
-	private Composite parent;
 	private Button btnProperties;
 	
 	public void setChannelQuery(ChannelQuery query) {
@@ -118,20 +114,19 @@ public class ChannelTreeByPropertyView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		this.parent = parent;
 		parent.setLayout(new FormLayout());
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
 		fd_lblPvName.left = new FormAttachment(0, 10);
-		fd_lblPvName.top = new FormAttachment(0, 18);
+		fd_lblPvName.top = new FormAttachment(0, 13);
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE,
 				Activator.getDefault().getDialogSettings(), "channeltreebypropertyview.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 15);
+		fd_combo.top = new FormAttachment(0, 10);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		inputBar.setLayoutData(fd_combo);
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
@@ -155,7 +150,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		btnProperties = new Button(parent, SWT.NONE);
 		fd_combo.right = new FormAttachment(btnProperties, -6);
 		FormData fd_btnProperties = new FormData();
-		fd_btnProperties.top = new FormAttachment(0, 13);
+		fd_btnProperties.top = new FormAttachment(0, 10);
 		fd_btnProperties.right = new FormAttachment(100, -10);
 		btnProperties.setLayoutData(fd_btnProperties);
 		btnProperties.setText("Properties");
