@@ -84,7 +84,7 @@ public class WaterfallView extends ViewPart {
 		fd_lblPvName.top = new FormAttachment(0, 13);
 		fd_lblPvName.left = new FormAttachment(0, 10);
 		lblPvName.setLayoutData(fd_lblPvName);
-		lblPvName.setText("PV Name:");
+		lblPvName.setText("Query:");
 		
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
 				Activator.getDefault().getDialogSettings(), "waterfall.query");
