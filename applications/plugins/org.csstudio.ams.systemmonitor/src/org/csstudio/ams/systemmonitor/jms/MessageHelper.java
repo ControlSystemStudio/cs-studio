@@ -68,14 +68,6 @@ public class MessageHelper
         return message;
     }
     
-
-    /**
-     * The method compares the property <code>CLASS</code> that contains the check id.
-     * 
-     * @param content
-     * @param mapMessage
-     * @return
-     */
     public boolean isAmsAnswer(Hashtable<String, String> content, MapMessage mapMessage)
     {
         Hashtable<String, String> receivedMessageContent = null;
@@ -127,18 +119,13 @@ public class MessageHelper
         return amsAnswer;
     }
     
-    /**
-     * 
-     * @param message
-     * @return
-     */
-    public boolean isAnswerFromSmsConnector(MapMessage message)
+    public boolean isAnswerFromSmsConnector(MapMessage mapMsg)
     {
         Hashtable<String, String> answer = null;
         String value;
         boolean success = false;
         
-        answer = extractContent(message);
+        answer = extractContent(mapMsg);
         
         // Check the content
         // The message has to contain this properties:
@@ -223,14 +210,14 @@ public class MessageHelper
         return success;
     }
 
-    public CheckResult getAnswerFromSmsConnector(MapMessage message, Hashtable<String, String> sentMessage)
+    public CheckResult getAnswerFromSmsConnector(MapMessage mapMsg, Hashtable<String, String> sentMessage)
     {
         Hashtable<String, String> answer = null;
-        CheckResult result = CheckResult.NONE;;
+        CheckResult result = CheckResult.NONE;
         String value = null;
         boolean success = false;
         
-        answer = extractContent(message);
+        answer = extractContent(mapMsg);
         
         if(isAnswerFromSmsConnector(answer) == false)
         {
@@ -299,33 +286,22 @@ public class MessageHelper
         return result;
     }
     
-    /**
-     * 
-     * @return
-     */
-    public String getErrorText()
-    {
+    public String getErrorText() {
         return errorText;
     }
     
-    /**
-     * 
-     * @param mm
-     * @return
-     */
-    public Hashtable<String, String> extractContent(MapMessage mm)
-    {
+    public Hashtable<String, String> extractContent(MapMessage mapMsg) {
         Hashtable<String, String> result = new Hashtable<String, String>();
         Enumeration<?> keys = null;
         String key = null;
         
         try
         {
-            keys = mm.getMapNames();
+            keys = mapMsg.getMapNames();
             while(keys.hasMoreElements())
             {
                 key = (String)keys.nextElement();
-                result.put(key, mm.getString(key));
+                result.put(key, mapMsg.getString(key));
             }
         }
         catch(JMSException jmse)
@@ -341,20 +317,18 @@ public class MessageHelper
      * @author Markus Moeller
      *
      */
-    public enum MessageType
-    {
-        SYSTEM("System"), SMS_CONNECTOR("SmsConnector");
+    public enum MessageType {
+        SYSTEM("System"), SMS_CONNECTOR("SmsDeliveryWorker/SmsConnector");
         
-        private String value;
+        private String name;
         
-        private MessageType(String value)
-        {
-            this.value = value;
+        private MessageType(String n) {
+            this.name = n;
         }
         
-        public String toString()
-        {
-            return value;
+        @Override
+        public String toString() {
+            return name;
         }
     }
     
