@@ -36,7 +36,6 @@ org.csstudio.diag.pvmanager.probe
 org.csstudio.display.channelviewer
 org.csstudio.display.pvmanager.pvtable
 org.csstudio.display.pvtable
-org.csstudio.display.waterfall
 org.csstudio.domain.common
 org.csstudio.domain.desy
 org.csstudio.email
