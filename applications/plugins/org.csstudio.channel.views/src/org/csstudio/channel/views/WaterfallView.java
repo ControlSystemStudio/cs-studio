@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
+import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.channel.widgets.WaterfallWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
@@ -114,6 +115,8 @@ public class WaterfallView extends ViewPart {
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
 			setPVName(memento.getString(MEMENTO_PVNAME));
 		}
+		
+		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 	}
 
 }
