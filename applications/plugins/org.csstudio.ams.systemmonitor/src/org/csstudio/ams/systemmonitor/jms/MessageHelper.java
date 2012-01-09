@@ -119,7 +119,7 @@ public class MessageHelper
         return amsAnswer;
     }
     
-    public boolean isAnswerFromSmsConnector(MapMessage mapMsg)
+    public boolean isAnswerFromSmsDeliveryWorker(MapMessage mapMsg)
     {
         Hashtable<String, String> answer = null;
         String value;
@@ -130,7 +130,7 @@ public class MessageHelper
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         //  CLASS = <check id>
@@ -145,7 +145,7 @@ public class MessageHelper
             if(answer.containsKey("APPLICATION-ID") && success)
             {
                 value = answer.get("APPLICATION-ID");
-                success = (value.compareTo("SmsConnector") == 0);
+                success = (value.compareTo("SmsDeliveryWorker") == 0);
             }
             else
             {
@@ -166,7 +166,7 @@ public class MessageHelper
         return success;
     }
     
-    public boolean isAnswerFromSmsConnector(Hashtable<String, String> content)
+    public boolean isAnswerFromSmsDeliveryWorker(Hashtable<String, String> content)
     {
         String value;
         boolean success = false;
@@ -174,7 +174,7 @@ public class MessageHelper
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
@@ -189,7 +189,7 @@ public class MessageHelper
             if(content.containsKey("APPLICATION-ID") && success)
             {
                 value = content.get("APPLICATION-ID");
-                success = (value.compareTo("SmsConnector") == 0);
+                success = (value.compareTo("SmsDeliveryWorker") == 0);
             }
             else
             {
@@ -210,7 +210,7 @@ public class MessageHelper
         return success;
     }
 
-    public CheckResult getAnswerFromSmsConnector(MapMessage mapMsg, Hashtable<String, String> sentMessage)
+    public CheckResult getAnswerFromSmsDeliveryWorker(MapMessage mapMsg, Hashtable<String, String> sentMessage)
     {
         Hashtable<String, String> answer = null;
         CheckResult result = CheckResult.NONE;
@@ -219,7 +219,7 @@ public class MessageHelper
         
         answer = extractContent(mapMsg);
         
-        if(isAnswerFromSmsConnector(answer) == false)
+        if(isAnswerFromSmsDeliveryWorker(answer) == false)
         {
             return CheckResult.NONE;
         }
@@ -227,7 +227,7 @@ public class MessageHelper
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
