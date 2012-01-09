@@ -73,7 +73,7 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
 
         LOG.info("Wait time for modem check: " + waitTime + " ms");
 
-        messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SMS_CONNECTOR, statusEntry);
+        messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SMS_DELIVERY_WORKER, statusEntry);
         // checkTimeStamp = convertDateStringToLong(messageContent.get("EVENTTIME"));
 
         // Send a new check message only if we do not wait for a older check message

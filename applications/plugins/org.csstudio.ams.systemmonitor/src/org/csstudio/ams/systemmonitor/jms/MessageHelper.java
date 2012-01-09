@@ -318,7 +318,10 @@ public class MessageHelper
      *
      */
     public enum MessageType {
-        SYSTEM("System"), SMS_CONNECTOR("SmsDeliveryWorker/SmsConnector");
+        
+        SYSTEM("System"),
+        SMS_DELIVERY_WORKER("SmsDeliveryWorker"),
+        ALL_DELIVERY_WORKER("*");
         
         private String name;
         
