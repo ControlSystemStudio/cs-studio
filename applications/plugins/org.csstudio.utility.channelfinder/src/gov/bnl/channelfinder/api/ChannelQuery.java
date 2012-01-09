@@ -8,6 +8,11 @@ import java.util.concurrent.Executors;
 
 import org.csstudio.utility.channelfinder.CFClientManager;
 
+/**
+ * An observable query to channel finder that maintains the cached result.
+ * 
+ * @author carcassi
+ */
 public class ChannelQuery {
 
 	private final ChannelFinderClient client;
@@ -54,7 +59,6 @@ public class ChannelQuery {
 		
 	}
 	
-	// Guarded by this
 	private volatile Result result;
 
 	private List<ChannelQueryListener> listeners = new CopyOnWriteArrayList<ChannelQueryListener>();
@@ -72,10 +76,23 @@ public class ChannelQuery {
 			this.query = query;
 		}
 
+		/**
+		 * A new query with the given search string.
+		 * 
+		 * @param query the query; cannot be null
+		 * @return a new builder
+		 */
 		public static Builder query(String query) {
+			// TODO can we move this to the actual class?
 			return new Builder(query);
 		}
 
+		/**
+		 * Changes which client should be used to execute the query.
+		 * 
+		 * @param client a cliemt
+		 * @return this
+		 */
 		public Builder using(ChannelFinderClient client) {
 			if (client == null)
 				throw new NullPointerException("Client can't be null");
@@ -83,11 +100,24 @@ public class ChannelQuery {
 			return this;
 		}
 		
+		/**
+		 * Pre-fills the cached result with the given channels and exception.
+		 * 
+		 * @param channels the result of the query
+		 * @param exception the exception for the result; can be null
+		 * @return this
+		 */
 		public Builder result(Collection<Channel> channels, Exception exception) {
 			result = new Result(exception, channels);
 			return this;
 		}
 
+		/**
+		 * Changes which executor should execute the query.
+		 * 
+		 * @param executor an executor
+		 * @return this
+		 */
 		public Builder on(Executor executor) {
 			if (executor == null)
 				throw new NullPointerException("Executor can't be null");
@@ -95,6 +125,12 @@ public class ChannelQuery {
 			return this;
 		}
 
+		/**
+		 * Creates the new query. The query is not executed until
+		 * is needed.
+		 * 
+		 * @return a new query
+		 */
 		public ChannelQuery create() {
 			return new ChannelQuery(this.query, this.client, this.queryExecutor, this.result);
 		}
@@ -108,10 +144,22 @@ public class ChannelQuery {
 		this.result = result;
 	}
 
+	/**
+	 * Adds a new listener that is called every time the query is executed.
+	 * Note: if you want the listener to be called at least once,
+	 * use {@link #execute(ChannelQueryListener)}.
+	 * 
+	 * @param listener a new listener
+	 */
 	public void addChannelQueryListener(ChannelQueryListener listener) {
 		this.listeners.add(listener);
 	}
 
+	/**
+	 * Removes a listener.
+	 * 
+	 * @param listener the listener to be removed
+	 */
 	public void removeChannelQueryListener(ChannelQueryListener listener) {
 		this.listeners.remove(listener);
 	}
@@ -122,27 +170,50 @@ public class ChannelQuery {
 		}
 	}
 	
+	/**
+	 * The text of the query.
+	 * 
+	 * @return the query text
+	 */
 	public String getQuery() {
 		return query;
 	}
 
+	/**
+	 * The result of the query, if present.
+	 * 
+	 * @return result or null if the query was never executed
+	 */
 	public Result getResult() {
 		return this.result;
 	}
 	
+	/**
+	 * Executes the query and calls the listener with the result.
+	 * If the query was already executed, the listener is called
+	 * immediately with the result.
+	 * 
+	 * @param listener
+	 */
 	public void execute(ChannelQueryListener listener) {
 		addChannelQueryListener(listener);
 		
 		// Make a local copy to avoid synchronization
 		Result localResult = result;
+		
+		// If the query was executed, just call the listener
 		if (localResult != null) {
 			listener.queryExecuted(localResult);
-			return;
+		} else {
+			execute();
 		}
 		
-		execute();
 	}
 	
+	/**
+	 * Triggers a new execution of the query, and calls
+	 * all the listeners as a result.
+	 */
 	public void refresh() {
 		execute();
 	}
@@ -178,6 +249,11 @@ public class ChannelQuery {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return getQuery();
 	}
 
 }
