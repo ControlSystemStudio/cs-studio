@@ -1,10 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.widgets.Composite;
 
 public class WaterfallEditPart
 extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {

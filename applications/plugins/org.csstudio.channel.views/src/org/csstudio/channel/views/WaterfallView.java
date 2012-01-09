@@ -1,6 +1,6 @@
 package org.csstudio.channel.views;
 
-import org.csstudio.channel.widgets.MultiChannelWaterfallWidget;
+import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -66,7 +66,7 @@ public class WaterfallView extends ViewPart {
 	}
 	
 	private Combo combo;
-	private MultiChannelWaterfallWidget waterfallComposite;
+	private WaterfallWidget waterfallComposite;
 	
 	private void resolveAndSetPVName(String text) {
 		waterfallComposite.setInputText(text);
@@ -91,7 +91,7 @@ public class WaterfallView extends ViewPart {
 		fd_combo.right = new FormAttachment(100, -10);
 		combo.setLayoutData(fd_combo);
 		
-		waterfallComposite = new MultiChannelWaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
 		fd_waterfallComposite.left = new FormAttachment(0, 10);
