@@ -25,6 +25,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		}
 		widget.setProperties(model.getTreeProperties());
 		widget.setConfigurable(model.getConfigurable());
+		widget.setShowChannelNames(model.isShowChannelNames());
 	}
 
 	@Override
