@@ -255,6 +255,7 @@ implements ConfigurableWidget {
 	
 	private final String MEMENTO_CHANNEL_QUERY = "channelQuery";
 	private final String MEMENTO_PROPERTIES = "properties";
+	private final String MEMENTO_SHOW_CHANNEL_NAMES = "showChanelNames";
 	
 	public void saveState(IMemento memento) {
 		if (getChannelQuery() != null) {
@@ -268,6 +269,7 @@ implements ConfigurableWidget {
 			sb.deleteCharAt(sb.length() - 1);
 			memento.putString(MEMENTO_PROPERTIES, sb.toString());
 		}
+		memento.putBoolean(MEMENTO_SHOW_CHANNEL_NAMES, isShowChannelNames());
 	}
 	
 	public void loadState(IMemento memento) {
@@ -277,6 +279,9 @@ implements ConfigurableWidget {
 			}
 			if (memento.getString(MEMENTO_PROPERTIES) != null) {
 				setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
+			}
+			if (memento.getBoolean(MEMENTO_SHOW_CHANNEL_NAMES) != null) {
+				setShowChannelNames(memento.getBoolean(MEMENTO_SHOW_CHANNEL_NAMES));
 			}
 		}
 	}
