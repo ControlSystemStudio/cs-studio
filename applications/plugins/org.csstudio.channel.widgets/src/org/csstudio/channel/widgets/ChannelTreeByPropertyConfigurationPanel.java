@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -53,6 +55,19 @@ public class ChannelTreeByPropertyConfigurationPanel extends AbstractConfigurati
 		fd_showChannelNames.left = new FormAttachment(0, 10);
 		showChannelNames.setLayoutData(fd_showChannelNames);
 		showChannelNames.setText("Show channel names");
+		showChannelNames.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeSupport.firePropertyChange("showChannelNames", !showChannelNames.getSelection(), showChannelNames.getSelection());
+				
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				changeSupport.firePropertyChange("showChannelNames", !showChannelNames.getSelection(), showChannelNames.getSelection());
+			}
+		});
 
 	}
 
@@ -77,5 +92,12 @@ public class ChannelTreeByPropertyConfigurationPanel extends AbstractConfigurati
 		listWidget.setSelectedProperties(selectedProperties);
 	}
 	
+	public boolean isShowChannelNames() {
+		return showChannelNames.getSelection();
+	}
+	
+	public void setShowChannelNames(boolean flag) {
+		showChannelNames.setSelection(flag);
+	}
 	
 }
