@@ -1,7 +1,5 @@
 package org.csstudio.channel.opiwidgets;
 
-import gov.bnl.channelfinder.api.ChannelQuery;
-
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -22,7 +20,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 	
 	private static void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
+			widget.setChannelQuery(model.getChannelQuery());
 			widget.setRowSelectionPv(model.getRowSelectionPvName());
 		}
 		widget.setRowProperty(model.getRowProperty());

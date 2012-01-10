@@ -5,7 +5,6 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.jface.viewers.ISelectionProvider;

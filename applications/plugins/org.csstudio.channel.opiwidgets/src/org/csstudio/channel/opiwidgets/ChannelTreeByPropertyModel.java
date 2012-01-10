@@ -14,12 +14,14 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$	
 	public static final String TREE_PROPERTIES = "tree_properties"; //$NON-NLS-1$	
 	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
+	public static final String SHOW_CHANNEL_NAMES = "show_channel_names"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(CONFIGURABLE, "Configurable", WidgetPropertyCategory.Behavior, false));
 		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(SELECTION_PV_NAME, "Selection PV Name", WidgetPropertyCategory.Basic, ""));
+		addProperty(new BooleanProperty(SHOW_CHANNEL_NAMES, "Show channel names", WidgetPropertyCategory.Basic, true));
 	}
 
 	@Override
@@ -43,6 +45,10 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	
 	public boolean getConfigurable() {
 		return getCastedPropertyValue(CONFIGURABLE);
+	}
+	
+	public boolean isShowChannelNames() {
+		return getCastedPropertyValue(SHOW_CHANNEL_NAMES);
 	}
 
 }

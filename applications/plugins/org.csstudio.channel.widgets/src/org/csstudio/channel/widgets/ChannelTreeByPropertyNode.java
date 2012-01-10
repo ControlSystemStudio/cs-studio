@@ -71,9 +71,13 @@ public class ChannelTreeByPropertyNode {
 			Collections.sort(childrenNames);
 		} else if (depth == model.properties.size()) {
 			// Children will be channels
-			childrenNames = new ArrayList<String>(
-					ChannelUtil.getChannelNames(nodeChannels));
-			Collections.sort(childrenNames);
+			if (model.isShowChannelNames()) {
+				childrenNames = new ArrayList<String>(
+						ChannelUtil.getChannelNames(nodeChannels));
+				Collections.sort(childrenNames);
+			} else {
+				childrenNames = null;
+			}
 		} else {
 			childrenNames = null;
 		}

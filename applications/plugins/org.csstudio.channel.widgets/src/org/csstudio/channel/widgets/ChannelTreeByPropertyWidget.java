@@ -1,6 +1,7 @@
 package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IMemento;
 
 /**
  * A tree constructed by a query to channel finder and a set of properties.
@@ -143,6 +145,19 @@ implements ConfigurableWidget {
 		errorBar.setException(ex);
 	}
 	
+	private boolean showChannelNames = true;
+	
+	public boolean isShowChannelNames() {
+		return showChannelNames;
+	}
+	
+	public void setShowChannelNames(boolean showChannelNames) {
+		boolean oldShowChannelNames = showChannelNames;
+		this.showChannelNames = showChannelNames;
+		computeTree();
+		changeSupport.firePropertyChange("showChannelNames", oldShowChannelNames, showChannelNames);
+	}
+	
 	/**
 	 * The properties, in the correct order, used to create the tree.
 	 * 
@@ -188,13 +203,15 @@ implements ConfigurableWidget {
 		tree.setItemCount(0);
 		tree.clearAll(true);
 		if (getChannelQuery() == null) {
-			model = new ChannelTreeByPropertyModel(null, null, getProperties(), this);
+			model = new ChannelTreeByPropertyModel(null, null, getProperties(), this, showChannelNames);
 		} else if (getChannelQuery().getResult() == null) {
-			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties(), this);
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), null, getProperties(), this, showChannelNames);
 		} else {
-			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties(), this);
+			model = new ChannelTreeByPropertyModel(getChannelQuery().getQuery(), getChannelQuery().getResult().channels, getProperties(), this, showChannelNames);
 		}
-		tree.setItemCount(model.getRoot().getChildrenNames().size());
+		if (model.getRoot().getChildrenNames() != null) {
+			tree.setItemCount(model.getRoot().getChildrenNames().size());
+		}
 	}
 	
 	/**
@@ -234,6 +251,39 @@ implements ConfigurableWidget {
 			return;
 		dialog = new ChannelTreeByPropertyConfigurationDialog(this);
 		dialog.open();
+	}
+	
+	private final String MEMENTO_CHANNEL_QUERY = "channelQuery";
+	private final String MEMENTO_PROPERTIES = "properties";
+	private final String MEMENTO_SHOW_CHANNEL_NAMES = "showChanelNames";
+	
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
+		}
+		if (!getProperties().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (String property : getProperties()) {
+				sb.append(property).append(",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			memento.putString(MEMENTO_PROPERTIES, sb.toString());
+		}
+		memento.putBoolean(MEMENTO_SHOW_CHANNEL_NAMES, isShowChannelNames());
+	}
+	
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_CHANNEL_QUERY)).create());
+			}
+			if (memento.getString(MEMENTO_PROPERTIES) != null) {
+				setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
+			}
+			if (memento.getBoolean(MEMENTO_SHOW_CHANNEL_NAMES) != null) {
+				setShowChannelNames(memento.getBoolean(MEMENTO_SHOW_CHANNEL_NAMES));
+			}
+		}
 	}
 
 	@Override
