@@ -80,18 +80,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 	@Override
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
-		// Save the currently selected variable
-		if (inputBar.getChannelQuery() != null) {
-			memento.putString(MEMENTO_QUERY, inputBar.getChannelQuery().getQuery());
-			if (!treeWidget.getProperties().isEmpty()) {
-				StringBuilder sb = new StringBuilder();
-				for (String property : treeWidget.getProperties()) {
-					sb.append(property).append(",");
-				}
-				sb.deleteCharAt(sb.length() - 1);
-				memento.putString(MEMENTO_PROPERTIES, sb.toString());
-			}
-		}
+		treeWidget.saveState(memento);
 	}
 	
 	private ChannelQueryInputBar inputBar;
@@ -161,12 +150,8 @@ public class ChannelTreeByPropertyView extends ViewPart {
 			}
 		});
 		
-		if (memento != null) {
-			inputBar.setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_QUERY)).create());
-			if (memento.getString(MEMENTO_PROPERTIES) != null) {
-				treeWidget.setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
-			}
-		}
+		treeWidget.loadState(memento);
+		inputBar.setChannelQuery(treeWidget.getChannelQuery());
 		
 		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);

@@ -37,6 +37,8 @@ public abstract class AbstractChannelQueryWidget extends Composite {
 		// If new query is the same, don't change -- you may lose the cached result
 		if (getChannelQuery() != null && getChannelQuery().equals(channelQuery))
 			return;
+		if (getChannelQuery() == null && channelQuery == null)
+			return;
 		
 		ChannelQuery oldValue = this.channelQuery;
 		this.channelQuery = channelQuery;

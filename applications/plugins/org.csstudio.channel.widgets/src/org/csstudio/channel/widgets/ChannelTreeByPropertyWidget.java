@@ -1,6 +1,7 @@
 package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -24,6 +25,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IMemento;
 
 /**
  * A tree constructed by a query to channel finder and a set of properties.
@@ -249,6 +251,34 @@ implements ConfigurableWidget {
 			return;
 		dialog = new ChannelTreeByPropertyConfigurationDialog(this);
 		dialog.open();
+	}
+	
+	private final String MEMENTO_CHANNEL_QUERY = "channelQuery";
+	private final String MEMENTO_PROPERTIES = "properties";
+	
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
+		}
+		if (!getProperties().isEmpty()) {
+			StringBuilder sb = new StringBuilder();
+			for (String property : getProperties()) {
+				sb.append(property).append(",");
+			}
+			sb.deleteCharAt(sb.length() - 1);
+			memento.putString(MEMENTO_PROPERTIES, sb.toString());
+		}
+	}
+	
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_CHANNEL_QUERY)).create());
+			}
+			if (memento.getString(MEMENTO_PROPERTIES) != null) {
+				setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
+			}
+		}
 	}
 
 	@Override
