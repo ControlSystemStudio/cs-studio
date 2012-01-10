@@ -82,6 +82,7 @@ org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.ldap
+org.csstudio.utility.olog.ui
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu

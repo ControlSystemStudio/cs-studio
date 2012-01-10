@@ -2,12 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Olog ClientAPI
 Bundle-SymbolicName: edu.msu.nscl.olog.api
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 2.0.1.qualifier
 Require-Bundle: org.csstudio.platform.libs.jersey,
  net.coobird.thumbnailator,
  org.apache.jackrabbit,
- org.apache.commons.httpclient
+ org.apache.commons.httpclient,
+ org.eclipse.core.runtime,
+ org.csstudio.auth;bundle-version="3.0.0",
+ org.eclipse.ui;bundle-version="3.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: edu.msu.nscl.olog.api
+Export-Package: edu.msu.nscl.olog.api,
+ edu.msu.nscl.olog.api.bundle
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy
+Bundle-Activator: edu.msu.nscl.olog.api.bundle.Activator
