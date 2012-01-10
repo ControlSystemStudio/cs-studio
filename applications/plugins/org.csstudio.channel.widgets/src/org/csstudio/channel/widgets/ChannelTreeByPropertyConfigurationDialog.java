@@ -10,7 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
 public class ChannelTreeByPropertyConfigurationDialog
-extends AbstractConfigurationDialog<ChannelTreeByPropertyWidget, PropertyListSelectionWidget> {
+extends AbstractConfigurationDialog<ChannelTreeByPropertyWidget, ChannelTreeByPropertyConfigurationPanel> {
 
 	public ChannelTreeByPropertyConfigurationDialog(ChannelTreeByPropertyWidget widget) {
 		super(widget, SWT.DIALOG_TRIM, "Select properties...");
@@ -29,9 +29,9 @@ extends AbstractConfigurationDialog<ChannelTreeByPropertyWidget, PropertyListSel
 	}
 
 	@Override
-	protected PropertyListSelectionWidget createConfigurationComposite(
+	protected ChannelTreeByPropertyConfigurationPanel createConfigurationComposite(
 			Shell shell) {
-		return new PropertyListSelectionWidget(shell, SWT.DIALOG_TRIM);
+		return new ChannelTreeByPropertyConfigurationPanel(shell, SWT.DIALOG_TRIM);
 	}
 	
 }
