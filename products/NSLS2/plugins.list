@@ -6,6 +6,7 @@ javax.annotation
 net.coobird.thumbnailator
 org.apache.commons.httpclient
 org.apache.jackrabbit
+org.apache.log4j
 org.apache.xerces
 org.csstudio.apputil
 org.csstudio.apputil.ui
