@@ -1,8 +1,9 @@
 package org.csstudio.channelviewer;
 
+import gov.bnl.channelfinder.api.ChannelFinder;
+
 import java.util.logging.Logger;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -36,7 +37,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		log.info(CFClientManager.DEFAULT_CLIENT);				
+		log.info(ChannelFinder.DEFAULT_CLIENT);				
 	}
 
 	/*

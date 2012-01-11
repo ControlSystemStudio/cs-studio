@@ -59,8 +59,8 @@ public class ChannelTreeByPropertyNodeAdapterFactory implements IAdapterFactory 
 		if (!node.isSubQuery()) {
 			return null;
 		}
-		return ChannelQuery.Builder.query(node.getSubQuery())
-				.result(node.getNodeChannels(), null).create();
+		return ChannelQuery.query(node.getSubQuery())
+				.result(node.getNodeChannels(), null).build();
 	}
 
 	@Override

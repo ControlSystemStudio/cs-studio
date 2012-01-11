@@ -48,7 +48,7 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 				settingsKey, combo, 20, true) {
 			@Override
 			public void newSelection(final String queryText) {
-				setChannelQuery(ChannelQuery.Builder.query(queryText).create());
+				setChannelQuery(ChannelQuery.query(queryText).build());
 			}
 		};
 		

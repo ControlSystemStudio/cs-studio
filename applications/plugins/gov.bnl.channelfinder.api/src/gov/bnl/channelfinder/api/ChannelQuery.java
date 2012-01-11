@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 
 /**
  * An observable query to channel finder that maintains the cached result.
@@ -19,6 +18,18 @@ public class ChannelQuery {
 	private final String query;
 	private static Executor defaultQueryExecutor = Executors.newSingleThreadExecutor();
 	private final Executor queryExecutor;
+	
+	
+	/**
+	 * A new query with the given search string.
+	 * 
+	 * @param query the query; cannot be null
+	 * @return a new builder
+	 */
+	public static Builder query(String query) {
+		return new Builder(query);
+	}
+
 	
 	/**
 	 * The executor on which the queries are executed.
@@ -65,7 +76,7 @@ public class ChannelQuery {
 
 	public static class Builder {
 		private String query = null;
-		private ChannelFinderClient client = CFClientManager.getClient();
+		private ChannelFinderClient client = ChannelFinder.getClient();
 		private Executor queryExecutor = defaultQueryExecutor;
 		private Result result = null;
 
@@ -74,17 +85,6 @@ public class ChannelQuery {
 				throw new IllegalArgumentException(
 						"query string cannot be null");
 			this.query = query;
-		}
-
-		/**
-		 * A new query with the given search string.
-		 * 
-		 * @param query the query; cannot be null
-		 * @return a new builder
-		 */
-		public static Builder query(String query) {
-			// TODO can we move this to the actual class?
-			return new Builder(query);
 		}
 
 		/**
@@ -131,7 +131,7 @@ public class ChannelQuery {
 		 * 
 		 * @return a new query
 		 */
-		public ChannelQuery create() {
+		public ChannelQuery build() {
 			return new ChannelQuery(this.query, this.client, this.queryExecutor, this.result);
 		}
 	}
