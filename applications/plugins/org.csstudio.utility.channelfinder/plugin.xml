@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension
+         point="gov.bnl.channelfinder.api.client">
+      <channelfinderclient
+            channelfinderclient="org.csstudio.utility.channelfinder.ChannelFinderClientFromPreferences">
+      </channelfinderclient>
+   </extension>
 
 </plugin>
