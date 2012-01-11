@@ -144,6 +144,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 				configure();
 			}
 		});
+		btnProperties.setEnabled(false);
 		
 		treeWidget.loadState(memento);
 		inputBar.setChannelQuery(treeWidget.getChannelQuery());
