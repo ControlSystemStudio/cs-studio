@@ -6,6 +6,7 @@ package org.csstudio.utility.channel.actions;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import static org.csstudio.utility.channel.CSSChannelUtils.*;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 
@@ -13,7 +14,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -61,7 +61,7 @@ public class RemoveTagsJob extends Job {
 					.hasNext();) {
 				String tagName = iterator.next();
 				monitor.subTask("Removing tag " + tagName);
-				CFClientManager.getClient().delete(tag(tagName),
+				ChannelFinder.getClient().delete(tag(tagName),
 						getCSSChannelNames(channels));
 				monitor.worked(1);
 			}

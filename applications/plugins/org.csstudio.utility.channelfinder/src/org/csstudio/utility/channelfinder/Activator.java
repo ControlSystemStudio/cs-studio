@@ -1,5 +1,6 @@
 package org.csstudio.utility.channelfinder;
 
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClientComp;
 import gov.bnl.channelfinder.api.ChannelFinderClientImpl.CFCBuilder;
 
@@ -81,7 +82,7 @@ public class Activator extends AbstractUIPlugin {
 		compositeClient.setWriter(CFCBuilder.serviceURL(url)
 				.withHTTPAuthentication(true).username(username)
 				.password(password).create());
-		CFClientManager.registerDefaultClient(compositeClient);
+		ChannelFinder.setClient(compositeClient);
 	}
 
 	/**

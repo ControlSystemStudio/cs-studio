@@ -6,7 +6,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 
 /**
  * An observable query to channel finder that maintains the cached result.
@@ -77,7 +76,7 @@ public class ChannelQuery {
 
 	public static class Builder {
 		private String query = null;
-		private ChannelFinderClient client = CFClientManager.getClient();
+		private ChannelFinderClient client = ChannelFinder.getClient();
 		private Executor queryExecutor = defaultQueryExecutor;
 		private Result result = null;
 
