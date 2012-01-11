@@ -28,7 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import org.csstudio.ams.systemmonitor.check.AmsSystemCheck;
 import org.csstudio.ams.systemmonitor.check.CheckResult;
-import org.csstudio.ams.systemmonitor.check.SmsConnectorCheck;
+import org.csstudio.ams.systemmonitor.check.SmsDeliveryWorkerCheck;
 import org.csstudio.ams.systemmonitor.database.DatabaseHelper;
 import org.csstudio.ams.systemmonitor.file.FileCleaner;
 import org.csstudio.ams.systemmonitor.internal.PreferenceKeys;
@@ -65,7 +65,7 @@ public class AmsSystemMonitorApplication implements IApplication
     private AmsSystemCheck amsSystemCheck;
 
     /** Class that does the check of the SMS connector */
-    private SmsConnectorCheck smsConnectorCheck;
+    private SmsDeliveryWorkerCheck smsConnectorCheck;
 
     /** Simple version information */
     private VersionInfo version;
@@ -137,7 +137,7 @@ public class AmsSystemMonitorApplication implements IApplication
         monitorStatusHandler.beginCurrentCheck();
         try {
             amsSystemCheck = new AmsSystemCheck("AmsSystemCheckSender", "AmsSystemCheckReceiver", "AmsSystemCheck");
-            smsConnectorCheck = new SmsConnectorCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
+            smsConnectorCheck = new SmsDeliveryWorkerCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
             
             monitorStatusHandler.setSmsSent(false);
             monitorStatusHandler.setCurrentStatus(CheckResult.OK);
