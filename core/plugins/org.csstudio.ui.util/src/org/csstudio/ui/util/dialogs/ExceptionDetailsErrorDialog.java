@@ -16,8 +16,10 @@ package org.csstudio.ui.util.dialogs;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.csstudio.ui.util.Activator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -39,6 +41,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * A dialog to display one or more errors to the user, as contained in an
@@ -632,4 +635,12 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 			populateList(text);
 		}
 	}
+	
+	public static int openError(Shell shell, String title, Exception ex) {
+		IStatus status = new Status(IStatus.ERROR, Activator.ID, ex.getLocalizedMessage(), ex);
+		return ExceptionDetailsErrorDialog.openError(shell,
+				title, null, 
+				status);
+	}
+
 }
