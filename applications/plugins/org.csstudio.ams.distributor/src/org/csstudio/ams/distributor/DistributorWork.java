@@ -851,11 +851,11 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					+ " in FilterAction: " + fa.getFilterActionID());
 			return ErrorState.STAT_FALSE.getStateNumber();
 		}
-
+		TopicTObject topic = null;
 		switch (fa.getFilterActionTypeRef())
 		{
 		    case FILTERACTIONTYPE_TO_JMS:
-		        final TopicTObject topic = TopicDAO.select(localAppDb, fa.getReceiverRef());
+		        topic = TopicDAO.select(localAppDb, fa.getReceiverRef());
 		        ct = topicContainer.getConnectorTopicByConnectorName("JmsConnector");
 		        if(ct.isFullMessageReceiver())
 		        {
@@ -885,7 +885,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		}
 
 		HistoryWriter.logHistorySend(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
-				null, 0, 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));
+				null, 0, 0, 0, topic);
 		return ErrorState.STAT_OK.getStateNumber();
 	}
 
