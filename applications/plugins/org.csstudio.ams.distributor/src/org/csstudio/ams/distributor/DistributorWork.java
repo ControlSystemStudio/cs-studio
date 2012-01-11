@@ -58,8 +58,6 @@ import org.csstudio.ams.dbAccess.configdb.FilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterActionTObject;
 import org.csstudio.ams.dbAccess.configdb.FilterDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterTObject;
-import org.csstudio.ams.dbAccess.configdb.HistoryDAO;
-import org.csstudio.ams.dbAccess.configdb.HistoryTObject;
 import org.csstudio.ams.dbAccess.configdb.MessageChainDAO;
 import org.csstudio.ams.dbAccess.configdb.MessageChainTObject;
 import org.csstudio.ams.dbAccess.configdb.MessageDAO;
@@ -602,24 +600,11 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			final int iFilterId = Integer.parseInt(msg.getString(MSGPROP_FILTERID));
 			final FilterTObject filter = FilterDAO.select(localAppDb, iFilterId);
 
-			final String msgHost = msg.getString(MSGPROP_HOST);
-			final String msgProc = msg.getString(MSGPROP_PROCESSID);
-			final String msgName = msg.getString(MSGPROP_NAME);
-			final String msgEventTime = msg.getString(MSGPROP_EVENTTIME);
-			final HistoryTObject history = new HistoryTObject();
-			history.setTimeNew(new Date(System.currentTimeMillis()));
-			history.setType("Message");
-			history.setMsgHost(msgHost);
-			history.setMsgProc(msgProc);
-			history.setMsgName(msgName);
-			history.setMsgEventtime(msgEventTime);
+			HistoryWriter.logMessage(localAppDb, msg, filter, iFilterId);
 
 			final String description = "Message filtered by " + iFilterId + " - "
 					+ (filter == null ? "filter not there" : filter.getName())
 					+ "." + " Msg: " + Utils.getMessageString(msg);
-			history.setDescription(description);
-
-			HistoryDAO.insert(localAppDb, history);
 			Log.log(Log.INFO, /* history.getHistoryID() + ". " + */
 			description);
 			// + " actiontype=" + history.getActionType()
