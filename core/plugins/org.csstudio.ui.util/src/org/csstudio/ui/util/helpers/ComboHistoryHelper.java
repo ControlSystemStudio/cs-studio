@@ -79,6 +79,7 @@ public abstract class ComboHistoryHelper {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				String new_entry = ComboHistoryHelper.this.combo.getText();
 				addEntry(new_entry);
+				ComboHistoryHelper.this.combo.select(0);
 				newSelection(new_entry);
 			}
 
