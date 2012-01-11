@@ -275,7 +275,7 @@ implements ConfigurableWidget {
 	public void loadState(IMemento memento) {
 		if (memento != null) {
 			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
-				setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_CHANNEL_QUERY)).create());
+				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_CHANNEL_QUERY)).build());
 			}
 			if (memento.getString(MEMENTO_PROPERTIES) != null) {
 				setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
