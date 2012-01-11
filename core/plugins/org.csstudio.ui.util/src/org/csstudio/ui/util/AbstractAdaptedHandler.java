@@ -54,11 +54,8 @@ public abstract class AbstractAdaptedHandler<T> extends AbstractHandler {
 		try {
 			execute(Arrays.asList(AdapterUtil.convert(selection, clazz)), event);
 		} catch (Exception ex) {
-
-			IStatus status = new Status(IStatus.ERROR, Activator.ID, ex.getLocalizedMessage(), ex);
 			ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
-					"Error executing command...", null, 
-					status);
+					"Error executing command...", ex);
 		}
 		return null;
 	}
