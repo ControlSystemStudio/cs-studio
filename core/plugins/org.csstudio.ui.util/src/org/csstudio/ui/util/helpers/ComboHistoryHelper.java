@@ -133,19 +133,23 @@ public abstract class ComboHistoryHelper {
 
 	/** Load persisted list values. */
 	public void loadSettings() {
-		IDialogSettings pvs = settings.getSection(tag);
-		if (pvs == null)
-			return;
-		String values[] = pvs.getArray(TAG);
-		if (values != null)
-			for (int i = values.length-1; i >= 0; i--)
-				// Load as if they were entered, i.e. skip duplicates
-				addEntry(values[i]);
+		if (settings != null) {
+			IDialogSettings pvs = settings.getSection(tag);
+			if (pvs == null)
+				return;
+			String values[] = pvs.getArray(TAG);
+			if (values != null)
+				for (int i = values.length-1; i >= 0; i--)
+					// Load as if they were entered, i.e. skip duplicates
+					addEntry(values[i]);
+		}
 	}
 
 	/** Save list values to persistent storage. */
 	public void saveSettings() {
-		IDialogSettings values = settings.addNewSection(tag);
-		values.put(TAG, combo.getItems());
+		if (settings != null) {
+			IDialogSettings values = settings.addNewSection(tag);
+			values.put(TAG, combo.getItems());
+		}
 	}
 }
