@@ -81,6 +81,22 @@ implements ConfigurableWidget {
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
+		addPropertyChangeListener(new PropertyChangeListener() {
+			
+			List<String> properties = Arrays.asList("properties");
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (properties.contains(evt.getPropertyName())) {
+					computeTree();
+				}
+			}
+		});
+		
 		tree = new Tree(this, SWT.VIRTUAL | SWT.BORDER);
 		tree.addListener(SWT.SetData, new Listener() {
 			public void handleEvent(Event event) {
@@ -124,21 +140,6 @@ implements ConfigurableWidget {
 			}
 		});
 		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
-		
-		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
-		addPropertyChangeListener(new PropertyChangeListener() {
-			
-			List<String> properties = Arrays.asList("properties");
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (properties.contains(evt.getPropertyName())) {
-					computeTree();
-				}
-			}
-		});
 	}
 	
 	private void setLastException(Exception ex) {
