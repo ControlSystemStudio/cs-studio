@@ -210,7 +210,7 @@ public class PVTableByPropertyView extends ViewPart {
 			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
 			tableWidget.setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
 			if (memento.getString(MEMENTO_QUERY) != null) {
-				setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_QUERY)).create());
+				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_QUERY)).build());
 			}
 		}
 		

@@ -22,7 +22,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 	
 	private static void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
+			widget.setChannelQuery(ChannelQuery.query(model.getChannelQuery()).build());
 			widget.setRowSelectionPv(model.getRowSelectionPvName());
 		}
 		widget.setRowProperty(model.getRowProperty());

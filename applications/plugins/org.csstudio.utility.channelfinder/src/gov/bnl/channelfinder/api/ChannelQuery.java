@@ -20,6 +20,18 @@ public class ChannelQuery {
 	private static Executor defaultQueryExecutor = Executors.newSingleThreadExecutor();
 	private final Executor queryExecutor;
 	
+	
+	/**
+	 * A new query with the given search string.
+	 * 
+	 * @param query the query; cannot be null
+	 * @return a new builder
+	 */
+	public static Builder query(String query) {
+		return new Builder(query);
+	}
+
+	
 	/**
 	 * The executor on which the queries are executed.
 	 * 
@@ -77,17 +89,6 @@ public class ChannelQuery {
 		}
 
 		/**
-		 * A new query with the given search string.
-		 * 
-		 * @param query the query; cannot be null
-		 * @return a new builder
-		 */
-		public static Builder query(String query) {
-			// TODO can we move this to the actual class?
-			return new Builder(query);
-		}
-
-		/**
 		 * Changes which client should be used to execute the query.
 		 * 
 		 * @param client a cliemt
@@ -131,7 +132,7 @@ public class ChannelQuery {
 		 * 
 		 * @return a new query
 		 */
-		public ChannelQuery create() {
+		public ChannelQuery build() {
 			return new ChannelQuery(this.query, this.client, this.queryExecutor, this.result);
 		}
 	}

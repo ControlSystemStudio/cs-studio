@@ -109,7 +109,7 @@ public class WaterfallView extends ViewPart {
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
 		
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_PVNAME)).create());
+			setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_PVNAME)).build());
 		}
 		
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);

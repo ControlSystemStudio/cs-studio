@@ -24,7 +24,7 @@ public class OpenWaterfall extends AbstractAdaptedHandler<ProcessVariable> {
 			throws Exception {
 		if (!pvs.isEmpty()) {
 			findView(WaterfallView.class, WaterfallView.ID)
-				.setChannelQuery(ChannelQuery.Builder.query(pvs.get(0).getName()).create());
+				.setChannelQuery(ChannelQuery.query(pvs.get(0).getName()).build());
 		}
 	}
 

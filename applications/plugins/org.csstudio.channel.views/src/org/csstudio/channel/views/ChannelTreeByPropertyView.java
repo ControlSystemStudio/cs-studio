@@ -162,7 +162,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		});
 		
 		if (memento != null) {
-			inputBar.setChannelQuery(ChannelQuery.Builder.query(memento.getString(MEMENTO_QUERY)).create());
+			inputBar.setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_QUERY)).build());
 			if (memento.getString(MEMENTO_PROPERTIES) != null) {
 				treeWidget.setProperties(Arrays.asList(memento.getString(MEMENTO_PROPERTIES).split(",")));
 			}

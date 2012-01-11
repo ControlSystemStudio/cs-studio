@@ -21,7 +21,7 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	
 	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
 		if (runMode)
-			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
+			widget.setChannelQuery(ChannelQuery.query(model.getChannelQuery()).build());
 		widget.setShowRange(model.isShowRange());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
 		widget.setPixelDuration(model.getPixelDuration());

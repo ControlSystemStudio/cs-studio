@@ -24,7 +24,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 	
 	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
+			widget.setChannelQuery(ChannelQuery.query(model.getChannelQuery()).build());
 			widget.setSelectionPv(model.getSelectionPvName());
 		}
 		widget.setProperties(model.getTreeProperties());
