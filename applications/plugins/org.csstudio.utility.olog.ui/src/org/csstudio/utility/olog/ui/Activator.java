@@ -3,6 +3,7 @@ package org.csstudio.utility.olog.ui;
 import java.util.logging.Logger;
 
 import org.csstudio.auth.security.SecureStorage;
+import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -12,7 +13,6 @@ import org.osgi.framework.BundleContext;
 
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 import edu.msu.nscl.olog.api.OlogClientManager;
-import edu.msu.nscl.olog.api.bundle.PreferenceConstants;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -50,29 +50,29 @@ public class Activator extends AbstractUIPlugin {
 						.getPreferencesService();
 				OlogClientBuilder ologClientBuilder;
 				String url = prefs.getString(
-						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+						org.csstudio.utility.olog.Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_URL,
 						"http://localhost:8080/Olog/resources", null);
 				String jcr_url = prefs.getString(
-						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+						org.csstudio.utility.olog.Activator.PLUGIN_ID,
 						PreferenceConstants.Olog_jcr_URL,
 						"http://localhost:8080/Olog/repository/olog", null);
 				ologClientBuilder = OlogClientBuilder.serviceURL(url).jcrURI(
 						jcr_url);
 				if (prefs.getBoolean(
-						edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+						org.csstudio.utility.olog.Activator.PLUGIN_ID,
 						PreferenceConstants.Use_authentication, false, null)) {
 					ologClientBuilder
 							.withHTTPAuthentication(true)
 							.username(
 									prefs.getString(
-											edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+											org.csstudio.utility.olog.Activator.PLUGIN_ID,
 											PreferenceConstants.Username,
 											"username", null))
 							.password(
 									SecureStorage
 											.retrieveSecureStorage(
-													edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID,
+													org.csstudio.utility.olog.Activator.PLUGIN_ID,
 													PreferenceConstants.Password));
 				} else {
 					ologClientBuilder.withHTTPAuthentication(false);
@@ -86,7 +86,7 @@ public class Activator extends AbstractUIPlugin {
 				}
 			}
 		};
-		edu.msu.nscl.olog.api.bundle.Activator.getDefault()
+		org.csstudio.utility.olog.Activator.getDefault()
 				.getPreferenceStore()
 				.addPropertyChangeListener(preferenceListner);
 	}
@@ -100,7 +100,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		edu.msu.nscl.olog.api.bundle.Activator.getDefault()
+		org.csstudio.utility.olog.Activator.getDefault()
 				.getPreferenceStore()
 				.removePropertyChangeListener(preferenceListner);
 		super.stop(context);

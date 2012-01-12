@@ -12,7 +12,7 @@ Require-Bundle: org.csstudio.platform.libs.jersey,
  org.eclipse.ui;bundle-version="3.7.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: edu.msu.nscl.olog.api,
- edu.msu.nscl.olog.api.bundle
+ org.csstudio.utility.olog
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: edu.msu.nscl.olog.api.bundle.Activator
+Bundle-Activator: org.csstudio.utility.olog.Activator

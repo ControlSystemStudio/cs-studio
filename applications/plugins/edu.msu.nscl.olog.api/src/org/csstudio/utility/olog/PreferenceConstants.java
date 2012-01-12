@@ -1,4 +1,4 @@
-package edu.msu.nscl.olog.api.bundle;
+package org.csstudio.utility.olog;
 
 /**
  * Constant definitions for plug-in preferences
