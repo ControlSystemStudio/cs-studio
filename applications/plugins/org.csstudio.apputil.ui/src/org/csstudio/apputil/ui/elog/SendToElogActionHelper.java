@@ -43,7 +43,7 @@ public class SendToElogActionHelper extends Action
     public SendToElogActionHelper()
     {
         super(Messages.ELog_ActionName,
-              Activator.getImageDescriptor("icons/elog.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/logentry-add-16.png")); //$NON-NLS-1$
         setToolTipText(Messages.ELog_ActionName_TT);
     }
 }

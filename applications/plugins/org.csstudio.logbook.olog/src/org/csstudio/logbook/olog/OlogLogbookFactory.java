@@ -51,7 +51,7 @@ public class OlogLogbookFactory implements ILogbookFactory {
 	 */
 	@Override
 	public String getDefaultLogbook() {
-		return "default olog logbook";
+		return "Operations";
 	}
 
 	/*
