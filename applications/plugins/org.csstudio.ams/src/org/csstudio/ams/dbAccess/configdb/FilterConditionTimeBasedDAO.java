@@ -35,7 +35,12 @@ public class FilterConditionTimeBasedDAO  extends DAO
 {
 	public static void copyFilterConditionTimeBased(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyFilterConditionTimeBased(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyFilterConditionTimeBased(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyFilterConditionTimeBased(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyFilterConditionTimeBased(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupFilterConditionTimeBased(Connection masterDB) throws SQLException

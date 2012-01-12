@@ -37,7 +37,12 @@ public abstract class UserGroupDAO extends DAO
 {
 	public static void copyUserGroup(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyUserGroup(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyUserGroup(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyUserGroup(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyUserGroup(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupUserGroup(Connection masterDB) throws SQLException

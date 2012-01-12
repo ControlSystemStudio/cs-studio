@@ -43,9 +43,14 @@ public class FilterCondNegationDAO extends DAO
 
     public static void copyFilterCondNegation(Connection masterDB, Connection localDB) throws SQLException
     {
-        copyFilterCondNegation(masterDB, localDB, DB_BACKUP_SUFFIX, "");        
+        copyFilterCondNegation(masterDB, localDB, DB_BACKUP_SUFFIX);        
     }   
    
+    public static void copyFilterCondNegation(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException
+    {
+    	copyFilterCondNegation(masterDB, localDB, masterDbSuffix, "");        
+    }   
+    
     public static void backupFilterCondNegation(Connection masterDB) throws SQLException
     {
         copyFilterCondNegation(masterDB, masterDB, "", DB_BACKUP_SUFFIX);
