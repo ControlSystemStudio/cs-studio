@@ -20,7 +20,7 @@ public abstract class AbstractChannelWidgetModel extends AbstractWidgetModel {
 
 	
 	public ChannelQuery getChannelQuery() {
-		return ChannelQuery.Builder.query((String) getCastedPropertyValue(CHANNEL_QUERY)).create();
+		return ChannelQuery.query((String) getCastedPropertyValue(CHANNEL_QUERY)).build();
 	}
 
 }

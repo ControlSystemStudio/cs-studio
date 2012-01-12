@@ -30,7 +30,7 @@ public class PVTableByPropertyCellAdapterFactory implements IAdapterFactory {
 			} else if (adapterType == ChannelQuery[].class) {
 				if (cell.getQuery() != null)
 					return new ChannelQuery[] {
-						ChannelQuery.Builder.query(cell.getQuery()).result(cell.getChannels(), null).create()
+						ChannelQuery.query(cell.getQuery()).result(cell.getChannels(), null).build()
 					};
 				
 			} else if (adapterType == ProcessVariable[].class) {

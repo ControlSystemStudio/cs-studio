@@ -6,7 +6,6 @@ import gov.bnl.channelfinder.api.ChannelQueryListener;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
@@ -38,10 +37,6 @@ public class ChannelTreeByPropertyView extends ViewPart {
 
 	/** Memento */
 	private IMemento memento = null;
-	
-	/** Memento tags */
-	private static final String MEMENTO_QUERY = "ChannelQuery"; //$NON-NLS-1$
-	private static final String MEMENTO_PROPERTIES = "Property"; //$NON-NLS-1$
 	
 	private final ChannelQueryListener channelQueryListener = new ChannelQueryListener() {
 		
@@ -149,6 +144,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 				configure();
 			}
 		});
+		btnProperties.setEnabled(false);
 		
 		treeWidget.loadState(memento);
 		inputBar.setChannelQuery(treeWidget.getChannelQuery());

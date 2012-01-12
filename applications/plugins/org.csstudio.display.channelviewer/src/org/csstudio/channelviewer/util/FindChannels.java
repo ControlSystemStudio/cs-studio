@@ -1,6 +1,7 @@
 package org.csstudio.channelviewer.util;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 
 import java.util.Collection;
@@ -11,7 +12,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.channelviewer.views.ChannelsView;
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,7 +37,7 @@ public class FindChannels extends Job {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
 		final Collection<Channel> channels = new HashSet<Channel>();
 		try {
-			channels.addAll(CFClientManager.getClient().find(
+			channels.addAll(ChannelFinder.getClient().find(
 					buildSearchMap(searchPattern)));
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override

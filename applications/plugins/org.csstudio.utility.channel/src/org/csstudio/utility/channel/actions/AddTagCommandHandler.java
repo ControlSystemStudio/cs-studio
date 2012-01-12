@@ -2,6 +2,7 @@ package org.csstudio.utility.channel.actions;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.Tag;
 
@@ -16,7 +17,6 @@ import java.util.concurrent.Executors;
 
 import org.csstudio.ui.util.AbstractAdaptedHandler;
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -105,7 +105,7 @@ public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
 		@Override
 		public Collection<String> call() throws Exception {
 			try {
-				return CFClientManager.getClient().getAllTags();
+				return ChannelFinder.getClient().getAllTags();
 			} catch (ChannelFinderException e) {
 				for (ExceptionListener listener : this.listeners) {
 					listener.exceptionThrown(e);
