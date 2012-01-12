@@ -1,4 +1,4 @@
-package edu.msu.nscl.olog.api.bundle;
+package org.csstudio.utility.olog;
 
 import java.util.logging.Logger;
 
