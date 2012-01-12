@@ -28,7 +28,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.csstudio.alarm.jms2ora.IMessageConverter;
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.VersionInfo;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.eclipse.core.runtime.Platform;
@@ -63,13 +63,13 @@ public class MessageAcceptor implements MessageListener {
         collector = stat;
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String urls = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                                       PreferenceConstants.JMS_PROVIDER_URLS,
                                       "", null);
-        final String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String topics = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                                         PreferenceConstants.JMS_TOPIC_NAMES,
                                         "", null);
-        final String factoryClass = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String factoryClass = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                                               PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS,
                                               "", null);
 

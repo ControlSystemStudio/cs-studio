@@ -32,7 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
@@ -81,7 +81,7 @@ public class MessageContentCreator {
         final IPreferencesService prefs = Platform.getPreferencesService();
 
         try {
-            metaDataService = Jms2OraPlugin.getDefault().getMetaDataReaderService();
+            metaDataService = Jms2OraActivator.getDefault().getMetaDataReaderService();
         } catch (final OsgiServiceUnavailableException mace) {
             LOG.error("[*** MessageArchiveConnectionException ***]: {}", mace.getMessage());
         }
@@ -90,7 +90,7 @@ public class MessageContentCreator {
 
         valueLength = metaDataService.getValueLength();
         if(valueLength == -1) {
-            valueLength = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
+            valueLength = prefs.getInt(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
             LOG.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
         }
 
@@ -99,7 +99,7 @@ public class MessageContentCreator {
 
         messageFilter = MessageFilter.getInstance();
 
-        final String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORE_EMPTY_VALUES,
+        final String temp = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.STORE_EMPTY_VALUES,
                                       "false", null);
         storeEmptyValues = Boolean.parseBoolean(temp);
         LOG.info("Empty values will be stored: " + storeEmptyValues);
@@ -111,7 +111,7 @@ public class MessageContentCreator {
         String temp = null;
         discardTypes = new Vector<String>();
 
-        final String[] list = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
+        final String[] list = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
         if(list != null) {
 
             for(final String s : list) {
@@ -131,7 +131,7 @@ public class MessageContentCreator {
         String temp = null;
         discardNames = new Vector<String>();
 
-        final String[] list = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_NAMES, "", null).split(",");
+        final String[] list = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.DISCARD_NAMES, "", null).split(",");
         if(list != null) {
 
             for(final String s : list) {

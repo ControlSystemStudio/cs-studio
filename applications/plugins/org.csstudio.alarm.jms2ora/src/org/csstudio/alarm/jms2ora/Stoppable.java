@@ -27,8 +27,6 @@ package org.csstudio.alarm.jms2ora;
  * @author Markus Moeller
  *
  */
-public interface Stoppable
-{
-    public void stopWorking();
-    public void setRestart();
+public interface Stoppable {
+    void stopWorking(boolean restart);
 }
