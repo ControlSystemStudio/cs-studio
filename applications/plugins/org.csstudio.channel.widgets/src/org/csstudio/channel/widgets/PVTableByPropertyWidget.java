@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
 import org.eclipse.jface.viewers.ISelection;

@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
