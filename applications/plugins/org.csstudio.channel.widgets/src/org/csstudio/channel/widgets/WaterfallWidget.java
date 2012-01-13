@@ -22,6 +22,7 @@ import java.util.List;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
@@ -55,6 +56,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	private WaterfallPlot plot;
 	private CLabel errorLabel;
 	private Label errorImage;
+	private ErrorBar errorBar;
 	private GridData gd_rangeWidget;
 	private boolean editable = true;
 	
@@ -92,10 +94,13 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		
 		rangeWidget = new RangeWidget(this, SWT.NONE);
 		rangeWidget.addRangeListener(new RangeListener() {
@@ -125,11 +130,6 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 			}
 		});
 		imageDisplay.setStretched(SWT.HORIZONTAL);
-		GridLayout gl_imageDisplay = new GridLayout(2, false);
-		gl_imageDisplay.marginLeft = 1;
-		gl_imageDisplay.marginWidth = 0;
-		gl_imageDisplay.marginHeight = 0;
-		imageDisplay.setLayout(gl_imageDisplay);
 		imageDisplay.addControlListener(new ControlListener() {
 			
 			@Override
@@ -144,17 +144,6 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 				// Nothing to do
 			}
 		});
-		
-		errorImage = new Label(imageDisplay, SWT.NONE);
-		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
-		errorImage.setVisible(false);
-		
-		errorLabel = new CLabel(imageDisplay, SWT.NONE);
-		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_errorLabel.widthHint = 221;
-		errorLabel.setLayoutData(gd_errorLabel);
-		errorLabel.setText("");
-		errorLabel.setVisible(false);
 		
 		// Set the parameters to the default
 		parametersChanged();
@@ -227,17 +216,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	
 	// Displays the last error generated
 	private void setLastError(Exception ex) {
-		if (!isDisposed()) {
-			if (ex == null) {
-				errorImage.setVisible(false);
-				errorLabel.setVisible(false);
-			} else {
-				errorImage.setVisible(true);
-				errorLabel.setVisible(true);
-				errorLabel.setToolTipText(ex.getMessage());
-				errorLabel.setText(ex.getMessage());
-			}
-		}
+		errorBar.setException(ex);
 	}
 	
 	private void parametersChanged() {
@@ -262,10 +241,6 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 			pv.close();
 			pv = null;
 		}
-		
-		// Clean up old image and previous error
-		imageDisplay.setVImage(null);
-		setLastError(null);
 		
 		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
@@ -408,6 +383,10 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	protected void queryCleared() {
 		setWaveformPVName(null);
 		setScalarPVNames(null);
+		
+		// Clean up old image and previous error
+		imageDisplay.setVImage(null);
+		setLastError(null);
 	}
 	
 	private Result result;
@@ -417,6 +396,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		if (result == null)
 			return;
 		
+		setLastError(result.exception);
 		this.result = result;
 		List<String> channelNames = null;
 		Exception ex = result.exception;
