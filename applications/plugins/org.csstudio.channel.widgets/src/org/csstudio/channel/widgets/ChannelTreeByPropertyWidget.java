@@ -77,7 +77,7 @@ implements ConfigurableWidget {
 		});
 		
 		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
