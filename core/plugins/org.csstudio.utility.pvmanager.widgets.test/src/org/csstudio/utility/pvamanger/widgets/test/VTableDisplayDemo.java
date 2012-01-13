@@ -1,20 +1,19 @@
 package org.csstudio.utility.pvamanger.widgets.test;
 
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.column;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
+import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -22,13 +21,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.data.VTable;
-
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 public class VTableDisplayDemo extends ViewPart {
 

@@ -2,7 +2,7 @@ package org.csstudio.utility.pvamanger.widgets.test;
 
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArray;
 import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.pvmanager.util.TimeDuration.hz;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
@@ -15,13 +15,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.wb.swt.SWTResourceManager;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
-
-import com.swtdesigner.ResourceManager;
-import com.swtdesigner.SWTResourceManager;
 
 public class VImageDisplayDemo extends ViewPart {
 
