@@ -1,6 +1,7 @@
 package org.csstudio.utility.olog.ui;
 
 import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.utility.olog.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -10,7 +11,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import edu.msu.nscl.olog.api.bundle.PreferenceConstants;
 
 public class PreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -24,7 +24,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 	public PreferencePage() {
 		super(GRID);
 		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				edu.msu.nscl.olog.api.bundle.Activator.PLUGIN_ID));
+				org.csstudio.utility.olog.Activator.PLUGIN_ID));
 		setMessage("Olog Client Preferences");
 		setDescription("Olog preference page");
 	}

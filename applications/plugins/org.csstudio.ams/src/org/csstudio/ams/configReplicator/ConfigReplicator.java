@@ -23,6 +23,10 @@
 
 package org.csstudio.ams.configReplicator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -144,6 +148,64 @@ public class ConfigReplicator implements AmsConstants {
 			} catch(Exception e) {
 			    // Ignore me
 			}
+		}
+		// All O.K.
+	}
+	
+	/**
+	 * Copying configuration from one database to another.
+	 * @throws SQLException 
+	 */
+	public static void replicateConfigurationToHsql(Connection masterDB,
+			Connection localDB) throws ReplicationException {
+		InputStream resourceAsStream = ConfigReplicator.class
+				.getResourceAsStream("hsqldb_create.sql");
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				resourceAsStream));
+		StringBuffer stringBuffer = new StringBuffer();
+		try {
+			while (reader.ready()) {
+				stringBuffer.append(reader.readLine() + "\n");
+			}
+			reader.close();
+			String sqlString = stringBuffer.toString();
+			localDB.prepareStatement(sqlString).execute();
+			Log.log(Log.INFO, "Start copying master configuration.");
+			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB, "");
+			FilterConditionDAO.copyFilterCondition(masterDB, localDB, "");
+			FilterConditionStringDAO.copyFilterConditionString(masterDB,
+					localDB, "");
+			FilterConditionArrayStringDAO.copyFilterConditionArrayString(
+					masterDB, localDB, "");
+			FilterConditionArrayStringValuesDAO
+					.copyFilterConditionArrayStringValues(masterDB, localDB, "");
+			FilterConditionProcessVariableDAO.copy(masterDB, localDB, "");
+			CommonConjunctionFilterConditionDAO.copy(masterDB, localDB, "");
+			// ADDED: Markus Moeller 2008-08-06
+			FilterCondJunctionDAO.copyFilterCondJunction(masterDB, localDB, "");
+			FilterCondNegationDAO.copyFilterCondNegation(masterDB, localDB, "");
+			FilterCondFilterCondDAO.copyFilterCondFilterCond(masterDB, localDB, "");
+
+			FilterConditionTimeBasedDAO.copyFilterConditionTimeBased(masterDB,
+					localDB, "");
+			FilterDAO.copyFilter(masterDB, localDB, "");
+			FilterFilterConditionDAO.copyFilterFilterCondition(masterDB,
+					localDB, "");
+			TopicDAO.copyTopic(masterDB, localDB, "");
+			FilterActionTypeDAO.copyFilterActionType(masterDB, localDB, "");
+
+			FilterActionDAO.copyFilterAction(masterDB, localDB, "");
+			FilterFilterActionDAO.copyFilterFilterAction(masterDB, localDB, "");
+			UserDAO.copyUser(masterDB, localDB, "");
+			UserGroupDAO.copyUserGroup(masterDB, localDB, "");
+			UserGroupUserDAO.copyUserGroupUser(masterDB, localDB, "");
+
+			Log.log(Log.INFO, "Replicating configuration finished.");
+
+		} catch (IOException e) {
+			throw new ReplicationException(e);
+		} catch (SQLException e) {
+			throw new ReplicationException(e);
 		}
 		// All O.K.
 	}

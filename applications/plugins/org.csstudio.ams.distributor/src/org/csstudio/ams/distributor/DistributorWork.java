@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -23,7 +22,10 @@
 
 package org.csstudio.ams.distributor;
 
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -49,6 +51,8 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.Utils;
+import org.csstudio.ams.configReplicator.ConfigReplicator;
+import org.csstudio.ams.configReplicator.ReplicationException;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.configdb.AggrFilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.AggrUserGroupDAO;
@@ -73,14 +77,20 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsMultipleProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.hsqldb.jdbcDriver;
 
 /*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
  *  auch dieser Connector nicht angesteuert wird??? */
-public class DistributorWork extends Thread implements AmsConstants, MessageListener {
+public class DistributorWork extends Thread implements AmsConstants,
+		MessageListener {
 
-    // TODO: Replace it with an enum!
+	// TODO: Replace it with an enum!
 
 	private java.sql.Connection localAppDb = null; // Derby database connection
+
+	private java.sql.Connection memoryCacheDb = null; // HSQL in-memory cache
+														// connection
+
 	// (application db)
 
 	// jms internal communication
@@ -102,98 +112,113 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	/** Container that holds the information about the connector topics. */
 	private final ConnectorTopicContainer topicContainer;
 
-    private boolean bStop = false;
-    private final boolean bStoppedClean = false;
+	private boolean bStop = false;
+	private final boolean bStoppedClean = false;
 
-    private final ConfigurationSynchronizer synchronizer;
+	private final ConfigurationSynchronizer synchronizer;
 
-	public DistributorWork(final java.sql.Connection localDatabaseConnection, final ConfigurationSynchronizer synch) {
+	public DistributorWork(final java.sql.Connection localDatabaseConnection,
+			final ConfigurationSynchronizer synch) throws ReplicationException {
 		localAppDb = localDatabaseConnection;
-        this.synchronizer = synch;
+		this.synchronizer = synch;
 
-		// Create the container that holds the information about the connector topics.
+		// Copy application db into cache db
+		try {
+			DriverManager.registerDriver(new jdbcDriver());
+			memoryCacheDb = DriverManager.getConnection(
+					"jdbc:hsqldb:mem:memConfigDB", "sa", "");
+			ConfigReplicator.replicateConfigurationToHsql(localAppDb,
+					memoryCacheDb);
+		} catch (SQLException sqlException) {
+			throw new ReplicationException(sqlException);
+		}
+
+		// Create the container that holds the information about the connector
+		// topics.
 		topicContainer = new ConnectorTopicContainer();
 
-        // Initialize JMS connections for sending messages to distributors
-        boolean success = initJmsInternal();
-        if (!success) {
-            throw new RuntimeException("Failed to initialize internal JMS connections");
-        }
-        success = initJmsExternal();
-        if (!success) {
-            throw new RuntimeException("Failed to initialize external JMS connections");
-        }
+		// Initialize JMS connections for sending messages to distributors
+		boolean success = initJmsInternal();
+		if (!success) {
+			throw new RuntimeException(
+					"Failed to initialize internal JMS connections");
+		}
+		success = initJmsExternal();
+		if (!success) {
+			throw new RuntimeException(
+					"Failed to initialize external JMS connections");
+		}
 	}
 
 	@Override
-    public void onMessage(final Message message) {
-	    synchronized (synchronizer) {
-    	    try {
-                workOnMessage(message);
-            } catch (final Exception e) {
-                Log.log(this, Log.ERROR, e);
-            }
-	    }
+	public void onMessage(final Message message) {
+		synchronized (synchronizer) {
+			try {
+				workOnMessage(message);
+			} catch (final Exception e) {
+				Log.log(this, Log.ERROR, e);
+			}
+		}
 	}
 
 	@Override
-    public void run() {
-		
-	    int iErr = ErrorState.STAT_OK.getStateNumber();
+	public void run() {
+		int iErr = ErrorState.STAT_OK.getStateNumber();
 		Log.log(this, Log.INFO, "start distributor work");
-        bStop = false;
+		bStop = false;
 
-		while(bStop == false) {
+		while (bStop == false) {
 			try {
 				sleep(1);
 
 				synchronized (synchronizer) {
-                    iErr = ErrorState.STAT_OK.getStateNumber();
+					iErr = ErrorState.STAT_OK.getStateNumber();
 
-                    // WorkOnReplyMessage 2 / 3 (reply or change status)
-                    if (iErr == ErrorState.STAT_OK.getStateNumber()) {
-                        Message message = null;
+					// WorkOnReplyMessage 2 / 3 (reply or change status)
+					if (iErr == ErrorState.STAT_OK.getStateNumber()) {
+						Message message = null;
 
-                        try {
-                            message = amsReceiver.receive("amsSubscriberReply");
-                        } catch (final Exception e) {
-                            Log.log(this, Log.FATAL, "could not receive from internal jms", e);
-                            iErr = ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
-                        }
+						try {
+							message = amsReceiver.receive("amsSubscriberReply");
+						} catch (final Exception e) {
+							Log.log(this, Log.FATAL,
+									"could not receive from internal jms", e);
+							iErr = ErrorState.STAT_ERR_JMSCON_INT
+									.getStateNumber();
+						}
 
-                        if (message != null) {
-                            iErr = responseMsg(message); // response 1
-                            // messages, other
-                            // in the next run
-                        }
-                    }
-                    // WorkOnMessageChain 3 / 3
-                    if (iErr == ErrorState.STAT_OK.getStateNumber()) {
-                        final List<Integer> keyList = MessageChainDAO.selectKeyList(localAppDb,
-                                                                              MESSAGECHAIN_WORK);
+						if (message != null) {
+							iErr = responseMsg(message); // response 1
+							// messages, other
+							// in the next run
+						}
+					}
+					// WorkOnMessageChain 3 / 3
+					if (iErr == ErrorState.STAT_OK.getStateNumber()) {
+						final List<Integer> keyList = MessageChainDAO
+								.selectKeyList(memoryCacheDb, MESSAGECHAIN_WORK);
 
-                        final Iterator<Integer> iter = keyList.iterator();
-                        while (iter.hasNext()) {
-                            final Integer val = iter.next();
-                            if (val != null) {
-                                iErr = workOnMessageChain(val.intValue());
-                                if (iErr != ErrorState.STAT_OK.getStateNumber())
-                                 {
-                                    break; // error: exit while
-                                }
-                            }
-                        }
-                    }
-                }
-			} catch(final Exception e) {
+						final Iterator<Integer> iter = keyList.iterator();
+						while (iter.hasNext()) {
+							final Integer val = iter.next();
+							if (val != null) {
+								iErr = workOnMessageChain(val.intValue());
+								if (iErr != ErrorState.STAT_OK.getStateNumber()) {
+									break; // error: exit while
+								}
+							}
+						}
+					}
+				}
+			} catch (final Exception e) {
 				Log.log(this, Log.FATAL, e);
 			}
 		}
 
 		closeJmsExternal();
 		closeJmsInternal();
-		
-        Log.log(this, Log.INFO, "Distributor is leaving.");
+
+		Log.log(this, Log.INFO, "Distributor is leaving.");
 	}
 
 	//
@@ -206,107 +231,119 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 	private boolean initJmsInternal() {
 
-	    final IPreferenceStore storeAct = AmsActivator.getDefault().getPreferenceStore();
+		final IPreferenceStore storeAct = AmsActivator.getDefault()
+				.getPreferenceStore();
 
-	    final boolean durable = Boolean.parseBoolean(storeAct.getString(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
+		final boolean durable = Boolean.parseBoolean(storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
-	    final String url = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL);
-	    final String factory = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS);
+		final String url = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL);
+		final String factory = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS);
 
-	    amsSender = new JmsMultipleProducer("DistributorWorkSenderInternal", url, factory);
-	    if (amsSender.isConnected() == false) {
-	        Log.log(Log.ERROR, "Cannot create JMS multiple producer");
-	        return false;
-	    }
+		amsSender = new JmsMultipleProducer("DistributorWorkSenderInternal",
+				url, factory);
+		if (amsSender.isConnected() == false) {
+			Log.log(Log.ERROR, "Cannot create JMS multiple producer");
+			return false;
+		}
 
+		String topicName;
 
-	    String topicName;
+		/* SMS Connector */
 
-	    /* SMS Connector */
+		topicName = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
+		if (amsSender.addMessageProducer("amsPublisherSms", topicName) == false) {
+			Log.log(this, Log.ERROR, "Cannot create amsPublisherSms");
+			return false;
+		}
+		boolean full = storeAct
+				.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
+		topicContainer.addConnectorTopic(new ConnectorTopic(topicName,
+				"SmsConnector", full));
 
-	    topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
-        if (amsSender.addMessageProducer("amsPublisherSms", topicName) == false) {
-            Log.log(this, Log.ERROR, "Cannot create amsPublisherSms");
-            return false;
-        }
-        boolean full = storeAct.getBoolean(org.csstudio.ams.internal.AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR_FORWARD);
-        topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "SmsConnector", full));
+		/* JMS Connector */
 
+		topicName = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
+		if (amsSender.addMessageProducer("amsPublisherJms", topicName) == false) {
+			Log.log(this, Log.ERROR, "Cannot create amsPublisherJms");
+			return false;
+		}
+		full = storeAct
+				.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
+		topicContainer.addConnectorTopic(new ConnectorTopic(topicName,
+				"JmsConnector", full));
 
-        /* JMS Connector */
+		/* Email Connector */
 
-        topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR);
-        if (amsSender.addMessageProducer("amsPublisherJms", topicName) == false) {
-            Log.log(this, Log.ERROR, "Cannot create amsPublisherJms");
-            return false;
-        }
-        full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR_FORWARD);
-        topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "JmsConnector", full));
+		topicName = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
+		if (amsSender.addMessageProducer("amsPublisherMail", topicName) == false) {
+			Log.log(this, Log.ERROR, "Cannot create amsPublisherMail");
+			return false;
+		}
+		full = storeAct
+				.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
+		topicContainer.addConnectorTopic(new ConnectorTopic(topicName,
+				"EMailConnector", full));
 
+		/* Voicemail Connector */
 
-        /* Email Connector */
+		topicName = storeAct
+				.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
+		if (amsSender.addMessageProducer("amsPublisherVoiceMail", topicName) == false) {
+			Log.log(this, Log.ERROR, "Cannot create amsPublisherVoiceMail");
+			return false;
+		}
+		full = storeAct
+				.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
+		topicContainer.addConnectorTopic(new ConnectorTopic(topicName,
+				"VoicemailConnector", full));
 
-        topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR);
-        if (amsSender.addMessageProducer("amsPublisherMail", topicName) == false) {
-            Log.log(this, Log.ERROR, "Cannot create amsPublisherMail");
-            return false;
-        }
-        full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_EMAIL_CONNECTOR_FORWARD);
-        topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "EMailConnector", full));
+		boolean success = true;
 
+		try {
 
-        /* Voicemail Connector */
+			amsReceiver = new JmsRedundantReceiver(
+					"DistributorWorkReceiverInternal",
+					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
+					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
 
-        topicName = storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR);
-        if (amsSender.addMessageProducer("amsPublisherVoiceMail", topicName) == false) {
-            Log.log(this, Log.ERROR, "Cannot create amsPublisherVoiceMail");
-            return false;
-        }
-        full = storeAct.getBoolean(AmsPreferenceKey.P_JMS_AMS_TOPIC_VOICEMAIL_CONNECTOR_FORWARD);
-        topicContainer.addConnectorTopic(new ConnectorTopic(topicName, "VoicemailConnector", full));
+			success = amsReceiver
+					.createRedundantSubscriber(
+							"amsSubscriberDist",
+							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR),
+							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR),
+							durable);
 
+			if (success == false) {
+				Log.log(this, Log.FATAL, "could not create amsSubscriberDist");
+				return false;
+			}
 
+			success = amsReceiver.createRedundantSubscriber(
+					"amsSubscriberReply",
+					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY),
+					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_REPLY),
+					durable);
 
-        boolean success = true;
+			if (success == false) {
+				Log.log(this, Log.FATAL, "could not create amsSubscriberReply");
+			}
 
-        try {
+		} catch (final Exception e) {
+			Log.log(this, Log.FATAL, "could not init internal Jms", e);
+		}
 
-            amsReceiver = new JmsRedundantReceiver(
-                              "DistributorWorkReceiverInternal",
-                              storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
-                              storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
-
-            success = amsReceiver.createRedundantSubscriber(
-                    "amsSubscriberDist",
-                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR),
-                    storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR),
-                    durable);
-
-            if (success == false) {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberDist");
-                return false;
-            }
-
-            success = amsReceiver.createRedundantSubscriber(
-                   "amsSubscriberReply",
-                   storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_REPLY),
-                   storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_REPLY),
-                   durable);
-
-            if (success == false) {
-                Log.log(this, Log.FATAL, "could not create amsSubscriberReply");
-            }
-
-       } catch (final Exception e) {
-           Log.log(this, Log.FATAL, "could not init internal Jms", e);
-       }
-
-	   return success;
+		return success;
 	}
 
 	public void closeJmsInternal() {
 
-	    Log.log(this, Log.INFO, "Exiting internal jms communication");
+		Log.log(this, Log.INFO, "Exiting internal jms communication");
 
 		// -- Close receiver connection ---
 		if (amsReceiver != null) {
@@ -321,20 +358,23 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 	private boolean initJmsExternal() {
 
-	    try {
+		try {
 
-	        final IPreferenceStore storeAct = AmsActivator.getDefault()
+			final IPreferenceStore storeAct = AmsActivator.getDefault()
 					.getPreferenceStore();
 
 			final Hashtable<String, String> properties = new Hashtable<String, String>();
-			properties.put(Context.INITIAL_CONTEXT_FACTORY,
-						   storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
-			properties.put(Context.PROVIDER_URL,
+			properties
+					.put(Context.INITIAL_CONTEXT_FACTORY,
+							storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS));
+			properties
+					.put(Context.PROVIDER_URL,
 							storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL));
 			extContext = new InitialContext(properties);
 
-			extFactory = (ConnectionFactory) extContext.
-			        lookup(storeAct.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
+			extFactory = (ConnectionFactory) extContext
+					.lookup(storeAct
+							.getString(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY));
 			extConnection = extFactory.createConnection();
 
 			// ADDED BY: Markus Moeller, 25.05.2007
@@ -351,9 +391,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			 */
 
 			extPublisherAlarm = extSession
-					.createProducer(extSession
-							.createTopic(storeAct
-									.getString(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM)));
+					.createProducer(extSession.createTopic(storeAct
+							.getString(AmsPreferenceKey.P_JMS_EXT_TOPIC_ALARM)));
 			if (extPublisherAlarm == null) {
 				Log.log(this, Log.FATAL, "could not create extPublisherAlarm");
 				return false;
@@ -420,24 +459,23 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		Log.log(this, Log.INFO, "jms external communication closed");
 	}
 
-    /**
-     * Sets the boolean variable that controlls the main loop to true
-     */
-    public synchronized void stopWorking() {
-        bStop = true;
-    }
+	/**
+	 * Sets the boolean variable that controlls the main loop to true
+	 */
+	public synchronized void stopWorking() {
+		bStop = true;
+	}
 
-    /**
-     * Returns the shutdown state.
-     *
-     * @return True, if the shutdown have occured clean otherwise false
-     */
-    public boolean stoppedClean()
-    {
-        return bStoppedClean;
-    }
+	/**
+	 * Returns the shutdown state.
+	 * 
+	 * @return True, if the shutdown have occured clean otherwise false
+	 */
+	public boolean stoppedClean() {
+		return bStoppedClean;
+	}
 
-    private void publishToConnectorSms(final String text, final String addr)
+	private void publishToConnectorSms(final String text, final String addr)
 			throws JMSException {
 		final MapMessage msg = amsSender.createMapMessage();
 		msg.setString(MSGPROP_RECEIVERTEXT, text);
@@ -447,46 +485,43 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 	/**
 	 * Sends the message to the JMS-Connector.
-	 *
+	 * 
 	 * @param text
 	 *            The Message
 	 * @param topic
 	 *            The JMS-Destination-Topic
 	 * @throws JMSException
 	 */
-	private void publishToConnectorJms(final String text, final String topic, final HashMap<String, String> map)
-			throws JMSException {
+	private void publishToConnectorJms(final String text, final String topic,
+			final HashMap<String, String> map) throws JMSException {
 		final MapMessage msg = amsSender.createMapMessage();
 
 		msg.setString(MSGPROP_RECEIVERTEXT, text);
 		msg.setString(MSGPROP_RECEIVERADDR, topic);
 
-		//TODO: Add the alarm message here!!!
-		if(map != null)
-		{
-		    if(!map.isEmpty())
-		    {
-		        // The marker for a message containing the origin alarm message
-		        msg.setString(MSGPROP_EXTENDED_MESSAGE, "true");
+		// TODO: Add the alarm message here!!!
+		if (map != null) {
+			if (!map.isEmpty()) {
+				// The marker for a message containing the origin alarm message
+				msg.setString(MSGPROP_EXTENDED_MESSAGE, "true");
 
-		        String key;
-		        Iterator<String> keys = map.keySet().iterator();
-		        while(keys.hasNext())
-		        {
-		            key = keys.next();
-		            msg.setString(key, map.get(key));
-		        }
+				String key;
+				Iterator<String> keys = map.keySet().iterator();
+				while (keys.hasNext()) {
+					key = keys.next();
+					msg.setString(key, map.get(key));
+				}
 
-		        key = null;
-		        keys = null;
-		    }
+				key = null;
+				keys = null;
+			}
 		}
 
 		amsSender.sendMessage("amsPublisherJms", msg);
 
 		Log.log(Log.INFO,
 				"DistributorWork.publishToConnectorJms(): Message sent via amsPublisherJms.send([text=\""
-				+ text + "\", topic=\"" + topic + "\"]);");
+						+ text + "\", topic=\"" + topic + "\"]);");
 	}
 
 	private void publishToConnectorMail(final String text, final String addr,
@@ -494,44 +529,48 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		final MapMessage msg = amsSender.createMapMessage();
 		msg.setString(MSGPROP_RECEIVERTEXT, text);
 		msg.setString(MSGPROP_RECEIVERADDR, addr);
-		Log.log(Log.INFO, "DistributorWork.publishToConnectorMail() -1- addr="
-				+ msg.getString(MSGPROP_RECEIVERADDR) + ", username="
-				+ msg.getString(MSGPROP_SUBJECT_USERNAME));
+		Log.log(Log.INFO,
+				"DistributorWork.publishToConnectorMail() -1- addr="
+						+ msg.getString(MSGPROP_RECEIVERADDR) + ", username="
+						+ msg.getString(MSGPROP_SUBJECT_USERNAME));
 		msg.setString(MSGPROP_SUBJECT_USERNAME, username);
-		Log.log(Log.INFO, "DistributorWork.publishToConnectorMail() -2- addr="
-				+ msg.getString(MSGPROP_RECEIVERADDR) + ", username="
-				+ msg.getString(MSGPROP_SUBJECT_USERNAME));
+		Log.log(Log.INFO,
+				"DistributorWork.publishToConnectorMail() -2- addr="
+						+ msg.getString(MSGPROP_RECEIVERADDR) + ", username="
+						+ msg.getString(MSGPROP_SUBJECT_USERNAME));
 		amsSender.sendMessage("amsPublisherMail", msg);
 	}
 
-	private void publishToConnectorVoiceMail(final String text, final String addr,
-			final int texttype) throws JMSException {
+	private void publishToConnectorVoiceMail(final String text,
+			final String addr, final int texttype) throws JMSException {
 		publishToConnectorVoiceMail(text, addr, "", texttype);
 	}
 
-	private void publishToConnectorVoiceMail(final String text, final String addr,
-			final String chainIdAndPos, final int texttype) throws JMSException {
+	private void publishToConnectorVoiceMail(final String text,
+			final String addr, final String chainIdAndPos, final int texttype)
+			throws JMSException {
 		final MapMessage msg = amsSender.createMapMessage();
 		msg.setString(MSGPROP_RECEIVERTEXT, text);
 		msg.setString(MSGPROP_RECEIVERADDR, addr);
 		msg.setString(MSGPROP_MESSAGECHAINID_AND_POS, chainIdAndPos);
 		msg.setString(MSGPROP_TEXTTYPE, "" + texttype);
-        msg.setString(MSGPROP_GROUP_WAIT_TIME, "0");
-        amsSender.sendMessage("amsPublisherVoiceMail", msg);
+		msg.setString(MSGPROP_GROUP_WAIT_TIME, "0");
+		amsSender.sendMessage("amsPublisherVoiceMail", msg);
 	}
 
-    private void publishToConnectorVoiceMail(final String text, final String addr,
-            final String chainIdAndPos, final int texttype, final Date nextActTime) throws JMSException {
-        final MapMessage msg = amsSender.createMapMessage();
-        msg.setString(MSGPROP_RECEIVERTEXT, text);
-        msg.setString(MSGPROP_RECEIVERADDR, addr);
-        msg.setString(MSGPROP_MESSAGECHAINID_AND_POS, chainIdAndPos);
-        msg.setString(MSGPROP_TEXTTYPE, "" + texttype);
-        msg.setString(MSGPROP_GROUP_WAIT_TIME, getTimeString(nextActTime));
-        amsSender.sendMessage("amsPublisherVoiceMail", msg);
-    }
+	private void publishToConnectorVoiceMail(final String text,
+			final String addr, final String chainIdAndPos, final int texttype,
+			final Date nextActTime) throws JMSException {
+		final MapMessage msg = amsSender.createMapMessage();
+		msg.setString(MSGPROP_RECEIVERTEXT, text);
+		msg.setString(MSGPROP_RECEIVERADDR, addr);
+		msg.setString(MSGPROP_MESSAGECHAINID_AND_POS, chainIdAndPos);
+		msg.setString(MSGPROP_TEXTTYPE, "" + texttype);
+		msg.setString(MSGPROP_GROUP_WAIT_TIME, getTimeString(nextActTime));
+		amsSender.sendMessage("amsPublisherVoiceMail", msg);
+	}
 
-    private boolean acknowledge(final Message msg) {
+	private boolean acknowledge(final Message msg) {
 		try {
 			msg.acknowledge();
 			return true;
@@ -551,13 +590,13 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 	private int workOnMessage(final Message message) throws Exception {
 
-	    int iErr = ErrorState.STAT_OK.getStateNumber();
+		int iErr = ErrorState.STAT_OK.getStateNumber();
 
-	    Log.log(this, Log.DEBUG, "Enter workOnMessage()");
-	    try {
+		Log.log(this, Log.DEBUG, "Enter workOnMessage()");
+		try {
 			if (!(message instanceof MapMessage)) {
-                Log.log(this, Log.WARN, "Got unknown message " + message);
-            } else {
+				Log.log(this, Log.WARN, "Got unknown message " + message);
+			} else {
 				final MapMessage msg = (MapMessage) message;
 				Utils.logMessage("DistributorWork receives MapMessage", msg);
 
@@ -569,7 +608,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					if (iErr == ErrorState.STAT_FALSE.getStateNumber()) {
 						Log.log(this, Log.WARN,
 								"Could not distributeMessage, handle as O.K.");
-						return ErrorState.STAT_OK.getStateNumber(); // handle as O.K.
+						return ErrorState.STAT_OK.getStateNumber(); // handle as
+																	// O.K.
 					}
 				}
 			}
@@ -578,94 +618,107 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
 		}
 
-		if (iErr == ErrorState.STAT_OK.getStateNumber()) // only if rplStart() or
+		if (iErr == ErrorState.STAT_OK.getStateNumber()) // only if rplStart()
+															// or
 		// distributeMessage()
 		// successful
 		{ // and if no instanceof MapMessage, too
 			if (!acknowledge(message)) {
-                // session
-			    Log.log(this, Log.DEBUG, "Acknowledge of message failed.");
+				// session
+				Log.log(this, Log.DEBUG, "Acknowledge of message failed.");
 				return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
-            }
+			}
 		}
-		
+
 		Log.log(this, Log.DEBUG, "Leaving workOnMessage()");
 		return iErr;
 	}
 
 	private int distributeMessage(final MapMessage msg) throws Exception {
-		
-	    Log.log(this, Log.DEBUG, "Enter distributeMessage()");
-	    try {
-			final int iFilterId = Integer.parseInt(msg.getString(MSGPROP_FILTERID));
-			final FilterTObject filter = FilterDAO.select(localAppDb, iFilterId);
+
+		Log.log(this, Log.DEBUG, "Enter distributeMessage()");
+		try {
+			final int iFilterId = Integer.parseInt(msg
+					.getString(MSGPROP_FILTERID));
+			final FilterTObject filter = FilterDAO.select(memoryCacheDb,
+					iFilterId);
 
 			HistoryWriter.logMessage(localAppDb, msg, filter, iFilterId);
 
-			final String description = "Message filtered by " + iFilterId + " - "
+			final String description = "Message filtered by " + iFilterId
+					+ " - "
 					+ (filter == null ? "filter not there" : filter.getName())
 					+ "." + " Msg: " + Utils.getMessageString(msg);
 			Log.log(Log.INFO, /* history.getHistoryID() + ". " + */
-			description);
+					description);
 			// + " actiontype=" + history.getActionType()
 			// + " user=" + history.getUserName()
 			// + " via " + history.getDestType()
 			// + " dest= " + history.getDestAdress());
 
-			final List<?> fActions = AggrFilterActionDAO.select(localAppDb, iFilterId);
+			final List<?> fActions = AggrFilterActionDAO.select(memoryCacheDb,
+					iFilterId);
 
 			int iMessageID = 0;
 			int iWorked = ErrorState.STAT_FALSE.getStateNumber();
 
 			final Iterator<?> iter = fActions.iterator();
 			while (iter.hasNext()) {
-				final FilterActionTObject fa = (FilterActionTObject) iter.next();
+				final FilterActionTObject fa = (FilterActionTObject) iter
+						.next();
 
 				if (fa.getFilterActionTypeRef() == FILTERACTIONTYPE_SMS_GR
 						|| fa.getFilterActionTypeRef() == FILTERACTIONTYPE_VM_GR
 						|| fa.getFilterActionTypeRef() == FILTERACTIONTYPE_MAIL_GR) {
 
-				    // ADDED BY Markus Moeller, 2007-11-12
-				    // Blocking non-active groups
-				    final AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
-	                        .getReceiverRef());
-	                if(userGroup.getUsergroup().getIsActive() != 0)
-	                {
-	                    if (iMessageID == 0) {
-                            iMessageID = MessageDAO.insert(localAppDb, msg, true);
-                        }
+					// ADDED BY Markus Moeller, 2007-11-12
+					// Blocking non-active groups
+					final AggrUserGroupTObject userGroup = AggrUserGroupDAO
+							.selectList(memoryCacheDb, fa.getReceiverRef());
+					if (userGroup.getUsergroup().getIsActive() != 0) {
+						if (iMessageID == 0) {
+							iMessageID = MessageDAO.insert(localAppDb, msg,
+									true);
+							iMessageID = MessageDAO.insert(memoryCacheDb, msg,
+									true);
+						}
 
-	                    final MessageChainTObject msgChain = new MessageChainTObject(0,
-	                            iMessageID, filter.getFilterID(), fa
-	                                    .getFilterActionID(), 0, null, null,
-	                            MESSAGECHAIN_WORK, null);
-	                    MessageChainDAO.insert(localAppDb, msgChain);
+						final MessageChainTObject msgChain = new MessageChainTObject(
+								0, iMessageID, filter.getFilterID(),
+								fa.getFilterActionID(), 0, null, null,
+								MESSAGECHAIN_WORK, null);
+						MessageChainDAO.insert(localAppDb, msgChain);
+						MessageChainDAO.insert(memoryCacheDb, msgChain);
 
-	                    if (iWorked == ErrorState.STAT_FALSE.getStateNumber()) {
-                            iWorked = ErrorState.STAT_OK.getStateNumber();
-                        }
-	                }
-	                else
-	                {
-                        HistoryWriter.logHistoryGroupBlocked(localAppDb, msg, "Send to group with reply", fa.getFilterActionTypeRef(),
-                                userGroup.getUsergroup(), 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));
-	                }
-				}
-				else
-				{
+						if (iWorked == ErrorState.STAT_FALSE.getStateNumber()) {
+							iWorked = ErrorState.STAT_OK.getStateNumber();
+						}
+					} else {
+						HistoryWriter.logHistoryGroupBlocked(
+								localAppDb,
+								msg,
+								"Send to group with reply",
+								fa.getFilterActionTypeRef(),
+								userGroup.getUsergroup(),
+								0,
+								0,
+								TopicDAO.select(memoryCacheDb,
+										fa.getReceiverRef()));
+					}
+				} else {
 					final int iErr = sendMessage(msg, filter, fa); // throws
 					// Exception
 					if (iErr == ErrorState.STAT_OK.getStateNumber()
 							|| iErr == ErrorState.STAT_FALSE.getStateNumber()) {
 						if (iWorked == ErrorState.STAT_FALSE.getStateNumber()) {
-                            iWorked = iErr;
-                        }
+							iWorked = iErr;
+						}
 					} else {
 						return iErr;
 					}
 				}// else
 			}// while
-			
+
 			Log.log(this, Log.DEBUG, "Leaving distributeMessage()");
 			return iWorked;
 		} catch (final JMSException e) {
@@ -675,24 +728,22 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			Log.log(this, Log.FATAL, "failed to sendMessage", e);
 			return ErrorState.STAT_ERR_APPLICATION_DB_SEND.getStateNumber();
 		} catch (final AMSException e) {
-			Log
-					.log(this, Log.FATAL,
-							"failed to sendMessage, delete message", e);
-			return ErrorState.STAT_FALSE.getStateNumber(); // error, delete message
+			Log.log(this, Log.FATAL, "failed to sendMessage, delete message", e);
+			return ErrorState.STAT_FALSE.getStateNumber(); // error, delete
+															// message
 		}
 	}
 
-	private String prepareMessageText(final MapMessage mapMsg, final FilterTObject filter,
-			final FilterActionTObject fa, final MessageChainTObject nextChain)
-			throws Exception // INCLUDING - AMSException
+	private String prepareMessageText(final MapMessage mapMsg,
+			final FilterTObject filter, final FilterActionTObject fa,
+			final MessageChainTObject nextChain) throws Exception // INCLUDING -
+																	// AMSException
 	{
 		String text = fa.getMessage();
-		if(text == null)
-		{
+		if (text == null) {
 			text = filter.getDefaultMessage();
-			if(text == null)
-			{
-			    text = "";
+			if (text == null) {
+				text = "";
 			}
 		}
 
@@ -707,23 +758,22 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			idxFirst = sbText.indexOf(placeHolder, idxFirst); // Search for
 			// placeHolder
 			if (idxFirst < 0) {
-                break;
-            }
+				break;
+			}
 
 			idxSecond = idxFirst + len;
 			idxSecond = sbText.indexOf(placeHolder, idxSecond); // Search for
 			// another
 			// placeHolder
 			if (idxSecond < 0) {
-                break;
-            }
+				break;
+			}
 
 			key = sbText.substring(idxFirst + len, idxSecond);
-			if (key != null)
-             {
-                key = key.toUpperCase(); // error tolerance: someone typed in
-			// small letter
-            }
+			if (key != null) {
+				key = key.toUpperCase(); // error tolerance: someone typed in
+				// small letter
+			}
 
 			if (key != null && key.indexOf(" ") < 0 && key.length() > 0) // error
 			// tolerance:
@@ -749,7 +799,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 						continue;
 					}
 				} catch (final Exception ex) {
-				    // Can be ignored
+					// Can be ignored
 				}
 			}
 			idxFirst = idxSecond; // start at next $
@@ -777,18 +827,18 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 		final StringBuffer sb = new StringBuffer();
 		sb.append(iChainID);
-		while (iRlen++ < MSG_POS_LENGTH_FOR_MSGPROP)
-         {
-            // until len == MSG_POS_LENGTH_FOR_MSGPROP
+		while (iRlen++ < MSG_POS_LENGTH_FOR_MSGPROP) {
+			// until len == MSG_POS_LENGTH_FOR_MSGPROP
 			sb.append('0'); // fill with leading zeros (1 -> 001)
-        }
+		}
 		sb.append(iChainPos);
 
 		return sb.toString();
 	}
 
-	private int sendMessage(final MapMessage mapMsg, final FilterTObject filter,
-			final FilterActionTObject fa) throws Exception // INCLUDING -
+	private int sendMessage(final MapMessage mapMsg,
+			final FilterTObject filter, final FilterActionTObject fa)
+			throws Exception // INCLUDING -
 	// SQLException,
 	// JMSException,
 	// AMSException
@@ -820,31 +870,31 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	// End: Distribute Message
 	// //////////////////////////////////////////////////////////////////////////////
 
-
 	/**
 	 * Send the message to a default topic which was configured as default
 	 * destination in preference page.
-	 *
+	 * 
 	 * @param message
 	 *            The message to be send
 	 */
 	private void sendMessageToDefaultTopic(final Message message) {
 		// TODO: create configuration, send
-		Log
-				.log(this, Log.WARN,
-						"method sendMessageToDefaultTopic(Message message) not implemented yet!");
+		Log.log(this, Log.WARN,
+				"method sendMessageToDefaultTopic(Message message) not implemented yet!");
 	}
 
-	private int sendMessageToConnector(final MapMessage mapMsg, final String text,
-			final FilterActionTObject fa) throws Exception // INCLUDING -
+	private int sendMessageToConnector(final MapMessage mapMsg,
+			final String text, final FilterActionTObject fa) throws Exception // INCLUDING
+																				// -
 	// SQLException,
 	// JMSException,
 	// AMSException
 	{
-	    ConnectorTopic ct = null;
-	    HashMap<String, String> map = null;
+		ConnectorTopic ct = null;
+		HashMap<String, String> map = null;
 
-		final UserTObject user = UserDAO.select(localAppDb, fa.getReceiverRef());
+		final UserTObject user = UserDAO.select(memoryCacheDb,
+				fa.getReceiverRef());
 		if (fa.getFilterActionTypeRef() != FILTERACTIONTYPE_TO_JMS
 				&& user.getActive() == 0) {
 			Log.log(Log.WARN, "User not active: " + user.getUserID()
@@ -852,84 +902,80 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			return ErrorState.STAT_FALSE.getStateNumber();
 		}
 		TopicTObject topic = null;
-		switch (fa.getFilterActionTypeRef())
-		{
-		    case FILTERACTIONTYPE_TO_JMS:
-		        topic = TopicDAO.select(localAppDb, fa.getReceiverRef());
-		        ct = topicContainer.getConnectorTopicByConnectorName("JmsConnector");
-		        if(ct.isFullMessageReceiver())
-		        {
-		            map = this.getMessageContent(mapMsg);
-		        }
+		switch (fa.getFilterActionTypeRef()) {
+		case FILTERACTIONTYPE_TO_JMS:
+			topic = TopicDAO.select(memoryCacheDb, fa.getReceiverRef());
+			ct = topicContainer
+					.getConnectorTopicByConnectorName("JmsConnector");
+			if (ct.isFullMessageReceiver()) {
+				map = this.getMessageContent(mapMsg);
+			}
 
-		        publishToConnectorJms(text, topic.getTopicName(), map);
-		        break;
+			publishToConnectorJms(text, topic.getTopicName(), map);
+			break;
 
-		    case FILTERACTIONTYPE_SMS:
-		        publishToConnectorSms(text, user.getMobilePhone()); // SMS
-		        break;
+		case FILTERACTIONTYPE_SMS:
+			publishToConnectorSms(text, user.getMobilePhone()); // SMS
+			break;
 
-		    case FILTERACTIONTYPE_VM:
-		        publishToConnectorVoiceMail(text, user.getPhone(),
-					TextType.ALARM_WOCONFIRM.getTextTypeNumber()  ); // VoiceMail
-		        break;
+		case FILTERACTIONTYPE_VM:
+			publishToConnectorVoiceMail(text, user.getPhone(),
+					TextType.ALARM_WOCONFIRM.getTextTypeNumber()); // VoiceMail
+			break;
 
-		    case FILTERACTIONTYPE_MAIL:
-		        publishToConnectorMail(text, user.getEmail(), user.getName()); // E-Mail
-		        break;
+		case FILTERACTIONTYPE_MAIL:
+			publishToConnectorMail(text, user.getEmail(), user.getName()); // E-Mail
+			break;
 
-		    default:
-		        throw new AMSException(
+		default:
+			throw new AMSException(
 					"Configuration is invalid. FilterActionType="
 							+ fa.getFilterActionTypeRef());
 		}
 
-		HistoryWriter.logHistorySend(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(), user,
-				null, 0, 0, 0, topic);
+		HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
+				fa.getFilterActionTypeRef(), user, null, 0, 0, 0, topic);
 		return ErrorState.STAT_OK.getStateNumber();
 	}
 
-	private HashMap<String, String> getMessageContent(final MapMessage message)
-	{
-	    final HashMap<String, String> map = new HashMap<String, String>();
-	    String key = null;
+	private HashMap<String, String> getMessageContent(final MapMessage message) {
+		final HashMap<String, String> map = new HashMap<String, String>();
+		String key = null;
 
-	    try
-        {
-            final Enumeration<?> list = message.getMapNames();
-            while(list.hasMoreElements())
-            {
-                key = (String)list.nextElement();
-                map.put(key, message.getString(key));
-            }
-        }
-	    catch(final JMSException jmse)
-        {
-	        map.clear();
-        }
+		try {
+			final Enumeration<?> list = message.getMapNames();
+			while (list.hasMoreElements()) {
+				key = (String) list.nextElement();
+				map.put(key, message.getString(key));
+			}
+		} catch (final JMSException jmse) {
+			map.clear();
+		}
 
-	    return map;
+		return map;
 	}
 
-	private int sendMessageToUserGroup(final MapMessage mapMsg, final String text,
-			final FilterActionTObject fa) throws Exception // INCLUDING -
+	private int sendMessageToUserGroup(final MapMessage mapMsg,
+			final String text, final FilterActionTObject fa) throws Exception // INCLUDING
+																				// -
 	// SQLException,
 	// JMSException,
 	// AMSException
 	{
 		int iOneSended = ErrorState.STAT_FALSE.getStateNumber();
-		final AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
-				.getReceiverRef());
+		final AggrUserGroupTObject userGroup = AggrUserGroupDAO.selectList(
+				memoryCacheDb, fa.getReceiverRef());
 
 		// If user group is NOT active...
-		if(userGroup.getUsergroup().getIsActive() == 0)
-		{
-		    HistoryWriter.logHistoryGroupBlocked(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(),
-	                    userGroup.getUsergroup(), 0, 0, TopicDAO.select(localAppDb, fa.getReceiverRef()));
+		if (userGroup.getUsergroup().getIsActive() == 0) {
+			HistoryWriter.logHistoryGroupBlocked(localAppDb, mapMsg, text,
+					fa.getFilterActionTypeRef(), userGroup.getUsergroup(), 0,
+					0, TopicDAO.select(memoryCacheDb, fa.getReceiverRef()));
 
-	            iOneSended = ErrorState.STAT_GROUP_BLOCKED.getStateNumber(); // == STAT_OK
+			iOneSended = ErrorState.STAT_GROUP_BLOCKED.getStateNumber(); // ==
+																			// STAT_OK
 
-	            return iOneSended;
+			return iOneSended;
 		}
 
 		final Iterator<?> iter = userGroup.getUsers().iterator();
@@ -939,10 +985,11 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			final UserTObject user = aUser.getUser();
 
 			if (aUser.getUserGroupUser().getActive() == 0) {
-				Log.log(Log.WARN, "UserGroupRel not active: User "
-						+ user.getUserID() + " of Group "
-						+ aUser.getUserGroupUser().getUserGroupRef()
-						+ " in FilterAction: " + fa.getFilterActionID());
+				Log.log(Log.WARN,
+						"UserGroupRel not active: User " + user.getUserID()
+								+ " of Group "
+								+ aUser.getUserGroupUser().getUserGroupRef()
+								+ " in FilterAction: " + fa.getFilterActionID());
 				continue;
 			}
 			if (aUser.getUser().getActive() == 0) {
@@ -968,9 +1015,10 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 								+ fa.getFilterActionTypeRef());
 			}
 
-			HistoryWriter.logHistorySend(localAppDb, mapMsg, text, fa.getFilterActionTypeRef(),
-					aUser.getUser(), userGroup.getUsergroup(), 0, 0, 0,
-					TopicDAO.select(localAppDb, fa.getReceiverRef()));
+			HistoryWriter.logHistorySend(localAppDb, mapMsg, text,
+					fa.getFilterActionTypeRef(), aUser.getUser(),
+					userGroup.getUsergroup(), 0, 0, 0,
+					TopicDAO.select(memoryCacheDb, fa.getReceiverRef()));
 			iOneSended = ErrorState.STAT_OK.getStateNumber();
 		}
 
@@ -989,8 +1037,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		int iErr = ErrorState.STAT_OK.getStateNumber();
 		try {
 			if (!(message instanceof MapMessage)) {
-                Log.log(this, Log.WARN, "got unknown message " + message);
-            } else {
+				Log.log(this, Log.WARN, "Got unknown message " + message);
+			} else {
 				final MapMessage msg = (MapMessage) message;
 				Utils.logMessage("DistributorWork receives MapMessage", msg);
 
@@ -998,7 +1046,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 				if (iErr == ErrorState.STAT_FALSE.getStateNumber()) {
 					Log.log(this, Log.WARN,
 							"MapMessage not accepted => delete it");
-					iErr = ErrorState.STAT_OK.getStateNumber(); // handle as O.K.
+					iErr = ErrorState.STAT_OK.getStateNumber(); // handle as
+																// O.K.
 				}
 			}
 		} catch (final SQLException e) {
@@ -1009,13 +1058,14 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
 		}
 
-		if (iErr == ErrorState.STAT_OK.getStateNumber()) // only if responseMessage()
+		if (iErr == ErrorState.STAT_OK.getStateNumber()) // only if
+															// responseMessage()
 		// successful
 		{ // and if no instanceof MapMessage, too
 			if (!acknowledge(message)) {
-                // session
+				// session
 				return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
-            }
+			}
 		}
 		return iErr;
 	}
@@ -1026,22 +1076,19 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	// SQLException,
 	// InterruptedException
 	{
-		final String strChainIdAndPos = msg.getString(MSGPROP_MESSAGECHAINID_AND_POS);
+		final String strChainIdAndPos = msg
+				.getString(MSGPROP_MESSAGECHAINID_AND_POS);
 		final String strGroupNum = msg.getString(MSGPROP_CHANGESTAT_GROUPNUM);
 
 		final String replyType = msg.getString(MSGPROP_REPLY_TYPE);
 		final String replyAdress = msg.getString(MSGPROP_REPLY_ADRESS);
 
-		/* TEST
-		String name = null;
-		Enumeration<?> list = msg.getMapNames();
-		while(list.hasMoreElements())
-		{
-		    name = (String)list.nextElement();
-		    System.out.println(name + " = " + msg.getString(name));
-		}
-		System.out.println();
-		*/
+		/*
+		 * TEST String name = null; Enumeration<?> list = msg.getMapNames();
+		 * while(list.hasMoreElements()) { name = (String)list.nextElement();
+		 * System.out.println(name + " = " + msg.getString(name)); }
+		 * System.out.println();
+		 */
 
 		if (strChainIdAndPos != null) {
 			int chainID = 0;
@@ -1049,10 +1096,10 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			try {
 				if (!strChainIdAndPos.equals("#")) {
 					if (strChainIdAndPos.length() < MSG_POS_LENGTH_FOR_MSGPROP + 1) {
-                        throw new NumberFormatException(
+						throw new NumberFormatException(
 								"strChainIdAndPos.length() < "
 										+ (MSG_POS_LENGTH_FOR_MSGPROP + 1));
-                    }
+					}
 
 					final int posInStr = strChainIdAndPos.length()
 							- MSG_POS_LENGTH_FOR_MSGPROP;// chars used for
@@ -1074,8 +1121,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			final String confirmCode = msg.getString(MSGPROP_CONFIRMCODE);
 
 			if (strChainIdAndPos.equals("#")) {
-                return replyAllMessageChain(confirmCode, replyType, replyAdress);
-            }
+				return replyAllMessageChain(confirmCode, replyType, replyAdress);
+			}
 
 			return replyMessageChain(null, chainID, chainPos, confirmCode,
 					replyType, replyAdress);
@@ -1086,7 +1133,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			int groupNum = 0;
 			int userNum = 0;
 			short status = 0;
-			final boolean changeGroupState = strAction.compareToIgnoreCase("group") == 0;
+			final boolean changeGroupState = strAction
+					.compareToIgnoreCase("group") == 0;
 
 			try {
 				groupNum = Integer.parseInt(strGroupNum);
@@ -1099,258 +1147,278 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 				// Log.log(Log.FATAL, "Message Change Status: first three values
 				// have to be numeric!");
 				// only warn
-				Log
-						.log(Log.WARN,
-								"Message Change Status: first three values have to be numeric!");
+				Log.log(Log.WARN,
+						"Message Change Status: first three values have to be numeric!");
 				return ErrorState.STAT_FALSE.getStateNumber();
 			}
 
 			String reason = msg.getString(MSGPROP_CHANGESTAT_REASON);
 			reason = reason.trim();
 
-			final String statusCode = msg.getString(MSGPROP_CHANGESTAT_STATUSCODE);
+			final String statusCode = msg
+					.getString(MSGPROP_CHANGESTAT_STATUSCODE);
 			String txt = null;
-			if(changeGroupState)
-			{
-			    txt = "G*" + groupNum + "*" + userNum + "*" + status + "*";
-			}
-			else
-			{
-			    txt = groupNum + "*" + userNum + "*" + status + "*";
+			if (changeGroupState) {
+				txt = "G*" + groupNum + "*" + userNum + "*" + status + "*";
+			} else {
+				txt = groupNum + "*" + userNum + "*" + status + "*";
 			}
 
-            if (!(status == 0 || status == 1)) {
-                Log.log(Log.WARN, "unknown state: " + status + " for msg "
-                        + txt);
-                final UserTObject userTmp = UserDAO.select(localAppDb, userNum);
-                if (userTmp != null
-                        && userTmp.getStatusCode().equalsIgnoreCase(statusCode))// NOT_OK
-                // -
-                // main
-                // system
-                // temporarly
-                // not
-                // available
-                {
-                    HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp, "Unknown state.",
-                            null, txt, status, reason, replyType, replyAdress);
-                    sendChangeStatusConfirmation(userTmp, txt
-                            + MSGCODE_UNKNOWN_STATUS, replyType, replyAdress,
-                            TextType.STATUSCHANGE_NOK.getTextTypeNumber());
-                } else {
-                    HistoryWriter.logHistoryChangeStatus(localAppDb, null, "Unknown state.", null,
-                            txt, status, reason, replyType, replyAdress);
-                }
-                return ErrorState.STAT_FALSE.getStateNumber(); // wrong request
-            }
-
-            boolean bBreak = false;
-
-            // If the user want to change the group state...
-			if(changeGroupState == true)
-			{
-                java.sql.Connection oraDb = null;
-                // UserTObject userOra = null;
-                UserGroupTObject groupOra = null;
-
-                try // try finally
-                {
-                    for (int i = 0; i < 3; i++) {
-                        try {
-                            oraDb = AmsConnectionFactory.getConfigurationDB(); // throws
-                            // ClassNotFoundException,
-                            // SQLException
-                        } catch (final Exception e) {
-                            sleep(10000);
-                            AmsConnectionFactory.closeConnection(oraDb); // don't
-                            // forget
-                            // to
-                            // close
-                            // connection
-                            oraDb = null;
-                            continue; // try max 3 times (with continue below)
-                        }
-
-                        if (oraDb == null) {
-                            sleep(10000); // no close needed, it's null
-                            continue; // try max 3 times (with continue below)
-                        }
-
-                        try {
-                            groupOra = changeGroupState(oraDb, groupNum, userNum,
-                                    status, statusCode, reason, txt, replyType, replyAdress);
-                        } catch (final Exception e) {
-                            sleep(10000);
-                            AmsConnectionFactory.closeConnection(oraDb); // don't
-                            // forget
-                            // to
-                            // close
-                            // connection
-                            oraDb = null;
-                            groupOra = null;
-                            continue; // try max 3 times (with continue above)
-                        }
-
-                        if (groupOra != null) // in main system deleted => reload
-                        // follows
-                        {
-                            try {
-                                final UserTObject user1 = UserDAO.select(localAppDb, userNum);
-                                final UserGroupTObject group2 = changeGroupState(localAppDb, groupNum,
-                                        userNum, status, statusCode, reason, txt, replyType, replyAdress);
-                                if (group2 != null) // OK - all well done
-                                {
-                                    final UserGroupTObject ug = UserGroupDAO.select(
-                                            localAppDb, groupNum);
-                                    HistoryWriter.logHistoryChangeStatus(localAppDb, null, null, ug,
-                                            txt, status, reason, replyType,
-                                            replyAdress);
-                                    sendChangeGroupStatusConfirmation(user1, ug, "Group state changed: " + txt
-                                            + MSGCODE_OK, replyType, replyAdress,
-                                            TextType.STATUSCHANGE_OK.getTextTypeNumber());
-                                    Log.log(Log.INFO, txt + MSGCODE_OK);
-                                    return ErrorState.STAT_OK.getStateNumber(); // All O.K.
-                                }
-                            } catch (final SQLException e) {
-                                Log.log(this, Log.FATAL, e);
-                            }
-                            HistoryWriter.logHistoryChangeStatus(
-                                    localAppDb,
-                                    null,
-                                    "Critical error => can update local db => replicate configuration.",
-                                    null, txt, status, reason, replyType,
-                                    replyAdress);
-                            Log.log(Log.FATAL,
-                                    "critical error => can update local db => replicate configuration "
-                                            + txt);
-                        }
-                        bBreak = true; // normal exit
-                        break; // exit for
-                    }// for
-                } finally {
-                    AmsConnectionFactory.closeConnection(oraDb); // don't forget
-                    // to close
-                    // connection
-                    oraDb = null;
-                    groupOra = null;
-                }
-
+			if (!(status == 0 || status == 1)) {
+				Log.log(Log.WARN, "unknown state: " + status + " for msg "
+						+ txt);
+				final UserTObject userTmp = UserDAO.select(memoryCacheDb,
+						userNum);
+				if (userTmp != null
+						&& userTmp.getStatusCode().equalsIgnoreCase(statusCode))// NOT_OK
+				// -
+				// main
+				// system
+				// temporarly
+				// not
+				// available
+				{
+					HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp,
+							"Unknown state.", null, txt, status, reason,
+							replyType, replyAdress);
+					sendChangeStatusConfirmation(userTmp, txt
+							+ MSGCODE_UNKNOWN_STATUS, replyType, replyAdress,
+							TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+				} else {
+					HistoryWriter.logHistoryChangeStatus(localAppDb, null,
+							"Unknown state.", null, txt, status, reason,
+							replyType, replyAdress);
+				}
+				return ErrorState.STAT_FALSE.getStateNumber(); // wrong request
 			}
-			else // the user want to change the user state
+
+			boolean bBreak = false;
+
+			// If the user want to change the group state...
+			if (changeGroupState == true) {
+				java.sql.Connection oraDb = null;
+				// UserTObject userOra = null;
+				UserGroupTObject groupOra = null;
+
+				try // try finally
+				{
+					for (int i = 0; i < 3; i++) {
+						try {
+							oraDb = AmsConnectionFactory.getConfigurationDB(); // throws
+							// ClassNotFoundException,
+							// SQLException
+						} catch (final Exception e) {
+							sleep(10000);
+							AmsConnectionFactory.closeConnection(oraDb); // don't
+							// forget
+							// to
+							// close
+							// connection
+							oraDb = null;
+							continue; // try max 3 times (with continue below)
+						}
+
+						if (oraDb == null) {
+							sleep(10000); // no close needed, it's null
+							continue; // try max 3 times (with continue below)
+						}
+
+						try {
+							groupOra = changeGroupState(oraDb,
+									Arrays.asList(oraDb), groupNum, userNum,
+									status, statusCode, reason, txt, replyType,
+									replyAdress);
+						} catch (final Exception e) {
+							sleep(10000);
+							AmsConnectionFactory.closeConnection(oraDb); // don't
+							// forget
+							// to
+							// close
+							// connection
+							oraDb = null;
+							groupOra = null;
+							continue; // try max 3 times (with continue above)
+						}
+
+						if (groupOra != null) // in main system deleted =>
+												// reload
+						// follows
+						{
+							try {
+								final UserTObject user1 = UserDAO.select(
+										memoryCacheDb, userNum);
+								final UserGroupTObject group2 = changeGroupState(
+										memoryCacheDb, Arrays.asList(
+												memoryCacheDb, localAppDb),
+										groupNum, userNum, status, statusCode,
+										reason, txt, replyType, replyAdress);
+								if (group2 != null) // OK - all well done
+								{
+									final UserGroupTObject ug = UserGroupDAO
+											.select(memoryCacheDb, groupNum);
+									HistoryWriter.logHistoryChangeStatus(
+											localAppDb, null, null, ug, txt,
+											status, reason, replyType,
+											replyAdress);
+									sendChangeGroupStatusConfirmation(user1,
+											ug, "Group state changed: " + txt
+													+ MSGCODE_OK, replyType,
+											replyAdress,
+											TextType.STATUSCHANGE_OK
+													.getTextTypeNumber());
+									Log.log(Log.INFO, txt + MSGCODE_OK);
+									return ErrorState.STAT_OK.getStateNumber(); // All
+																				// O.K.
+								}
+							} catch (final SQLException e) {
+								Log.log(this, Log.FATAL, e);
+							}
+							HistoryWriter
+									.logHistoryChangeStatus(
+											localAppDb,
+											null,
+											"Critical error => can update local db => replicate configuration.",
+											null, txt, status, reason,
+											replyType, replyAdress);
+							Log.log(Log.FATAL,
+									"critical error => can update local db => replicate configuration "
+											+ txt);
+						}
+						bBreak = true; // normal exit
+						break; // exit for
+					}// for
+				} finally {
+					AmsConnectionFactory.closeConnection(oraDb); // don't forget
+					// to close
+					// connection
+					oraDb = null;
+					groupOra = null;
+				}
+
+			} else // the user want to change the user state
 			{
-    			java.sql.Connection oraDb = null;
-    			UserTObject userOra = null;
-    			try // try finally
-    			{
-    				for (int i = 0; i < 3; i++) {
-    					try {
-    						oraDb = AmsConnectionFactory.getConfigurationDB(); // throws
-    						// ClassNotFoundException,
-    						// SQLException
-    					} catch (final Exception e) {
-    						sleep(10000);
-    						AmsConnectionFactory.closeConnection(oraDb); // don't
-    						// forget
-    						// to
-    						// close
-    						// connection
-    						oraDb = null;
-    						continue; // try max 3 times (with continue below)
-    					}
+				java.sql.Connection oraDb = null;
+				UserTObject userOra = null;
+				try // try finally
+				{
+					for (int i = 0; i < 3; i++) {
+						try {
+							oraDb = AmsConnectionFactory.getConfigurationDB(); // throws
+							// ClassNotFoundException,
+							// SQLException
+						} catch (final Exception e) {
+							sleep(10000);
+							AmsConnectionFactory.closeConnection(oraDb); // don't
+							// forget
+							// to
+							// close
+							// connection
+							oraDb = null;
+							continue; // try max 3 times (with continue below)
+						}
 
-    					if (oraDb == null) {
-    						sleep(10000); // no close needed, it's null
-    						continue; // try max 3 times (with continue below)
-    					}
+						if (oraDb == null) {
+							sleep(10000); // no close needed, it's null
+							continue; // try max 3 times (with continue below)
+						}
 
-    					try {
-    						userOra = changeStatus(oraDb, groupNum, userNum,
-    								status, statusCode, reason, txt, replyType,
-    								replyAdress);
-    					} catch (final Exception e) {
-    						sleep(10000);
-    						AmsConnectionFactory.closeConnection(oraDb); // don't
-    						// forget
-    						// to
-    						// close
-    						// connection
-    						oraDb = null;
-    						userOra = null;
-    						continue; // try max 3 times (with continue above)
-    					}
+						try {
+							userOra = changeStatus(oraDb, Arrays.asList(oraDb),
+									groupNum, userNum, status, statusCode,
+									reason, txt, replyType, replyAdress);
+						} catch (final Exception e) {
+							sleep(10000);
+							AmsConnectionFactory.closeConnection(oraDb); // don't
+							// forget
+							// to
+							// close
+							// connection
+							oraDb = null;
+							userOra = null;
+							continue; // try max 3 times (with continue above)
+						}
 
-    					if (userOra != null) // in main system deleted => reload
-    					// follows
-    					{
-    						try {
-    							final UserTObject user2 = changeStatus(localAppDb, groupNum,
-    									userNum, status, statusCode, reason, txt,
-    									replyType, replyAdress);
-    							if (user2 != null) // OK - all well done
-    							{
-    								final UserGroupTObject ug = UserGroupDAO.select(
-    										localAppDb, groupNum);
-    								HistoryWriter.logHistoryChangeStatus(localAppDb, user2, null, ug,
-    										txt, status, reason, replyType,
-    										replyAdress);
-    								sendChangeStatusConfirmation(user2, txt
-    										+ MSGCODE_OK, replyType, replyAdress,
-    										TextType.STATUSCHANGE_OK.getTextTypeNumber());
-    								Log.log(Log.INFO, txt + MSGCODE_OK);
-    								return ErrorState.STAT_OK.getStateNumber(); // All O.K.
-    							}
-    						} catch (final SQLException e) {
-    							Log.log(this, Log.FATAL, e);
-    						}
-    						HistoryWriter.logHistoryChangeStatus(
-    								localAppDb,
-    								null,
-    								"Critical error => can update local db => replicate configuration.",
-    								null, txt, status, reason, replyType,
-    								replyAdress);
-    						Log.log(Log.FATAL,
-    								"critical error => can update local db => replicate configuration "
-    										+ txt);
-    					}
-    					bBreak = true; // normal exit
-    					break; // exit for
-    				}// for
-    			} finally {
-    				AmsConnectionFactory.closeConnection(oraDb); // don't forget
-    				// to close
-    				// connection
-    				oraDb = null;
-    				userOra = null;
-    			}
+						if (userOra != null) // in main system deleted => reload
+						// follows
+						{
+							try {
+								final UserTObject user2 = changeStatus(
+										memoryCacheDb, Arrays.asList(
+												memoryCacheDb, localAppDb),
+										groupNum, userNum, status, statusCode,
+										reason, txt, replyType, replyAdress);
+								if (user2 != null) // OK - all well done
+								{
+									final UserGroupTObject ug = UserGroupDAO
+											.select(memoryCacheDb, groupNum);
+									HistoryWriter.logHistoryChangeStatus(
+											localAppDb, user2, null, ug, txt,
+											status, reason, replyType,
+											replyAdress);
+									sendChangeStatusConfirmation(user2, txt
+											+ MSGCODE_OK, replyType,
+											replyAdress,
+											TextType.STATUSCHANGE_OK
+													.getTextTypeNumber());
+									Log.log(Log.INFO, txt + MSGCODE_OK);
+									return ErrorState.STAT_OK.getStateNumber(); // All
+																				// O.K.
+								}
+							} catch (final SQLException e) {
+								Log.log(this, Log.FATAL, e);
+							}
+							HistoryWriter
+									.logHistoryChangeStatus(
+											localAppDb,
+											null,
+											"Critical error => can update local db => replicate configuration.",
+											null, txt, status, reason,
+											replyType, replyAdress);
+							Log.log(Log.FATAL,
+									"critical error => can update local db => replicate configuration "
+											+ txt);
+						}
+						bBreak = true; // normal exit
+						break; // exit for
+					}// for
+				} finally {
+					AmsConnectionFactory.closeConnection(oraDb); // don't forget
+					// to close
+					// connection
+					oraDb = null;
+					userOra = null;
+				}
 
-    			if (bBreak == false) // if no connection to configuration
-    			// database
-    			{
-    				Log
-    						.log(
-    								this,
-    								Log.FATAL,
-    								"Could not changeStatus: temporary no connection to configuration database for msg "
-    										+ txt);
-    				final UserTObject userTmp = UserDAO.select(localAppDb, userNum);
-    				HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp,
-    						"No connection to config db.", null, txt, status,
-    						reason, replyType, replyAdress);
-    				if (userTmp != null) {
-                        // available
-    					sendChangeStatusConfirmation(userTmp, txt
-    							+ MSGCODE_NO_MAIN_SYSTEM, replyType, replyAdress,
-    							TextType.STATUSCHANGE_NOK.getTextTypeNumber());
-                    }
-    			}
-	        } // if(changeGroupState == true) ... else
+				if (bBreak == false) // if no connection to configuration
+				// database
+				{
+					Log.log(this,
+							Log.FATAL,
+							"Could not changeStatus: temporary no connection to configuration database for msg "
+									+ txt);
+					final UserTObject userTmp = UserDAO.select(memoryCacheDb,
+							userNum);
+					HistoryWriter.logHistoryChangeStatus(localAppDb, userTmp,
+							"No connection to config db.", null, txt, status,
+							reason, replyType, replyAdress);
+					if (userTmp != null) {
+						// available
+						sendChangeStatusConfirmation(userTmp, txt
+								+ MSGCODE_NO_MAIN_SYSTEM, replyType,
+								replyAdress,
+								TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+					}
+				}
+			} // if(changeGroupState == true) ... else
 		} // else if (strGroupNum != null)
 		return ErrorState.STAT_FALSE.getStateNumber();
 	}
 
-	private UserTObject changeStatus(final java.sql.Connection con, final int groupNum,
-			final int userNum, final short status, final String statusCode, final String reason,
-			final String txt, final String replyType, final String replyAdress) throws Exception // INCLUDING
+	private UserTObject changeStatus(final java.sql.Connection readConnection,
+			List<java.sql.Connection> writeConnections, final int groupNum,
+			final int userNum, final short status, final String statusCode,
+			final String reason, final String txt, final String replyType,
+			final String replyAdress) throws Exception // INCLUDING
 	// -
 	// SQLException
 	// (Oracle
@@ -1359,14 +1427,19 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	// Derby
 	// DB)
 	{
-		final UserTObject user = UserDAO.select(con, userNum);
+		final UserTObject user = UserDAO.select(readConnection, userNum);
 		if (user == null) {
-			HistoryWriter.logHistoryChangeStatus(localAppDb, null, "UserID=" + userNum
-					+ " not found.", null, txt, status, reason, replyType,
-					replyAdress);
-			Log
-					.log(Log.FATAL, "User not found: " + userNum + " for msg "
-							+ txt);// do not send back to user if not
+			HistoryWriter.logHistoryChangeStatus(localAppDb, null, "UserID="
+					+ userNum + " not found.", null, txt, status, reason,
+					replyType, replyAdress);
+			Log.log(Log.FATAL, "User not found: " + userNum + " for msg " + txt);// do
+																					// not
+																					// send
+																					// back
+																					// to
+																					// user
+																					// if
+																					// not
 			// registered
 			return null; // no user to send to
 		}
@@ -1376,36 +1449,41 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		// not publish
 		// statuscode
 		{
-			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "Status code does not match.",
-					null, txt, status, reason, replyType, replyAdress);
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user,
+					"Status code does not match.", null, txt, status, reason,
+					replyType, replyAdress);
 			Log.log(Log.FATAL, "status code does not match for msg " + txt);
 			return null;
 		}
 
-		final UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
+		final UserGroupTObject ug = UserGroupDAO.select(readConnection,
+				groupNum);
 		if (ug == null) {
-			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID=" + groupNum
-					+ " not found.", null, txt, status, reason, replyType,
-					replyAdress);
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID="
+					+ groupNum + " not found.", null, txt, status, reason,
+					replyType, replyAdress);
 			Log.log(Log.WARN, "no group: " + groupNum + " for msg " + txt);
 
 			// never coming twice here
 			sendChangeStatusConfirmation(user, txt + MSGCODE_NO_GROUP,
-					replyType, replyAdress, TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+					replyType, replyAdress,
+					TextType.STATUSCHANGE_NOK.getTextTypeNumber());
 			return null;
 		}
 
 		for (int i = 0; i < 3; i++) // if update failed try max 3 times
 		{
-			final UserGroupUserTObject ugu = UserGroupUserDAO.select(con, groupNum,
-					userNum);
+			final UserGroupUserTObject ugu = UserGroupUserDAO.select(
+					readConnection, groupNum, userNum);
 			if (ugu == null) {
-				HistoryWriter.logHistoryChangeStatus(localAppDb, user, "User not in group.", ug,
-						txt, status, reason, replyType, replyAdress);
+				HistoryWriter.logHistoryChangeStatus(localAppDb, user,
+						"User not in group.", ug, txt, status, reason,
+						replyType, replyAdress);
 				Log.log(Log.WARN, "user not in group for msg " + txt);
 				// never coming twice here, nok not in group
 				sendChangeStatusConfirmation(user, txt + MSGCODE_NOT_IN_GROUP,
-						replyType, replyAdress, TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+						replyType, replyAdress,
+						TextType.STATUSCHANGE_NOK.getTextTypeNumber());
 				return null;
 			}
 			if (ugu.getActive() == status) {
@@ -1417,27 +1495,30 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			if (status == 0) // only check if want to set 0 - Inactive
 			{
 				int iActiveCount = 0;
-				final Iterator<?> iter = UserGroupUserDAO.selectList(con, groupNum)
-						.iterator();
+				final Iterator<?> iter = UserGroupUserDAO.selectList(
+						readConnection, groupNum).iterator();
 				while (iter.hasNext()) {
 					if (((AggrUserGroupUserTObject) iter.next())
-							.getUserGroupUser().getActive() == 1)
-                     {
-                        // Inactive,
+							.getUserGroupUser().getActive() == 1) {
+						// Inactive,
 						// 1 -
 						// Active
 						// (group
 						// ownership)
 						iActiveCount++; // count active user in group
-                    }
+					}
 				}
 				if (ug.getMinGroupMember() >= iActiveCount) {
-					HistoryWriter.logHistoryChangeStatus(localAppDb, user,
+					HistoryWriter.logHistoryChangeStatus(
+							localAppDb,
+							user,
 							"Min user count reached min="
 									+ ug.getMinGroupMember() + ".", ug, txt,
 							status, reason, replyType, replyAdress);
-					Log.log(Log.WARN, "min user count reached min="
-							+ ug.getMinGroupMember() + " for msg " + txt);
+					Log.log(Log.WARN,
+							"min user count reached min="
+									+ ug.getMinGroupMember() + " for msg "
+									+ txt);
 
 					// never coming twice here
 					// NOT_OK - min count of user reached
@@ -1449,140 +1530,158 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			}
 
 			if (reason.length() > 0) {
-                ugu.setActiveReason(reason);
-            }
+				ugu.setActiveReason(reason);
+			}
 
 			ugu.setActive(status); // set status in UserGroupUserTObject
-			if (UserGroupUserDAO.update(con, ugu))
-             {
-                return user; // status updated
-            }
+			boolean updateSuccessful = true;
+			for (java.sql.Connection writeConnection : writeConnections) {
+				updateSuccessful &= UserGroupUserDAO.update(writeConnection,
+						ugu);
+			}
+			if (updateSuccessful) {
+				return user; // status updated
+			}
 		}// for
 
-		HistoryWriter.logHistoryChangeStatus(
-				localAppDb,
-				user,
-				"failed to update status (tried 3 times, Data changed or deleted!).",
-				ug, txt, status, reason, replyType, replyAdress);
+		HistoryWriter
+				.logHistoryChangeStatus(
+						localAppDb,
+						user,
+						"failed to update status (tried 3 times, Data changed or deleted!).",
+						ug, txt, status, reason, replyType, replyAdress);
 		Log.log(Log.WARN, "failed to update status (tried 3 times) for msg "
 				+ txt + " (Data changed or deleted!)");
 		return null;
 	}
 
-	//java.sql.Connection con, int groupNum,
-    //int userNum, short status, String statusCode, String reason,
-    //String txt, String replyType, String replyAdress
-	private UserGroupTObject changeGroupState(final java.sql.Connection con, final int groupNum,
-            final int userNum, final short status, final String statusCode, final String reason,
-            final String txt, final String replyType, final String replyAdress) throws Exception
-	{
-	    UserGroupUserTObject groupUser = null;
-	    UserTObject user = null;
+	private UserGroupTObject changeGroupState(
+			final java.sql.Connection readConnection,
+			List<java.sql.Connection> writeConnections, final int groupNum,
+			final int userNum, final short status, final String statusCode,
+			final String reason, final String txt, final String replyType,
+			final String replyAdress) throws Exception {
+		UserGroupUserTObject groupUser = null;
+		UserTObject user = null;
 
-	    // Check whether or not the user is a member of the group
-	    groupUser = UserGroupUserDAO.select(con, groupNum, userNum);
-        if (groupUser == null) {
-            HistoryWriter.logHistoryChangeStatus(localAppDb, null, "GroupID=" + groupNum
-                    + " or UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
-                    replyAdress);
-            Log.log(Log.FATAL, "User=" + userNum + " or group=" + groupNum + " not found");// do not send back to user if not
-            // registered
-            return null; // no user to send to
-        }
+		// Check whether or not the user is a member of the group
+		groupUser = UserGroupUserDAO.select(readConnection, groupNum, userNum);
+		if (groupUser == null) {
+			HistoryWriter.logHistoryChangeStatus(localAppDb, null, "GroupID="
+					+ groupNum + " or UserID=" + userNum + " not found.", null,
+					txt, status, reason, replyType, replyAdress);
+			Log.log(Log.FATAL, "User=" + userNum + " or group=" + groupNum
+					+ " not found");// do not send back to user if not
+			// registered
+			return null; // no user to send to
+		}
 
-        // Get the user
-        user = UserDAO.select(con, userNum);
-        if(user == null)
-        {
-            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "UserID=" + userNum + " not found.", null, txt, status, reason, replyType,
-                    replyAdress);
-            Log.log(Log.FATAL, "User=" + userNum + " not found");// do not send back to user if not
+		// Get the user
+		user = UserDAO.select(readConnection, userNum);
+		if (user == null) {
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "UserID="
+					+ userNum + " not found.", null, txt, status, reason,
+					replyType, replyAdress);
+			Log.log(Log.FATAL, "User=" + userNum + " not found");// do not send
+																	// back to
+																	// user if
+																	// not
 
-            return null;
-        }
+			return null;
+		}
 
-        // Check the status code
-        if (!user.getStatusCode().equalsIgnoreCase(statusCode)) // consitent
-        // state, but do
-        // not publish
-        // statuscode
-        {
-            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "Status code does not match.",
-                    null, txt, status, reason, replyType, replyAdress);
-            Log.log(Log.FATAL, "status code does not match for user=" + userNum);
+		// Check the status code
+		if (!user.getStatusCode().equalsIgnoreCase(statusCode)) // consitent
+		// state, but do
+		// not publish
+		// statuscode
+		{
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user,
+					"Status code does not match.", null, txt, status, reason,
+					replyType, replyAdress);
+			Log.log(Log.FATAL, "status code does not match for user=" + userNum);
 
-            return null;
-        }
+			return null;
+		}
 
-        final UserGroupTObject userGroup = UserGroupDAO.select(con, groupNum);
-        if (userGroup == null) {
-            HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID=" + groupNum
-                    + " not found.", userGroup, txt, status, reason, replyType,
-                    replyAdress);
-            Log.log(Log.WARN, "no group: " + groupNum);
+		final UserGroupTObject userGroup = UserGroupDAO.select(readConnection,
+				groupNum);
+		if (userGroup == null) {
+			HistoryWriter.logHistoryChangeStatus(localAppDb, user, "GroupID="
+					+ groupNum + " not found.", userGroup, txt, status, reason,
+					replyType, replyAdress);
+			Log.log(Log.WARN, "no group: " + groupNum);
 
-            // never coming twice here
-            sendChangeStatusConfirmation(user, txt + MSGCODE_NO_GROUP,
-                    replyType, replyAdress, TextType.STATUSCHANGE_NOK.getTextTypeNumber());
-            return null;
-        }
+			// never coming twice here
+			sendChangeStatusConfirmation(user, txt + MSGCODE_NO_GROUP,
+					replyType, replyAdress,
+					TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+			return null;
+		}
 
-        for (int i = 0; i < 3; i++) // if update failed try max 3 times
-        {
-            final UserGroupTObject ug = UserGroupDAO.select(con, groupNum);
-            if (ug == null) {
-                HistoryWriter.logHistoryChangeStatus(localAppDb, user, "User not in group.", ug,
-                        txt, status, reason, replyType, replyAdress);
-                Log.log(Log.WARN, "group not found ");
-                // never coming twice here, nok not in group
-                sendChangeGroupStatusConfirmation(user, ug, txt + MSGCODE_NOT_IN_GROUP,
-                        replyType, replyAdress, TextType.STATUSCHANGE_NOK.getTextTypeNumber());
-                return null;
-            }
-            if (ug.getIsActive() == status) {
-                Log.log(Log.WARN, "status already set for msg, handle as ok ");
-                return ug;
-            }
+		for (int i = 0; i < 3; i++) // if update failed try max 3 times
+		{
+			final UserGroupTObject ug = UserGroupDAO.select(readConnection,
+					groupNum);
+			if (ug == null) {
+				HistoryWriter.logHistoryChangeStatus(localAppDb, user,
+						"User not in group.", ug, txt, status, reason,
+						replyType, replyAdress);
+				Log.log(Log.WARN, "group not found ");
+				// never coming twice here, nok not in group
+				sendChangeGroupStatusConfirmation(user, ug, txt
+						+ MSGCODE_NOT_IN_GROUP, replyType, replyAdress,
+						TextType.STATUSCHANGE_NOK.getTextTypeNumber());
+				return null;
+			}
+			if (ug.getIsActive() == status) {
+				Log.log(Log.WARN, "status already set for msg, handle as ok ");
+				return ug;
+			}
 
-            if (status == 0) // only check if want to set 0 - Inactive
-            {
-                int iActiveCount = 0;
-                final Iterator<?> iter = UserGroupUserDAO.selectList(con, groupNum)
-                        .iterator();
-                while (iter.hasNext()) {
-                    if (((AggrUserGroupUserTObject) iter.next())
-                            .getUserGroupUser().getActive() == 1)
-                     {
-                        // Inactive,
-                        // 1 -
-                        // Active
-                        // (group
-                        // ownership)
-                        iActiveCount++; // count active user in group
-                    }
-                }
-            }
+			if (status == 0) // only check if want to set 0 - Inactive
+			{
+				int iActiveCount = 0;
+				final Iterator<?> iter = UserGroupUserDAO.selectList(
+						readConnection, groupNum).iterator();
+				while (iter.hasNext()) {
+					if (((AggrUserGroupUserTObject) iter.next())
+							.getUserGroupUser().getActive() == 1) {
+						// Inactive,
+						// 1 -
+						// Active
+						// (group
+						// ownership)
+						iActiveCount++; // count active user in group
+					}
+				}
+			}
 
-            ug.setIsActive(status); // set status in UserGroupUserTObject
-            if (UserGroupDAO.update2(con, ug))
-             {
-                return ug; // status updated
-            }
-        }// for
+			ug.setIsActive(status); // set status in UserGroupUserTObject
+			boolean updateSuccessful = true;
+			for (java.sql.Connection writeConnection : writeConnections) {
+				updateSuccessful &= UserGroupDAO.update2(writeConnection, ug);
+			}
+			if (updateSuccessful) {
+				return ug; // status updated
+			}
+		}// for
 
-        HistoryWriter.logHistoryChangeStatus(
-                localAppDb,
-                user,
-                "failed to update group status (tried 3 times, Data changed or deleted!).",
-                userGroup, txt, status, reason, replyType, replyAdress);
-        Log.log(Log.WARN, "failed to update status (tried 3 times) for msg "
-                + txt + " (Data changed or deleted!)");
+		HistoryWriter
+				.logHistoryChangeStatus(
+						localAppDb,
+						user,
+						"failed to update group status (tried 3 times, Data changed or deleted!).",
+						userGroup, txt, status, reason, replyType, replyAdress);
+		Log.log(Log.WARN, "failed to update status (tried 3 times) for msg "
+				+ txt + " (Data changed or deleted!)");
 
-	    return null;
+		return null;
 	}
 
-	private void sendReplyConfirmationForUser(final UserTObject user, final boolean bOk,
-			final String error, final int msgChainId, final int msgChainPos, final String replyType,
+	private void sendReplyConfirmationForUser(final UserTObject user,
+			final boolean bOk, final String error, final int msgChainId,
+			final int msgChainPos, final String replyType,
 			final String originator) {
 		String txt = null;
 		String addr = "";
@@ -1599,8 +1698,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			}
 
 			if (originator != null) {
-                txt += " (confirmation initiated from " + originator + ")";
-            }
+				txt += " (confirmation initiated from " + originator + ")";
+			}
 
 			if (replyType.equals(MSG_REPLY_TYPE_SMS)) {
 				addr = " with MobilePhoneNumber=" + user.getMobilePhone();
@@ -1622,7 +1721,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 						+ " via voicemail (" + user.getPhone() + ")");
 			}
 		} catch (final Exception ex) {
-			Log.log(this, Log.WARN,
+			Log.log(this,
+					Log.WARN,
 					"failed to send reply confirmation message to user="
 							+ user.getName() + addr, ex);
 		}
@@ -1630,7 +1730,7 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 	/**
 	 * Send a reply message for an JMS topic.
-	 *
+	 * 
 	 * @param topic
 	 *            The current JMS topic, where the message is sent to
 	 * @param msgChainId
@@ -1649,8 +1749,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					+ prepareMessageNumber(msgChainId, msgChainPos);
 
 			if (originator != null) {
-                txt += " (confirmation initiated from " + originator + ")";
-            }
+				txt += " (confirmation initiated from " + originator + ")";
+			}
 
 			addr = " with Topic=" + topic.getTopicName();
 			publishToConnectorJms(txt, topic.getTopicName(), null);
@@ -1664,13 +1764,14 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		}
 	}
 
-	private void sendChangeStatusConfirmation(final UserTObject user, String txt,
-			final String replyType, final String originator, final int texttype) {
+	private void sendChangeStatusConfirmation(final UserTObject user,
+			String txt, final String replyType, final String originator,
+			final int texttype) {
 		String addr = "";
 		try {
 			if (originator != null) {
-                txt += " (status change initiated from " + originator + ")";
-            }
+				txt += " (status change initiated from " + originator + ")";
+			}
 
 			if (replyType.equals(MSG_REPLY_TYPE_SMS)) {
 				addr = " with MobilePhoneNumber=" + user.getMobilePhone();
@@ -1688,9 +1789,9 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 				addr = " with PhoneNumber=" + user.getPhone();
 				publishToConnectorVoiceMail(txt, user.getPhone(), texttype); // VoiceMail
 			} else {
-                throw new AMSException("Invalid MSGPROP_REPLY_TYPE="
+				throw new AMSException("Invalid MSGPROP_REPLY_TYPE="
 						+ replyType);
-            }
+			}
 		} catch (final Exception ex) {
 			Log.log(this, Log.WARN,
 					"failed to send change status confirmation message to user="
@@ -1698,64 +1799,61 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		}
 	}
 
-    private void sendChangeGroupStatusConfirmation(final UserTObject user, final UserGroupTObject group, String txt,
-            final String replyType, final String originator, final int texttype)
-    {
-        String addr = "";
-        try
-        {
-            if (originator != null) {
-                txt += " (group status change initiated from " + originator + ")";
-            }
+	private void sendChangeGroupStatusConfirmation(final UserTObject user,
+			final UserGroupTObject group, String txt, final String replyType,
+			final String originator, final int texttype) {
+		String addr = "";
+		try {
+			if (originator != null) {
+				txt += " (group status change initiated from " + originator
+						+ ")";
+			}
 
-            if (replyType.equals(MSG_REPLY_TYPE_SMS))
-            {
-                addr = " with MobilePhoneNumber=" + user.getMobilePhone();
-                // publishToConnectorSms(txt, user.getMobilePhone()); // SMS
+			if (replyType.equals(MSG_REPLY_TYPE_SMS)) {
+				addr = " with MobilePhoneNumber=" + user.getMobilePhone();
+				// publishToConnectorSms(txt, user.getMobilePhone()); // SMS
 
-                // Get the numbers of all active group members
-                Vector<UserTObject> activeUsers = UserGroupUserDAO.selectByGroupAndState(localAppDb, group.getID(), 1);
+				// Get the numbers of all active group members
+				Vector<UserTObject> activeUsers = UserGroupUserDAO
+						.selectByGroupAndState(memoryCacheDb, group.getID(), 1);
 
-                if(!activeUsers.isEmpty())
-                {
-                    UserTObject u = null;
+				if (!activeUsers.isEmpty()) {
+					UserTObject u = null;
 
-                    for(int i = 0;i < activeUsers.size();i++)
-                    {
-                        u = activeUsers.get(i);
-                        if(u.getActive() != 0)
-                        {
-                            publishToConnectorSms(txt, u.getMobilePhone());
-                        }
-                    }
+					for (int i = 0; i < activeUsers.size(); i++) {
+						u = activeUsers.get(i);
+						if (u.getActive() != 0) {
+							publishToConnectorSms(txt, u.getMobilePhone());
+						}
+					}
 
-                    u = null;
-                    activeUsers.clear();
-                    activeUsers = null;
-                }
-            }
-            else if (replyType.equals(MSG_REPLY_TYPE_JMS)) {
+					u = null;
+					activeUsers.clear();
+					activeUsers = null;
+				}
+			} else if (replyType.equals(MSG_REPLY_TYPE_JMS)) {
 
-                // TopicTObject topic = TopicDAO.select(conDb, fa
-                // .getReceiverRef()); TODO
-                // addr = " with Topic=" + topic.getName();
-                // publishToConnectorJms(txt, topic.getName()); // JMS
-            } else if (replyType.equals(MSG_REPLY_TYPE_EMAIL)) {
-                addr = " with Email=" + user.getEmail();
-                publishToConnectorMail(txt, user.getEmail(), user.getName()); // E-Mail
-            } else if (replyType.equals(MSG_REPLY_TYPE_VOICEMAIL)) {
-                addr = " with PhoneNumber=" + user.getPhone();
-                publishToConnectorVoiceMail(txt, user.getPhone(), texttype); // VoiceMail
-            } else {
-                throw new AMSException("Invalid MSGPROP_REPLY_TYPE="
-                        + replyType);
-            }
-        } catch (final Exception ex) {
-            Log.log(this, Log.WARN,
-                    "failed to send change status confirmation message to user="
-                            + user.getName() + addr, ex);
-        }
-    }
+				// TopicTObject topic = TopicDAO.select(conDb, fa
+				// .getReceiverRef()); TODO
+				// addr = " with Topic=" + topic.getName();
+				// publishToConnectorJms(txt, topic.getName()); // JMS
+			} else if (replyType.equals(MSG_REPLY_TYPE_EMAIL)) {
+				addr = " with Email=" + user.getEmail();
+				publishToConnectorMail(txt, user.getEmail(), user.getName()); // E-Mail
+			} else if (replyType.equals(MSG_REPLY_TYPE_VOICEMAIL)) {
+				addr = " with PhoneNumber=" + user.getPhone();
+				publishToConnectorVoiceMail(txt, user.getPhone(), texttype); // VoiceMail
+			} else {
+				throw new AMSException("Invalid MSGPROP_REPLY_TYPE="
+						+ replyType);
+			}
+		} catch (final Exception ex) {
+			Log.log(this, Log.WARN,
+					"failed to send change status confirmation message to user="
+							+ user.getName() + addr, ex);
+		}
+	}
+
 	//
 	// End: Reply & ChangeStatus
 	// //////////////////////////////////////////////////////////////////////////////
@@ -1764,31 +1862,33 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	// Start: Message Chain
 	//
 
-	private int replyAllMessageChain(final String confirmCode, final String replyType,
-			final String replyAdress) throws Exception {
+	private int replyAllMessageChain(final String confirmCode,
+			final String replyType, final String replyAdress) throws Exception {
 		int iRet = ErrorState.STAT_OK.getStateNumber();
 
-		final List<?> lMc = MessageChainDAO.selectKeyListByReceiverAdress(localAppDb,
-				MESSAGECHAIN_WORK, replyAdress);
+		final List<?> lMc = MessageChainDAO.selectKeyListByReceiverAdress(
+				memoryCacheDb, MESSAGECHAIN_WORK, replyAdress);
 
 		final Iterator<?> iter = lMc.iterator();
 		while (iter.hasNext()) {
-			final MessageChainTObject chainDb = (MessageChainTObject) iter.next();
+			final MessageChainTObject chainDb = (MessageChainTObject) iter
+					.next();
 			iRet = replyMessageChain(chainDb, chainDb.getMessageChainID(),
 					chainDb.getReceiverPos(), confirmCode, replyType,
 					replyAdress);
 
 			if (iRet != ErrorState.STAT_OK.getStateNumber()) {
-                return iRet;
-            }
+				return iRet;
+			}
 
 		}
 		return iRet;
 	}
 
 	private int replyMessageChain(final MessageChainTObject chainDbParam,
-			final int msgChainId, final int msgChainPos, final String confirmCode,
-			final String replyType, final String replyAdress) throws Exception // INCLUDING
+			final int msgChainId, final int msgChainPos,
+			final String confirmCode, final String replyType,
+			final String replyAdress) throws Exception // INCLUDING
 	// -
 	// SQLException,
 	// JMSException
@@ -1796,10 +1896,10 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 		MessageChainTObject chainDb = null;
 
 		if (chainDbParam != null) {
-            chainDb = chainDbParam;
-        } else {
-            chainDb = MessageChainDAO.select(localAppDb, msgChainId);
-        }
+			chainDb = chainDbParam;
+		} else {
+			chainDb = MessageChainDAO.select(memoryCacheDb, msgChainId);
+		}
 
 		FilterActionTObject fa = null;
 		AggrUserGroupUserTObject aUser = null;
@@ -1807,48 +1907,55 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 
 		if (chainDb != null && chainDb.getChainState() == MESSAGECHAIN_WORK) {
 			if (chainDb.getReceiverPos() == msgChainPos) {
-				fa = FilterActionDAO
-						.select(localAppDb, chainDb.getFilterActionRef());
+				fa = FilterActionDAO.select(memoryCacheDb,
+						chainDb.getFilterActionRef());
 				if (fa != null) {
 					if (replyType.equals(MSG_REPLY_TYPE_JMS)) {
-						final TopicTObject topic = TopicDAO.select(localAppDb, fa
-								.getReceiverRef());
+						final TopicTObject topic = TopicDAO.select(
+								memoryCacheDb, fa.getReceiverRef());
 						chainDb.setChainState(MESSAGECHAIN_REPLIED);
 						MessageChainDAO.update(localAppDb, chainDb);
-						HistoryWriter.logHistoryReply(localAppDb, "Reply", null, null, topic,
-								"Chain replied for ChainId=" + msgChainId
-										+ ", Pos=" + msgChainPos + ".", fa
-										.getFilterActionTypeRef(), msgChainId,
-								msgChainPos, replyType, replyAdress);
+						MessageChainDAO.update(memoryCacheDb, chainDb);
+						HistoryWriter
+								.logHistoryReply(localAppDb, "Reply", null,
+										null, topic,
+										"Chain replied for ChainId="
+												+ msgChainId + ", Pos="
+												+ msgChainPos + ".",
+										fa.getFilterActionTypeRef(),
+										msgChainId, msgChainPos, replyType,
+										replyAdress);
 
 						sendReplyConfirmationForJms(topic, msgChainId,
 								msgChainPos, replyAdress);
 						return ErrorState.STAT_OK.getStateNumber(); // All O.K.
 					} else {
-						userGroup = AggrUserGroupDAO.select(localAppDb, fa
-								.getReceiverRef(), msgChainPos);
+						userGroup = AggrUserGroupDAO.select(memoryCacheDb,
+								fa.getReceiverRef(), msgChainPos);
 						if (userGroup != null) {
-                            aUser = userGroup.getUsers().get(0);
-                        }
+							aUser = userGroup.getUsers().get(0);
+						}
 
 						if (aUser != null
-								&& aUser.getUser().getConfirmCode().equals(
-										confirmCode)) {
+								&& aUser.getUser().getConfirmCode()
+										.equals(confirmCode)) {
 							chainDb.setChainState(MESSAGECHAIN_REPLIED);
 							MessageChainDAO.update(localAppDb, chainDb);
+							MessageChainDAO.update(memoryCacheDb, chainDb);
 
-							HistoryWriter.logHistoryReply(localAppDb, "Reply", aUser.getUser(),
-									userGroup.getUsergroup(), null,
-									"Chain replied for ChainId=" + msgChainId
-											+ ", Pos=" + msgChainPos + ".", fa
-											.getFilterActionTypeRef(),
-									msgChainId, msgChainPos, replyType,
-									replyAdress);
+							HistoryWriter.logHistoryReply(localAppDb, "Reply",
+									aUser.getUser(), userGroup.getUsergroup(),
+									null, "Chain replied for ChainId="
+											+ msgChainId + ", Pos="
+											+ msgChainPos + ".",
+									fa.getFilterActionTypeRef(), msgChainId,
+									msgChainPos, replyType, replyAdress);
 
 							sendReplyConfirmationForUser(aUser.getUser(), true,
 									null, msgChainId, msgChainPos, replyType,
 									replyAdress);
-							return ErrorState.STAT_OK.getStateNumber(); // All O.K.
+							return ErrorState.STAT_OK.getStateNumber(); // All
+																		// O.K.
 						}
 					}
 				}
@@ -1862,42 +1969,44 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			// pos wrong
 			// fa not there
 			if (fa == null) {
-                fa = FilterActionDAO
-						.select(localAppDb, chainDb.getFilterActionRef());
-            }
+				fa = FilterActionDAO.select(memoryCacheDb,
+						chainDb.getFilterActionRef());
+			}
 
 			if (fa != null
 					&& (userGroup == null || userGroup.getUsers().isEmpty())) {
-				userGroup = AggrUserGroupDAO.select(localAppDb, fa.getReceiverRef(),
-						msgChainPos);
+				userGroup = AggrUserGroupDAO.select(memoryCacheDb,
+						fa.getReceiverRef(), msgChainPos);
 				if (userGroup != null) {
-                    aUser = userGroup.getUsers().get(0);
-                }
+					aUser = userGroup.getUsers().get(0);
+				}
 			}
 
 			// user not there
 			// confirm code wrong
 			if (aUser != null && fa != null) {
 				if (chainDb.getChainState() != MESSAGECHAIN_WORK) {
-                    err = "message chain not in work.";
-                } else if (chainDb.getReceiverPos() != msgChainPos) {
-                    err = "user not in time interval.";
-                } else if (!aUser.getUser().getConfirmCode().equals(confirmCode)) {
-                    err = "wrong confirmation code.";
-                }
+					err = "message chain not in work.";
+				} else if (chainDb.getReceiverPos() != msgChainPos) {
+					err = "user not in time interval.";
+				} else if (!aUser.getUser().getConfirmCode()
+						.equals(confirmCode)) {
+					err = "wrong confirmation code.";
+				}
 
 				sendReplyConfirmationForUser(aUser.getUser(), false, err,
 						msgChainId, msgChainPos, replyType, replyAdress);
 			}
 		} else {
-            Log.log(Log.FATAL, "Message Reply: ChainID '" + msgChainId
+			Log.log(Log.FATAL, "Message Reply: ChainID '" + msgChainId
 					+ "' not found.");
-        }
+		}
 
-		HistoryWriter.logHistoryReply(localAppDb, "Reply Err", (aUser == null ? null : aUser
-				.getUser()), (userGroup == null ? null : userGroup
-				.getUsergroup()), null, "Reply not accepted for ChainId="
-				+ msgChainId + ", Pos=" + msgChainPos + " Error: " + err,
+		HistoryWriter.logHistoryReply(localAppDb, "Reply Err",
+				(aUser == null ? null : aUser.getUser()),
+				(userGroup == null ? null : userGroup.getUsergroup()), null,
+				"Reply not accepted for ChainId=" + msgChainId + ", Pos="
+						+ msgChainPos + " Error: " + err,
 				(fa == null ? 0 : fa.getFilterActionTypeRef()), msgChainId,
 				msgChainPos, replyType, replyAdress);
 
@@ -1907,46 +2016,44 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 	private int workOnMessageChain(final int msgChainId) throws Exception {
 		MessageChainTObject msgChain = null;
 		try {
-			msgChain = MessageChainDAO.select(localAppDb, msgChainId);
-			if (msgChain == null)
-             {
-                return ErrorState.STAT_OK.getStateNumber(); // handle as O.K. (no error)
-            }
-			if (msgChain.getChainState() != MESSAGECHAIN_WORK)
-             {
-                return ErrorState.STAT_OK.getStateNumber(); // handle as O.K. (no error)
-            }
-			if (msgChain.getNextActTime() != null)
-             {
-                if (System.currentTimeMillis() < msgChain.getNextActTime()
-						.getTime())
-                 {
-                    return ErrorState.STAT_OK.getStateNumber(); // handle as O.K. (no
-			// error)
-                }
-            }
+			msgChain = MessageChainDAO.select(memoryCacheDb, msgChainId);
+			if (msgChain == null) {
+				return ErrorState.STAT_OK.getStateNumber(); // handle as O.K.
+															// (no error)
+			}
+			if (msgChain.getChainState() != MESSAGECHAIN_WORK) {
+				return ErrorState.STAT_OK.getStateNumber(); // handle as O.K.
+															// (no error)
+			}
+			if (msgChain.getNextActTime() != null) {
+				if (System.currentTimeMillis() < msgChain.getNextActTime()
+						.getTime()) {
+					return ErrorState.STAT_OK.getStateNumber(); // handle as
+																// O.K. (no
+					// error)
+				}
+			}
 
 			// msg is not send to internal topic, only for text preparing
 			// if chain is not replied then send the msg to extern alarm topic
 			MapMessage extMsg = null;
 			try {
 				extMsg = extSession.createMapMessage();
-				MessageDAO.select(localAppDb, msgChain.getMessageRef(), extMsg);
+				MessageDAO.select(memoryCacheDb, msgChain.getMessageRef(),
+						extMsg);
 			} catch (final JMSException e) // JMSException (STAT_ERR_JMSCON_EXT)
 			{
-				Log
-						.log(
-								this,
-								Log.FATAL,
-								"workOnMessageChain: could not extSession.createMapMessage",
-								e);
+				Log.log(this,
+						Log.FATAL,
+						"workOnMessageChain: could not extSession.createMapMessage",
+						e);
 				return ErrorState.STAT_ERR_JMSCON_EXT.getStateNumber();
 			}
 
-			final FilterTObject filter = FilterDAO.select(localAppDb, msgChain
-					.getFilterRef());
-			final FilterActionTObject fa = FilterActionDAO.select(localAppDb, msgChain
-					.getFilterActionRef());
+			final FilterTObject filter = FilterDAO.select(memoryCacheDb,
+					msgChain.getFilterRef());
+			final FilterActionTObject fa = FilterActionDAO.select(
+					memoryCacheDb, msgChain.getFilterActionRef());
 
 			AggrUserGroupUserTObject aNextUser = null;
 			AggrUserGroupTObject userGroup = null;
@@ -1954,8 +2061,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			// chain
 
 			if (fa != null && filter != null) {
-				userGroup = AggrUserGroupDAO.selectList(localAppDb, fa
-						.getReceiverRef()); // ggf. eine Topic-ID!
+				userGroup = AggrUserGroupDAO.selectList(memoryCacheDb,
+						fa.getReceiverRef()); // ggf. eine Topic-ID!
 
 				final Iterator<?> iter = userGroup.getUsers().iterator();
 				while (iter.hasNext()) {
@@ -1963,33 +2070,27 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 							.next();
 
 					if (aUser.getUserGroupUser().getActive() == 0) {
-						Log
-								.log(Log.WARN, "UserGroupRel not active: User "
-										+ aUser.getUser().getUserID()
-										+ " of Group "
-										+ aUser.getUserGroupUser()
-												.getUserGroupRef()
-										+ " in FilterAction: "
-										+ fa.getFilterActionID());
+						Log.log(Log.WARN, "UserGroupRel not active: User "
+								+ aUser.getUser().getUserID() + " of Group "
+								+ aUser.getUserGroupUser().getUserGroupRef()
+								+ " in FilterAction: " + fa.getFilterActionID());
 						continue;
 					}
 					if (aUser.getUser().getActive() == 0) {
-						Log
-								.log(Log.WARN, "User not active: "
-										+ aUser.getUser().getUserID()
-										+ " in FilterAction: "
-										+ fa.getFilterActionID());
+						Log.log(Log.WARN, "User not active: "
+								+ aUser.getUser().getUserID()
+								+ " in FilterAction: " + fa.getFilterActionID());
 						continue;
 					}
 
 					bOneActive = true;
 
 					if (-1 == aUser.getUserGroupUser().getPos()) {
-                        // => config
+						// => config
 						// Error
 						throw new AMSException(
 								"Config Error: next UserPos == -1 == aUser.getUserGroupUser().getPos()");
-                    }
+					}
 
 					if (msgChain.getReceiverPos() < aUser.getUserGroupUser()
 							.getPos())// act < next
@@ -2012,12 +2113,13 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			if (aNextUser != null) // send next
 			{
 				int iPref = 0;
-				final String text = prepareMessageText(extMsg, filter, fa, msgChain); // throws
+				final String text = prepareMessageText(extMsg, filter, fa,
+						msgChain); // throws
 				// no
 				// JMSException
 				// (STAT_ERR_JMSCON_EXT)
-				final String chainIdAndPos = prepareMessageNumber(msgChain
-						.getMessageChainID(), msgChain.getReceiverPos());
+				final String chainIdAndPos = prepareMessageNumber(
+						msgChain.getMessageChainID(), msgChain.getReceiverPos());
 
 				final UserTObject user = aNextUser.getUser();
 				switch (user.getPrefAlarmingTypeRR()) {
@@ -2027,20 +2129,21 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					iPref = USERFILTERALARMTYPE_SMS;
 					break;
 				case USERFILTERALARMTYPE_JMS:
-					final TopicTObject topic = TopicDAO.select(localAppDb, fa
-							.getReceiverRef());
+					final TopicTObject topic = TopicDAO.select(memoryCacheDb,
+							fa.getReceiverRef());
 					publishToConnectorJms(text, topic.getTopicName(), null); // JMS
 					msgChain.setReceiverAdress(topic.getTopicName());
 					iPref = USERFILTERALARMTYPE_JMS;
 					break;
 				case USERFILTERALARMTYPE_VM:
 					publishToConnectorVoiceMail(text, user.getPhone(),
-							chainIdAndPos, TextType.ALARM_WCONFIRM.getTextTypeNumber()); // VoiceMail
+							chainIdAndPos,
+							TextType.ALARM_WCONFIRM.getTextTypeNumber()); // VoiceMail
 					iPref = USERFILTERALARMTYPE_VM;
 					break;
 				case USERFILTERALARMTYPE_MAIL:
-					publishToConnectorMail(text, user.getEmail(), user
-							.getName());// E-Mail
+					publishToConnectorMail(text, user.getEmail(),
+							user.getName());// E-Mail
 					iPref = USERFILTERALARMTYPE_MAIL;
 					break;
 				default:
@@ -2051,11 +2154,13 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 						break;
 					case FILTERACTIONTYPE_VM_GR:
 						publishToConnectorVoiceMail(text, user.getPhone(),
-								chainIdAndPos, TextType.ALARM_WCONFIRM.getTextTypeNumber(), msgChain.getNextActTime());// VoiceMail
+								chainIdAndPos,
+								TextType.ALARM_WCONFIRM.getTextTypeNumber(),
+								msgChain.getNextActTime());// VoiceMail
 						break;
 					case FILTERACTIONTYPE_MAIL_GR:
-						publishToConnectorMail(text, user.getEmail(), user
-								.getName());// E-Mail
+						publishToConnectorMail(text, user.getEmail(),
+								user.getName());// E-Mail
 						break;
 					default:
 						throw new AMSException(
@@ -2066,14 +2171,22 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 				}
 
 				MessageChainDAO.update(localAppDb, msgChain);
+				MessageChainDAO.update(memoryCacheDb, msgChain);
 
 				try {
-					HistoryWriter.logHistorySend(localAppDb, extMsg, text, fa
-							.getFilterActionTypeRef(), user,
-							(userGroup != null ? userGroup.getUsergroup()
-									: null), msgChain.getReceiverPos(),
-							msgChain.getMessageChainID(), iPref, TopicDAO
-									.select(localAppDb, fa.getReceiverRef()));
+					HistoryWriter
+							.logHistorySend(
+									localAppDb,
+									extMsg,
+									text,
+									fa.getFilterActionTypeRef(),
+									user,
+									(userGroup != null ? userGroup
+											.getUsergroup() : null), msgChain
+											.getReceiverPos(), msgChain
+											.getMessageChainID(), iPref,
+									TopicDAO.select(memoryCacheDb,
+											fa.getReceiverRef()));
 				} catch (final JMSException e) // JMSException
 				// (STAT_ERR_JMSCON_EXT)
 				{
@@ -2100,7 +2213,8 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 							+ " Error: system error - configuration changed - no active user anymore.";
 				}
 
-				HistoryWriter.logHistoryReply(localAppDb, "Failed", null, null, null, err,
+				HistoryWriter.logHistoryReply(localAppDb, "Failed", null, null,
+						null, err,
 						(fa == null ? 0 : fa.getFilterActionTypeRef()),
 						msgChain.getMessageChainID(),
 						msgChain.getReceiverPos(), null, null);
@@ -2117,18 +2231,17 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 					} catch (final JMSException e) // JMSException
 					// (STAT_ERR_JMSCON_EXT)
 					{
-						Log
-								.log(
-										this,
-										Log.FATAL,
-										"workOnMessageChain: could not send to extPublisherAlarm",
-										e);
+						Log.log(this,
+								Log.FATAL,
+								"workOnMessageChain: could not send to extPublisherAlarm",
+								e);
 						return ErrorState.STAT_ERR_JMSCON_EXT.getStateNumber();
 					}
 				}
 
 				msgChain.setChainState(MESSAGECHAIN_FAILED); // delete old
 				MessageChainDAO.update(localAppDb, msgChain);
+				MessageChainDAO.update(memoryCacheDb, msgChain);
 			}
 			return ErrorState.STAT_OK.getStateNumber(); // All O.K.
 		} catch (final SQLException e) {
@@ -2138,28 +2251,27 @@ public class DistributorWork extends Thread implements AmsConstants, MessageList
 			Log.log(this, Log.FATAL, "could not workOnMessageChain", e);
 			return ErrorState.STAT_ERR_JMSCON_INT.getStateNumber();
 		} catch (final AMSException e) {
-			Log
-					.log(
-							this,
-							Log.FATAL,
-							"could not workOnMessageChain, set message chain to failed",
-							e);
+			Log.log(this,
+					Log.FATAL,
+					"could not workOnMessageChain, set message chain to failed",
+					e);
 			msgChain.setChainState(MESSAGECHAIN_FAILED);
 			try {
 				MessageChainDAO.update(localAppDb, msgChain);
+				MessageChainDAO.update(memoryCacheDb, msgChain);
 			} catch (final SQLException ex) {
 				Log.log(this, Log.FATAL, "could not update message chain", ex);
 				return ErrorState.STAT_ERR_APPLICATION_DB.getStateNumber();
 			}
-			return ErrorState.STAT_OK.getStateNumber(); // handle as O.K., continue with
+			return ErrorState.STAT_OK.getStateNumber(); // handle as O.K.,
+														// continue with
 			// work
 		}
 	}
 
-    public String getTimeString(final java.util.Date date)
-    {
-        return String.valueOf(date.getTime());
-    }
+	public String getTimeString(final java.util.Date date) {
+		return String.valueOf(date.getTime());
+	}
 
 	//
 	// End: Message Chain

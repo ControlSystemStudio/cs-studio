@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
@@ -74,7 +76,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     private boolean shutdown;
 
     /** Time to sleep in ms */
-    private final long WAITFORTHREAD = 20000;
+    private static final long WAITFORTHREAD = 20000;
 
     public Jms2OraApplication() {
         lock = new Object();
@@ -88,7 +90,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      * {@inheritDoc}
      */
     @Override
-    public Object start(final IApplicationContext context) throws Exception {
+    public Object start(@Nonnull final IApplicationContext context) throws Exception {
 
         CommandLine cmd = null;
         String[] args = null;
@@ -98,11 +100,11 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppUser = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_USER_NAME, "anonymous", null);
-        final String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
-        final String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppServer = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
         xmppInfo = new XmppInfo(xmppServer, xmppUser, xmppPassword);
@@ -163,7 +165,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         messageProcessor = new MessageProcessor();
         messageProcessor.start();
 
-        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+        Jms2OraActivator.getDefault().addSessionServiceListener(this);
 
         context.applicationRunning();
 
@@ -217,7 +219,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      * {@inheritDoc}
      */
     @Override
-    public void bindService(final ISessionService sessionService) {
+    public void bindService(@Nonnull final ISessionService sessionService) {
 
     	if (xmppInfo == null) {
     	    return;
@@ -236,7 +238,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      * {@inheritDoc}
      */
     @Override
-    public void unbindService(final ISessionService service) {
+    public void unbindService(@Nonnull final ISessionService service) {
     	// Nothing to do here
     }
 
@@ -244,28 +246,12 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
      * {@inheritDoc}
      */
     @Override
-    public void stopWorking() {
+    public void stopWorking(boolean restart) {
 
         running = false;
-        shutdown = true;
+        shutdown = !restart;
 
         LOG.info("The application will shutdown...");
-
-        synchronized(lock) {
-            lock.notify();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setRestart() {
-
-        running = false;
-        shutdown = false;
-
-        LOG.info("The application will restart...");
 
         synchronized(lock) {
             lock.notify();

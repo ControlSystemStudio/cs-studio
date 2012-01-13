@@ -36,7 +36,12 @@ public abstract class FilterDAO extends DAO
 {
 	public static void copyFilter(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyFilter(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyFilter(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyFilter(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyFilter(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupFilter(Connection masterDB) throws SQLException

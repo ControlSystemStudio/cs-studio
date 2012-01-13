@@ -47,9 +47,14 @@ public class FilterConditionProcessVariableDAO extends DAO {
 	 */
 	public static void copy(Connection masterDB,
 			Connection localDB) throws SQLException {
-		copyFilterConditionString(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copy(masterDB, localDB, DB_BACKUP_SUFFIX);
 	}
 
+	public static void copy(Connection masterDB,
+			Connection localDB, String masterDbSuffix) throws SQLException {
+		copyFilterConditionString(masterDB, localDB, masterDbSuffix, "");
+	}
+	
 	/**
 	 * Used by {@link ConfigReplicator} to copy from db (currentDB) to 'syn' db (currentDB).
 	 */

@@ -24,6 +24,8 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
 import org.csstudio.alarm.jms2ora.service.IMetaDataReader;
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
@@ -42,16 +44,16 @@ import org.slf4j.LoggerFactory;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Jms2OraPlugin implements BundleActivator {
+public class Jms2OraActivator implements BundleActivator {
     
     /** The plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.alarm.jms2ora";
     
     /** The class logger */
-    private static final Logger LOG = LoggerFactory.getLogger(Jms2OraPlugin.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Jms2OraActivator.class);
     
     /** The shared instance */
-    private static Jms2OraPlugin plugin;
+    private static Jms2OraActivator PLUGIN;
 
     /** The BundleContext instance */
     private BundleContext bundleContext;
@@ -71,11 +73,12 @@ public class Jms2OraPlugin implements BundleActivator {
     /**
      * {@inheritDoc}
      */
-    public void start(BundleContext context) throws Exception {
+    @Override
+    public void start(@Nonnull BundleContext context) throws Exception {
         
         LOG.info("Jms2Ora is starting.");
 
-        plugin = this;
+        PLUGIN = this;
         bundleContext = context;
         
         _genericServiceTracker = new GenericServiceTracker<ISessionService>(
@@ -95,8 +98,9 @@ public class Jms2OraPlugin implements BundleActivator {
     /**
      * {@inheritDoc}
      */
-    public void stop(BundleContext context) throws Exception {
-        plugin = null;
+    @Override
+    public void stop(@Nonnull BundleContext context) throws Exception {
+        PLUGIN = null;
         bundleContext = null;
         persistenceServiceTracker.close();
         metaDataServiceTracker.close();
@@ -109,6 +113,7 @@ public class Jms2OraPlugin implements BundleActivator {
      * 
      * @return The bundle context of this plugin
      */
+    @Nonnull
     public BundleContext getBundleContext() {
         return bundleContext;
     }
@@ -118,8 +123,9 @@ public class Jms2OraPlugin implements BundleActivator {
 	 *
 	 * @return the shared instance
 	 */
-	public static Jms2OraPlugin getDefault() {
-		return plugin;
+    @Nonnull
+	public static Jms2OraActivator getDefault() {
+		return PLUGIN;
 	}
 
 	/**
@@ -127,6 +133,7 @@ public class Jms2OraPlugin implements BundleActivator {
 	 * 
 	 * @return The plugin id
 	 */
+    @Nonnull
     public String getPluginId() {
         return PLUGIN_ID;
     }

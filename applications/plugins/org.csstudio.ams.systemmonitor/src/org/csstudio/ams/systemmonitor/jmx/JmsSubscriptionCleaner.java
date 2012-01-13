@@ -175,6 +175,6 @@ public class JmsSubscriptionCleaner {
                 value = "";
             }
         }
-        return (value.contains("AmsSystemCheck") || value.contains("SmsConnectorCheck"));
+        return (value.contains("AmsSystemCheck") || value.contains("SmsDeliveryWorkerCheck"));
     }
 }

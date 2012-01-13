@@ -35,15 +35,20 @@ import org.csstudio.ams.dbAccess.PreparedStatementHolder;
 
 public class TopicDAO extends DAO {
 
+	public static void copyTopic(Connection masterDB, Connection localDB)
+			throws SQLException {
+		copyTopic(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+
+	public static void copyTopic(Connection masterDB, Connection localDB, String masterDbSuffix)
+			throws SQLException {
+		copyTopic(masterDB, localDB, masterDbSuffix, "");
+	}
+	
 	public static void backupTopic(Connection masterDB) throws SQLException {
 		copyTopic(masterDB, masterDB, "", DB_BACKUP_SUFFIX);
 	}
-
-	public static void copyTopic(Connection masterDB, Connection localDB)
-			throws SQLException {
-		copyTopic(masterDB, localDB, DB_BACKUP_SUFFIX, "");
-	}
-
+	
 	private static void copyTopic(Connection masterDB, Connection targetDB,
 			String strMaster, String strTarget) throws SQLException {
 		final String query = "SELECT iTopicID, iGroupRef, cTopicName, cName, cDescription FROM AMS_Topic"

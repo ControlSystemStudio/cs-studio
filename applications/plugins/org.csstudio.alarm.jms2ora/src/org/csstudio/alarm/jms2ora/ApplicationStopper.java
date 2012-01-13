@@ -77,9 +77,9 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
         boolean success = false;
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        stopPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
+        stopPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
-        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+        Jms2OraActivator.getDefault().addSessionServiceListener(this);
 
         final Object lock = new Object();
         synchronized (lock) {
@@ -287,11 +287,11 @@ public class ApplicationStopper implements IGenericServiceListener<ISessionServi
     public void bindService(final ISessionService sessionService) {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppUser = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous", null);
-        final String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous", null);
-        final String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppServer = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
         try {

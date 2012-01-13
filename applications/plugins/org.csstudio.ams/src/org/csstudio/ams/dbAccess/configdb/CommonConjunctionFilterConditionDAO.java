@@ -50,9 +50,14 @@ public class CommonConjunctionFilterConditionDAO extends DAO {
 	 */
 	public static void copy(Connection masterDB, Connection localDB)
 			throws SQLException {
-		copyCommonConjunctionFilterCondition(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copy(masterDB, localDB, DB_BACKUP_SUFFIX);
 	}
 
+	public static void copy(Connection masterDB, Connection localDB, String masterDbSuffix)
+			throws SQLException {
+		copyCommonConjunctionFilterCondition(masterDB, localDB, masterDbSuffix, "");
+	}
+	
 	/**
 	 * Used by {@link ConfigReplicator} to copy from db (currentDB) to 'syn' db
 	 * (currentDB).
