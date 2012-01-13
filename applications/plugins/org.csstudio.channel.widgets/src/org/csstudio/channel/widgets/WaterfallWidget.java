@@ -46,8 +46,6 @@ import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
 
-import com.swtdesigner.ResourceManager;
-
 public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	
 	private VImageDisplay imageDisplay;
