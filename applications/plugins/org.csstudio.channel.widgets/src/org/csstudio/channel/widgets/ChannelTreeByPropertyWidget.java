@@ -142,10 +142,6 @@ implements ConfigurableWidget {
 		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
 	}
 	
-	private void setLastException(Exception ex) {
-		errorBar.setException(ex);
-	}
-	
 	private boolean showChannelNames = true;
 	
 	public boolean isShowChannelNames() {
