@@ -19,6 +19,7 @@ Export-Package: org.csstudio.ui.util,
  org.csstudio.ui.util.swt.stringtable,
  org.csstudio.ui.util.thread,
  org.csstudio.ui.util.widgets,
- org.csstudio.ui.util.wizards
+ org.csstudio.ui.util.wizards,
+ org.eclipse.wb.swt
 Bundle-Activator: org.csstudio.ui.util.Activator
 Bundle-ActivationPolicy: lazy
