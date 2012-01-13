@@ -25,13 +25,14 @@ package org.csstudio.alarm.jms2ora.management;
 
 import java.util.Arrays;
 import java.util.List;
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.equinox.app.IApplicationContext;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.application.ApplicationHandle;
@@ -41,19 +42,20 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Markus Moeller
  *
  */
-public class Stop implements IManagementCommand
-{
+public class Stop implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         
         CommandResult result = null;
         ApplicationHandle thisHandle = null;
-        BundleContext bundleContext = Jms2OraPlugin.getDefault().getBundleContext();
+        BundleContext bundleContext = Jms2OraActivator.getDefault().getBundleContext();
 
         IPreferencesService prefs = Platform.getPreferencesService();
-        String xmppShutdownPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
+        String xmppShutdownPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
         if(xmppShutdownPassword.length() > 0) {
             
@@ -69,12 +71,12 @@ public class Stop implements IManagementCommand
 
         String serviceFilter = "(&(objectClass=" +
         ApplicationHandle.class.getName() + ")"
-        + "(application.descriptor=" + Jms2OraPlugin.getDefault().getPluginId() + "*))";
+        + "(application.descriptor=" + Jms2OraActivator.getDefault().getPluginId() + "*))";
         
         // Get the application from the Application Admin Service
-        ServiceTracker tracker = null;
+        ServiceTracker<ApplicationHandle, IApplicationContext> tracker = null;
         try {
-            tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
+            tracker = new ServiceTracker<ApplicationHandle, IApplicationContext>(bundleContext, bundleContext.createFilter(serviceFilter), null);
             tracker.open();
         
             Object[] allServices = tracker.getServices();

@@ -40,9 +40,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Markus
  *
  */
-public class SmsConnectorCheck extends AbstractCheckProcessor
+public class SmsDeliveryWorkerCheck extends AbstractCheckProcessor
 {
-    public SmsConnectorCheck(String senderClientId,
+    public SmsDeliveryWorkerCheck(String senderClientId,
                              String receiverClientId,
                              String subscriberName)
                                      throws AmsSystemMonitorException {
@@ -62,7 +62,7 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
         int waitTime = 0;
         boolean success = false;
         
-        LOG.info("Starting check of SmsConnector.");
+        LOG.info("Starting check of SmsDeliveryWorker.");
 
         IPreferencesService pref = Platform.getPreferencesService();
         waitTime = pref.getInt(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_SMS_WAIT_TIME, -1, null);
@@ -73,7 +73,7 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
 
         LOG.info("Wait time for modem check: " + waitTime + " ms");
 
-        messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SMS_CONNECTOR, statusEntry);
+        messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SMS_DELIVERY_WORKER, statusEntry);
         // checkTimeStamp = convertDateStringToLong(messageContent.get("EVENTTIME"));
 
         // Send a new check message only if we do not wait for a older check message
@@ -124,15 +124,15 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
                 if(message instanceof MapMessage)
                 {
                     mapMessage = (MapMessage)message;
-                    result = messageHelper.getAnswerFromSmsConnector(mapMessage, messageContent);
+                    result = messageHelper.getAnswerFromSmsDeliveryWorker(mapMessage, messageContent);
                     if(result == CheckResult.NONE)
                     {
-                        LOG.warn("Received message is NOT a message from the SmsConnector.");
+                        LOG.warn("Received message is NOT a message from the SmsDeliveryWorker.");
                         LOG.warn(message.toString());
                     }
                     else
                     {
-                        LOG.info("SmsConnector answered: " + result);
+                        LOG.info("SmsDeliveryWorker answered: " + result);
                         LOG.info(message.toString());
                     }
                 }
@@ -156,7 +156,7 @@ public class SmsConnectorCheck extends AbstractCheckProcessor
                 throw new AmsSystemMonitorException("Timeout!", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
 
-            throw new AmsSystemMonitorException("No response from the SmsConnector.", AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
+            throw new AmsSystemMonitorException("No response from the SmsDeliveryWorker.", AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
         }
         else if(result == CheckResult.ERROR)
         {

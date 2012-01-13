@@ -93,10 +93,10 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
     public ApplicationChecker() {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        maxReceiveDiffTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID,
+        maxReceiveDiffTime = prefs.getLong(Jms2OraActivator.PLUGIN_ID,
                                PreferenceConstants.MAX_RECEIVE_DIFF_TIME, 10, null);
 
-        maxStoreDiffTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID,
+        maxStoreDiffTime = prefs.getLong(Jms2OraActivator.PLUGIN_ID,
                                            PreferenceConstants.MAX_STORE_DIFF_TIME, 10, null);
 
         // Convert the time to ms
@@ -123,7 +123,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         IRosterEntry currentApplic = null;
         boolean success = false;
 
-        Jms2OraPlugin.getDefault().addSessionServiceListener(this);
+        Jms2OraActivator.getDefault().addSessionServiceListener(this);
 
         final Object lock = new Object();
         synchronized (lock) {
@@ -232,7 +232,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
 
                     // Retrieve the check interval
                     final IPreferencesService pref = Platform.getPreferencesService();
-                    final String url = pref.getString(Jms2OraPlugin.PLUGIN_ID,
+                    final String url = pref.getString(Jms2OraActivator.PLUGIN_ID,
                                                 PreferenceConstants.JMS_PRODUCER_URL, "", null);
 
                     JmsSender sender = new JmsSender(url, "ALARM");
@@ -574,11 +574,11 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
     public final void bindService(final ISessionService service) {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        final String xmppUser = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppUser = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous", null);
-        final String xmppPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous", null);
-        final String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        final String xmppServer = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
         try {

@@ -23,7 +23,7 @@
 
 package org.csstudio.alarm.jms2ora.management;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.Stoppable;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.platform.management.CommandParameters;
@@ -43,10 +43,11 @@ public class Restart implements IManagementCommand {
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         
         IPreferencesService prefs = Platform.getPreferencesService();
-        String xmppShutdownPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
+        String xmppShutdownPassword = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
         if(xmppShutdownPassword.length() > 0) {
             
@@ -60,7 +61,7 @@ public class Restart implements IManagementCommand {
             }
         }
 
-        objectToBeRestarted.setRestart();
+        objectToBeRestarted.stopWorking(true);
         
         return CommandResult.createMessageResult("\nRestarting Jms2Ora...");
     }

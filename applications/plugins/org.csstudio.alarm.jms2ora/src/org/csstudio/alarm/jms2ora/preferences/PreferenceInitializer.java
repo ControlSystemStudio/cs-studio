@@ -24,7 +24,7 @@
 
 package org.csstudio.alarm.jms2ora.preferences;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -38,7 +38,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         
-        IEclipsePreferences prefs = new DefaultScope().getNode(Jms2OraPlugin.getDefault().getPluginId());
+        IEclipsePreferences prefs = new DefaultScope().getNode(Jms2OraActivator.getDefault().getPluginId());
 
         prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
         prefs.put(PreferenceConstants.XMPP_PASSWORD, "anonymous");
