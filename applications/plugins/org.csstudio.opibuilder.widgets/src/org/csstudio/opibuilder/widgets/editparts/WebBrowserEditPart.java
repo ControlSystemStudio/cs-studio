@@ -55,11 +55,11 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 		setPropertyChangeHandler(WebBrowserModel.PROP_URL, urlHandler);
 	}	
 	
-	@Override
-	public void deactivate() {
-		((AbstractWebBrowserFigure)getFigure()).dispose();		
-		super.deactivate();
-	}
+//	@Override
+//	public void deactivate() {
+////		((AbstractWebBrowserFigure)getFigure()).dispose();		
+//		super.deactivate();
+//	}
 	
 	public Browser getBrowser(){
 		return ((AbstractWebBrowserFigure)getFigure()).getBrowser();
