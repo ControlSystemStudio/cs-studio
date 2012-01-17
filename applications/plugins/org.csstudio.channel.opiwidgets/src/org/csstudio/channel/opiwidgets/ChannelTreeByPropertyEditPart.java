@@ -14,7 +14,7 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 	protected ChannelTreeByPropertyFigure doCreateFigure() {
 		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		registerPopup(figure.getSWTWidget());
+//		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	
