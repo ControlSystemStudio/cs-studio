@@ -17,7 +17,7 @@ class LoginDialog(Dialog):
     
     def createDialogArea(self, parent):
         self.getShell().setText("Login")
-        container = Dialog.createDialogArea(self, parent) 
+        container=self.super__createDialogArea(parent)
         gridLayout= container.getLayout()
         gridLayout.numColumns=2;  
         
@@ -34,11 +34,11 @@ class LoginDialog(Dialog):
         
         self.passwordText = Text(container, SWT.BORDER|SWT.PASSWORD)
         self.passwordText.setLayoutData(GridData(SWT.FILL, SWT.CENTER, True, False))
-        
+        return container
     def okPressed(self):
         self.userName=self.text.getText()
         self.passWord=self.passwordText.getText()
-        Dialog.okPressed(self)
+        self.super__okPressed()
     
     def getLoginInfo(self):
         return [self.userName, self.passWord]        
