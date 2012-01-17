@@ -344,13 +344,12 @@ public class SearchView extends ViewPart
         // Warn when searching ALL channels
         if (pattern_txt.length() <= 0)
     	{
-            if (! MessageDialog.openConfirm(pattern.getShell(),
+            MessageDialog.openInformation(pattern.getShell(),
                     Messages.Search,
-                    Messages.SearchPatternConfirmMessage))
-            {   // Aborted, move focus to search pattern
-                pattern.setFocus();
-                return;
-            }
+                    Messages.SearchPatternEmptyMessage);
+            // Aborted, move focus to search pattern
+            pattern.setFocus();
+            return;
     	}
 
         final ArchiveReader reader = archive_gui.getArchiveReader();
