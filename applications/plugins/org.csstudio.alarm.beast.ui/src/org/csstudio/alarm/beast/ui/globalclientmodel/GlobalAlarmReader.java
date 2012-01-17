@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -57,8 +58,9 @@ public class GlobalAlarmReader
     {
         final List<AlarmTreeRoot> alarms = new ArrayList<AlarmTreeRoot>();
 
-        final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.sel_global_alarm_pvs);
-        final PreparedStatement path_statement = rdb.getConnection().prepareStatement(sql.sel_item_by_id);
+        final Connection connection = rdb.getConnection();
+        final PreparedStatement statement = connection.prepareStatement(sql.sel_global_alarm_pvs);
+        final PreparedStatement path_statement = connection.prepareStatement(sql.sel_item_by_id);
         try
         {
             statement.setBoolean(1, true);
@@ -93,6 +95,7 @@ public class GlobalAlarmReader
         {
             path_statement.close();
             statement.close();
+            connection.commit();
         }
 
         return alarms;

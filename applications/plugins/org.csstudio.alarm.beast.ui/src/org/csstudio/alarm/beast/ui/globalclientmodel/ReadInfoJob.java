@@ -63,6 +63,7 @@ public class ReadInfoJob extends Job
             monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
             final SQL sql = new SQL(rdb, rdb_schema);
             alarm.completeGuiInfo(rdb, sql);
+            rdb.getConnection().commit();
         }
         catch (Exception ex)
         {   // Log
