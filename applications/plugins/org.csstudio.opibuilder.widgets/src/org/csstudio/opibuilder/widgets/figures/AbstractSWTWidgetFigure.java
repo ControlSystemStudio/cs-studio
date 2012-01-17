@@ -125,15 +125,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 				if(wrapComposite==null)
 					swtWidget.moveAbove(null);
 				swtWidget.setEnabled(runmode);
-				// select the combo when mouse down
-//				swtWidget
-//						.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
-//							@Override
-//							public void mouseDown(
-//									org.eclipse.swt.events.MouseEvent e) {
-//								editPart.getViewer().select(editPart);								
-//							}
-//						});
+				// select the swt widget when menu about to show
+
 				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
 					
 					@Override
@@ -142,14 +135,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 
 					}
 				};
-				swtWidget.addMenuDetectListener(menuDetectListener);
 				
-				//hack for composite widget with multiple children.
-				if(swtWidget instanceof Composite){
-					for(Control control : ((Composite)swtWidget).getChildren()){
-						control.addMenuDetectListener(menuDetectListener);
-					}
-				}
+				addMenuDetectListener(swtWidget, menuDetectListener);
 				
 				// update tooltip
 				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget, 
@@ -164,6 +151,21 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 				// hook the context menu to combo
 				swtWidget.setMenu(editPart.getViewer().getContextMenu()
 						.createContextMenu(composite));
+			}
+
+			/**Add menu detect listener recursively to all children widgets inside the SWT Widget.
+			 * @param swtWidget
+			 * @param menuDetectListener
+			 */
+			private void addMenuDetectListener(final Control swtWidget,
+					MenuDetectListener menuDetectListener) {
+				swtWidget.addMenuDetectListener(menuDetectListener);
+				//hack for composite widget with multiple children.
+				if(swtWidget instanceof Composite){
+					for(Control control : ((Composite)swtWidget).getChildren()){
+						addMenuDetectListener(control, menuDetectListener);						
+					}
+				}
 			}
 		});
 		
