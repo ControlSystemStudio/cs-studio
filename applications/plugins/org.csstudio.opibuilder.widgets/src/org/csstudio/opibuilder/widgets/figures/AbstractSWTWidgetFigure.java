@@ -134,14 +134,23 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 //								editPart.getViewer().select(editPart);								
 //							}
 //						});
-				swtWidget.addMenuDetectListener(new MenuDetectListener() {
+				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
 					
 					@Override
 					public void menuDetected(MenuDetectEvent e) {
 						editPart.getViewer().select(editPart);								
 
 					}
-				});
+				};
+				swtWidget.addMenuDetectListener(menuDetectListener);
+				
+				//hack for composite widget with multiple children.
+				if(swtWidget instanceof Composite){
+					for(Control control : ((Composite)swtWidget).getChildren()){
+						control.addMenuDetectListener(menuDetectListener);
+					}
+				}
+				
 				// update tooltip
 				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget, 
 						new MouseTrackAdapter() {
