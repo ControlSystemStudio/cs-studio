@@ -71,11 +71,11 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		return runmode;
 	}
 	
-	@Override
-	public void dispose() {
-		if(runmode) {
-			super.dispose();
-			getSWTWidget().dispose();
-		}
-	}
+//	@Override
+//	public void dispose() {
+//		if(runmode) {
+//			super.dispose();
+//			getSWTWidget().dispose();
+//		}
+//	}
 }
