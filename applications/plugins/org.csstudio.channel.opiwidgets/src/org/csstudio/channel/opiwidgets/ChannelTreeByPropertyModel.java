@@ -13,14 +13,16 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	
 	public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$	
 	public static final String TREE_PROPERTIES = "tree_properties"; //$NON-NLS-1$	
-	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
+	public static final String SELECTION_PV = "selection_pv"; //$NON-NLS-1$	
+	public static final String SELECTION_EXPRESSION = "selection_expression"; //$NON-NLS-1$	
 	public static final String SHOW_CHANNEL_NAMES = "show_channel_names"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(CONFIGURABLE, "Configurable", WidgetPropertyCategory.Behavior, false));
 		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(SELECTION_PV_NAME, "Selection PV Name", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(SELECTION_PV, "Selection PV", WidgetPropertyCategory.Behavior, ""));
+		addProperty(new StringProperty(SELECTION_EXPRESSION, "Selection Expression", WidgetPropertyCategory.Behavior, ""));
 		addProperty(new BooleanProperty(SHOW_CHANNEL_NAMES, "Show channel names", WidgetPropertyCategory.Basic, true));
 	}
 
@@ -40,14 +42,23 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	}
 	
 	public String getSelectionPvName() {
-		String pvName = getCastedPropertyValue(SELECTION_PV_NAME);
+		String pvName = getCastedPropertyValue(SELECTION_PV);
 		if (pvName.trim().isEmpty())
 			return null;
 		return pvName;
 	}
 	
 	public String getNotificationString() {
-		return "#(" + getTreeProperties().get(getTreeProperties().size() - 1) + ")";
+		String selectionExpression = getCastedPropertyValue(SELECTION_EXPRESSION);
+		if (selectionExpression != null && !selectionExpression.trim().isEmpty()) {
+			return selectionExpression;
+		}
+		
+		if (isShowChannelNames()) {
+			return "#(Channel Name)";
+		} else {
+			return "#(" + getTreeProperties().get(getTreeProperties().size() - 1) + ")";
+		}
 	}
 	
 	public boolean getConfigurable() {

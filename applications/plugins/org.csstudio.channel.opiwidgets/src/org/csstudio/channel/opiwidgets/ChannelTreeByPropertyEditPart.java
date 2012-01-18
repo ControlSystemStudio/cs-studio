@@ -49,7 +49,8 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		};
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.TREE_PROPERTIES, reconfigure);
-		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV_NAME, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_EXPRESSION, reconfigure);
 	}
 	
 }
