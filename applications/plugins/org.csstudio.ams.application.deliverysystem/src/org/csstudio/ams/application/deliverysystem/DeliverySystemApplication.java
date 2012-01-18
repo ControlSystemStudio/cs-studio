@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
 import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
@@ -74,27 +73,36 @@ public class DeliverySystemApplication implements IApplication,
 		
 	    Activator.getPlugin().addSessionServiceListener(this);
 	    
+	    DeliveryWorkerList workerList = new DeliveryWorkerList();
+	    
         IExtensionRegistry extReg = Platform.getExtensionRegistry();
         IConfigurationElement[] confElements = extReg
                 .getConfigurationElementsFor("org.csstudio.ams.delivery.DeliveryWorker");
         
-        LOG.debug("Implementationen: {}", confElements.length);
-        
         if(confElements.length > 0) {
-            
+
+            LOG.info("I've found {} implementations in the extension registry.", confElements.length);
+            if (workerList.isEmpty()) {
+                LOG.warn("... but no delivery worker is defined in the configuration file. Leaving application.");
+                running = false;
+            }
+
             for (int i = 0; i < confElements.length; i++) {
                 
-                try {
-                    
-                    AbstractDeliveryWorker worker =
-                            (AbstractDeliveryWorker) confElements[i]
-                                    .createExecutableExtension("class");
-                    Thread thread = new Thread(worker);
-                    thread.start();
-                    deliveryWorker.put(worker, thread);
-                } catch (CoreException ce) {
-                    LOG.error("*** CoreException *** : ", ce);
-                    running = false;
+                String className = confElements[i].getAttribute("class");
+                if (workerList.containsWorker(className)) {
+                    try {
+                        
+                        AbstractDeliveryWorker worker =
+                                (AbstractDeliveryWorker) confElements[i]
+                                        .createExecutableExtension("class");
+                        Thread thread = new Thread(worker);
+                        thread.start();
+                        deliveryWorker.put(worker, thread);
+                    } catch (CoreException ce) {
+                        LOG.error("*** CoreException *** : ", ce);
+                        running = false;
+                    }
                 }
             }
         } else {
