@@ -10,7 +10,7 @@ import org.junit.Test;
 public class ChannelNotificationStringTest {
 
 	@Test
-	public void validString() {
+	public void validString1() {
 		ChannelNotificationString string = new ChannelNotificationString("abcd");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().isEmpty(), true);
@@ -63,6 +63,14 @@ public class ChannelNotificationStringTest {
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
 		assertEquals(string.getRequiredProperties().get(1), "prop2");
 		assertEquals(string.notification(Arrays.asList("value1", "value2")), "value1value2");
+	}
+
+	@Test
+	public void invalidString1() {
+		ChannelNotificationString string = new ChannelNotificationString("#(prop1");
+		assertNotNull(string.getRequiredProperties());
+		assertEquals(string.getRequiredProperties().size(), 0);
+		assertEquals(string.notification(Collections.<String>emptyList()), "#(prop1");
 	}
 
 }

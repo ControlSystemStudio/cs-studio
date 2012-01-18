@@ -8,14 +8,12 @@ import java.util.regex.Pattern;
 
 public class ChannelNotificationString {
 	
-	private final String notificationString;
 	private final List<String> requiredProperties = new ArrayList<String>();
 	private final List<String> textTokens = new ArrayList<String>();
 	private static final String TOKEN_PATTERN = "#\\((\\w*)\\)";
 	private static final Pattern PATTERN = Pattern.compile(TOKEN_PATTERN);
 	
 	public ChannelNotificationString(String notificationString) {
-		this.notificationString = notificationString;
 		Matcher matcher = PATTERN.matcher(notificationString);
 		int previousEnd = 0;
 		while (matcher.find()) {
