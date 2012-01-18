@@ -40,7 +40,14 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	}
 	
 	public String getSelectionPvName() {
-		return getCastedPropertyValue(SELECTION_PV_NAME);
+		String pvName = getCastedPropertyValue(SELECTION_PV_NAME);
+		if (pvName.trim().isEmpty())
+			return null;
+		return pvName;
+	}
+	
+	public String getNotificationString() {
+		return "#(" + getTreeProperties().get(getTreeProperties().size() - 1) + ")";
 	}
 	
 	public boolean getConfigurable() {

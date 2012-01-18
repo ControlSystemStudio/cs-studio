@@ -18,10 +18,18 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		return figure;
 	}
 	
-	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
+	private ChannelTreeByPropertySelectionNotification notification;
+	private void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
 		if (runMode) {
 			widget.setChannelQuery(model.getChannelQuery());
-			widget.setSelectionPv(model.getSelectionPvName());
+			if (notification != null) {
+				notification.close();
+				notification = null;
+			}
+			if (model.getSelectionPvName() != null && !model.getSelectionPvName().isEmpty()) {
+				notification = new ChannelTreeByPropertySelectionNotification(model.getSelectionPvName(),
+					model.getNotificationString(), widget);
+			}
 		}
 		widget.setProperties(model.getTreeProperties());
 		widget.setConfigurable(model.getConfigurable());
