@@ -181,6 +181,7 @@ implements ConfigurableWidget {
 	protected void queryCleared() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
+		errorBar.setException(null);
 	}
 	
 	@Override
