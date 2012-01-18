@@ -3,6 +3,7 @@ package org.csstudio.channel.opiwidgets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,22 @@ public class ChannelNotificationString {
 		int n = 0;
 		for (n = 0; n < requiredProperties.size(); n++) {
 			builder.append(textTokens.get(n)).append(propertyValues.get(n));
+		}
+		builder.append(textTokens.get(n));
+		return builder.toString();
+	}
+
+	public String notification(Map<String, String> map) {
+		StringBuilder builder = new StringBuilder();
+		int n = 0;
+		for (n = 0; n < requiredProperties.size(); n++) {
+			builder.append(textTokens.get(n));
+			String value = map.get(requiredProperties.get(n));
+			if (value == null || value.isEmpty()) {
+				return "";
+			} else {
+				builder.append(value);
+			}
 		}
 		builder.append(textTokens.get(n));
 		return builder.toString();
