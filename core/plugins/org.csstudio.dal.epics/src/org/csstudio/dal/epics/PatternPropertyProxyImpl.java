@@ -22,11 +22,11 @@
 
 package org.csstudio.dal.epics;
 
-import java.util.BitSet;
-
 import gov.aps.jca.dbr.DBRType;
 
-import org.epics.css.dal.RemoteException;
+import java.util.BitSet;
+
+import org.csstudio.dal.RemoteException;
 
 /**
  * Pattern property proxy implementation.
@@ -40,7 +40,7 @@ public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet> {
 	 * @param name property name.
 	 * @throws RemoteException
 	 */
-	public PatternPropertyProxyImpl(EPICSPlug plug, String name)
+	public PatternPropertyProxyImpl(final EPICSPlug plug, final String name)
 			throws RemoteException {
 		super(plug, name, BitSet.class, DBRType.ENUM);
 	}

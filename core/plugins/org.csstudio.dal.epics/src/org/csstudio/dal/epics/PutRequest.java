@@ -25,9 +25,9 @@ package org.csstudio.dal.epics;
 import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
 
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.impl.RequestImpl;
-import org.epics.css.dal.impl.ResponseImpl;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.impl.RequestImpl;
+import org.csstudio.dal.impl.ResponseImpl;
 
 
 /**
@@ -41,13 +41,13 @@ public class PutRequest<T> extends RequestImpl<T> implements PutListener
 	 * Proxy of this request.
 	 */
 	protected PropertyProxyImpl<T> proxy;
-	private T value;
+	private final T value;
 	/**
 	 * Construcor.
      * @param proxy proxy of this request.
      * @param l listener to notify.
      */
-	public PutRequest(PropertyProxyImpl<T> proxy, ResponseListener<T> l, T value)
+	public PutRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final T value)
 	{
 		super(proxy, l, 1);
 		this.proxy = proxy;
@@ -57,7 +57,8 @@ public class PutRequest<T> extends RequestImpl<T> implements PutListener
 	/*
 	 * @see gov.aps.jca.event.PutListener#putCompleted(gov.aps.jca.event.PutEvent)
 	 */
-	public void putCompleted(PutEvent ev)
+	@Override
+    public void putCompleted(final PutEvent ev)
 	{
 		addResponse(new ResponseImpl<T>(proxy, this, value, "value",
 		        ev.getStatus().isSuccessful(), null, proxy.getCondition(), null,

@@ -22,7 +22,7 @@
 
 package org.csstudio.dal.epics;
 
-import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.csstudio.dal.impl.DefaultApplicationContext;
 
 /**
  * Default EPICS application context.
@@ -35,17 +35,17 @@ public class EPICSApplicationContext extends DefaultApplicationContext {
 	 * Constructor.
 	 * @param name	context name.
 	 */
-	public EPICSApplicationContext(String name) {
+	public EPICSApplicationContext(final String name) {
 		super(name);
 		//SimulatorUtilities.configureSimulatorPlug(getConfiguration());
 		PlugUtilities.configureEPICSPlug(getConfiguration());
-		
+
 		/*
 		dal.plugs=Simulator,EPICS
 		dal.plugs.default=EPICS
-		dal.devicefactory.Simulator=org.epics.css.dal.simulation.DeviceFactoryImpl
-		dal.propertyfactory.Simulator=org.epics.css.dal.simulation.PropertyFactoryImpl
-		dal.propertyfactory.EPICS=org.epics.css.dal.epics.PropertyFactoryImpl
+		dal.devicefactory.Simulator=org.csstudio.dal.simulation.DeviceFactoryImpl
+		dal.propertyfactory.Simulator=org.csstudio.dal.simulation.PropertyFactoryImpl
+		dal.propertyfactory.EPICS=org.csstudio.dal.epics.PropertyFactoryImpl
 		*/
 	}
 

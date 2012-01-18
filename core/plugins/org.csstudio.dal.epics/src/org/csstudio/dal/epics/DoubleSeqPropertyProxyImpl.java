@@ -24,7 +24,7 @@ package org.csstudio.dal.epics;
 
 import gov.aps.jca.dbr.DBRType;
 
-import org.epics.css.dal.RemoteException;
+import org.csstudio.dal.RemoteException;
 
 /**
  * Double sequence property proxy implementation.
@@ -38,7 +38,7 @@ public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]> {
 	 * @param name property name.
 	 * @throws RemoteException
 	 */
-	public DoubleSeqPropertyProxyImpl(EPICSPlug plug, String name)
+	public DoubleSeqPropertyProxyImpl(final EPICSPlug plug, final String name)
 			throws RemoteException {
 		super(plug, name, double[].class, DBRType.DOUBLE);
 	}

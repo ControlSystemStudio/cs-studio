@@ -53,30 +53,30 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.epics.css.dal.AccessType;
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.EnumPropertyCharacteristics;
-import org.epics.css.dal.NumericPropertyCharacteristics;
-import org.epics.css.dal.PatternPropertyCharacteristics;
-import org.epics.css.dal.PropertyCharacteristics;
-import org.epics.css.dal.RemoteException;
-import org.epics.css.dal.Request;
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.SequencePropertyCharacteristics;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.impl.RequestImpl;
-import org.epics.css.dal.impl.ResponseImpl;
-import org.epics.css.dal.proxy.AbstractPropertyProxyImpl;
-import org.epics.css.dal.proxy.DirectoryProxy;
-import org.epics.css.dal.proxy.MonitorProxy;
-import org.epics.css.dal.proxy.PropertyProxy;
-import org.epics.css.dal.proxy.SyncPropertyProxy;
-import org.epics.css.dal.simple.impl.DataUtil;
-import org.epics.css.dal.spi.Plugs;
+import org.csstudio.dal.AccessType;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.DataExchangeException;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.EnumPropertyCharacteristics;
+import org.csstudio.dal.NumericPropertyCharacteristics;
+import org.csstudio.dal.PatternPropertyCharacteristics;
+import org.csstudio.dal.PropertyCharacteristics;
+import org.csstudio.dal.RemoteException;
+import org.csstudio.dal.Request;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.SequencePropertyCharacteristics;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.impl.RequestImpl;
+import org.csstudio.dal.impl.ResponseImpl;
+import org.csstudio.dal.proxy.AbstractPropertyProxyImpl;
+import org.csstudio.dal.proxy.DirectoryProxy;
+import org.csstudio.dal.proxy.MonitorProxy;
+import org.csstudio.dal.proxy.PropertyProxy;
+import org.csstudio.dal.proxy.SyncPropertyProxy;
+import org.csstudio.dal.simple.impl.DataUtil;
+import org.csstudio.dal.spi.Plugs;
 
 import com.cosylab.epics.caj.CAJChannel;
 import com.cosylab.util.BitCondition;
@@ -193,7 +193,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#destroy()
+	 * @see org.csstudio.dal.proxy.AbstractProxyImpl#destroy()
 	 */
 	@Override
 	public synchronized void destroy() {
@@ -223,7 +223,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.PropertyProxy#getValueAsync(org.epics.css.dal.ResponseListener)
+	 * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(org.csstudio.dal.ResponseListener)
 	 */
 	@Override
     public Request<T> getValueAsync(final ResponseListener<T> callback)
@@ -240,7 +240,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.PropertyProxy#setValueAsync(T, org.epics.css.dal.ResponseListener)
+	 * @see org.csstudio.dal.proxy.PropertyProxy#setValueAsync(T, org.csstudio.dal.ResponseListener)
 	 */
 	@Override
     public Request<T> setValueAsync(final T value, final ResponseListener<T> callback)
@@ -289,7 +289,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#getValueSync()
+	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#getValueSync()
 	 */
 	@Override
     public T getValueSync() throws DataExchangeException {
@@ -332,7 +332,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
+	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
 	 */
 	@Override
     public void setValueSync(final Object value) throws DataExchangeException {
@@ -353,7 +353,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 
 
 	/*
-	 * @see org.epics.css.dal.proxy.PropertyProxy#isSettable()
+	 * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
 	 */
 	@Override
     public boolean isSettable() {
@@ -361,7 +361,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.PropertyProxy#createMonitor(org.epics.css.dal.ResponseListener)
+	 * @see org.csstudio.dal.proxy.PropertyProxy#createMonitor(org.csstudio.dal.ResponseListener)
 	 */
 	@Override
     public synchronized MonitorProxy createMonitor(final ResponseListener<T> callback, final Map<String,Object> param)
@@ -1000,7 +1000,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.AbstractProxyImpl#setConnectionState(org.epics.css.dal.context.ConnectionState)
+	 * @see org.csstudio.dal.proxy.AbstractProxyImpl#setConnectionState(org.csstudio.dal.context.ConnectionState)
 	 */
 	@Override
 	public void setConnectionState(final ConnectionState s, final Throwable error) {
@@ -1018,7 +1018,7 @@ public class PropertyProxyImpl<T> extends AbstractPropertyProxyImpl<T,EPICSPlug,
 	}
 
 	/*
-	 * @see org.epics.css.dal.proxy.DirectoryProxy#refresh()
+	 * @see org.csstudio.dal.proxy.DirectoryProxy#refresh()
 	 */
 	@Override
     public void refresh() {

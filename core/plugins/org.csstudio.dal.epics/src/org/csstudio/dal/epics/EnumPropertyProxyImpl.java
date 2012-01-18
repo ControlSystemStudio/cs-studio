@@ -24,12 +24,10 @@ package org.csstudio.dal.epics;
 
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
-import gov.aps.jca.dbr.LABELS;
 
-import org.epics.css.dal.EnumPropertyCharacteristics;
-import org.epics.css.dal.NumericPropertyCharacteristics;
-import org.epics.css.dal.PatternPropertyCharacteristics;
-import org.epics.css.dal.RemoteException;
+import org.csstudio.dal.EnumPropertyCharacteristics;
+import org.csstudio.dal.NumericPropertyCharacteristics;
+import org.csstudio.dal.RemoteException;
 
 /**
  * Enum property proxy implementation.
@@ -43,20 +41,20 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long> {
 	 * @param name property name.
 	 * @throws RemoteException
 	 */
-	public EnumPropertyProxyImpl(EPICSPlug plug, String name)
+	public EnumPropertyProxyImpl(final EPICSPlug plug, final String name)
 			throws RemoteException {
 		super(plug, name, Long.class, DBRType.ENUM);
 	}
 
 	@Override
-	protected void createSpecificCharacteristics(DBR dbr) {
-		
-		
+	protected void createSpecificCharacteristics(final DBR dbr) {
+
+
 		String[] names= (String[])getCharacteristics().get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
-		
+
 		if (names==null || names.length==0) {
 			names= new String[16];
-			Object[] vals= new Object[16];
+			final Object[] vals= new Object[16];
 			for (int i = 0; i < names.length; i++) {
 				names[i]="Value "+i;
 				vals[i]= new Long(i);
@@ -70,6 +68,6 @@ public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long> {
 
 		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(0));
 		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(names.length));
-		
+
 	}
 }

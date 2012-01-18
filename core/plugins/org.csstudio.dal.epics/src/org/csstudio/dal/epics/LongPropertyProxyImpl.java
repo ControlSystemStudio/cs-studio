@@ -24,7 +24,7 @@ package org.csstudio.dal.epics;
 
 import gov.aps.jca.dbr.DBRType;
 
-import org.epics.css.dal.RemoteException;
+import org.csstudio.dal.RemoteException;
 
 /**
  * Long property proxy implementation.
@@ -38,7 +38,7 @@ public class LongPropertyProxyImpl extends PropertyProxyImpl<Long> {
 	 * @param name property name.
 	 * @throws RemoteException
 	 */
-	public LongPropertyProxyImpl(EPICSPlug plug, String name)
+	public LongPropertyProxyImpl(final EPICSPlug plug, final String name)
 			throws RemoteException {
 		super(plug, name, Long.class, DBRType.INT);
 	}

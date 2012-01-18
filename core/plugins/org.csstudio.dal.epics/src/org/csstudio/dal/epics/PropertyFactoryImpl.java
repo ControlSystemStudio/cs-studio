@@ -22,8 +22,8 @@
 
 package org.csstudio.dal.epics;
 
-import org.epics.css.dal.proxy.AbstractPlug;
-import org.epics.css.dal.spi.AbstractPropertyFactory;
+import org.csstudio.dal.proxy.AbstractPlug;
+import org.csstudio.dal.spi.AbstractPropertyFactory;
 
 /**
  * EPICS PropertyFactory implementation
@@ -33,7 +33,7 @@ import org.epics.css.dal.spi.AbstractPropertyFactory;
 public class PropertyFactoryImpl extends AbstractPropertyFactory
 {
 	/**
-	 * @see org.epics.css.dal.spi.AbstractFactorySupport#getPlugClass()
+	 * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
 	 */
 	@Override
 	protected Class<? extends AbstractPlug> getPlugClass() {
@@ -46,5 +46,5 @@ public class PropertyFactoryImpl extends AbstractPropertyFactory
 	public PropertyFactoryImpl() {
 		super();
 	}
-	
+
 }

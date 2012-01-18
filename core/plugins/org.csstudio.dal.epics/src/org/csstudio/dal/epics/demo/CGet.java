@@ -21,7 +21,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.csstudio.dal.epics.demo;
 
@@ -31,15 +31,15 @@ import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.csstudio.dal.DynamicValueAdapter;
+import org.csstudio.dal.DynamicValueEvent;
+import org.csstudio.dal.DynamicValueListener;
+import org.csstudio.dal.DynamicValueProperty;
 import org.csstudio.dal.epics.EPICSApplicationContext;
-import org.epics.css.dal.DynamicValueAdapter;
-import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.spi.DefaultPropertyFactoryService;
-import org.epics.css.dal.spi.LinkPolicy;
-import org.epics.css.dal.spi.Plugs;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.spi.DefaultPropertyFactoryService;
+import org.csstudio.dal.spi.LinkPolicy;
+import org.csstudio.dal.spi.Plugs;
+import org.csstudio.dal.spi.PropertyFactory;
 
 /**
  * @author ikriznar
@@ -54,70 +54,71 @@ public class CGet implements Runnable {
 	SimpleDateFormat f= new SimpleDateFormat("yyyy-mm-dd'T'HH:mm:ss.SSS");
 	final static String HELP="*** Channel Getter *** \nType one of following options:\nh - this help\ni - information about connection status\ns - change current plug to system default plug\ns <plug> - change plug to <plug> (Simulator or EPICS so far)\nc - disconnect any connected channel\nc <name> - connects to channel <name>\ng - gets latest value\np <value> - puts value\nm - registeres monitor until <enter> key is pressed\nx or q - exit";
 	String plug = "Simulator";
-	
-	DynamicValueListener listener= new DynamicValueAdapter() {
-	
-		@Override
-		public void valueChanged(DynamicValueEvent event) {
-			out(f.format(new Date(event.getTimestamp().getMilliseconds()))+' '+event.getValue()+' '+event.getCondition().getStates().toString());
-		}
-		@Override
-		public void valueUpdated(DynamicValueEvent event) {
-			out(f.format(new Date(event.getTimestamp().getMilliseconds()))+' '+event.getValue()+' '+event.getCondition().getStates().toString());
-		}
-	
-	};
-	
 
-	public static void main(String[] args) {
-		CGet ex= new CGet();
+	DynamicValueListener listener= new DynamicValueAdapter() {
+
+		@Override
+		public void valueChanged(final DynamicValueEvent event) {
+			out(f.format(new Date(event.getTimestamp().getMilliseconds()))+' '+event.getValue()+' '+event.getCondition().getStates().toString());
+		}
+		@Override
+		public void valueUpdated(final DynamicValueEvent event) {
+			out(f.format(new Date(event.getTimestamp().getMilliseconds()))+' '+event.getValue()+' '+event.getCondition().getStates().toString());
+		}
+
+	};
+
+
+	public static void main(final String[] args) {
+		final CGet ex= new CGet();
 		ex.run();
 		System.exit(0);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 */
 	public CGet() {
 		super();
 		in= new BufferedReader(new InputStreamReader(System.in),128);
 	}
-	
-	private void out(String s) {
+
+	private void out(final String s) {
 		System.out.print("< ");
 		System.out.println(s);
 	}
-	
+
 	private String read() {
 		System.out.print("> ");
 		try {
 			return in.readLine();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 		return "";
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
-	public void run() {
+	@Override
+    public void run() {
 		ctx= new EPICSApplicationContext("ChannelExplorer");
 		factory= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY);
-		
-		
+
+
 		boolean alive=true;
-		
+
 		printHelp();
-		
+
 		while (alive) {
 			try {
-				String s= read();
-				
+				final String s= read();
+
 				if (prop!=null) {
 					prop.removeDynamicValueListener(listener);
 				}
-				
+
 				if ("h".equals(s) || s==null) {
 					printHelp();
 				} else if ("q".equals(s) || "x".equals(s)) {
@@ -147,18 +148,19 @@ public class CGet implements Runnable {
 							Object value = prop.getValue();
 							if (value.getClass().isArray()) {
 								final int len = Array.getLength(value);
-								StringBuffer str = new StringBuffer(64);
+								final StringBuffer str = new StringBuffer(64);
 								str.append("[");
 								for (int i = 0; i < len; i++) {
 									str.append(Array.get(value, i));
-									if (i < len-1)
-										str.append(",");
+									if (i < len-1) {
+                                        str.append(",");
+                                    }
 								}
 								str.append("]");
 								value = str;
 							}
 							out(value.toString());
-						} catch (Exception e) {
+						} catch (final Exception e) {
 							e.printStackTrace();
 						}
 					}
@@ -183,51 +185,51 @@ public class CGet implements Runnable {
 				} else {
 					printHelp();
 				}
-				
-			} catch (Exception e) {
+
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	
-	private void connect(String s) {
+
+	private void connect(final String s) {
 		if (prop!=null) {
 			out("Disconnected from "+prop.getName());
 			factory.getPropertyFamily().destroy(prop);
 			prop=null;
 		}
-		
+
 		if (s==null || s.length()==0) {
 			return;
 		}
-		
+
 		try {
-			prop= (DynamicValueProperty)factory.getProperty(s);
+			prop= factory.getProperty(s);
 			out("Connected to "+s+".");
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void printHelp() {
 		out(HELP);
 	}
-	
-	private void setPlug(String p) {
-		
+
+	private void setPlug(final String p) {
+
 		connect(null);
-		
+
 		if (factory!= null) {
 			factory.getPropertyFamily().destroyAll();
 		}
-		
+
 		if (p!=null) {
 			factory= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY,p);
 		} else {
 			factory= DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY);
 		}
-		
+
 		out("Now using plug "+factory.getPlugType());
 
 	}

@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.dal.epics.Activator
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
 Require-Bundle: org.eclipse.core.runtime,
  org.junit,
- org.csstudio.platform.libs.dal,
+ org.csstudio.dal,
  org.csstudio.platform.libs.epics;visibility:=reexport,
  org.apache.log4j;bundle-version="1.2.16"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

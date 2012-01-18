@@ -25,9 +25,9 @@ package org.csstudio.dal.epics;
 import gov.aps.jca.event.GetEvent;
 import gov.aps.jca.event.GetListener;
 
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.impl.RequestImpl;
-import org.epics.css.dal.impl.ResponseImpl;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.impl.RequestImpl;
+import org.csstudio.dal.impl.ResponseImpl;
 
 
 /**
@@ -47,7 +47,7 @@ public class GetRequest<T> extends RequestImpl<T> implements GetListener
      * @param proxy proxy of this request.
      * @param l listener to notify.
      */
-	public GetRequest(PropertyProxyImpl<T> proxy, ResponseListener<T> l)
+	public GetRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l)
 	{
 		super(proxy, l, 1);
 		this.proxy = proxy;
@@ -56,7 +56,8 @@ public class GetRequest<T> extends RequestImpl<T> implements GetListener
 	/* (non-Javadoc)
 	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
 	 */
-	public void getCompleted(GetEvent ev)
+	@Override
+    public void getCompleted(final GetEvent ev)
 	{
 		if (ev.getDBR()==null || ev.getStatus() == null || !ev.getStatus().isSuccessful()) {
 			addResponse(new ResponseImpl<T>(proxy, this, null,
