@@ -1,5 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.Property;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +14,7 @@ public class ChannelNotificationString {
 	
 	private final List<String> requiredProperties = new ArrayList<String>();
 	private final List<String> textTokens = new ArrayList<String>();
-	private static final String TOKEN_PATTERN = "#\\((\\w*)\\)";
+	private static final String TOKEN_PATTERN = "#\\((\\w*)\\)|#\\(Channel Name\\)";
 	private static final Pattern PATTERN = Pattern.compile(TOKEN_PATTERN);
 	
 	public ChannelNotificationString(String notificationString) {
@@ -19,7 +22,11 @@ public class ChannelNotificationString {
 		int previousEnd = 0;
 		while (matcher.find()) {
 			textTokens.add(notificationString.substring(previousEnd, matcher.start()));
-			requiredProperties.add(matcher.group(1));
+			if (matcher.group(1) == null) {
+				requiredProperties.add("Channel Name");
+			} else {
+				requiredProperties.add(matcher.group(1));
+			}
 			previousEnd = matcher.end();
 		}
 		textTokens.add(notificationString.substring(previousEnd, notificationString.length()));
@@ -49,6 +56,36 @@ public class ChannelNotificationString {
 				return "";
 			} else {
 				builder.append(value);
+			}
+		}
+		builder.append(textTokens.get(n));
+		return builder.toString();
+	}
+
+	public String notification(Channel channel) {
+		StringBuilder builder = new StringBuilder();
+		int n = 0;
+		for (n = 0; n < requiredProperties.size(); n++) {
+			builder.append(textTokens.get(n));
+			String propertyName = requiredProperties.get(n);
+			
+			// Check if the property is actually the channel name
+			if ("Channel Name".equals(propertyName)) {
+				builder.append(channel.getName());
+			} else {
+				
+				// Find a matching property
+				Property property = channel.getProperty(propertyName);
+				if (property != null) {
+					if (property.getValue() == null ||
+							property.getValue().isEmpty()) {
+						// Matching property has no value. Abort!
+						return "";
+					}
+					builder.append(property.getValue());
+				} else {
+					return "";
+				}
 			}
 		}
 		builder.append(textTokens.get(n));
