@@ -16,6 +16,7 @@ import org.csstudio.channelviewer.views.PropertyCellLabelProvider;
 import org.csstudio.channelviewer.views.TableViewerChannelPropertySorter;
 import org.csstudio.channelviewer.views.TableViewerChannelTagSorter;
 import org.csstudio.channelviewer.views.TagCellLabelProvider;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -46,7 +47,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import com.swtdesigner.TableViewerColumnSorter;
 
 public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
-		implements ISelectionProvider {
+		implements ISelectionProvider, ConfigurableWidget {
 
 	private Table table;
 	private TableViewer tableViewer;
@@ -66,7 +67,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 
-	private void updateTable(){
+	private void updateTable() {
 		// Clear the channel list;
 		tableViewer.setInput(channels.toArray());
 		tableViewer.setItemCount(channels.size());
@@ -148,16 +149,17 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		tableViewer.refresh();
 		// table.notifyListeners(0, //new Event()));
 	}
-	
+
 	public ChannelsViewWidget(Composite parent, int style) {
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
 		setLayout(gridLayout);
-		
+
 		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
+				1, 1));
+
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);
 		table = tableViewer.getTable();
@@ -249,28 +251,31 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		tblclmnOwner.setWidth(100);
 		tblclmnOwner.setText("Owner");
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
-			
+
 			@Override
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				
+			public void inputChanged(Viewer viewer, Object oldInput,
+					Object newInput) {
+
 			}
-			
+
 			@Override
 			public void dispose() {
-				
+
 			}
-			
+
 			@Override
 			public Object[] getElements(Object inputElement) {
-				return (Object[]) inputElement;			}
+				return (Object[]) inputElement;
+			}
 		});
 
-		this.selectionProvider = new AbstractSelectionProviderWrapper(
+		selectionProvider = new AbstractSelectionProviderWrapper(
 				tableViewer, this) {
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
-				if(selection!=null)
-					return selection;
+				if (selection != null)
+					return new StructuredSelection(new ChannelsViewAdaptable(
+							selection.toList(), ChannelsViewWidget.this));
 				else
 					return new StructuredSelection();
 			}
@@ -295,7 +300,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		super.setMenu(menu);
 		table.setMenu(menu);
 	}
-	
+
 	@Override
 	protected void queryCleared() {
 		this.channels = null;
@@ -331,6 +336,41 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	@Override
 	public void setSelection(ISelection selection) {
 		selectionProvider.setSelection(selection);
+	}
+
+	private boolean configurable = true;
+
+	private ChannelsViewConfigurationDialog dialog;
+
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new ChannelsViewConfigurationDialog(this, SWT.None,
+				"Configure Channels View");
+		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldConfigurable = configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldConfigurable,
+				configurable);
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
 	}
 
 }
