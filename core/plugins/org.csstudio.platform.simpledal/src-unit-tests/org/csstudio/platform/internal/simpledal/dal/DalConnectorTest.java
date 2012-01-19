@@ -24,9 +24,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.spi.PropertyFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -116,14 +116,14 @@ public class DalConnectorTest {
 
 		// verify, that we are connected
 		assertNotNull(value);
-		assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, dalProperty.getConnectionState());
+		assertEquals(org.csstudio.dal.context.ConnectionState.CONNECTED, dalProperty.getConnectionState());
 
 		// dispose
 		connector.dispose();
 		Thread.sleep(2000);
 
 		// verify that we are disconnected
-		assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, dalProperty.getConnectionState());
+		assertEquals(org.csstudio.dal.context.ConnectionState.DESTROYED, dalProperty.getConnectionState());
 	}
 
 	/**

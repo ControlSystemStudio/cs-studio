@@ -18,7 +18,7 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
 import org.csstudio.platform.simpledal.SettableState;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

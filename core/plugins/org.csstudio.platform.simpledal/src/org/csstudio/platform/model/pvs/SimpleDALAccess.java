@@ -21,10 +21,10 @@
  */
  package org.csstudio.platform.model.pvs;
 
-import org.epics.css.dal.DataAccess;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.RemoteException;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.DataAccess;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.RemoteException;
+import org.csstudio.dal.spi.PropertyFactory;
 
 /**
  * Simple access to the control systems via DAL. (Proposed by Igor Kriznar)

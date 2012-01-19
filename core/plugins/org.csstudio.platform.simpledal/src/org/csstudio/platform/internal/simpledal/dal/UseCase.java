@@ -10,7 +10,7 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 public class UseCase {
 	public static void main(String[] args) {

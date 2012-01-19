@@ -16,11 +16,11 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.DoubleProperty;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.spi.PropertyFactory;
 
 public class SimpleDALTest extends TestCase {
 	
@@ -295,7 +295,7 @@ public class SimpleDALTest extends TestCase {
 			.getPropertyFactory(ia.getControlSystem());
 			DynamicValueProperty pp= factory.getPropertyFamily().getFirst("D2:P1");
 			assertNotNull(pp);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			assertEquals(org.csstudio.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
 			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
 			double d= connectionService.readValueSynchronously(ia,ValueType.DOUBLE);
@@ -309,14 +309,14 @@ public class SimpleDALTest extends TestCase {
 			l.value=null;
 			Thread.sleep(1100);
 			assertNotNull(l.value);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			assertEquals(org.csstudio.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
 			connectionService.unregister(l);
 			
 			l.value=null;
 			Thread.sleep(1100);
 			assertNull(l.value);
-			//assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			//assertEquals(org.csstudio.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

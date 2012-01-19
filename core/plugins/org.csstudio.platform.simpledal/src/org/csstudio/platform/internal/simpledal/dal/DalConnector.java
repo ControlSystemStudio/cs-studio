@@ -34,19 +34,19 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.ResponseEvent;
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionEvent;
-import org.epics.css.dal.context.LinkListener;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.DataExchangeException;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueEvent;
+import org.csstudio.dal.DynamicValueListener;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.ResponseEvent;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.context.ConnectionEvent;
+import org.csstudio.dal.context.LinkListener;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.spi.PropertyFactory;
 
 /**
  * DAL Connectors are connected to the control system via the DAL API.
