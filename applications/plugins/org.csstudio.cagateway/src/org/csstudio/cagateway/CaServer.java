@@ -15,6 +15,9 @@ import org.csstudio.platform.statistic.Collector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cosylab.epics.caj.cas.util.NumericProcessVariable;
+import com.cosylab.epics.caj.cas.util.examples.CounterProcessVariable;
+
 
 public class CaServer {
 	
@@ -94,27 +97,31 @@ public class CaServer {
 
 				}
 				else
-//					System.out.println(aliasName +" doesn't exists here");
-				
-				return ProcessVariableExistanceCompletion.DOES_NOT_EXIST_HERE;	
+					// try local records
+					synchronized (pvs)
+					{
+						return pvs.containsKey(aliasName) ?
+								ProcessVariableExistanceCompletion.EXISTS_HERE :
+								ProcessVariableExistanceCompletion.DOES_NOT_EXIST_HERE;
+					}
 			}	
 		}
 		
 	    public final synchronized void stop() {
-	        LOG.debug("caServer: stop() was called, stopping server");
+	        LOG.warn("caServer: stop() was called, stopping server");
 	        try {
                 context.shutdown();
             } catch (IllegalStateException e) {
-                LOG.debug("caServer shutdown, Illegal state exception: {}", e);
+                LOG.warn("caServer shutdown, Illegal state exception: {}", e);
             } catch (CAException e) {
-                LOG.debug("caServer shutdown, CA exception: ", e);
+                LOG.warn("caServer shutdown, CA exception: ", e);
             }
 	        try {
                 context.destroy();
             } catch (IllegalStateException e) {
-                LOG.debug("caServer shutdown, Illegal state exception: ", e);
+                LOG.warn("caServer shutdown, Illegal state exception: ", e);
             } catch (CAException e) {
-                LOG.debug("caServer shutdown, CA exception: ", e);
+                LOG.warn("caServer shutdown, CA exception: ", e);
             }
 	    }
 		
@@ -150,6 +157,25 @@ public class CaServer {
 			// Display basic information about the context.
 	        System.out.println(context.getVersion().getVersionString());
 	        context.printInfo(); System.out.println();
+	        
+	        // add channels manually
+	        String newRecord = "CA:DOOCS:Gateway:alive";
+	        NumericProcessVariable myAliveRecord = new CounterProcessVariable(newRecord, null, 0, 7, 1, 1000, 
+	        		2, 5, 1, 6); 
+	        this.server.registerProcessVaribale(myAliveRecord);
+	        LOG.info("Create Record " + newRecord +" on: ", localHostName);
+	        
+	        newRecord = "CA:DOOCS:Gateway:Ramp";
+	        NumericProcessVariable myRampRecord = new CounterProcessVariable(newRecord, null, 0, 1000, 1, 500, 
+	        		200, 800, 100, 900);
+	        this.server.registerProcessVaribale(myRampRecord);
+	        LOG.info("Create Record " + newRecord +" on: ", localHostName);
+
+	        newRecord = "CA:DOOCS:Gateway:TickTack";
+	        NumericProcessVariable myTickTackRecord = new CounterProcessVariable(newRecord, null, 0, 1, 1, 1000, 
+	        		-1, -1, -1, 0);
+	        this.server.registerProcessVaribale(myTickTackRecord);
+	        LOG.info("Create Record " + newRecord +" on: ", localHostName);
 	    }
 	    
 	    private void initializeStatisticCollectors() {

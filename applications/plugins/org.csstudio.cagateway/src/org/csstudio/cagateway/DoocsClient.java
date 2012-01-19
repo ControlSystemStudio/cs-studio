@@ -100,7 +100,7 @@ public class DoocsClient implements ControlSystemClient{
 				blackList.remove(channel);
 				isOnBlackList = false;
 				
-				LOG.warn("caGateway DOOCS: remove {} from blackList", channel);
+				LOG.debug("caGateway DOOCS: remove {} from blackList", channel);
 			} else {
 				isOnBlackList = true;
 			}
@@ -149,7 +149,7 @@ public class DoocsClient implements ControlSystemClient{
 
 		Scanner s = null;
 		System.out.println("Open file " + definitionFilePath);
-		LOG.info("caGateway DOOCS: load {}", configFile);
+		LOG.debug("caGateway DOOCS: load {}", configFile);
 		try {
 			s = new Scanner(new FileReader(definitionFilePath));
 		} catch (FileNotFoundException e) {
@@ -190,7 +190,7 @@ public class DoocsClient implements ControlSystemClient{
 
 		Scanner s = null;
 		System.out.println("Open file " + definitionFilePath);
-		LOG.info("caGateway DOOCS: load {}", configFile);
+		LOG.debug("caGateway DOOCS: load {}", configFile);
 		try {
 			s = new Scanner(new FileReader(definitionFilePath));
 		} catch (FileNotFoundException e) {
@@ -241,7 +241,7 @@ public class DoocsClient implements ControlSystemClient{
 
 	
 
-	public Object findChannelName(String channelName, HashMap<String, MetaData> availableRemoteDevices, CaServer thisGatewayServer) {
+	synchronized public Object findChannelName(String channelName, HashMap<String, MetaData> availableRemoteDevices, CaServer thisGatewayServer) {
 		String facility = null;
 		String facility_2 = null;
 		String remainingString = null;
@@ -272,8 +272,8 @@ public class DoocsClient implements ControlSystemClient{
 		
 		// already defined in HashMap??
 		if (availableRemoteDevices.get(channelName) != null) {
-//			System.out.println("findChannel:channel already defined in HashMap: " + channelName);
-			return "found in HashMap";	//DOOCS name not available here!
+			System.out.println("findChannel:channel already defined in HashMap: " + channelName);
+			return "found in HashMap";	//DOOCS name already defined
 		}
 		
 		/*
@@ -317,10 +317,12 @@ public class DoocsClient implements ControlSystemClient{
 			// check if channel defined in completeNames
 			doocsCompleteName = completeNames.get(channelName);
 			if ( doocsCompleteName != null) {
+//				System.out.println("DOOCS complete name = " + doocsCompleteName + "  channel name = " + channelName);
 				// check if a 'real' DOOCS name
 				doocsEqAdr = new EqAdr(doocsCompleteName);
 				if ( doocsEqAdr != null) {
 					// create/ fill meta data
+					// TODO: get meta data from DOOCS
 					MetaData metaData = new MetaData(channelName, doocsCompleteName, urlPrefix);
 					metaData.set_objectReference( doocsEqAdr);
 					metaData.set_facility(doocsFacility);
@@ -373,7 +375,7 @@ public class DoocsClient implements ControlSystemClient{
 						System.out.println("use : " + reverseCheck + " instead in EPICS channel name! " + channelName);
 					}
 					LOG.debug( "caGateway DOOCS: error translating FACILITY: [{}] in {} probably no property defined - wromg umber of separated (:) strings", epicsDoocsFacility, channelName);
-					LOG.warn( "caGateway DOOCS: Error  put {} on blackList", channelName);
+					LOG.debug( "caGateway DOOCS: Error  put {} on blackList", channelName);
 		        	addToBlackList(channelName, new GregorianCalendar());
 					return null;
 				} else {

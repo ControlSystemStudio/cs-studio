@@ -33,12 +33,6 @@
             label="Stop Server">
       </command>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.csstudio.cagateway.preferences.PreferenceInitializer">
-      </initializer>
-   </extension>
 
 
 </plugin>

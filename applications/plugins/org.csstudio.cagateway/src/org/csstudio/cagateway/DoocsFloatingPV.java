@@ -196,7 +196,7 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		value = 0;
 		timestamp = new TimeStamp();
 //		LOG.error( this, "caGateway DOOCS channel: " + doocsName + " initialize()");
-		checkForAlarms();
+//		checkForAlarms();
 		
 		Thread thread = new Thread(this, getName());
 //		Thread thread = new Thread(this);
@@ -489,17 +489,29 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 		
 		int errorCount = 0;
 		int totalErrorCount = 0;
+		int noInterestCounter = 0;
+		
+		Double testValue = 0.0;
+		
+		boolean isTestChannel = false;
+		
+		if ( doocsName.equals( "CADOOCS.GATEWAY/TEST/DOUBLE/VALUE")) {
+			isTestChannel = true;
+		}
+		
 		
 //		LOG.info( this, "caGateway DOOCS create thread for: " + doocsName); 
 		
 		/*
+		 * TODO:
 		 * initialize meta data
 		 */
+		
 		ed.init();
 		data.init();
 		
 		
-		while (!Thread.interrupted())
+		while (!Thread.interrupted() & (noInterestCounter < 30) & (errorCount < maxDoocsErrorCount) & (totalErrorCount < maxDoocsTotalErrorCount))
 		{
 			try {
 				Thread.sleep(doocsUpdateRate);
@@ -507,74 +519,111 @@ public class DoocsFloatingPV extends FloatingDecimalProcessVariable implements R
 				break;
 			}
 			
-			synchronized (this)
-			{
-				if ( eq == null) {
-					eq = new EqCall();
-				}
-				// necessary if in a loop
-				ed.init();
-				data.init();
-				
-		        data = eq.get(doocsAddr, ed);
-		        if (data.error() == 0) {
-		        	doocsReadOk = true;
-		        	value = data.get_double();
-//		        	System.out.println (doocsName + " - double = " + value);
-//		        	System.out.println (doocsName + " - float  = " + data.get_float());
+			// just the test channel?
+			if ( isTestChannel) {
+				synchronized (this) {
+					value = testValue++;
 		        	
 		        	setDoubleValue(value);
 		        	
 		        	status = Status.NO_ALARM;
 		        	severity = Severity.NO_ALARM;
-		        	
-		        	if ( errorCount > 0) {
-		        		errorCount--;
+		        	if (testValue > 100) {
+		        		testValue = 0.0;
 		        	}
-		        } else {
-		        	doocsReadOk = false;
-		        	errorCount++;
-		        	totalErrorCount++;
-		        	/*
-		        	 * Alternating connection errors:
-		        	 * - errors do not occur consecutively. 
-		        	 * Correct connections happen in-between so the errorCount does not reach
-		        	 * the maxDoocsErrorCount limit which puts the channel to the blackList.
-		        	 * 
-		        	 * alternating errors would blow up the log file
-		        	 * so we limit this to the first messages generated here
-		        	 * after this we generate a message every 100th time
-		        	 */
-		        	if ( (totalErrorCount < maxDoocsErrorCount) || (totalErrorCount%modulusForTotalErrorCount == 0)) {
-		        	    Object[] args = new Object[] {doocsName, data.get_string(), errorCount, totalErrorCount};
-		        		LOG.error( "caGateway DOOCS read-error: {} {} errorCount: {} total: {}",args );
-		        	}		        	
-		        }
-		        /*
-		         * put channel on black list if
-		         * - errorCount reached its limit - or
-		         * - totalErrorCount reached its limit
-		         */
-		        if ( (errorCount > maxDoocsErrorCount) || (totalErrorCount > maxDoocsTotalErrorCount)) {
-		        	// add channel to black list
-		        	LOG.warn( "caGateway DOOCS error count > {} stop and put {} on blackList", maxDoocsErrorCount, name);
-		        	DoocsClient.getInstance().addToBlackList(name, new GregorianCalendar());
-		        	
-		        	// just in case we do not stop the first time ...
-		        	errorCount = 0;
-		        	
-		        	
-		        	// remove from HashMap of existing channel names
-		        	CaServer.getGatewayInstance().removeAvailableRemoteDevices(name);
-		        	
-		        	// remove from CA-Server list of existing records
-		        	CaServer.getGatewayInstance().getServer().unregisterProcessVaribale(name);
+				}
+			} else {
+				synchronized (this)
+				{
+					if ( eq == null) {
+						eq = new EqCall();
+					}
+					// necessary if in a loop
+					ed.init();
+					data.init();
+					
+			        data = eq.get(doocsAddr, ed);
+			        if (data.error() == 0) {
+			        	doocsReadOk = true;
+			        	value = data.get_double();
+//			        	System.out.println (doocsName + " - double = " + value);
+//			        	System.out.println (doocsName + " - float  = " + data.get_float());
+			        	
+			        	setDoubleValue(value);
+			        	
+			        	status = Status.NO_ALARM;
+			        	severity = Severity.NO_ALARM;
+			        	
+			        	if ( errorCount > 0) {
+			        		errorCount--;
+			        	}
+			        } else {
+			        	doocsReadOk = false;
+			        	errorCount++;
+			        	totalErrorCount++;
+			        	/*
+			        	 * Alternating connection errors:
+			        	 * - errors do not occur consecutively. 
+			        	 * Correct connections happen in-between so the errorCount does not reach
+			        	 * the maxDoocsErrorCount limit which puts the channel to the blackList.
+			        	 * 
+			        	 * alternating errors would blow up the log file
+			        	 * so we limit this to the first messages generated here
+			        	 * after this we generate a message every 100th time
+			        	 */
+			        	if ( (totalErrorCount < maxDoocsErrorCount) || (totalErrorCount%modulusForTotalErrorCount == 0)) {
+			        	    Object[] args = new Object[] {doocsName, data.get_string(), errorCount, totalErrorCount};
+			        		LOG.error( "caGateway DOOCS read-error: {} {} errorCount: {} total: {}",args );
+			        	}		        	
+			        }
+			        /*
+			         * put channel on black list if
+			         * - errorCount reached its limit - or
+			         * - totalErrorCount reached its limit
+			         */
+			        if ( (errorCount > maxDoocsErrorCount) || (totalErrorCount > maxDoocsTotalErrorCount)) {
+			        	// add channel to black list
+			        	LOG.warn( "caGateway DOOCS error count > {} stop and put {} on blackList", maxDoocsErrorCount, name);
+			        	DoocsClient.getInstance().addToBlackList(name, new GregorianCalendar());
+			        	
+			        	// remove from HashMap of existing channel names
+			        	CaServer.getGatewayInstance().removeAvailableRemoteDevices(name);
+			        	
+			        	// remove from CA-Server list of existing records
+			        	CaServer.getGatewayInstance().getServer().unregisterProcessVaribale(name);
 
-		        	// stop this thread here
-		        	break;
-		        }
+			        	// stop this thread here - well we need to put the condition into the while in addition
+			        	break;
+			        }
+			     
+				}
+				// do not poll if there's no CAS client interested
+				noInterestCounter = 0;
 			}
-		}
+			while (!interest) {
+//				System.out.println (doocsName + " waiting for interest in me");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					break;
+				}
+				if (noInterestCounter++ > 30) {
+					//delete dynamically created channel
+					// nobody likes this channel any more ...
+					synchronized (this) {
+						//
+//						System.out.println (doocsName + " nobody interested in me any more (30x" + 1000 + ")");
+						// remove from HashMap of existing channel names
+			        	CaServer.getGatewayInstance().removeAvailableRemoteDevices(name);
+			        	
+			        	// remove from CA-Server list of existing records
+			        	CaServer.getGatewayInstance().getServer().unregisterProcessVaribale(name);
+					}
+			       	// stop this thread here - well in the while loop ...
+			       	break;
+				} // if
+			} // while !interest
+		} // run
 	}
 
 	public boolean isDoocsReadOk() {
