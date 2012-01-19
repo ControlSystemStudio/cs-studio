@@ -32,6 +32,17 @@ import org.eclipse.core.runtime.PlatformObject;
 
 /** EPICS ChannelAccess implementation of the PV interface.
  *
+ *  <p>When started, it connects to the channel, fetches
+ *  meta data, and subscribes to value updates.
+ *  
+ *  <p>It also subscribes to updates of the meta data
+ *  via the DBE_PROPERTY event introduced in EPICS R3.14.11.
+ *  All IOCs will send initial meta data, and new IOCs may
+ *  also send meta data updates via that subscription.
+ *  The CA gateway, however, does at this time not respond
+ *  at all, so the initial one-time fetch of meta data
+ *  is still needed for the gateway.
+ *  
  *  @see PV
  *  @author Kay Kasemir
  */
@@ -39,6 +50,9 @@ import org.eclipse.core.runtime.PlatformObject;
 public class EPICS_V3_PV extends PlatformObject
             implements PV, ConnectionListener, MonitorListener
 {
+    // TODO Use PROPERTY event from gov.aps.jca Monitor once that's in there
+    private static final int DBE_PROPERTY = 1 << 3;
+
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
@@ -79,9 +93,9 @@ public class EPICS_V3_PV extends PlatformObject
     /** JCA channel. LOCK <code>this</code> on change. */
     private RefCountedChannel channel_ref = null;
 
-    /** Either <code>null</code>, or the subscription identifier.
+    /** Either <code>null</code>, or the subscription identifier for values resp. meta data
      *  LOCK <code>this</code> on change */
-    private Monitor subscription = null;
+    private Monitor subscription = null, meta_subscription = null;
 
     /** isConnected?
      *  <code>true</code> if we are currently connected
@@ -93,10 +107,10 @@ public class EPICS_V3_PV extends PlatformObject
     private volatile boolean connected = false;
 
     /** Meta data obtained during connection cycle. */
-    private IMetaData meta = null;
+    private volatile IMetaData meta = null;
 
     /** Most recent 'live' value. */
-    private IValue value = null;
+    private volatile IValue value = null;
 
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
@@ -133,6 +147,31 @@ public class EPICS_V3_PV extends PlatformObject
         }
     };
 
+    private final MonitorListener meta_update_listener = new MonitorListener()
+    {
+        @Override
+        public void monitorChanged(final MonitorEvent event)
+        {   // This runs in a CA thread
+            try
+            {
+                if (!event.getStatus().isSuccessful())
+                    return;
+                if (state == State.GettingMetadata)
+                    state = State.GotMetaData;
+                final DBR dbr = event.getDBR();
+                meta = DBR_Helper.decodeMetaData(dbr);
+                value = DBR_Helper.decodeValue(plain, meta, dbr);
+                Activator.getLogger().log(Level.FINEST, "{0} meta data update: {1}", new Object[] { name, meta });
+                fireValueUpdate();
+            }
+            catch (Exception ex)
+            {
+                Activator.getLogger().log(Level.WARNING, "{0} meta data update error: {1}",
+                        new Object[] { name, ex.getMessage() });
+            }
+        }
+    };
+    
     /** Listener to a get-callback for data. */
     private class GetCallbackListener implements GetListener
     {
@@ -148,7 +187,7 @@ public class EPICS_V3_PV extends PlatformObject
          */
         boolean got_response = false;
 
-        public void reset()
+        public synchronized void reset()
         {
             got_response = false;
         }
@@ -184,6 +223,7 @@ public class EPICS_V3_PV extends PlatformObject
         }
     }
     private final GetCallbackListener get_callback = new GetCallbackListener();
+
 
     /** Generate an EPICS PV.
      *  @param name The PV name.
@@ -308,9 +348,8 @@ public class EPICS_V3_PV extends PlatformObject
         // Already attempted a connection?
         synchronized (this)
         {
-            if (channel_ref == null) {
+            if (channel_ref == null)
                 channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
-            }
 		}
         if (channel_ref.getChannel().getConnectionState()
             == ConnectionState.CONNECTED)
@@ -360,14 +399,12 @@ public class EPICS_V3_PV extends PlatformObject
     	synchronized (this)
     	{
             // Prevent multiple subscriptions.
-            if (subscription != null) {
+            if (subscription != null)
                 return;
-            }
             // Late callback, channel already closed?
             final RefCountedChannel ch_ref = channel_ref;
-            if (ch_ref == null) {
+            if (ch_ref == null)
                 return;
-            }
     		final Channel channel = ch_ref.getChannel();
             final Logger logger = Activator.getLogger();
             try
@@ -387,6 +424,12 @@ public class EPICS_V3_PV extends PlatformObject
                 subscription = channel.addMonitor(type,
                        channel.getElementCount(),
                        mask.getMask(), this);
+
+                if (! (plain || type.isSTRING()))
+                {
+                    final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
+                    meta_subscription = channel.addMonitor(meta_type, 1, DBE_PROPERTY, meta_update_listener);
+                }
             }
             catch (final Exception ex)
             {
@@ -398,20 +441,22 @@ public class EPICS_V3_PV extends PlatformObject
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-    	Monitor sub_copy;
+    	Monitor sub_copy, meta_copy;
     	// Atomic access
     	synchronized (this)
     	{
     		sub_copy = subscription;
     		subscription = null;
+    		meta_copy = meta_subscription;
+    		meta_subscription = null;
 		}
-		if (sub_copy == null) {
-            return;
-        }
-        try
-        {
-        	sub_copy.clear();
-        }
+    	try
+    	{
+    		if (sub_copy != null)
+    			sub_copy.clear();
+    		if (meta_copy != null)
+    		    meta_copy.clear();
+    	}
         catch (final Exception ex)
         {
             Activator.getLogger().log(Level.SEVERE, name + " unsubscribe error", ex);
@@ -599,14 +644,7 @@ public class EPICS_V3_PV extends PlatformObject
                 state = State.GettingMetadata;
                 Activator.getLogger().fine("Getting meta info for type "
                                     + type.getName());
-                if (type.isDOUBLE()  ||  type.isFLOAT())
-                    type = DBRType.CTRL_DOUBLE;
-                else if (type.isENUM())
-                    type = DBRType.LABELS_ENUM;
-                else if (type.isINT())
-                	type = DBRType.CTRL_INT;
-                else
-                    type = DBRType.CTRL_SHORT;
+                type = DBR_Helper.getCtrlType(false, type);
                 channel.get(type, 1, meta_get_listener);
                 return;
             }
@@ -643,7 +681,8 @@ public class EPICS_V3_PV extends PlatformObject
             return;
         }
         
-        if(ev == null){
+        if (ev == null)
+        {
         	log.warning(name + " MonitorEvent is null.");
             return;
         }
@@ -662,8 +701,7 @@ public class EPICS_V3_PV extends PlatformObject
                 log.warning(name + " monitor with null dbr");
                 return;
             }
-			value =
-                DBR_Helper.decodeValue(plain, meta, dbr);
+			value = DBR_Helper.decodeValue(plain, meta, dbr);
             if (!connected)
                 connected = true;
             // Logging every received value is expensive and chatty.

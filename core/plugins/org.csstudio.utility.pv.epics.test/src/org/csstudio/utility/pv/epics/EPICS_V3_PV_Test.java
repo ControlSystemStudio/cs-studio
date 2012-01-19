@@ -18,12 +18,9 @@ import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
 import org.csstudio.data.values.IEnumeratedValue;
 import org.csstudio.data.values.ILongValue;
-import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.utility.pv.epics.PVContext;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -46,22 +43,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test
 {
-
-    /** Get a PV.
-     *
-     *  <b>This is where the implementation is hard-coded!</b>
-     *
-     *  @return PV
-     */
-    static private PV getPV(final String name)
-    {
-        PVContext.use_pure_java = false;
-        System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
-                           "gov.aps.jca.event.DirectEventDispatcher");
-        //                   "gov.aps.jca.event.QueuedEventDispatcher");
-        return new EPICS_V3_PV(name);
-    }
-
     /** Update counter for TestListener */
     private final AtomicInteger updates = new AtomicInteger();
 
@@ -90,10 +71,10 @@ public class EPICS_V3_PV_Test
         }
     }
 
-    @Test
+    @Test(timeout=15000)
     public void testSinglePVStartStop() throws Exception
     {
-        final PV pv = getPV("fred");
+        final PV pv = TestUtil.getPV("fred");
         pv.addListener(new TestListener("A"));
 
         ////System.out.println("Checking monitors from single PV...");
@@ -122,40 +103,9 @@ public class EPICS_V3_PV_Test
     }
 
     @Test
-    public void testMetaData() throws Exception
-    {
-        final PV pv = getPV("fred");
-        pv.addListener(new TestListener("A"));
-        pv.start();
-        try
-        {
-            int wait = 10;
-            while (wait > 0)
-            {
-                if (updates.get() > 2) {
-                    break;
-                }
-                Thread.sleep(1000);
-                --wait;
-            }
-            // Did we get anything?
-            assertTrue(updates.get() > 2);
-            // Meta info as expected?
-            final INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
-            assertEquals("furlong", meta.getUnits());
-            assertEquals(4, meta.getPrecision());
-        }
-        finally
-        {
-            pv.stop();
-        }
-    }
-
-
-    @Test
     public void testLong() throws Exception
     {
-        final PV pva = getPV("long_fred");
+        final PV pva = TestUtil.getPV("long_fred");
 
         pva.start();
 
@@ -172,8 +122,8 @@ public class EPICS_V3_PV_Test
     @Test
     public void testMultiplePVs() throws Exception
     {
-        final PV pva = getPV("fred");
-        final PV pvb = getPV("janet");
+        final PV pva = TestUtil.getPV("fred");
+        final PV pvb = TestUtil.getPV("janet");
 
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
@@ -198,8 +148,8 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDuplicatePVs() throws Exception
     {
-        final PV pva = getPV("fred");
-        final PV pvb = getPV("fred");
+        final PV pva = TestUtil.getPV("fred");
+        final PV pvb = TestUtil.getPV("fred");
 
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
@@ -225,7 +175,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testEnum() throws Exception
     {
-        PV pva = getPV("fred.SCAN");
+        PV pva = TestUtil.getPV("fred.SCAN");
 
         pva.start();
 
@@ -235,11 +185,11 @@ public class EPICS_V3_PV_Test
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         IEnumeratedValue e = (IEnumeratedValue) pva.getValue();
         assertEquals(6, e.getValue());
-        assertEquals("1 second (6)", e.format());
+        assertEquals("1 second", e.format());
 
         pva.stop();
 
-        pva = getPV("enum");
+        pva = TestUtil.getPV("enum");
 
         pva.start();
 
@@ -249,7 +199,7 @@ public class EPICS_V3_PV_Test
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         e = (IEnumeratedValue) pva.getValue();
         assertEquals(1, e.getValue());
-        assertEquals("one (1)", e.format());
+        assertEquals("one", e.format());
         assertTrue(e.getMetaData() instanceof IEnumeratedMetaData);
         final IEnumeratedMetaData meta = (IEnumeratedMetaData) e.getMetaData();
         assertEquals(4, meta.getStates().length);
@@ -262,7 +212,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDblWaveform() throws Exception
     {
-        final PV pva = getPV("hist");
+        final PV pva = TestUtil.getPV("hist");
 
         pva.start();
 
@@ -271,7 +221,7 @@ public class EPICS_V3_PV_Test
         final IValue value = pva.getValue();
         assertTrue(value instanceof IDoubleValue);
         final double dbl[] = ((IDoubleValue) value).getValues();
-        assertEquals(50, dbl.length);
+        assertEquals(5000, dbl.length);
         ////System.out.println(value);
 
         pva.stop();
@@ -280,7 +230,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testLongWaveform() throws Exception
     {
-        final PV pva = getPV("longs");
+        final PV pva = TestUtil.getPV("longs");
 
         pva.start();
         threadSleepWithMaxTimeOut(pva);
@@ -288,7 +238,7 @@ public class EPICS_V3_PV_Test
         final IValue value = pva.getValue();
         assertTrue(value instanceof ILongValue);
         final long longs[] = ((ILongValue) value).getValues();
-        assertEquals(50, longs.length);
+        assertEquals(5000, longs.length);
         ////System.out.println(value);
 
         pva.stop();
@@ -323,7 +273,7 @@ public class EPICS_V3_PV_Test
         ////System.out.println("Creating " + PV_Count + " PVs...");
         final PV pvs[] = new PV[PV_Count];
         for (int i=0; i<PV_Count; ++i) {
-            pvs[i] = getPV("ramp" + (i+1));
+            pvs[i] = TestUtil.getPV("ramp" + (i+1));
         }
 
         ////System.out.println("Starting " + PV_Count + " PVs...");
@@ -337,15 +287,11 @@ public class EPICS_V3_PV_Test
         final int maxTime = 2000;
         while (true)
         {
-            int connected = 0;
             int disconnected = 0;
             for (int i=0; i < PV_Count; ++i)
             {
-                if (pvs[i].isConnected()) {
-                    ++connected;
-                } else {
+                if (! pvs[i].isConnected())
                     ++disconnected;
-                }
             }
             ++test;
             if (test >= 10)
@@ -380,6 +326,7 @@ public class EPICS_V3_PV_Test
         System.out.println("Done.");
     }
 
+    @Ignore
     @Test
     public void testMultipleRuns() throws Exception
     {
