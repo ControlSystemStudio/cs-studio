@@ -12,4 +12,11 @@ package org.epics.pvmanager.data;
 public interface VEnumArray extends Array<String>, Enum, Alarm, Time {
     @Override
     String[] getArray();
+    
+    /**
+     * Returns the indexes instead of the labels.
+     * 
+     * @return an array of indexes
+     */
+    int[] getIndexes();
 }

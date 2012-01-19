@@ -4,7 +4,6 @@
  */
 package org.epics.pvmanager.util;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,18 +23,19 @@ public class FunctionParser {
     static final Pattern functionAndStringParameter = Pattern.compile("(\\w+)(\\((\".*\")\\))?");
     static final Pattern pvNameAndParameter = Pattern.compile("([^\\(]+)(\\(((" + commaSeparatedDoubles + ")?)\\))?");
     static final Pattern pvNameAndStringParameter = Pattern.compile("([^\\(]+)(\\((\".*\")\\))?");
-
+ 
     /**
      * Parses a comma separated list of arguments and returns them as a list.
      *
-     * @param string a comma separated list of arguments; if null or empty returns
-     * the empty list
+     * @param string a comma separated list of arguments; if null or empty
+     * returns the empty list
      * @return the list of parsed arguments
      */
     static List<Object> parseParameters(String string) {
         // Argument is empty
-        if (string == null || "".equals(string))
+        if (string == null || "".equals(string)) {
             return Collections.emptyList();
+        }
 
         // Validate input
         if (!commaSeparatedDoubles.matcher(string).matches()) {

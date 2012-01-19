@@ -36,7 +36,6 @@ public final class LocalDataSource extends DataSource {
     
     @Override
     protected ChannelHandler<?> createChannel(String channelName) {
-    	
         // Parse the channel name
         List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
         if (parsedTokens == null || parsedTokens.size() > 2)
@@ -48,7 +47,6 @@ public final class LocalDataSource extends DataSource {
             return handler;
         
         if (parsedTokens.size() == 1) {
-        	System.out.println("Creating");
             return new LocalChannelHandler(parsedTokens.get(0).toString(), 0.0);
         } else {
             return new LocalChannelHandler(parsedTokens.get(0).toString(), parsedTokens.get(1));
