@@ -7,7 +7,7 @@
       <view
             allowMultiple="true"
             category="org.csstudio.channel.application.category"
-            class="org.csstudio.channelviewer.views.ChannelsView"
+            class="org.csstudio.channel.views.ChannelsView"
             icon="icons/channelFinder.png"
             id="org.csstudio.channelfinder.views.ChannelsView"
             name="Channels">
