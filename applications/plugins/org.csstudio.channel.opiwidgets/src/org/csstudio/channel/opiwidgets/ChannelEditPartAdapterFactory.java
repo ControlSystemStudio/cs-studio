@@ -7,9 +7,10 @@ import org.csstudio.channel.widgets.ConfigurableWidget;
 import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
-/**The adaptor factory to make a PV widget as a PV provider for css context menu.
- * @author Xihui Chen
- *
+/**
+ * TODO: should be removed once we have the command adaptable interfaces.
+ * 
+ * @author carcassi
  */
 public class ChannelEditPartAdapterFactory implements IAdapterFactory {
 
