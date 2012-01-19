@@ -6,6 +6,8 @@ import org.csstudio.channel.widgets.LocalUtilityPvManagerBridge;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 
 public class ChannelTreeByPropertySelectionNotification {
 	
@@ -41,6 +43,13 @@ public class ChannelTreeByPropertySelectionNotification {
 		notification = new LocalUtilityPvManagerBridge(notificationPv);
 		
 		widget.getTreeSelectionProvider().addSelectionChangedListener(listener);
+		widget.addDisposeListener(new DisposeListener() {
+			
+			@Override
+			public void widgetDisposed(DisposeEvent e) {
+				close();
+			}
+		});
 	}
 	
 	public void close() {
