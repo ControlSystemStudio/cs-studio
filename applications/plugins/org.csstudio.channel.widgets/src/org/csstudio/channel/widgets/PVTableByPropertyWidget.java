@@ -370,6 +370,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	@Override
 	protected void queryCleared() {
 		setChannels(null);
+		errorBar.setException(null);
 	}
 
 	@Override

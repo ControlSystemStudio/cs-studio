@@ -5,31 +5,30 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
 
 public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChannelWidgetFigure<?>,
     Model extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart {
 	
-	private void registerMouseListener(Control control) {
-		control.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDown(MouseEvent e) {
-				getViewer().select(AbstractChannelWidgetEditPart.this);
-			}
-		});
-		
-		if (control instanceof Composite) {
-			for (Control child : ((Composite) control).getChildren()) {
-				registerMouseListener(child);
-			}
-		}
-	}
+//	private void registerMouseListener(Control control) {
+//		control.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseDown(MouseEvent e) {
+//				getViewer().select(AbstractChannelWidgetEditPart.this);
+//			}
+//		});
+//		
+//		if (control instanceof Composite) {
+//			for (Control child : ((Composite) control).getChildren()) {
+//				registerMouseListener(child);
+//			}
+//		}
+//	}
 	
-	protected void registerPopup(final Control control) {
-		registerMouseListener(control);
-		Menu menu = getViewer().getContextMenu().createContextMenu(getViewer().getControl());
-		control.setMenu(menu);
-	}
+//	protected void registerPopup(final Control control) {
+//		registerMouseListener(control);
+////		Menu menu = getViewer().getContextMenu().createContextMenu(getViewer().getControl());
+////		control.setMenu(menu);
+//	}
 	
 	@Override
 	protected abstract Figure doCreateFigure();
@@ -48,10 +47,10 @@ public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChann
 		return widgetModel;
 	}
 	
-	@Override
-	public void deactivate() {
-		getFigure().getSWTWidget().dispose();		
-		super.deactivate();
-	}
+//	@Override
+//	public void deactivate() {
+////		getFigure().getSWTWidget().dispose();		
+//		super.deactivate();
+//	}
 
 }

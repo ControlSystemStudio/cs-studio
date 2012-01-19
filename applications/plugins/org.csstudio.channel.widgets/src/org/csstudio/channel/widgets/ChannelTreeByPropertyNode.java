@@ -5,7 +5,9 @@ import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ChannelTreeByPropertyNode {
 	
@@ -145,6 +147,21 @@ public class ChannelTreeByPropertyNode {
 		}
 		
 		return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
+	}
+	
+	private void includePropertyAndValue(Map<String, String> map) {
+		if (getPropertyName() != null) {
+			map.put(getPropertyName(), getDisplayName());
+		}
+		if (parentNode != null) {
+			parentNode.includePropertyAndValue(map);
+		}
+	}
+	
+	public Map<String, String> getPropertiesAndValues() {
+		Map<String, String> map = new HashMap<String, String>();
+		includePropertyAndValue(map);
+		return map;
 	}
 
 }

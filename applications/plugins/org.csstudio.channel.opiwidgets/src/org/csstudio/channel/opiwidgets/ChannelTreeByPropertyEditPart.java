@@ -14,14 +14,22 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 	protected ChannelTreeByPropertyFigure doCreateFigure() {
 		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		registerPopup(figure.getSWTWidget());
+//		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	
-	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
+	private ChannelTreeByPropertySelectionNotification notification;
+	private void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
 		if (runMode) {
 			widget.setChannelQuery(model.getChannelQuery());
-			widget.setSelectionPv(model.getSelectionPvName());
+			if (notification != null) {
+				notification.close();
+				notification = null;
+			}
+			if (model.getSelectionPvName() != null && !model.getSelectionPvName().isEmpty()) {
+				notification = new ChannelTreeByPropertySelectionNotification(model.getSelectionPvName(),
+					model.getNotificationString(), widget);
+			}
 		}
 		widget.setProperties(model.getTreeProperties());
 		widget.setConfigurable(model.getConfigurable());
@@ -41,7 +49,8 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		};
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.TREE_PROPERTIES, reconfigure);
-		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV_NAME, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_EXPRESSION, reconfigure);
 	}
 	
 }
