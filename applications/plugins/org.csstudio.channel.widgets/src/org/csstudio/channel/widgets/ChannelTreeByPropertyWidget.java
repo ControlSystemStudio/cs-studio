@@ -1,7 +1,7 @@
 package org.csstudio.channel.widgets;
 
-import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -13,10 +13,6 @@ import java.util.List;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -40,8 +36,6 @@ implements ConfigurableWidget {
 	private ErrorBar errorBar;
 	private ISelectionProvider treeSelectionProvider;
 	private List<String> properties = new ArrayList<String>();
-	private String selectionPv = null;
-	private LocalUtilityPvManagerBridge selectionWriter = null;
 	private ChannelTreeByPropertyModel model;
 	
 	@Override
@@ -63,18 +57,6 @@ implements ConfigurableWidget {
 	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
-		
-		// Close PV on dispose
-		addDisposeListener(new DisposeListener() {
-			
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (selectionWriter != null) {
-					selectionWriter.close();
-					selectionWriter = null;
-				}
-			}
-		});
 		
 		GridLayout gridLayout = new GridLayout(1, false);
 		gridLayout.verticalSpacing = 5;
@@ -126,19 +108,6 @@ implements ConfigurableWidget {
 		});
 		tree.setItemCount(0);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tree.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (selectionWriter != null && tree.getSelectionCount() > 0) {
-					selectionWriter.write(tree.getSelection()[0].getText());
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
 		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
 	}
 	
@@ -209,34 +178,6 @@ implements ConfigurableWidget {
 		}
 		if (model.getRoot().getChildrenNames() != null) {
 			tree.setItemCount(model.getRoot().getChildrenNames().size());
-		}
-	}
-	
-	/**
-	 * The pv that is going to be used to broadcast the selection of the tree.
-	 * 
-	 * @return a pv name
-	 */
-	public String getSelectionPv() {
-		return selectionPv;
-	}
-	
-	/**
-	 * Changes the pv that is going to be used to broadcast the selection of the tree.
-	 * 
-	 * @param selectionPv a pv name
-	 */
-	public void setSelectionPv(String selectionPv) {
-		this.selectionPv = selectionPv;
-		if (selectionPv == null || selectionPv.trim().isEmpty()) {
-			// Close PVManager
-			if (selectionWriter != null) {
-				selectionWriter.close();
-				selectionWriter = null;
-			}
-			
-		} else {
-			selectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
 	}
 	
