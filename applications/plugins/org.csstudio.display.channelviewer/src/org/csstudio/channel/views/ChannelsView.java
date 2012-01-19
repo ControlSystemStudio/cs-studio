@@ -22,7 +22,6 @@ import org.eclipse.swt.layout.GridData;
 
 public class ChannelsView extends ViewPart {
 	private ChannelQueryInputBar inputBar;
-	private Button search;
 	private ChannelsViewWidget channelsViewWidget;
 
 	public ChannelsView() {
@@ -30,7 +29,7 @@ public class ChannelsView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		GridLayout gl_parent = new GridLayout(3, false);
+		GridLayout gl_parent = new GridLayout(2, false);
 		parent.setLayout(gl_parent);
 		
 		Label lblQuery = new Label(parent, SWT.NONE);
@@ -48,16 +47,10 @@ public class ChannelsView extends ViewPart {
 				}
 			}
 		});
-		
-		search = new Button(parent, SWT.PUSH);
-		search.setText("Search");
-		search.setToolTipText("search for channels");
-		search.setEnabled(false);
-		
+				
 		channelsViewWidget = new ChannelsViewWidget(parent, SWT.None);
-		channelsViewWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		((GridData)channelsViewWidget.getLayoutData()).horizontalSpan = 3;
-		// TODO Auto-generated method stub
+		channelsViewWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+		
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 		PopupMenuUtil.installPopupForView(channelsViewWidget, getSite(), channelsViewWidget);
 	}
