@@ -10,8 +10,6 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_Byte;
-import gov.aps.jca.dbr.DBR_CTRL_Double;
-import gov.aps.jca.dbr.DBR_CTRL_Int;
 import gov.aps.jca.dbr.DBR_Double;
 import gov.aps.jca.dbr.DBR_Enum;
 import gov.aps.jca.dbr.DBR_Float;
@@ -19,7 +17,6 @@ import gov.aps.jca.dbr.DBR_Int;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
-import gov.aps.jca.dbr.DBR_TIME_Enum;
 import gov.aps.jca.dbr.GR;
 import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.Status;
@@ -97,32 +94,7 @@ public class DBR_Helper
             final DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
             return ValueFactory.createEnumeratedMetaData(labels.getLabels());
         }
-        else if (dbr instanceof DBR_CTRL_Double)
-        {
-            final DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            ctrl.getPrecision(),
-                            ctrl.getUnits());
-        }
-        else if (dbr instanceof DBR_CTRL_Int)
-        {
-            final DBR_CTRL_Int ctrl = (DBR_CTRL_Int)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            0, // no precision
-                            ctrl.getUnits());
-        }else if (dbr instanceof GR)
+        else if (dbr instanceof GR)
         {
             final GR ctrl = (GR)dbr;
             return ValueFactory.createNumericMetaData(

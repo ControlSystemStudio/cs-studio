@@ -42,6 +42,8 @@ import org.eclipse.core.runtime.PlatformObject;
  *  The CA gateway, however, does at this time not respond
  *  at all, so the initial one-time fetch of meta data
  *  is still needed for the gateway.
+ *  For IOCs, this means we receive meta data from the initial
+ *  fetch as well as via an one initial subscription value...
  *  
  *  @see PV
  *  @author Kay Kasemir
@@ -428,7 +430,7 @@ public class EPICS_V3_PV extends PlatformObject
                 if (! (plain || type.isSTRING()))
                 {
                     final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-                    meta_subscription = channel.addMonitor(meta_type, 1, DBE_PROPERTY, meta_update_listener);
+                    meta_subscription = channel.addMonitor(meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
                 }
             }
             catch (final Exception ex)
@@ -441,7 +443,7 @@ public class EPICS_V3_PV extends PlatformObject
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-    	Monitor sub_copy, meta_copy;
+    	final Monitor sub_copy, meta_copy;
     	// Atomic access
     	synchronized (this)
     	{
@@ -645,6 +647,10 @@ public class EPICS_V3_PV extends PlatformObject
                 Activator.getLogger().fine("Getting meta info for type "
                                     + type.getName());
                 type = DBR_Helper.getCtrlType(false, type);
+                // Fetch only one value, not the actual value size.
+                // Some older IOCs, don't remember details, had problems
+                // when asked for DBR_CTRL_.. for > 1 array elements.
+                // Since this is only used for the meta data, it's OK to get 1 value.
                 channel.get(type, 1, meta_get_listener);
                 return;
             }
