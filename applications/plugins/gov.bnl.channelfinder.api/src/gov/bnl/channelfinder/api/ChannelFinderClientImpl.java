@@ -970,10 +970,8 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 			for (int index = 0; index < words.length; index++) {
 				if (!words[index].contains("=")) {
 					// this is a name value
-					if (words[index] != null && !words[index].isEmpty())
+					if (words[index] != null)
 						map.put("~name", words[index]);
-					else
-						throw new IllegalArgumentException("I");
 				} else {
 					// this is a property or tag
 					try {
@@ -989,8 +987,8 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 					} catch (Exception e) {
 						throw new IllegalArgumentException(
 								"The search must consist of key value pairs, " +
-								"propertyName=propertyValuePattern1,propertyValuePattern2\r\n" +
-								"Tags=tagNamePattern\r\n");
+								"propertyName=propertyValuePattern1,propertyValuePattern2 " +
+								"Tags=tagNamePattern.");
 
 					}
 
