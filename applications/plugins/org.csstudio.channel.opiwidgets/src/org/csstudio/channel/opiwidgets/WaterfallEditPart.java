@@ -23,7 +23,7 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 		widget.setShowTimeAxis(model.isShowTimeAxis());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
 		widget.setPixelDuration(model.getResolution());
-		widget.setScrollDown(model.isScrollDown());
+		widget.setScrollDirection(model.getScrollDirection());
 		widget.setSortProperty(model.getSortProperty());
 	}
 
