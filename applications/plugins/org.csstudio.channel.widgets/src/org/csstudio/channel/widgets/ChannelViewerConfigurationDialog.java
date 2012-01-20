@@ -9,13 +9,12 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
 
-public class ChannelsViewConfigurationDialog
+public class ChannelViewerConfigurationDialog
 		extends
-		AbstractConfigurationDialog<ChannelsViewWidget, ChannelsViewConfigurationPanel> {
+		AbstractConfigurationDialog<ChannelViewerWidget, ChannelsViewConfigurationPanel> {
 
-	protected ChannelsViewConfigurationDialog(ChannelsViewWidget widget,
-			int style, String title) {
-		super(widget, style, title);
+	protected ChannelViewerConfigurationDialog(ChannelViewerWidget widget) {
+		super(widget, SWT.DIALOG_TRIM, "Configure Channel Viewer");
 		addInitialValues("possibleProperties", new ArrayList<String>(
 				ChannelUtil.getPropertyNames(widget.getChannels())));
 		addInitialValues("selectedProperties", widget.getProperties());

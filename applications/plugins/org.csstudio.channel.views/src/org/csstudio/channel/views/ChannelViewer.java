@@ -6,7 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
-import org.csstudio.channel.widgets.ChannelsViewWidget;
+import org.csstudio.channel.widgets.ChannelViewerWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -15,16 +15,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.part.ViewPart;
 
-public class ChannelsView extends ViewPart {
+public class ChannelViewer extends ViewPart {
 	private ChannelQueryInputBar inputBar;
-	private ChannelsViewWidget channelsViewWidget;
+	private ChannelViewerWidget channelsViewWidget;
 
 	/**
 	 * The ID of the view as specified by the extension.
 	 */
-	public static final String ID = "org.csstudio.channel.views.ChannelsView";
+	public static final String ID = "org.csstudio.channel.views.ChannelViewer";
 	
-	public ChannelsView() {
+	public ChannelViewer() {
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class ChannelsView extends ViewPart {
 			}
 		});
 				
-		channelsViewWidget = new ChannelsViewWidget(parent, SWT.None);
+		channelsViewWidget = new ChannelViewerWidget(parent, SWT.None);
 		channelsViewWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);

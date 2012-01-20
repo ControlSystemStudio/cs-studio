@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import com.swtdesigner.TableViewerColumnSorter;
 
-public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
+public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
 
 	private Table table;
@@ -71,19 +71,19 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	public Collection<String> getProperties() {
 		return properties;
 	}
-	
 
 	public void setProperties(List<String> properties) {
 		List<String> oldProperties = this.properties;
 		this.properties = properties;
-		changeSupport.firePropertyChange("properties", oldProperties, properties);
+		changeSupport.firePropertyChange("properties", oldProperties,
+				properties);
 	}
 
 	public Collection<String> getTags() {
 		return tags;
 	}
-	
-	public void setTags(List<String> tags){
+
+	public void setTags(List<String> tags) {
 		List<String> oldTags = this.tags;
 		this.tags = tags;
 		changeSupport.firePropertyChange("tags", oldTags, tags);
@@ -115,24 +115,24 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			// 100, true, true));
 
 			tblclmnNumericprop.setText(propertyName);
-			tblclmnNumericprop.setWidth(100);
+//			tblclmnNumericprop.setWidth(100);
 		}
 		// Add a new column for each Tag
 		for (String tagName : tags) {
 			// Tag Column
 			TableViewerColumn channelTagColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
-			channelTagColumn
-					.setLabelProvider(new ChannelTagCellLabelProvider(tagName));
+			channelTagColumn.setLabelProvider(new ChannelTagCellLabelProvider(
+					tagName));
 			new TableViewerChannelTagSorter(channelTagColumn, tagName);
 			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
 			// tcl_composite.setColumnData(tblclmnNumericprop, new
 			// ColumnPixelData(
 			// 100, true, true));
 			tblclmnNumericprop.setText(tagName);
-			tblclmnNumericprop.setWidth(100);
+//			tblclmnNumericprop.setWidth(100);
 		}
-		// calculate column size since adding removing colums does not trigger a
+		// calculate column size since adding removing columns does not trigger a
 		// control resize event.
 		Rectangle area = table.getClientArea();
 		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
@@ -172,7 +172,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		// table.notifyListeners(0, //new Event()));
 	}
 
-	public ChannelsViewWidget(Composite parent, int style) {
+	public ChannelViewerWidget(Composite parent, int style) {
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -298,8 +298,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
 				if (selection != null)
-					return new StructuredSelection(new ChannelsViewAdaptable(
-							selection.toList(), ChannelsViewWidget.this));
+					return new StructuredSelection(new ChannelViewerAdaptable(
+							selection.toList(), ChannelViewerWidget.this));
 				else
 					return new StructuredSelection();
 			}
@@ -307,7 +307,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 
 		addPropertyChangeListener(new PropertyChangeListener() {
 
-			List<String> properties = Arrays.asList("channels", "properties", "tags");
+			List<String> properties = Arrays.asList("channels", "properties",
+					"tags");
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -364,13 +365,12 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 
 	private boolean configurable = true;
 
-	private ChannelsViewConfigurationDialog dialog;
+	private ChannelViewerConfigurationDialog dialog;
 
 	public void openConfigurationDialog() {
 		if (dialog != null)
 			return;
-		dialog = new ChannelsViewConfigurationDialog(this, SWT.None,
-				"Configure Channels View");
+		dialog = new ChannelViewerConfigurationDialog(this);
 		dialog.open();
 	}
 
