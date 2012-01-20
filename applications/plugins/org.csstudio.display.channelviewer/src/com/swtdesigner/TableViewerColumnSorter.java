@@ -13,7 +13,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Table;
 
-/**
+/** 
+ * TODO generate this class again 
+ * 
  * Helper for sorting {@link TableViewer} by one of its {@link TableViewerColumn}s.
  * <p>
  * Originally from http://wiki.eclipse.org/index.php/JFaceSnippets, Snippet040TableViewerSorting.

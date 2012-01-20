@@ -57,6 +57,9 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	private Collection<Channel> channels = new ArrayList<Channel>();
 	private AbstractSelectionProviderWrapper selectionProvider;
 
+	private List<String> properties;
+	private List<String> tags;
+
 	public Collection<Channel> getChannels() {
 		return channels;
 	}
@@ -64,7 +67,31 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
 		this.channels = channels;
+		this.properties = new ArrayList<String>(
+				ChannelUtil.getPropertyNames(channels));
+		this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
+	}
+
+	public Collection<String> getProperties() {
+		return properties;
+	}
+	
+
+	public void setProperties(List<String> properties) {
+		List<String> oldProperties = this.properties;
+		this.properties = properties;
+		changeSupport.firePropertyChange("properties", oldProperties, properties);
+	}
+
+	public Collection<String> getTags() {
+		return tags;
+	}
+	
+	public void setTags(List<String> tags){
+		List<String> oldTags = this.tags;
+		this.tags = tags;
+		changeSupport.firePropertyChange("tags", oldTags, tags);
 	}
 
 	private void updateTable() {
@@ -78,7 +105,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 					.dispose();
 		}
 		// Add a new column for each property
-		for (String propertyName : ChannelUtil.getPropertyNames(channels)) {
+		for (String propertyName : properties) {
 			// Property Column
 			TableViewerColumn channelPropertyColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
@@ -96,7 +123,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			tblclmnNumericprop.setWidth(100);
 		}
 		// Add a new column for each Tag
-		for (String tagName : ChannelUtil.getAllTagNames(channels)) {
+		for (String tagName : tags) {
 			// Tag Column
 			TableViewerColumn channelTagColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
@@ -269,8 +296,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			}
 		});
 
-		selectionProvider = new AbstractSelectionProviderWrapper(
-				tableViewer, this) {
+		selectionProvider = new AbstractSelectionProviderWrapper(tableViewer,
+				this) {
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
 				if (selection != null)
@@ -283,7 +310,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 
 		addPropertyChangeListener(new PropertyChangeListener() {
 
-			List<String> properties = Arrays.asList("channels");
+			List<String> properties = Arrays.asList("channels", "properties", "tags");
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -312,7 +339,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		Exception e = result.exception;
 		errorBar.setException(e);
 		if (e == null) {
-			this.setChannels(result.channels);
+			setChannels(result.channels);
 		}
 	}
 
