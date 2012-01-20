@@ -9,16 +9,16 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.PartInitException;
 
 
-public class OpenChannelsView extends AbstractAdaptedHandler<ChannelQuery> {
+public class OpenChannelViewer extends AbstractAdaptedHandler<ChannelQuery> {
 
-	public OpenChannelsView() {
+	public OpenChannelViewer() {
 		super(ChannelQuery.class);
 	}
 	
 	@Override
 	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
 		if (!queries.isEmpty()) {
-			findView(ChannelsView.class, ChannelsView.ID)
+			findView(ChannelViewer.class, ChannelViewer.ID)
 					.setChannelQuery(queries.get(0));
 		}
 	}

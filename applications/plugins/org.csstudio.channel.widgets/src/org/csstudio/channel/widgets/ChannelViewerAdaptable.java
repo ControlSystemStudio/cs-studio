@@ -15,13 +15,13 @@ import org.csstudio.csdata.ProcessVariable;
  * @author shroffk
  * 
  */
-public class ChannelsViewAdaptable implements ChannelAdaptable,
+public class ChannelViewerAdaptable implements ChannelAdaptable,
 		ConfigurableWidgetAdaptable {
 
 	private final Collection<Channel> channels;
 	private final ConfigurableWidget configurableWidget;
 
-	public ChannelsViewAdaptable(Collection<Channel> channels,
+	public ChannelViewerAdaptable(Collection<Channel> channels,
 			ConfigurableWidget configurableWidget) {
 		super();
 		this.channels = channels;

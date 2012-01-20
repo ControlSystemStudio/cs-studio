@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.TableColumn;
 
 import com.swtdesigner.TableViewerColumnSorter;
 
-public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
+public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
 
 	private Table table;
@@ -172,7 +172,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		// table.notifyListeners(0, //new Event()));
 	}
 
-	public ChannelsViewWidget(Composite parent, int style) {
+	public ChannelViewerWidget(Composite parent, int style) {
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
@@ -298,8 +298,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
 				if (selection != null)
-					return new StructuredSelection(new ChannelsViewAdaptable(
-							selection.toList(), ChannelsViewWidget.this));
+					return new StructuredSelection(new ChannelViewerAdaptable(
+							selection.toList(), ChannelViewerWidget.this));
 				else
 					return new StructuredSelection();
 			}
@@ -365,12 +365,12 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 
 	private boolean configurable = true;
 
-	private ChannelsViewConfigurationDialog dialog;
+	private ChannelViewerConfigurationDialog dialog;
 
 	public void openConfigurationDialog() {
 		if (dialog != null)
 			return;
-		dialog = new ChannelsViewConfigurationDialog(this);
+		dialog = new ChannelViewerConfigurationDialog(this);
 		dialog.open();
 	}
 

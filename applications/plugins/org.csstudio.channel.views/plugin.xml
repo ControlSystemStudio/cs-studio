@@ -33,10 +33,10 @@
       </category>
       <view
             category="org.csstudio.channel.application.category"
-            class="org.csstudio.channel.views.ChannelsView"
+            class="org.csstudio.channel.views.ChannelViewer"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-            id="org.csstudio.channel.views.ChannelsView"
-            name="Channels"
+            id="org.csstudio.channel.views.ChannelViewer"
+            name="Channel Viewer"
             restorable="true">
       </view>
    </extension>
@@ -78,7 +78,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-               label="Channels View"
+               label="Channel Viewer"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -110,7 +110,7 @@
          <command
                commandId="org.csstudio.channel.views.OpenChannelsView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-               label="Channels View"
+               label="Channel Viewer"
                style="push">
          </command>
       </menuContribution>
@@ -138,9 +138,9 @@
             name="PV Table by Property">
       </command>
       <command
-            defaultHandler="org.csstudio.channel.views.OpenChannelsView"
-            id="org.csstudio.channel.views.OpenChannelsView"
-            name="Channels View">
+            defaultHandler="org.csstudio.channel.views.OpenChannelViewer"
+            id="org.csstudio.channel.views.OpenChannelViewer"
+            name="Channel Viewer">
       </command>
    </extension>
 </plugin>
