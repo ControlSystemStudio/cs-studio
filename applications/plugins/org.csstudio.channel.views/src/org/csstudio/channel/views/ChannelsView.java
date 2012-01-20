@@ -36,7 +36,7 @@ public class ChannelsView extends ViewPart {
 		lblQuery.setText("Query: ");
 
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, Activator
-				.getDefault().getDialogSettings(), "waterfall.query");
+				.getDefault().getDialogSettings(), "channelviewer.query");
 		inputBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
 
