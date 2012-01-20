@@ -13,9 +13,8 @@ public class ChannelsViewConfigurationDialog
 		extends
 		AbstractConfigurationDialog<ChannelsViewWidget, ChannelsViewConfigurationPanel> {
 
-	protected ChannelsViewConfigurationDialog(ChannelsViewWidget widget,
-			int style, String title) {
-		super(widget, style, title);
+	protected ChannelsViewConfigurationDialog(ChannelsViewWidget widget) {
+		super(widget, SWT.DIALOG_TRIM, "Configure Channel Viewer");
 		addInitialValues("possibleProperties", new ArrayList<String>(
 				ChannelUtil.getPropertyNames(widget.getChannels())));
 		addInitialValues("selectedProperties", widget.getProperties());

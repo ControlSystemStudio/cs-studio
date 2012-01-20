@@ -71,19 +71,19 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	public Collection<String> getProperties() {
 		return properties;
 	}
-	
 
 	public void setProperties(List<String> properties) {
 		List<String> oldProperties = this.properties;
 		this.properties = properties;
-		changeSupport.firePropertyChange("properties", oldProperties, properties);
+		changeSupport.firePropertyChange("properties", oldProperties,
+				properties);
 	}
 
 	public Collection<String> getTags() {
 		return tags;
 	}
-	
-	public void setTags(List<String> tags){
+
+	public void setTags(List<String> tags) {
 		List<String> oldTags = this.tags;
 		this.tags = tags;
 		changeSupport.firePropertyChange("tags", oldTags, tags);
@@ -122,8 +122,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			// Tag Column
 			TableViewerColumn channelTagColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
-			channelTagColumn
-					.setLabelProvider(new ChannelTagCellLabelProvider(tagName));
+			channelTagColumn.setLabelProvider(new ChannelTagCellLabelProvider(
+					tagName));
 			new TableViewerChannelTagSorter(channelTagColumn, tagName);
 			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
 			// tcl_composite.setColumnData(tblclmnNumericprop, new
@@ -307,7 +307,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 
 		addPropertyChangeListener(new PropertyChangeListener() {
 
-			List<String> properties = Arrays.asList("channels", "properties", "tags");
+			List<String> properties = Arrays.asList("channels", "properties",
+					"tags");
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -369,8 +370,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 	public void openConfigurationDialog() {
 		if (dialog != null)
 			return;
-		dialog = new ChannelsViewConfigurationDialog(this, SWT.None,
-				"Configure Channels View");
+		dialog = new ChannelsViewConfigurationDialog(this);
 		dialog.open();
 	}
 
