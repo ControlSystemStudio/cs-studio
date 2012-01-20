@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="ArchiveConfigTool" uid="config_tool" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="1.0.0" useFeatures="false" includeLaunchers="true">
-
+<product name="ArchiveConfigTool" uid="config_tool" id="org.csstudio.archive.config.rdb.product" application="org.csstudio.archive.config.rdb.app" version="3.1.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -13,7 +12,6 @@
 
    <windowImages/>
 
-
    <launcher name="ArchiveConfigTool">
       <solaris/>
       <win useIco="false">
@@ -21,12 +19,11 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
-
    <plugins>
+      <plugin id="com.ibm.icu"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.config"/>
       <plugin id="org.csstudio.archive.config.rdb"/>
@@ -40,6 +37,7 @@
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -50,6 +48,8 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>

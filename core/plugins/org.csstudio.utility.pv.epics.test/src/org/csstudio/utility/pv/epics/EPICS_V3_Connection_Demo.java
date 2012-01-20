@@ -15,8 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.utility.pv.epics.PVContext;
 import org.junit.Test;
 
 /** JUnit Demo or command-line test of PV connect/disconnect.
@@ -47,48 +45,15 @@ public class EPICS_V3_Connection_Demo implements PVListener
 	 */
     private static final String PV_NAME = "longs";
 
-	private static final int MAX_ARRAY = 50000;
-
-	private static final String NETWORK = "127.0.0.1";
 
     /** Test runs (connect, ..., disconnect) to perform */
-    private static final int TEST_RUNS = Integer.MAX_VALUE;
+    private static final int TEST_RUNS = 10; // Integer.MAX_VALUE;
 
     /** Values to receive within each run */
-    private static final int VALUE_UPDATES = 1000;
+    private static final int VALUE_UPDATES = 2; // 1000;
 
     /** Updates received from PV */
     final AtomicInteger updates = new AtomicInteger(0);
-
-    /** Perform setup that's usually done by the CSS plugin
-     *  based on Eclipse preferences.
-     */
-    private static void setup()
-    {
-        PVContext.use_pure_java = false;
-        System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
-                           "gov.aps.jca.event.DirectEventDispatcher");
-        //                 "gov.aps.jca.event.QueuedEventDispatcher");
-
-        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", NETWORK);
-        System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "false");
-
-        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", NETWORK);
-        System.setProperty("gov.aps.jca.jni.JNIContext.auto_addr_list", "false");
-
-        System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", Integer.toString(MAX_ARRAY));
-        System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", Integer.toString(MAX_ARRAY));
-    }
-
-    /** @param name PV name
-     *  @return PV
-     */
-    static private PV getPV(final String name)
-    {
-        setup();
-        // Hard-coded to use EPICS_V3_PV, not using PV Factory
-        return new EPICS_V3_PV(name);
-    }
 
     // PVListener
     @Override
@@ -111,12 +76,11 @@ public class EPICS_V3_Connection_Demo implements PVListener
     @Test
     public void testConnections() throws Exception
     {
-        setup();
         for (int i=1; i<TEST_RUNS; ++i)
         {
             log(i);
             updates.set(0);
-            final PV pv = getPV(PV_NAME);
+            final PV pv = TestUtil.getPV(PV_NAME);
             pv.addListener(this);
             pv.start();
             // Allow about 2 seconds for each value
