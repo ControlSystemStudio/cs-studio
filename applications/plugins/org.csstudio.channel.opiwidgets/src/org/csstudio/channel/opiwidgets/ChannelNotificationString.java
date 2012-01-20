@@ -10,6 +10,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Notification string for a channel based widget. It parses the string, and then
+ * is able to create the notification string from the property value, a map of
+ * available property values or a channel. Notification support can use
+ * this to go from the current selection to the appropriate selection notification string.
+ * 
+ * @author carcassi
+ */
 public class ChannelNotificationString {
 	
 	private final List<String> requiredProperties = new ArrayList<String>();
@@ -17,6 +25,11 @@ public class ChannelNotificationString {
 	private static final String TOKEN_PATTERN = "#\\((\\w*)\\)|#\\(Channel Name\\)";
 	private static final Pattern PATTERN = Pattern.compile(TOKEN_PATTERN);
 	
+	/**
+	 * Parses the string and creates a new notification.
+	 * 
+	 * @param notificationString the notification string
+	 */
 	public ChannelNotificationString(String notificationString) {
 		Matcher matcher = PATTERN.matcher(notificationString);
 		int previousEnd = 0;
@@ -32,10 +45,22 @@ public class ChannelNotificationString {
 		textTokens.add(notificationString.substring(previousEnd, notificationString.length()));
 	}
 
+	/**
+	 * Returns the full list of required properties.
+	 * 
+	 * @return a list of strings
+	 */
 	public List<String> getRequiredProperties() {
 		return Collections.unmodifiableList(requiredProperties);
 	}
 	
+	/**
+	 * Creates a notification given the property values in the same order given returned
+	 * by {@link ChannelNotificationString#getRequiredProperties()}.
+	 * 
+	 * @param propertyValues the values
+	 * @return the new notification string
+	 */
 	public String notification(List<String> propertyValues) {
 		StringBuilder builder = new StringBuilder();
 		int n = 0;
@@ -46,6 +71,12 @@ public class ChannelNotificationString {
 		return builder.toString();
 	}
 
+	/**
+	 * Creates a new notification string given a map of property name/value.
+	 * 
+	 * @param map a map from names to values
+	 * @return the notification string
+	 */
 	public String notification(Map<String, String> map) {
 		StringBuilder builder = new StringBuilder();
 		int n = 0;
@@ -62,6 +93,12 @@ public class ChannelNotificationString {
 		return builder.toString();
 	}
 
+	/**
+	 * Creates a new notification string based on the properties of the given channel.
+	 * 
+	 * @param channel the selected channel
+	 * @return the notification string
+	 */
 	public String notification(Channel channel) {
 		StringBuilder builder = new StringBuilder();
 		int n = 0;

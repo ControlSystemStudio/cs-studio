@@ -9,6 +9,6 @@ public class ChannelTreeByPropertyFigure extends AbstractChannelWidgetFigure<Cha
 	public ChannelTreeByPropertyFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
 		widget = new ChannelTreeByPropertyWidget(composite, SWT.NONE);
-		selectionProvider = widget.getTreeSelectionProvider();
+		selectionProvider = widget;
 	}
 }

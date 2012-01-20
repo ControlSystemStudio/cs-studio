@@ -31,7 +31,7 @@ import org.eclipse.swt.layout.GridData;
 public class WaterfallParametersDialog extends Dialog {
 
 	private WaterfallPlotParameters oldParameters;
-	private boolean oldShowRange;
+	private boolean oldShowTimeAxis;
 	private String oldSortProperty;
 	protected Shell shell;
 	
@@ -43,7 +43,7 @@ public class WaterfallParametersDialog extends Dialog {
 	private Button btnDown;
 
 	private Spinner spPixelDuration;
-	private Button btnHideRange;
+	private Button btnShowTimeAxis;
 	private Label lblProperty;
 	private Group grpChannels;
 	private Text propertyField;
@@ -63,14 +63,14 @@ public class WaterfallParametersDialog extends Dialog {
 		// Save widget and old status (in case of cancel)
 		this.widget = widget;
 		this.oldParameters = widget.getWaterfallPlotParameters();
-		this.oldShowRange = widget.isShowRange();
+		this.oldShowTimeAxis = widget.isShowTimeAxis();
 		this.oldSortProperty = widget.getSortProperty();
 		if (this.oldSortProperty != null)
 			propertyField.setText(this.oldSortProperty);
 		
 		// Make all controls display the current parameters
 		// of the widget
-		btnHideRange.setSelection(!oldShowRange);
+		btnShowTimeAxis.setSelection(oldShowTimeAxis);
 		if (oldParameters.isAdaptiveRange()) {
 			btnAutoRange.setSelection(true);
 			btnMetadata.setSelection(false);
@@ -131,7 +131,7 @@ public class WaterfallParametersDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// If click cancel, reset the old parameters
-				widget.setShowRange(oldShowRange);
+				widget.setShowTimeAxis(oldShowTimeAxis);
 				widget.setWaterfallPlotParameters(oldParameters);
 				widget.setSortProperty(oldSortProperty);
 				shell.close();
@@ -239,12 +239,12 @@ public class WaterfallParametersDialog extends Dialog {
 		lblMsPerPixel.setLayoutData(fd_lblMsPerPixel);
 		lblMsPerPixel.setText("ms per pixel");
 		
-		btnHideRange = new Button(shell, SWT.CHECK);
-		FormData fd_btnHideRange = new FormData();
-		fd_btnHideRange.top = new FormAttachment(lblResolution, 6);
-		fd_btnHideRange.left = new FormAttachment(grpRange, 0, SWT.LEFT);
-		btnHideRange.setLayoutData(fd_btnHideRange);
-		btnHideRange.setText("Hide range");
+		btnShowTimeAxis = new Button(shell, SWT.CHECK);
+		FormData fd_btnShowTimeAxis = new FormData();
+		fd_btnShowTimeAxis.top = new FormAttachment(lblResolution, 6);
+		fd_btnShowTimeAxis.left = new FormAttachment(grpRange, 0, SWT.LEFT);
+		btnShowTimeAxis.setLayoutData(fd_btnShowTimeAxis);
+		btnShowTimeAxis.setText("Show Time Axis");
 		
 		grpChannels = new Group(shell, SWT.NONE);
 		fd_lblResolution.top = new FormAttachment(grpChannels, 6);
@@ -270,10 +270,10 @@ public class WaterfallParametersDialog extends Dialog {
 				widget.setSortProperty(propertyField.getText());
 			}
 		});
-		btnHideRange.addSelectionListener(new SelectionAdapter() {
+		btnShowTimeAxis.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				widget.setShowRange(!btnHideRange.getSelection());
+				widget.setShowTimeAxis(btnShowTimeAxis.getSelection());
 			}
 		});
 

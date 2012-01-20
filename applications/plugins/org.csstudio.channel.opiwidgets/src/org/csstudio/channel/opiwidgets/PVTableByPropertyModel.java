@@ -14,8 +14,8 @@ public class PVTableByPropertyModel extends AbstractChannelWidgetModel {
 	
 	@Override
 	protected void configureProperties() {
-		addProperty(new StringProperty(ROW_PROPERTY, "Row property", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(COLUMN_PROPERTY, "Column property", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(ROW_PROPERTY, "Row Property", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(COLUMN_PROPERTY, "Column Property", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(ROW_SELECTION_PV_NAME, "Row Selection PV Name", WidgetPropertyCategory.Basic, ""));
 	}
 

@@ -176,6 +176,8 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.marginWidth = 0;
+		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
 
 		errorBar = new ErrorBar(this, SWT.NONE);

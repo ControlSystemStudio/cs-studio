@@ -309,12 +309,21 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		return parameters;
 	}
 	
-	public boolean isScrollDown() {
-		return parameters.isScrollDown();
+	public int getScrollDirection() {
+		if (parameters.isScrollDown())
+			return SWT.DOWN;
+		else
+			return SWT.UP;
 	}
 	
-	public void setScrollDown(boolean scrollDown) {
-		setWaterfallPlotParameters(parameters.with(scrollDown(scrollDown)));
+	public void setScrollDirection(int direction) {
+		if (direction == SWT.UP) {
+			setWaterfallPlotParameters(parameters.with(scrollDown(false)));
+		} else if (direction == SWT.DOWN) {
+			setWaterfallPlotParameters(parameters.with(scrollDown(true)));
+		} else {
+			throw new IllegalArgumentException("Scroll direction must be SWT.UP or SWT.DOWN");
+		}
 	}
 	
 	public boolean isAdaptiveRange() {
@@ -346,7 +355,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @param showRange true if range should be displayed
 	 */
-	public void setShowRange(boolean showRange) {
+	public void setShowTimeAxis(boolean showRange) {
 		rangeWidget.setVisible(showRange);
 		
 		// Making the range invisible is not enough to not show it.
@@ -367,7 +376,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @return true if the range is displayed
 	 */
-	public boolean isShowRange() {
+	public boolean isShowTimeAxis() {
 		return rangeWidget.isVisible();
 	}
 

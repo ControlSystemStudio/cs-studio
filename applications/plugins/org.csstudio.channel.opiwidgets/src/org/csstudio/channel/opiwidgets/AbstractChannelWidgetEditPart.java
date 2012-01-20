@@ -1,56 +1,36 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
-public abstract class AbstractChannelWidgetEditPart<Figure extends AbstractChannelWidgetFigure<?>,
-    Model extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart {
-	
-//	private void registerMouseListener(Control control) {
-//		control.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseDown(MouseEvent e) {
-//				getViewer().select(AbstractChannelWidgetEditPart.this);
-//			}
-//		});
-//		
-//		if (control instanceof Composite) {
-//			for (Control child : ((Composite) control).getChildren()) {
-//				registerMouseListener(child);
-//			}
-//		}
-//	}
-	
-//	protected void registerPopup(final Control control) {
-//		registerMouseListener(control);
-////		Menu menu = getViewer().getContextMenu().createContextMenu(getViewer().getControl());
-////		control.setMenu(menu);
-//	}
+/**
+ * Abstract class for channel based widgets. Here we put the functionality that is common to
+ * all channel based widgets, some of which may in the future be pushed to the BOY base classes.
+ * <p>
+ * Generics is used to avoid casting figures and widgets.
+ * 
+ * @author carcassi
+ *
+ * @param <F> the figure type
+ * @param <M> the model type
+ */
+public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWidgetFigure<?>,
+    M extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart {
 	
 	@Override
-	protected abstract Figure doCreateFigure();
+	protected abstract F doCreateFigure();
 	
 	@Override
-	public Figure getFigure() {
+	public F getFigure() {
 		@SuppressWarnings("unchecked")
-		Figure figure = (Figure) super.getFigure();
+		F figure = (F) super.getFigure();
 		return figure;
 	}
 	
 	@Override
-	public Model getWidgetModel() {
+	public M getWidgetModel() {
 		@SuppressWarnings("unchecked")
-		Model widgetModel = (Model) super.getWidgetModel();
+		M widgetModel = (M) super.getWidgetModel();
 		return widgetModel;
 	}
-	
-//	@Override
-//	public void deactivate() {
-////		getFigure().getSWTWidget().dispose();		
-//		super.deactivate();
-//	}
 
 }

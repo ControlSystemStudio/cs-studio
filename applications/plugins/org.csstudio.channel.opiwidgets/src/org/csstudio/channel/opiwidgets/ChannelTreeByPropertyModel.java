@@ -20,10 +20,10 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(CONFIGURABLE, "Configurable", WidgetPropertyCategory.Behavior, false));
-		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(TREE_PROPERTIES, "Tree Properties", WidgetPropertyCategory.Basic, ""));
 		addProperty(new StringProperty(SELECTION_PV, "Selection PV", WidgetPropertyCategory.Behavior, ""));
 		addProperty(new StringProperty(SELECTION_EXPRESSION, "Selection Expression", WidgetPropertyCategory.Behavior, ""));
-		addProperty(new BooleanProperty(SHOW_CHANNEL_NAMES, "Show channel names", WidgetPropertyCategory.Basic, true));
+		addProperty(new BooleanProperty(SHOW_CHANNEL_NAMES, "Show Channel Names", WidgetPropertyCategory.Basic, true));
 	}
 
 	@Override
