@@ -113,6 +113,7 @@ public class WaterfallView extends ViewPart {
 		}
 		
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
+		PopupMenuUtil.installPopupForView(waterfallComposite, getSite(), waterfallComposite);
 	}
 
 }

@@ -149,7 +149,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		treeWidget.loadState(memento);
 		inputBar.setChannelQuery(treeWidget.getChannelQuery());
 		
-		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
+		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget);
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 	}
 }

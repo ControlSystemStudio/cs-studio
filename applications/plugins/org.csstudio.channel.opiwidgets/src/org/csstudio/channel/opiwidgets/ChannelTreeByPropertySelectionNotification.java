@@ -42,7 +42,7 @@ public class ChannelTreeByPropertySelectionNotification {
 		
 		notification = new LocalUtilityPvManagerBridge(notificationPv);
 		
-		widget.getTreeSelectionProvider().addSelectionChangedListener(listener);
+		widget.addSelectionChangedListener(listener);
 		widget.addDisposeListener(new DisposeListener() {
 			
 			@Override
@@ -53,7 +53,7 @@ public class ChannelTreeByPropertySelectionNotification {
 	}
 	
 	public void close() {
-		widget.getTreeSelectionProvider().removeSelectionChangedListener(listener);
+		widget.removeSelectionChangedListener(listener);
 		notification.close();
 	}
 

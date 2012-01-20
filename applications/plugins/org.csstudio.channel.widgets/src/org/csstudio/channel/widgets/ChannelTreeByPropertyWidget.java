@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -30,11 +32,11 @@ import org.eclipse.ui.IMemento;
  * 
  */
 public class ChannelTreeByPropertyWidget extends AbstractChannelQueryResultWidget
-implements ConfigurableWidget {
+implements ConfigurableWidget, ISelectionProvider {
 	
 	private Tree tree;
 	private ErrorBar errorBar;
-	private ISelectionProvider treeSelectionProvider;
+	private ISelectionProvider selectionProvider;
 	private List<String> properties = new ArrayList<String>();
 	private ChannelTreeByPropertyModel model;
 	
@@ -42,17 +44,6 @@ implements ConfigurableWidget {
 	public void setMenu(Menu menu) {
 		super.setMenu(menu);
 		tree.setMenu(menu);
-	}
-	
-	/**
-	 * The selection provider with the selected data in the tree,
-	 * in terms of ChannelTreeByPropertyNode objects.
-	 * Provided to add pop-up menu.
-	 * 
-	 * @return the selection provider
-	 */
-	public ISelectionProvider getTreeSelectionProvider() {
-		return treeSelectionProvider;
 	}
 	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
@@ -108,7 +99,7 @@ implements ConfigurableWidget {
 		});
 		tree.setItemCount(0);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
+		selectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
 	}
 	
 	private boolean showChannelNames = true;
@@ -246,4 +237,26 @@ implements ConfigurableWidget {
 	public void configurationDialogClosed() {
 		dialog = null;
 	}
+
+	@Override
+	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
+	}
+	
 }

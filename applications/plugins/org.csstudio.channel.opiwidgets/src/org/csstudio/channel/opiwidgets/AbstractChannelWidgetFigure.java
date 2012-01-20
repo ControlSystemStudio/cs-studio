@@ -9,7 +9,6 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 /**
  * Base class for all figures that are based on SWTWidgets and channel finder.
@@ -32,35 +31,55 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		super(editPart);
 	}
 	
+	// TODO: this should be changed to have an abstract method to be implemented,
+	// instead of having people set it in the constructor.
 	protected T widget;
 	protected ISelectionProvider selectionProvider;
-	protected Control control;
 
 	@Override
 	public T getSWTWidget() {
 		return widget;
 	}
 	
+	/**
+	 * The selection provider to be used for the pop-up.
+	 * 
+	 * @return the selection provider or null
+	 */
 	public ISelectionProvider getSelectionProvider() {
 		return selectionProvider;
 	}
 	
-	public Control getControlForPopup() {
-		return control;
-	}
+	// TODO: these most likely are better moved to the edit part, and converted
+	// to use the adaptable interfaces we are building.
 	
+	/**
+	 * Takes the selection and converts it to a Channel array.
+	 * 
+	 * @return the adapted object or null
+	 */
 	public Channel[] getSelectedChannels() {
 		if (selectionProvider == null)
 			return null;
 		return AdapterUtil.convert(getSelectionProvider().getSelection(), Channel.class);
 	}
-	
+
+	/**
+	 * Takes the selection and converts it to a ChannelQuery array.
+	 * 
+	 * @return the adapted object or null
+	 */
 	public ChannelQuery[] getSelectedChannelQuery() {
 		if (selectionProvider == null)
 			return null;
 		return AdapterUtil.convert(getSelectionProvider().getSelection(), ChannelQuery.class);
 	}
-	
+
+	/**
+	 * Takes the selection and converts it to a ProcessVariable array.
+	 * 
+	 * @return the adapted object or null
+	 */
 	public ProcessVariable[] getSelectedProcessVariables() {
 		if (selectionProvider == null)
 			return null;
@@ -71,11 +90,4 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		return runmode;
 	}
 	
-//	@Override
-//	public void dispose() {
-//		if(runmode) {
-//			super.dispose();
-//			getSWTWidget().dispose();
-//		}
-//	}
 }
