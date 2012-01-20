@@ -24,13 +24,19 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DelayCommand extends BaseCommand
+public class DelayCommand extends ScanCommand
 {
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
 
     private double seconds;
 
+    /** Initialize delay with 1 second */
+    public DelayCommand()
+    {
+        this(1.0);
+    }
+    
 	/** Initialize
 	 *  @param seconds Delay in seconds
 	 */

@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitCommand extends BaseCommand
+public class WaitCommand extends ScanCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -32,6 +32,12 @@ public class WaitCommand extends BaseCommand
     private String device_name;
     private double desired_value;
     private double tolerance;
+
+    /** Initialize empty wait command */
+    public WaitCommand()
+    {
+        this("device", 0.0, 0.1);
+    }
 
     /** Initialize
      *  @param device_name Name of device to check

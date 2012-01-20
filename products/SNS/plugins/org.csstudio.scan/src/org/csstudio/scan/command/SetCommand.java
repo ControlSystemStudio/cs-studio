@@ -24,7 +24,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SetCommand extends BaseCommand
+public class SetCommand extends ScanCommand
 {
 	/** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -32,6 +32,12 @@ public class SetCommand extends BaseCommand
     private String device_name;
 	private Object value;
 
+    /** Initialize empty set command */
+    public SetCommand()
+    {
+        this("device", 0.0);
+    }
+	
 	/** Initialize
 	 *  @param device_name Name of device
 	 *  @param value Value to write to the device
@@ -91,5 +97,4 @@ public class SetCommand extends BaseCommand
 	{
 	    return "Set '" + device_name + "' = " + value;
 	}
-
 }

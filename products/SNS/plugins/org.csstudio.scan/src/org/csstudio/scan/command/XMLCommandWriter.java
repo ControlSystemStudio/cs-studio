@@ -30,9 +30,7 @@ public class XMLCommandWriter
         out.println("<commands>");
         for (ScanCommand command : commands)
         {
-            if (! (command instanceof BaseCommand))
-                throw new Exception("Cannot write " + command.getClass().getName() + " to XML");
-            ((BaseCommand)command).writeXML(out, 1);
+            command.writeXML(out, 1);
         }
         out.println("</commands>");
         out.flush();

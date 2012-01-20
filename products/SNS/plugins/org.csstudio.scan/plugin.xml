@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="command" name="Scan Command" schema="schema/command.exsd"/>
+   <extension point="org.csstudio.scan.command">
+      <command
+            class="org.csstudio.scan.command.DelayCommand"
+            icon="icons/delaycommand.gif"
+            name="Delay">
+      </command>
+      <command
+            class="org.csstudio.scan.command.LogCommand"
+            icon="icons/logcommand.gif"
+            name="Log">
+      </command>
+      <command
+            class="org.csstudio.scan.command.LoopCommand"
+            icon="icons/loopcommand.gif"
+            name="Loop">
+      </command>
+      <command
+            class="org.csstudio.scan.command.SetCommand"
+            icon="icons/setcommand.gif"
+            name="Set">
+      </command>
+      <command
+            class="org.csstudio.scan.command.WaitCommand"
+            icon="icons/waitcommand.gif"
+            name="Wait">
+      </command>
+   </extension>
+</plugin>

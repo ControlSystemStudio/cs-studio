@@ -27,13 +27,19 @@ import org.w3c.dom.Node;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LogCommand extends BaseCommand
+public class LogCommand extends ScanCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
     private String[] device_names;
 
+    /** Initialize empty log command */
+    public LogCommand()
+    {
+        this("device");
+    }
+    
 	/** Initialize
 	 *  @param device_names List of device names
 	 */

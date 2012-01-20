@@ -15,31 +15,47 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
 import java.io.Serializable;
 
-/** Information about a command in a scan
- *
+import org.csstudio.scan.server.ScanServer;
+
+/** Description of a scan server command
+ * 
  *  <p>Used by the client to describe commands to the server.
- *
- *  <p>Also used by the server as the base class for
- *  most command implementations.
- *  Needs to be <code>Serializable</code> to allow RMI
- *  to pass the data from the client to the server.
- *  By sharing the <code>...Command</code> classes between
- *  the server and client we avoid problems with RMI
- *  having to dynamically create the types across JVMs.
- *
- *  <p>Originally just called 'Command', but that clashed
- *  with the PyDev Command class that's used inside the
- *  PyDev shell executing in the Eclipse Command view.
- *  The easiest way around that issue seemed a rename
- *  of the basic scan command.
  *
  *  @author Kay Kasemir
  */
-public interface ScanCommand extends Serializable
+@SuppressWarnings("nls")
+abstract public class ScanCommand implements Serializable
 {
-    /** @return One-line text representation of the command */
-	@Override
-    public String toString();
+    // TODO Transfer commands as XML so Serializable is no longer necessary
+    /** Serialization ID */
+    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+
+    // TODO public ScanCommandProperty[] getProperties();
+    
+    /** Write the command (and its sub-commands) in an XML format.
+     * 
+     *  <p>A command called AbcCommand should write itself as a tag "abc"
+     *  so that the {@link XMLCommandReader} can later determine
+     *  which class to use for reading the command back from XML.
+     *  
+     *  @param out {@link PrintStream}
+     *  @param level Indentation level
+     */
+    abstract public void writeXML(PrintStream out, final int level);
+
+    // TODO public static ScanCommand fromXML(final Element element) throws Exception
+    // But can't be static
+    
+    /** Write indentation
+     *  @param out Where to print
+     *  @param level Indentation level
+     */
+    protected void writeIndent(final PrintStream out, final int level)
+    {
+        for (int i=0; i<level; ++i)
+            out.print("  ");
+    }
 }

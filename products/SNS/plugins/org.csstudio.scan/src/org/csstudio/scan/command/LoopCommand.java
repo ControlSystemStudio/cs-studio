@@ -42,7 +42,7 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LoopCommand extends BaseCommand
+public class LoopCommand extends ScanCommand
 {
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -53,6 +53,12 @@ public class LoopCommand extends BaseCommand
     private double stepsize;
 	private List<ScanCommand> body;
 
+    /** Initialize empty loop */
+    public LoopCommand()
+    {
+        this("device", 0, 10, 1, new ScanCommand[0]);
+    }
+	
 	/** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
@@ -167,16 +173,8 @@ public class LoopCommand extends BaseCommand
         out.println("<step>" + stepsize + "</step>");
         writeIndent(out, level+1);
         out.println("<body>");
-        for (ScanCommand b : body)
-        {   // Anticipate that Command might be implemented without BaseCommand
-            if (b instanceof BaseCommand)
-                ((BaseCommand)b).writeXML(out, level + 2);
-            else
-            {
-                writeIndent(out, level+2);
-                out.println("<unknown>" + b.toString() + "</unknown>");
-            }
-        }
+        for (ScanCommand cmd : body)
+            cmd.writeXML(out, level + 2);
         writeIndent(out, level+1);
         out.println("</body>");
         writeIndent(out, level);
