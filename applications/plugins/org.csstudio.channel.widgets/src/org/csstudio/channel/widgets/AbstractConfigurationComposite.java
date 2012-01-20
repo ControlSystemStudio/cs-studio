@@ -7,7 +7,8 @@ import org.eclipse.swt.widgets.Composite;
 
 public abstract class AbstractConfigurationComposite extends Composite {
 	
-	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+	// TODO (shroffk) fix access modifier 
+	public final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	public AbstractConfigurationComposite(Composite parent, int style) {
 		super(parent, style);
