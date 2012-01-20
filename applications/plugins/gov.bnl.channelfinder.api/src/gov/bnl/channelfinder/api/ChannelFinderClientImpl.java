@@ -974,22 +974,24 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 						map.put("~name", words[index]);
 				} else {
 					// this is a property or tag
+					String[] keyValue = words[index].split("=");
+					String key = null;
+					String valuePattern;
 					try {
-						String key = words[index].split("=")[0];
-						String values = words[index].split("=")[1];
+						key = keyValue[0];
+						valuePattern = keyValue[1];
 						if (key.equalsIgnoreCase("Tags")) {
-							map.put("~tag", values.replace("||", ","));
+							map.put("~tag", valuePattern.replace("||", ","));
 							// for (int i = 0; i < values.length; i++)
 							// map.put("~tag", values[i]);
-						} else {
-							map.put(key, values.replace("||", ","));
+						} else if(!key.isEmpty()) {
+							map.put(key, valuePattern.replace("||", ","));
 						}
-					} catch (Exception e) {
-						throw new IllegalArgumentException(
-								"The search must consist of key value pairs, " +
-								"propertyName=propertyValuePattern1,propertyValuePattern2 " +
-								"Tags=tagNamePattern.");
-
+					} catch (ArrayIndexOutOfBoundsException e) {
+						if(e.getMessage().equals(String.valueOf(0))){
+							throw new IllegalArgumentException("= must be preceeded by a propertyName or keyword Tags.");
+						} else if (e.getMessage().equals(String.valueOf(1)))
+							throw new IllegalArgumentException("key: '" + key + "' is specified with no pattern.");
 					}
 
 				}
