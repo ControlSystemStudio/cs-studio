@@ -41,6 +41,7 @@ public abstract class AbstractSelectionProviderWrapper implements ISelectionProv
 			
 			@Override
 			public boolean equals(Object obj) {
+				// TODO: this doesn't actually work!
 				return listener.equals(obj);
 			}
 		});
@@ -50,6 +51,7 @@ public abstract class AbstractSelectionProviderWrapper implements ISelectionProv
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
+		// TODO: this doesn't actually work!
 		wrappedProvider.removeSelectionChangedListener(listener);
 	}
 	
