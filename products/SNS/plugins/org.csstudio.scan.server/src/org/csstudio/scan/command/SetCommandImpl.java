@@ -44,8 +44,15 @@ public class SetCommandImpl extends CommandImpl<SetCommand>
 		final Device device = context.getDevice(command.getDeviceName());
 		device.write(command.getValue());
 
-		// Note we do NOT wait for the device to reach the value
-		// If that is desired, a separate WaitForValueCommand is needed
+		// TODO Wait for the device to reach the value?
+		// Use put-callback?
+		// Use separate readback PV as in WaitForValueCommand?
+		// .. or with 'above', 'below'?
+		
+        // For now, a separate WaitForValueCommand is needed
+		
+		// TODO Log the value
+
 		context.workPerformed(1);
     }
 }

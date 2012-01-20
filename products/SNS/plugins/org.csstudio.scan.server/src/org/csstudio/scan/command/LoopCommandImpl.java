@@ -101,6 +101,9 @@ public class LoopCommandImpl extends CommandImpl<LoopCommand>
         // .. wait for device to reach value
         reach_value.setDesiredValue(value);
         reach_value.await();
+        
+        // TODO Log the device's value
+        
         // Execute loop body
         try
         {
