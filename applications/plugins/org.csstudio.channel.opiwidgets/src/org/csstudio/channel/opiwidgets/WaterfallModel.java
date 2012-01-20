@@ -31,7 +31,7 @@ public class WaterfallModel extends AbstractChannelWidgetModel {
 		return ID;
 	}
 
-	public boolean isShowRange() {
+	public boolean isShowTimeAxis() {
 		return getCastedPropertyValue(SHOW_TIME_AXIS);
 	}
 	
@@ -49,7 +49,7 @@ public class WaterfallModel extends AbstractChannelWidgetModel {
 		return getCastedPropertyValue(SORT_PROPERTY);
 	}
 	
-	public TimeDuration getPixelDuration() {
+	public TimeDuration getResolution() {
 		return TimeDuration.ms((Double) getCastedPropertyValue(RESOLUTION));
 	}
 

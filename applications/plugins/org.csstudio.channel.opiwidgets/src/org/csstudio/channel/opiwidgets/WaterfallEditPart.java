@@ -20,9 +20,9 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
 		if (runMode)
 			widget.setChannelQuery(model.getChannelQuery());
-		widget.setShowRange(model.isShowRange());
+		widget.setShowTimeAxis(model.isShowTimeAxis());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
-		widget.setPixelDuration(model.getPixelDuration());
+		widget.setPixelDuration(model.getResolution());
 		widget.setScrollDown(model.isScrollDown());
 		widget.setSortProperty(model.getSortProperty());
 	}

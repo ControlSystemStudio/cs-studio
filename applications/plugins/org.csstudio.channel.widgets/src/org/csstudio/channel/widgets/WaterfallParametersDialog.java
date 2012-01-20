@@ -63,7 +63,7 @@ public class WaterfallParametersDialog extends Dialog {
 		// Save widget and old status (in case of cancel)
 		this.widget = widget;
 		this.oldParameters = widget.getWaterfallPlotParameters();
-		this.oldShowRange = widget.isShowRange();
+		this.oldShowRange = widget.isShowTimeAxis();
 		this.oldSortProperty = widget.getSortProperty();
 		if (this.oldSortProperty != null)
 			propertyField.setText(this.oldSortProperty);
@@ -131,7 +131,7 @@ public class WaterfallParametersDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// If click cancel, reset the old parameters
-				widget.setShowRange(oldShowRange);
+				widget.setShowTimeAxis(oldShowRange);
 				widget.setWaterfallPlotParameters(oldParameters);
 				widget.setSortProperty(oldSortProperty);
 				shell.close();
@@ -244,7 +244,7 @@ public class WaterfallParametersDialog extends Dialog {
 		fd_btnHideRange.top = new FormAttachment(lblResolution, 6);
 		fd_btnHideRange.left = new FormAttachment(grpRange, 0, SWT.LEFT);
 		btnHideRange.setLayoutData(fd_btnHideRange);
-		btnHideRange.setText("Hide range");
+		btnHideRange.setText("Hide Time Axis");
 		
 		grpChannels = new Group(shell, SWT.NONE);
 		fd_lblResolution.top = new FormAttachment(grpChannels, 6);
@@ -273,7 +273,7 @@ public class WaterfallParametersDialog extends Dialog {
 		btnHideRange.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				widget.setShowRange(!btnHideRange.getSelection());
+				widget.setShowTimeAxis(!btnHideRange.getSelection());
 			}
 		});
 

@@ -346,7 +346,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @param showRange true if range should be displayed
 	 */
-	public void setShowRange(boolean showRange) {
+	public void setShowTimeAxis(boolean showRange) {
 		rangeWidget.setVisible(showRange);
 		
 		// Making the range invisible is not enough to not show it.
@@ -367,7 +367,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @return true if the range is displayed
 	 */
-	public boolean isShowRange() {
+	public boolean isShowTimeAxis() {
 		return rangeWidget.isVisible();
 	}
 
