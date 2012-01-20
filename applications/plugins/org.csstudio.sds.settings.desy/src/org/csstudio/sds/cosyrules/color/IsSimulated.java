@@ -35,7 +35,7 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.IRule;
-import org.epics.css.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueCondition;
 
 /**
  * Check if the incoming Object represent a Invalid state

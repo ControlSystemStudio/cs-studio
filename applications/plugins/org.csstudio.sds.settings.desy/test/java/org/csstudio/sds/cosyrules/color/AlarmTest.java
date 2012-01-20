@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.EnumSet;
 
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.Timestamp;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

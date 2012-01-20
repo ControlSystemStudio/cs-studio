@@ -1,7 +1,7 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * Rule to control the border style dependent on the severity.
