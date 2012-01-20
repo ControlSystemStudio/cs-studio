@@ -1,12 +1,11 @@
 /**
  * 
  */
-package org.csstudio.channelviewer.views;
+package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 
-import org.csstudio.channelviewer.util.ChannelUtilities;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 
@@ -14,11 +13,11 @@ import org.eclipse.jface.viewers.ViewerCell;
  * @author shroffk
  * 
  */
-public class PropertyCellLabelProvider extends CellLabelProvider {
+public class ChannelPropertyCellLabelProvider extends CellLabelProvider {
 
 	private String propertyName;
 
-	public PropertyCellLabelProvider(String propertyName) {
+	public ChannelPropertyCellLabelProvider(String propertyName) {
 		super();
 		this.propertyName = propertyName;
 	}
@@ -32,8 +31,7 @@ public class PropertyCellLabelProvider extends CellLabelProvider {
 	 */
 	@Override
 	public void update(ViewerCell cell) {
-		Property property = ChannelUtilities.getProperty((Channel) cell.getElement(),
-				this.propertyName);
+		Property property = ((Channel) cell.getElement()).getProperty(propertyName);
 		if(property == null)
 			cell.setText("");
 		else

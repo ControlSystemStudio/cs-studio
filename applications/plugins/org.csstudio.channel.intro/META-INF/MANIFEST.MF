@@ -9,6 +9,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
- org.csstudio.channel.widgets,
- org.csstudio.display.channelviewer
+ org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL

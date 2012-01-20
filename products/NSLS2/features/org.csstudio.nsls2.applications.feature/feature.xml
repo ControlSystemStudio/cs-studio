@@ -27,10 +27,6 @@
          optional="true"/>
 
    <includes
-         id="org.csstudio.display.channelviewer.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.opibuilder.feature"
          version="0.0.0"/>
 
