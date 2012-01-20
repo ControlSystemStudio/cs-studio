@@ -49,7 +49,7 @@ public class CommonAdapterFactory implements IAdapterFactory {
 					return channelQueries.iterator().next();
 			} else if (adapterType == ChannelQuery[].class) {
 				if (channelQueries != null && !channelQueries.isEmpty())
-					return channelQueries.toArray(new Channel[channelQueries
+					return channelQueries.toArray(new ChannelQuery[channelQueries
 							.size()]);
 			}
 		} 
