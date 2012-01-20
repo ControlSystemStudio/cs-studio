@@ -57,7 +57,6 @@
       <plugin id="org.csstudio.diag.epics.pvtree"/>
       <plugin id="org.csstudio.diag.probe" fragment=""/>
       <plugin id="org.csstudio.diag.pvmanager.probe"/>
-      <plugin id="org.csstudio.display.channelviewer"/>
       <plugin id="org.csstudio.display.pvmanager.pvtable" fragment=""/>
       <plugin id="org.csstudio.display.pvtable"/>
       <plugin id="org.csstudio.domain.common" fragment=""/>
