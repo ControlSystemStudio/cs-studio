@@ -444,15 +444,20 @@ public class PVItem extends ModelItem implements PVListener
         }
 
         item.configureFromDocument(model, node);
-        // Load archives
-        Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
-        while (archive != null)
-        {
-            final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
-            final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
-            final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
-            item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
-            archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
+        
+        if (Preferences.useDefaultArchives())
+            item.useDefaultArchiveDataSources();
+        else
+        {   // Load archives from saved configuration
+            Element archive = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_ARCHIVE);
+            while (archive != null)
+            {
+                final String url = DOMHelper.getSubelementString(archive, Model.TAG_URL);
+                final int key = DOMHelper.getSubelementInt(archive, Model.TAG_KEY);
+                final String arch = DOMHelper.getSubelementString(archive, Model.TAG_NAME);
+                item.addArchiveDataSource(new ArchiveDataSource(url, key, arch));
+                archive = DOMHelper.findNextElementNode(archive, Model.TAG_ARCHIVE);
+            }
         }
         return item;
     }

@@ -24,15 +24,15 @@ package org.csstudio.platform.model.pvs;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DoubleSeqProperty;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.EnumProperty;
-import org.epics.css.dal.LongProperty;
-import org.epics.css.dal.LongSeqProperty;
-import org.epics.css.dal.ObjectSeqProperty;
-import org.epics.css.dal.StringProperty;
-import org.epics.css.dal.StringSeqProperty;
+import org.csstudio.dal.DoubleProperty;
+import org.csstudio.dal.DoubleSeqProperty;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.EnumProperty;
+import org.csstudio.dal.LongProperty;
+import org.csstudio.dal.LongSeqProperty;
+import org.csstudio.dal.ObjectSeqProperty;
+import org.csstudio.dal.StringProperty;
+import org.csstudio.dal.StringSeqProperty;
 
 /**
  * 

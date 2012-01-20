@@ -27,6 +27,7 @@
 package org.csstudio.nams.application.department.decision.office.decision;
 
 import org.csstudio.nams.application.department.decision.ThreadTypesOfDecisionDepartment;
+import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
@@ -40,7 +41,7 @@ import org.csstudio.nams.common.wam.Automat;
 class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 		Arbeitsfaehig {
 	private final DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufEingaenge;
-	private final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe;
+	private final Eingangskorb<Ablagefaehig>[] sachbearbeiterEingangkoerbe;
 	private final ExecutionService executionService;
 
 	/**
@@ -52,7 +53,7 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	 */
 	public Abteilungsleiter(final ExecutionService executionService,
 			final Eingangskorb<Vorgangsmappe> eingangskorbNeuerAlarmVorgaenge,
-			final Eingangskorb<Vorgangsmappe>[] sachbearbeiterEingangkoerbe) {
+			final Eingangskorb<Ablagefaehig>[] sachbearbeiterEingangkoerbe) {
 		this.executionService = executionService;
 		this.sachbearbeiterEingangkoerbe = sachbearbeiterEingangkoerbe;
 
@@ -65,7 +66,7 @@ class Abteilungsleiter implements DokumentenBearbeiter<Vorgangsmappe>,
 	 */
 	public void bearbeiteVorgang(final Vorgangsmappe mappe) {
 		// Nachricht kopieren.
-		for (final Eingangskorb<Vorgangsmappe> eingangskorb : this.sachbearbeiterEingangkoerbe) {
+		for (final Eingangskorb<Ablagefaehig> eingangskorb : this.sachbearbeiterEingangkoerbe) {
 			final Vorgangsmappe erstelleKopieFuer = mappe
 					.erstelleKopieFuer(eingangskorb.toString());
 			try {

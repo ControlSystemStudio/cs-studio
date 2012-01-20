@@ -51,8 +51,10 @@ public class StopGroupResponse extends AbstractGroupResponse {
     /**
      * Constructor.
      */
-    public StopGroupResponse(@Nonnull final EngineModel model) {
-        super(model);
+    public StopGroupResponse(@Nonnull final EngineModel model,
+                             @Nonnull final String adminParamKey,
+                             @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     /**

@@ -118,7 +118,7 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_gn_gr_rt"
             compatibleProperties="sds.color"
-            name="BIN_gn_gr_rt_gb"
+            name="BIN_gn_gr_rt_gb_bl"
             ruleId="org.csstudio.sds.rule.color.bin_gn_gr_rt">
          <parameterDescription
                name="Value">
@@ -134,6 +134,9 @@
          </parameterDescription>
          <parameterDescription
                name="gelb value">
+         </parameterDescription>
+         <parameterDescription
+               name="blau value">
          </parameterDescription>
       </rule>
       <rule

@@ -74,50 +74,105 @@ public class EngineHttpServer {
         }
     }
 
+
     private void createContextAndRegisterServlets(@Nonnull final EngineModel model,
                                                   @Nonnull final IServiceProvider provider,
                                                   @Nonnull final HttpService httpService) throws NamespaceException, ServletException {
         final HttpContext httpContext = httpService.createDefaultHttpContext();
         httpService.registerResources("/", "/webroot", httpContext);
 
-        httpService.registerServlet(MainResponse.baseUrl(),
-                                    new MainResponse(model, provider.getPreferencesService().getVersion()),
+        registerEngineAdministrationServlets(model, provider, httpService, httpContext);
+
+        registerGroupsServlets(model, provider, httpService, httpContext);
+
+        registerChannelServlets(model, provider, httpService, httpContext);
+
+        registerDebugAndInfoServlets(model, provider, httpService, httpContext);
+    }
+
+
+    private void registerDebugAndInfoServlets(@Nonnull final EngineModel model,
+                                              @Nonnull final IServiceProvider provider,
+                                              @Nonnull final HttpService httpService,
+                                              @Nonnull final HttpContext httpContext)
+                                              throws ServletException,
+                                                     NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        httpService.registerServlet(EnvironmentResponse.baseUrl(),
+                                    new EnvironmentResponse(model), null, httpContext);
+        httpService.registerServlet(HelpResponse.baseUrl(),
+                                    new HelpResponse(model, adminParamKey), null, httpContext);
+    }
+
+
+    private void registerEngineAdministrationServlets(@Nonnull final EngineModel model,
+                                                      @Nonnull final IServiceProvider provider,
+                                                      @Nonnull final HttpService httpService,
+                                                      @Nonnull final HttpContext httpContext) throws ServletException,
+                                                                                    NamespaceException {
+        final String version = provider.getPreferencesService().getVersion();
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
+        httpService.registerServlet(MainResponse.baseUrl(), new MainResponse(model, version),
                                     null, httpContext);
+        httpService.registerServlet(RestartResponse.baseUrl(), new RestartResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(ResetResponse.baseUrl(), new ResetResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(ShutdownResponse.baseUrl(), new ShutdownResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+    }
+
+
+    private void registerGroupsServlets(@Nonnull final EngineModel model,
+                                        @Nonnull final IServiceProvider provider,
+                                        @Nonnull final HttpService httpService,
+                                        @Nonnull final HttpContext httpContext) throws ServletException,
+                                                                                       NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
         httpService.registerServlet(GroupsResponse.baseUrl(),
                                     new GroupsResponse(model), null, httpContext);
-        httpService.registerServlet(DisconnectedResponse.baseUrl(),
-                                    new DisconnectedResponse(model), null, httpContext);
         httpService.registerServlet(ShowGroupResponse.baseUrl(),
                                     new ShowGroupResponse(model), null, httpContext);
         httpService.registerServlet(StartGroupResponse.baseUrl(),
                                     new StartGroupResponse(model), null, httpContext);
-        httpService.registerServlet(StopGroupResponse.baseUrl(),
-                                    new StopGroupResponse(model), null, httpContext);
+        httpService.registerServlet(StopGroupResponse.baseUrl(), new StopGroupResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
         httpService.registerServlet(AddGroupResponse.baseUrl(),
                                     new AddGroupResponse(model), null, httpContext);
+    }
+
+
+    private void registerChannelServlets(@Nonnull final EngineModel model,
+                                         @Nonnull final IServiceProvider provider,
+                                         @Nonnull final HttpService httpService,
+                                         @Nonnull final HttpContext httpContext)
+                                         throws ServletException,
+                                                NamespaceException {
+        final String adminParamKey = provider.getPreferencesService().getHttpAdminKey();
+        final String adminParamValue = provider.getPreferencesService().getHttpAdminValue();
+
         httpService.registerServlet(ChannelListResponse.baseUrl(),
                                     new ChannelListResponse(model), null, httpContext);
-        httpService.registerServlet(EnvironmentResponse.baseUrl(),
-                                    new EnvironmentResponse(model), null, httpContext);
-        httpService.registerServlet(RestartResponse.baseUrl(),
-                                    new RestartResponse(model), null, httpContext);
-        httpService.registerServlet(ResetResponse.baseUrl(),
-                                    new ResetResponse(model), null, httpContext);
-        httpService.registerServlet(StopEngineResponse.baseUrl(),
-                                    new StopEngineResponse(model), null, httpContext);
+        httpService.registerServlet(DisconnectedResponse.baseUrl(),
+                                    new DisconnectedResponse(model), null, httpContext);
         httpService.registerServlet(ShowChannelResponse.baseUrl(),
                                     new ShowChannelResponse(model), null, httpContext);
         httpService.registerServlet(StartChannelResponse.baseUrl(),
                                     new StartChannelResponse(model), null, httpContext);
-        httpService.registerServlet(StopChannelResponse.baseUrl(),
-                                    new StopChannelResponse(model), null, httpContext);
+        httpService.registerServlet(StopChannelResponse.baseUrl(), new StopChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
         httpService.registerServlet(AddChannelResponse.baseUrl(),
                                     new AddChannelResponse(model), null, httpContext);
-        httpService.registerServlet(RemoveChannelResponse.baseUrl(),
-                                    new RemoveChannelResponse(model), null, httpContext);
-        httpService.registerServlet(DebugResponse.baseUrl(),
-                                    new DebugResponse(model), null, httpContext);
+        httpService.registerServlet(RemoveChannelResponse.baseUrl(), new RemoveChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
+        httpService.registerServlet(PermanentDisableChannelResponse.baseUrl(), new PermanentDisableChannelResponse(model, adminParamKey, adminParamValue),
+                                    null, httpContext);
     }
+
 
     /** Stop the server */
     public void stop() {

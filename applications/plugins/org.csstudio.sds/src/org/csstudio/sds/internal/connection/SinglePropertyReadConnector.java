@@ -2,16 +2,15 @@ package org.csstudio.sds.internal.connection;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
+import org.csstudio.dal.DataExchangeException;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
 
 public class SinglePropertyReadConnector implements ChannelListener {
 	private final ChannelInputProcessor channelInputProcessor;
 	private final ValueType valueType;
-	private org.epics.css.dal.context.ConnectionState latestConnectionState;
+	private org.csstudio.dal.context.ConnectionState latestConnectionState;
 	private final String characteristic;
 
 	public SinglePropertyReadConnector(final ChannelInputProcessor channelInputProcessor, final ValueType valueType, final String characteristic) {
@@ -25,24 +24,20 @@ public class SinglePropertyReadConnector implements ChannelListener {
 	/**
 	 *{@inheritDoc}
 	 */
-	public void channelDataUpdate(final AnyDataChannel channel) {
+	@Override
+    public void channelDataUpdate(final AnyDataChannel channel) {
 		if (characteristic != null) {
 			try {
 				// FIXME: 26.03.2010: swende: asynchrones Abgreifen der Characteristics bzw. anderen Weg bei Igor erfragen!
-				Object cc = channel.getProperty().getCharacteristic(characteristic);
-				if (cc instanceof DynamicValueCondition) {
-                    DynamicValueCondition dvc = (DynamicValueCondition) cc;
-                    channelInputProcessor.valueChanged(dvc.descriptionToString());
-
-                }else {
-                    channelInputProcessor.valueChanged(cc);
-                }
-			} catch (DataExchangeException e) {
+				final Object cc = channel.getProperty().getCharacteristic(characteristic);
+				// Changed 24.10.2011 HRickens: give the DynamicValueCondition as value not the String representation
+                channelInputProcessor.valueChanged(cc);
+			} catch (final DataExchangeException e) {
 				CentralLogger.getInstance().error(this, e);
 			}
 		} else {
 			// .. handle value
-			AnyData data = channel.getData();
+			final AnyData data = channel.getData();
 
 			if (data.isValid()) {
 				channelInputProcessor.valueChanged(getTypesafeValue(data));
@@ -53,8 +48,9 @@ public class SinglePropertyReadConnector implements ChannelListener {
 	/**
 	 *{@inheritDoc}
 	 */
-	public void channelStateUpdate(final AnyDataChannel channel) {
-		org.epics.css.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
+	@Override
+    public void channelStateUpdate(final AnyDataChannel channel) {
+		final org.csstudio.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
 
 		// .. handle connection state
 		if (latestConnectionState != state) {

@@ -6,15 +6,15 @@ Sampling Engine.
 <li>DesyArchiveEngine.product is the actual product.
     Run with -? for command-line options.
 <li>webroot is used by engine's HTTPD
-<li>xml contains the new configuration schema (not yet readily implemented)
+<li>path xml contains the new configuration schema (not yet readily implemented)
 </ul>
 
 Run as background job:
 <code>
 export DISPLAY="";
-nohup DesyArchiveEngine ... >log 2>&1 &
+nohup ./mysql-archiver ... >log 2>&1 &
 </code>
 
 <h2>Versions</h2>
 Defined in EngineModel.VERSION,
-documented in webroot/version.html
+

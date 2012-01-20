@@ -25,6 +25,11 @@
             id="org.csstudio.archive.sdds.server.Restart"
             label="Restart">
       </command>
+      <command
+            class="org.csstudio.archive.sdds.server.management.GetVersionMgmtCommand"
+            id="org.csstudio.archive.sdds.server.GetVersion"
+            label="Get Version">
+      </command>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -38,6 +43,10 @@
       <product
             application="org.csstudio.archive.sdds.server.SddsServerApplication"
             name="SddsServerProduct">
+         <property
+               name="appName"
+               value="SddsServerProduct">
+         </property>
       </product>
    </extension>
 

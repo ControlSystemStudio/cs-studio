@@ -1,8 +1,28 @@
-DROP TRIGGER IF EXISTS updateLastSampleTime//
+DROP TRIGGER IF EXISTS insertLastSampleRow//
 
-CREATE TRIGGER updateLastSampleTime 
-        BEFORE INSERT ON sample 
+CREATE TRIGGER insertLastSampleRow 
+        AFTER INSERT ON channel 
         FOR EACH ROW 
             BEGIN 
-                UPDATE channel set last_sample_time=NEW.time where id=NEW.channel_id;
+                INSERT INTO last_sample (channel_id) VALUES (NEW.id);
+            END//
+
+
+DROP TRIGGER IF EXISTS updateLastSampleTime//
+
+CREATE TRIGGER updateLastSampleTime
+        BEFORE INSERT ON sample 
+        FOR EACH ROW 
+            BEGIN
+                UPDATE last_sample SET time=NEW.time WHERE channel_id=NEW.channel_id;
+            END//
+
+
+DROP TRIGGER IF EXISTS updateLastSampleBlobTime//
+            
+CREATE TRIGGER updateLastSampleBlobTime
+        BEFORE INSERT ON sample_blob 
+        FOR EACH ROW 
+            BEGIN 
+                UPDATE last_sample SET time=NEW.time WHERE channel_id=NEW.channel_id;
             END//

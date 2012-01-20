@@ -80,7 +80,7 @@ import org.slf4j.LoggerFactory;
  * @since 20.06.2007
  */
 public final class ConfigHelper {
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -89,11 +89,11 @@ public final class ConfigHelper {
      */
     private static final class SpinnerKeyListener implements KeyListener {
         private final SpinnerModifyListener _modifyListener;
-        
+
         public SpinnerKeyListener(@Nonnull final SpinnerModifyListener modifyListener) {
             _modifyListener = modifyListener;
         }
-        
+
         @Override
         public void keyPressed(@Nonnull final KeyEvent e) {
             final Spinner spinner = (Spinner) e.widget;
@@ -107,16 +107,16 @@ public final class ConfigHelper {
             } else {
                 _modifyListener.doItNot();
             }
-            
+
         }
-        
+
         @Override
         public void keyReleased(@Nullable final KeyEvent e) {
             // Not used.
         }
-        
+
     }
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -129,7 +129,7 @@ public final class ConfigHelper {
         private final Spinner _indexSpinner;
         private boolean _doIt = true;
         private int _lastValue;
-        
+
         protected SpinnerModifyListener(@Nonnull final ProfiBusTreeView profiBusTreeView,
                                         @Nonnull final AbstractNodeDBO<?,?> node,
                                         @Nonnull final Spinner indexSpinner) {
@@ -138,25 +138,25 @@ public final class ConfigHelper {
             _indexSpinner = indexSpinner;
             _lastValue = indexSpinner.getSelection();
         }
-        
+
         public void doIt() {
             _doIt = true;
         }
-        
+
         public void doItNot() {
             _doIt = false;
         }
-        
+
         public int getLastvalue() {
             return _lastValue;
         }
-        
+
         @Override
         public void modifyText(@Nullable final ModifyEvent e) {
             if (_doIt) {
                 // TODO: Hier gibt es noch ein GDI Object leak.
                 final short index = (short) _indexSpinner.getSelection();
-                
+
                 try {
                     _node.moveSortIndex(index);
                     if (_node.getParent() != null) {
@@ -172,21 +172,21 @@ public final class ConfigHelper {
             }
         }
     }
-    
+
     protected static final Logger LOG = LoggerFactory.getLogger(ConfigHelper.class);
-    
+
     /**
      * The standard Date format.
      */
     private static SimpleDateFormat _SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-    
+
     /**
      * The Private Constructor.
      */
     private ConfigHelper() {
         // Default Constructor
     }
-    
+
     /**
      * Put a Text file into a String.
      *
@@ -219,16 +219,16 @@ public final class ConfigHelper {
                 fileReader.close();
             }
         }
-        
-        
+
+
         return text.toString();
     }
-    
+
     @CheckForNull
     public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node) {
         return getImageFromNode(node, -1, -1);
     }
-    
+
     // CHECKSTYLE OFF: CyclomaticComplexity
     @CheckForNull
     public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node, final int width, final int height) {
@@ -261,7 +261,7 @@ public final class ConfigHelper {
         return image;
     }
     // CHECKSTYLE ON: CyclomaticComplexity
-    
+
     @Nonnull
     public static Image getImageMaxSize(@Nonnull final String imagePath, final int width, final int height) {
         final ImageData imageData = CustomMediaFactory.getInstance()
@@ -269,17 +269,17 @@ public final class ConfigHelper {
         if (width > 0 && height > 0) {
             int width2 = imageData.width;
             int height2 = imageData.height;
-            
+
             if (width2 > width && height2 > height) {
                 width2 = width;
                 height2 = height;
             }
-            
+
             return new Image(null, imageData.scaledTo(width2, height2));
         }
         return new Image(null, imageData);
     }
-    
+
     /**
      *
      * @param parent
@@ -292,6 +292,7 @@ public final class ConfigHelper {
      *            Label text for Spinner
      * @param profiBusTreeView
      *            IO Config TreeViewer.
+     * @param max TODO
      * @return the Sort Index Spinner.
      */
     @Nonnull
@@ -299,10 +300,9 @@ public final class ConfigHelper {
                                           @Nonnull final AbstractNodeDBO<?,?> node,
                                           @Nonnull final ModifyListener modifyListener,
                                           @Nonnull final String label,
-                                          @Nonnull final ProfiBusTreeView profiBusTreeView) {
+                                          @Nonnull final ProfiBusTreeView profiBusTreeView, final int max) {
         final int min = 0;
-        final int max = 99;
-        
+
         // Label
         final Label slotIndexLabel = new Label(parent, SWT.NONE);
         slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.RIGHT, false, false, 1, 1));
@@ -323,7 +323,7 @@ public final class ConfigHelper {
         indexSpinner.addModifyListener(spinnerModifyListener);
         return indexSpinner;
     }
-    
+
     @Nonnull
     public static Composite getNewTabItem(@Nonnull final String head,
                                           @Nonnull final TabFolder tabFolder,
@@ -333,7 +333,7 @@ public final class ConfigHelper {
                                           final int minHeight) {
         final TabItem item = new TabItem(tabFolder, SWT.NONE,0);
         item.setText(head);
-        
+
         final GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
         final ScrolledComposite scrolledComposite = new ScrolledComposite(tabFolder, SWT.H_SCROLL
                                                                           | SWT.V_SCROLL);
@@ -342,45 +342,45 @@ public final class ConfigHelper {
         scrolledComposite.setExpandHorizontal(true);
         fillDefaults.numColumns(1);
         scrolledComposite.setLayout(fillDefaults.create());
-        
+
         final Composite comp = new Composite(scrolledComposite, SWT.NONE);
         comp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         // _mainComposite.setLayout(fillDefaults.create());
-        
+
         scrolledComposite.setContent(comp);
         scrolledComposite.setMinSize(minWidthSize, minHeight);
-        
+
         comp.setLayout(new GridLayout(size, true));
         item.setControl(scrolledComposite);
-        
+
         comp.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
         if (viewer instanceof DocumentationManageView) {
             final DocumentationManageView docView = (DocumentationManageView) viewer;
-            
+
             tabFolder.addSelectionListener(new SelectionListener() {
-                
+
                 @Override
                 public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
-                
+
                 @Override
                 public void widgetSelected(@Nonnull final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
-                
+
                 private void docTabSelectionAction(@Nonnull final SelectionEvent e) {
                     if (e.item.equals(item)) {
                         docView.onActivate();
                     }
                 }
-                
+
             });
-            
+
         }
         return comp;
     }
-    
+
     /**
      * @param head
      *            Headline for the Tab.
@@ -398,7 +398,7 @@ public final class ConfigHelper {
                                           final int minHeight) {
         return getNewTabItem(head, tabFolder, size, null, minWidthSize, minHeight);
     }
-    
+
     /**
      * @return the Default CSS SimpleDateFormat.
      */
@@ -406,7 +406,7 @@ public final class ConfigHelper {
     public static SimpleDateFormat getSimpleDateFormat() {
         return _SIMPLE_DATE_FORMAT;
     }
-    
+
     /**
      * @return The CSS User-Name.
      */
@@ -414,7 +414,7 @@ public final class ConfigHelper {
     public static String getUserName() {
         return UserName.getUserName();
     }
-    
+
 
     @Nonnull
     private static Image getChannelImage(final boolean isInput, final boolean isDigital, final int width, final int height) {
@@ -432,7 +432,7 @@ public final class ConfigHelper {
         } else {
             image = getImageMaxSize("icons/Output_green16.png", width, height);
         }
-        
+
         return image;
     }
 }

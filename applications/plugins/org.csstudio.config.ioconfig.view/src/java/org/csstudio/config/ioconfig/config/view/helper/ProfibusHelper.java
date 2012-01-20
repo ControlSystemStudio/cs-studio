@@ -41,7 +41,6 @@ import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -147,16 +146,11 @@ public final class ProfibusHelper {
      *
      * @param min
      *            the min Value was accept at Text field.
-     * @param max
-     *            the max Value was accept at Text field.
-     * @param toolTipPos
-     *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Number
      *         that is in range Min - Max.
      */
     @Nonnull
-    public static VerifyListener getNumberVerifyListener(final long min,
-                                                         final long max, @Nonnull final Point toolTipPos) {
+    public static VerifyListener getNumberVerifyListener(final long min) {
         return new NumberVerifyListenerImplementation(min);
     }
 
@@ -201,17 +195,17 @@ public final class ProfibusHelper {
             switch (verifyListenerTyp) {
                 case VL_TYP_U08:
                     textField.addVerifyListener(ProfibusHelper
-                                                .getVerifyListenerCheckOfU8(textField.getLocation()));
+                                                .getVerifyListenerCheckOfU8());
                     textField.setTextLimit(3);
                     break;
                 case VL_TYP_U16:
                     textField.addVerifyListener(ProfibusHelper
-                                                .getVerifyListenerCheckOfU16(textField.getLocation()));
+                                                .getVerifyListenerCheckOfU16());
                     textField.setTextLimit(5);
                     break;
                 case VL_TYP_U32:
                     textField.addVerifyListener(ProfibusHelper
-                                                .getVerifyListenerCheckOfU32(textField.getLocation()));
+                                                .getVerifyListenerCheckOfU32());
                     textField.setTextLimit(10);
                     break;
                 default:
@@ -230,16 +224,13 @@ public final class ProfibusHelper {
     /**
      * Verify input at Text field is confirm with a Profibus U16 (0-65535).
      *
-     * @param toolTipPos
-     *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
      *         U16 (0-65535)
      */
     @Nonnull
-    public static VerifyListener getVerifyListenerCheckOfU16(
-                                                             @Nonnull final Point toolTipPos) {
+    public static VerifyListener getVerifyListenerCheckOfU16() {
         if (_CHECK_OF_U16 == null) {
-            _CHECK_OF_U16 = getNumberVerifyListener(0, 65535, toolTipPos);
+            _CHECK_OF_U16 = getNumberVerifyListener(0);
         }
         return _CHECK_OF_U16;
     }
@@ -247,17 +238,13 @@ public final class ProfibusHelper {
     /**
      * Verify input at Text field is confirm with a Profibus U16 (0-2^32).
      *
-     * @param toolTipPos
-     *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
      *         U16 (0-2^32)
      */
     @Nonnull
-    public static VerifyListener getVerifyListenerCheckOfU32(
-                                                             @Nonnull final Point toolTipPos) {
+    public static VerifyListener getVerifyListenerCheckOfU32() {
         if (_CHECK_OF_U32 == null) {
-            final long max = (long) Math.pow(2, 31);
-            _CHECK_OF_U32 = getNumberVerifyListener(0, max, toolTipPos);
+            _CHECK_OF_U32 = getNumberVerifyListener(0);
         }
         return _CHECK_OF_U32;
     }
@@ -265,16 +252,13 @@ public final class ProfibusHelper {
     /**
      * Verify input at Text field is confirm with a Profibus U8 (0-255).
      *
-     * @param toolTipPos
-     *            Position for the Tool tip.
      * @return a VerifyListener to check a Text field is confirm with a Profibus
      *         U8 (0-255)
      */
     @Nonnull
-    public static VerifyListener getVerifyListenerCheckOfU8(
-                                                            @Nonnull final Point toolTipPos) {
+    public static VerifyListener getVerifyListenerCheckOfU8() {
         if (_CHECK_OF_U8 == null) {
-            _CHECK_OF_U8 = getNumberVerifyListener(0, 255, toolTipPos);
+            _CHECK_OF_U8 = getNumberVerifyListener(0);
         }
         return _CHECK_OF_U8;
     }

@@ -47,6 +47,7 @@ public class RestartMgmtCommand implements IManagementCommand {
     @Override
     @Nonnull
     public CommandResult execute(@Nonnull final CommandParameters parameters) {
+
         // The result of this method call.
         CommandResult result = null;
 

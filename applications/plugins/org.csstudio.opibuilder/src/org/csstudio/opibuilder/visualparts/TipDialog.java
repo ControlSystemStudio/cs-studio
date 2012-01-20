@@ -1,6 +1,5 @@
 package org.csstudio.opibuilder.visualparts;
 
-import org.eclipse.jface.dialogs.IDialogLabelKeys;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -22,7 +21,7 @@ public class TipDialog extends MessageDialog {
 	public TipDialog(Shell parentShell, String dialogTitle,
 			String dialogMessage) {
 		super(parentShell, dialogTitle, null, dialogMessage,
-				MessageDialog.INFORMATION, new String[] { JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY)}, 0);
+				MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
 	}
 
 	@Override

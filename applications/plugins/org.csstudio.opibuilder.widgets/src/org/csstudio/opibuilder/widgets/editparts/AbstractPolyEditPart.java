@@ -22,11 +22,17 @@
 
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.util.HashMap;
+
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.swt.widgets.util.RotationUtil;
+import org.eclipse.draw2d.AbstractConnectionAnchor;
+import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.EditPart;
 
@@ -60,7 +66,22 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 				Polyline polyline = (Polyline) refreshableFigure;
 
 				PointList points = (PointList) newValue;
-
+				if(points.size() != polyline.getPoints().size()){
+					anchorMap = null;
+					//delete connections on deleted points
+					if(points.size() < polyline.getPoints().size()){
+						for(ConnectionModel conn : getWidgetModel().getSourceConnections()){
+							if(Integer.parseInt(conn.getSourceTerminal()) >= points.size()){
+								conn.disconnect();
+							}
+						}						
+						for(ConnectionModel conn : getWidgetModel().getTargetConnections()){
+							if(Integer.parseInt(conn.getTargetTerminal()) >= points.size()){
+								conn.disconnect();
+							}
+						}
+					}						
+				}
 				// deselect the widget (this refreshes the polypoint drag
 				// handles)
 				int selectionState = getSelected();
@@ -90,6 +111,39 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 		
 		setPropertyChangeHandler(AbstractPolyModel.PROP_ROTATION, rotationHandler);
 		
+		
+	}
+	
+	@Override
+	public Polyline getFigure() {
+		return (Polyline) super.getFigure();
+	}
+	
+	
+	@Override
+	protected void fillAnchorMap() {
+		anchorMap = new HashMap<String, ConnectionAnchor>(getFigure().getPoints().size());
+		for(int i=0; i<getFigure().getPoints().size(); i++){
+			anchorMap.put(Integer.toString(i), new PolyGraphAnchor(getFigure(), i));
+		}
+	}
+	
+	
+	public static class PolyGraphAnchor extends AbstractConnectionAnchor {
+		private  int pointIndex;
+		private Polyline polyline;
+		public PolyGraphAnchor(final Polyline owner, final int pointIndex) {
+			setOwner(owner);
+			this.polyline = owner;
+			this.pointIndex = pointIndex;
+		}
+
+		@Override
+		public Point getLocation(Point reference) {
+			Point p = polyline.getPoints().getPoint(pointIndex);
+			polyline.translateToAbsolute(p);
+			return p;
+		}
 		
 	}
 	

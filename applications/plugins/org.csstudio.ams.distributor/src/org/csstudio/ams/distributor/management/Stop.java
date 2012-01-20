@@ -37,13 +37,13 @@ public class Stop implements IManagementCommand {
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         
         String param = (String)parameters.get("Password");
         String password = DistributorStart.getInstance().getPassword();
 
-        if(param == null)
-        {
+        if(param == null) {
             return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 

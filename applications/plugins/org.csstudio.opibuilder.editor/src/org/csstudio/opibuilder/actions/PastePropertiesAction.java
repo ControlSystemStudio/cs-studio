@@ -103,9 +103,8 @@ public class PastePropertiesAction extends SelectionAction {
 	 * 
 	 * @return a list with all widget models that are currently selected
 	 */
-	@SuppressWarnings("unchecked")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
+		List<?> selection = getSelectedObjects();
 	
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	

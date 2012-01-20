@@ -55,9 +55,9 @@ import org.eclipse.swt.widgets.Text;
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
  * between {@link ActionButtonModel} and {@link RefreshableActionButtonFigure}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
     /**
@@ -65,20 +65,20 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
      * to drag the figure around (even if the cell editor is activated).
      */
     private static final int FRAME_WIDTH = 1;
-    
+
     /**
      * The input field will be slightly brighter than the actual figure so it
      * can be easily recognized.
      */
     private static final int INPUT_FIELD_BRIGHTNESS = 10;
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected IFigure doCreateFigure() {
-        ActionButtonModel model = (ActionButtonModel) getWidgetModel();
-        
+        final ActionButtonModel model = (ActionButtonModel) getWidgetModel();
+
         final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
         buttonFigure.setTextValue(determineLabel(null));
         buttonFigure.setFont(getModelFont(ActionButtonModel.PROP_FONT));
@@ -89,72 +89,70 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
         buttonFigure.setSelected(model.isPressed());
         return buttonFigure;
     }
-    
+
     /**
      * Returns the Figure of this EditPart.
-     * 
+     *
      * @return RefreshableActionButtonFigure The RefreshableActionButtonFigure
      *         of this EditPart
      */
     protected RefreshableActionButtonFigure getCastedFigure() {
         return (RefreshableActionButtonFigure) getFigure();
     }
-    
+
     /**
      * Returns the casted model. This is just for convenience.
-     * 
+     *
      * @return the casted {@link ActionButtonModel}
      */
     @Override
     protected ActionButtonModel getCastedModel() {
         return (ActionButtonModel) getModel();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void performRequest(final Request req) {
-        Object type = req.getType();
-        
+        final Object type = req.getType();
+
         // entering a value is only allowed in run mode and when the widget is
         // enabled
-        if ((type != null)
+        if (type != null
                 && (type.equals(RequestConstants.REQ_OPEN) || type
                         .equals(RequestConstants.REQ_DIRECT_EDIT))) {
-            if ((getExecutionMode() == ExecutionMode.RUN_MODE) && getCastedModel().isAccesible()) {
+            if (getExecutionMode() == ExecutionMode.RUN_MODE && getCastedModel().isAccesible()) {
                 super.performRequest(req);
             } else if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
                 performEditTextValue();
             }
         }
-        
+
     }
-    
+
     /**
      * Configures a listener for performing a {@link AbstractWidgetActionModel}.
-     * 
+     *
      * @param figure
      *            The figure of the widget
      */
     private void configureButtonListener(final RefreshableActionButtonFigure buttonFigure) {
         buttonFigure.addChangeListener(new ChangeListener() {
+            @Override
             public void handleStateChanged(final ChangeEvent event) {
                 final String propertyName = event.getPropertyName();
-                if (propertyName.equalsIgnoreCase(ButtonModel.PRESSED_PROPERTY)) {
-                    //					System.out.println("Button pressed");
-                }
                 CentralLogger.getInstance().debug(this,
                                                   "ChangeEvent received, event.property="
                                                           + propertyName);
-                
+
                 // If the display is not in run mode or the button is not armed,
                 // don't do anything.
-                if ((getExecutionMode() != ExecutionMode.RUN_MODE)
+                if (getExecutionMode() != ExecutionMode.RUN_MODE
                         || !buttonFigure.getModel().isArmed()) {
                     return;
                 }
-                
+
                 // If the button is a toggle button, the property that changes
                 // when the toggle state changes is SELECTED_PROPERTY. For a
                 // standard button, the PRESSED_PROPERTY is used, which reflects
@@ -170,7 +168,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                     if (ButtonModel.SELECTED_PROPERTY.equals(propertyName)) {
                         widget.setPropertyValue(ActionButtonModel.PROP_TOGGLE_STATE,
                                                 buttonFigure.isSelected());
-                        
+
                         if (buttonFigure.isSelected()) {
                             actionIndex = widget.getChoosenPressedActionIndex();
                             CentralLogger.getInstance().debug(this,
@@ -198,21 +196,22 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                         }
                     }
                 }
-                
-                List<AbstractWidgetActionModel> actions = widget.getActionData().getWidgetActions();
-                
+
+                final List<AbstractWidgetActionModel> actions = widget.getActionData().getWidgetActions();
+
                 // If an action should be used and there is only a single
                 // action, use that action.
-                if ((actionIndex >= 0) && (actions.size() == 1)) {
+                if (actionIndex >= 0 && actions.size() == 1) {
                     actionIndex = 0;
                 }
-                
-                if ((actionIndex >= 0) && (actionIndex < actions.size())) {
+
+                if (actionIndex >= 0 && actionIndex < actions.size()) {
                     final AbstractWidgetActionModel action = actions.get(actionIndex);
-                    
+
                     // The actual action can now be run asynchronously, because
                     // all required data has been retrieved from the model.
                     Display.getCurrent().asyncExec(new Runnable() {
+                        @Override
                         public void run() {
                             CentralLogger.getInstance()
                                     .debug(this, "Performing widget action: " + action);
@@ -223,7 +222,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -231,21 +230,22 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         super.registerPropertyChangeHandlers();
         //
-        RefreshableActionButtonFigure buttonFigure = getCastedFigure();
+        final RefreshableActionButtonFigure buttonFigure = getCastedFigure();
         this.configureButtonListener(buttonFigure);
-        
+
         // label
-        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                RefreshableActionButtonFigure rabFigure = getCastedFigure();
+                final RefreshableActionButtonFigure rabFigure = getCastedFigure();
                 rabFigure.setTextValue(determineLabel(null));
                 return true;
             }
         };
         setPropertyChangeHandler(ActionButtonModel.PROP_LABEL, labelHandler);
-        
+
         // font
         setPropertyChangeHandler(ActionButtonModel.PROP_FONT,
                                  new FontChangeHandler<RefreshableActionButtonFigure>() {
@@ -255,62 +255,50 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                                          rabFigure.setFont(font);
                                      }
                                  });
-        
+
         // text alignment
-        IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
                 rabFigure.setTextAlignment((Integer) newValue);
                 return true;
             }
         };
         setPropertyChangeHandler(ActionButtonModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
-        
+
         // button style
-        IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+        final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                                         final Object newValue,
                                         final IFigure refreshableFigure) {
-                RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
                 rabFigure.setStyle((Boolean) newValue);
                 rabFigure.setSelected((Boolean) newValue && getCastedModel().isPressed());
-                
+
                 return true;
             }
         };
         setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_BUTTON, buttonStyleHandler);
-        
+
         // button toggle state
-        IWidgetPropertyChangeHandler toggleButtonPressedHandler = new IWidgetPropertyChangeHandler() {
-            
+        final IWidgetPropertyChangeHandler toggleButtonPressedHandler = new IWidgetPropertyChangeHandler() {
+
             @Override
-            public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
-                RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+                final RefreshableActionButtonFigure rabFigure = (RefreshableActionButtonFigure) refreshableFigure;
                 rabFigure.setSelected(getCastedModel().isToggleButton() && (Boolean) newValue);
-                
+
                 return true;
             }
         };
         setPropertyChangeHandler(ActionButtonModel.PROP_TOGGLE_STATE, toggleButtonPressedHandler);
-        
-        // IWidgetPropertyChangeHandler actionDataHandler = new
-        // IWidgetPropertyChangeHandler() {
-        //
-        // @Override
-        // public boolean handleChange(final Object oldValue, final Object
-        // newValue, final IFigure refreshableFigure) {
-        // RefreshableActionButtonFigure rabFigure =
-        // (RefreshableActionButtonFigure) refreshableFigure;
-        // System.out.println("Test Toggle Button");
-        // return false;
-        // }
-        // };
-        // setPropertyChangeHandler(ActionButtonModel.PROP_ACTIONDATA,
-        // buttonStyleHandler);
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -318,28 +306,28 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
     protected boolean forceDisabledInEditMode() {
         return true;
     }
-    
+
     private void performEditTextValue() {
-        CellEditor cellEditor = createCellEditor2();
+        final CellEditor cellEditor = createCellEditor2();
         locateCellEditor(cellEditor);
         cellEditor.activate();
         cellEditor.setFocus();
     }
-    
+
     private CellEditor createCellEditor2() {
         final CellEditor result = new TextCellEditor((Composite) getViewer().getControl());
-        
+
         // init cell editor...
         String currentValue = "N/A"; //$NON-NLS-1$
         currentValue = getWidgetModel().getStringProperty(ActionButtonModel.PROP_LABEL);
-        
+
         result.setValue(currentValue);
         final Text text = (Text) result.getControl();
         // input text
         text.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(final KeyEvent e) {
-                if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
                     getWidgetModel().setPropertyValue(ActionButtonModel.PROP_LABEL, text.getText());
                     result.deactivate();
                     result.dispose();
@@ -347,47 +335,47 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                     result.deactivate();
                     result.dispose();
                 }
-                
+
             }
-            
+
         });
-        
+
         text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
         text.setFont(getModelFont(ActionButtonModel.PROP_FONT));
-        
+
         // calculate background color
-        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
-        
-        int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
-        int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
-        int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
-        
-        Color backgroundColor = CustomMediaFactory.getInstance()
+        final RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
+
+        final int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
+        final int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
+        final int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
+
+        final Color backgroundColor = CustomMediaFactory.getInstance()
                 .getColor(new RGB(red, green, blue));
-        
+
         text.setBackground(backgroundColor);
         text.selectAll();
-        
+
         return result;
     }
-    
+
     /**
      * Locate the given cell editor .
-     * 
+     *
      * @param cellEditor
      *            A cell editor.
      */
     private void locateCellEditor(final CellEditor cellEditor) {
-        Rectangle rect = ActionButtonEditPart.this.figure.getBounds().getCopy();
+        final Rectangle rect = ActionButtonEditPart.this.figure.getBounds().getCopy();
         rect.x = rect.x + FRAME_WIDTH;
         rect.y = rect.y + FRAME_WIDTH;
-        rect.height = rect.height - (FRAME_WIDTH * 1);
-        rect.width = rect.width - (FRAME_WIDTH * 1);
+        rect.height = rect.height - FRAME_WIDTH * 1;
+        rect.width = rect.width - FRAME_WIDTH * 1;
         getFigure().translateToAbsolute(rect);
-        
+
         cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
         cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
         cellEditor.getControl().setVisible(true);
     }
-    
+
 }

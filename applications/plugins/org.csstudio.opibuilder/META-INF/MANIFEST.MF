@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY base plugin
 Bundle-Description: Base plugin of BOY
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
@@ -30,8 +30,10 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.datadefinition,
  org.csstudio.opibuilder.dnd,
  org.csstudio.opibuilder.editparts,
+ org.csstudio.opibuilder.editpolicies,
  org.csstudio.opibuilder.feedback,
  org.csstudio.opibuilder.model,
+ org.csstudio.opibuilder.palette,
  org.csstudio.opibuilder.persistence,
  org.csstudio.opibuilder.preferences,
  org.csstudio.opibuilder.properties,
@@ -46,4 +48,4 @@ Export-Package: org.csstudio.opibuilder,
 Bundle-ClassPath: lib/rhino/js.jar,
  lib/jython/jython.jar,
  .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

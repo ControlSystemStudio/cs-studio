@@ -27,9 +27,9 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *
@@ -42,8 +42,6 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
 
-
-    private boolean _defTransparent;
 
     /**
      * Constructor.
@@ -59,8 +57,7 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        _defTransparent = widget.getBooleanProperty(LabelModel.PROP_TRANSPARENT);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        if(widget.getValueType()==TextTypeEnum.TEXT) {
             widget.setJavaType(String.class);
         }
     }
@@ -72,16 +69,18 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
+        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
+        final boolean isTransparent = model.getTransparent()&&hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(LabelModel widget, AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        final boolean isTransparent = isConnected(anyDataChannel)&&widget.getTransparent()&&hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 

@@ -39,11 +39,35 @@ abstract class AbstractResponse extends HttpServlet {
     /** Model from which to serve info */
     private final EngineModel _model;
 
+    /** String to compare admin parameter against for pages secured for erroneous modification */
+    private final String _adminParamKey;
+    private final String _adminParamValue;
+
     /** Construct <code>HttpServlet</code>
      *  @param title Page title
      */
     protected AbstractResponse(@Nonnull final EngineModel model) {
         this._model = model;
+        _adminParamValue = null;
+        _adminParamKey = null;
+    }
+    /** Construct <code>HttpServlet</code>
+     *  @param title Page title
+     */
+    protected AbstractResponse(@Nonnull final EngineModel model,
+                               @Nonnull final String adminParamKey,
+                               @Nonnull final String admingParamValue) {
+        _model = model;
+        _adminParamKey = adminParamKey;
+        _adminParamValue = admingParamValue;
+    }
+    @Nonnull
+    public String getAdminParamKey() {
+        return _adminParamKey;
+    }
+    @Nonnull
+    public String getAdminParamValue() {
+        return _adminParamValue;
     }
 
     @Nonnull
@@ -62,6 +86,14 @@ abstract class AbstractResponse extends HttpServlet {
                          @Nonnull final HttpServletResponse resp)
                          throws ServletException, IOException {
         try {
+            if (!Strings.isNullOrEmpty(_adminParamKey)) {
+                final String parameter = req.getParameter(_adminParamKey);
+                if (!_adminParamValue.equals(parameter)) {
+                    redirectToErrorPage(resp, "This command or URL is secured by an admin key=value pair for " + _adminParamKey + "=?" +
+                                              "\nPlease ensure to add the correct admin key=value pair.");
+                    return;
+                }
+            }
             fillResponse(req, resp);
         } catch (final Exception ex) {
             ex.printStackTrace();
@@ -105,21 +137,21 @@ abstract class AbstractResponse extends HttpServlet {
                                        @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request error");
         html.text("Error on processing request:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
     protected void redirectToWarnPage(@Nonnull final HttpServletResponse resp,
                                       @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request warning");
         html.text("Warning on processing request:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
     protected void redirectToSuccessPage(@Nonnull final HttpServletResponse resp,
                                          @Nonnull final String msg) throws Exception {
         final HTMLWriter html = new HTMLWriter(resp, "Request success");
         html.text("Request successful:\n" + msg);
-        MainResponse.linkTo("Back to main");
+        MainResponse.linkTo(Messages.HTTP_MAIN);
         html.close();
     }
 
@@ -151,9 +183,9 @@ abstract class AbstractResponse extends HttpServlet {
         @Nonnull
         public String link(@CheckForNull final String text) {
             if (Strings.isNullOrEmpty(text)) {
-                return HTMLWriter.makeLink(_url, _url);
+                return "<a href=\"" + _url + "\">" + _url + "</a>";
             }
-            return HTMLWriter.makeLink(_url, text);
+            return "<a href=\"" + _url + "\">" + text + "</a>";
         }
         @Nonnull
         public String url() {

@@ -19,9 +19,9 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.Severity;
 
 /**
  * TODO (hrickens) :
@@ -36,9 +36,9 @@ import org.epics.css.dal.simple.Severity;
  */
 public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> extends
         AbstractDesyConnectionBehavior<W> {
-    
+
     private String _defColor;
-    
+
     /**
      * Constructor.
      */
@@ -47,24 +47,19 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_STYLE);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_BORDER_WIDTH);
     }
-    
+
     @Override
     protected void doInitialize(final W widget) {
         super.doInitialize(widget);
     }
-    
+
     @Override
     protected void doProcessConnectionStateChange(final W widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        AnyData anyData = anyDataChannel.getData();
-        Severity severity = anyData.getSeverity();
+        final AnyData anyData = anyDataChannel.getData();
+        final Severity severity = anyData.getSeverity();
         if(severity != null) {
-            if(severity.isInvalid()) {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, true);
-            } else {
-                widget.setPropertyValue(AbstractWidgetModel.PROP_CROSSED_OUT, false);
-            }
             widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_COLOR,
                                     determineColorBySeverity(severity, _defColor));
             widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE,
@@ -73,5 +68,5 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
                                     determineBorderWidthBySeverity(severity));
         }
     }
-    
+
 }

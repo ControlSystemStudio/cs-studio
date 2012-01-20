@@ -12,8 +12,7 @@ import java.io.PrintWriter;
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
 
-import org.csstudio.data.values.ITimestamp;
-import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
@@ -22,7 +21,7 @@ import org.csstudio.data.values.TimestampFactory;
 public class HTMLWriter {
     public static final int MAX_TABLE_ENTRY_WIDTH = 70;
 
-    protected static final String BACKGROUND = "images/blueback.jpg"; //$NON-NLS-1$
+    protected static final String BACKGROUND = "/images/blueback.jpg"; //$NON-NLS-1$
     protected static final String RED_FONT = "<font color='#ff0000'>"; //$NON-NLS-1$
     protected static final String CLOSE_FONT = "</font>"; //$NON-NLS-1$
 
@@ -45,27 +44,37 @@ public class HTMLWriter {
         text("<head>");
         text("<title>" + title + "</title>");
         text("<script type=\"text/javascript\" src=\"/sorttable.js\"></script>\n");
+        text("<link rel=\"stylesheet\" type=\"text/css\" href=\"/archiver.css\"></link>");
         text("</head>");
         text("<body background='" + BACKGROUND + "'>");
-        text("<blockquote>");
         h1(title);
 
+        text("<div id=\"navigation\">");
+        createNavigationBar(MainResponse.linkTo(),
+                            GroupsResponse.linkTo(),
+                            DisconnectedResponse.linkTo(Messages.HTTP_DISCONNECTED),
+                            HelpResponse.linkTo());
+        text("</div>");
+
+        text("<div id=\"content\">");
+    }
+
+    private void createNavigationBar(@Nonnull final String...navPoints) {
+        for (final String nav : navPoints) {
+            text("<li>" + nav + "</li>");
+        }
     }
 
     /** Add end of HTML page. */
     public void close() {
-        text("<p>");
-        text("<hr width='50%' align='left'>");
 
-        text("<a href=\"/main\">-Main-</a> ");
-        text("<a href=\"/groups\">-Groups-</a> ");
-        text("<a href=\"/disconnected\">-Disconnected-</a> ");
-        text("<a href=\"/version.html\">-Version-</a> ");
+        text("</div>");
+        text("<hr width='100%' align='left'>");
+        text("<div id=\"timeAndHint\">");
+        text(TimeInstantBuilder.fromNow().formatted());
+        text("(Use web browser's Reload to refresh this page)");
+        text("</div>");
 
-        text("<address>");
-        text(TimestampFactory.now().format(ITimestamp.Format.DateTimeSeconds));
-        text("   <i>(Use web browser's Reload to refresh this page)</i>");
-        text("</address>");
 
         text("</blockquote>");
         text("</body>");
@@ -146,17 +155,6 @@ public class HTMLWriter {
     protected void closeTable() {
         text("</tbody>");
         text("</table>");
-    }
-
-    /** Create HTML for a link
-     *  @param url Linked URL
-     *  @param text Text to display
-     *  @return HTML for the link
-     */
-    @Nonnull
-    public static String makeLink(@Nonnull final String url,
-                                  @Nonnull final String text) {
-        return "<a href=\"" + url + "\">" + text + "</a>";
     }
 
     /** @return HTML for red text */

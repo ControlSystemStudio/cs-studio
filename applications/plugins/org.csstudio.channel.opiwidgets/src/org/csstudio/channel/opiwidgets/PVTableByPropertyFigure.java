@@ -1,26 +1,15 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 
-public class PVTableByPropertyFigure extends AbstractSWTWidgetFigure {
+public class PVTableByPropertyFigure extends AbstractChannelWidgetFigure<PVTableByPropertyWidget> {
 	
-	public PVTableByPropertyFigure(Composite composite, AbstractContainerModel parentModel) {
-		super(composite, parentModel);
+	public PVTableByPropertyFigure(AbstractBaseEditPart editPart) {
+		super(editPart);
 		widget = new PVTableByPropertyWidget(composite, SWT.NONE);
+		selectionProvider = widget;
 	}
 	
-	private PVTableByPropertyWidget widget;
-
-	@Override
-	public PVTableByPropertyWidget getSWTWidget() {
-		return widget;
-	}
-	
-	public boolean isRunMode() {
-		return runmode;
-	}
 }

@@ -17,6 +17,7 @@ import org.csstudio.archive.common.engine.model.EngineModel;
 import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.archive.common.engine.model.SampleBufferStatistics;
 import org.csstudio.domain.desy.system.ISystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 import com.google.common.base.Strings;
 
@@ -28,11 +29,11 @@ import com.google.common.base.Strings;
 @SuppressWarnings("nls")
 class ShowGroupResponse extends AbstractGroupResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_SHOW_GROUP_ACTION;
-    private static String URL_SHOW_GROUP_PAGE;
     static {
         URL_SHOW_GROUP_ACTION = "show";
-        URL_SHOW_GROUP_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
+        URL_BASE_PAGE = URL_GROUP_PAGE + "/" + URL_SHOW_GROUP_ACTION;
     }
 
     /** Maximum text length of last value that's displayed */
@@ -63,8 +64,6 @@ class ShowGroupResponse extends AbstractGroupResponse {
 
         createBasicInfoTable(group, html);
 
-        html.h2(Messages.HTTP_CHANNELS + " (Last write time: " + getModel().getLastWriteTime()  + ")");
-
         createChannelsTable(group, html);
 
         html.close();
@@ -80,6 +79,17 @@ class ShowGroupResponse extends AbstractGroupResponse {
             Messages.HTTP_STARTED,
             group.isStarted() ? Messages.HTTP_YES : HTMLWriter.makeRedText(Messages.HTTP_NO),
         });
+        final TimeInstant lastWriteTime = getModel().getLastWriteTime();
+        html.tableLine(new String[] {
+                Messages.HTTP_LAST_WRITETIME,
+                lastWriteTime != null ? lastWriteTime.formatted() : Messages.HTTP_NOT_AVAILABLE,
+        });
+        if (!group.isStarted()) {
+            html.tableLine(new String[] {
+                    Messages.HTTP_START_GROUP,
+                    StartGroupResponse.linkTo(group.getName(), Messages.HTTP_START),
+            });
+        }
         html.closeTable();
     }
 
@@ -134,11 +144,15 @@ class ShowGroupResponse extends AbstractGroupResponse {
 
     @Nonnull
     public static String baseUrl() {
-        return URL_SHOW_GROUP_PAGE;
+        return URL_BASE_PAGE;
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(name);
+        return linkTo(name, name);
+    }
+    @Nonnull
+    public static String linkTo(@Nonnull final String name, @Nonnull final String linkText) {
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(linkText);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {

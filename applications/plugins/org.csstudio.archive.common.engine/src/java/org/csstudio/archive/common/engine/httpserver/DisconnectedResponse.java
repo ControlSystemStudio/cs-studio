@@ -19,9 +19,14 @@ import org.csstudio.archive.common.engine.model.EngineModel;
  * Provide web page with list of disconnected channels
  *  @author Kay Kasemir
  */
-class DisconnectedResponse extends AbstractResponse {
+class DisconnectedResponse extends AbstractChannelResponse {
 
-    private static final String URL_BASE_PAGE = "/disconnected";
+    private static String URL_BASE_PAGE;
+    private static String URL_DISC_CHANNEL_ACTION;
+    static {
+        URL_DISC_CHANNEL_ACTION = "disconnected";
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_DISC_CHANNEL_ACTION;
+    }
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -68,5 +73,14 @@ class DisconnectedResponse extends AbstractResponse {
     @Nonnull
     public static String baseUrl() {
         return URL_BASE_PAGE;
+    }
+
+    @Nonnull
+    public static String linkTo(@Nonnull final String linkText) {
+        return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return linkTo(baseUrl());
     }
 }

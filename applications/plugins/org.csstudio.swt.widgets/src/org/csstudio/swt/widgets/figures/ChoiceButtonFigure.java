@@ -8,6 +8,7 @@
 package org.csstudio.swt.widgets.figures;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Toggle;
 import org.eclipse.draw2d.ToggleButton;
@@ -39,6 +40,7 @@ public class ChoiceButtonFigure extends AbstractChoiceFigure {
 		 */
 		public ColorToggleButton(String text) {
 			super(text, null);
+			setCursor(Cursors.HAND);
 		}
 		
 		/**

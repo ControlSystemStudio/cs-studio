@@ -41,6 +41,7 @@ import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveConnectionHandle
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.common.service.mysqlimpl.persistengine.PersistEngineDataManager;
 import org.csstudio.domain.common.service.DeleteResult;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.typesupport.TypeSupportException;
 
@@ -61,7 +62,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     private final String _selectLatestChannelStatusStmt =
         "SELECT id, channel_id, connected, info, time FROM " +
         getDatabaseName() + "." + TAB +
-        " WHERE channel_id=? ORDER BY time DESC LIMIT 1";
+        " WHERE channel_id=? AND time BETWEEN ? AND ? ORDER BY time DESC LIMIT 1";
     private final String _deleteFromChannelStatusStmt =
         "DELETE FROM " + getDatabaseName() + "." + TAB + " WHERE channel_id=?";
 
@@ -89,29 +90,33 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     @Override
     @Nonnull
     public Collection<IArchiveChannelStatus>
-    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> ids)
+    retrieveLatestStatusByChannelIds(@Nonnull final Collection<ArchiveChannelId> ids,
+                                     @Nonnull final TimeInstant start,
+                                     @Nonnull final TimeInstant end)
     throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectLatestChannelStatusStmt);
 
             final List<IArchiveChannelStatus> resultList = Lists.newArrayListWithExpectedSize(ids.size());
             for (final ArchiveChannelId id : ids) {
                 stmt.setInt(1, id.intValue()); // channel_id=?
+                stmt.setLong(2, start.getNanos()); // time between ?
+                stmt.setLong(3, end.getNanos()); // and ?
 
                 rs = stmt.executeQuery();
                 if (rs.next()) {
                     resultList.add(createChannelStatusFromResult(rs));
                 }
-                closeSqlResources(rs, null, _selectLatestChannelStatusStmt);
             }
             return resultList;
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
+            closeSqlResources(rs, stmt, conn, _selectLatestChannelStatusStmt);
         }
         return Collections.emptyList();
     }
@@ -141,9 +146,10 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
     @Override
     @Nonnull
     public DeleteResult deleteStatusForChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
+        Connection conn = null;
         PreparedStatement stmt = null;
         try {
-            final Connection conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_deleteFromChannelStatusStmt);
             stmt.setInt(1, id.intValue());
             final int updated = stmt.executeUpdate();
@@ -153,7 +159,7 @@ public class ArchiveChannelStatusDaoImpl extends AbstractArchiveDao implements I
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(null, stmt, _selectLatestChannelStatusStmt);
+            closeSqlResources(null, stmt, conn, _selectLatestChannelStatusStmt);
         }
         return DeleteResult.failed("Channel status removal failed for id '" + id.intValue() + "'");
     }

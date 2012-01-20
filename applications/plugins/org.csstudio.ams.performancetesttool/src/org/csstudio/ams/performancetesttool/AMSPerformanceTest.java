@@ -71,6 +71,8 @@ public class AMSPerformanceTest {
     private ReceiveTimeLogger listener;
     private String sendTopic;
     private int delay;
+	private long startTime;
+	private long endTime;
 
     public AMSPerformanceTest(CommandLineArgs options) {
         this.options = options;
@@ -87,7 +89,8 @@ public class AMSPerformanceTest {
         } else if (options.component.equals("decision")) {
             sendTopic = "ALARM";
             if (options.receiveFromTopics.size() == 0) {
-                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+//                options.receiveFromTopics.add("T_AMS_MESSAGEMINDER");
+                options.receiveFromTopics.add("T_AMS_DISTRIBUTE");
             }
         } else if (options.component.equals("minder")) {
             sendTopic = "T_AMS_MESSAGEMINDER";
@@ -122,9 +125,11 @@ public class AMSPerformanceTest {
     public void run() throws JMSException {
         connectJMS();
         startListening();
+        startTime = System.currentTimeMillis();
         sendMessages();
         waitUntilAllMessagesReceived();
         stopListening();
+        endTime = System.currentTimeMillis();
         disconnectJMS();
         printMeasurements();
     }
@@ -153,6 +158,7 @@ public class AMSPerformanceTest {
         System.out.println(String.format("Send rate:          %.1f messages/s", sendRate));
         System.out.println(String.format("Receive rate:       %.1f messages/s", receiveRate));
         System.out.println(String.format("Average latency:    %.0f ms", averageLatency));
+        System.out.println(String.format("Test time:          %d ms", endTime - startTime));
     }
 
     private void sendMessages() throws JMSException {

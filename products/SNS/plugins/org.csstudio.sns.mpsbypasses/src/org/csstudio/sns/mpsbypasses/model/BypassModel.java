@@ -139,6 +139,18 @@ public class BypassModel implements BypassListener
 	public void selectMachineMode(final MachineMode mode)
 	{
 		stop();
+
+		synchronized (this)
+        {
+			machine_mode = mode;
+            mode_bypasses = new Bypass[] { new Bypass("Reading Bypass Info", mode.toString()) };
+			filtered_bypasses = mode_bypasses;
+    		updateCounts();
+            
+    		// Notify listeners
+    		for (BypassModelListener listener : listeners)
+    			listener.bypassesChanged();
+        }
 		
 		Exception error = null;
 		RDBUtil rdb = null;

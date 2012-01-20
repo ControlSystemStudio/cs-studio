@@ -24,8 +24,10 @@ class ResetResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    ResetResponse(@Nonnull final EngineModel model) {
-        super(model);
+    ResetResponse(@Nonnull final EngineModel model,
+                  @Nonnull final String adminParamKey,
+                  @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     @Override

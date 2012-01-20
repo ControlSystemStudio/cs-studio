@@ -68,6 +68,17 @@ abstract public class ElogDialog extends TitleAreaDialog
         this.image_filename = image_filename;
     }
 
+    /** Make Elog dialog non-modal to allow user access to the "rest"
+     *  of the application.
+     *  This was requested by operators who tend to edit the entry
+     *  for a while but still need for example operator displays
+     *  to remain responsive.
+     */
+	protected void setShellStyle(final int style)
+	{
+		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
+	}
+    
     /** Allow resize */
     @Override
     protected boolean isResizable()

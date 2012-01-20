@@ -72,8 +72,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	@Override
 	protected synchronized void fillShape(final Graphics graphics) {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.shrink(this.getInsets());
+		Rectangle figureBounds = getClientArea();
 		if (!transparent) {
 			if(isEnabled())
 				graphics.setBackgroundColor(getBackgroundColor());

@@ -25,15 +25,20 @@
 package org.csstudio.archive.sdds.server.file;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
 import org.csstudio.archive.sdds.server.data.RecordDataCollection;
+import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,14 +59,44 @@ public class SddsFileReader {
     /** The path to the data files */
     private final ArchiveLocation archiveLocation;
 
+    /** Indicates if byte order is little endian */
+    private final boolean littleEndian;
+
+    private final long maxFileSize;
+
+    private final boolean ignoreBigFiles;
+
     /**
      * Constructor that gets a string containing the path to the data files.
      *
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
-        archiveLocation = new ArchiveLocation();
-        archiveLocation.loadLocationList(dataSourceFile);
+
+        archiveLocation = new ArchiveLocation(dataSourceFile);
+
+        final IPreferencesService pref = Platform.getPreferencesService();
+        if (pref != null) {
+            littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                           ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN,
+                                           false, null);
+            LOG.info("Assuming little endian files: {}", littleEndian);
+            ignoreBigFiles = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                             ServerPreferenceKey.P_IGNORE_BIG_FILES,
+                                             true, null);
+            LOG.info("Ignoring big files: {}", ignoreBigFiles);
+            maxFileSize = pref.getLong(SddsServerActivator.PLUGIN_ID,
+                                       ServerPreferenceKey.P_MAX_FILE_SIZE,
+                                       5242880L, null);
+            LOG.info("Max. file size: {}", maxFileSize);
+        } else {
+            LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
+            littleEndian = false;
+            LOG.warn("Cannot read if I should ignore big files. Use default: true.");
+            ignoreBigFiles = true;
+            LOG.warn("Cannot read max. file size. Use default: 5MB");
+            maxFileSize = 5242880L;
+        }
     }
 
     /**
@@ -73,23 +108,43 @@ public class SddsFileReader {
      * @return Array of data objects
      */
     @Nonnull
-    public RecordDataCollection readData(@Nonnull final String recordName,
+    public final RecordDataCollection readData(@Nonnull final String recordName,
                                          final long startTimeInS,
-                                         final long endTimeInS) {
+                                         final long endTimeInS) throws SddsFileLengthException {
 
-        final String[] filePaths = archiveLocation.getAllPaths(getEndTimeOfPreviousMonth(startTimeInS), endTimeInS);
+        final String[] filePaths = archiveLocation.getAllPaths(1000L * startTimeInS,
+                                                               1000L * endTimeInS);
         final long st = System.currentTimeMillis();
 
+        // TODO: First check which paths do exist, then create the arrays
         final ThreadGroup threadGroup = new ThreadGroup("DataReader");
-        final Thread[] readerThread = new Thread[filePaths.length];
-        final SddsDataReader[] reader = new SddsDataReader[filePaths.length];
+        final ArrayList<Thread> readerThread = Lists.newArrayList();
+        final ArrayList<SddsDataReader> reader = Lists.newArrayList();
 
         for(int i = 0; i < filePaths.length; i++) {
+
             filePaths[i] = getCorrectFilename(filePaths[i], recordName);
             if(filePaths[i] != null) {
-                reader[i] = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS);
-                readerThread[i] = new Thread(threadGroup, reader[i]);
-                readerThread[i].start();
+
+                // TODO: This is a hack to avoid OutOfMemory exceptions
+                //       1048576 Byte = 1 MB
+                final File file = new File(filePaths[i]);
+                final long fileLength = file.length();
+                LOG.debug(" " + filePaths[i] + " - Length: " + fileLength);
+
+                // If the file length is greater then max. allowed file size
+                // AND the server have to ignore them
+                // THEN DO NOT read it
+                if (ignoreBigFiles && fileLength > maxFileSize) {
+                    throw new SddsFileLengthException("File '" + filePaths[i] + "' too big to be read (" + fileLength + ")");
+                }
+
+                final SddsDataReader dataReader = new SddsDataReader(filePaths[i], startTimeInS, endTimeInS, littleEndian);
+                reader.add(dataReader);
+
+                final Thread thread = new Thread(threadGroup, dataReader);
+                readerThread.add(thread);
+                thread.start();
             }
         }
 
@@ -111,15 +166,19 @@ public class SddsFileReader {
         final RecordDataCollection dataCollection = new RecordDataCollection();
 
         final List<EpicsRecordData> allResults = Lists.newLinkedList();
-        for(int i = 0; i < filePaths.length; i++) {
-            if(reader[i] != null) {
-                allResults.addAll(reader[i].getResult());
+        for(final SddsDataReader o : reader) {
+            if(o != null) {
+                if (!o.hasCausedError()) {
+                    allResults.addAll(o.getResult());
+                } else {
+                    LOG.warn(o.getError().toString() + ": " + o.getErrorDescription());
+                }
             }
         }
 
         dataCollection.setData(allResults);
-        if(reader[0] != null) {
-            dataCollection.setSampleParameter(reader[0].getSampleCtrl());
+        if(reader.size() > 0) {
+            dataCollection.setSampleParameter(reader.get(0).getSampleCtrl());
         } else {
             dataCollection.setSampleParameter(new SampleParameters());
         }
@@ -156,7 +215,8 @@ public class SddsFileReader {
      * @param dwStartTime
      * @return The last timestamp of the month
      */
-    public long getEndTimeOfPreviousMonth(final long dwStartTime) {
+    @SuppressWarnings("unused")
+    private long getEndTimeOfPreviousMonth(final long dwStartTime) {
 
         GregorianCalendar cal = null;
         long epoch;
@@ -169,38 +229,6 @@ public class SddsFileReader {
         cal.set(Calendar.SECOND, 0);
 
         epoch = cal.getTimeInMillis() / 1000 - 1;
-
-        return epoch;
-    }
-
-    /**
-     *  New start search time is '01-mmm-yyyy 00:00:00'.
-     *  Get year and month from current epoch, increase the month by one,
-     *  modify others and call 'mktime()' to get new start_time.
-     *
-     * @param dwStartTime
-     * @return The first timestamp of the next month
-     */
-    public long getStartTimeOfNextMonth(final long dwStartTime) {
-
-        GregorianCalendar cal = null;
-        long epoch;
-
-        cal = new GregorianCalendar();
-        cal.setTimeInMillis(dwStartTime * 1000);
-
-        cal.add(Calendar.MONTH, 1);
-        if(cal.get(Calendar.MONTH) > 10) {
-            cal.set(Calendar.MONTH, 0);
-            cal.add(Calendar.YEAR, 1);
-        }
-
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-
-        epoch = cal.getTimeInMillis() / 1000;
 
         return epoch;
     }

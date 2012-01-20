@@ -73,6 +73,7 @@
                id="org.csstudio.ui.menu.popup.processvariable"
                label="%PVName">
             <visibleWhen>
+            <or>
                <with variable="activeMenuSelection">
                   <iterate>
                      <adapt type="org.csstudio.csdata.ProcessVariable"/>
@@ -81,6 +82,18 @@
                      <count value="+"/>
                   </and>
                </with>
+               <with
+                     variable="activeMenuSelection">
+                  <iterate>
+                     <adapt
+                           type="[Lorg.csstudio.csdata.ProcessVariable;">
+                     </adapt>
+                  </iterate>
+                  <and>
+                     <count value="+"/>
+                  </and>
+               </with>
+            </or>
             </visibleWhen>
             <separator
                   name="main">

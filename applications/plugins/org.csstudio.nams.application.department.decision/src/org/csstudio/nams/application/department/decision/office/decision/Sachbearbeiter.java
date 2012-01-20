@@ -28,12 +28,11 @@ package org.csstudio.nams.application.department.decision.office.decision;
 
 import java.util.Iterator;
 
-import org.csstudio.nams.application.department.decision.ThreadTypesOfDecisionDepartment;
 import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Ausgangskorb;
-import org.csstudio.nams.common.decision.Eingangskorb;
-import org.csstudio.nams.common.decision.StandardAblagekorb;
+import org.csstudio.nams.common.decision.BeobachtbarerEingangskorb;
+import org.csstudio.nams.common.decision.EingangskorbBeobachter;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.decision.Zwischenablagekorb;
@@ -42,7 +41,6 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.Regelwerk;
 import org.csstudio.nams.common.material.regelwerk.WeiteresVersandVorgehen;
-import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.common.wam.Automat;
 
 /**
@@ -56,116 +54,71 @@ import org.csstudio.nams.common.wam.Automat;
  */
 @Automat
 class Sachbearbeiter implements Arbeitsfaehig {
-	private final DokumentVerbraucherArbeiter<Ablagefaehig> achteAufInterneEingaenge;
 	private final Ausgangskorb<Vorgangsmappe> ausgangkorb;
 	private final Regelwerk regelwerk;
 	private final Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge;
 	private final Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz;
 	private final String nameDesSachbearbeiters;
-	private final DokumentVerbraucherArbeiter<Vorgangsmappe> achteAufVorgangsmappenEingaenge;
-	private final DokumentVerbraucherArbeiter<Terminnotiz> achteAufTerminnotizEingaenge;
-	// private Logger log = Logger.getLogger(Sachbearbeiter.class.getName());
-	// private final HistoryService historyService;
-	private final ExecutionService executionService;
+	private final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb;
+	private boolean istAmArbeiten;
 
 	/**
 	 * 
 	 * @param nameDesSachbearbeiters
-	 * @param eingangskorbFuerNeueVorgangsmappen
-	 * @param eingangskorbFuerTerminnotizen
+	 * @param eingangskorb darf nicht parallelisiert Neuzugänge an seinen Beobachter melden!
 	 * @param ablagekorbFuerOffeneVorgaenge
 	 * @param ausgangskorbZurAssistenz
 	 * @param ausgangskorbFuerBearbeiteteVorgangsmappen
 	 * @param regelwerk
-	 * @param historyService
 	 */
 	public Sachbearbeiter(
-			final ExecutionService executionService,
 			final String nameDesSachbearbeiters,
-			final Eingangskorb<Vorgangsmappe> eingangskorbFuerNeueVorgangsmappen,
-			final Eingangskorb<Terminnotiz> eingangskorbFuerTerminnotizen,
+			final BeobachtbarerEingangskorb<Ablagefaehig> eingangskorb,
 			final Zwischenablagekorb<Vorgangsmappe> ablagekorbFuerOffeneVorgaenge,
 			final Ausgangskorb<Terminnotiz> ausgangskorbZurAssistenz,
 			final Ausgangskorb<Vorgangsmappe> ausgangskorbFuerBearbeiteteVorgangsmappen,
 			final Regelwerk regelwerk
-	// ,
-	// HistoryService historyService
 	) {
 
-		this.executionService = executionService;
 		this.nameDesSachbearbeiters = nameDesSachbearbeiters;
+		this.eingangskorb = eingangskorb;
 		this.ablagekorbFuerOffeneVorgaenge = ablagekorbFuerOffeneVorgaenge;
 		this.ausgangskorbZurAssistenz = ausgangskorbZurAssistenz;
 		this.ausgangkorb = ausgangskorbFuerBearbeiteteVorgangsmappen;
 		this.regelwerk = regelwerk;
-		// this.historyService = historyService;
-
-		final Eingangskorb<Ablagefaehig> internerEingangskorb = new StandardAblagekorb<Ablagefaehig>();
-
-		this.achteAufVorgangsmappenEingaenge = new DokumentVerbraucherArbeiter<Vorgangsmappe>(
-				new DokumentenBearbeiter<Vorgangsmappe>() {
-					public void bearbeiteVorgang(
-							final Vorgangsmappe aeltestenEingang)
-							throws InterruptedException {
-						internerEingangskorb.ablegen(aeltestenEingang);
-					}
-				}, eingangskorbFuerNeueVorgangsmappen);
-
-		this.achteAufTerminnotizEingaenge = new DokumentVerbraucherArbeiter<Terminnotiz>(
-				new DokumentenBearbeiter<Terminnotiz>() {
-					public void bearbeiteVorgang(
-							final Terminnotiz aeltestenEingang)
-							throws InterruptedException {
-						internerEingangskorb.ablegen(aeltestenEingang);
-					}
-				}, eingangskorbFuerTerminnotizen);
-
-		this.achteAufInterneEingaenge = new DokumentVerbraucherArbeiter<Ablagefaehig>(
-				new DokumentenBearbeiter<Ablagefaehig>() {
-					public void bearbeiteVorgang(
-							final Ablagefaehig aeltestenEingang)
-							throws InterruptedException {
-						Sachbearbeiter.this
-								.bearbeiteVorgangBeimSachbearbeiter(aeltestenEingang);
-					}
-				}, internerEingangskorb);
 	}
 
 	/**
 	 * Beendet die Arbeit.
 	 */
 	public void beendeArbeit() {
-		this.achteAufVorgangsmappenEingaenge.stopWorking();
-		this.achteAufTerminnotizEingaenge.stopWorking();
-		this.achteAufInterneEingaenge.stopWorking();
-
-		// TODO Sende offene Vorgänge...
+		
+		// Eingangskörbe nicht mehr beobachten
+		eingangskorb.setBeobachter(null);
+		
+		// TODO Sende offene Vorgänge...?
+		
+		this.istAmArbeiten = false;
 	}
 
 	/**
 	 * Beginnt mit der Arbeit.
 	 */
 	public void beginneArbeit() {
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				this.achteAufVorgangsmappenEingaenge);
-		while (!this.achteAufVorgangsmappenEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				this.achteAufTerminnotizEingaenge);
-		while (!this.achteAufTerminnotizEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
-
-		this.executionService.executeAsynchronsly(
-				ThreadTypesOfDecisionDepartment.SACHBEARBEITER,
-				this.achteAufInterneEingaenge);
-		while (!this.achteAufInterneEingaenge.isCurrentlyRunning()) {
-			Thread.yield();
-		}
+		
+		eingangskorb.setBeobachter(new EingangskorbBeobachter() {
+			@Override
+			public void neuerEingang() {
+				try {
+					Sachbearbeiter.this.bearbeiteVorgangBeimSachbearbeiter(eingangskorb.entnehmeAeltestenEingang());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		this.istAmArbeiten = true;
 	}
 
 	public String gibName() {
@@ -173,9 +126,7 @@ class Sachbearbeiter implements Arbeitsfaehig {
 	}
 
 	public boolean istAmArbeiten() {
-		return this.achteAufInterneEingaenge.isCurrentlyRunning()
-				&& this.achteAufVorgangsmappenEingaenge.isCurrentlyRunning()
-				&& this.achteAufTerminnotizEingaenge.isCurrentlyRunning();
+		return this.istAmArbeiten;
 	}
 
 	protected void bearbeiteNeuenVorgang(final Vorgangsmappe vorgangsmappe)

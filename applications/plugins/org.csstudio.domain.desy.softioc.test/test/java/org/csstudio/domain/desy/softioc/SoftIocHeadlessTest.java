@@ -34,6 +34,8 @@ import org.csstudio.domain.desy.junit.ConditionalClassRunner;
 import org.csstudio.domain.desy.junit.OsCondition;
 import org.csstudio.domain.desy.junit.RunIf;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,6 +62,12 @@ public class SoftIocHeadlessTest {
         final ISoftIocConfigurator cfg = new BasicSoftIocConfigurator().with(new File(dbFileUrl.getFile()));
         _softIoc = new SoftIoc(cfg);
         _softIoc.start();
+
+     // ATTENTION: dont use EpicsPlugin.ID, since then that bundle is activated and the default prefs
+        // are read immediately into the EpicsPlugin singleton.
+        final IEclipsePreferences prefs = new DefaultScope().getNode("org.csstudio.platform.libs.epics");
+        // Then this
+        prefs.put("use_pure_java", "false");
     }
 
     @Test

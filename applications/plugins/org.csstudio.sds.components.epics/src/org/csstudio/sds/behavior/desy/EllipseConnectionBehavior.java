@@ -20,9 +20,10 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.EllipseModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *
@@ -35,8 +36,6 @@ import org.epics.css.dal.simple.MetaData;
  */
 public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<AbstractWidgetModel> {
 
-    private String _defColor;
-
     /**
      * Constructor.
      */
@@ -45,7 +44,6 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
-//        addInvisiblePropertyId(EllipseModel.PROP_COLOR_FOREGROUND);
         addInvisiblePropertyId(EllipseModel.PROP_COLOR_BACKGROUND);
     }
 
@@ -56,7 +54,6 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
     protected void doInitialize(final AbstractWidgetModel widget) {
         super.doInitialize(widget);
         widget.setPropertyValue(EllipseModel.PROP_FILL, 100);
-        _defColor = widget.getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
     }
 
     /**
@@ -66,9 +63,23 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
     protected void doProcessConnectionStateChange(final AbstractWidgetModel widget,
                                                   final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String determineBackgroundColor = isConnected(anyDataChannel)?_defColor:determineBackgroundColor(connectionState);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? widget
+                .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND)
+                : determineBackgroundColor(connectionState);
         widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doProcessValueChange(final AbstractWidgetModel model, final AnyData anyData) {
+        super.doProcessValueChange(model, anyData);
+//        // this is only to make the test easier!
+//        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, model
+//                        .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+
     }
 
     @Override

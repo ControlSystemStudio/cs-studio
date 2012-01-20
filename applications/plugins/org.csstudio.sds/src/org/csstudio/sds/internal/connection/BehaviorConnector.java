@@ -5,9 +5,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
 
 /**
  * Connector that forwards channel events to a behavior strategy class.

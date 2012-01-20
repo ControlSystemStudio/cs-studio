@@ -12,6 +12,8 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IWorkbenchPage;
@@ -37,7 +39,7 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
             filename = ResourceUtil.buildAbsolutePath(model, filename);
         try
         {
-            final IFile file_input = ResourceUtil.getIFileFromIPath(filename);
+            final IFile file_input = getIFileFromIPath(filename);
             final DataBrowserModelEditorInput model_input =
                     new DataBrowserModelEditorInput(new FileEditorInput(file_input), model.createDataBrowserModel());
             IDE.openEditor(page, model_input, DataBrowserEditor.ID, true);
@@ -50,4 +52,27 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
                 NLS.bind(Messages.ErrorDetailFmt, filename.toString(), ex.getMessage())).open();
         }
     }
+	/**Get the IFile from IPath.
+	 * @param path Path to file in workspace
+	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
+	 */
+	public static IFile getIFileFromIPath(final IPath path)
+	{
+	    try
+	    {
+    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+    				path, false);
+    		if (r!= null && r instanceof IFile)
+		    {
+    		    final IFile file = (IFile) r;
+    		    if (file.exists())
+    		        return file;
+		    }
+	    }
+	    catch (Exception ex)
+	    {
+	        // Ignored
+	    }
+	    return null;
+	}
 }

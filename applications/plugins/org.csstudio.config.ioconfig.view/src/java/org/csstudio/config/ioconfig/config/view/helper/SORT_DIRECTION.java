@@ -41,7 +41,7 @@ enum SORT_DIRECTION{
         final SORT_DIRECTION[] values = SORT_DIRECTION.values();
         int ordinal = ordinal()+1;
         if(ordinal>values.length) {
-         ordinal=0;   
+         ordinal=0;
         }
         return values[ordinal];
     }

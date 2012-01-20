@@ -21,12 +21,13 @@
  */
 package org.csstudio.sds.behavior.desy;
 
+
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  * Default DESY-Behavior for the {@link LabelModel} widget with Connection state
@@ -54,8 +55,8 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        _defTransparent = widget.getBooleanProperty(LabelModel.PROP_TRANSPARENT);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        _defTransparent = widget.getTransparent();
+        if(widget.getValueType()==TextTypeEnum.TEXT) {
             widget.setJavaType(String.class);
         }
     }
@@ -67,24 +68,27 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
-        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
-
+        handleValueType(model, model.getValueType(), LabelModel.PROP_TEXTVALUE, anyData);
+        final boolean isTransparent = _defTransparent
+                && hasValue(anyData.getParentChannel());
+        model.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(LabelModel widget, AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final LabelModel widget,
+                                                  final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        boolean isTransparent = isConnected(anyDataChannel)&&_defTransparent;
+        final boolean isTransparent = isConnected(anyDataChannel) && _defTransparent
+                && hasValue(anyDataChannel);
         widget.setPropertyValue(LabelModel.PROP_TRANSPARENT, isTransparent);
     }
 
-	@Override
-	protected void doProcessMetaDataChange(LabelModel widget, MetaData metaData) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
+        // Nothing to do;
+    }
 
 }

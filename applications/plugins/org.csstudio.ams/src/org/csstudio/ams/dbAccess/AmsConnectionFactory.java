@@ -36,8 +36,25 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.hsqldb.jdbcDriver;
 import com.mysql.jdbc.Driver;
 
-public class AmsConnectionFactory
-{
+public class AmsConnectionFactory {
+
+    public static Connection getConfigurationDB(ConfigDbProperties prop) throws SQLException {
+        
+        if(prop.getDbType().toUpperCase().indexOf("ORACLE") > -1) {
+            DriverManager.registerDriver(new OracleDriver());
+        } else if(prop.getDbType().toUpperCase().indexOf("HSQL") > -1) {
+            DriverManager.registerDriver(new jdbcDriver());
+        } else if(prop.getDbType().toUpperCase().indexOf("MYSQL") > -1) {
+            DriverManager.registerDriver(new Driver());
+        }
+
+        Log.log(Log.INFO, "try getConfigurationDB for DB " + prop.getDbType());
+        Log.log(Log.INFO, "try getConfigurationDB to " + prop.getDbUrl());
+        Log.log(Log.INFO, "try getConfigurationDB user " + prop.getDbUser());
+
+        return DriverManager.getConnection(prop.getDbUrl(), prop.getDbUser(), prop.getDbPassword());
+    }
+
     public static Connection getConfigurationDB() throws SQLException {
         
         final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
@@ -96,7 +113,7 @@ public class AmsConnectionFactory
                 conDb.close();
             }
         } catch(final Exception ex) {
-            Log.log(Log.WARN, ex);
+            Log.log(Log.WARN, "Cannot close database connection. ", ex);
         }
     }
 }

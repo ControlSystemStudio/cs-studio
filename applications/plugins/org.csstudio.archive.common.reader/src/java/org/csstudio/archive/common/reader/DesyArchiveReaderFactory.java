@@ -23,6 +23,7 @@ package org.csstudio.archive.common.reader;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
@@ -33,6 +34,7 @@ import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
 import org.csstudio.archive.common.requesttype.IArchiveRequestType;
 import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.channel.IArchiveChannel;
+import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveReaderFactory;
@@ -41,11 +43,13 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.domain.desy.regexp.SimplePattern;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
+import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.typesupport.BaseTypeConversionSupport;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * The plugin.xml registers this factory for ArchiveReaders
@@ -54,10 +58,13 @@ import com.google.common.collect.ImmutableSet;
  * @author bknerr
  * @since 22.12.2010
  */
-// CHECKSTYLE:OFF Due to misleading 'Class X must be declared as 'abstract' warning'.
-//                Seems to be a CS 5.3 problem
+// CHECKSTYLE:OFF
+// Due to misleading 'Class X must be declared as 'abstract' warning'.
+// Seems to be a CS 5.3 problem
 public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 // CHECKSTYLE:ON
+
+    public static final String EXT_POINT_PREFIX = "mysql:";
 
     static final ValueIterator EMPTY_ITER = new ValueIterator() {
         @Override
@@ -81,6 +88,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
      * @author bknerr
      * @since 03.02.2011
      */
+    @SuppressWarnings("rawtypes")
     private static final class DesyArchiveReader implements ArchiveReader {
 
         private final IArchiveServiceProvider _provider;
@@ -102,7 +110,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Override
         @Nonnull
         public String getURL() {
-            return "Secret URL";
+            return EXT_POINT_PREFIX;
         }
 
         @Override
@@ -120,9 +128,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
         @Nonnull
         public ArchiveInfo[] getArchiveInfos() {
             return new ArchiveInfo[] {
-                                      new ArchiveInfo("Desy Kryo Archive",
-                                      "MySQL Cluster",
-                                      5),
+                                      new ArchiveInfo("Desy Kryo Archive", "MySQL Cluster", 5),
                                       };
         }
 
@@ -148,6 +154,7 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             return names.toArray(new String[]{});
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public ValueIterator getRawValues(final int key,
@@ -157,10 +164,16 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
 
             final TimeInstant s = BaseTypeConversionSupport.toTimeInstant(start);
             final TimeInstant e = BaseTypeConversionSupport.toTimeInstant(end);
-            return new DesyArchiveValueIterator<Serializable>(_provider, name, s, e, findRequestType("RAW"));
+
+            final IArchiveReaderFacade service = _provider.getReaderFacade();
+            final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =
+                service.readSamples(name, s, e, findRequestType("RAW"));
+
+            return new DesyArchiveValueIterator(samples, name, s, e);
         }
 
 
+        @SuppressWarnings("unchecked")
         @Override
         @Nonnull
         public ValueIterator getOptimizedValues(final int key,
@@ -177,12 +190,19 @@ public final class DesyArchiveReaderFactory implements ArchiveReaderFactory {
             final IArchiveChannel channel = service.getChannelByName(name);
 
             if (channel!= null &&
-                BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType(),
-                                                                        "java.lang",
-                                                                        "org.csstudio.domain.desy.epics.types")) {
-                final EquidistantTimeBinsIterator<Serializable> iter =
-                    new EquidistantTimeBinsIterator<Serializable>(_provider, name, s, e, findRequestType("AVG_PER_HOUR"), count);
-                return iter;
+                BaseTypeConversionSupport.isDataTypeConvertibleToDouble(channel.getDataType())) {
+
+                final IArchiveSample lastSampleBefore = service.readLastSampleBefore(name, s);
+
+                final Collection<IArchiveSample> samples = (Collection)
+                    service.readSamples(channel.getName(), s, e, null);
+
+                if (samples.size() <= count) {
+                    return new DesyArchiveValueIterator(Iterables.concat(Collections.<IArchiveSample>singleton(lastSampleBefore), samples),
+                                                        name, s, e);
+                }
+
+                return new EquidistantTimeBinsIterator(_provider, samples, name, s, e, count);
             }
             return EMPTY_ITER;
         }

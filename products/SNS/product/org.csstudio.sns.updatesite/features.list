@@ -1,5 +1,6 @@
 org.csstudio.alarm.beast.ui.feature/**
 org.csstudio.opibuilder.feature/**
+org.csstudio.scan.ui.feature/**
 org.csstudio.sns.feature.applications/**
 org.csstudio.sns.feature.basiccore/**
 org.csstudio.sns.feature.core/**

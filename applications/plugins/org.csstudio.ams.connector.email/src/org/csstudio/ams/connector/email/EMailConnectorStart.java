@@ -49,13 +49,14 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
-public class EMailConnectorStart implements IApplication, IGenericServiceListener<ISessionService>
-{
+public class EMailConnectorStart implements IApplication,
+                                            IGenericServiceListener<ISessionService> {
+    
     public final static int STAT_INIT = 0;
     public final static int STAT_OK = 1;
     public final static int STAT_ERR_EMAIL = 2;
     public final static int STAT_ERR_EMAIL_SEND = 3;
-    public final static int STAT_ERR_JMSCON = 4;                                // jms communication to ams internal jms partners
+    public final static int STAT_ERR_JMSCON = 4; // jms communication to ams internal jms partners
     public final static int STAT_ERR_UNKNOWN = 5;
 
     public final static long WAITFORTHREAD = 10000;
@@ -78,8 +79,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
     private boolean bStop;
     private boolean restart;
     
-    public EMailConnectorStart()
-    {
+    public EMailConnectorStart() {
         _instance = this;
         sObj = new SynchObject(STAT_INIT, System.currentTimeMillis());
         xmppService = null;
@@ -90,49 +90,17 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         }
     }
 
-    public static EMailConnectorStart getInstance()
-    {
+    public static EMailConnectorStart getInstance() {
         return _instance;
     }
     
-    public void stop()
-    {
-        return;
-    }
-
     /**
-     * 
+     * {@inheritDoc}
      */
-    public synchronized void setRestart()
-    {
-        restart = true;
-        bStop = true;
-    }
-
-    /**
-     * 
-     */
-    public synchronized void setShutdown()
-    {
-        restart = false;
-        bStop = true;
-    }
-
-    /**
-     * 
-     * @return The mangement password
-     */
-    public synchronized String getPassword()
-    {
-        return managementPassword;
-    }
-    
-    /**
-     * 
-     */
-    public Object start(IApplicationContext context) throws Exception
-    {
-        Log.log(this, Log.INFO, "start");
+    @Override
+    public Object start(IApplicationContext context) throws Exception {
+        
+        Log.log(this, Log.INFO, "Starting.");
         
         EMailConnectorPreferenceKey.showPreferences();
         
@@ -146,35 +114,30 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         bStop = false;
         restart = false;
         
-        while(bStop == false)
-        {
-            try
-            {
-                if (ecw == null)
-                {
+        while(bStop == false) {
+            try {
+                if (ecw == null) {
                     ecw = new EMailConnectorWork(this);
                     ecw.start();
                 }
                 
-                if (!bInitedJms)
-                {
+                if (!bInitedJms) {
                     bInitedJms = initJms();
                 }
         
-                Log.log(this, Log.DEBUG, "run");
                 Thread.sleep(1000);
                 
                 SynchObject actSynch = new SynchObject(0, 0);
-                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN))        // if status has not changed in the last 5 minutes
-                {                                                               // every 5 minutes if blocked
+                // if status has not changed in the last 5 minutes
+                // every 5 minutes if blocked
+                if (!sObj.hasStatusSet(actSynch, 300, STAT_ERR_UNKNOWN)) {                                                               
                     Log.log(this, Log.FATAL, "TIMEOUT: status has not changed the last 5 minutes.");
                 }
 
                 String statustext = "unknown";
-                if (actSynch.getStatus() != lastStatus)                         // if status value changed
-                {
-                    switch (actSynch.getStatus())
-                    {
+                // if status value changed
+                if (actSynch.getStatus() != lastStatus) {
+                    switch (actSynch.getStatus()) {
                         case STAT_INIT:
                             statustext = "init";
                             break;
@@ -191,20 +154,15 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
                     }
                     Log.log(this, Log.INFO, "set status to " + statustext + "(" + actSynch.getStatus() + ")");
                     lastStatus = actSynch.getStatus();
-                    if (bInitedJms)
-                    {
-                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime()))
-                        {
+                    if (bInitedJms) {
+                        if (!sendStatusChange(actSynch.getStatus(), statustext, actSynch.getTime())) {
                             closeJms();
                             bInitedJms = false;
                         }
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 Log.log(this, Log.FATAL, e);
-                
                 closeJms();
                 bInitedJms = false;
             }
@@ -212,8 +170,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
 
         Log.log(this, Log.INFO, "EMailConnectorStart is exiting now");
         
-        if(ecw != null)
-        {
+        if(ecw != null) {
             // Clean stop of the working thread
             ecw.stopWorking();
             
@@ -223,14 +180,11 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
                 // Can be ignored
             }
     
-            if(ecw.stoppedClean())
-            {
+            if(ecw.stoppedClean()) {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread stopped clean.");
                 
                 ecw = null;
-            }
-            else
-            {
+            } else {
                 Log.log(this, Log.FATAL, "Restart/Exit: Thread did NOT stop clean.");
                 ecw.closeJms();
                 ecw.closeEmail();
@@ -250,6 +204,35 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         return exitCode;
     }
 
+    @Override
+    public void stop() {
+        return;
+    }
+
+    /**
+     * 
+     */
+    public synchronized void setRestart() {
+        restart = true;
+        bStop = true;
+    }
+
+    /**
+     * 
+     */
+    public synchronized void setShutdown() {
+        restart = false;
+        bStop = true;
+    }
+
+    /**
+     * 
+     * @return The mangement password
+     */
+    public synchronized String getPassword() {
+        return managementPassword;
+    }
+    
     public int getStatus()
     {
         return sObj.getSynchStatus();
@@ -363,6 +346,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
         return true;
     }
     
+    @Override
     public void bindService(ISessionService sessionService) {
     	
         IPreferencesService pref = Platform.getPreferencesService();
@@ -378,6 +362,7 @@ public class EMailConnectorStart implements IApplication, IGenericServiceListene
 		}
     }
     
+    @Override
     public void unbindService(ISessionService service) {
     	// Nothing to do here
     }

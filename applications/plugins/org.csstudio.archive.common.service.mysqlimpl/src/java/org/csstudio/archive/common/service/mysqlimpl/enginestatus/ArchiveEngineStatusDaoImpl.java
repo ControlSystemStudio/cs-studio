@@ -112,7 +112,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         PreparedStatement stmt = null;
         ResultSet resultSet = null;
         try {
-            conn = getThreadLocalConnection();
+            conn = createConnection();
             stmt = conn.prepareStatement(_selectLatestEngineStatusInfoStmt);
 
             stmt.setLong(1, latestAliveTime.getNanos());
@@ -125,7 +125,7 @@ public class ArchiveEngineStatusDaoImpl extends AbstractArchiveDao implements IA
         } catch (final Exception e) {
             handleExceptions(EXC_MSG, e);
         } finally {
-            closeSqlResources(resultSet, stmt, _selectLatestEngineStatusInfoStmt);
+            closeSqlResources(resultSet, stmt, conn, _selectLatestEngineStatusInfoStmt);
         }
         return null;
     }

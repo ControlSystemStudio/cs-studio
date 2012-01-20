@@ -96,9 +96,16 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_1ST));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
+
+        final IArchiveChannel channel = channels.iterator().next();
+        final TimeInstant latestTimestamp = channel.getLatestTimestamp();
+        Assert.assertNotNull(latestTimestamp);
+        Assert.assertTrue(latestTimestamp.equals(START.plusMillis(1000*60)));
+
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> minSamples =
-            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channels.iterator().next(), START, START.plusMillis(1000*60));
+            SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.AVG_PER_MINUTE, channel, START, START.plusMillis(1000*60));
 
         assertSamples(minSamples);
 
@@ -112,6 +119,7 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_1ST));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
 
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> hourSamples =
@@ -150,6 +158,7 @@ public class ArchiveSampleDaoCreateUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_2ND));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
         final IArchiveChannel channel = channels.iterator().next();
 

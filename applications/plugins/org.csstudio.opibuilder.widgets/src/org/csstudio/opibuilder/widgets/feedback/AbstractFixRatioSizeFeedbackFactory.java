@@ -248,7 +248,8 @@ public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalF
 					newBounds.width = Math.max(newBounds.width, getWidthFromHeight(newBounds.height, widget));
 				newBounds.height = getHeightFromWidth(newBounds.width, widget);
 			}
-			widget.setSize(newBounds.width, newBounds.height);
+			if(newBounds.width >0 && newBounds.height >0)
+				widget.setSize(newBounds.width, newBounds.height);
 		}
 		
 		@Override

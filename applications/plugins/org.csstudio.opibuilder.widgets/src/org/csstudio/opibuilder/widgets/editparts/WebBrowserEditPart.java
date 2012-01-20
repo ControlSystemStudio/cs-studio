@@ -8,14 +8,12 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.figures.AbstractWebBrowserFigure;
 import org.csstudio.opibuilder.widgets.model.WebBrowserModel;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.browser.Browser;
-import org.eclipse.swt.widgets.Composite;
 
 /**The editpart of web browser widget.
  * 
@@ -29,11 +27,9 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		final WebBrowserModel model = getWidgetModel();
-		AbstractWebBrowserFigure figure = SingleSourceHelper.createWebBrowserFigure(
-				(Composite) getViewer().getControl(), model.getParent(),
-				getExecutionMode() == ExecutionMode.RUN_MODE, model.isShowToolBar());
-		figure.setUrl(model.getURL());
-		figure.setRunMode(getExecutionMode() == ExecutionMode.RUN_MODE);
+		final AbstractWebBrowserFigure figure = SingleSourceHelper.createWebBrowserFigure(
+				this, model.isShowToolBar());
+		figure.setUrl(model.getURL());	
 		return figure;
 	}
 	

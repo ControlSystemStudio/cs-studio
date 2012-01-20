@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
-<toc label="Best OPI Yet" link_to="../org.csstudio.ui.help/tocApps.xml#display">
-<topic label="Best OPI Yet (BOY)"  href="html/Contents.html">
+<toc label="Best OPI, Yet (BOY)" link_to="../org.csstudio.ui.help/tocApps.xml#display">
+<topic label="Best OPI, Yet (BOY)"  href="html/Contents.html">
    <topic href="html/BOY_Introduction.html" label="Introduction">
+   </topic>
+   <topic href="html/ChangeLog.html" label="What&apos;s new">
    </topic> 
   <topic label="Install Examples" href="html/Install Examples.html"></topic>
   <topic href="html/Getting Started.html" label="Getting Started">
@@ -31,9 +33,12 @@
      <topic href="html/widgets/Image.html" label="Image"></topic>
      <topic href="html/widgets/BooleanWidgets.html" label="Boolean Widgets">
         <topic href="html/widgets/LED.html" label="LED"></topic>
+        <topic href="html/widgets/ImageBoolIndicator.html" label="Image Boolean Indicator">
+        </topic>
         <topic href="html/widgets/BoolSwitch.html" label="Boolean Switch"></topic>
         <topic href="html/widgets/BoolButton.html" label="Boolean Button"></topic>
         <topic href="html/widgets/ImageBoolButton.html" label="Image Boolean Button"></topic>
+        <anchor id="booleanWidgets"/>
      </topic>
      <topic href="html/widgets/TextUpdate.html" label="Text Update"></topic>
      <topic href="html/widgets/ScaledWidgets.html" label="Scaled Widgets">
@@ -89,6 +94,8 @@
      </topic>
      <topic href="html/script/PropertyType.html" label="Property Type">
      </topic>
+     <topic href="html/script/CreateCustomScriptUtil.html" label="Creating Custom ScriptUtil">
+     </topic>
      <topic href="html/script/ScriptUtil.html" label="Script Utililty APIs">
         <topic href="html/script/ScriptUtil/PVUtil.html" label="PVUtil">
         </topic>
@@ -101,6 +108,8 @@
         <topic href="html/script/ScriptUtil/FileUtil.html" label="FileUtil">
         </topic>
         <topic href="html/script/ScriptUtil/WidgetUtil.html" label="WidgetUtil">
+        </topic>
+        <topic href="html/script/ScriptUtil/GUIUtil.html" label="GUIUtil">
         </topic>
      </topic>
   </topic>

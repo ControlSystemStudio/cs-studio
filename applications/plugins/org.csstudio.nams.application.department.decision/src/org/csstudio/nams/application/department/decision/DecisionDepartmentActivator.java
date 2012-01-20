@@ -29,6 +29,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
+
 import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
@@ -60,6 +61,7 @@ import org.csstudio.nams.service.messaging.declaration.PostfachArt;
 import org.csstudio.nams.service.messaging.declaration.Producer;
 import org.csstudio.nams.service.messaging.exceptions.MessagingException;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
+import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceConfigurationKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceJMSKeys;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceManagementKeys;
@@ -99,11 +101,12 @@ import org.remotercp.service.connection.session.ISessionService;
  *          org.csstudio.nams.common.activatorUtils.BundleActivatorUtils.
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
-@SuppressWarnings("hiding")
 public class DecisionDepartmentActivator extends AbstractBundleActivator
         implements IApplication, RemotelyStoppable, IGenericServiceListener<ISessionService> {
 
-    class AusgangsKorbBearbeiter extends StepByStepProcessor {
+    private static final int DEFAULT_THREAD_COUNT = 10;
+
+	class AusgangsKorbBearbeiter extends StepByStepProcessor {
 
         private final Eingangskorb<Vorgangsmappe> vorgangskorb;
 
@@ -574,12 +577,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
             this.eingangskorbDesDecisionOffice = new StandardAblagekorb<Vorgangsmappe>();
             this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice = new StandardAblagekorb<Vorgangsmappe>();
 
+            
+            final IPreferencesService pref = Platform.getPreferencesService();
+            int threadCount = pref.getInt(DecisionDepartmentActivator.PLUGIN_ID, PreferenceServiceConfigurationKeys.FILTER_THREAD_COUNT.getKey(), DEFAULT_THREAD_COUNT, null);
             this._alarmEntscheidungsBuero = new AlarmEntscheidungsBuero(
                     DecisionDepartmentActivator.executionService,
                     alleRegelwerke
                             .toArray(new Regelwerk[alleRegelwerke.size()]),
                     this.eingangskorbDesDecisionOffice,
-                    this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice);
+                    this.ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice,
+                    threadCount);
         } catch (final Throwable e) {
             DecisionDepartmentActivator.logger
                     .logFatalMessage(

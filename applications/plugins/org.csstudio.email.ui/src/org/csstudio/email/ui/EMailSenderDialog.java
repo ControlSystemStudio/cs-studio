@@ -79,6 +79,17 @@ public class EMailSenderDialog extends TitleAreaDialog
         return true;
     }
 
+    /** Make EMail dialog non-modal to allow user access to the "rest"
+     *  of the application.
+     *  This was requested by operators who tend to edit the entry
+     *  for a while but still need for example operator displays
+     *  to remain responsive.
+     */
+	protected void setShellStyle(final int style)
+	{
+		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
+	}
+    
     /** Set the dialog title. */
     @Override
     protected void configureShell(Shell shell)
@@ -93,7 +104,7 @@ public class EMailSenderDialog extends TitleAreaDialog
     {
         // Title, title image, handle image disposal
         final Image title_image =
-            Activator.getImageDescriptor("icons/email_image.png").createImage(); //$NON-NLS-1$
+            Activator.getImageDescriptor("icons/mail-edit-48.png").createImage(); //$NON-NLS-1$
         setTitle(Messages.SendEmail);
         setMessage(Messages.EmailDialogMessage);
         setTitleImage(title_image);

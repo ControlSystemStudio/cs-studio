@@ -27,8 +27,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Test for epics specific part of {@link BaseTypeConversionSupport}.
+ *
  * @author bknerr
  * @since 19.04.2011
  */
@@ -36,7 +36,7 @@ public class EpicsTypeConversionSupportUnitTest {
     @Test
     public void testCreateTypeClassFromStringFromBuddyPlugin() throws TypeSupportException {
         Assert.assertNotNull(BaseTypeConversionSupport.createBaseTypeClassFromString(EpicsEnum.class.getSimpleName(),
-                                                                                 "org.csstudio.domain.desy.epics.types"));
+                                                                                     "org.csstudio.domain.desy.epics.types"));
     }
 }
 

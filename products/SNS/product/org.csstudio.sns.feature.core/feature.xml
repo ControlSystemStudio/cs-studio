@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="3.0.1.qualifier"
+      version="3.0.3.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
@@ -34,7 +34,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <requires>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.data" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
       <import plugin="org.csstudio.utility.pv" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.epics" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
@@ -43,6 +42,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
+      <import plugin="org.junit4"/>
       <import plugin="org.csstudio.platform.libs.jdbc" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
@@ -59,7 +59,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4" version="4.8.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.osgi" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jms" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.3.0" match="greaterOrEqual"/>
@@ -304,13 +303,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.ui.menu.web"
          download-size="0"
          install-size="0"
@@ -364,6 +356,24 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.macosx"
+         os="macosx"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.epics.linux"
+         os="linux"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

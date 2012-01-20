@@ -1,14 +1,17 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import com.swtdesigner.ResourceManager;
 
@@ -16,6 +19,7 @@ public class ErrorBar extends Composite {
 
 	private Label errorImage;
 	private CLabel errorLabel;
+	private Exception exception;
 	
 	/**
 	 * Create the composite.
@@ -24,26 +28,41 @@ public class ErrorBar extends Composite {
 	 */
 	public ErrorBar(Composite parent, int style) {
 		super(parent, style);
-		GridLayout gridLayout = new GridLayout(2, false);
+		GridLayout gridLayout = new GridLayout(3, false);
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		gridLayout.marginLeft = 1;
 		setLayout(gridLayout);
 		
+		Cursor handCursor = new Cursor(getDisplay(), SWT.CURSOR_HAND);
+		MouseListener listener = new MouseAdapter() {
+			@Override
+			public void mouseUp(MouseEvent e) {
+				if (e.button == 1) {
+					ExceptionDetailsErrorDialog.openError(getShell(), "Query failed...", exception);
+				}
+			}
+		};
+		
 		errorImage = new Label(this, SWT.NONE);
 		GridData gd_errorImage = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		errorImage.setLayoutData(gd_errorImage);
 		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
+		errorImage.setCursor(handCursor);
+		errorImage.addMouseListener(listener);
 		
 		errorLabel = new CLabel(this, SWT.NONE);
 		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_errorLabel.widthHint = 221;
 		errorLabel.setLayoutData(gd_errorLabel);
+		errorLabel.setCursor(handCursor);
+		errorLabel.addMouseListener(listener);
 		setException(null);
 	}
 	
 	public void setException(Exception ex) {
 		if (!isDisposed()) {
+			this.exception = ex;
 			if (ex == null) {
 				errorLabel.setToolTipText("");
 				errorLabel.setText("");

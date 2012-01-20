@@ -41,7 +41,7 @@ import org.csstudio.domain.desy.preferences.AbstractPreference;
 public final class CAGatewayPreference<T> extends AbstractPreference<T> {
 
     public static final CAGatewayPreference<String> XMPP_SERVER_NAME =
-        new CAGatewayPreference<String>("XmppServerName", "krynfsb.desy.de");
+        new CAGatewayPreference<String>("XmppServerName", "krynfs.desy.de");
     public static final CAGatewayPreference<String> XMPP_USER_NAME =
         new CAGatewayPreference<String>("XmppUserName", "cagateway");
     public static final CAGatewayPreference<String> XMPP_PASSWORD =

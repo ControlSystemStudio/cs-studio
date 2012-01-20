@@ -62,7 +62,6 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         DAO = new ArchiveChannelStatusDaoImpl(HANDLER, PERSIST_MGR);
     }
 
-
     @Test
     public void testCreateAndRetrieveStatus() throws ArchiveDaoException, InterruptedException, ArchiveConnectionException, SQLException {
         final TimeInstant fstTime = NOW.plusMillis(1000L);
@@ -89,7 +88,7 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
         Thread.sleep(2500);
 
         final Collection<IArchiveChannelStatus> coll =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST), fstTime, sndTime);
 
         Assert.assertTrue(coll.size() == 1);
         final IArchiveChannelStatus result = coll.iterator().next();
@@ -103,17 +102,23 @@ public class ArchiveChannelStatusDaoUnitTest extends AbstractDaoTestSetup {
 
     @Test
     public void testDeleteChannelStatus() throws ArchiveDaoException {
-        Iterable<IArchiveChannelStatus> status =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
+        final Iterable<IArchiveChannelStatus> status =
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST),
+                                                 TimeInstantBuilder.fromMillis(0L),
+                                                 TimeInstantBuilder.fromNow());
         Assert.assertTrue(status.iterator().hasNext());
 
         final DeleteResult deleteResult =
             DAO.deleteStatusForChannelId(CHANNEL_ID_1ST);
         Assert.assertTrue(deleteResult.succeeded());
 
-        status =
-            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST));
-        Assert.assertFalse(status.iterator().hasNext());
+        final Iterable<IArchiveChannelStatus> statusResult =
+            DAO.retrieveLatestStatusByChannelIds(Collections.singleton(CHANNEL_ID_1ST),
+                                                 TimeInstantBuilder.fromMillis(0L),
+                                                 TimeInstantBuilder.fromNow());
+        Assert.assertFalse(statusResult.iterator().hasNext());
+
+        DAO.createChannelStatus(status.iterator().next());
     }
 
     @AfterClass

@@ -86,6 +86,15 @@
       </widget>
       <widget
             category="Monitors"
+            description="A boolean widget that displays 0/1 value as an On/Off Image."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ImageBoolIndicatorEditPart"
+            icon="icons/imageBooleanIndicator.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel"
+            name="Image Boolean Indicator"
+            typeId="org.csstudio.opibuilder.widgets.ImageBoolIndicator">
+      </widget>
+      <widget
+            category="Monitors"
             description="A widget that display PV value in text. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TextUpdateEditPart"
             icon="icons/textUpdate.png"

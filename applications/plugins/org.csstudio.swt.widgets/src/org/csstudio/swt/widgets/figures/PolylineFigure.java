@@ -24,7 +24,6 @@ package org.csstudio.swt.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-
 import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
@@ -49,10 +48,16 @@ import org.eclipse.swt.SWT;
 public final class PolylineFigure extends Polyline implements HandleBounds, Introspectable {
 	
 	public enum ArrowType{
-		None,
-		From,
-		To,
-		Both;
+		None("None"),
+		From("From"),
+		To("To"),
+		Both("Both");
+		
+		String description;
+		
+		private ArrowType(String desc) {
+			this.description = desc;
+		}
 		
 		public static String[] stringValues(){
 			String[] sv = new String[values().length];
@@ -60,6 +65,11 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 			for(ArrowType p : values())
 				sv[i++] = p.toString();
 			return sv;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
 		}
 	}
 
@@ -373,6 +383,9 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	@Override
 	public void setBounds(Rectangle rect) {
 		super.setBounds(rect);
+		//figure should be forced to be moved since the bounds of a polyline might be unchanged.
+		fireFigureMoved();
+		
 		//bounds = bounds.getExpanded(lineWidth / 2, lineWidth / 2);
 	}
 	

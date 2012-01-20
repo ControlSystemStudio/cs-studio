@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -28,7 +30,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Base for ValueIterators that read from the RDB
  *  @author Kay Kasemir
@@ -45,21 +46,27 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 
     final protected RDBArchiveReader reader;
     final protected int channel_id;
-
+    
     protected IMetaData meta = null;
 
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
-
-    /** For performance reasons, we remember the fact that we
-     *  found (or didn't find) array samples.
-     *  <p>
-     *  Initially: Assume there are array samples.
-     *  Once a scalar is identified, we stick with scalars.
-     *  The obvious drawback: If only a few samples are array
-     *  samples, we're likely to ignore them.
+    
+    /** Before version 3.1.0, we would look for array
+     *  values in the array_val table until we are sure
+     *  that there are no array samples.
+     *  Than we stopped looking for array samples
+     *  to speed things up.
+     *  
+     *  Since version 3.1.0, there is the option of using a
+     *  BLOB and the sample table contains an is_array indicator,
+     *  so we know for sure right away.
+     *  
+     *  To remain compatible with old data, we still assume
+     *  there are array values until we know otherwise.
      */
-    private boolean data_is_scalar = false;
+    protected boolean is_an_array = true;
+
 
     /** @param reader RDBArchiveReader
      *  @param channel_id ID of channel
@@ -163,8 +170,8 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     {
         // Get time stamp
         final Timestamp stamp = result.getTimestamp(1);
-        // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
-        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
+        // Oracle has nanoseconds in TIMESTAMP, other RDBs in separate column
+        if (!reader.isOracle())
             stamp.setNanos(result.getInt(7));
         final ITimestamp time = TimestampFactory.fromSQLTimestamp(stamp);
 
@@ -185,7 +192,9 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
                         (IEnumeratedMetaData) meta, IValue.Quality.Original,
                         new int [] { (int) dbl0 });
             // Double data. Get array elements - if any.
-            final double data[] = readArrayElements(stamp, dbl0, severity);
+            final double data[] = reader.useArrayBlob()
+        		? readBlobArrayElements(dbl0, result)
+				: readArrayElements(stamp, dbl0, severity);
             if (meta instanceof INumericMetaData)
                 return ValueFactory.createDoubleValue(time, severity, status,
                         (INumericMetaData)meta, IValue.Quality.Original, data);
@@ -309,7 +318,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             final ISeverity severity) throws Exception
     {
         // For performance reasons, only look for array data until we hit a scalar sample.
-        if (data_is_scalar)
+        if (is_an_array==false)
             return new double [] { dbl0 };
 
         // See if there are more array elements
@@ -321,7 +330,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         sel_array_samples.setInt(1, channel_id);
         sel_array_samples.setTimestamp(2, stamp);
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
-        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
+        if (! reader.isOracle())
             sel_array_samples.setInt(3, stamp.getNanos());
 
         // Assemble array of unknown size in ArrayList ....
@@ -348,10 +357,47 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (N == 1  &&  !severity.isInvalid())
         {   // Found a perfect non-array sample:
             // Assume that the data is scalar, skip the array check from now on
-            data_is_scalar = true;
-            closeArraySampleSel();
+        	is_an_array = false;
         }
         return ret;
+    }
+
+    /** See if there are array elements.
+     *  @param dbl0 Value of the first (maybe only) array element
+     *  @param result ResultSet for the sample table with blob
+     *  @return Array with given element and maybe more.
+     *  @throws Exception on error, including 'cancel'
+     */
+    private double[] readBlobArrayElements(final double dbl0, final ResultSet result) throws Exception
+    {
+    	final String datatype;
+    	if (reader.isOracle())
+    	    datatype = result.getString(7);
+    	else
+    	    datatype = result.getString(8);
+    		
+        // ' ' or NULL indicate: Scalar, not an array
+    	if (datatype == null || " ".equals(datatype) || result.wasNull())
+            return new double [] { dbl0 };
+
+        // Decode BLOB
+    	final byte[] bytes = result.getBytes(reader.isOracle() ? 8 : 9);
+    	final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+    	final DataInputStream data = new DataInputStream(stream);
+    	if ("d".equals(datatype))
+    	{	// Read Double typed array elements
+    	    final int nelm = data.readInt();
+            final double[] array = new double[nelm];
+        	for (int i = 0; i < nelm; i++)
+        		array[i] = data.readDouble();
+        	data.close();
+        	return array;
+    	}
+    	// TODO Decode 'l' Long and 'i' Integer?
+    	else
+    	{
+    		throw new Exception("Sample BLOBs of type '" + datatype + "' are not decoded");
+    	}
     }
 
     /** @param result ResultSet positioned on row to dump to console
@@ -373,8 +419,11 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         System.out.println();
     }
 
-    /** Close the select statement for array samples. */
-    private void closeArraySampleSel()
+    /** Release all database resources.
+     *  OK to call more than once.
+     */
+    @Override
+    public void close()
     {
         if (sel_array_samples != null)
         {
@@ -388,14 +437,5 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             }
             sel_array_samples = null;
         }
-    }
-
-    /** Release all database resources.
-     *  OK to call more than once.
-     */
-    @Override
-    public void close()
-    {
-        closeArraySampleSel();
     }
 }

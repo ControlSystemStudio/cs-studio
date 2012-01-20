@@ -59,7 +59,7 @@ public class KS2ConfigUnitTest {
     private boolean _debugPrint;
 
     @Nonnull
-    private List<ModuleDBO> addNewModules(final int sortIndex, @Nonnull final SlaveDBO pk2, final int... modules) throws PersistenceException, IOException {
+    private List<ModuleDBO> addNewModules(final int sortIndex, @Nonnull final SlaveDBO pk2, final int... modules) throws PersistenceException {
         int index = sortIndex;
         final List<ModuleDBO> modulesList = new ArrayList<ModuleDBO>();
         for (final int moduleNumber : modules) {
@@ -69,7 +69,7 @@ public class KS2ConfigUnitTest {
     }
 
     @Nonnull
-    private ModuleDBO addNewModule(@Nonnull final SlaveDBO pk, final int moduleNumber, final int sortIndex) throws PersistenceException, IOException {
+    private ModuleDBO addNewModule(@Nonnull final SlaveDBO pk, final int moduleNumber, final int sortIndex) throws PersistenceException {
         final ModuleDBO mo = new ModuleDBO(pk);
         mo.setSortIndex(sortIndex);
         mo.setModuleNumber(moduleNumber);

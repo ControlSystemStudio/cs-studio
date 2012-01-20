@@ -2,6 +2,9 @@ package org.csstudio.channelviewer.views;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderException;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
@@ -10,9 +13,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQuery.Builder;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -37,7 +37,6 @@ import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -45,7 +44,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -239,7 +237,6 @@ public class ChannelsView extends ViewPart {
 
 		};
 
-
 		search = new Button(parent, SWT.PUSH);
 		search.setText("Search");
 		search.setToolTipText("search for channels");
@@ -294,19 +291,19 @@ public class ChannelsView extends ViewPart {
 					"Are you sure you want to search for all channels?"))
 				return;
 		}
-		final ChannelQuery query = Builder.query(text).create();
+		final ChannelQuery query = ChannelQuery.query(text).build();
 		final ChannelsView view = this;
-		query.addChannelQueryListener(new ChannelQueryListener() {
+		query.execute(new ChannelQueryListener() {
 
 			@Override
-			public void getQueryResult() {
+			public void queryExecuted(final Result result) {
 				PlatformUI.getWorkbench().getDisplay()
 						.asyncExec(new Runnable() {
 							@Override
 							public void run() {
-								Exception e = query.getLastException();
+								Exception e =  result.exception;
 								if (e == null) {
-									view.updateList(query.getResult());
+									view.updateList(result.channels);
 								} else if (e instanceof ChannelFinderException) {
 									e.printStackTrace();
 									Status status = new Status(Status.ERROR,
@@ -333,8 +330,8 @@ public class ChannelsView extends ViewPart {
 							}
 						});
 			}
+
 		});
-		query.execute();
 	}
 
 	/**

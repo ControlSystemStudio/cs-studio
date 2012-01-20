@@ -1,6 +1,6 @@
 
 /* 
- * Copyright (c) 2008 C1 WPS mbH, 
+ * Copyright (c) 2011 C1 WPS mbH, 
  * HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 

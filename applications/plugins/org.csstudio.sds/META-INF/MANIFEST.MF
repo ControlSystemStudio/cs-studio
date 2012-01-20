@@ -13,10 +13,13 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.jmock,
  org.eclipse.core.resources,
  org.eclipse.gef;bundle-version="3.4.1",
- org.csstudio.platform.libs.dal;visibility:=reexport,
+ org.csstudio.dal;visibility:=reexport,
  org.jdom,
  org.csstudio.auth;bundle-version="1.0.0",
- org.csstudio.auth.ui;bundle-version="1.0.0"
+ org.csstudio.auth.ui;bundle-version="1.0.0",
+ org.mockito;bundle-version="1.8.5",
+ org.csstudio.domain.desy;bundle-version="1.0.0",
+ org.csstudio.domain.desy.softioc;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds,
  org.csstudio.sds.cursorservice,

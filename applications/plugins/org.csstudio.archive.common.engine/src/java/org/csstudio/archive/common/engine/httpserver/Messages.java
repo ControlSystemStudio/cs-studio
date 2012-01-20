@@ -15,6 +15,7 @@ package org.csstudio.archive.common.engine.httpserver;
  */
 public final class Messages {
 
+    public static final String HTTP_ACTION = "Action";
     public static final String HTTP_AVG_WRITE = "Average Write";
     public static final String HTTP_CHANNEL = "Channel";
     public static final String HTTP_CHANNEL_INFO = "Channel Info";
@@ -28,21 +29,30 @@ public final class Messages {
     public static final String HTTP_COLUMN_RECEIVEDVALUES = "Received Values";
     public static final String HTTP_CURRENT_VALUE = "Current Value";
     public static final String HTTP_DESCRIPTION = "Description";
+    public static final String HTTP_DISABLE_CHANNEL = "Disable permanently";
+    public static final String HTTP_DISCONNECTED = "Disconnected";
     public static final String HTTP_DISCONNECTED_TITLE = "Disconnected Channels";
+    public static final String HTTP_GROUPS = "Groups";
+    public static final String HTTP_HELP = "Help";
     public static final String HTTP_HOST = "HTTP Server";
     public static final String HTTP_INTERNAL_STATE = "Internal EngineState";
     public static final String HTTP_LAST_ARCHIVED_VALUE = "Last Archived Value";
     public static final String HTTP_LAST_WRITETIME = "Last Written";
+    public static final String HTTP_MAIN = "Main";
     public static final String HTTP_MAIN_TITLE = "Archive Engine";
     public static final String HTTP_NEVER = "never";
     public static final String HTTP_NO = "No";
+    public static final String HTTP_NOT_AVAILABLE = "N/A";
     public static final String HTTP_NOT_CONNECTED = "Not conn.";
     public static final String HTTP_OK = "Ok";
+    public static final String HTTP_PARAMETERS = "Parameter(s)";
     public static final String HTTP_QUEUELEN = "Queue Len.";
+    public static final String HTTP_REQUIRED = "Required";
     public static final String HTTP_ROW_TOTAL = "Total";
     public static final String HTTP_START = "Start";
     public static final String HTTP_STARTED = "Started";
     public static final String HTTP_START_CHANNEL = "Start Channel";
+    public static final String HTTP_START_GROUP = "Start Group";
     public static final String HTTP_STARTTIME = "Start Time (UTC)";
     public static final String HTTP_STATE = "EngineState";
     public static final String HTTP_STATUS = "Status";
@@ -52,6 +62,8 @@ public final class Messages {
     public static final String HTTP_SUMMARY = "Summary";
     public static final String HTTP_TIMESTAMP = "TimeStamp";
     public static final String HTTP_UPTIME = "Uptime";
+    public static final String HTTP_URL = "URL";
+    public static final String HTTP_URL_COMMANDS = "URL Commands";
     public static final String HTTP_VERSION = "Version";
     public static final String HTTP_WORKSPACE = "Workspace";
     public static final String HTTP_WRITE_DURATION = "Average Write Duration";

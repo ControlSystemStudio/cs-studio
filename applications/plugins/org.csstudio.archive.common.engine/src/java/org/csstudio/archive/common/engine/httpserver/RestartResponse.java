@@ -24,8 +24,10 @@ class RestartResponse extends AbstractResponse {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
 
-    RestartResponse(@Nonnull final EngineModel model) {
-        super(model);
+    RestartResponse(@Nonnull final EngineModel model,
+                    @Nonnull final String adminParamKey,
+                    @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     @Override

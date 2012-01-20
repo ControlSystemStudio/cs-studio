@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+  <title>Scan System</title>
+</head>
+<body>
+
+<h1>Scan System</h1>
+
+<h2><a name="overview">Overview</a></h2> 
+
+<p>The scan system is used to automate experiments.
+For example, it can move a motor from some start
+position to an end position in certain steps,
+waiting at each step until experiment data has been taken.
+</p>
+
+<p>A scan can consist of several nested loops.
+For example, at each step of moving the "horizontal"
+position of a sample, an inner loop can vary the
+"vertical" position of the sample to perform a
+2-dimensional scan of the sample surface.
+As another example, another outer loop may vary the sample
+temperature while inner loops vary the sample position.
+</p>
+
+<p>It is important to understand that the scan system
+uses separate tools to define a scan, to execute a scan
+and to monitor it:
+</p>
+
+<ol>
+<li>Scans are configured via a control system panel,
+a scan editor, or a script.
+</li>
+<li>The commands of the scans are then submitted
+to a Scan Server for execution.
+</li>
+<li>You can monitor the execution of a scan in various ways.
+</li>
+</ol>
+
+<p>This design allows scans to execute even if the
+original control system panel has been closed.
+Scans can be monitored, paused or aborted 
+independent from the computer that submitted the scans.
+</p>
+
+
+<h2><a name="commands">Commands</a></h2> 
+
+<img src="scan_example.png"/>
+
+<p>The picture above shows a scan with two nested loops
+as it would appear in the <a href="#editor">Scan Editor</a>.
+What follows is a description of all available commands.
+</p>
+
+<h3><img src="../icons/setcommand.gif"/>&nbsp;Set Command</h3>
+<p>This command sets a device to a desired value.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Value: Desired value of the device.</li>
+</ul>
+<p>Example:
+<code>Set 'setpoint' = 1.0</code>
+will write the value 1.0 to the "setpoint" device.
+</p>
+
+
+<h3><img src="../icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
+<p>This command waits for a device to reach a desired value.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Desired Value: Desired value of the device.</li>
+<li>Tolerance: Difference between the actual valud of the device and the desired value that is considered "good enough".</li>
+</ul>
+<p>Example:
+<code>Wait for 'readback' to reach 1.0 (+-0.1)</code>
+will wait until the value of the "readback" device reaches the value 1.0+-0.1,
+i.e. is within the range of 0.9 ... 1.1.
+Because of rounding errors and control system noise you should never
+set the tolerance to 0.0, because your device might never reach
+the exact desired value.
+</p>
+
+
+<h3><img src="../icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
+<p>This command changes a device from a start to an end value.
+It is at the core of most scans.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Initial Value: Initial value of the device.</li>
+<li>Final Value: Final value of the device.</li>
+<li>Step Size: Step in which value of device should be changed.</li>
+<li>Body: Commands to be executed at each step of the loop.</li>
+</ul>
+<p>Example:
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code>
+will set the "xpos" device to 0.0, then 1.0, 2.0, 3.0, 4.0, 5.0.
+At each step it will execute the "body" of the loop.
+</p>
+<p>Loops can count "up" as well as "down".
+A loop from 0 to 5 in steps of 1 will operate as just mentioned.
+A loop from 5 to 0 in steps of -1 will assume values 5, 4, 3, 2, 1, 0.
+When specifying a step direction that does <u>not</u> match
+the loop direction, for example a loop from 0 to 5 in steps of -1,
+the loop will have a special behavior:
+It will toggle its direction each time it is executed.
+This can be useful for nested loops that are intended to scan a surface,
+as shown in the diagram below:
+</p>
+
+<img src="scan_alternate.png" width="90%"/>
+
+<p>The normal scan displayed in the left diagram was executed with nested loops</p>
+<p>
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code><br/>
+&nbsp;&nbsp;&nbsp;<code>Loop 'ypos' = 0.0 ... 5.0, step 1.0</code>
+</p>
+
+<p>The alternating scan displayed to the right was executed with nested loops</p>
+<p>
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code><br/>
+&nbsp;&nbsp;&nbsp;<code>Loop 'ypos' = 0.0 ... 5.0, step -1.0</code>
+</p>
+<p>causing the inner loop on "ypos" to alternate direction each time is is executed.
+If these "xpos" and "ypos" devices are for example connected to stepper motors,
+the alternating scan will be faster and reduce wear on the motors.
+</p>
+
+<h3><img src="../icons/logcommand.gif"/>&nbsp;Log Command</h3>
+<p>Send values of devices to the log.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Devices: List of devices</li>
+</ul>
+<p>Example:
+<code>Log 'ypos', 'readback'</code>
+will send the current value of the "ypos" and "readback"
+devices to the log.
+</p>
+
+<h3><img src="../icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
+<p>This command simply delays the scan for a configurable
+number of seconds.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Delay: Seconds</li>
+</ul>
+<p>Example:
+<code>Delay 1.0 sec</code>
+will delay the scan for 1 second.
+</p>
+<p>Note that you should avoid using this command.
+It is usually a bad idea to simply wait some time,
+hoping that the experiment reached a desired state,
+for example a certain temperature or a certain amount
+of beam exposure.
+If the temperature is already at the desired value before
+the delay expires, you have wasted time.
+If the beam should turn off, your delay will not notice this.
+</p>
+<p>Instead of a delay, try to use the "Wait" command to wait
+for the desired state, for example the desired temperature
+or a certain amount of beam exposure.
+</p>
+
+
+
+<h2><a name="server">Scan Server</a></h2> 
+
+<p>The scan server is a program that executes submitted scans.
+There is typically one scan server instance per beam line.
+</p>
+<p>
+When multiple scans are submitted, they are executed in the order
+of submission. If a user accidentally submits a scan while the
+scan server is still executing a scan, this will not impact the
+ongoing scan. The new scan is simply queued for execution after
+the current scan finishes.
+This also allows users to plan ahead, submitting scans for several experiment
+runs in advance, and the scan server will then execute them one after the other.
+</p>
+<p>Users do not directly interact with the scan server.
+They use the <a href="#editor">Scan Editor</a> 
+or beamline-specific user interface panels to submit scans.
+Users can monitor the progress via directly monitoring the
+temperature, sample position or other experiment properties
+affected by the scan, or use the <a href="#monitor">Scan Monitor</a>
+to track the progress of a scan and potentially pause or abort it.
+</p>
+
+
+<h2><a name="editor">Scan Editor</a></h2> 
+<p>The Scan Editor is a graphical editor for scan configurations.
+It shows the hierarchical structure of loops in a scan.
+</p>
+
+<img src="scan_edit.png" width="100%"/>
+
+<p>Basic Operation:</p>
+
+<ul>
+<li>Open new editor from menu <code>CSS/Scan/Scan Editor</code>, or open
+    existing <code>*.scn</code> scan file
+</li>
+<li>Open respectively reset the Scan Editor perspective via
+    the context menu.
+</li>
+<li>Drag new commands from the Scan Command Palette into the "tree"-type
+    display of the scan.
+</li>
+<li>Re-arrange commands by dragging them to a new position within the scan tree.
+    Holding the 'Alt' or 'Ctr' key (depending on the operating system)
+    while doing this will copy a command.
+</li>
+<li>Configure the properties of a command in the Properties view.
+</li>
+<li>Save the scan as a file for later re-use as a <code>*.scn</code> file
+    via the menu <code>File/Save</code>.
+</li>
+<li>Submit to scan server for execution via either the context menu
+or the toolbar button <img src="../icons/run.png"/>.
+</li>
+</ul>
+
+
+<h2><a name="monitor">Scan Monitor</a></h2> 
+<p>The Scan Monitor displays the current state of the Scan Server.
+</p>
+
+<img src="scan_monitor.png" width="80%"/>
+
+<p>Access the scan monitor via the menu <code>CSS/Scan/Scan Monitor</code>
+</p>
+<p>It lists which scans have been submitted to the server
+and their state:
+<ul>
+<li>Finished - OK: Scan has been executed until it finished without errors.
+<li>Aborted: The scan was aborted by the user.
+<li>Running...: This scan is currently being executed. The "%" column displays the
+    progress, and the "Command" column shows the currently active command.
+<li>Idle: The scan has been submitted to the scan server and will be executed
+when previously queued scans have been handled.
+</ul>
+</p>
+
+<p>The context menu and the toolbar buttons can be used to pause or abort the Running scan,
+and to remove completed scans from the server, i.e. scans that have either finished or have been aborted.
+</p>
+
+
+<h2><a name="programmatic">Programmatic Access</a></h2> 
+<p>For now refer to <code>org.csstudio.scan/examples</code>
+</p>
+<p>
+</p>
+
+
+</body>
+</html>

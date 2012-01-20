@@ -20,10 +20,10 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.ArcModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *
@@ -77,11 +77,11 @@ public class ArcConnectionBehavior extends AbstractDesyConnectionBehavior<ArcMod
     @Override
     protected void doProcessConnectionStateChange(final ArcModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        if(!isConnected(anyDataChannel)) {
-            // TODO (hrickens) [09.06.2011]: Muss auch wieder zurückgesetzt werden
-            widget.setColor(ArcModel.PROP_FILLCOLOR,determineBackgroundColor(connectionState));
-        }
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String determineBackgroundColor = isConnected(anyDataChannel) ? widget
+                .getColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND)
+                : determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, determineBackgroundColor);
         if(!widget.getFill()) {
             widget.setPropertyValue(ArcModel.PROP_TRANSPARENT, isConnected(anyDataChannel));
         }

@@ -8,9 +8,8 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 
-import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.Triangle;
@@ -30,38 +29,41 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 	
 	Triangle selector;
 	private final static Color GRAY_COLOR = 
-		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_GRAY);
+		CustomMediaFactory.getInstance().getColor(240,240,240);
 	private final static Color DARK_GRAY_COLOR = 
 		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_DARK_GRAY);
 
-	private static final int SELECTOR_WIDTH = 12;
+	private static final int SELECTOR_WIDTH = 8;
 
 	private Combo combo;
 	
-	public ComboFigure(Composite composite, AbstractContainerModel parentModel) {
-		super(composite, parentModel);
-		combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-		combo.setVisible(false);
-		combo.moveAbove(null);
-		selector = new Triangle();	
-		selector.setDirection(PositionConstants.SOUTH);
-		selector.setFill(true);
-		add(selector);
+	public ComboFigure(AbstractBaseEditPart editPart) {
+		super(editPart);		
+		if(!runmode){
+			selector = new Triangle();	
+			selector.setBackgroundColor(DARK_GRAY_COLOR);
+			selector.setDirection(PositionConstants.SOUTH);
+			selector.setFill(true);
+			add(selector);
+		}		
+		combo = new Combo(getParentComposite(), SWT.DROP_DOWN | SWT.READ_ONLY);
 		
 	}
 	
 	@Override
 	protected void layout() {
 		super.layout();
-		Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
-		selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH -2,
-				clientArea.y, SELECTOR_WIDTH, clientArea.height));
+		if(!runmode){
+			Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
+			selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH -2,
+					clientArea.y, SELECTOR_WIDTH, clientArea.height));
+		}
 	}
 
 	@Override
 	protected void paintClientArea(Graphics graphics) {			
 		//draw this so that it can be seen in the outline view
-		if(!runmode){
+		if(!runmode){			
 			Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
 			graphics.setBackgroundColor(GRAY_COLOR);
 			graphics.fillRectangle(clientArea);
@@ -71,13 +73,7 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 		}
 		super.paintClientArea(graphics);	
 	}
-
-	@Override
-	public void setBounds(Rectangle rect) {
-		super.setBounds(rect);
-		relocateWidget();
-	}
-
+	
 	public void setText(String text) {
 		combo.setText(text);
 	}
@@ -94,36 +90,10 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 				combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + getInsets().getHeight());
 	}
 
-	/**
-	 * @param runMode the runMode to set
-	 */
-	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);
-		selector.setVisible(!runMode);
-	}
-
-
 
 	@Override
-	public Composite getSWTWidget() {
+	public Composite getSWTWidget() {		
 		return combo;
-	}	
-	
-	@Override
-	public void dispose() {
-		super.dispose();
-		UIBundlingThread.getInstance().addRunnable(
-				combo.getDisplay(), new Runnable() {
-			
-			public void run() {
-				if(!combo.isDisposed()){
-					combo.setMenu(null);
-					combo.dispose();
-					combo = null;			
-				}
-			}
-		});
-		
-	}
+	}		
 	
 }

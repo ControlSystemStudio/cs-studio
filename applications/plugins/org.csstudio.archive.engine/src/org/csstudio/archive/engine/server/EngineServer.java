@@ -53,7 +53,9 @@ public class EngineServer
         http.registerServlet("/stop", new StopResponse(model), null, http_context);
         http.registerServlet("/debug", new DebugResponse(model), null, http_context);
 
-        Activator.getLogger().log(Level.INFO, "Engine HTTP Server port {0}", port);
+        // When formatting the port via {0}, that could result in "4,812".
+        // So format the URL outside of the logger.
+        Activator.getLogger().log(Level.INFO, "Engine HTTP Server on {0}", "http://localhost:" + port + "/main");
     }
 
     /** Stop the server */

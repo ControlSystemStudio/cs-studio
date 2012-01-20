@@ -104,7 +104,10 @@ public interface IArchiveEngineFacade {
                                                throws ArchiveServiceException;
 
     /**
-     * Writes the samples to the archive.
+     * Writes the samples to the archive - the samples in this collection should be either of
+     * {@link org.csstudio.archive.common.service.sample.ArchiveMultiScalarSample} or
+     * {@link org.csstudio.archive.common.service.sample.ArchiveSample}, since these are treated
+     * differently within the service.
      *
      * @param samples the samples to be archived with their channel id
      * @return true, if the samples have been persisted
@@ -152,6 +155,14 @@ public interface IArchiveEngineFacade {
                                       @Nonnull final V displayHigh) throws ArchiveServiceException;
 
     /**
+     * Writes the channel's datatype information.
+     * @param id
+     * @param datatype
+     */
+    void writeChannelDataTypeInfo(@Nonnull final ArchiveChannelId id,
+                                  @Nonnull final String datatype) throws ArchiveServiceException;
+
+    /**
      * Updates the time information for the given archive engine.
      * @param engineId
      * @param lastTimeAlive
@@ -170,20 +181,15 @@ public interface IArchiveEngineFacade {
                                                           throws ArchiveServiceException;
 
     /**
-     * @param name
-     * @return
-     */
-    @CheckForNull
-    IArchiveChannelStatus getLatestChannelStatusByChannelName(@Nonnull final String name)
-                                                        throws ArchiveServiceException;
-
-    /**
+     * Returns the latest channels' status for the given channels in the specified interval.
      * @param channels
      * @return
      * @throws ArchiveServiceException
      */
     @Nonnull
-    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException;
+    Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels,
+                                                                @Nonnull final TimeInstant start,
+                                                                @Nonnull final TimeInstant end) throws ArchiveServiceException;
 
     @CheckForNull
     IArchiveControlSystem getControlSystemByName(@Nonnull final String name) throws ArchiveServiceException;
@@ -203,9 +209,22 @@ public interface IArchiveEngineFacade {
     @Nonnull
     DeleteResult removeChannel(@Nonnull final String name) throws ArchiveServiceException;
 
+    /**
+     * Creates a group. Returns <code>null</code> on success and the group itself on failure.
+     * @param group
+     * @return
+     * @throws ArchiveServiceException
+     */
     @CheckForNull
     IArchiveChannelGroup createGroup(@Nonnull final IArchiveChannelGroup group) throws ArchiveServiceException;
 
+    /**
+     * Creates a collection of groups. Returns an empty list on success, and on failure it returns
+     * collection of those groups that could not be added.
+     * @param group
+     * @return
+     * @throws ArchiveServiceException
+     */
     @Nonnull
     Collection<IArchiveChannelGroup> createGroups(@Nonnull final Collection<IArchiveChannelGroup> groups) throws ArchiveServiceException;
 

@@ -34,7 +34,7 @@ public class ConnectionStateTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.platform.simpledal.ConnectionState#translate(org.epics.css.dal.context.ConnectionState)}.
+	 * {@link org.csstudio.platform.simpledal.ConnectionState#translate(org.csstudio.dal.context.ConnectionState)}.
 	 */
 	@Test
 	public void testTranslate() {

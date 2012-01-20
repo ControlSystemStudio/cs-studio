@@ -29,7 +29,7 @@ public class EMailDialogDemo
 
 
         final Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
-                                                 "This is a test", "icons/email_image.png");
+                                                 "This is a test", "icons/mail-edit-48.png");
         dlg.open();
     }
 

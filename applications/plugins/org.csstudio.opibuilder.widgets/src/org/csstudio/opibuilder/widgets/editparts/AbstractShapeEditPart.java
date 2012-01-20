@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.datadefinition.LineStyle;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
-import org.csstudio.opibuilder.widgets.model.AbstractShapeModel.LineStyle;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Shape;
 

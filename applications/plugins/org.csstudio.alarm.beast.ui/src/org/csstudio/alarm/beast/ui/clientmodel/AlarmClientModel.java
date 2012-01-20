@@ -222,15 +222,17 @@ public class AlarmClientModel
      *
      *  @param new_root_name Name of configuration to load
      *  @param listener Listener that's notified when done
+     *  @return <code>true</code> if configuration will be changed, <code>false</code>
+     *          if requested configuration is already the current one
      */
-    public void setConfigurationName(final String new_root_name,
+    public boolean setConfigurationName(final String new_root_name,
     		final AlarmClientModelConfigListener listener)
     {
     	// TODO If loading, ignore change
     	synchronized (this)
         {
         	if (new_root_name.equals(config_name))
-        		return;
+        		return false;
 
         	// Update config. name
         	config_name = new_root_name;
@@ -254,6 +256,7 @@ public class AlarmClientModel
         // Load new configuration:
         // Create new JMS communicator, read from RDB, fire events, ...
     	new ReadConfigJob(this, listener).schedule();
+    	return true;
     }
 
     /** @return <code>true</code> if model allows write access

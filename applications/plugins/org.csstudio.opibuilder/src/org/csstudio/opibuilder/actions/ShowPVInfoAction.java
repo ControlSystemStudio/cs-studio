@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IDialogLabelKeys;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,7 +40,7 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 
 		public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, PV> pvMap) {
 			super(parentShell, dialogTitle, null, "PVs' details on this widget:",
-					MessageDialog.INFORMATION, new String[] { JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY)}, 0);
+					MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
 			this.pvMap = pvMap;
 		}
 		

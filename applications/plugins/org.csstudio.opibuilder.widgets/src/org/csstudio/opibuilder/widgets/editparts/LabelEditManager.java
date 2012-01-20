@@ -8,10 +8,11 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -20,6 +21,8 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Composite;
@@ -44,18 +47,21 @@ private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
 private double cachedZoom = -1.0;
 private Font scaledFont;
 private boolean multiLine = true;
+private AbstractBaseEditPart editPart;
 private ZoomListener zoomListener = new ZoomListener() {
 	public void zoomChanged(double newZoom) {
 		updateScaledFont(newZoom);
 	}
 };
-public LabelEditManager(GraphicalEditPart source, CellEditorLocator locator, boolean multiline) {
+public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator, boolean multiline) {
 	super(source, null, locator);
+	this.editPart = source;
 	this.multiLine = multiline;
 }
 
-public LabelEditManager(GraphicalEditPart source, CellEditorLocator locator) {
+public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator) {
 	super(source, null, locator);
+	this.editPart = source;
 }
 
 /**
@@ -83,7 +89,42 @@ protected void bringDown() {
 }
 
 protected CellEditor createCellEditorOn(Composite composite) {
-	return new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP);
+	return new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
+		@Override
+		protected void focusLost() {		
+			//in run mode, lose focus should cancel the editing
+			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE){
+				if (isActivated()) {
+					fireCancelEditor();
+					deactivate();
+				}
+			}else
+				super.focusLost();
+		}
+		
+		@Override
+		protected void handleDefaultSelection(SelectionEvent event) {
+			//In run mode, hit ENTER should force to write the new value even it doesn't change.
+			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE)
+				setDirty(true);
+			super.handleDefaultSelection(event);
+		}
+		
+		@Override
+		protected void keyReleaseOccured(KeyEvent keyEvent) {
+			//In run mode, CTRL+ENTER will always perform a write if it is multiline text input
+			if (keyEvent.character == '\r' && 
+					editPart.getExecutionMode() == ExecutionMode.RUN_MODE) { // Return key	            
+	            if (text != null && !text.isDisposed()
+	                    && (text.getStyle() & SWT.MULTI) != 0) {
+	                if ((keyEvent.stateMask & SWT.CTRL) != 0) {
+	                  setDirty(true);
+	                }
+	            }
+			}
+			super.keyReleaseOccured(keyEvent);
+		}
+	};
 }
 
 private void disposeScaledFont() {

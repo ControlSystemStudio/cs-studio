@@ -28,7 +28,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.List;
-import java.util.Queue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -64,9 +63,6 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         LoggerFactory.getLogger("StatementRescueLogger");
     private static final Logger LOG =
             LoggerFactory.getLogger(PersistDataWorker.class);
-    /**
-     * See configuration of this logger - if log4j is used - see log4j.properties
-     */
     private static final Logger EMAIL_LOG =
         LoggerFactory.getLogger("ErrorPerEmailLogger");
 
@@ -78,6 +74,7 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
 
     private final IBatchQueueHandlerProvider _handlerProvider;
     private final List<Object> _rescueDataList = Lists.newLinkedList();
+    private final RunningStopWatch _watch;
 
 
     /**
@@ -90,8 +87,8 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
         _connectionHandler = connectionHandler;
         _name = name;
         _periodInMS = periodInMS;
-
         _handlerProvider = provider;
+        _watch = StopWatch.start();
     }
 
     /**
@@ -99,10 +96,11 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
      */
     @Override
     public void measuredRun() {
+        LOG.info("RUN");
         try {
             final Connection connection = _connectionHandler.getThreadLocalConnection();
 
-            processBatchHandlerMap(connection, _handlerProvider, _rescueDataList);
+            processBatchHandlers(connection, _handlerProvider, _rescueDataList);
 
         } catch (final ArchiveConnectionException e) {
             LOG.error("Connection to archive failed", e);
@@ -115,43 +113,38 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> void processBatchHandlerMap(@Nonnull final Connection connection,
-                                            @Nonnull final IBatchQueueHandlerProvider handlerProvider,
-                                            @Nonnull final List<T> rescueDataList) {
+    private <T> void processBatchHandlers(@Nonnull final Connection connection,
+                                          @Nonnull final IBatchQueueHandlerProvider handlerProvider,
+                                          @Nonnull final List<T> rescueDataList) {
+        final Collection<T> elements = Lists.newLinkedList();
         for (final BatchQueueHandlerSupport<?> handler : handlerProvider.getHandlers()) {
-            PreparedStatement stmt = null;
-            try {
-                if (!handler.getQueue().isEmpty()) {
-                    LOG.debug("Start for {} in {}", handler.getHandlerType().getSimpleName(), _name);
+            ((BatchQueueHandlerSupport<T>) handler).getQueue().drainTo(elements);
+            if (!elements.isEmpty()) {
+                PreparedStatement stmt = null;
+                try {
                     stmt = handler.createNewStatement(connection);
-                    processBatchForStatement((BatchQueueHandlerSupport<T>) handler, stmt, rescueDataList);
-                    LOG.debug("End for {}", handler.getHandlerType().getSimpleName());
+                    processBatchForStatement((BatchQueueHandlerSupport<T>) handler, elements, stmt, rescueDataList);
+                } catch (final SQLException e) {
+                    LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
+                    // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
+                } finally {
+                    closeStatement(stmt);
                 }
-            } catch (final SQLException e) {
-                LOG.error("Creation of batch statement failed for strategy " + handler.getClass().getSimpleName(), e);
-                // FIXME (bknerr) : strategy for queues getting full, when to rescue data?
-            } finally {
-                closeStatement(stmt);
+                elements.clear();
             }
         }
     }
 
     private <T> void processBatchForStatement(@Nonnull final BatchQueueHandlerSupport<T> handler,
+                                              @Nonnull final Collection<T> elements,
                                               @Nonnull final PreparedStatement stmt,
                                               @Nonnull final List<T> rescueDataList) {
-        final Queue<T> queue = handler.getQueue();
-        T element;
         try {
-            while (true) {
-                element = queue.poll();
-                if (element != null) {
-                    addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
-                    executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
-                } else {
-                    executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
-                    break;
-                }
+            for (final T element : elements) {
+                addElementToBatchAndRescueList(handler, stmt, element, rescueDataList);
+                executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1000);
             }
+            executeBatchAndClearListOnCondition(handler, stmt, rescueDataList, 1);
         } catch (final Throwable t) {
             handleThrowable(t, handler, rescueDataList);
         }
@@ -172,12 +165,10 @@ public class PersistDataWorker extends AbstractTimeMeasuredRunnable {
                                                             final int minBatchSize) throws SQLException {
         final int size = rescueDataList.size();
         if (size >= minBatchSize) {
-            LOG.info("{} for {}", new Object[]{size, handler.getHandlerType().getSimpleName()});
             try {
-                final RunningStopWatch start = StopWatch.start();
+                _watch.restart();
                 stmt.executeBatch();
-                LOG.info("took for {}: {}ms", size, start.getElapsedTimeInMillis());
-
+                LOG.info("{}ms for {}x {}", new Object[] {_watch.getElapsedTimeInMillis(), size, handler.getHandlerType().getSimpleName()});
             } finally {
                 rescueDataList.clear();
             }

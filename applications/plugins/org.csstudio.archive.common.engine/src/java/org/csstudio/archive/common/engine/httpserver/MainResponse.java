@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.csstudio.archive.common.engine.model.ArchiveChannelBuffer;
 import org.csstudio.archive.common.engine.model.ArchiveGroup;
 import org.csstudio.archive.common.engine.model.EngineModel;
-import org.csstudio.archive.common.engine.model.SampleBuffer;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.eclipse.core.runtime.Platform;
@@ -34,9 +33,12 @@ import com.google.common.base.Strings;
  */
 class MainResponse extends AbstractResponse {
 
+    private static final String URL_BASE_DESC = Messages.HTTP_MAIN;
+
     private static final Logger LOG = LoggerFactory.getLogger(MainResponse.class);
 
     private static final String URL_BASE_PAGE = "/main";
+
 
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
@@ -141,11 +143,6 @@ class MainResponse extends AbstractResponse {
                                      getModel().getWritePeriodInMS() + " ms",
                                      });
 
-        html.tableLine(new String[] {Messages.HTTP_WRITE_STATE,
-                                     (SampleBuffer.isInErrorState() ? HTMLWriter.makeRedText(Messages.HTTP_WRITE_ERROR) :
-                                                                      Messages.HTTP_OK),
-                                                                      });
-
         final TimeInstant lastWriteTime = getModel().getLastWriteTime();
         html.tableLine(new String[] {Messages.HTTP_LAST_WRITETIME,
                                      (lastWriteTime == null ? Messages.HTTP_NEVER :
@@ -172,12 +169,13 @@ class MainResponse extends AbstractResponse {
 
     private void createMemoryStatsRow(@Nonnull final HTMLWriter html) {
         final Runtime runtime = Runtime.getRuntime();
-        final double usedMem = runtime.totalMemory() / MB;
         final double maxMem = runtime.maxMemory() / MB;
-        final double percMem = maxMem > 0 ? usedMem / maxMem * 100.0 : 0.0;
-        html.tableLine(new String[] {"Memory",
-                                     String.format("%.1f MB of %.1f MB used (%.1f %%)",
-                                                   usedMem, maxMem, percMem),
+        final double totalMem = runtime.totalMemory() / MB;
+        final double freeMem = runtime.freeMemory() / MB;
+        final double percMem = maxMem > 0 ? totalMem / maxMem * 100.0 : 0.0;
+        html.tableLine(new String[] {"Memory (used|total|max)",
+                                     String.format("%.1f MB | %.1f MB | %.1f MB (%.1f %%)",
+                                                   totalMem-freeMem, totalMem, maxMem, percMem),
                                                    });
     }
 
@@ -188,5 +186,9 @@ class MainResponse extends AbstractResponse {
     @Nonnull
     public static String linkTo(@CheckForNull final String linkText) {
         return new Url(baseUrl()).link(linkText);
+    }
+    @Nonnull
+    public static String linkTo() {
+        return new Url(baseUrl()).link(URL_BASE_DESC);
     }
 }

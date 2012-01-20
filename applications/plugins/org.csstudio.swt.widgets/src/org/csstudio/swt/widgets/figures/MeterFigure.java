@@ -104,6 +104,11 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		valueLabel.setText(getValueText());			
 	}
 	
+	
+	public void setValueLabelVisibility(boolean visible) {
+		valueLabel.setVisible(visible);
+	}
+	
 	/**
 	 * @param needleColor the needleColor to set
 	 */
@@ -243,10 +248,17 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 						new Point(center.x + area.width/4, center.y + NEEDLE_WIDTH/2 - 3), 2);
 	
 				double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);
-				if(value > maximum)
-					valuePosition += 8;
-				else if(value < minimum)
-					valuePosition -=8;
+				if(maximum > minimum){
+					if(value > maximum)
+						valuePosition += 8;
+					else if(value < minimum)
+						valuePosition -=8;
+				}else{
+					if(value > minimum)
+						valuePosition -= 8;
+					else if(value < maximum)
+						valuePosition +=8;
+				}
 				needlePoints.setPoint(
 						RotationUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
 				needlePoints.setPoint(

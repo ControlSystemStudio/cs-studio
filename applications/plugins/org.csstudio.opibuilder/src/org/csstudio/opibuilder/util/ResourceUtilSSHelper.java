@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 
 /**ResourceUtil Single Source helper. The IMPL should not be null.
@@ -61,6 +63,9 @@ public abstract class ResourceUtilSSHelper {
 	 * @return the corresponding system path. null if it is not exist.
 	 */
 	public abstract IPath workspacePathToSysPath(IPath path);
+
+
+	public abstract Image getScreenShotImage(GraphicalViewer viewer);
 
 
 

@@ -10,11 +10,9 @@ package org.csstudio.opibuilder.widgets.actions;
 import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart;
 import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.widgets.Display;
@@ -45,9 +43,8 @@ public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 			
 			private void selectWidgets(){
 				//must be queued so it is executed after property has been changed.
-				GUIRefreshThread.getInstance().addIgnorableTask(
-						new WidgetIgnorableUITask(
-								containerModel.getProperty(AbstractWidgetModel.PROP_ACTIONS), //a fake property
+				GUIRefreshThread.getInstance(false).addIgnorableTask(
+						new WidgetIgnorableUITask(this,
 								new Runnable() {
 					
 					public void run() {

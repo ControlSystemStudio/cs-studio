@@ -100,27 +100,21 @@ public class MonitorStatusHandler
         currentStatus = new MonitorStatusEntry(0, CheckResult.NONE, "", false, false, false);
         
         // Retrieve the location of the workspace directory
-        try
-        {
+        try {
             workspaceLocation = Platform.getLocation().toPortableString();
-            if(workspaceLocation.endsWith("/") == false)
-            {
+            if(workspaceLocation.endsWith("/") == false) {
                 workspaceLocation = workspaceLocation + "/";
             }
-        }
-        catch(IllegalStateException ise)
-        {
+        } catch(IllegalStateException ise) {
             LOG.warn("Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
         
         statusHistory = loadStatus();
-        if(statusHistory == null)
-        {
+        if(statusHistory == null) {
             LOG.warn("MonitorStatus object '" + statusFileName + "' not found on disk. Creating a fresh object.");
             statusHistory = new TreeSet<MonitorStatusEntry>(new MonitorStatusEntryComperator());
-            if(storeStatus() == true)
-            {
+            if(storeStatus() == true) {
                 LOG.info("Modem status object stored in " + workspaceLocation + statusFileName + ".");
             }
         }

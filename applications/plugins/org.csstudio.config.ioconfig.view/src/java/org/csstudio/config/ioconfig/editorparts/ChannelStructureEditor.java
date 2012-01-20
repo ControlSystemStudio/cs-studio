@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureDBO> {
 
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.channelstructure";
-    private static final Logger LOG = LoggerFactory.getLogger(ChannelStructureEditor.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ChannelStructureEditor.class);
 
     /**
      * System Line separator
@@ -180,14 +180,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureD
         _ioNameList = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER);
         _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,2,1));
         final ArrayList<StyleRange> styleRanges = new ArrayList<StyleRange>();
-
-        try {
-            createChildren(text, styleRanges);
-        } catch (final PersistenceException e) {
-            DeviceDatabaseErrorDialog.open(null, "Can't create node! Database error.", e);
-            LOG.error("Can't create node! Database error.", e);
-        }
-
+        createChildren(text, styleRanges);
         _ioNameList.addModifyListener(getMLSB());
         _ioNameList.setFocus();
         selecttTabFolder(0);
@@ -203,26 +196,20 @@ public class ChannelStructureEditor extends AbstractNodeEditor<ChannelStructureD
         final String[] ioNames = text.split(LS);
 
         ChannelDBO[] channels;
-        try {
-            channels = _channelStructure.getChildrenAsMap().values().toArray(new ChannelDBO[0]);
-            for (int i = 0; i < channels.length && i < ioNames.length; i++) {
-                channels[i].setIoName(ioNames[i]);
-            }
-            _ioNameList.setData(_ioNameList.getText());
-            save();
-        } catch (final PersistenceException e) {
-            DeviceDatabaseErrorDialog.open(null, "Can't node save. Database error.", e);
-            LOG.error("Can't node save. Database error.", e);
+        channels = _channelStructure.getChildrenAsMap().values().toArray(new ChannelDBO[0]);
+        for (int i = 0; i < channels.length && i < ioNames.length; i++) {
+            channels[i].setIoName(ioNames[i]);
         }
+        _ioNameList.setData(_ioNameList.getText());
+        save();
     }
 
     /**
      * @param text
      * @param styleRanges
-     * @throws PersistenceException
      */
     private void createChildren(@Nonnull final StyledText text,
-                                @Nonnull final ArrayList<StyleRange> styleRanges) throws PersistenceException {
+                                @Nonnull final ArrayList<StyleRange> styleRanges) {
         if (_channelStructure.hasChildren()) {
             final StringBuilder sbIOName = new StringBuilder();
             final StringBuilder sbDesc = new StringBuilder();

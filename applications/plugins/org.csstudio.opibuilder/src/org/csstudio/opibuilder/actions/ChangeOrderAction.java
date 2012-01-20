@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.commands.ChangeOrderCommand;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
@@ -236,8 +237,8 @@ public class ChangeOrderAction extends SelectionAction {
 			Map<AbstractContainerModel, List<IndexedWidget>> widgetMap) {
 		
 		for(Object selection : getSelectedObjects()){
-			if(selection instanceof EditPart){
-				EditPart widgetEditpart = (EditPart)selection;
+			if(selection instanceof AbstractBaseEditPart){
+				AbstractBaseEditPart widgetEditpart = (AbstractBaseEditPart)selection;
 				AbstractWidgetModel widgetModel = (AbstractWidgetModel) widgetEditpart.getModel();
 				if(widgetEditpart.getParent() != null){
 					AbstractContainerModel containerModel = 

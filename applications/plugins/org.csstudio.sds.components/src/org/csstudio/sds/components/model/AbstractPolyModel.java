@@ -69,7 +69,8 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
 		addPropertyChangeListener(PROP_ROTATION, new PropertyChangeAdapter() {
-			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+			@Override
+            public void propertyValueChanged(final Object oldValue, final Object newValue) {
 				setPoints(rotatePoints(_originalPoints.getCopy(), (Double) newValue), false);
 			}
 		});
@@ -95,12 +96,12 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	public final void setPoints(final PointList points, final boolean rememberPoints) {
 		if (points.size() > 0) {
-			PointList copy = points.getCopy();
+			final PointList copy = points.getCopy();
 			if (rememberPoints) {
 				this.rememberZeroDegreePoints(copy);
 			}
 			super.setPropertyValue(PROP_POINTS, copy);
-			Rectangle bounds = copy.getBounds();
+			final Rectangle bounds = copy.getBounds();
 			super.setPropertyValue(PROP_POS_X, bounds.x);
 			super.setPropertyValue(PROP_POS_Y, bounds.y);
 			super.setPropertyValue(PROP_WIDTH, bounds.width);
@@ -131,29 +132,29 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	public final void setSize(final int width, final int height) {
-		int targetW = Math.max(1, width);
-		int targetH = Math.max(1, height);
-		PointList pointList = getPoints();
-		double oldW = pointList.getBounds().width;
-		double oldH = pointList.getBounds().height;
-		double topLeftX = pointList.getBounds().x;
-		double topLeftY = pointList.getBounds().y;
+		final int targetW = Math.max(1, width);
+		final int targetH = Math.max(1, height);
+		final PointList pointList = getPoints();
+		final double oldW = pointList.getBounds().width;
+		final double oldH = pointList.getBounds().height;
+		final double topLeftX = pointList.getBounds().x;
+		final double topLeftY = pointList.getBounds().y;
 
-		if ((oldW != targetW) || (oldH != targetH)) {
-			PointList newPoints = new PointList();
+		if (oldW != targetW || oldH != targetH) {
+			final PointList newPoints = new PointList();
 			for (int i = 0; i < pointList.size(); i++) {
-				int x = pointList.getPoint(i).x;
-				int y = pointList.getPoint(i).y;
+				final int x = pointList.getPoint(i).x;
+				final int y = pointList.getPoint(i).y;
 
 				Point newPoint = new Point(x, y);
-				if ((oldW > 0) && (oldH > 0)) {
-					double oldRelX = (x - topLeftX) / oldW;
-					double oldRelY = (y - topLeftY) / oldH;
+				if (oldW > 0 && oldH > 0) {
+					final double oldRelX = (x - topLeftX) / oldW;
+					final double oldRelY = (y - topLeftY) / oldH;
 
-					double newX = topLeftX + (oldRelX * targetW);
-					double newY = topLeftY + (oldRelY * targetH);
-					long roundedX = Math.round(newX);
-					long roundedY = Math.round(newY);
+					final double newX = topLeftX + oldRelX * targetW;
+					final double newY = topLeftY + oldRelY * targetH;
+					final long roundedX = Math.round(newX);
+					final long roundedY = Math.round(newY);
 					newPoint = new Point(roundedX, roundedY);
 				}
 
@@ -168,14 +169,14 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 */
 	@Override
 	public final void setLocation(final int x, final int y) {
-		PointList points = getPoints();
-		int oldX = points.getBounds().x;
-		int oldY = points.getBounds().y;
+		final PointList points = getPoints();
+		final int oldX = points.getBounds().x;
+		final int oldY = points.getBounds().y;
 		points.translate(x - oldX, y - oldY);
 
 		setPoints(points, true);
-		int newX = points.getBounds().x;
-		int newY = points.getBounds().y;
+		final int newX = points.getBounds().x;
+		final int newY = points.getBounds().y;
 		super.setLocation(newX, newY);
 	}
 
@@ -189,17 +190,17 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * @return The rotated PointList
 	 */
 	public final PointList rotatePoints(final PointList points, final double angle) {
-		Rectangle pointBounds = points.getBounds();
-		Point rotationPoint = pointBounds.getCenter();
-		PointList newPoints = new PointList();
+		final Rectangle pointBounds = points.getBounds();
+		final Point rotationPoint = pointBounds.getCenter();
+		final PointList newPoints = new PointList();
 
 		for (int i = 0; i < points.size(); i++) {
 			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle, rotationPoint));
 		}
 
-		Rectangle newPointBounds = newPoints.getBounds();
+		final Rectangle newPointBounds = newPoints.getBounds();
 		if (!rotationPoint.equals(newPointBounds.getCenter())) {
-			Dimension difference = rotationPoint.getCopy().getDifference(newPointBounds.getCenter());
+			final Dimension difference = rotationPoint.getCopy().getDifference(newPointBounds.getCenter());
 			newPoints.translate(difference.width, difference.height);
 		}
 
@@ -225,18 +226,18 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final synchronized void setPropertyValue(final String propertyID, final Object value) {
+	public synchronized void setPropertyValue(final String propertyID, final Object value) {
 		if (propertyID.equals(AbstractPolyModel.PROP_POINTS)) {
 			if (value instanceof PointList) {
 				this.setPoints((PointList) value, true);
 			}
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_X) && ((Integer) value != getPoints().getBounds().x)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_X) && (Integer) value != getPoints().getBounds().x) {
 			setLocation((Integer) value, getY());
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_Y) && ((Integer) value != getPoints().getBounds().y)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_POS_Y) && (Integer) value != getPoints().getBounds().y) {
 			setLocation(getX(), (Integer) value);
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_WIDTH) && ((Integer) value != getPoints().getBounds().width)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_WIDTH) && (Integer) value != getPoints().getBounds().width) {
 			setSize((Integer) value, getHeight());
-		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT) && ((Integer) value != getPoints().getBounds().height)) {
+		} else if (propertyID.equals(AbstractWidgetModel.PROP_HEIGHT) && (Integer) value != getPoints().getBounds().height) {
 			setSize(getWidth(), (Integer) value);
 		} else {
 			super.setPropertyValue(propertyID, value);

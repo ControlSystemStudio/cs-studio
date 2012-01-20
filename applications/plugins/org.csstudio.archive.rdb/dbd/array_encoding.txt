@@ -1,0 +1,69 @@
+Array Sample Storage
+====================
+
+In the original design, before the 'array_val' BLOB was introduced,
+(double) type arrays were stored as follows:
+sample.float_val contains the first array element,
+and the array_val table has the remaining array elements,
+one row per array element.
+
+The current sample table contains columns
+CHAR datatype
+BLOB array_val
+
+The software to use them is enabled via the preference setting
+org.csstudio.archive.rdb/use_array_blob=true
+
+The data in the BLOB array_val is encoded as follows:
+
+* Scalar *
+CHAR datatype == NULL or ' ' (space, ASCII 32):
+
+BLOB array_val == NULL (empty, not used).
+The sample is a scalar whose value is in the num_val,
+float_val or str_val columns.
+
+
+* Double Array *
+CHAR datatype == 'd' (lower-case d, ASCII 100)
+
+BLOB array_val ==
+32-bit element count, high byte first, unsigned(#)
+double[element count], i.e. one 8-byte double per array element.
+
+Example of BLOB with 2-element array [ 0.0, 1.0 ]:
+00 00 00 02             - 32-bit element count, integer 2
+00 00 00 00 00 00 00 00 - First array element, double 0.0
+3F F0 00 00 00 00 00 00 - Second array element, double 1.0
+
+(#) The element count is supposed to be unsigned.
+The current Java implementation, however, uses a signed int.
+Since an array's length in Java is also int,
+the supported array length is limited to
+ 2^31-1 == 0x7fffffff == 2147483647
+
+
+
+To be supported in near future
+------------------------------
+ 
+* Short Array *
+CHAR datatype == 's' (lower-case s, ASCII 115)
+
+BLOB array_val ==
+32-bit element count, high byte first, unsigned(#)
+short[element count], i.e. one 2-byte short, signed, per array element.
+ 
+Example of BLOB with 2-element array [ 0, 1 ]:
+00 00 00 02 - 32-bit element count, integer 2
+00 00       - First array element, short 0
+00 01       - Second array element, short 1
+
+
+
+Ideas for future data types as control system provides them
+-----------------------------------------------------------
+'i': BLOB is 32-bit element count, int[] (32 bit)
+'D': BLOB is 32-bit element dimension count, 32-bit dimensions[], double[]
+'p': BLOB is PNG image
+'j': BLOB is JPG

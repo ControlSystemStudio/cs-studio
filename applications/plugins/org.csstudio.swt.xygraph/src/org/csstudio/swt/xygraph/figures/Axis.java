@@ -827,7 +827,10 @@ public class Axis extends LinearScale{
         {
             final double t1 = getPositionValue(isHorizontal() ? start.x : start.y, false);
             final double t2 = getPositionValue(isHorizontal() ? end.x   : end.y,   false);
-            setRange(t1, t2);
+            if(getRange().isMinBigger()){
+            	setRange(t1>t2? t1:t2, t1>t2?t2:t1);
+			}else
+				setRange(t1>t2? t2:t1, t1>t2?t1:t2);
         }
 
 		/** Perform the in or out zoom according to zoomType */

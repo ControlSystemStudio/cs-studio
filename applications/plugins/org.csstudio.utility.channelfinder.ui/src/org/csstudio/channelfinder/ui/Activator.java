@@ -1,7 +1,11 @@
 package org.csstudio.channelfinder.ui;
 
+import gov.bnl.channelfinder.api.ChannelFinder;
+import gov.bnl.channelfinder.api.ChannelFinderClient;
+
 import java.util.logging.Logger;
 
+import org.csstudio.utility.channelfinder.ChannelFinderClientFromPreferences;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -18,7 +22,7 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 
-	private static IPropertyChangeListener preferenceListner;
+	private static IPropertyChangeListener preferenceListener;
 	private static Logger log = Logger.getLogger(PLUGIN_ID);
 
 	/**
@@ -37,18 +41,21 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		preferenceListner = new IPropertyChangeListener() {
+		preferenceListener = new IPropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				log.info("ChannelFinder clinet property Changed = creating new client");
-				org.csstudio.utility.channelfinder.Activator.getDefault()
-						.registerClients();
-
+				
+				// Fetch the instanciated extension and reload the configuration
+				ChannelFinderClient client = ChannelFinder.getClient();
+				if (client instanceof ChannelFinderClientFromPreferences) {
+					((ChannelFinderClientFromPreferences) client).reloadConfiguration();
+				}
 			}
 		};
 		org.csstudio.utility.channelfinder.Activator.getDefault()
 				.getPreferenceStore()
-				.addPropertyChangeListener(preferenceListner);
+				.addPropertyChangeListener(preferenceListener);
 	}
 
 	/*
@@ -62,7 +69,7 @@ public class Activator extends AbstractUIPlugin {
 		plugin = null;
 		org.csstudio.utility.channelfinder.Activator.getDefault()
 				.getPreferenceStore()
-				.removePropertyChangeListener(preferenceListner);
+				.removePropertyChangeListener(preferenceListener);
 		super.stop(context);
 	}
 

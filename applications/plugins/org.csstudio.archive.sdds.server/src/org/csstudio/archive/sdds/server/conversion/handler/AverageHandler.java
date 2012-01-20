@@ -25,9 +25,7 @@
 package org.csstudio.archive.sdds.server.conversion.handler;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -77,7 +75,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
      */
     @Override
     @Nonnull
-    public List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
+    public final List<EpicsRecordData> handle(@Nonnull final DataRequestHeader header,
                                         @Nonnull final EpicsRecordData[] data)
     throws DataException, AlgorithmHandlerException, MethodNotImplementedException {
 
@@ -98,21 +96,17 @@ public class AverageHandler extends AbstractAlgorithmHandler {
         final long intervalStart = header.getFromSec();
         long intervalEnd = header.getToSec();
 
-        // Get the current time...
-        final GregorianCalendar cal = new GregorianCalendar();
-
-        // ...and substract 2 months
-        cal.add(Calendar.MONTH, -3);
-        if (intervalEnd * 1000L > cal.getTimeInMillis()) {
-            intervalEnd = cal.getTimeInMillis() / 1000L;
-        }
-
         long deltaTime = (intervalEnd - intervalStart) / resultLength;
         if(deltaTime == 0) {
 
             // Requested region very short --> only 1 point per sec
             deltaTime = 1;
             header.setMaxNumOfSamples((int) (intervalEnd - intervalStart));
+        }
+
+        // Check if the server gets data for the whole time interval
+        if (data[data.length - 1].getTime() < intervalEnd) {
+            intervalEnd = data[data.length - 1].getTime();
         }
 
         // Get the first data sample with the valid time stamp within the request time interval
@@ -126,7 +120,7 @@ public class AverageHandler extends AbstractAlgorithmHandler {
             }
 
             if(o.isValueValid()) {
-             avg = ((Float) o.getValue()).floatValue();
+                avg = ((Float) o.getValue()).floatValue();
             }
 
             index++;

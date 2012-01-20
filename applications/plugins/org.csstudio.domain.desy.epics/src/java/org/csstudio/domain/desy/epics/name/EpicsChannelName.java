@@ -21,8 +21,6 @@
  */
 package org.csstudio.domain.desy.epics.name;
 
-import java.util.regex.Matcher;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -40,24 +38,21 @@ public class EpicsChannelName {
      * Any out of: a-z A-Z 0-9 _ - + : [ ] < > ;
      */
     public static final String BASENAME_REGEX = "[a-zA-Z0-9_\\+:;<>\\[\\]-]{1," + MAX_BASENAME_LENGTH + "}";
-    //
 
     public static final Integer MAX_FIELD_LENGTH = 4;
+
     public static final String FIELD_SEP = ".";
     /**
      * The {@link java.lang.String#split(String)} method does not like the
-     * {@link Matcher#quoteReplacement(String)} output as input... try it and cry.
+     * {@link java.util.regex.Matcher#quoteReplacement(String)} output as input... try it and cry.
      */
-    public static final String FIELD_SEP_FOR_SPLIT = "\\" + FIELD_SEP;
-
+    public static final String FIELD_SEP_FOR_REGEXP = "\\.";
     /**
      * Regex specifying the permitted structure of an EPICS channel record field name.
      */
-    public static final String FIELD_REGEX = "[A-Z]{1," + MAX_FIELD_LENGTH + "}";
-    public static final String FIELD_SEP_REGEX = Matcher.quoteReplacement(FIELD_SEP);
-    public static final String FULLNAME_REGEX = BASENAME_REGEX +
-                                                "(" + FIELD_SEP_REGEX +
-                                                FIELD_REGEX + ")?";
+    public static final String FIELD_REGEX = "[A-Z0-9]{1," + MAX_FIELD_LENGTH + "}";
+    public static final String FULLNAME_REGEX =
+        BASENAME_REGEX + "(" + FIELD_SEP_FOR_REGEXP + FIELD_REGEX + ")?";
 
     private final String _baseName;
     private final IRecordField _field;

@@ -69,13 +69,10 @@ public class HistoricSamples extends PlotSamples
      */
     private int visible_size = 0;
 
-    private boolean adel_info_complete = false;
-
-
     /**
      * Constructor.
      */
-    public HistoricSamples(final RequestType request_type)
+    public HistoricSamples(@Nonnull final RequestType request_type)
     {
         for (final RequestType type : RequestType.values()) {
             sample_map.put(type, new PlotSample[0]);
@@ -139,12 +136,14 @@ public class HistoricSamples extends PlotSamples
     /** Merge newly received archive data into historic orgSamples
      * @param channel_name
      *  @param source Info about data source
+     * @param requestType
      *  @param result Samples to add/merge
      * @throws ArchiveServiceException
      * @throws OsgiServiceUnavailableException
      */
     synchronized public void mergeArchivedData(final String channel_name,
                                                final ArchiveReader source,
+                                               final RequestType requestType,
                                                final List<IValue> result)
                                                throws OsgiServiceUnavailableException,
                                                       ArchiveServiceException
@@ -163,14 +162,15 @@ public class HistoricSamples extends PlotSamples
         }
 
         // Merge with existing samples
-        final PlotSample[] ext_samples = sample_map.get(request_type);
+        final PlotSample[] ext_samples = sample_map.get(requestType);
+
         final PlotSample[] merged_result = PlotSampleMerger.merge(ext_samples, new_samples);
 
+        sample_map.put(requestType, merged_result);
         computeVisibleSize(merged_result);
-        sample_map.put(request_type, merged_result);
+        updateRequestType(requestType);
 
         have_new_samples = true;
-        adel_info_complete = false;
     }
 
     /**
@@ -195,13 +195,6 @@ public class HistoricSamples extends PlotSamples
             sample_map.put(type, new PlotSample[0]);
         }
         have_new_samples = true;
-    }
-
-    public void setAdelInfoComplete(final boolean b) {
-        adel_info_complete = b;
-    }
-    public boolean adelInfoComplete() {
-        return adel_info_complete;
     }
 
     /**
@@ -287,14 +280,16 @@ public class HistoricSamples extends PlotSamples
             EpicsChannelName.FIELD_SEP +
             RecordField.ADEL.getFieldName();
 
-        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, s);
-
         final Collection samples =
             service.readSamples(adelChannelName,
                                 s,
                                 e);
         final LinkedList<IArchiveSample<Serializable, IAlarmSystemVariable<Serializable>>> allSamples = Lists.newLinkedList(samples);
-        allSamples.addFirst(lastBefore);
+
+        final IArchiveSample lastBefore = service.readLastSampleBefore(adelChannelName, s);
+        if (lastBefore != null) {
+            allSamples.addFirst(lastBefore);
+        }
         return allSamples;
     }
 

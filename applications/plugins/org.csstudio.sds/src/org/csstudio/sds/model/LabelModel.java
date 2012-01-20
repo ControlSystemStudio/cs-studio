@@ -21,6 +21,9 @@
  */
 package org.csstudio.sds.model;
 
+import java.util.List;
+
+import org.csstudio.sds.cursorservice.AbstractCursor;
 import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.swt.graphics.FontData;
 
@@ -30,7 +33,7 @@ import org.eclipse.swt.graphics.FontData;
  * @author jbercic
  *
  */
-public final class LabelModel extends AbstractTextTypeWidgetModel {
+public class LabelModel extends AbstractTextTypeWidgetModel {
 	/**
 	 * Unique identifier.
 	 */
@@ -87,6 +90,15 @@ public final class LabelModel extends AbstractTextTypeWidgetModel {
 	}
 
 	/**
+	 * Constructor.
+	 */
+	public LabelModel(final List<AbstractCursor> cursorDescriptors) {
+	    super(cursorDescriptors);
+	    setWidth(100);
+	    setHeight(30);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -121,7 +133,7 @@ public final class LabelModel extends AbstractTextTypeWidgetModel {
 	 */
 	@Override
 	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
+		final StringBuffer buffer = new StringBuffer();
 		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
 		buffer.append("Value:\t");
 		buffer.append(createTooltipParameter(PROP_TEXTVALUE));
@@ -152,7 +164,8 @@ public final class LabelModel extends AbstractTextTypeWidgetModel {
 	 *
 	 * @return True if the background is transparent, false otherwise
 	 */
-	public boolean getTransparent() {
+	@Override
+    public boolean getTransparent() {
 		return getBooleanProperty(PROP_TRANSPARENT);
 	}
 
@@ -191,15 +204,6 @@ public final class LabelModel extends AbstractTextTypeWidgetModel {
 	 */
 	public void setTextValue(final String value) {
 		setPropertyValue(PROP_TEXTVALUE, value);
-	}
-
-	/**
-	 * Returns the text.
-	 *
-	 * @return The text
-	 */
-	public String getTextValue() {
-		return getStringProperty(PROP_TEXTVALUE);
 	}
 
 	/**

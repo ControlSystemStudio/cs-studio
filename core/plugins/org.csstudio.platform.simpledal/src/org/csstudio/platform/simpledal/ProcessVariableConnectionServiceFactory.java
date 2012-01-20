@@ -27,7 +27,7 @@ import javax.swing.tree.FixedHeightLayoutCache;
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.internal.simpledal.ConnectorFactory;
 import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Factory of

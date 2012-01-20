@@ -1,9 +1,12 @@
 package org.csstudio.display.multichannelviewer.views;
 
-import static org.csstudio.utility.channelfinder.ChannelQuery.Builder.query;
-import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
+import static org.epics.pvmanager.ExpressionLanguage.mapOf;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -15,26 +18,25 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.csstudio.display.multichannelviewer.Activator;
-import org.csstudio.utility.channelfinder.ChannelQuery;
-import org.csstudio.utility.channelfinder.ChannelQueryListener;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 import org.epics.pvmanager.ExpressionLanguage;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.data.Array;
 import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.ValueUtil;
 import org.jfree.chart.ChartFactory;
@@ -46,10 +48,6 @@ import org.jfree.data.xy.DefaultXYDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.experimental.chart.swt.ChartComposite;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
 
 public class MultiChannelGraph extends Composite {
 
@@ -263,14 +261,14 @@ public class MultiChannelGraph extends Composite {
 	}
 
 	public void queryChannels() {
-		this.channelQuery = query(queryString).create();
-		this.channelQuery.addChannelQueryListener(new ChannelQueryListener() {
+		this.channelQuery = ChannelQuery.query(queryString).build();
+		this.channelQuery.execute(new ChannelQueryListener() {
 
 			@Override
-			public void getQueryResult() {
-				final Exception e = channelQuery.getLastException();
+			public void queryExecuted(Result result) {
+				final Exception e = result.exception;
 				if (e == null) {
-					setChannels(new ArrayList<Channel>(channelQuery.getResult()));
+					setChannels(new ArrayList<Channel>(result.channels));
 				} else {
 					PlatformUI.getWorkbench().getDisplay()
 							.asyncExec(new Runnable() {
@@ -289,7 +287,6 @@ public class MultiChannelGraph extends Composite {
 			}
 
 		});
-		this.channelQuery.execute();
 	}
 
 	public Collection<Channel> getChannels() {

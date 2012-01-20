@@ -38,7 +38,7 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.eclipse.core.runtime.Platform;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 /**
  * Base class for connectors. A connector encapsulates all program logic that is

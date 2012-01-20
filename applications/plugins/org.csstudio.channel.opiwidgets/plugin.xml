@@ -19,6 +19,33 @@
             name="PVTable by Property"
             typeId="org.csstudio.channel.opiwidgets.PVTableByProperty">
       </widget>
+      <widget
+            category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+            model_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyModel"
+            name="Channel Tree by Property"
+            typeId="org.csstudio.channel.opiwidgets.ChannelTreeByProperty">
+      </widget>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.channel.opiwidgets.AbstractChannelWidgetEditPart"
+            class="org.csstudio.channel.opiwidgets.ChannelEditPartAdapterFactory">
+         <adapter
+               type="[Lgov.bnl.channelfinder.api.Channel;">
+         </adapter>
+         <adapter
+               type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+         <adapter
+               type="org.csstudio.channel.widgets.ConfigurableWidget">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>

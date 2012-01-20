@@ -38,8 +38,8 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.ThermometerModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyDataChannel;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link ThermometerModel} widget with Connection state.
@@ -79,12 +79,23 @@ public class ThermometerConnectionBehavior extends MarkedWidgetDesyConnectionBeh
      */
     @Override
     protected void doProcessConnectionStateChange( final ThermometerModel widget,final AnyDataChannel anyDataChannel) {
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        String fillBackColor = isConnected(anyDataChannel)?_defFillBackColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
-        String fillColor = isConnected(anyDataChannel)?_defFillColor  : determineBackgroundColor(connectionState);
-        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, fillColor);
-
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        String determineBackgroundColor;
+        String determineFillColor;
+        if(isConnected(anyDataChannel)) {
+            if(hasValue(anyDataChannel)) {
+                determineBackgroundColor = _defFillBackColor;
+                determineFillColor = _defFillColor;
+            } else {
+                determineBackgroundColor = "${Invalid}";
+                determineFillColor = "${Invalid}";
+            }
+        } else {
+            determineBackgroundColor = determineBackgroundColor(connectionState);
+            determineFillColor = determineBackgroundColor;
+        }
+        widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor);
+        widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineFillColor);
     }
 
 }

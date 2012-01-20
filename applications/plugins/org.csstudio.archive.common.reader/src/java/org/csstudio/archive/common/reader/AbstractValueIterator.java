@@ -21,22 +21,13 @@
  */
 package org.csstudio.archive.common.reader;
 
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.Iterator;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.common.reader.facade.IArchiveServiceProvider;
-import org.csstudio.archive.common.requesttype.IArchiveRequestType;
-import org.csstudio.archive.common.service.ArchiveServiceException;
-import org.csstudio.archive.common.service.IArchiveReaderFacade;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
-import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.csstudio.domain.desy.system.ISystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -44,48 +35,34 @@ import org.csstudio.domain.desy.time.TimeInstant;
  *
  * @author bknerr
  * @since 22.06.2011
- * @param <V> the basic type of the samples
  */
-public abstract class AbstractValueIterator<V extends Serializable> implements ValueIterator {
+@SuppressWarnings("rawtypes")
+public abstract class AbstractValueIterator implements ValueIterator {
 
-    @SuppressWarnings("rawtypes")
     protected static final ArchiveSampleToIValueFunction ARCH_SAMPLE_2_IVALUE_FUNC =
         new ArchiveSampleToIValueFunction();
-
-    private final IArchiveServiceProvider _provider;
 
     private final String _channelName;
     private final TimeInstant _start;
     private final TimeInstant _end;
 
 
-    private final Collection<IArchiveSample<V, ISystemVariable<V>>> _samples;
-    private final Iterator<IArchiveSample<V, ISystemVariable<V>>> _samplesIter;
+    private final Iterable<IArchiveSample> _samples;
+    private final Iterator<IArchiveSample> _samplesIter;
 
 
     /**
      * Constructor.
-     * @throws ArchiveServiceException
-     * @throws OsgiServiceUnavailableException
      */
-    protected AbstractValueIterator(@Nonnull final IArchiveServiceProvider provider,
+    protected AbstractValueIterator(@Nonnull final Iterable<IArchiveSample> samples,
                                     @Nonnull final String channelName,
                                     @Nonnull final TimeInstant start,
-                                    @Nonnull final TimeInstant end,
-                                    @Nullable final IArchiveRequestType type)
-                                    throws ArchiveServiceException,
-                                           OsgiServiceUnavailableException {
-        _provider = provider;
+                                    @Nonnull final TimeInstant end) {
         _channelName = channelName;
         _start = start;
         _end = end;
 
-        if (_start.isAfter(_end)) {
-            throw new IllegalArgumentException("Start time mustn't be after end time");
-        }
-
-        final IArchiveReaderFacade service = _provider.getReaderFacade();
-        _samples = service.readSamples(channelName, start, end, type);
+        _samples = samples;
         _samplesIter = _samples.iterator();
     }
 
@@ -105,12 +82,7 @@ public abstract class AbstractValueIterator<V extends Serializable> implements V
     }
 
     @Nonnull
-    protected Collection<IArchiveSample<V, ISystemVariable<V>>> getSamples() {
-        return _samples;
-    }
-
-    @Nonnull
-    protected Iterator<IArchiveSample<V, ISystemVariable<V>>> getIterator() {
+    protected Iterator<IArchiveSample> getIterator() {
         return _samplesIter;
     }
 

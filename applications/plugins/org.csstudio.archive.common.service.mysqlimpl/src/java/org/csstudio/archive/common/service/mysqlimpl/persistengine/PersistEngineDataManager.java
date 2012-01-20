@@ -78,7 +78,7 @@ public class PersistEngineDataManager {
 
     private final ArchiveConnectionHandler _connectionHandler;
 
-    private final IBatchQueueHandlerProvider _handlerProvider =
+    private final IBatchQueueHandlerProvider _allHandlersProvider =
         new IBatchQueueHandlerProvider() {
             @SuppressWarnings("rawtypes")
             @Override
@@ -99,7 +99,7 @@ public class PersistEngineDataManager {
         _prefPeriodInMS = prefs.getPeriodInMS();
         _prefTermTimeInMS = prefs.getTerminationTimeInMS();
 
-        addGracefulShutdownHook(_connectionHandler, _handlerProvider, _prefTermTimeInMS);
+        addGracefulShutdownHook(_connectionHandler, _allHandlersProvider, _prefTermTimeInMS);
     }
 
     private void submitNewPersistDataWorker(@Nonnull final ScheduledThreadPoolExecutor executor,
@@ -158,13 +158,13 @@ public class PersistEngineDataManager {
 //        if (isMaxPoolSizeNotReached()) {
 //            submitNewPersistDataWorker(_executor,
 //                                       _prefPeriodInMS,
-//                                       _handlerProvider,
+//                                       _allHandlersProvider,
 //                                       _workerId,
 //                                       _submittedWorkers);
 //        } else {
 //            lowerPeriodOfExistingWorker(_executor,
 //                                        _prefPeriodInMS,
-//                                        _handlerProvider,
+//                                        _allHandlersProvider,
 //                                        _workerId,
 //                                        _submittedWorkers);
 //        }
@@ -223,7 +223,7 @@ public class PersistEngineDataManager {
             submitNewPersistDataWorker(_executor,
                                        _connectionHandler,
                                        _prefPeriodInMS,
-                                       _handlerProvider,
+                                       _allHandlersProvider,
                                        _workerId,
                                        _submittedWorkers);
         }

@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.email.ui.AbstractSendEMailAction;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -39,7 +39,7 @@ public class SendEMailAction extends AbstractSendEMailAction
     {
         try
         {
-            return ResourceUtilSSHelperImpl.getScreenshotFile(
+            return ResourceUtil.getScreenshotFile(
             		(GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)

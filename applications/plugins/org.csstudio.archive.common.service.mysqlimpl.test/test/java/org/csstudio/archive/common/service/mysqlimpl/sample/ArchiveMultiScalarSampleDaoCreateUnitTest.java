@@ -82,6 +82,7 @@ public class ArchiveMultiScalarSampleDaoCreateUnitTest extends AbstractDaoTestSe
         Thread.sleep(2500);
 
         final Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_5TH));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
 
         final Collection<IArchiveSample<Serializable, ISystemVariable<Serializable>>> samples =

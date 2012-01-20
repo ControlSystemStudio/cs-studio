@@ -60,7 +60,7 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
 
     public void accumulate(@Nonnull final A nextValue) {
         final R val = calculateAccumulation(_accumulatedValue.getValue(), nextValue);
-        if (_num + 1 >= Integer.MAX_VALUE) {
+        if (_num >= Integer.MAX_VALUE) {
             LOG.warn("Potential accumulation overflow detected - number of accumulations is reset to zero.");
             _num = 0;
         }

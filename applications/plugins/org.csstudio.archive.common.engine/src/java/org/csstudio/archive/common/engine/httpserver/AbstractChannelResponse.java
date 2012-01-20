@@ -52,6 +52,14 @@ abstract class AbstractChannelResponse extends AbstractResponse {
     protected AbstractChannelResponse(@Nonnull final EngineModel model) {
         super(model);
     }
+    /**
+     * Constructor.
+     */
+    protected AbstractChannelResponse(@Nonnull final EngineModel model,
+                                      @Nonnull final String adminParamKey,
+                                      @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
+    }
 
     /**
      * Checks for the validity of the name parameter and creates an epics compatible name object.

@@ -27,6 +27,10 @@ public class MeterModel extends AbstractMarkedWidgetModel{
 	
 	/** The ID of the Ramp Gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
+	
+	/**Show value label. */
+	public static final String PROP_SHOW_VALUE_LABEL = "show_value_label"; //$NON-NLS-1$
+	
 
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_NEEDLE_COLOR = new RGB(255,0,0);
@@ -63,7 +67,12 @@ public class MeterModel extends AbstractMarkedWidgetModel{
 		addProperty(new BooleanProperty(PROP_RAMP_GRADIENT, "Ramp Gradient", 
 				WidgetPropertyCategory.Display, true));	
 		
+		addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABEL, "Show Value Label", 
+				WidgetPropertyCategory.Display, true));	
+		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");		
+		
+		//Ramp cannot be transparent.
 		setPropertyValue(PROP_TRANSPARENT, false);
 		removeProperty(PROP_TRANSPARENT);
 	}	

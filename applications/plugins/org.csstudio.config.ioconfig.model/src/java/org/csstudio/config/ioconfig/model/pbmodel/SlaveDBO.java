@@ -41,6 +41,7 @@ import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFileParser;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel2;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ParsedGsdFileModel;
 import org.hibernate.annotations.BatchSize;
 import org.slf4j.Logger;
@@ -492,5 +493,30 @@ public class SlaveDBO extends AbstractNodeDBO<MasterDBO, ModuleDBO> {
     @Column(scale = 5)
     public void setWdFact2(final int wdFact2) {
         _wdFact2 = (short) wdFact2;
+    }
+
+    @Transient
+    @Nonnull
+    public String getSlaveCfgDataString() {
+        StringBuilder cfgData = new StringBuilder();
+        for (final ModuleDBO module : getChildrenAsMap().values()) {
+            final GsdModuleModel2 gsdModuleModel2 = module.getGsdModuleModel2();
+            if(gsdModuleModel2 != null) {
+                cfgData = cfgData.append(gsdModuleModel2.getValueAsString().trim()).append(",");
+            }
+        }
+        if(cfgData.toString().endsWith(",")) {
+            cfgData = cfgData.deleteCharAt(cfgData.length() - 1);
+        }
+        return cfgData.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assembleEpicsAddressString() throws PersistenceException {
+        setSlaveFlag(128);
+        super.assembleEpicsAddressString();
     }
 }

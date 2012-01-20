@@ -21,10 +21,10 @@ package org.csstudio.sds.behavior.desy;
 import org.csstudio.sds.components.model.AbstractPolyModel;
 import org.csstudio.sds.components.model.PolygonModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *
@@ -36,8 +36,6 @@ import org.epics.css.dal.simple.MetaData;
  * @since 20.04.2010
  */
 public class PolygonConnectionBehavior extends AbstractDesyConnectionBehavior<PolygonModel> {
-
-    private String _color;
 
     /**
      * Constructor.
@@ -55,19 +53,18 @@ public class PolygonConnectionBehavior extends AbstractDesyConnectionBehavior<Po
     @Override
     protected void doProcessValueChange(final PolygonModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
-        _color = getColorFromColorRule(anyData);
-        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _color);
+        model.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, getColorFromDigLogColorRule(anyData));
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(PolygonModel widget, AnyDataChannel anyDataChannel) {
+    protected void doProcessConnectionStateChange(final PolygonModel widget, final AnyDataChannel anyDataChannel) {
         super.doProcessConnectionStateChange(widget, anyDataChannel);
-        ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
-        _color = isConnected(anyDataChannel)?_color:determineBackgroundColor(connectionState);
-        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, _color);
+        final ConnectionState connectionState = anyDataChannel.getProperty().getConnectionState();
+        final String color = isConnected(anyDataChannel)?getColorFromDigLogColorRule(anyDataChannel.getData()):determineBackgroundColor(connectionState);
+        widget.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, color);
     }
 
     @Override

@@ -81,8 +81,8 @@ public class CopyPropertiesAction extends SelectionAction {
 		if(dialog.open() == Window.OK){
 			List<String> propList = dialog.getOutput();
 			if(!propList.isEmpty()){
-				
-				Element widgetElement = XMLUtil.widgetToXMLElement(getSelectedWidgetModels().get(0));
+				AbstractWidgetModel widget = getSelectedWidgetModels().get(0);
+				Element widgetElement = XMLUtil.widgetToXMLElement(widget);
 				
 				Element propertisElement = new Element(PROPID_ELEMENT);
 				
@@ -110,9 +110,8 @@ public class CopyPropertiesAction extends SelectionAction {
 	 * 
 	 * @return a list with all widget models that are currently selected
 	 */
-	@SuppressWarnings("unchecked")
 	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
+		List<?> selection = getSelectedObjects();
 	
 		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
 	

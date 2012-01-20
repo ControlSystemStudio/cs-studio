@@ -29,16 +29,16 @@ import java.util.TreeSet;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.sdds.server.SddsServerActivator;
 import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 import org.csstudio.archive.sdds.server.data.EpicsRecordData;
-import org.csstudio.archive.sdds.server.internal.ServerPreferenceKey;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.archive.sdds.server.type.TypeFactory;
+import org.csstudio.archive.sdds.server.type.TypeNotSupportedException;
 
 import SDDS.java.SDDS.SDDSFile;
 
 import com.google.common.base.Strings;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
@@ -67,6 +67,12 @@ public class SddsDataReader implements Runnable {
     @SuppressWarnings("unused")
     private final long endTime;
 
+    /** This field indicates an error */
+    private AapiServerError error;
+
+    /** Additional error description */
+    private String errorDesc;
+
     /**
      *
      * @param path
@@ -75,12 +81,7 @@ public class SddsDataReader implements Runnable {
      */
     public SddsDataReader(@Nonnull final String path,
                           final long timeStart,
-                          final long timeEnd) {
-
-        final IPreferencesService pref = Platform.getPreferencesService();
-
-        // Indicates if byte order is little endian
-        final boolean littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID, ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false, null);
+                          final long timeEnd, final boolean littleEndian) {
 
         filePath = path;
         this.startTime = timeStart;
@@ -89,8 +90,9 @@ public class SddsDataReader implements Runnable {
         sampleParameters = new SampleParameters();
         sddsFile.setFileName(filePath);
         sddsFile.setEndian(littleEndian);
-        // result = new Vector<EpicsRecordData>();
         data = new TreeSet<EpicsRecordData>(new TimeComparator());
+        error = AapiServerError.NO_ERROR;
+        errorDesc = "";
     }
 
     /**
@@ -98,7 +100,7 @@ public class SddsDataReader implements Runnable {
      * @return EpicsRecordData
      */
     @Nonnull
-    public EpicsRecordData[] getResultAsArray() {
+    public final EpicsRecordData[] getResultAsArray() {
 
         EpicsRecordData[] r = null;
 
@@ -117,7 +119,7 @@ public class SddsDataReader implements Runnable {
      * @return TreeSet<EpicsRecordData>
      */
     @Nonnull
-    public TreeSet<EpicsRecordData> getResult() {
+    public final TreeSet<EpicsRecordData> getResult() {
         return data;
     }
 
@@ -126,7 +128,7 @@ public class SddsDataReader implements Runnable {
      *
      * @return Number of results
      */
-    public int getResultCount() {
+    public final int getResultCount() {
         return data.size();
     }
 
@@ -136,56 +138,76 @@ public class SddsDataReader implements Runnable {
      * @return SampleParameters
      */
     @Nonnull
-    public SampleParameters getSampleCtrl() {
+    public final SampleParameters getSampleCtrl() {
         return sampleParameters;
+    }
+
+    public final boolean hasCausedError() {
+        return error != AapiServerError.NO_ERROR;
+    }
+
+    @Nonnull
+    public final AapiServerError getError() {
+        return error;
+    }
+
+    @Nonnull
+    public final String getErrorDescription() {
+        return errorDesc;
     }
 
     /**
      *
      */
     @Override
-    public void run() {
+    public final void run() {
 
-        sddsFile.readFile();
+        final boolean success = sddsFile.readFile();
+        if (!success) {
+            error = AapiServerError.CAN_T_OPEN_FILE;
+            errorDesc = sddsFile.getErrors().trim();
+            return;
+        }
 
         final String[] list = sddsFile.getParameterNames();
         // types = sddsFile.getParameterTypes();
         sampleParameters = this.getParameters(list);
 
-        final Object[] time = sddsFile.getColumnValues(0, 1, false);
-        final Object[] nanoSec = sddsFile.getColumnValues(1, 1, false);
-        final Object[] status = sddsFile.getColumnValues(2, 1, false);
-        final Object[] value = sddsFile.getColumnValues(3, 1, false);
+        final int indexOfTime = sddsFile.getColumnIndex("time");
+        final int indexOfNano = sddsFile.getColumnIndex("n_time");
+        final int indexOfStatus = sddsFile.getColumnIndex("stat");
+        final int indexOfvalue = sddsFile.getColumnIndex("val");
 
-//        for(int i = 0;i < count;i++) {
-//            if(((Long)time[i] >= startTime) && ((Long)time[i] <= endTime)) {
-//                result.add(new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
-//                                               (Long)status[i], value[i]));
-//            } else if((Long)time[i] < startTime) {
-//                prevData = new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
-//                                               (Long)status[i], value[i]);
-//            } else if(((Long)time[i] > endTime) && (lastData == null)) {
-//                lastData = new EpicsRecordData((Long)time[i], (Long)nanoSec[i],
-//                                               (Long)status[i], value[i]);
-//                break;
-//            }
-//        }
+        final Object[] time = sddsFile.getColumnValues(indexOfTime, 1, false);
+        final Object[] value = sddsFile.getColumnValues(indexOfvalue, 1, false);
 
-        for(int i = 0; i < time.length; i++) {
-            data.add(new EpicsRecordData((Long) time[i], (Long) nanoSec[i],
-                                         (Long) status[i], value[i]));
+        Object[] nanoSec = null;
+        if (indexOfNano != -1) {
+            nanoSec = sddsFile.getColumnValues(indexOfNano, 1, false);
         }
 
-//        if(result.isEmpty()) {
-//
-//            if(prevData != null) {
-//                result.add(prevData);
-//            }
-//
-//            if(lastData != null) {
-//                result.add(lastData);
-//            }
-//        }
+        Object[] status = null;
+        if (indexOfStatus != -1) {
+            status = sddsFile.getColumnValues(indexOfStatus, 1, false);
+        }
+
+        try {
+            if (nanoSec != null && status != null) {
+
+                for(int i = 0; i < time.length; i++) {
+
+                    data.add(new EpicsRecordData(TypeFactory.toLong(time[i]), TypeFactory.toLong(nanoSec[i]),
+                                                 TypeFactory.toLong(status[i]), value[i]));
+                }
+            } else {
+                for(int i = 0; i < time.length; i++) {
+                    data.add(new EpicsRecordData(TypeFactory.toLong(time[i]), value[i]));
+                }
+            }
+        } catch (final TypeNotSupportedException tnse) {
+            error = AapiServerError.BAD_HR_FILE;
+            errorDesc = tnse.getMessage().trim();
+        }
     }
 
     /**

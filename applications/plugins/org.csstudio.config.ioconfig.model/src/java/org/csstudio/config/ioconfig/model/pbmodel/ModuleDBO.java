@@ -21,7 +21,6 @@
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -245,7 +244,7 @@ INodeWithPrototype {
     }
 
     @Transient
-    public short getMaxOffset() throws IOException {
+    public short getMaxOffset() {
         final GsdModuleModel2 gsdModuleModel2 = getGsdModuleModel2();
         if(gsdModuleModel2 != null) {
             short offset = getSortIndex();
@@ -289,7 +288,7 @@ INodeWithPrototype {
 
     @Transient
     @CheckForNull
-    private ModuleDBO getModuleBefore() throws PersistenceException {
+    private ModuleDBO getModuleBefore() {
         ModuleDBO module = null;
         if (getSlave() != null) {
             int sub = 1;
@@ -490,4 +489,21 @@ INodeWithPrototype {
     public void update() throws PersistenceException {
         super.update();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void assembleEpicsAddressString() throws PersistenceException {
+        final List<Integer> configurationDataList = getConfigurationDataList();
+        final GsdModuleModel2 module2 = getGsdModuleModel2();
+        if(module2!=null) {
+            final List<Integer> extUserPrmDataConst = module2.getExtUserPrmDataConst();
+            if(!(configurationDataList!=null&&extUserPrmDataConst!=null&&configurationDataList.size()==extUserPrmDataConst.size())) {
+                setConfigurationData(extUserPrmDataConst);
+            }
+        }
+        super.assembleEpicsAddressString();
+    }
+
 }

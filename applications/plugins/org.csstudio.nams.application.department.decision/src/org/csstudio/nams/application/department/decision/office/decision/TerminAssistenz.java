@@ -30,6 +30,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import org.csstudio.nams.application.department.decision.ThreadTypesOfDecisionDepartment;
+import org.csstudio.nams.common.decision.Ablagefaehig;
 import org.csstudio.nams.common.decision.Arbeitsfaehig;
 import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.fachwert.Millisekunden;
@@ -46,10 +47,10 @@ import org.csstudio.nams.common.service.ExecutionService;
 public class TerminAssistenz implements Arbeitsfaehig {
 	private class Terminbearbeitung implements
 			DokumentenBearbeiter<Terminnotiz> {
-		private final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen;
+		private final Map<String, Eingangskorb<Ablagefaehig>> eingangskoerbeDerSachbearbeiterNachNamen;
 
 		public Terminbearbeitung(
-				final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen) {
+				final Map<String, Eingangskorb<Ablagefaehig>> eingangskoerbeDerSachbearbeiterNachNamen) {
 			this.eingangskoerbeDerSachbearbeiterNachNamen = eingangskoerbeDerSachbearbeiterNachNamen;
 		}
 
@@ -58,9 +59,9 @@ public class TerminAssistenz implements Arbeitsfaehig {
 			final String name = eingang
 					.gibNamenDesZuInformierendenSachbearbeiters();
 			final Millisekunden wartezeit = eingang.gibWartezeit();
-			final Eingangskorb<Terminnotiz> eingangskorb = this.eingangskoerbeDerSachbearbeiterNachNamen
+			final Eingangskorb<Ablagefaehig> sachbearbeiterEingangskorb = this.eingangskoerbeDerSachbearbeiterNachNamen
 					.get(name);
-			if (eingangskorb == null) {
+			if (sachbearbeiterEingangskorb == null) {
 				throw new RuntimeException(
 						"Zu jedem Namen sollte es ein Korb geben.");
 			}
@@ -68,7 +69,7 @@ public class TerminAssistenz implements Arbeitsfaehig {
 				@Override
 				public void run() {
 					try {
-						eingangskorb.ablegen(eingang);
+						sachbearbeiterEingangskorb.ablegen(eingang);
 					} catch (InterruptedException e) {
 						throw new RuntimeException(
 								"Ablegen in einen Eingangskorb schlug fehl.", e);
@@ -88,7 +89,7 @@ public class TerminAssistenz implements Arbeitsfaehig {
 	public TerminAssistenz(
 			final ExecutionService executionService,
 			final Eingangskorb<Terminnotiz> eingehendeTerminnotizen,
-			final Map<String, Eingangskorb<Terminnotiz>> eingangskoerbeDerSachbearbeiterNachNamen,
+			final Map<String, Eingangskorb<Ablagefaehig>> eingangskoerbeDerSachbearbeiterNachNamen,
 			final Timer timer) {
 		this.executionService = executionService;
 		this.timer = timer;

@@ -7,9 +7,12 @@
  ******************************************************************************/
 package org.csstudio.archive.writer.rdb;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +50,8 @@ public class RDBArchiveWriter implements ArchiveWriter
     
     final private int MAX_TEXT_SAMPLE_LENGTH = Preferences.getMaxStringSampleLength();
     
+    final private boolean use_array_blob;
+        
     /** RDB connection */
     final private RDBUtil rdb;
 
@@ -65,8 +70,8 @@ public class RDBArchiveWriter implements ArchiveWriter
     /** Prepared statement for inserting 'double' samples */
     private PreparedStatement insert_double_sample = null;
 
-    /** Prepared statement for inserting 'double' array samples */
-    private PreparedStatement insert_double_array_sample = null;
+    /** Prepared statement for inserting array samples */
+    private PreparedStatement insert_array_sample = null;
 
     /** Prepared statement for inserting 'long' samples */
     private PreparedStatement insert_long_sample = null;
@@ -98,31 +103,22 @@ public class RDBArchiveWriter implements ArchiveWriter
     public RDBArchiveWriter() throws Exception
     {
         this(RDBArchivePreferences.getURL(), RDBArchivePreferences.getUser(),
-        		RDBArchivePreferences.getPassword(), RDBArchivePreferences.getSchema());
-    }
-
-    /** Initialize.
-     *  This constructor can be invoked by test code.
-     *  @param url RDB URL
-     *  @param user .. user name
-     *  @param password .. password
-     *  @throws Exception on error, for example RDB connection error
-     */
-    public RDBArchiveWriter(final String url, final String user, final String password) throws Exception
-    {
-        this(url, user, password, RDBArchivePreferences.getSchema());
+                RDBArchivePreferences.getPassword(), RDBArchivePreferences.getSchema(),
+                RDBArchivePreferences.useArrayBlob());
     }
 
     /** Initialize
      *  @param url RDB URL
      *  @param user .. user name
      *  @param password .. password
-     *  @param schema Schema/table prefix, ending in ".". May be empty
+     *  @param schema Schema/table prefix, not including ".". May be empty
+     *  @param use_array_blob Use BLOB for array elements?
      *  @throws Exception on error, for example RDB connection error
      */
     public RDBArchiveWriter(final String url, final String user, final String password,
-            final String schema) throws Exception
+            final String schema, boolean use_array_blob) throws Exception
     {
+        this.use_array_blob = use_array_blob;
         rdb = RDBUtil.connect(url, user, password, false);
         sql = new SQL(rdb.getDialect(), schema);
         severities = new SeverityCache(rdb, sql);
@@ -225,6 +221,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             final long[] num = ((ILongValue)sample).getValues();
             
             // Handle arrays as double
+            // TODO Support Long arrays 'l' and Integer 'i'
             if (num.length > 1)
             {
                 final double[] dbl = new double[num.length];
@@ -252,12 +249,96 @@ public class RDBArchiveWriter implements ArchiveWriter
             final Timestamp stamp, final Severity severity,
             final Status status, final double[] dbl) throws Exception
     {
+        if (use_array_blob)
+            batchBlobbedDoubleSample(channel, stamp, severity, status, dbl);
+        else
+            oldBatchDoubleSamples(channel, stamp, severity, status, dbl);
+    }
+
+    /** Helper for batchSample: Add double sample(s) to batch, using
+     *  blob to store array elements.
+     */
+    private void batchBlobbedDoubleSample(final RDBWriteChannel channel,
+            final Timestamp stamp, Severity severity,
+            Status status, final double[] dbl) throws Exception
+    {
+        if (insert_double_sample == null)
+        {
+            insert_double_sample =
+                rdb.getConnection().prepareStatement(sql.sample_insert_double_blob);
+            if (SQL_TIMEOUT_SECS > 0)
+                insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+        }
+        // Set scalar or 1st element of a waveform.
+        // Catch not-a-number, which JDBC (at least Oracle) can't handle.
+        if (Double.isNaN(dbl[0]))
+        {
+            insert_double_sample.setDouble(5, 0.0);
+            severity = severities.findOrCreate(NOT_A_NUMBER_SEVERITY);
+            status = stati.findOrCreate(NOT_A_NUMBER_STATUS);
+        }
+        else
+            insert_double_sample.setDouble(5, dbl[0]);
+
+        if (dbl.length <= 1)
+        {    // No more array elements, only scalar
+            switch (rdb.getDialect())
+            {
+            case Oracle:
+                // TODO Oracle case not tested
+                insert_double_sample.setString(6, " ");
+                insert_double_sample.setNull(7, Types.BLOB);
+                break;
+            case PostgreSQL:
+                insert_double_sample.setString(7, " ");
+                insert_double_sample.setBytes(8, null);
+                break;
+            default:
+                // Types.BINARY?
+                insert_double_sample.setString(7, " ");
+                insert_double_sample.setNull(8, Types.BLOB);
+            }
+        }
+        else
+        {   // More array elements
+            final ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            final DataOutputStream dout = new DataOutputStream(bout);
+            // Indicate 'Double' as data type
+            dout.writeInt(dbl.length);
+            // Write binary data for array elements
+            for (double d : dbl)
+                dout.writeDouble(d);
+            dout.close();
+            final byte[] asBytes = bout.toByteArray();
+            if (rdb.getDialect() == Dialect.Oracle)
+            {
+                insert_double_sample.setString(6, "d");
+                insert_double_sample.setBytes(7, asBytes);
+            }
+            else
+            {
+                insert_double_sample.setString(7, "d");
+                insert_double_sample.setBytes(8, asBytes);
+            }
+        }
+        // Batch
+        completeAndBatchInsert(insert_double_sample, channel, stamp, severity, status);
+        ++batched_double_inserts;
+    }
+
+    /** Add 'insert' for double samples to batch, handling arrays
+     *  via the original array_val table
+     */
+    private void oldBatchDoubleSamples(final RDBWriteChannel channel,
+            final Timestamp stamp, final Severity severity,
+            final Status status, final double[] dbl) throws Exception
+    {
         if (insert_double_sample == null)
         {
             insert_double_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_double);
             if (SQL_TIMEOUT_SECS > 0)
-            	insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+                insert_double_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
         if (Double.isNaN(dbl[0]))
@@ -277,15 +358,15 @@ public class RDBArchiveWriter implements ArchiveWriter
         // More array elements?
         if (dbl.length > 1)
         {
-            if (insert_double_array_sample == null)
-                insert_double_array_sample =
+            if (insert_array_sample == null)
+                insert_array_sample =
                     rdb.getConnection().prepareStatement(
-                            sql.sample_insert_double_array_element);
+                        sql.sample_insert_double_array_element);
             for (int i = 1; i < dbl.length; i++)
             {
-                insert_double_array_sample.setInt(1, channel.getId());
-                insert_double_array_sample.setTimestamp(2, stamp);
-                insert_double_array_sample.setInt(3, i);
+                insert_array_sample.setInt(1, channel.getId());
+                insert_array_sample.setTimestamp(2, stamp);
+                insert_array_sample.setInt(3, i);
                 // Patch NaN.
                 // Conundrum: Should we set the status/severity to indicate NaN?
                 // Would be easy if we wrote the main sample with overall
@@ -294,15 +375,14 @@ public class RDBArchiveWriter implements ArchiveWriter
                 // with the array sample time stamp....
                 // Go back and update the main sample after the fact??
                 if (Double.isNaN(dbl[i]))
-                    insert_double_array_sample.setDouble(4, 0.0);
+                    insert_array_sample.setDouble(4, 0.0);
                 else
-                    insert_double_array_sample.setDouble(4, dbl[i]);
+                    insert_array_sample.setDouble(4, dbl[i]);
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_double_array_sample.setInt(5, stamp.getNanos());
-
+                    insert_array_sample.setInt(5, stamp.getNanos());
                 // Batch
-                insert_double_array_sample.addBatch();
+                insert_array_sample.addBatch();
                 ++batched_double_array_inserts;
             }
         }
@@ -318,7 +398,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             insert_long_sample =
                rdb.getConnection().prepareStatement(sql.sample_insert_int);
             if (SQL_TIMEOUT_SECS > 0)
-            	insert_long_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+                insert_long_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         insert_long_sample.setLong(5, num);
         completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
@@ -335,7 +415,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             insert_txt_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_string);
             if (SQL_TIMEOUT_SECS > 0)
-            	insert_txt_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
+                insert_txt_sample.setQueryTimeout(SQL_TIMEOUT_SECS);
         }
         if (txt.length() > MAX_TEXT_SAMPLE_LENGTH)
         {
@@ -414,7 +494,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             {
                 try
                 {
-                    checkBatchExecution(insert_double_array_sample);
+                    checkBatchExecution(insert_array_sample);
                 }
                 finally
                 {
@@ -500,9 +580,11 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_double_sample.setInt(3, severity.getId());
                 insert_double_sample.setInt(4, status.getId());
                 insert_double_sample.setDouble(5, dbl.getValue());
+                //always false as we don't insert arrays in this function
+                insert_double_sample.setBoolean(6, false);
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_double_sample.setInt(6, stamp.getNanos());
+                    insert_double_sample.setInt(7, stamp.getNanos());
                 insert_double_sample.executeUpdate();
             }
             else if (sample instanceof ILongValue)
@@ -515,9 +597,10 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_long_sample.setInt(3, severity.getId());
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
+                insert_long_sample.setBoolean(6, false);
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_long_sample.setInt(6, stamp.getNanos());
+                    insert_long_sample.setInt(7, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
             else if (sample instanceof IEnumeratedValue)
@@ -530,9 +613,10 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_long_sample.setInt(3, severity.getId());
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
+                insert_long_sample.setBoolean(6, false);
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_long_sample.setInt(6, stamp.getNanos());
+                    insert_long_sample.setInt(7, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
             else
@@ -543,9 +627,10 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_txt_sample.setInt(3, severity.getId());
                 insert_txt_sample.setInt(4, status.getId());
                 insert_txt_sample.setString(5, txt);
+                insert_txt_sample.setBoolean(6, false);                
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
-                    insert_txt_sample.setInt(6, stamp.getNanos());
+                    insert_txt_sample.setInt(7, stamp.getNanos());
                 insert_txt_sample.executeUpdate();
             }
             rdb.getConnection().commit();

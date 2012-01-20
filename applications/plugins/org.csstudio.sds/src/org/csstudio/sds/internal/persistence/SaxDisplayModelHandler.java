@@ -40,7 +40,7 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.GroupingContainerModel;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.xml.sax.Attributes;

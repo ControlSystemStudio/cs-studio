@@ -31,9 +31,12 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.sdds.server.command.header.DataRequestHeader;
 import org.csstudio.archive.sdds.server.conversion.ConversionExecutor;
 import org.csstudio.archive.sdds.server.file.DataPathNotFoundException;
+import org.csstudio.archive.sdds.server.file.SddsFileLengthException;
 import org.csstudio.archive.sdds.server.file.SddsFileReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.desy.aapi.AapiServerError;
 
 /**
  * @author Markus Moeller
@@ -60,7 +63,7 @@ public class DataCollector {
         try {
             sddsReader = new SddsFileReader("./sdds_data_location.txt");
         } catch(final DataPathNotFoundException dpnfe) {
-            LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe);
+            LOG.error("[*** DataPathNotFoundException ***]: {}", dpnfe.getMessage());
             throw new DataCollectorException("DataCollector: Cannot instantiate the class SddsFileReader: " + dpnfe.getMessage());
         }
     }
@@ -77,13 +80,19 @@ public class DataCollector {
         RecordDataCollection dataCollection = null;
         List<EpicsRecordData> data = null;
 
-        dataCollection = sddsReader.readData(recordName, header.getFromSec(), header.getToSec());
+        try {
 
-        EpicsRecordData[] readData = new EpicsRecordData[dataCollection.getNumberOfData()];
-        readData = dataCollection.getData().toArray(readData);
+            dataCollection = sddsReader.readData(recordName, header.getFromSec(), header.getToSec());
+            EpicsRecordData[] readData = new EpicsRecordData[dataCollection.getNumberOfData()];
+            readData = dataCollection.getData().toArray(readData);
 
-        data = conversionExecutor.convertData(readData, header);
-        dataCollection.setData(data);
+            data = conversionExecutor.convertData(readData, header);
+            dataCollection.setData(data);
+
+        } catch (final SddsFileLengthException fle) {
+            dataCollection = new RecordDataCollection(AapiServerError.CAN_T_OPEN_FILE);
+            LOG.error("[*** SddsFileLengthException ***]: {}", fle.getMessage());
+        }
 
         return dataCollection;
     }

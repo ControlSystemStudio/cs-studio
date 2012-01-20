@@ -27,7 +27,11 @@
 # Byte/sample unclear because not all data in a mysql/data subdir?
 # accl2 -> ics-srv-softioc4: 1200 / sec
 # local, all on ics-srv-softioc4: 3500 / sec
-
+#
+# Table size info:
+# SELECT table_name, data_length/1024/1024 "Table MB", index_length / 1024 / 1024  "Index MB" FROM information_schema.TABLES WHERE table_schema="archive";
+#
+# SHOW TABLE STATUS FROM archive;
 
 -- Create 'archive' user who can remotely access the 'archive' tables,
 -- but only change the table layout locally
@@ -52,6 +56,11 @@ DROP DATABASE IF EXISTS archive;
 CREATE DATABASE archive;
 
 USE archive;
+
+# Switch from default MyISAM (no checks but faster)
+# to InnoDB ('real' database but slower)?
+SET storage_engine=INNODB;
+# SET storage_engine=MyISAM;
 
 # ----------------------
 # Sample engine
@@ -121,7 +130,13 @@ CREATE TABLE IF NOT EXISTS channel
    retent_id INT UNSIGNED NULL,
    retent_val DOUBLE NULL
 );
-INSERT INTO channel(channel_id, name) VALUES (1, 'sim://sine(0, 10, 50, 0.1)'), (2, 'freddy'), (3, 'jane');
+INSERT INTO channel(channel_id, name) VALUES
+  (1, 'sim://sine(0, 10, 50, 0.1)'),
+  (2, 'sim://noiseWaveform(0,10,100,10)'),
+  (3, 'freddy'),
+  (4, 'jane');
+
+
 UPDATE channel SET retent_id=9999 WHERE channel_id < 4;
 UPDATE channel SET grp_id=1 WHERE channel_id < 4;
 UPDATE channel SET smpl_val=1 WHERE channel_id = 1;
@@ -153,24 +168,40 @@ SELECT * FROM status;
 # Samples of a channel
 # Either the numeric, floating point or string value should be set,
 # not all of them.
-# For (double) arrays, the float_val contains the first array element,
-# and the array_val table has the following ones
+#
+# See array_encoding.txt for handling of array data.
+#
+# Blob size considerations:
+# TINYBLOB: Up to 2^8 = 256 bytes, 1 byte overhead
+# BLOB: 2^16
+# MEDIUMBLOB: 2^24
+# LONGBLOB: 2^32, 4 byte overhead
 DROP TABLE IF EXISTS sample;
 CREATE TABLE IF NOT EXISTS sample
 (
-   channel_id INT UNSIGNED NOT NULL,
-   smpl_time TIMESTAMP NOT NULL,
-   nanosecs INT UNSIGNED NOT NULL,
-   severity_id INT UNSIGNED NOT NULL,
-   status_id INT UNSIGNED NOT NULL,
-   num_val INT NULL,
-   float_val REAL NULL,
-   str_val VARCHAR(120) NULL,
+   channel_id INT UNSIGNED NOT NULL                       COMMENT 'Channel ID',
+   smpl_time TIMESTAMP NOT NULL                           COMMENT 'Time stamp',
+   nanosecs INT UNSIGNED NOT NULL                         COMMENT 'Nanoseconds of time stamp',
+   severity_id INT UNSIGNED NOT NULL                      COMMENT 'Severity ID',
+   status_id INT UNSIGNED NOT NULL                        COMMENT 'Status ID',
+   num_val INT NULL                                       COMMENT 'Integer value or null',
+   float_val REAL NULL                                    COMMENT 'Float value or null',
+   str_val VARCHAR(120) NULL                              COMMENT 'String value or null',
+   datatype CHAR(1) CHARACTER SET binary NULL DEFAULT ' ' COMMENT 'Array element count, 1 for scalar',
+   array_val LONGBLOB  NULL                               COMMENT 'Array data',
+   
    FOREIGN KEY (channel_id) REFERENCES channel (channel_id) ON DELETE CASCADE,
    FOREIGN KEY (severity_id) REFERENCES severity (severity_id) ON DELETE CASCADE,
    FOREIGN KEY (status_id) REFERENCES status (status_id) ON DELETE CASCADE
 );
 
+# Update original non-BLOB sample table:
+#
+# ALTER TABLE sample ADD COLUMN datatype CHAR(1) CHARACTER SET binary NULL DEFAULT ' ' COMMENT 'array_val data type' AFTER str_val;
+# ALTER TABLE sample ADD COLUMN array_val LONGBLOB NULL COMMENT 'Array data' AFTER datatype;
+#  
+# SHOW FULL COLUMNS FROM sample;
+  
 # Need index on channel_id and smpl_time?
 CREATE INDEX sample_id_time ON sample ( channel_id, smpl_time, nanosecs );
 
@@ -180,8 +211,12 @@ INSERT INTO sample (channel_id, smpl_time, nanosecs, severity_id, status_id, flo
           (1, '2004-01-10 13:01:11', 2, 1, 1, 3.16),
           (1, '2004-01-10 13:01:10', 3, 1, 2, 3.15),
           (1, '2004-01-10 13:01:10', 4, 1, 2, 3.14);
+          
+# To display array_val in MySQL, the closest might be
+# SELECT ... HEX(array_val) FROM sample WHERE ...
 
 # ----------------------
+# *** OLD Array element table. Replaced by array_val BLOB in sample table ***
 # See sample table: Array elements 1, 2, 3, ... beyond the element 0
 # that's in the sample table
 DROP TABLE IF EXISTS array_val;

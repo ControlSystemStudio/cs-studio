@@ -94,8 +94,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         }
 
         // Fetch the samples
-        sel_samples = reader.getRDB().getConnection().prepareStatement(
-                reader.getSQL().sample_sel_by_id_start_end);
+        if (reader.useArrayBlob())
+	        sel_samples = reader.getRDB().getConnection().prepareStatement(
+	                reader.getSQL().sample_sel_by_id_start_end_with_blob);
+        else
+	        sel_samples = reader.getRDB().getConnection().prepareStatement(
+	                reader.getSQL().sample_sel_by_id_start_end);
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
 
         // Test w/ ~170000 raw samples:

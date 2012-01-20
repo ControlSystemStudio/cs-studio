@@ -38,11 +38,11 @@ import org.csstudio.domain.desy.epics.name.EpicsChannelName;
  */
 public class StartChannelResponse extends AbstractChannelResponse {
 
+    private static String URL_BASE_PAGE;
     private static String URL_START_CHANNEL_ACTION;
-    private static String URL_START_CHANNEL_PAGE;
     static {
         URL_START_CHANNEL_ACTION = "start";
-        URL_START_CHANNEL_PAGE = URL_CHANNEL_PAGE + "/" + URL_START_CHANNEL_ACTION;
+        URL_BASE_PAGE = URL_CHANNEL_PAGE + "/" + URL_START_CHANNEL_ACTION;
     }
 
     private static final long serialVersionUID = 1L;
@@ -90,11 +90,11 @@ public class StartChannelResponse extends AbstractChannelResponse {
 
     @Nonnull
     public static String baseUrl() {
-        return URL_START_CHANNEL_PAGE;
+        return URL_BASE_PAGE;
     }
     @Nonnull
     public static String linkTo(@Nonnull final String name) {
-        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_START);
+        return new Url(baseUrl()).with(PARAM_NAME, name).link(Messages.HTTP_START_CHANNEL);
     }
     @Nonnull
     public static String urlTo(@Nonnull final String name) {

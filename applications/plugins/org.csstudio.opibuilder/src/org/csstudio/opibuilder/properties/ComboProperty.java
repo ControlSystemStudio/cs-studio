@@ -92,7 +92,11 @@ public class ComboProperty extends AbstractWidgetProperty {
 	
 	@Override
 	public Object readValueFromXML(Element propElement) {
-		return Integer.parseInt(propElement.getValue());			
+		 try {
+			return Integer.parseInt(propElement.getValue());
+		} catch (NumberFormatException e) {
+			return Boolean.parseBoolean(propElement.getValue())? 0 : 1;
+		}			
 	}
 
 	@Override

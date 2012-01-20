@@ -29,9 +29,11 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
+import org.eclipse.gef.tools.SelectEditPartTracker;
 
 /**The editpart for spinner widget.
  * @author Xihui Chen
@@ -293,10 +295,27 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 	}
 
+	public DragTracker getDragTracker(Request request) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			return new SelectEditPartTracker(this) {				
+				@Override
+				protected boolean handleButtonUp(int button) {
+					if (button == 1) {
+						//make widget in edit mode by single click
+						performOpen();
+					}
+					return super.handleButtonUp(button);
+				}
+			};
+		}else
+			return super.getDragTracker(request);
+	}
 
 	@Override
 	public void performRequest(Request request){
-		if (getFigure().isEnabled() && (request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
+		if (getFigure().isEnabled()
+				&&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
+				getExecutionMode() != ExecutionMode.RUN_MODE)||
 				request.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}

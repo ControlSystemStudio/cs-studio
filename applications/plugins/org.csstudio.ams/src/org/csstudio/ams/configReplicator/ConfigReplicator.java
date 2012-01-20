@@ -21,7 +21,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
- package org.csstudio.ams.configReplicator;
+package org.csstudio.ams.configReplicator;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -51,25 +51,25 @@ import org.csstudio.ams.dbAccess.configdb.UserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
 
-public class ConfigReplicator implements AmsConstants
-{
-	/**
+public class ConfigReplicator implements AmsConstants {
+	
+    /**
 	 * Copying configuration from one database to another.
 	 */
-	public static void replicateConfiguration(Connection masterDB, Connection localDB)
-												throws Exception
-	{
-		try
-		{
-			Log.log(Log.INFO, "Start Configuration Replicating.");
+	public static void replicateConfiguration(Connection masterDB,
+	                                          Connection localDB)
+												throws Exception {
+		try {
 			
+		    Log.log(Log.INFO, "Start configuration replication.");
+		    
 			masterDB.setAutoCommit(false);
 			if (!FlagDAO.bUpdateFlag(masterDB, FLG_BUP, FLAGVALUE_RPLCFG_IDLE, FLAGVALUE_RPLCFG_DIST_SYNC))
 				throw new ExitException("replicateConfiguration start: could not update " + FLG_BUP 
 						+ " from + " + FLAGVALUE_RPLCFG_IDLE + " to " + FLAGVALUE_RPLCFG_DIST_SYNC
 						, EXITERR_BUP_UPDATEFLAG_START);
 
-			Log.log(Log.INFO, "Start deleting local Configuration.");			
+			Log.log(Log.INFO, "Start deleting local configuration.");			
 			// ADDED: Markus Moeller 06.08.2008
 			FilterCondJunctionDAO.removeAll(localDB);			
 			FilterCondNegationDAO.removeAll(localDB);
@@ -95,7 +95,7 @@ public class ConfigReplicator implements AmsConstants
 			UserGroupDAO.removeAll(localDB);
 			UserGroupUserDAO.removeAll(localDB);
 	
-			Log.log(Log.INFO, "Start copying master Configuration.");
+			Log.log(Log.INFO, "Start copying master configuration.");
 			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB);
 			FilterConditionDAO.copyFilterCondition(masterDB, localDB);
 			FilterConditionStringDAO.copyFilterConditionString(masterDB, localDB);
@@ -120,7 +120,7 @@ public class ConfigReplicator implements AmsConstants
 			UserGroupDAO.copyUserGroup(masterDB, localDB);
 			UserGroupUserDAO.copyUserGroupUser(masterDB, localDB);
 			
-			Log.log(Log.INFO, "Replicating Configuration finished.");
+			Log.log(Log.INFO, "Replicating configuration finished.");
 			
 			if (!FlagDAO.bUpdateFlag(masterDB, FLG_BUP, FLAGVALUE_RPLCFG_DIST_SYNC, FLAGVALUE_RPLCFG_IDLE))
 				throw new ExitException("replicateConfiguration end: could not update " + FLG_BUP 
@@ -128,29 +128,22 @@ public class ConfigReplicator implements AmsConstants
 						, EXITERR_BUP_UPDATEFLAG_END);
 
 			masterDB.commit();
-		}
-		catch (Exception ex)
-		{
-			try
-			{
+		} catch (Exception ex) {
+			try {
 				masterDB.rollback();
-			}
-			catch(Exception e)
-			{
-				Log.log(Log.WARN, "rollback failed.", e);
+			} catch(Exception e) {
+				Log.log(Log.WARN, "Rollback failed.", e);
 			}
 
-			Log.log(Log.FATAL, "replicateConfiguration failed.", ex);
+			Log.log(Log.FATAL, "Replicate configuration failed.", ex);
 			
 			throw ex;
-		}
-		finally 
-		{
-			try
-			{
+		} finally {
+			try {
 				masterDB.setAutoCommit(true);
+			} catch(Exception e) {
+			    // Ignore me
 			}
-			catch(Exception e){}
 		}
 		// All O.K.
 	}
@@ -239,7 +232,9 @@ public class ConfigReplicator implements AmsConstants
 		{
 			try{
 				masterDB.setAutoCommit(true);
-			}catch(Exception e){}
+			}catch(Exception e) {
+			    // Ignore me
+			}
 		}
 		return bReturnValue;
 	}

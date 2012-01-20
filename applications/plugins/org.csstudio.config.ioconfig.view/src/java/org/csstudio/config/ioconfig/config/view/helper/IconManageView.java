@@ -29,9 +29,9 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -63,33 +63,84 @@ import org.eclipse.swt.widgets.Label;
  */
 public class IconManageView extends Composite {
     //    public class IconManageView extends ScrolledComposite {
-    
-    private final Composite _mainComposite;
+
+    /**
+     * TODO (hrickens) :
+     *
+     * @author hrickens
+     * @since 10.10.2011
+     */
+    private final class ImageFileSelectionAdapter extends SelectionAdapter {
+        private final TableViewer _iconOverview;
+        private final Label _iconSelectX;
+
+        /**
+         * Constructor.
+         * @param iconOverview
+         * @param iconSelectX
+         */
+        protected ImageFileSelectionAdapter(@Nonnull final TableViewer iconOverview, @Nonnull final Label iconSelectX) {
+            _iconOverview = iconOverview;
+            _iconSelectX = iconSelectX;
+        }
+
+        @Override
+        public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            fileChooserAction();
+        }
+
+        @Override
+        public void widgetSelected(@Nonnull final SelectionEvent e) {
+            fileChooserAction();
+        }
+
+        private void fileChooserAction() {
+            final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
+            dialog.setFilterExtensions(new String[]{"*.jpg; *.jpeg; *.gif; *.png; *.bmp","*.*"});
+            final String iconFile = dialog.open();
+            if(iconFile!=null){
+                IconManageView.this.layout(true,true);
+                final ImageLoader im = new ImageLoader();
+                final Image image = new Image(null, im.load(iconFile)[0]);
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                im.save(baos, SWT.IMAGE_JPEG);
+                final NodeImageDBO selectedImage = new NodeImageDBO();
+                selectedImage.setImageBytes(baos.toByteArray());
+                selectedImage.setName(iconFile);
+                selectedImage.setFile(iconFile);
+                setSelectedImage(selectedImage);
+                _iconOverview.add(selectedImage);
+                _iconSelectX.setImage(image);
+                _iconSelectX.pack();
+                IconManageView.this.pack(false);
+            }
+        }
+    }
+
     private final List<NodeImageDBO> _nodeImages;
     private NodeImageDBO _selectedImage;
-    
+
     /**
      * @param parent
      * @param style
      */
-    public IconManageView(@Nonnull final Composite parent, final int style, @Nonnull final AbstractNodeDBO node) {
+    public IconManageView(@Nonnull final Composite parent, final int style) {
         super(parent, style);
         this.setLayoutData(GridDataFactory.fillDefaults().create());
         this.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).create());
-        _mainComposite = this;
-        final Composite tableComposite = new Composite(_mainComposite, SWT.BORDER);
+        final Composite tableComposite = new Composite(this, SWT.BORDER);
         final TableColumnLayout tableColumnLayout = new TableColumnLayout();
         GridDataFactory.fillDefaults().grab(false, true).span(1, 2).applyTo(tableComposite);
         tableComposite.setLayout(tableColumnLayout);
         tableComposite.setBackground(new Color(null,125,125,0));
-        
+
         final TableViewer iconOverview = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
                                                          | SWT.MULTI | SWT.FULL_SELECTION);
         iconOverview.getTable().setHeaderVisible(true);
         iconOverview.setContentProvider(new ArrayContentProvider());
         iconOverview.getTable().setLinesVisible(true);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(iconOverview.getTable());
-        
+
         // Column Icon
         TableViewerColumn column = new TableViewerColumn(iconOverview, SWT.NONE);
         column.getColumn().setText("Icon");
@@ -101,7 +152,7 @@ public class IconManageView extends Composite {
             }
         });
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(2, 100, true));
-        
+
         // Column File Name
         column = new TableViewerColumn(iconOverview, SWT.NONE);
         column.getColumn().setText("File Name");
@@ -112,59 +163,30 @@ public class IconManageView extends Composite {
             }
         });
         tableColumnLayout.setColumnData(column.getColumn(), new ColumnWeightData(4, 200, true));
-        //        _nodeImages = Repository.load(NodeImage.class);
         _nodeImages = new ArrayList<NodeImageDBO>();
         iconOverview.setInput(_nodeImages);
-        
-        final Label iconSelectX = new Label(_mainComposite,SWT.BORDER|SWT.CENTER);
+
+        final Label iconSelectX = new Label(this,SWT.BORDER|SWT.CENTER);
         final GridData layoutData = new GridData(SWT.LEFT, SWT.TOP, true, true, 1,1);
         layoutData.minimumHeight=100;
         layoutData.minimumWidth=100;
         iconSelectX.setLayoutData(layoutData);
         iconSelectX.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
         iconSelectX.setText("testX");
-        
-        final Button fileChooserButton = new Button(_mainComposite,SWT.PUSH);
+
+        final Button fileChooserButton = new Button(this,SWT.PUSH);
         fileChooserButton.setText("Add Icon");
-        
-        fileChooserButton.addSelectionListener(new SelectionAdapter() {
-            
-            @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                fileChooserAction();
-            }
-            
-            @Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                fileChooserAction();
-            }
-            
-            private void fileChooserAction() {
-                final FileDialog dialog = new FileDialog(getShell(), SWT.OPEN);
-                dialog.setFilterExtensions(new String[]{"*.jpg; *.jpeg; *.gif; *.png; *.bmp","*.*"});
-                final String iconFile = dialog.open();
-                if(iconFile!=null){
-                    IconManageView.this.layout(true,true);
-                    final ImageLoader im = new ImageLoader();
-                    final Image image = new Image(null, im.load(iconFile)[0]);
-                    final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    im.save(baos, SWT.IMAGE_JPEG);
-                    _selectedImage = new NodeImageDBO();
-                    _selectedImage.setImageBytes(baos.toByteArray());
-                    _selectedImage.setName(iconFile);
-                    _selectedImage.setFile(iconFile);
-                    iconOverview.add(_selectedImage);
-                    iconSelectX.setImage(image);
-                    iconSelectX.pack();
-                    IconManageView.this.pack(false);
-                }
-            }
-        });
-        
+        fileChooserButton.addSelectionListener(new ImageFileSelectionAdapter(iconOverview, iconSelectX));
+
     }
-    
+
+    @CheckForNull
     public NodeImageDBO getSelectedImage() {
         return _selectedImage;
     }
-    
+
+    public void setSelectedImage(@Nonnull final NodeImageDBO selectedImage) {
+        _selectedImage = selectedImage;
+    }
+
 }

@@ -85,12 +85,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The DCT Editor implementation.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
-    
+
     /**
      * @author hrickens
      * @author $Author: hrickens $
@@ -103,19 +103,19 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
         /**
          * Constructor.
          */
-        public SearchListener(Text searchBox) {
+        public SearchListener(final Text searchBox) {
             _searchBox = searchBox;
         }
-        
-        public void widgetSelected(SelectionEvent e) {
+
+        public void widgetSelected(final SelectionEvent e) {
             search();
         }
-        
+
         private void search() {
             searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
         }
-        
-        public void widgetDefaultSelected(SelectionEvent e) {
+
+        public void widgetDefaultSelected(final SelectionEvent e) {
             search();
         }
     }
@@ -132,17 +132,17 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
         Color red = Display.getDefault().getSystemColor(SWT.COLOR_RED);
         Color white = Display.getDefault().getSystemColor(SWT.COLOR_WHITE);
         Color black = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
-        
+
         /**
          * Constructor.
          */
         private SearchModifyListener(final Text searchBox) {
             _searchBox = searchBox;
         }
-        
-        public void modifyText(ModifyEvent e) {
-            
-        	boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensetiv());
+
+        public void modifyText(final ModifyEvent e) {
+
+        	final boolean found = searchAndMarkInPreview(_searchBox.getText(), false, isCaseSensetiv());
         	if(found) {
         	    _searchBox.setBackground(white);
         	    _searchBox.setForeground(black);
@@ -154,7 +154,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
     }
 
     private static final Logger LOG = LoggerFactory.getLogger(DctEditor.class);
-    
+
 	private Project project;
 	private final CommandStack commandStack;
 	private final ISelectionChangedListener outlineSelectionListener;
@@ -182,11 +182,11 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		outlineSelectionListener = new ISelectionChangedListener() {
 
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
 				if (sel != null && sel.getFirstElement() != null) {
-					Object o = sel.getFirstElement();
+					final Object o = sel.getFirstElement();
 
 					// .. set form inputs
 					projectForm.setInput(o instanceof IProject ? o : null);
@@ -247,35 +247,35 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		projectForm.setInput(getProject());
 		stackLayout.topControl = projectForm.getMainComposite();
 
-		int index = addPage(contentPanel);
+		final int index = addPage(contentPanel);
 		setPageText(index, "Edit");
 	}
 
 	void createPage1() {
-		Composite composite = new Composite(getContainer(), SWT.NONE);
+		final Composite composite = new Composite(getContainer(), SWT.NONE);
 		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 5, 5, 5, 5, 5));
 
-		Composite c = new Composite(composite, SWT.NONE);
+		final Composite c = new Composite(composite, SWT.NONE);
 		c.setLayoutData(LayoutUtil.createGridData());
-		GridLayout gridLayout = GridLayoutFactory.swtDefaults().numColumns(5).create();
+		final GridLayout gridLayout = GridLayoutFactory.swtDefaults().numColumns(5).create();
 //		FillLayout layout = new FillLayout();
 //		layout.spacing=5;
 //		c.setLayout(layout);
 		c.setLayout(gridLayout);
 
-		CCombo list = new CCombo(c, SWT.READ_ONLY | SWT.BORDER);
-		GridDataFactory swtDefaults = GridDataFactory.swtDefaults();
+		final CCombo list = new CCombo(c, SWT.READ_ONLY | SWT.BORDER);
+		final GridDataFactory swtDefaults = GridDataFactory.swtDefaults();
 		list.setLayoutData(swtDefaults.create());
-        ComboViewer viewer = new ComboViewer(list);
+        final ComboViewer viewer = new ComboViewer(list);
 		viewer.getCCombo().setEditable(false);
 		viewer.getCCombo().setVisibleItemCount(20);
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new LabelProvider());
-		List<ExporterDescriptor> exporterExtensions = Extensions.lookupExporterExtensions();
+		final List<ExporterDescriptor> exporterExtensions = Extensions.lookupExporterExtensions();
 		viewer.setInput(exporterExtensions);
-		
+
 		// .. choose default exporter
-		for(ExporterDescriptor d : exporterExtensions) {
+		for(final ExporterDescriptor d : exporterExtensions) {
 			if(d.isStandard()) {
 				exporterDescriptor = d;
 				viewer.setSelection(new StructuredSelection(exporterDescriptor));
@@ -283,58 +283,58 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		}
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-				ExporterDescriptor descriptor = (ExporterDescriptor) sel.getFirstElement();
+			public void selectionChanged(final SelectionChangedEvent event) {
+				final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+				final ExporterDescriptor descriptor = (ExporterDescriptor) sel.getFirstElement();
 				exporterDescriptor = descriptor;
 				updatePreview();
 			}
 		});
-		    
+
 		_searchBox = new Text(c, SWT.SEARCH);
 		_searchBox.setMessage("Search");
 		_searchBox.setLayoutData(GridDataFactory.fillDefaults().hint(200, 0).create());
 		_searchBox.addModifyListener(new SearchModifyListener(_searchBox));
 		_searchBox.addKeyListener(new KeyAdapter() {
-		    
+
 		    @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(final KeyEvent e) {
 		        if(e.keyCode==SWT.KEYPAD_CR||e.keyCode==SWT.CR||e.keyCode==SWT.F3) {
 		            searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
 		        }
 		    }
         });
-            
-            
-		
-		Button searchButton = new Button(c, SWT.NONE);
+
+
+
+		final Button searchButton = new Button(c, SWT.NONE);
 		searchButton.setLayoutData(swtDefaults.create());
 		searchButton.addSelectionListener(new SearchListener(_searchBox));
 		searchButton.setText("Search");
-		
+
 		final Button caseSensetivButton = new Button(c, SWT.CHECK);
         caseSensetivButton.setLayoutData(swtDefaults.create());
         caseSensetivButton.setText("Case Sensetiv");
         caseSensetivButton.addSelectionListener(new SelectionListener() {
-            
-            public void widgetSelected(SelectionEvent e) {
+
+            public void widgetSelected(final SelectionEvent e) {
                 setCaseSensetiv(caseSensetivButton.getSelection());
             }
-            
-            public void widgetDefaultSelected(SelectionEvent e) {
+
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 setCaseSensetiv(caseSensetivButton.getSelection());
             }
         });
-        
 
-		Button saveToFileButton = new Button(c, SWT.NONE);
+
+		final Button saveToFileButton = new Button(c, SWT.NONE);
 		saveToFileButton.setLayoutData(swtDefaults.grab(true, false).align(SWT.END, SWT.CENTER).create());
 		saveToFileButton.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseUp(MouseEvent event) {
+			public void mouseUp(final MouseEvent event) {
 				if (exporterDescriptor != null) {
-					FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
-					String path = dialog.open();
+					final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.SAVE);
+					final String path = dialog.open();
 
 					if (path != null) {
 						try {
@@ -345,13 +345,13 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 							}
 
 							if (file.canWrite()) {
-								FileWriter writer = new FileWriter(file);
+								final FileWriter writer = new FileWriter(file);
 								writer.write(exporterDescriptor.getExporter().export(getProject()));
 								writer.close();
 							}
 
 							file = null;
-						} catch (IOException e) {
+						} catch (final IOException e) {
 							MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Export not possible", e.getMessage());
 						}
 					}
@@ -368,22 +368,22 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		dbFilePreviewText.setEditable(false);
 		dbFilePreviewText.setFont(CustomMediaFactory.getInstance().getFont("Courier", 11, SWT.NORMAL));
 		dbFilePreviewText.addKeyListener(new KeyAdapter() {
-            
+
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyReleased(final KeyEvent e) {
                 if(e.keyCode==SWT.F3) {
                     searchAndMarkInPreview(_searchBox.getText(), true, isCaseSensetiv());
                 }
             }
         });
-		int index = addPage(composite);
+		final int index = addPage(composite);
 		setPageText(index, "Preview DB-File");
 	}
 
-	protected boolean searchAndMarkInPreview(String criteria2, boolean startFromCaret, boolean caseSensitiv) {
+	protected boolean searchAndMarkInPreview(final String criteria2, final boolean startFromCaret, final boolean caseSensitiv) {
 	    boolean found = true;
 		if (criteria2 != null && criteria2.length() > 0) {
-			int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
+			final int offset = startFromCaret?dbFilePreviewText.getCaretOffset() : 0;
 			String text;
 			String criteria;
 			if(caseSensitiv) {
@@ -393,10 +393,10 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			    text = dbFilePreviewText.getText().toLowerCase();
 			    criteria = criteria2.toLowerCase();
 			}
-			int index = text.substring(offset).indexOf(criteria);
-			
+			final int index = text.substring(offset).indexOf(criteria);
+
 			if(index>-1) {
-				int pos = offset + index;
+				final int pos = offset + index;
 				dbFilePreviewText.setSelection(pos, pos + criteria.length());
 				found = true;
 			} else if(startFromCaret) {
@@ -407,12 +407,12 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		}
 	    return found;
 	}
-	
+
 	protected boolean isCaseSensetiv() {
         return _caseSensetiv;
     }
-	
-	protected void setCaseSensetiv(boolean caseSensetiv) {
+
+	protected void setCaseSensetiv(final boolean caseSensetiv) {
         _caseSensetiv = caseSensetiv;
     }
 	/**
@@ -420,8 +420,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 */
 	private void updatePreview() {
 		if (exporterDescriptor != null) {
-			String export = exporterDescriptor.getExporter().export(getProject());
-            StyleRange[] ranges = buildStyleRange(export);
+			final String export = exporterDescriptor.getExporter().export(getProject());
+            final StyleRange[] ranges = buildStyleRange(export);
             dbFilePreviewText.setText(export);
             dbFilePreviewText.setStyleRanges(ranges);
 		}
@@ -429,8 +429,8 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 	}
 
-    private StyleRange[] buildStyleRange(String export) {
-        IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl();
+    private StyleRange[] buildStyleRange(final String export) {
+        final IEpicsDBSyntaxHighlighter highlighter = new EpicsDBSyntaxHighlighterImpl();
         highlighter.append(export);
         return highlighter.getStyleRange();
     }
@@ -448,14 +448,14 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 *{@inheritDoc}
 	 */
 	@Override
-    public void doSave(IProgressMonitor monitor) {
-		FileEditorInput in = (FileEditorInput) getEditorInput();
+    public void doSave(final IProgressMonitor monitor) {
+		final FileEditorInput in = (FileEditorInput) getEditorInput();
 		try {
 			DctActivator.getDefault().getPersistenceService().saveProject(in.getFile(), getProject());
 			commandStack.markSaveLocation();
-			markErrors();
+			markErrorsAndWarnings();
 			firePropertyChange(PROP_DIRTY);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -465,14 +465,14 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 */
 	@Override
     public void doSaveAs() {
-		IEditorPart editor = getEditor(0);
+		final IEditorPart editor = getEditor(0);
 		editor.doSaveAs();
 		setPageText(0, editor.getTitle());
 		setInput(editor.getEditorInput());
 	}
 
 	@Override
-	protected void pageChange(int newPageIndex) {
+	protected void pageChange(final int newPageIndex) {
 		if (newPageIndex == 1) {
 			updatePreview();
 		}
@@ -482,13 +482,13 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 *{@inheritDoc}
 	 */
 	@Override
-    public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+    public void init(final IEditorSite site, final IEditorInput editorInput) throws PartInitException {
 		if (!(editorInput instanceof IFileEditorInput)) {
 			throw new PartInitException("Invalid Input: Must be IFileEditorInput");
 		}
 		super.init(site, editorInput);
 
-		IFile file = ((IFileEditorInput) editorInput).getFile();
+		final IFile file = ((IFileEditorInput) editorInput).getFile();
 
 		// .. set editor title
 		setPartName(file.getName());
@@ -496,7 +496,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		try {
 			// .. load the file contents
 			project = DctActivator.getDefault().getPersistenceService().loadProject(file);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error("Error: ", e);
 			project = null;
 		}
@@ -507,7 +507,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 		}
 
 		// .. refresh markers
-		markErrors();
+		markErrorsAndWarnings();
 	}
 
 	/**
@@ -528,7 +528,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 	/**
 	 * Returns the command stack used by this editor.
-	 * 
+	 *
 	 * @return the command stack used by this editor
 	 */
 	public CommandStack getCommandStack() {
@@ -539,11 +539,11 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	 *{@inheritDoc}
 	 */
 	@Override
-	public Object getAdapter(Class adapter) {
+	public Object getAdapter(final Class adapter) {
 		Object result = null;
 
 		if (adapter == IContentOutlinePage.class) {
-			OutlinePage outline = new OutlinePage(getProject(), commandStack);
+			final OutlinePage outline = new OutlinePage(getProject(), commandStack);
 			outline.setInput(getProject());
 			outline.setCommandStack(commandStack);
 			outline.addSelectionChangedListener(outlineSelectionListener);
@@ -552,15 +552,15 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 			getSite().setSelectionProvider(outline);
 		} else if (adapter == IGotoMarker.class) {
 			return new IGotoMarker() {
-				public void gotoMarker(IMarker marker) {
+				public void gotoMarker(final IMarker marker) {
 					try {
-						String location = (String) marker.getAttribute(IMarker.LOCATION);
+						final String location = (String) marker.getAttribute(IMarker.LOCATION);
 
 						if (StringUtil.hasLength(location)) {
-							UUID id = UUID.fromString(location);
+							final UUID id = UUID.fromString(location);
 							selectItemInOutline(id);
 						}
-					} catch (CoreException e) {
+					} catch (final CoreException e) {
 						LOG.info("Info: ", e);
 					}
 				}
@@ -572,71 +572,81 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 	/**
 	 *{@inheritDoc}
 	 */
-	public void commandStackChanged(EventObject event) {
+	public void commandStackChanged(final EventObject event) {
 		firePropertyChange(PROP_DIRTY);
-		markErrors();
+		markErrorsAndWarnings();
 
 		if (getActivePage() == 1) {
 			updatePreview();
 		}
 	}
 
-	private void markErrors() {
-		// .. find problems
-		ProblemVisitor visitor = new ProblemVisitor();
-		getProject().accept(visitor);
-		Set<MarkableError> errors = visitor.getErrors();
 
-		IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+    private void markErrorsAndWarnings() {
+		// .. find problems
+		final ProblemVisitor visitor = new ProblemVisitor();
+		getProject().accept(visitor);
+		final Set<MarkableError> errors = visitor.getErrors();
+		final Set<MarkableError> warnigs = visitor.getWarnnings();
+
+		final IFile file = ((IFileEditorInput) getEditorInput()).getFile();
 
 		try {
 			// .. clear old markers
 			file.deleteMarkers(IMarker.PROBLEM, true, 1);
 
-			// .. add new markers
-			for (MarkableError e : errors) {
-				IMarker marker = file.createMarker(IMarker.PROBLEM);
-				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_INFO);
+			// .. add new error markers
+			for (final MarkableError e : errors) {
+				final IMarker marker = file.createMarker(IMarker.PROBLEM);
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 				marker.setAttribute(IMarker.LOCATION, e.getId().toString());
 				marker.setAttribute(IMarker.MESSAGE, e.getErrorMessage());
 			}
-			
+
+			// .. add new warning markers
+			for (final MarkableError e : warnigs) {
+			    final IMarker marker = file.createMarker(IMarker.PROBLEM);
+			    marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+			    marker.setAttribute(IMarker.LOCATION, e.getId().toString());
+			    marker.setAttribute(IMarker.MESSAGE, e.getErrorMessage());
+			}
+
 			// .. mark file as changed
 			file.touch(new NullProgressMonitor());
-			
+
 			// .. save workspace changes to persist the new markers
 			ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
-			
-		} catch (CoreException e) {
+
+		} catch (final CoreException e) {
 			LOG.info("Info:", e);
 		}
 	}
 
 	/**
 	 * Selects the model element with the specified id in the outline view.
-	 * 
+	 *
 	 * @param id
 	 *            the element id
 	 */
-	public void selectItemInOutline(UUID id) {
-		IElement element = new SearchVisitor().search(project, id);
+	public void selectItemInOutline(final UUID id) {
+		final IElement element = new SearchVisitor().search(project, id);
 
 		if (element != null) {
-			List<Object> path = new ArrayList<Object>();
+			final List<Object> path = new ArrayList<Object>();
 			findPathToRoot(element, path);
 			getSite().getSelectionProvider().setSelection(new TreeSelection(new TreePath(path.toArray())));
 		}
 	}
 
-	private void findPathToRoot(IElement element, List<Object> path) {
+	private void findPathToRoot(final IElement element, final List<Object> path) {
 		if (element != null) {
 			path.add(0, element);
 
 			if (element instanceof IRecord) {
-				IRecord record = (IRecord) element;
+				final IRecord record = (IRecord) element;
 				findPathToRoot(record.getContainer(), path);
 			} else if (element instanceof IContainer) {
-				IContainer container = (IContainer) element;
+				final IContainer container = (IContainer) element;
 
 				if (container.getContainer() != null) {
 					findPathToRoot(container.getContainer(), path);
@@ -644,7 +654,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 					findPathToRoot(container.getParentFolder(), path);
 				}
 			} else if (element instanceof IFolder) {
-				IFolder folder = (IFolder) element;
+				final IFolder folder = (IFolder) element;
 				findPathToRoot(folder.getParentFolder(), path);
 			}
 		}

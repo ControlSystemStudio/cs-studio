@@ -1,3 +1,4 @@
+
 package org.csstudio.cagateway;
 
 import org.csstudio.platform.AbstractCssPlugin;
@@ -16,20 +17,22 @@ public class Activator extends AbstractCssPlugin {
 
 	// The shared instance
 	private static Activator plugin;
-	
+
 	private GenericServiceTracker<ISessionService> _genericServiceTracker;
-	
+
 	/**
 	 * The constructor
 	 */
 	public Activator() {
+	    // Nothing to do here
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
+	@Override
+    public void doStart(final BundleContext context) throws Exception {
 		plugin = this;
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(
 				context, ISessionService.class);
@@ -40,7 +43,8 @@ public class Activator extends AbstractCssPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void doStop(BundleContext context) throws Exception {
+	@Override
+    public void doStop(final BundleContext context) throws Exception {
 		plugin = null;
 	}
 
@@ -57,9 +61,9 @@ public class Activator extends AbstractCssPlugin {
 	public String getPluginId() {
 		return PLUGIN_ID;
 	}
-	
+
 	public void addSessionServiceListener(
-			IGenericServiceListener<ISessionService> sessionServiceListener) {
+			final IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);
 	}
 

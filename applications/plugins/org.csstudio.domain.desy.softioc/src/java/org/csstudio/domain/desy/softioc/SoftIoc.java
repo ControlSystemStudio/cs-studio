@@ -21,9 +21,12 @@
  */
 package org.csstudio.domain.desy.softioc;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 
 import javax.annotation.Nonnull;
@@ -88,10 +91,34 @@ public class SoftIoc {
             writer.append("dbLoadRecords(\"").append(dbFile.getAbsolutePath()).append("\")\n");
         }
         writer.append("iocInit\n");
-        writer.append("dbpf \"TrainIoc:valid\",\"Enabled\"   # from demo\n\n\n");
-        writer.append("iocLogClientInit\n");
-
+        writer.append("dbpf \"UnitTestIoc:valid\",\"Enabled\"   # from demo\n\n\n");
         writer.close();
+    }
+
+    public boolean isStartUpDone() {
+        boolean done = false;
+        final InputStream inputStream = _process.getInputStream();
+        try {
+            BufferedReader input;
+            final InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            input = new BufferedReader(inputStreamReader);
+            String line;
+            line = input.readLine();
+            while (line != null ) {
+                done = line.startsWith("DBR_STRING:          \"Enabled\"");
+                if (done) {
+                    return true;
+                }
+                // TODO (hrickens): hier muss nach einem Timeout Abgebrochen werden. Sonst kann es sein das man endlos Wartet!
+                line = input.readLine();
+            }
+            if(input.ready()) {
+                input.close();
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return done;
     }
 
 

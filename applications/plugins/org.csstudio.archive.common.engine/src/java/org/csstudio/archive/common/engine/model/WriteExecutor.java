@@ -8,7 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 import java.io.Serializable;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -24,8 +24,6 @@ import org.csstudio.domain.desy.time.TimeInstant;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Maps;
 
 /**
  * Executor wrapper to handle the archive writer pool.
@@ -44,8 +42,8 @@ public class WriteExecutor {
     /** Minimum write period [millis] */
     private static final long MIN_WRITE_PERIOD_MS = 2000;
 
-    private final ConcurrentMap<String, ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _channelMap =
-        Maps.newConcurrentMap();
+
+    private final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> _channelsView;
 
     private final ScheduledExecutorService _heartBeatExecutor =
         Executors.newSingleThreadScheduledExecutor();
@@ -62,16 +60,14 @@ public class WriteExecutor {
     /**
      * Construct thread for writing to server
      * @param provider provider for the service
+     * @param collection
      */
     public WriteExecutor(@Nonnull final IServiceProvider provider,
-                         @Nonnull final ArchiveEngineId engineId) {
+                         @Nonnull final ArchiveEngineId engineId,
+                         @Nonnull final Collection<ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>>> collection) {
         _provider = provider;
         _engineId = engineId;
-    }
-
-
-    public void addChannel(@Nonnull final ArchiveChannelBuffer<Serializable, ISystemVariable<Serializable>> channel) {
-        _channelMap.putIfAbsent(channel.getName(), channel);
+        _channelsView = collection;
     }
 
     public void start(final long pHeartBeatPeriodInMS, final long pWritePeriodInMS) {
@@ -111,7 +107,7 @@ public class WriteExecutor {
                                                      final long writePeriodInMS) {
         final WriteWorker writeWorker = new WriteWorker(provider,
                                                         "Periodic Archive Engine Writer",
-                                                        _channelMap.values(),
+                                                        _channelsView,
                                                         writePeriodInMS);
         _writeSamplesExecutor.scheduleAtFixedRate(writeWorker,
                                                   0L,
@@ -176,7 +172,7 @@ public class WriteExecutor {
         final ExecutorService finalWriteExecutor = Executors.newSingleThreadExecutor();
         finalWriteExecutor.execute(new WriteWorker(_provider,
                                                    "Shutdown Archive Engine writer",
-                                                   _channelMap.values(),
+                                                   _channelsView,
                                                    0L));
 
 

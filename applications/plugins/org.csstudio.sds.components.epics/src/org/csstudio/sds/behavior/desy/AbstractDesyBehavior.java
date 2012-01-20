@@ -19,11 +19,14 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.Severity;
+import org.csstudio.domain.desy.net.GatewayUtil;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.sds.model.TextTypeEnum;
 
 /**
  * Default DESY-Behaviour for all widget.<br>
@@ -38,10 +41,11 @@ import org.epics.css.dal.simple.Severity;
 public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extends
         AbstractBehavior<W> {
     private static final String YELLOW = "${Minor}";
+    private static final String ININTIAL = "${Initial}";
     private static final String GREEN = "${NoAlarm}";
     private static final String RED = "${Major}";
     private static final String PINK = "${VerbAbbr}";
-    private static final String WHITE = "${Weiss}";
+    private static final String INVALID = "${Invalid}";
 
     private final Map<ConnectionState, String> colorsByConnectionState = new HashMap<ConnectionState, String>();
     private final Map<ConnectionState, BorderStyleEnum> borderStyleByConnectionState = new HashMap<ConnectionState, BorderStyleEnum>();
@@ -65,7 +69,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      */
     // CHECKSTYLE OFF: CyclomaticComplexity
     private void initConnectionState() {
-        for (ConnectionState cs : ConnectionState.values()) {
+        for (final ConnectionState cs : ConnectionState.values()) {
             switch (cs) {
                 case CONNECTED:
                     addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
@@ -74,10 +78,10 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                     addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
                     break;
                 case CONNECTING:
-                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, YELLOW, YELLOW);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case INITIAL:
-                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, YELLOW, YELLOW);
+                    addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, ININTIAL, ININTIAL);
                     break;
                 case CONNECTION_FAILED:
                     addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
@@ -95,10 +99,10 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                     addConnectionStates(cs,1, BorderStyleEnum.DASH_DOT, PINK, PINK);
                     break;
                 case READY:
-                    addConnectionStates(cs,0, BorderStyleEnum.NONE, GREEN, GREEN);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, ININTIAL, ININTIAL);
                     break;
                 default:
-                    addConnectionStates(cs,0, BorderStyleEnum.NONE, WHITE, WHITE);
+                    addConnectionStates(cs,0, BorderStyleEnum.NONE, INVALID, INVALID);
                     break;
             }
         }
@@ -107,7 +111,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
     /**
      * @param cs
      */
-    private void addConnectionStates(ConnectionState cs, Integer borderWidth, BorderStyleEnum borderStyle, String borderColor, String color) {
+    private void addConnectionStates(final ConnectionState cs, final Integer borderWidth, final BorderStyleEnum borderStyle, final String borderColor, final String color) {
         borderWidthByConnectionState.put(cs, borderWidth);
         borderStyleByConnectionState.put(cs, borderStyle);
         borderColorsByConnectionState.put(cs, borderColor);
@@ -135,8 +139,15 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      */
 
     protected final String determineBackgroundColor(final ConnectionState connectionState) {
-        return connectionState != null ? colorsByConnectionState.get(connectionState)
-                : colorsByConnectionState.get(ConnectionState.INITIAL);
+        final ConnectionState tempConnectionState = connectionState != null ? connectionState : ConnectionState.INITIAL;
+        return getColorsByConnectionState(tempConnectionState);
+    }
+
+    private String getColorsByConnectionState(final ConnectionState connectionState) {
+        if(colorsByConnectionState.containsKey(connectionState)) {
+            return colorsByConnectionState.get(connectionState);
+        }
+        return ININTIAL;
     }
 
     /**
@@ -168,7 +179,7 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @return the DESY default Border width for the given {@link Severity}
      */
     protected static BorderStyleEnum determineBorderStyleBySeverity(final Severity severity) {
-        return severity.isOK()?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
+        return severity!=null&&(severity.isOK()||severity.isInvalid())?BorderStyleEnum.NONE:BorderStyleEnum.LINE;
     }
 
     /**
@@ -178,9 +189,9 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @return the DESY default Border width for the given {@link Severity}
      */
     protected static int determineBorderWidthBySeverity(final Severity severity) {
-        return (severity.isOK()||severity.isInvalid())?0:3;
+        return severity!=null&&(severity.isOK()||severity.isInvalid())?0:3;
     }
-    
+
     /**
      * The new way? Give a DESY default Color for the given {@link Severity}
      *
@@ -206,11 +217,54 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
                 color = RED;
             } else {
                 // .. white
-                color = WHITE;
+                color = INVALID;
             }
         }
 
         return color;
+    }
+
+    public static void handleValueType(final AbstractWidgetModel model, final TextTypeEnum textTypeEnum, final String propertyId, final AnyData anyData) {
+        switch (textTypeEnum) {
+            case ALIAS:
+                model.setPropertyValue(propertyId, anyData.getMetaData().getName());
+                break;
+            case DOUBLE:
+//                model.setPropertyValue(propertyId, anyData.stringValue());
+                model.setPropertyValue(propertyId, anyData.doubleValue());
+                break;
+            case EXP:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case HEX:
+                model.setPropertyValue(propertyId, anyData.stringValue());
+                break;
+            case TEXT:
+                // TODO (hrickens): The CA Gateway sent wrong formated floating point.
+                // when the gateway sent the correct string, the stringValue can sent 1by1.
+                String stringValue = anyData.stringValue();
+                if(GatewayUtil.hasGateway()) {
+                    stringValue = gatewayPrecisionBugHack(stringValue);
+                }
+                model.setPropertyValue(propertyId, stringValue);
+                break;
+            default:
+                break;
+        }
+    }
+
+    protected static String gatewayPrecisionBugHack(final String stringValue) {
+        String tmpValue = stringValue;
+        try {
+            Double.parseDouble(stringValue);
+            final int indexOf = stringValue.indexOf(".");
+            if(indexOf>0&&stringValue.length()-indexOf>4) {
+                tmpValue = stringValue.substring(0, stringValue.length()+1-indexOf);
+            }
+        } catch (final NumberFormatException nfe) {
+            // do default
+        }
+        return tmpValue;
     }
 
 }

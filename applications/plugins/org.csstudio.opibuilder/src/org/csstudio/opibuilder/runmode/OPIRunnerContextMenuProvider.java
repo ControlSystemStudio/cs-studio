@@ -30,7 +30,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
@@ -78,8 +77,6 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
 		// ELog and EMail actions may not be available
 		SingleSourceHelper.appendRCPRuntimeActionsToMenu(actionRegistry, menu);
-
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
 //		MenuManager cssMenu = new MenuManager("CSS", "css");
 //		cssMenu.add(new Separator("additions")); //$NON-NLS-1$

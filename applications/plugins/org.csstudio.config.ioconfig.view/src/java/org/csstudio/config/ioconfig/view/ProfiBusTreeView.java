@@ -279,7 +279,7 @@ public class ProfiBusTreeView extends Composite {
      * @author $Author: hrickens $
      * @since 20.06.2007
      */
-    class NameSorter extends ViewerSorter {
+    static class NameSorter extends ViewerSorter {
 
         @Override
         public int category(@Nullable final Object element) {
@@ -470,13 +470,24 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
+     * @return false is an Editor open.<br>
+     *  e.g. unsaved changes.
      *
      */
-    public void closeOpenEditor() {
+    public boolean closeOpenEditor() {
+        boolean isOpen =   false;
         if (_openNodeEditor != null) {
             _openNodeEditor.perfromClose();
-            _openNodeEditor = null;
+            if(_openNodeEditor!=null) {
+                isOpen = _openNodeEditor.isSaveOnCloseNeeded();
+                final StructuredSelection selection = new StructuredSelection(_openNodeEditor.getNode());
+                setSelectedNode(selection);
+                getTreeViewer().setSelection(selection);
+            } else {
+                _openNodeEditor = null;
+            }
         }
+        return !isOpen;
     }
 
     /**
@@ -786,13 +797,14 @@ public class ProfiBusTreeView extends Composite {
 
             @Override
             public void run() {
-                closeOpenEditor();
-                final IHandlerService handlerService = (IHandlerService) getSite()
-                .getService(IHandlerService.class);
-                try {
-                    handlerService.executeCommand(CallNewFacilityEditor.ID, null);
-                } catch (final Exception ex) {
-                    LOG.error(ex.getMessage(), ex);
+                if (closeOpenEditor()) {
+                    final IHandlerService handlerService = (IHandlerService) getSite()
+                            .getService(IHandlerService.class);
+                    try {
+                        handlerService.executeCommand(CallNewFacilityEditor.ID, null);
+                    } catch (final Exception ex) {
+                        LOG.error(ex.getMessage(), ex);
+                    }
                 }
             }
         };
@@ -811,8 +823,9 @@ public class ProfiBusTreeView extends Composite {
         _newNodeAction = new Action() {
             @Override
             public void run() {
-                closeOpenEditor();
-                openNewEmptySiblingNode();
+                if (closeOpenEditor()) {
+                    openNewEmptySiblingNode();
+                }
             }
 
         };
@@ -877,12 +890,14 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void openEditor(@Nonnull final String editorID) {
-        final IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
-        try {
-            closeOpenEditor();
-            handlerService.executeCommand(editorID, null);
-        } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+        if (closeOpenEditor()) {
+            final IHandlerService handlerService = (IHandlerService) _site
+                    .getService(IHandlerService.class);
+            try {
+                handlerService.executeCommand(editorID, null);
+            } catch (final Exception ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
         }
     }
 
@@ -929,15 +944,15 @@ public class ProfiBusTreeView extends Composite {
      */
     protected void editNode() {
         _editNodeAction.setEnabled(false);
-
-        closeOpenEditor();
-        final IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
-        try {
-            handlerService.executeCommand(CallEditor.ID, null);
-        } catch (final Exception ex) {
-            LOG.error(ex.getMessage(), ex);
+        if (closeOpenEditor()) {
+            final IHandlerService handlerService = (IHandlerService) _site
+                    .getService(IHandlerService.class);
+            try {
+                handlerService.executeCommand(CallEditor.ID, null);
+            } catch (final Exception ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
         }
-        return;
     }
 
     // CHECKSTYLE OFF: CyclomaticComplexity

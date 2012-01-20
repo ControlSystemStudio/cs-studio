@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-consoleLog -engine KryoEngineAll -pluginCustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
+      <vmArgs>-Djava.awt.headless=true -Djava.util.logging.config.file=log.properties -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 

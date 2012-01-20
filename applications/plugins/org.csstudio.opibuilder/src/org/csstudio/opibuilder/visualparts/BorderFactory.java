@@ -54,7 +54,7 @@ public class BorderFactory {
 		case DASH_DOT_DOT:
 			return createLineBorder(SWTConstants.LINE_DASHDOTDOT, width, color);
 		case GROUP_BOX:
-			return createGroupBoxBorder(text);
+			return createGroupBoxBorder(text, color);
 		case TITLE_BAR:
 			return createTitleBarBorder(text, color);
 		case NONE:			
@@ -85,8 +85,9 @@ public class BorderFactory {
 		return border;
 	}
 	
-	private static AbstractBorder createGroupBoxBorder(String text) {
+	private static AbstractBorder createGroupBoxBorder(String text, Color textColor) {
 		AbstractLabeledBorder border = new GroupBoxBorder(text);
+		border.setTextColor(textColor);
 		return border;
 	}
 		

@@ -25,7 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -50,7 +50,7 @@ public final class ArchiveEngineStatusBatchQueueHandler extends BatchQueueHandle
     public ArchiveEngineStatusBatchQueueHandler(@Nonnull final String databaseName) {
         super(IArchiveEngineStatus.class,
               createSqlStatementString(databaseName),
-              new ConcurrentLinkedQueue<IArchiveEngineStatus>());
+              new LinkedBlockingQueue<IArchiveEngineStatus>());
     }
 
     @Nonnull

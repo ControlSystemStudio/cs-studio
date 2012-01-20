@@ -187,6 +187,15 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
         _updateSupport.updateChannelDisplayRangeInfo(id, displayLow, displayHigh);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void writeChannelDataTypeInfo(@Nonnull final ArchiveChannelId id,
+                                         @Nonnull final String datatype) throws ArchiveServiceException {
+        _updateSupport.updateChannelDataType(id, datatype);
+    }
+
 
     /**
      * {@inheritDoc}
@@ -203,18 +212,11 @@ public class MySQLArchiveServiceImpl implements IArchiveEngineFacade, IArchiveRe
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public IArchiveChannelStatus getLatestChannelStatusByChannelName(@Nonnull final String name) throws ArchiveServiceException {
-        return _retrievalSupport.retrieveLatestChannelStatusByChannelName(name);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels) throws ArchiveServiceException {
-        return _retrievalSupport.retrieveLatestChannelsStatusForChannels(channels);
+    public Collection<IArchiveChannelStatus> getLatestChannelsStatusBy(@Nonnull final Collection<ArchiveChannelId> channels,
+                                                                       @Nonnull final TimeInstant start,
+                                                                       @Nonnull final TimeInstant end) throws ArchiveServiceException {
+        return _retrievalSupport.retrieveLatestChannelsStatusForChannels(channels, start, end);
     }
 
     /**

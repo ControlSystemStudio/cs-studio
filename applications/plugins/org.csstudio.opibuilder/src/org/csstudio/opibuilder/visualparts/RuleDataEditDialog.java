@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.script.Expression;
@@ -203,7 +204,15 @@ public class RuleDataEditDialog extends HelpTrayDialog {
 		propCombo.select(propIDList.indexOf(ruleData.getPropId()));
 		propCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(SelectionEvent e) {				
+				if(propIDList.get(propCombo.getSelectionIndex()).equals(
+						AbstractPVWidgetModel.PROP_PVVALUE)){
+					MessageDialog.openWarning(propCombo.getShell(), "Warning", 
+							"Note: Changing pv_value property with rule or " +
+							"script will not write value to the PV. " +
+							"It only change the graphical value on the widget! " +
+							"If you need to write a PV, please call PV.setValue() from script.");
+				}
 				ruleData.setPropId(propIDList.get(propCombo.getSelectionIndex()));
 				if(ruleData.getProperty().getPropertyDescriptor() == null || 
 						ruleData.getProperty().onlyAcceptExpressionInRule()){

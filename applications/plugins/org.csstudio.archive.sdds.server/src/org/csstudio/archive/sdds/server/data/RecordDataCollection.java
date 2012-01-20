@@ -28,6 +28,8 @@ import org.csstudio.archive.sdds.server.conversion.SampleParameters;
 
 import com.google.common.collect.Lists;
 
+import de.desy.aapi.AapiServerError;
+
 /**
  * TODO (mmoeller) :
  *
@@ -43,51 +45,39 @@ public class RecordDataCollection {
     /** The parameters of the data samples */
     private SampleParameters sampleParameter;
 
+    /** If an error occurs store it here */
+    private AapiServerError errorType;
+
     /** Standard constructor */
     public RecordDataCollection() {
         data = Lists.newArrayList();
         sampleParameter = new SampleParameters();
+        errorType = AapiServerError.NO_ERROR;
     }
 
-    /**
-     *
-     * @return
-     */
+    public RecordDataCollection(@Nonnull final AapiServerError error) {
+        this();
+        errorType = error;
+    }
+
     @Nonnull
     public List<EpicsRecordData> getData() {
         return data;
     }
 
-    /**
-     *
-     * @param data
-     */
-    public void setData(@Nonnull final List<EpicsRecordData> data) {
-        this.data = Lists.newArrayList(data);
+    public void setData(@Nonnull final List<EpicsRecordData> d) {
+        this.data = Lists.newArrayList(d);
     }
 
-    /**
-     *
-     * @return
-     */
     @Nonnull
     public SampleParameters getSampleParameter() {
         return sampleParameter;
     }
 
-    /**
-     *
-     * @param sampleParameter
-     */
-    public void setSampleParameter(@Nonnull final SampleParameters sampleParameter) {
-        this.sampleParameter = sampleParameter;
+    public void setSampleParameter(@Nonnull final SampleParameters param) {
+        this.sampleParameter = param;
     }
 
-    /**
-     * Returns the number of data samples.
-     *
-     * @return
-     */
     public int getNumberOfData() {
 
         int result = 0;
@@ -99,12 +89,16 @@ public class RecordDataCollection {
         return result;
     }
 
-    /**
-     * Return true if data is present.
-     *
-     * @return
-     */
     public boolean containsData() {
         return getNumberOfData() > 0;
+    }
+
+    @Nonnull
+    public final AapiServerError getError() {
+        return errorType;
+    }
+
+    public boolean containsError() {
+        return errorType != AapiServerError.NO_ERROR;
     }
 }

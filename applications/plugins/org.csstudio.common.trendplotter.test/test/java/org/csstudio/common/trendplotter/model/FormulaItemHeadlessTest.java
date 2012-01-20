@@ -172,7 +172,7 @@ public class FormulaItemHeadlessTest
         }
         final ArchiveReader readerMock = Mockito.mock(ArchiveReader.class);
         Mockito.when(readerMock.getServerName()).thenReturn("Testserver");
-        pvs[0].mergeArchivedSamples(readerMock, data);
+        pvs[0].mergeArchivedSamples(readerMock, data, RequestType.OPTIMIZED);
 
 
         PlotSamples samples = pvs[0].getSamples();

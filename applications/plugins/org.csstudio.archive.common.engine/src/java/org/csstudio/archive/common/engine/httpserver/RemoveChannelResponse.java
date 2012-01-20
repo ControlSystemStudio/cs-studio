@@ -49,8 +49,10 @@ public class RemoveChannelResponse extends AbstractChannelResponse {
     /**
      * Constructor.
      */
-    public RemoveChannelResponse(@Nonnull final EngineModel model) {
-        super(model);
+    public RemoveChannelResponse(@Nonnull final EngineModel model,
+                                 @Nonnull final String adminParamKey,
+                                 @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
     }
 
     /**

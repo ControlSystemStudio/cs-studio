@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-<xs:include schemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\lib\channels.xsd"/>
+<xs:include schemaLocation="file:///D:\development\repo\cs-studio\applications\plugins\org.csstudio.archive.common.engine\xml\channels.xsd"/>
     <!-- ############################## Elements ######################### -->
     <xs:element name="engine">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="system" />
-				<xs:element ref="httpViewer" minOccurs="0" />
+				<xs:element ref="groups" minOccurs="0" maxOccurs="1"/>
+				<xs:element ref="httpViewer" maxOccurs="1" />
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
@@ -35,12 +36,9 @@
 
 
 	<xs:element name="httpViewer">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element ref="groups" />
-			</xs:sequence>
+        <xs:complexType>
 			<xs:attribute name="url" type="xs:anyURI" />
-		</xs:complexType>
+        </xs:complexType>
 	</xs:element>
 
 

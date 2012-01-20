@@ -44,4 +44,12 @@ abstract class AbstractGroupResponse extends AbstractResponse {
     protected AbstractGroupResponse(@Nonnull final EngineModel model) {
         super(model);
     }
+    /**
+     * Constructor.
+     */
+    protected AbstractGroupResponse(@Nonnull final EngineModel model,
+                                    @Nonnull final String adminParamKey,
+                                    @Nonnull final String admingParamValue) {
+        super(model, adminParamKey, admingParamValue);
+    }
 }

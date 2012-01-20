@@ -88,7 +88,7 @@ public class AlarmTreeView extends ViewPart
             // Tried SWT.Resize listener with toolbar.update(true), no improvement.
             if (Preferences.isConfigSelectionAllowed())
         	{
-        		toolbar.add(new SelectConfigurationAction(model));
+        		toolbar.add(new SelectConfigurationAction(parent, model));
         		toolbar.add(new Separator());
         	}
             toolbar.add(new MaintenanceModeAction(model));

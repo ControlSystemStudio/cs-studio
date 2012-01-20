@@ -8,7 +8,7 @@
             class="org.csstudio.channel.views.PVTableByPropertyView"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
             id="org.csstudio.channel.views.PVTableByPropertyView"
-            name="PVTable by Property"
+            name="PV Table by Property"
             restorable="true">
       </view>
       <view
@@ -17,6 +17,14 @@
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
             id="org.csstudio.channel.views.WaterfallView"
             name="Waterfall"
+            restorable="true">
+      </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+            id="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            name="Channel Tree by Property"
             restorable="true">
       </view>
       <category
@@ -49,6 +57,61 @@
                   value="org.csstudio.channel.views.WaterfallView">
             </parameter>
          </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+               label="Channel Tree by Property"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.ChannelTreeByPropertyView">
+            </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.channelquery">
+         <command
+               commandId="org.csstudio.channel.views.OpenChannelTreeByProperty"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+               label="Channel Tree by Property"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.channel.views.OpenWaterfallQuery"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+               label="Waterfall"
+               style="push">
+         </command>
+         <command
+               commandId="org.csstudio.channel.views.OpenPVTableByProperty"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
+               label="PV Table by Property"
+               style="push">
+         </command>
       </menuContribution>
     </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenWaterfall"
+            id="org.csstudio.channel.views.OpenWaterfall"
+            name="Waterfall">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenWaterfallQuery"
+            id="org.csstudio.channel.views.OpenWaterfallQuery"
+            name="Waterfall">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenChannelTreeByProperty"
+            id="org.csstudio.channel.views.OpenChannelTreeByProperty"
+            name="Channel Tree by Property">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenPVTableByProperty"
+            id="org.csstudio.channel.views.OpenPVTableByProperty"
+            name="PV Table by Property">
+      </command>
+   </extension>
 </plugin>

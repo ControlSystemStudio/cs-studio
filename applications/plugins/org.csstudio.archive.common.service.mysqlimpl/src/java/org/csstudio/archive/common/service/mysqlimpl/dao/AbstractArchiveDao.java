@@ -69,16 +69,6 @@ public abstract class AbstractArchiveDao {
     protected Connection createConnection() throws ArchiveConnectionException {
         return _connectionHandler.createConnection();
     }
-    /**
-     * Returns the thread current connection for the dao implementation and its subclasses.
-     * Don't close!
-     * @return the connection
-     * @throws ArchiveConnectionException
-     */
-    @Nonnull
-    protected Connection getThreadLocalConnection() throws ArchiveConnectionException {
-        return _connectionHandler.getThreadLocalConnection();
-    }
 
     @Nonnull
     protected String getDatabaseName() {

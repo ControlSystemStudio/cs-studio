@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** Eclipse Job for fetching archived data.
  *  <p>
@@ -37,6 +39,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class ArchiveFetchJob extends Job
 {
+    private static final Logger LOG = LoggerFactory.getLogger(PVItem.class);
+
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
 
@@ -130,20 +134,34 @@ public class ArchiveFetchJob extends Job
                     }
 
                     final ValueIterator value_iter;
-                    if (item.getRequestType() == RequestType.RAW) {
-                        value_iter = reader.getRawValues(archive.getKey(), item.getName(), start, end);
+                    final RequestType currentRequestType = item.getRequestType();
+
+                    //Patch to handle PVs with common.archive reader from DnD and Object Contribution.
+                    String name = item.getName();
+                    if (!item.getName().contains(".")) {
+                        name = name + ".VAL";
+                     }
+
+                    if (currentRequestType == RequestType.RAW) {
+                        value_iter = reader.getRawValues(archive.getKey(), name, start, end);
                     }
                     else {
-                        value_iter = reader.getOptimizedValues(archive.getKey(), item.getName(), start, end, bins);
+                        value_iter = reader.getOptimizedValues(archive.getKey(), name, start, end, bins);
                     }
                     // Get samples into array
                     final ArrayList<IValue> result = new ArrayList<IValue>();
-
                     while (value_iter.hasNext()) {
-                        result.add(value_iter.next());
+                        final IValue next = value_iter.next();
+                        result.add(next);
                     }
+                    LOG.debug("-------- ArchSource: " + url + "  bins: " + bins);
+                    LOG.debug("-------- from: " + start.toCalendar().getTime().toString() +
+                              "  to: " + end.toCalendar().getTime().toString());
+                    LOG.debug("-------- resultSize: " + result.size());
+                    final int j = 0;
 
-                    item.mergeArchivedSamples(reader, result);
+                    item.mergeArchivedSamples(reader, result, currentRequestType);
+//                  LOG.debug("--------sampleSize : " + item.size() + "   liveSize: " + item.getSamples().getLiveSampleSize());
                     if (cancelled) {
                         break;
                     }

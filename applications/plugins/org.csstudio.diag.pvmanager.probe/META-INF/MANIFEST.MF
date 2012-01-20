@@ -14,6 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.ui.util;bundle-version="0.0.1",
  org.eclipse.ui.intro,
  org.eclipse.ui.intro.universal,
- org.eclipse.help;bundle-version="3.5.100"
+ org.eclipse.help
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

@@ -56,8 +56,6 @@ public abstract class AbstractServerCommand {
     /**
      *
      * @param buffer
-     * @param receivedValue
-     * @param resultLength
      * @throws ServerCommandException
      * @throws CommandNotImplementedException
      */

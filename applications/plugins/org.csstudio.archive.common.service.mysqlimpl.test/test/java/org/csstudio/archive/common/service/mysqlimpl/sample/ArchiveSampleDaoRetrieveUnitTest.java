@@ -66,7 +66,9 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
     @SuppressWarnings("rawtypes")
     @Test
     public void retrieveSamples() throws ArchiveDaoException {
-        Collection<IArchiveChannel> channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_3RD));
+        Collection<IArchiveChannel> channels = 
+                CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_3RD));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
         IArchiveChannel channel = channels.iterator().next();
 
@@ -84,10 +86,11 @@ public class ArchiveSampleDaoRetrieveUnitTest extends AbstractDaoTestSetup {
 
 
         channels = CHANNEL_DAO.retrieveChannelsByIds(Sets.newHashSet(CHANNEL_ID_5TH));
+        Assert.assertNotNull(channels);
         Assert.assertTrue(channels.size() == 1);
         channel = channels.iterator().next();
 
-        samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW_MULTI_SCALAR, channel, TimeInstantBuilder.fromNanos(1999999999L),  TimeInstantBuilder.fromNanos(2000000000L));
+        samples = SAMPLE_DAO.retrieveSamples(DesyArchiveRequestType.RAW, channel, TimeInstantBuilder.fromNanos(1999999999L),  TimeInstantBuilder.fromNanos(2000000000L));
         Assert.assertNotNull(samples);
         Assert.assertEquals(1, samples.size());
         final Serializable value = samples.iterator().next().getValue();

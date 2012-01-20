@@ -22,7 +22,11 @@
 
 package org.csstudio.opibuilder.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.rmi.server.UID;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -43,6 +47,7 @@ import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.properties.ScriptProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
+import org.csstudio.opibuilder.properties.UnsavableListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.script.ScriptsInput;
@@ -171,6 +176,22 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public static final String PROP_WIDGET_TYPE= "widget_type"; //$NON-NLS-1$
 	
+	/**
+	 * Unique ID of the widget, it should not be changed after generated.
+	 */
+	public static final String PROP_WIDGET_UID = "wuid"; ////$NON-NLS-1$
+
+	/**
+	 * Source Connections.
+	 */
+	public static final String PROP_SRC_CONNETIONS = "src_connections"; //$NON-NLS-1$	
+	
+	/**
+	 * Target Connections.
+	 */
+	public static final String PROP_TGT_CONNETIONS = "tgt_connections"; //$NON-NLS-1$	
+	
+	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
 	/**
@@ -186,6 +207,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	private ExecutionMode executionMode;
 	
+	/** List of outgoing Connections. */
+	private List<ConnectionModel> sourceConnections = Collections.emptyList();
+	/** List of incoming Connections. */
+	private List<ConnectionModel> targetConnections = Collections.emptyList();
+	
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -193,6 +219,41 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		pvMap = new LinkedHashMap<StringProperty, PVValueProperty>();
 		configureBaseProperties();
 		configureProperties();	
+	}
+	
+	public void addConnection(ConnectionModel conn) {		
+		if (conn == null || conn.getSource() == conn.getTarget()) {
+			throw new IllegalArgumentException();
+		}		
+		if(sourceConnections == Collections.EMPTY_LIST || targetConnections == Collections.EMPTY_LIST){
+			sourceConnections = new ArrayList<ConnectionModel>(1);
+			targetConnections = new ArrayList<ConnectionModel>(1);
+		}
+		if (conn.getSource() == this) {
+			sourceConnections.add(conn);
+			setPropertyValue(PROP_SRC_CONNETIONS, sourceConnections, true);
+		} else if (conn.getTarget() == this) {
+			targetConnections.add(conn);
+			setPropertyValue(PROP_TGT_CONNETIONS, targetConnections, true);
+		}		
+	}	
+	
+	/**
+	 * Remove an incoming or outgoing connection from this widget.
+	 * @param conn a non-null connection instance
+	 * @throws IllegalArgumentException if the parameter is null
+	 */
+	void removeConnection(ConnectionModel conn) {
+		if (conn == null) {
+			throw new IllegalArgumentException();
+		}
+		if (conn.getSource() == this) {
+			sourceConnections.remove(conn);
+			setPropertyValue(PROP_SRC_CONNETIONS, sourceConnections, true);
+		} else if (conn.getTarget() == this) {
+			targetConnections.remove(conn);
+			setPropertyValue(PROP_TGT_CONNETIONS, targetConnections, true);
+		}
 	}
 	
 	/**Add a property to the widget.
@@ -270,7 +331,24 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Behavior));
 		addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
 		addProperty(new RulesProperty(PROP_RULES, "Rules", WidgetPropertyCategory.Behavior));	
+		addProperty(new StringProperty(PROP_WIDGET_UID, "Widget UID", WidgetPropertyCategory.Basic, 
+				new UID().toString()));	
+		//update the WUID saved in connections without triggering anything
+		getProperty(PROP_WIDGET_UID).addPropertyChangeListener(new PropertyChangeListener() {
 			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				for(ConnectionModel connection : sourceConnections){
+					connection.setPropertyValue(ConnectionModel.PROP_SRC_WUID, evt.getNewValue(), false);
+				}
+				for(ConnectionModel connection : targetConnections){
+					connection.setPropertyValue(ConnectionModel.PROP_TGT_WUID, evt.getNewValue(), false);
+				}
+			}
+		});
+		
+		setPropertyVisibleAndSavable(PROP_WIDGET_UID, false, true);
+		
 		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
 		String name;
 		name = descriptor == null? getTypeID().substring(getTypeID().lastIndexOf(".")+1) :
@@ -279,6 +357,15 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Basic, name)); 	
 		addProperty(new UnchangableStringProperty(PROP_WIDGET_TYPE, "Widget Type",
 				WidgetPropertyCategory.Basic, name));
+		
+		addProperty(new UnsavableListProperty(
+				PROP_SRC_CONNETIONS, "Source Connections", WidgetPropertyCategory.Display, sourceConnections));
+		setPropertyVisible(PROP_SRC_CONNETIONS, false);
+		
+		addProperty(new UnsavableListProperty(
+				PROP_TGT_CONNETIONS, "Target Connections", WidgetPropertyCategory.Display, targetConnections));
+		setPropertyVisible(PROP_TGT_CONNETIONS, false);
+		
 		
 	}
 	
@@ -572,7 +659,28 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		propertyMap.get(id).setPropertyValue(value, forceFire);
 	}
 	
-	public void setPropertyVisible(final String prop_id, final boolean visible){
+	/**Set if property should be visible in property sheet. 
+	 * Note: this method will also make the invisible property not savable to xml file.
+	 * If the invisible property still needs to be saved, please use 
+	 * {@link #setPropertyVisibleAndSavable(String, boolean, boolean)}.
+	 * @param prop_id id of the property.
+	 * @param visible true if visible in 
+	 */
+	public void setPropertyVisible(final String prop_id, 
+			final boolean visible){
+		if(visible)
+			setPropertyVisibleAndSavable(prop_id, visible, true);
+		else
+			setPropertyVisibleAndSavable(prop_id, visible, false);
+	}
+	
+	/**Set if property should be visible in property sheet and if savable to xml file. 
+	 * @param prop_id id of the property
+	 * @param visible true if visible in property sheet.
+	 * @param isSavable true if this property should be saved to xml file.
+	 */
+	public void setPropertyVisibleAndSavable(final String prop_id, 
+			final boolean visible, final boolean isSavable){
 		checkPropertyExist(prop_id);
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
 		if(property.setVisibleInPropSheet(visible)){
@@ -580,7 +688,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				propertyDescriptors.put(prop_id, property.getPropertyDescriptor());
 			else
 				propertyDescriptors.remove(prop_id);
-		}			
+		}		
+		property.setSavable(isSavable);
 	}
 	
 	public void setSize(Dimension dimension){
@@ -760,6 +869,31 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		
 		setLocation(newX, newY);
 		setSize(newW, newH);		
-	}		
+	}
+
+	/**
+	 * @return a copy list of source connections.
+	 */
+	public List<ConnectionModel> getSourceConnections() {
+		return new ArrayList<ConnectionModel>(sourceConnections);
+	}
+	
+	/**
+	 * @return a copy list of target connections.
+	 */
+	public List<ConnectionModel> getTargetConnections() {
+		return new ArrayList<ConnectionModel>(targetConnections);
+	}
+
+	public String getWUID() {
+		return (String)getPropertyValue(PROP_WIDGET_UID);
+	}
+	
+	/**
+	 * Generate a new WUID for this widget.
+	 */
+	public void generateNewWUID(){
+		setPropertyValue(PROP_WIDGET_UID, new UID().toString());
+	}
 
 }

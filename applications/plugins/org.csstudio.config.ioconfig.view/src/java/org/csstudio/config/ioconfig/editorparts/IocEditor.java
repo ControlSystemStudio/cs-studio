@@ -154,7 +154,7 @@ public class IocEditor extends AbstractNodeEditor<IocDBO> {
             setNameWidget(nameText);
             
             final Spinner indexSpinner = ConfigHelper.getIndexSpinner(gName, _ioc,
-                                                                      getMLSB(), "Index", getProfiBusTreeView());
+                                                                      getMLSB(), "Index", getProfiBusTreeView(), 99);
             setIndexSpinner(indexSpinner);
             indexSpinner.setMaximum(
                                     _ioc.getParent().getChildren().size() - 1);

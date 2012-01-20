@@ -25,7 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
 
 import javax.annotation.Nonnull;
 
@@ -49,7 +49,7 @@ final class FalseFillStmtHandler extends
      */
     FalseFillStmtHandler(@Nonnull final Class<IArchiveSample> typeClass,
                          @Nonnull final String database,
-                         @Nonnull final Queue<IArchiveSample> queue) {
+                         @Nonnull final BlockingQueue<IArchiveSample> queue) {
         super(typeClass, createSqlStatementString(database), queue);
     }
 
@@ -57,7 +57,7 @@ final class FalseFillStmtHandler extends
     protected void fillStatement(@Nonnull final PreparedStatement stmt,
                                  @Nonnull final IArchiveSample element)
     throws ArchiveDaoException, SQLException {
-        stmt.setInt(-1, -1); // wrong statement
+        stmt.setInt(-1, -1); // that will cause an error
     }
 
     @Nonnull
