@@ -115,7 +115,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			// 100, true, true));
 
 			tblclmnNumericprop.setText(propertyName);
-			tblclmnNumericprop.setWidth(100);
+//			tblclmnNumericprop.setWidth(100);
 		}
 		// Add a new column for each Tag
 		for (String tagName : tags) {
@@ -130,9 +130,9 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			// ColumnPixelData(
 			// 100, true, true));
 			tblclmnNumericprop.setText(tagName);
-			tblclmnNumericprop.setWidth(100);
+//			tblclmnNumericprop.setWidth(100);
 		}
-		// calculate column size since adding removing colums does not trigger a
+		// calculate column size since adding removing columns does not trigger a
 		// control resize event.
 		Rectangle area = table.getClientArea();
 		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
