@@ -960,28 +960,40 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 
 	}
 
-	private static Map<String, String> buildSearchMap(String searchPattern) {
+	static Map<String, String> buildSearchMap(String searchPattern) {
 		Hashtable<String, String> map = new Hashtable<String, String>();
 		searchPattern = searchPattern.replaceAll(", ", ",");
 		String[] words = searchPattern.split("\\s");
 		if (words.length <= 0) {
-			// ERROR
+			throw new IllegalArgumentException();
 		} else {
 			for (int index = 0; index < words.length; index++) {
 				if (!words[index].contains("=")) {
 					// this is a name value
-					map.put("~name", words[index]);
+					if (words[index] != null && !words[index].isEmpty())
+						map.put("~name", words[index]);
+					else
+						throw new IllegalArgumentException("I");
 				} else {
 					// this is a property or tag
-					String key = words[index].split("=")[0];
-					String values = words[index].split("=")[1];
-					if (key.equalsIgnoreCase("Tags")) {
-						map.put("~tag", values.replace("||", ","));
-						// for (int i = 0; i < values.length; i++)
-						// map.put("~tag", values[i]);
-					} else {
-						map.put(key, values.replace("||", ","));
+					try {
+						String key = words[index].split("=")[0];
+						String values = words[index].split("=")[1];
+						if (key.equalsIgnoreCase("Tags")) {
+							map.put("~tag", values.replace("||", ","));
+							// for (int i = 0; i < values.length; i++)
+							// map.put("~tag", values[i]);
+						} else {
+							map.put(key, values.replace("||", ","));
+						}
+					} catch (Exception e) {
+						throw new IllegalArgumentException(
+								"The search must consist of key value pairs, " +
+								"propertyName=propertyValuePattern1,propertyValuePattern2\r\n" +
+								"Tags=tagNamePattern\r\n");
+
 					}
+
 				}
 			}
 		}
