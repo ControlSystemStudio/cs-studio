@@ -39,10 +39,10 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 			}
 		};
 		setPropertyChangeHandler(WaterfallModel.CHANNEL_QUERY, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.ADAPTIVE_RANGE, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.PIXEL_DURATION, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.SCROLL_DOWN, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.SHOW_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.VALUE_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.RESOLUTION, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SCROLL_DIRECTION, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SHOW_TIME_AXIS, reconfigure);
 		setPropertyChangeHandler(WaterfallModel.SORT_PROPERTY, reconfigure);
 	}
 	
