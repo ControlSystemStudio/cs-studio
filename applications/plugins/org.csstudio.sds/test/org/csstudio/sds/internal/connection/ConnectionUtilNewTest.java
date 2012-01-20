@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNull;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.RemoteInfo;
 import org.junit.Test;
 
 public class ConnectionUtilNewTest {

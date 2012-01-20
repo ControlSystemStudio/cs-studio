@@ -38,8 +38,8 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.ThermometerModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyDataChannel;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyDataChannel;
 
 /**
  * Default DESY-Behavior for the {@link ThermometerModel} widget with Connection state.

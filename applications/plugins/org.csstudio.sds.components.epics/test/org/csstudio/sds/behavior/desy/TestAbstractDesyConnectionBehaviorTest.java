@@ -33,13 +33,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.Severity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,7 +79,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
 
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#doProcessConnectionStateChange(org.csstudio.sds.model.AbstractWidgetModel, org.epics.css.dal.simple.AnyDataChannel)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#doProcessConnectionStateChange(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.dal.simple.AnyDataChannel)}.
      */
     @Test
     public void testDoProcessConnectionStateChange() {
@@ -106,7 +106,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#doProcessValueChange(org.csstudio.sds.model.AbstractWidgetModel, org.epics.css.dal.simple.AnyData)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#doProcessValueChange(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.dal.simple.AnyData)}.
      */
     @Test
     public void testDoProcessValueChange() {
@@ -134,7 +134,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
 
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#isConnected(org.epics.css.dal.simple.AnyDataChannel)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#isConnected(org.csstudio.dal.simple.AnyDataChannel)}.
      */
     @Test
     public void testIsConnected() {
@@ -150,7 +150,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromDigLogColorRule(org.epics.css.dal.simple.AnyData)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromDigLogColorRule(org.csstudio.dal.simple.AnyData)}.
      */
     @Test
     public void testGetColorFromDigLogColorRule() {
@@ -222,7 +222,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromAlarmColorRule(org.epics.css.dal.simple.AnyData)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromAlarmColorRule(org.csstudio.dal.simple.AnyData)}.
      */
     @Test
     public void testGetColorFromAlarmColorRule() {
@@ -294,7 +294,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromOperatingRule(org.epics.css.dal.simple.AnyData)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#getColorFromOperatingRule(org.csstudio.dal.simple.AnyData)}.
      */
     @Test
     public void testGetColorFromOperatingRule() {
@@ -350,7 +350,7 @@ public class TestAbstractDesyConnectionBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#hasValue(org.epics.css.dal.simple.AnyDataChannel)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyConnectionBehavior#hasValue(org.csstudio.dal.simple.AnyDataChannel)}.
      */
     @Test
     public void testHasValue() {

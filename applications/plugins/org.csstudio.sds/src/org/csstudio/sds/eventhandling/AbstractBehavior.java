@@ -4,11 +4,11 @@ import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  * Base class for behaviors. A behavior encapsulates code that influences a

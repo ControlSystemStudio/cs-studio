@@ -19,52 +19,46 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.sds.behavior.desy;
+package org.csstudio.domain.desy.net;
 
-import static org.junit.Assert.assertEquals;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.dal.DataExchangeException;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.apache.commons.net.util.SubnetUtils;
+import org.csstudio.domain.desy.preferences.ControlSubnetPreference;
 
 /**
- * TODO (hrickens) :
- *
  * @author hrickens
  * @since 22.12.2011
  */
-public class AbstractDesyBehaviorUnitTest {
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+public final class GatewayUtil {
+    public static boolean hasGateway() {
+        boolean inSubnet = false;
+        try {
+            final InetAddress localHost = InetAddress.getLocalHost();
+            final String myAddress = localHost.getHostAddress();
+            final List<SubnetUtils> controlSubnets = getControlSubnets();
+            for (final SubnetUtils subnetUtils : controlSubnets) {
+                inSubnet |= subnetUtils.getInfo().isInRange(myAddress);
+            }
+        } catch (final UnknownHostException e) {
+            e.printStackTrace();
+        } finally {
+        }
+        return !inSubnet;
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
+    public static List<SubnetUtils> getControlSubnets() {
+        final ArrayList<SubnetUtils> controlSubnetsList = new ArrayList<SubnetUtils>();
+        final List<String> controlSubnets = ControlSubnetPreference.getControlSubnets();
+        for (final String string : controlSubnets) {
+            final String[] split = string.split("/");
+            if (split.length == 2) {
+                controlSubnetsList.add(new SubnetUtils(split[0], split[1]));
+            }
+        }
+        return controlSubnetsList;
     }
-
-    /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#handleValueType(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.sds.model.TextTypeEnum, java.lang.String, org.csstudio.dal.simple.AnyData)}.
-     * @throws DataExchangeException
-     */
-    @Test
-    public void testHandleValueType() {
-        String stringValue = AbstractDesyBehavior.gatewayPrecisionBugHack("123.456");
-        assertEquals("123.456", stringValue);
-        stringValue = AbstractDesyBehavior.gatewayPrecisionBugHack("123.456789");
-        assertEquals("123.4567", stringValue);
-        stringValue = AbstractDesyBehavior.gatewayPrecisionBugHack("123");
-        assertEquals("123", stringValue);
-        stringValue = AbstractDesyBehavior.gatewayPrecisionBugHack("nicht Auf");
-        assertEquals("nicht Auf", stringValue);
-
-    }
-
 }

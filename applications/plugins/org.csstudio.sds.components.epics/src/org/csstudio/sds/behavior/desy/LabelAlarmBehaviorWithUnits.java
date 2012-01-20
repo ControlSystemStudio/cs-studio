@@ -25,7 +25,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.LabelModel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *

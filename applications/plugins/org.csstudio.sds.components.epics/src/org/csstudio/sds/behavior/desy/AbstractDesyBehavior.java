@@ -19,14 +19,14 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.dal.util.GatewayUtil;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.Severity;
+import org.csstudio.domain.desy.net.GatewayUtil;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.Severity;
 
 /**
  * Default DESY-Behaviour for all widget.<br>

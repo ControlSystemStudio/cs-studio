@@ -37,11 +37,11 @@ import java.util.List;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -74,7 +74,7 @@ public class TestAbstractDesyAlarmBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyAlarmBehavior#doProcessConnectionStateChange(org.csstudio.sds.model.AbstractWidgetModel, org.epics.css.dal.simple.AnyDataChannel)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyAlarmBehavior#doProcessConnectionStateChange(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.dal.simple.AnyDataChannel)}.
      */
     @Test
     public void testDoProcessConnectionStateChange() {
