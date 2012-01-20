@@ -66,11 +66,6 @@ implements ConfigurableWidget, ISelectionProvider {
 	public String getSortProperty() {
 		return sortProperty;
 	}
-	
-	public void openConfigurationDialog(int x, int y) {
-		WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
-		dialog.open(this, x, y);
-	}
 
 	/**
 	 * Creates a new widget.
