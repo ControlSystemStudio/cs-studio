@@ -1,20 +1,14 @@
 /**
  * 
  */
-package org.csstudio.channelviewer.views;
+package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 
-import java.util.Collection;
-
-import org.csstudio.channelviewer.util.AlphanumComparator;
-import org.csstudio.channelviewer.util.ChannelUtilities;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import com.swtdesigner.TableViewerColumnSorter;
 
 /**
@@ -38,8 +32,8 @@ public class TableViewerChannelPropertySorter extends TableViewerColumnSorter {
 	}
 
 	private int compareProperties(Channel ch1, Channel ch2) {
-		Property prop1 = ChannelUtilities.getProperty(ch1, propertyName);
-		Property prop2 = ChannelUtilities.getProperty(ch2, propertyName);
+		Property prop1 = ch1.getProperty(propertyName);
+		Property prop2 = ch2.getProperty(propertyName);
 		if ((prop1 == null) && (prop2 == null))
 			return 0;
 		else if (prop1 == null)

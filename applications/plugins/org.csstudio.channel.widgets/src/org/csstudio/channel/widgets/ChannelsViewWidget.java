@@ -11,11 +11,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.csstudio.channelviewer.views.ChannelContentProvider;
-import org.csstudio.channelviewer.views.PropertyCellLabelProvider;
-import org.csstudio.channelviewer.views.TableViewerChannelPropertySorter;
-import org.csstudio.channelviewer.views.TableViewerChannelTagSorter;
-import org.csstudio.channelviewer.views.TagCellLabelProvider;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -110,7 +105,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			TableViewerColumn channelPropertyColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
 			channelPropertyColumn
-					.setLabelProvider(new PropertyCellLabelProvider(
+					.setLabelProvider(new ChannelPropertyCellLabelProvider(
 							propertyName));
 			new TableViewerChannelPropertySorter(channelPropertyColumn,
 					propertyName);
@@ -128,7 +123,7 @@ public class ChannelsViewWidget extends AbstractChannelQueryResultWidget
 			TableViewerColumn channelTagColumn = new TableViewerColumn(
 					tableViewer, SWT.NONE);
 			channelTagColumn
-					.setLabelProvider(new TagCellLabelProvider(tagName));
+					.setLabelProvider(new ChannelTagCellLabelProvider(tagName));
 			new TableViewerChannelTagSorter(channelTagColumn, tagName);
 			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
 			// tcl_composite.setColumnData(tblclmnNumericprop, new

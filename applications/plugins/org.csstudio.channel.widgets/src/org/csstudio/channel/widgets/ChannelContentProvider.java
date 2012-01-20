@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.channelviewer.views;
+package org.csstudio.channel.widgets;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;

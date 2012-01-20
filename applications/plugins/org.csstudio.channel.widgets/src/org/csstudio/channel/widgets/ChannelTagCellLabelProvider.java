@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.csstudio.channelviewer.views;
+package org.csstudio.channel.widgets;
 
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import gov.bnl.channelfinder.api.Channel;
@@ -13,11 +13,11 @@ import org.eclipse.jface.viewers.ViewerCell;
  * @author shroffk
  * 
  */
-public class TagCellLabelProvider extends CellLabelProvider {
+public class ChannelTagCellLabelProvider extends CellLabelProvider {
 
 	private String tagName;
 
-	public TagCellLabelProvider(String tagName) {
+	public ChannelTagCellLabelProvider(String tagName) {
 		super();
 		this.tagName = tagName;
 	}

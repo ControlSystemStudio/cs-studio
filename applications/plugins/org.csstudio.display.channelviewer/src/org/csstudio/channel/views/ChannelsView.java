@@ -9,16 +9,12 @@ import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.ChannelsViewWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
 import org.csstudio.channelviewer.Activator;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.part.ViewPart;
 
 public class ChannelsView extends ViewPart {
 	private ChannelQueryInputBar inputBar;
