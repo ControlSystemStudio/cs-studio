@@ -82,7 +82,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.ChannelsView">
+                  value="org.csstudio.channel.views.ChannelViewer">
             </parameter>
          </command>
       </menuContribution>
@@ -108,7 +108,7 @@
                style="push">
          </command>
          <command
-               commandId="org.csstudio.channel.views.OpenChannelsView"
+               commandId="org.csstudio.channel.views.OpenChannelViewer"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
                label="Channel Viewer"
                style="push">
