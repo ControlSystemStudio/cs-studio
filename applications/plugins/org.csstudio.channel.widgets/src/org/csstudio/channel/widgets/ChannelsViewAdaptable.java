@@ -40,7 +40,10 @@ public class ChannelsViewAdaptable implements ChannelAdaptable,
 	
 	@Override
 	public ConfigurableWidget toConfigurableWidget() {
-		return configurableWidget;
+		if(channels != null && !channels.isEmpty())
+			return configurableWidget;
+		else
+			return null;
 	}
 
 

@@ -39,7 +39,6 @@ public class ChannelsViewConfigurationPanel extends
 
 					@Override
 					public void propertyChange(PropertyChangeEvent event) {
-						System.out.println(event);
 						if (Arrays.asList("selectedValues")
 								.contains(event.getPropertyName())) {
 							changeSupport
