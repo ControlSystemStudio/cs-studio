@@ -8,7 +8,6 @@ import java.beans.PropertyChangeListener;
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.ChannelsViewWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
-import org.csstudio.channelviewer.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,6 +19,11 @@ public class ChannelsView extends ViewPart {
 	private ChannelQueryInputBar inputBar;
 	private ChannelsViewWidget channelsViewWidget;
 
+	/**
+	 * The ID of the view as specified by the extension.
+	 */
+	public static final String ID = "org.csstudio.channel.views.ChannelsView";
+	
 	public ChannelsView() {
 	}
 
