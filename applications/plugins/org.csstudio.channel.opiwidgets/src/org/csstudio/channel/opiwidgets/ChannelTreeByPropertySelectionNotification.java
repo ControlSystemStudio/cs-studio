@@ -1,18 +1,19 @@
 package org.csstudio.channel.opiwidgets;
 
 import org.csstudio.channel.widgets.ChannelTreeByPropertyNode;
-import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.channel.widgets.LocalUtilityPvManagerBridge;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.widgets.Widget;
 
 public class ChannelTreeByPropertySelectionNotification {
 	
 	private final ChannelNotificationString notificationExpression;
-	private final ChannelTreeByPropertyWidget widget;
+	private final ISelectionProvider selectionProvider;
 	private final LocalUtilityPvManagerBridge notification;
 	
 	private final ISelectionChangedListener listener = new ISelectionChangedListener() {
@@ -20,12 +21,11 @@ public class ChannelTreeByPropertySelectionNotification {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			if (event.getSelection() instanceof IStructuredSelection) {
-				ChannelTreeByPropertyNode node = (ChannelTreeByPropertyNode)
-						((IStructuredSelection) event.getSelection()).getFirstElement();
-				if (node.isSubQuery()) {
-					notification.write(notificationExpression.notification(node.getPropertiesAndValues()));
+				String notificationString = notificationFor(((IStructuredSelection) event.getSelection()).getFirstElement());
+				if (notificationString != null) {
+					notification.write(notificationString);
 				} else {
-					notification.write(notificationExpression.notification(node.getNodeChannels().get(0)));
+					notification.write(notificationString);
 				}
 			} else {
 				notification.write("");
@@ -33,14 +33,29 @@ public class ChannelTreeByPropertySelectionNotification {
 		}
 	};
 	
+	protected String notificationFor(Object selection) {
+		ChannelTreeByPropertyNode node = (ChannelTreeByPropertyNode) selection;
+		if (node.isSubQuery()) {
+			return notificationExpression.notification(node.getPropertiesAndValues());
+		} else {
+			return notificationExpression.notification(node.getNodeChannels().get(0));
+		}
+	}
+	
+	public <T extends Widget & ISelectionProvider>  ChannelTreeByPropertySelectionNotification(String notificationPv,
+			String notificationExpression, T widget) {
+		this(notificationPv, notificationExpression, widget, widget);
+	}
+	
+	
 	public ChannelTreeByPropertySelectionNotification(String notificationPv,
-			String notificationExpression, ChannelTreeByPropertyWidget widget) {
+			String notificationExpression, ISelectionProvider selectionProvider, Widget widget) {
 		this.notificationExpression = new ChannelNotificationString(notificationExpression);
-		this.widget = widget;
+		this.selectionProvider = selectionProvider;
 		
 		notification = new LocalUtilityPvManagerBridge(notificationPv);
 		
-		widget.addSelectionChangedListener(listener);
+		selectionProvider.addSelectionChangedListener(listener);
 		widget.addDisposeListener(new DisposeListener() {
 			
 			@Override
@@ -51,7 +66,7 @@ public class ChannelTreeByPropertySelectionNotification {
 	}
 	
 	public void close() {
-		widget.removeSelectionChangedListener(listener);
+		selectionProvider.removeSelectionChangedListener(listener);
 		notification.close();
 	}
 
