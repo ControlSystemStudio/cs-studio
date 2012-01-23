@@ -65,7 +65,7 @@ public class CommonAdapterFactory implements IAdapterFactory {
 
 	@Override
 	public Class[] getAdapterList() {
-		return new Class[] { Channel[].class, ChannelQuery[].class,
+		return new Class[] { Channel.class, Channel[].class, ChannelQuery.class, ChannelQuery[].class,
 				ProcessVariable.class, ProcessVariable[].class,
 				ConfigurableWidget.class };
 	}
