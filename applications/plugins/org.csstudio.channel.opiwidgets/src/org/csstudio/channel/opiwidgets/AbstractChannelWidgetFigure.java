@@ -29,12 +29,34 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 	 */
 	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
+		widget = createWidget(composite);
+		selectionProvider = retrieveSelectionProvider(widget);
+	}
+
+	/**
+	 * Implement to create the widget to be wrapped.
+	 * 
+	 * @param parent the widget parent
+	 * @return the new widget
+	 */
+	protected abstract T createWidget(Composite parent);
+	
+	/**
+	 * Returns the selection provider to be used for pop-ups. By default, if the
+	 * widget is itself an ISelectionProvider, the widget is returned.
+	 * 
+	 * @param widget the widget
+	 * @return the selection provider or null
+	 */
+	protected ISelectionProvider retrieveSelectionProvider(T widget) {
+		if (widget instanceof ISelectionProvider) {
+			return (ISelectionProvider) widget;
+		}
+		return null;
 	}
 	
-	// TODO: this should be changed to have an abstract method to be implemented,
-	// instead of having people set it in the constructor.
-	protected T widget;
-	protected ISelectionProvider selectionProvider;
+	private final T widget;
+	private final ISelectionProvider selectionProvider;
 
 	@Override
 	public T getSWTWidget() {

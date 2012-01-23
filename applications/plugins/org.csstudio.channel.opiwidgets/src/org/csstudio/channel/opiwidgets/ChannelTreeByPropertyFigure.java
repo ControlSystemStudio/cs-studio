@@ -3,12 +3,16 @@ package org.csstudio.channel.opiwidgets;
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 
 public class ChannelTreeByPropertyFigure extends AbstractChannelWidgetFigure<ChannelTreeByPropertyWidget> {
 	
 	public ChannelTreeByPropertyFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
-		widget = new ChannelTreeByPropertyWidget(composite, SWT.NONE);
-		selectionProvider = widget;
+	}
+	
+	@Override
+	protected ChannelTreeByPropertyWidget createWidget(Composite parent) {
+		return new ChannelTreeByPropertyWidget(parent, SWT.NONE);
 	}
 }
