@@ -989,9 +989,9 @@ public class ChannelFinderClientImpl implements ChannelFinderClient {
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {
 						if(e.getMessage().equals(String.valueOf(0))){
-							throw new IllegalArgumentException("= must be preceeded by a propertyName or keyword Tags.");
+							throw new IllegalArgumentException("= must be preceeded by a propertyName or 'Tags'.");
 						} else if (e.getMessage().equals(String.valueOf(1)))
-							throw new IllegalArgumentException("key: '" + key + "' is specified with no pattern.");
+							throw new IllegalArgumentException("No pattern specified for property '" + key + "'.");
 					}
 
 				}
