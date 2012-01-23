@@ -32,4 +32,5 @@ Export-Package: org.csstudio.domain.desy,
  org.csstudio.domain.desy.time,
  org.csstudio.domain.desy.types,
  org.csstudio.domain.desy.typesupport
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/commons-net-2.0.jar

@@ -6,7 +6,7 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.nams.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
- org.csstudio.platform.libs.dal,
+ org.csstudio.dal,
  org.csstudio.platform.libs.easymock;bundle-version="3.0.0",
  org.csstudio.platform.simpledal;bundle-version="1.0.0",
  org.csstudio.nams.service.logging,

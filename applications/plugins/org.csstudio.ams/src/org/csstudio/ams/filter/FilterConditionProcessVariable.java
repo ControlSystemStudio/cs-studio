@@ -38,7 +38,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 /**
  * A filter condition based on PV-values.

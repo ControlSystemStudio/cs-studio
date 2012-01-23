@@ -11,7 +11,7 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.RemoteInfo;
 import org.junit.Test;
 
 public class ProcessVariableRegel_Test extends
