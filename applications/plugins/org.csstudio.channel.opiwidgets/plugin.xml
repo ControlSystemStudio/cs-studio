@@ -28,24 +28,4 @@
             typeId="org.csstudio.channel.opiwidgets.ChannelTreeByProperty">
       </widget>
    </extension>
-   <extension
-         point="org.eclipse.core.runtime.adapters">
-      <factory
-            adaptableType="org.csstudio.channel.opiwidgets.AbstractChannelWidgetEditPart"
-            class="org.csstudio.channel.opiwidgets.ChannelEditPartAdapterFactory">
-         <adapter
-               type="[Lgov.bnl.channelfinder.api.Channel;">
-         </adapter>
-         <adapter
-               type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
-         </adapter>
-         <adapter
-               type="org.csstudio.csdata.ProcessVariable">
-         </adapter>
-         <adapter
-               type="org.csstudio.channel.widgets.ConfigurableWidget">
-         </adapter>
-      </factory>
-   </extension>
-
 </plugin>
