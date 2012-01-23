@@ -97,15 +97,15 @@ public class PVTableByPropertyView extends ViewPart {
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
-		fd_lblPvName.top = new FormAttachment(0, 13);
-		fd_lblPvName.left = new FormAttachment(0, 10);
+		fd_lblPvName.top = new FormAttachment(0, 8);
+		fd_lblPvName.left = new FormAttachment(0, 5);
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
 				Activator.getDefault().getDialogSettings(), "pvtablebyproperty.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 10);
+		fd_combo.top = new FormAttachment(0, 5);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		inputBar.setLayoutData(fd_combo);
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
@@ -120,10 +120,10 @@ public class PVTableByPropertyView extends ViewPart {
 		
 		tableWidget = new PVTableByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -5);
 		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
-		fd_waterfallComposite.left = new FormAttachment(0, 10);
-		fd_waterfallComposite.right = new FormAttachment(100, -10);
+		fd_waterfallComposite.left = new FormAttachment(0, 5);
+		fd_waterfallComposite.right = new FormAttachment(100, -5);
 		tableWidget.setLayoutData(fd_waterfallComposite);
 		tableWidget.addPropertyChangeListener(new PropertyChangeListener() {
 			
@@ -189,7 +189,7 @@ public class PVTableByPropertyView extends ViewPart {
 		fd_lblColumn.right = new FormAttachment(columnProperty, -6);
 		FormData fd_columnProperty = new FormData();
 		fd_columnProperty.bottom = new FormAttachment(tableWidget, -6);
-		fd_columnProperty.right = new FormAttachment(100, -10);
+		fd_columnProperty.right = new FormAttachment(100, -5);
 		columnProperty.setLayoutData(fd_columnProperty);
 		columnProperty.addSelectionListener(new SelectionListener() {
 			

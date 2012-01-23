@@ -78,17 +78,17 @@ public class WaterfallView extends ViewPart {
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
-		fd_lblPvName.top = new FormAttachment(0, 13);
-		fd_lblPvName.left = new FormAttachment(0, 10);
+		fd_lblPvName.top = new FormAttachment(0, 8);
+		fd_lblPvName.left = new FormAttachment(0, 5);
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
 				Activator.getDefault().getDialogSettings(), "waterfall.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 10);
+		fd_combo.top = new FormAttachment(0, 5);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
-		fd_combo.right = new FormAttachment(100, -10);
+		fd_combo.right = new FormAttachment(100, -5);
 		inputBar.setLayoutData(fd_combo);
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
 			
@@ -102,8 +102,8 @@ public class WaterfallView extends ViewPart {
 		
 		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
-		fd_waterfallComposite.left = new FormAttachment(0, 10);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -5);
+		fd_waterfallComposite.left = new FormAttachment(0, 5);
 		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
 		fd_waterfallComposite.right = new FormAttachment(inputBar, 0, SWT.RIGHT);
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
