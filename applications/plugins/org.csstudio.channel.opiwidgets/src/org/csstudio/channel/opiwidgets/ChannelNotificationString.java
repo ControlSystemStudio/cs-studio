@@ -1,9 +1,11 @@
 package org.csstudio.channel.opiwidgets;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelUtil;
 import gov.bnl.channelfinder.api.Property;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -127,5 +129,18 @@ public class ChannelNotificationString {
 		}
 		builder.append(textTokens.get(n));
 		return builder.toString();
+	}
+
+	public Object notification(Collection<Channel> channels) {
+		List<String> commonValues = new ArrayList<String>();
+		for (String propertyName : getRequiredProperties()) {
+			Collection<String> values = ChannelUtil.getPropValues(channels, propertyName);
+			if (values.size() == 1) {
+				commonValues.add(values.iterator().next());
+			} else {
+				return "";
+			}
+		}
+		return notification(commonValues);
 	}
 }

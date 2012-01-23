@@ -8,7 +8,9 @@ import gov.bnl.channelfinder.api.Channel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -118,6 +120,21 @@ public class ChannelNotificationStringTest {
 		channel = Channel.Builder.channel("myChannel").with(property("prop1").value("value1"))
 				.with(property("prop2").value("value2")).build();
 		assertEquals(string.notification(channel), "myChannel value2");
+	}
+
+	@Test
+	public void propMultipleChannel1() {
+		Set<Channel> channels = new HashSet<Channel>();
+		channels.add(Channel.Builder.channel("channel1").with(property("same").value("value"))
+				.with(property("different").value("value1")).build());
+		channels.add(Channel.Builder.channel("channel2").with(property("same").value("value"))
+				.with(property("different").value("value2")).build());
+		ChannelNotificationString string = new ChannelNotificationString("#(same)");
+		assertEquals(string.notification(channels), "value");
+		string = new ChannelNotificationString("#(different)");
+		assertEquals(string.notification(channels), "");
+		string = new ChannelNotificationString("#(Channel Name)");
+		assertEquals(string.notification(channels), "");
 	}
 
 }
