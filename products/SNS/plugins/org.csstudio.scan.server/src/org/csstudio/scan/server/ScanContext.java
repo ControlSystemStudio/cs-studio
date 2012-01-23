@@ -20,14 +20,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.logger.MemoryDataLogger;
 
-/** Context in which the {@link CommandImpl}s of a {@link Scan} are executed.
+/** Context in which the {@link ScanCommandImpl}s of a {@link Scan} are executed.
  *
  *  <ul>
  *  <li>{@link Device}s with which commands can interact.
@@ -51,7 +50,7 @@ public class ScanContext
 
 	private boolean paused = false;
 
-	private volatile CommandImpl<?> current_command = null;
+	private volatile ScanCommandImpl<?> current_command = null;
 
 	public ScanContext(final DeviceContext devices)
     {
@@ -94,12 +93,12 @@ public class ScanContext
         return data_logger;
     }
 
-    /** @param commands {@link CommandImpl}s to execute
+    /** @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
-    public void execute(final List<CommandImpl<?>> commands) throws Exception
+    public void execute(final List<ScanCommandImpl<?>> commands) throws Exception
     {
-        for (CommandImpl<?> command : commands)
+        for (ScanCommandImpl<?> command : commands)
         {
             if (! run)
                 return;
@@ -107,10 +106,10 @@ public class ScanContext
         }
     }
 
-    /** @param command {@link CommandImpl} to execute
+    /** @param command {@link ScanCommandImpl} to execute
      *  @throws Exception on error in executing the command
      */
-    public void execute(final CommandImpl<?> command) throws Exception
+    public void execute(final ScanCommandImpl<?> command) throws Exception
     {
         synchronized (this)
         {
@@ -176,7 +175,7 @@ public class ScanContext
 	}
 
 	/** Inform scan context that work has been performed.
-	 *  Meant to be called by {@link CommandImpl}s
+	 *  Meant to be called by {@link ScanCommandImpl}s
 	 *  @param work_units Number of performed work units
 	 */
 	public void workPerformed(final int work_units)
@@ -193,7 +192,7 @@ public class ScanContext
     /** @return String representation of current command */
     public String getCurrentCommand()
     {
-        final CommandImpl<?> command = current_command;
+        final ScanCommandImpl<?> command = current_command;
         if (command == null)
             return "";
         return command.toString();

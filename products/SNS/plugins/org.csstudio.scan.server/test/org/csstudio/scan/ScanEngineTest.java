@@ -25,13 +25,13 @@ import java.util.List;
 
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
-import org.csstudio.scan.command.LogCommandImpl;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.SetCommandImpl;
 import org.csstudio.scan.command.WaitCommand;
-import org.csstudio.scan.command.WaitCommandImpl;
+import org.csstudio.scan.commandimpl.LogCommandImpl;
+import org.csstudio.scan.commandimpl.LoopCommandImpl;
+import org.csstudio.scan.commandimpl.SetCommandImpl;
+import org.csstudio.scan.commandimpl.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanEngine;

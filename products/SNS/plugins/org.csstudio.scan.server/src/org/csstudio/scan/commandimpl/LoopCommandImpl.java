@@ -13,24 +13,27 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not getEnd()orsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
 
 /** Command that performs a loop
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LoopCommandImpl extends CommandImpl<LoopCommand>
+public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 {
     final private boolean reverse;
-	final private List<CommandImpl<?>> implementation;
+	final private List<ScanCommandImpl<?>> implementation;
 	private int direction = 1;
 	
     /** Initialize
@@ -41,7 +44,7 @@ public class LoopCommandImpl extends CommandImpl<LoopCommand>
         super(command);
         reverse = (command.getStart() <= command.getEnd()  &&  command.getStepSize() < 0) ||
                 (command.getStart() >= command.getEnd()  &&  command.getStepSize() > 0);
-        implementation = CommandImplFactory.implement(command.getBody());
+        implementation = ScanCommandImplTool.getInstance().implement(command.getBody());
     }
 
     /** {@inheritDoc} */
@@ -50,7 +53,7 @@ public class LoopCommandImpl extends CommandImpl<LoopCommand>
     {
         final int iterations = 1 + (int) Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
         int body_units = 0;
-        for (CommandImpl<?> command : implementation)
+        for (ScanCommandImpl<?> command : implementation)
             body_units += command.getWorkUnits();
         if (body_units == 0)
             return iterations;

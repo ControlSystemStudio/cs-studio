@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.command.CommandImpl;
-import org.csstudio.scan.command.CommandImplFactory;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
@@ -150,7 +148,7 @@ public class ScanServerImpl implements ScanServer
         try
         {
             // Obtain implementations for the requested commands
-            final List<CommandImpl<?>> implementations = CommandImplFactory.implement(commands);
+            final List<ScanCommandImpl<?>> implementations = ScanCommandImplTool.getInstance().implement(commands);
 
             // Get devices
     		final DeviceContext devices = DeviceContext.getDefault();

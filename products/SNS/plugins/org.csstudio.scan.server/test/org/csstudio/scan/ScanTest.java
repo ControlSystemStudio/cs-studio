@@ -25,10 +25,10 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;

@@ -13,40 +13,36 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.condition.DeviceValueCondition;
-import org.csstudio.scan.device.Device;
+import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** {@link CommandImpl} that delays the scan until a device reaches a certain value
+/** {@link ScanCommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitCommandImpl extends CommandImpl<WaitCommand>
+public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
-	/** Initialize
-	 *  @param command Command description
-	 */
-    public WaitCommandImpl(final WaitCommand command)
+    /** Initialize
+     *  @param command Command description
+     */
+    public DelayCommandImpl(final DelayCommand command)
     {
         super(command);
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
 	@Override
-    public void execute(final ScanContext context) throws Exception
+    public void execute(final ScanContext command_context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "Wait for {0} to reach {1}",
-				new Object[] { command.getDeviceName(), command.getDesiredValue() });
-        final Device device = context.getDevice(command.getDeviceName());
-
-        final DeviceValueCondition condition =
-            new DeviceValueCondition(device, command.getDesiredValue(), command.getTolerance());
-        condition.await();
-        context.workPerformed(1);
+		Logger.getLogger(getClass().getName()).log(Level.FINE, "Delay {0} secs",
+				command.getSeconds());
+		Thread.sleep(Math.round(command.getSeconds() * 1000));
+        command_context.workPerformed(1);
     }
 }

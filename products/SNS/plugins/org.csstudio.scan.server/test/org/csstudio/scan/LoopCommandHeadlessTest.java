@@ -18,14 +18,14 @@ package org.csstudio.scan;
 import static org.junit.Assert.assertEquals;
 
 import org.csstudio.data.values.ValueUtil;
-import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.SetCommand;
+import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.Scan;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.junit.Test;
 
@@ -49,7 +49,7 @@ public class LoopCommandHeadlessTest
         assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
 
         final ScanContext context = new ScanContext(devices);
-        final CommandImpl<?> loop = new LoopCommandImpl(
+        final ScanCommandImpl<?> loop = new LoopCommandImpl(
                 new LoopCommand("counter", 1.0, 5.0, 1.0,
                     new LogCommand("counter")));
         System.out.println(loop);
