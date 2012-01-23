@@ -9,5 +9,6 @@ public class WaterfallFigure extends AbstractChannelWidgetFigure<WaterfallWidget
 	public WaterfallFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
 		widget = new WaterfallWidget(composite, SWT.NONE);
+		selectionProvider = widget;
 	}
 }

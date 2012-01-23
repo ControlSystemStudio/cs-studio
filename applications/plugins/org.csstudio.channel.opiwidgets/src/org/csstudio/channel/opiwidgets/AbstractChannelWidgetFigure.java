@@ -50,42 +50,6 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		return selectionProvider;
 	}
 	
-	// TODO: these most likely are better moved to the edit part, and converted
-	// to use the adaptable interfaces we are building.
-	
-	/**
-	 * Takes the selection and converts it to a Channel array.
-	 * 
-	 * @return the adapted object or null
-	 */
-	public Channel[] getSelectedChannels() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), Channel.class);
-	}
-
-	/**
-	 * Takes the selection and converts it to a ChannelQuery array.
-	 * 
-	 * @return the adapted object or null
-	 */
-	public ChannelQuery[] getSelectedChannelQuery() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), ChannelQuery.class);
-	}
-
-	/**
-	 * Takes the selection and converts it to a ProcessVariable array.
-	 * 
-	 * @return the adapted object or null
-	 */
-	public ProcessVariable[] getSelectedProcessVariables() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), ProcessVariable.class);
-	}
-	
 	public boolean isRunMode() {
 		return runmode;
 	}
