@@ -25,9 +25,9 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 				notification.close();
 				notification = null;
 			}
-			if (model.getSelectionPvName() != null && !model.getSelectionPvName().isEmpty()) {
-				notification = new ChannelTreeByPropertySelectionNotification(model.getSelectionPvName(),
-					model.getNotificationString(), widget);
+			if (model.getSelectionPv() != null && !model.getSelectionPv().isEmpty()) {
+				notification = new ChannelTreeByPropertySelectionNotification(model.getSelectionPv(),
+					model.getSelectionExpression(), widget);
 			}
 		}
 		widget.setProperties(model.getTreeProperties());
