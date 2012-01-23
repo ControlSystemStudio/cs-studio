@@ -3,6 +3,26 @@
 <plugin>
    <extension
          point="org.eclipse.ui.views">
+      <category
+            id="org.csstudio.channel.application.category"
+            name="Channel Applications">
+      </category>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.views.ChannelViewer"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+            id="org.csstudio.channel.views.ChannelViewer"
+            name="Channel Viewer"
+            restorable="true">
+      </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+            id="org.csstudio.channel.views.ChannelTreeByPropertyView"
+            name="Channel Tree by Property"
+            restorable="true">
+      </view>
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.channel.views.PVTableByPropertyView"
@@ -19,32 +39,32 @@
             name="Waterfall"
             restorable="true">
       </view>
-      <view
-            category="org.csstudio.channel.application.category"
-            class="org.csstudio.channel.views.ChannelTreeByPropertyView"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
-            id="org.csstudio.channel.views.ChannelTreeByPropertyView"
-            name="Channel Tree by Property"
-            restorable="true">
-      </view>
-      <category
-            id="org.csstudio.channel.application.category"
-            name="Channel Applications">
-      </category>
-      <view
-            category="org.csstudio.channel.application.category"
-            class="org.csstudio.channel.views.ChannelViewer"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-            id="org.csstudio.channel.views.ChannelViewer"
-            name="Channel Viewer"
-            restorable="true">
-      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
             locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+               label="Channel Viewer"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.ChannelViewer">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+               label="Channel Tree by Property"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.ChannelTreeByPropertyView">
+            </parameter>
+         </command>
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.channel.widgets/icons/table-property-16.png"
@@ -65,40 +85,20 @@
                   value="org.csstudio.channel.views.WaterfallView">
             </parameter>
          </command>
-         <command
-               commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
-               label="Channel Tree by Property"
-               style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.ChannelTreeByPropertyView">
-            </parameter>
-         </command>
-         <command
-               commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-               label="Channel Viewer"
-               style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.ChannelViewer">
-            </parameter>
-         </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
             locationURI="popup:org.csstudio.ui.menu.popup.channelquery">
          <command
-               commandId="org.csstudio.channel.views.OpenChannelTreeByProperty"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
-               label="Channel Tree by Property"
+               commandId="org.csstudio.channel.views.OpenChannelViewer"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+               label="Channel Viewer"
                style="push">
          </command>
          <command
-               commandId="org.csstudio.channel.views.OpenWaterfallQuery"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
-               label="Waterfall"
+               commandId="org.csstudio.channel.views.OpenChannelTreeByProperty"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+               label="Channel Tree by Property"
                style="push">
          </command>
          <command
@@ -108,9 +108,9 @@
                style="push">
          </command>
          <command
-               commandId="org.csstudio.channel.views.OpenChannelViewer"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
-               label="Channel Viewer"
+               commandId="org.csstudio.channel.views.OpenWaterfallQuery"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+               label="Waterfall"
                style="push">
          </command>
       </menuContribution>
