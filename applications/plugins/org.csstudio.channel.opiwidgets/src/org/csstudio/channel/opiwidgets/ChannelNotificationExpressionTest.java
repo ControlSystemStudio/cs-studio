@@ -14,11 +14,11 @@ import java.util.Set;
 
 import org.junit.Test;
 
-public class ChannelNotificationStringTest {
+public class ChannelNotificationExpressionTest {
 
 	@Test
 	public void validString1() {
-		ChannelNotificationString string = new ChannelNotificationString("abcd");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("abcd");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().isEmpty(), true);
 		assertEquals(string.notification(Collections.<String>emptyList()), "abcd");
@@ -26,7 +26,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void validString2() {
-		ChannelNotificationString string = new ChannelNotificationString("#(prop1)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(prop1)");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 1);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -35,7 +35,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void validString3() {
-		ChannelNotificationString string = new ChannelNotificationString("before#(prop1)after");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("before#(prop1)after");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 1);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -44,7 +44,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void validString4() {
-		ChannelNotificationString string = new ChannelNotificationString("before#(prop1)middle#(prop2)after");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("before#(prop1)middle#(prop2)after");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -54,7 +54,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void validString5() {
-		ChannelNotificationString string = new ChannelNotificationString("before#(prop1)#(prop2)after");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("before#(prop1)#(prop2)after");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -64,7 +64,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void validString6() {
-		ChannelNotificationString string = new ChannelNotificationString("#(prop1)#(prop2)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(prop1)#(prop2)");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -74,7 +74,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void invalidString1() {
-		ChannelNotificationString string = new ChannelNotificationString("#(prop1");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(prop1");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 0);
 		assertEquals(string.notification(Collections.<String>emptyList()), "#(prop1");
@@ -82,7 +82,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void propMap1() {
-		ChannelNotificationString string = new ChannelNotificationString("#(prop1)#(prop2)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(prop1)#(prop2)");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -96,7 +96,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void propChannel1() {
-		ChannelNotificationString string = new ChannelNotificationString("#(prop1)#(prop2)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(prop1)#(prop2)");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "prop1");
@@ -110,7 +110,7 @@ public class ChannelNotificationStringTest {
 
 	@Test
 	public void propChannel2() {
-		ChannelNotificationString string = new ChannelNotificationString("#(Channel Name) #(prop2)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(Channel Name) #(prop2)");
 		assertNotNull(string.getRequiredProperties());
 		assertEquals(string.getRequiredProperties().size(), 2);
 		assertEquals(string.getRequiredProperties().get(0), "Channel Name");
@@ -129,11 +129,11 @@ public class ChannelNotificationStringTest {
 				.with(property("different").value("value1")).build());
 		channels.add(Channel.Builder.channel("channel2").with(property("same").value("value"))
 				.with(property("different").value("value2")).build());
-		ChannelNotificationString string = new ChannelNotificationString("#(same)");
+		ChannelNotificationExpression string = new ChannelNotificationExpression("#(same)");
 		assertEquals(string.notification(channels), "value");
-		string = new ChannelNotificationString("#(different)");
+		string = new ChannelNotificationExpression("#(different)");
 		assertEquals(string.notification(channels), "");
-		string = new ChannelNotificationString("#(Channel Name)");
+		string = new ChannelNotificationExpression("#(Channel Name)");
 		assertEquals(string.notification(channels), "");
 	}
 

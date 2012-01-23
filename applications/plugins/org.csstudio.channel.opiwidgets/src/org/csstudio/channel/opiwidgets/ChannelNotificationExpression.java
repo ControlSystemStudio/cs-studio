@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
  * 
  * @author carcassi
  */
-public class ChannelNotificationString {
+public class ChannelNotificationExpression {
 	
 	private final List<String> requiredProperties = new ArrayList<String>();
 	private final List<String> textTokens = new ArrayList<String>();
@@ -32,7 +32,7 @@ public class ChannelNotificationString {
 	 * 
 	 * @param notificationString the notification string
 	 */
-	public ChannelNotificationString(String notificationString) {
+	public ChannelNotificationExpression(String notificationString) {
 		Matcher matcher = PATTERN.matcher(notificationString);
 		int previousEnd = 0;
 		while (matcher.find()) {
@@ -58,7 +58,7 @@ public class ChannelNotificationString {
 	
 	/**
 	 * Creates a notification given the property values in the same order given returned
-	 * by {@link ChannelNotificationString#getRequiredProperties()}.
+	 * by {@link ChannelNotificationExpression#getRequiredProperties()}.
 	 * 
 	 * @param propertyValues the values
 	 * @return the new notification string

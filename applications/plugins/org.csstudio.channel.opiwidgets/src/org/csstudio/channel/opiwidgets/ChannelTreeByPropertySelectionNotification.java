@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Widget;
 
 public class ChannelTreeByPropertySelectionNotification {
 	
-	private final ChannelNotificationString notificationExpression;
+	private final ChannelNotificationExpression notificationExpression;
 	private final ISelectionProvider selectionProvider;
 	private final LocalUtilityPvManagerBridge notification;
 	
@@ -50,7 +50,7 @@ public class ChannelTreeByPropertySelectionNotification {
 	
 	public ChannelTreeByPropertySelectionNotification(String notificationPv,
 			String notificationExpression, ISelectionProvider selectionProvider, Widget widget) {
-		this.notificationExpression = new ChannelNotificationString(notificationExpression);
+		this.notificationExpression = new ChannelNotificationExpression(notificationExpression);
 		this.selectionProvider = selectionProvider;
 		
 		notification = new LocalUtilityPvManagerBridge(notificationPv);
