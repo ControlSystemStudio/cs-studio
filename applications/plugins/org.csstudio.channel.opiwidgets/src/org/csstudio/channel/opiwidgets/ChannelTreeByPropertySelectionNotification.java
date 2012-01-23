@@ -11,8 +11,7 @@ import org.eclipse.swt.events.DisposeListener;
 
 public class ChannelTreeByPropertySelectionNotification {
 	
-	private final String notificationPv;
-	private final ChannelNotificationString notificationString;
+	private final ChannelNotificationString notificationExpression;
 	private final ChannelTreeByPropertyWidget widget;
 	private final LocalUtilityPvManagerBridge notification;
 	
@@ -24,9 +23,9 @@ public class ChannelTreeByPropertySelectionNotification {
 				ChannelTreeByPropertyNode node = (ChannelTreeByPropertyNode)
 						((IStructuredSelection) event.getSelection()).getFirstElement();
 				if (node.isSubQuery()) {
-					notification.write(notificationString.notification(node.getPropertiesAndValues()));
+					notification.write(notificationExpression.notification(node.getPropertiesAndValues()));
 				} else {
-					notification.write(notificationString.notification(node.getNodeChannels().get(0)));
+					notification.write(notificationExpression.notification(node.getNodeChannels().get(0)));
 				}
 			} else {
 				notification.write("");
@@ -35,9 +34,8 @@ public class ChannelTreeByPropertySelectionNotification {
 	};
 	
 	public ChannelTreeByPropertySelectionNotification(String notificationPv,
-			String notificationString, ChannelTreeByPropertyWidget widget) {
-		this.notificationPv = notificationPv;
-		this.notificationString = new ChannelNotificationString(notificationString);
+			String notificationExpression, ChannelTreeByPropertyWidget widget) {
+		this.notificationExpression = new ChannelNotificationString(notificationExpression);
 		this.widget = widget;
 		
 		notification = new LocalUtilityPvManagerBridge(notificationPv);
