@@ -73,22 +73,19 @@ public class SetCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
         out.println("<set><device>" + device_name + "</device><value>" + value + "</value></set>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        final String device = DOMHelper.getSubelementString(element, "device");
-        final double value = DOMHelper.getSubelementDouble(element, "value");
-        return new SetCommand(device, value);
+        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setValue(DOMHelper.getSubelementDouble(element, "value"));
     }
     
     /** {@inheritDoc} */

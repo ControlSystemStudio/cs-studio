@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.io.Serializable;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** Description of a scan server command
  * 
@@ -46,8 +47,13 @@ abstract public class ScanCommand implements Serializable
      */
     abstract public void writeXML(PrintStream out, final int level);
 
-    // TODO public static ScanCommand fromXML(final Element element) throws Exception
-    // But can't be static
+    /** Read command parameters from XML element
+     *  @param factory ScanCommandFactory to use in case inner scan commands,
+     *                 for example a loop body, need to be created
+     *  @param element
+     *  @throws Exception on error, for example missing essential data
+     */
+    abstract public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception;
     
     /** Write indentation
      *  @param out Where to print

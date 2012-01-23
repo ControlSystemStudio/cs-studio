@@ -69,6 +69,7 @@ public class LogCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
@@ -86,12 +87,9 @@ public class LogCommand extends ScanCommand
         out.println("</log>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         final List<String> devices = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
@@ -106,7 +104,7 @@ public class LogCommand extends ScanCommand
             devices.add(text_node.getNodeValue());
             node = DOMHelper.findNextElementNode(node, "device");
         }
-        return new LogCommand(devices.toArray(new String[devices.size()]));
+        setDeviceNames(devices.toArray(new String[devices.size()]));
     }
     
     /** {@inheritDoc} */

@@ -52,7 +52,14 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  Name of the command,
+                  Name of the command, displayed in GUI.
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Command identifier, used in XML representation.
                </documentation>
             </annotation>
          </attribute>

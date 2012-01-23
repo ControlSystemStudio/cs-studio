@@ -89,6 +89,7 @@ public class WaitCommand extends ScanCommand
     }
     
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
@@ -98,17 +99,13 @@ public class WaitCommand extends ScanCommand
         		    "</wait>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        final String device = DOMHelper.getSubelementString(element, "device");
-        final double value = DOMHelper.getSubelementDouble(element, "value");
-        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance");
-        return new WaitCommand(device, value, tolerance);
+        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setDesiredValue(DOMHelper.getSubelementDouble(element, "value"));
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
     }
     
     /** {@inheritDoc} */
