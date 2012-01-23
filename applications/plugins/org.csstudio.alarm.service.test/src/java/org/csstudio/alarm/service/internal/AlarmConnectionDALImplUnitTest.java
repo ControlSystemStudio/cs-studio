@@ -11,9 +11,9 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.DynamicValueListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

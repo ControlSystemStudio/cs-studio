@@ -28,9 +28,9 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.epics.css.dal.impl.DefaultApplicationContext;
-import org.epics.css.dal.simple.SimpleDALBroker;
-import org.epics.css.dal.spi.Plugs;
+import org.csstudio.dal.impl.DefaultApplicationContext;
+import org.csstudio.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.spi.Plugs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +65,7 @@ public class AlarmServiceJMSImplUnitTest {
         System.setProperty(Plugs.PLUGS, "EPICS");
         System.setProperty(Plugs.PLUGS_DEFAULT, "EPICS");
         System.setProperty(Plugs.PLUG_PROPERTY_FACTORY_CLASS + "EPICS",
-                           "org.epics.css.dal.epics.PropertyFactoryImpl");
+                           "org.csstudio.dal.epics.PropertyFactoryImpl");
     }
 
     /**

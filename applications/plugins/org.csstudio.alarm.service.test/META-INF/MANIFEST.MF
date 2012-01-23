@@ -8,4 +8,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: DESY <css-developer@desy.de>, Joerg Penning
 Require-Bundle: org.junit4;bundle-version="4.8.1",
  org.mockito;bundle-version="1.8.5",
- org.csstudio.platform.libs.dal.epics;bundle-version="1.3.0"
+ org.csstudio.dal.epics;bundle-version="1.0.0"
