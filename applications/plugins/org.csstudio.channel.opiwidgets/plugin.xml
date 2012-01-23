@@ -5,11 +5,11 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Multi-channel"
-            editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
-            model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
-            name="Waterfall"
-            typeId="org.csstudio.channel.opiwidgets.Waterfall">
+            editpart_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
+            model_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyModel"
+            name="Channel Tree by Property"
+            typeId="org.csstudio.channel.opiwidgets.ChannelTreeByProperty">
       </widget>
       <widget
             category="Multi-channel"
@@ -21,11 +21,11 @@
       </widget>
       <widget
             category="Multi-channel"
-            editpart_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyEditPart"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
-            model_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyModel"
-            name="Channel Tree by Property"
-            typeId="org.csstudio.channel.opiwidgets.ChannelTreeByProperty">
+            editpart_class="org.csstudio.channel.opiwidgets.WaterfallEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/waterfall-16.png"
+            model_class="org.csstudio.channel.opiwidgets.WaterfallModel"
+            name="Waterfall"
+            typeId="org.csstudio.channel.opiwidgets.Waterfall">
       </widget>
    </extension>
 </plugin>
