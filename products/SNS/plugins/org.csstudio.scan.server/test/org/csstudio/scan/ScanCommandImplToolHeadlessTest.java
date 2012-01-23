@@ -15,33 +15,35 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertSame;
 
-import org.csstudio.scan.command.CommandImpl;
-import org.csstudio.scan.command.CommandImplFactory;
 import org.csstudio.scan.command.DelayCommand;
-import org.csstudio.scan.command.DelayCommandImpl;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.commandimpl.DelayCommandImpl;
+import org.csstudio.scan.commandimpl.LoopCommandImpl;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandImplTool;
 import org.junit.Test;
 
-/** JUnit test of the {@link CommandImplFactory}
+/** [Headless] JUnit Plug-In test of the {@link ScanCommandImplTool}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CommandImplFactoryTest
+public class ScanCommandImplToolHeadlessTest
 {
     @Test
     public void testImplementScanCommand() throws Exception
     {
+        final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
+        
         final ScanCommand delay = new DelayCommand(1.0);
-        CommandImpl<?> impl = CommandImplFactory.implement(delay);
+        ScanCommandImpl<?> impl = tool.implement(delay);
         assertSame(delay, impl.getCommand());
         assertSame(DelayCommandImpl.class, impl.getClass());
 
         final LoopCommand loop = new LoopCommand("device", 1, 10, 1, delay);
-        impl = CommandImplFactory.implement(loop);
+        impl = tool.implement(loop);
         assertSame(loop, impl.getCommand());
         assertSame(LoopCommandImpl.class, impl.getClass());
     }

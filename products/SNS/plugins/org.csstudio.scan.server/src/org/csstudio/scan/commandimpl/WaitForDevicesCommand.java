@@ -13,34 +13,43 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.condition.Condition;
+import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.device.Device;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** {@link CommandImpl} that delays the scan for some time
+/** {@link ScanCommandImpl} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DelayCommandImpl extends CommandImpl<DelayCommand>
+public class WaitForDevicesCommand extends ScanCommandImpl<ScanCommand>
 {
-    /** Initialize
-     *  @param command Command description
-     */
-    public DelayCommandImpl(final DelayCommand command)
+	public WaitForDevicesCommand()
     {
-        super(command);
+        super(null);
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
 	@Override
-    public void execute(final ScanContext command_context) throws Exception
+    public void execute(final ScanContext context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "Delay {0} secs",
-				command.getSeconds());
-		Thread.sleep(Math.round(command.getSeconds() * 1000));
-        command_context.workPerformed(1);
+		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
+
+		final Condition ready = new WaitForDevicesCondition(context.getDevices());
+		ready.await();
+        context.workPerformed(1);
     }
+
+    /** {@inheritDoc} */
+	@Override
+	public String toString()
+	{
+	    return "Wait for devices";
+	}
 }

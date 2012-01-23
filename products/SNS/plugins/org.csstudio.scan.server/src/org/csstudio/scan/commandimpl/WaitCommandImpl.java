@@ -13,41 +13,42 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.condition.Condition;
-import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** {@link CommandImpl} that delays the scan until all {@link Device}s are 'ready'
+/** {@link ScanCommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitForDevicesCommand extends CommandImpl<ScanCommand>
+public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 {
-	public WaitForDevicesCommand()
+	/** Initialize
+	 *  @param command Command description
+	 */
+    public WaitCommandImpl(final WaitCommand command)
     {
-        super(null);
+        super(command);
     }
 
     /** {@inheritDoc} */
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
+		Logger.getLogger(getClass().getName()).log(Level.FINE, "Wait for {0} to reach {1}",
+				new Object[] { command.getDeviceName(), command.getDesiredValue() });
+        final Device device = context.getDevice(command.getDeviceName());
 
-		final Condition ready = new WaitForDevicesCondition(context.getDevices());
-		ready.await();
+        final DeviceValueCondition condition =
+            new DeviceValueCondition(device, command.getDesiredValue(), command.getTolerance());
+        condition.await();
         context.workPerformed(1);
     }
-
-    /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return "Wait for devices";
-	}
 }

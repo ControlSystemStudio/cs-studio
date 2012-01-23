@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,77 +17,80 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
-/** {@link ScanCommand} that delays the scan for some time
+/** Example for a custom command, added to scan system via extension point.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DelayCommand extends ScanCommand
+public class CommentCommand extends ScanCommand
 {
     /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    private static final long serialVersionUID = 1L;
+    
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("delay", "Delay (seconds)", Double.class)
+        new ScanCommandProperty("comment", "Comment", String.class),
     };
     
-    private double seconds;
+    private String comment;
 
-    /** Initialize delay with 1 second */
-    public DelayCommand()
+    /** Initialize with example comment */
+    public CommentCommand()
     {
-        this(1.0);
+        this("This is a comment");
     }
-    
-	/** Initialize
-	 *  @param seconds Delay in seconds
-	 */
-	public DelayCommand(final double seconds)
+
+    /** Initialize
+     *  @param comment Comment
+     */
+    public CommentCommand(final String comment)
     {
-	    this.seconds = seconds;
+        this.comment = comment;
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public ScanCommandProperty[] getProperties()
     {
         return properties;
     }
 
-    /** @return Delay in seconds */
-	public double getSeconds()
+    /** @return Comment */
+    public String getComment()
     {
-        return seconds;
+        return comment;
     }
 
-	/**@param seconds Delay in seconds */
-	public void setSeconds(final double seconds)
-	{
-	    this.seconds = seconds;
-	}
-	
+    /** @param comment Desired comment */
+    public void setComment(final String comment)
+    {
+        this.comment = comment;
+    }
+    
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void writeXML(final PrintStream out, final int level)
-	{
-	    writeIndent(out, level);
-	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
-	}
-	
+    {
+        writeIndent(out, level);
+        // Note that the 'comment' is written as the text of the
+        // command node itself, not within another embedded node
+        // like '<text/>'
+        out.println("<comment>" + comment + "</comment>");
+    }
+    
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
-	{
-        setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
-	}
-	
+    {
+        setComment(element.getTextContent());
+    }
+    
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return "Delay " + seconds + " sec";
-	}
+    @Override
+    public String toString()
+    {
+        return "Comment: " + comment;
+    }
 }

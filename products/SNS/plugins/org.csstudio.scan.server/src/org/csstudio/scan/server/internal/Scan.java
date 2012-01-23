@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.server;
+package org.csstudio.scan.server.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,12 +21,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.WaitForDevicesCommand;
+import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanState;
 
-/** Scanner executes the {@link CommandImpl}s for one scan within a {@link ScanContext}
+/** Scanner executes the {@link ScanCommandImpl}s for one scan within a {@link ScanContext}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -41,13 +44,13 @@ public class Scan
 
     final private Date created = new Date();
 
-    final private List<CommandImpl<?>> implementations;
+    final private List<ScanCommandImpl<?>> implementations;
 
     private volatile ScanState state = ScanState.Idle;
 
     private volatile String error = null;
 
-    private volatile ScanContext context = null;
+    private volatile ScanContextImpl context = null;
 
     private volatile long total_work_units = 0;
 
@@ -55,7 +58,7 @@ public class Scan
      *  @param name User-provided name for this scan
      *  @param implementations Commands to execute in this scan
      */
-    public Scan(final String name, CommandImpl<?>... implementations)
+    public Scan(final String name, ScanCommandImpl<?>... implementations)
     {
         this(name, Arrays.asList(implementations));
     }
@@ -64,7 +67,7 @@ public class Scan
      *  @param name User-provided name for this scan
      *  @param implementations Commands to execute in this scan
      */
-    public Scan(final String name, final List<CommandImpl<?>> implementations)
+    public Scan(final String name, final List<ScanCommandImpl<?>> implementations)
     {
         id = ids.incrementAndGet();
         this.name = name;
@@ -101,7 +104,7 @@ public class Scan
     {
         // Fetch underlying commands for implementations
         final List<ScanCommand> commands = new ArrayList<ScanCommand>(implementations.size());
-        for (CommandImpl<?> impl : implementations)
+        for (ScanCommandImpl<?> impl : implementations)
             commands.add(impl.getCommand());
         return commands;
     }
@@ -117,7 +120,7 @@ public class Scan
     /** Execute all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
-    public void execute(final ScanContext context)
+    public void execute(final ScanContextImpl context)
     {
         try
         {
@@ -139,7 +142,7 @@ public class Scan
      *  passing exceptions back up.
      *  @throws Exception on error
      */
-    private void execute_or_die_trying(final ScanContext context) throws Throwable
+    private void execute_or_die_trying(final ScanContextImpl context) throws Throwable
     {
         // Was scan aborted before it ever got to run?
         if (state == ScanState.Aborted)
@@ -154,7 +157,7 @@ public class Scan
 
         // Determine work units
         total_work_units = 1; // WaitForDevicesCommand
-        for (CommandImpl<?> command : implementations)
+        for (ScanCommandImpl<?> command : implementations)
             total_work_units += command.getWorkUnits();
 
         // Execute commands

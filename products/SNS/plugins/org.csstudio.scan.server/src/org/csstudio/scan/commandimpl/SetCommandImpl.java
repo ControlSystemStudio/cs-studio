@@ -13,19 +13,21 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** {@link CommandImpl} that sets a device to a value
+/** {@link ScanCommandImpl} that sets a device to a value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SetCommandImpl extends CommandImpl<SetCommand>
+public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 {
     /** Initialize
      *  @param command Command description

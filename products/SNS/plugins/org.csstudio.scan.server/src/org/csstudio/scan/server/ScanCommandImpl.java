@@ -13,11 +13,10 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.server;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.server.Scan;
-import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.internal.Scan;
 
 /** Implementation of a command
  * 
@@ -42,20 +41,20 @@ import org.csstudio.scan.server.ScanContext;
  *  
  *  @author Kay Kasemir
  */
-abstract public class CommandImpl<C extends ScanCommand>
+abstract public class ScanCommandImpl<C extends ScanCommand>
 {
     final protected C command;
 
-    /** Initliaze
+    /** Initialize
      *  @param command Command that is implemented
      */
-    public CommandImpl(final C command)
+    public ScanCommandImpl(final C command)
     {
         this.command = command;
     }
     
     /** @return {@link ScanCommand} */
-    public C getCommand()
+    final public C getCommand()
     {
         return command;
     }
@@ -63,7 +62,7 @@ abstract public class CommandImpl<C extends ScanCommand>
     /** Most commands will perform one unit of work,
      *  for example set a PV.
      *  A loop on the other hand will perform one unit of work per loop
-     *  iteration.
+     *  iteration, so derived implementations may override.
      *
      *  @return Number of work units that this command performs */
     public int getWorkUnits()

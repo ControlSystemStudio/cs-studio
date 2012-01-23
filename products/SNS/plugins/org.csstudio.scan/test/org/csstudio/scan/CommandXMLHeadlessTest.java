@@ -25,15 +25,17 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandFactory;
+import org.csstudio.scan.command.SimpleScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.junit.Test;
 
-/** JUnit test of writing/reading a Command sequence as XML
+/** [Headless] JUnit Plug-In test of writing/reading a Command sequence as XML
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CommandXMLUnitTest
+public class CommandXMLHeadlessTest
 {
     private static String xml;
     
@@ -53,13 +55,13 @@ public class CommandXMLUnitTest
         assertTrue(xml.contains("</commands>"));
     }
     
-    @Test
-    public void testReadXML() throws Exception
+    public void runReader(final XMLCommandReader reader) throws Exception
     {
         assertNotNull(xml);
         assertTrue(xml.length() > 0);
+
         final InputStream in = new ByteArrayInputStream(xml.getBytes());
-        final List<ScanCommand> commands = XMLCommandReader.readXMLStream(in);
+        final List<ScanCommand> commands = reader.readXMLStream(in);
         in.close();
         assertNotNull(commands);
         
@@ -71,5 +73,17 @@ public class CommandXMLUnitTest
         System.out.println("Read from XML:");
         System.out.println(copy);
         assertEquals(xml, copy);
+    }
+
+    @Test
+    public void readXMLUsingSimpleScanCommandFactory() throws Exception
+    {
+        runReader(new XMLCommandReader(new SimpleScanCommandFactory()));
+    }
+
+    @Test
+    public void readXMLUsingEclipseScanCommandFactory() throws Exception
+    {
+        runReader(new XMLCommandReader(new ScanCommandFactory()));
     }
 }
