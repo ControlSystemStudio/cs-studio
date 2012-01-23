@@ -33,9 +33,9 @@ import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.commandimpl.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.server.Scan;
-import org.csstudio.scan.server.ScanEngine;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ScanEngine;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link ScanEngine}

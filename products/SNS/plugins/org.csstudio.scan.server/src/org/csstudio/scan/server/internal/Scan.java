@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.server;
+package org.csstudio.scan.server.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +24,10 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanState;
 
 /** Scanner executes the {@link ScanCommandImpl}s for one scan within a {@link ScanContext}
  *  @author Kay Kasemir
@@ -46,7 +50,7 @@ public class Scan
 
     private volatile String error = null;
 
-    private volatile ScanContext context = null;
+    private volatile ScanContextImpl context = null;
 
     private volatile long total_work_units = 0;
 
@@ -116,7 +120,7 @@ public class Scan
     /** Execute all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
-    public void execute(final ScanContext context)
+    public void execute(final ScanContextImpl context)
     {
         try
         {
@@ -138,7 +142,7 @@ public class Scan
      *  passing exceptions back up.
      *  @throws Exception on error
      */
-    private void execute_or_die_trying(final ScanContext context) throws Throwable
+    private void execute_or_die_trying(final ScanContextImpl context) throws Throwable
     {
         // Was scan aborted before it ever got to run?
         if (state == ScanState.Aborted)

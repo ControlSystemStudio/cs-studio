@@ -24,9 +24,10 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ScanContextImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the {@link LoopCommand}
@@ -48,7 +49,7 @@ public class LoopCommandHeadlessTest
         counter.write(2.0);
         assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        final ScanContext context = new ScanContext(devices);
+        final ScanContext context = new ScanContextImpl(devices);
         final ScanCommandImpl<?> loop = new LoopCommandImpl(
                 new LoopCommand("counter", 1.0, 5.0, 1.0,
                     new LogCommand("counter")));
@@ -68,7 +69,7 @@ public class LoopCommandHeadlessTest
         devices.addPVDevice("counter", "loc://counter");
         devices.addPVDevice("other", "loc://other");
 
-        final ScanContext context = new ScanContext(devices);
+        final ScanContextImpl context = new ScanContextImpl(devices);
 
         final LoopCommandImpl loop1 = new LoopCommandImpl(new LoopCommand("counter", 1.0, 5.0, 1.0));
         assertEquals(5, loop1.getWorkUnits());
@@ -96,7 +97,7 @@ public class LoopCommandHeadlessTest
         final Device counter = devices.getDevice("counter");
         devices.startDevices();
 
-        final ScanContext context = new ScanContext(devices);
+        final ScanContext context = new ScanContextImpl(devices);
 
         // Downward loop 5, 4, 3, 2, 1
         counter.write(4.0);
@@ -142,7 +143,7 @@ public class LoopCommandHeadlessTest
                     new LogCommand("counter")));
         System.out.println(loop);
 
-        final ScanContext context = new ScanContext(devices);
+        final ScanContext context = new ScanContextImpl(devices);
 
         // Downward loop 5, 4, 3, 2, 1
         counter.write(4.0);

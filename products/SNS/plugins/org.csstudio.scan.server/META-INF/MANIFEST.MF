@@ -12,3 +12,5 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.utility.pv;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.scan.server.app.Activator
+Export-Package: org.csstudio.scan.device,
+ org.csstudio.scan.server

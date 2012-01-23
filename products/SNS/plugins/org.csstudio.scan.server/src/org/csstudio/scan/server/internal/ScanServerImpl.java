@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.server;
+package org.csstudio.scan.server.internal;
 
 import java.net.BindException;
 import java.rmi.RemoteException;
@@ -33,6 +33,11 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.server.DeviceInfo;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandImplTool;
+import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServer;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
