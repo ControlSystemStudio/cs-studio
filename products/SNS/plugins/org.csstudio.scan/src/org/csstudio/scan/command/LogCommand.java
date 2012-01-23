@@ -32,6 +32,12 @@ public class LogCommand extends ScanCommand
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_names", "Device Names", String[].class)
+    };
+
+    
     private String[] device_names;
 
     /** Initialize empty log command */
@@ -54,6 +60,13 @@ public class LogCommand extends ScanCommand
     public LogCommand(final String device_name)
     {
         this(new String[] { device_name });
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
 	/** @return Names of devices to read and log */

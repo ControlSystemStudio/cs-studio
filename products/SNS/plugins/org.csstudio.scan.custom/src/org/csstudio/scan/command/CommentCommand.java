@@ -29,6 +29,11 @@ public class CommentCommand extends ScanCommand
     /** Serialization ID */
     private static final long serialVersionUID = 1L;
     
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("comment", "Comment", String.class),
+    };
+    
     private String comment;
 
     /** Initialize with example comment */
@@ -43,6 +48,13 @@ public class CommentCommand extends ScanCommand
     public CommentCommand(final String comment)
     {
         this.comment = comment;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
     /** @return Comment */

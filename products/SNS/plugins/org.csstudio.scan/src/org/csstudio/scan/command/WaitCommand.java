@@ -29,6 +29,13 @@ public class WaitCommand extends ScanCommand
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
+        new ScanCommandProperty("tolerance", "Tolerance", Double.class),
+    };
+    
     private String device_name;
     private double desired_value;
     private double tolerance;
@@ -50,6 +57,13 @@ public class WaitCommand extends ScanCommand
         this.device_name = device_name;
         this.desired_value = desired_value;
 	    this.tolerance = tolerance;
+    }
+
+	/** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
 	/** @return Device name */

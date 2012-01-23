@@ -29,6 +29,12 @@ public class SetCommand extends ScanCommand
 	/** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("value", "Value", Object.class),
+    };
+    
     private String device_name;
 	private Object value;
 
@@ -46,6 +52,13 @@ public class SetCommand extends ScanCommand
     {
 		this.device_name = device_name;
 		this.value = value;
+    }
+
+	/** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
 	/** @return Name of device to set */

@@ -47,6 +47,14 @@ public class LoopCommand extends ScanCommand
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("start", "Initial Value", Double.class),
+        new ScanCommandProperty("end", "Final Value", Double.class),
+        new ScanCommandProperty("stepsize", "Step Size", Double.class),
+    };
+    
     private String device_name;
     private double start;
     private double end;
@@ -96,6 +104,13 @@ public class LoopCommand extends ScanCommand
         this.start = start;
         this.end = end;
         this.body = body;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
     
 	/** @return Device name */

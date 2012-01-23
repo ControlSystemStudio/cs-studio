@@ -29,6 +29,11 @@ public class DelayCommand extends ScanCommand
     /** Serialization ID */
     private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("delay", "Delay (seconds)", Double.class)
+    };
+    
     private double seconds;
 
     /** Initialize delay with 1 second */
@@ -45,7 +50,14 @@ public class DelayCommand extends ScanCommand
 	    this.seconds = seconds;
     }
 
-	/** @return Delay in seconds */
+    /** {@inheritDoc} */
+	@Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
+    }
+
+    /** @return Delay in seconds */
 	public double getSeconds()
     {
         return seconds;
