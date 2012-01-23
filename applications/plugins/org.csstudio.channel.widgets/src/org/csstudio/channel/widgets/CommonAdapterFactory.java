@@ -9,6 +9,11 @@ import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
+ * Adapter factor for the common adaptables. This will adapt a selection of
+ * {@link ConfigurableWidgetAdaptable}, {@link ProcessVariableAdaptable},
+ * {@link ChannelAdaptable} and {@link ChannelQueryAdaptable} to the appropriate
+ * objects and arrays so that the logic does not have to be replicated over and
+ * over.
  * 
  * @author shroffk
  * 
