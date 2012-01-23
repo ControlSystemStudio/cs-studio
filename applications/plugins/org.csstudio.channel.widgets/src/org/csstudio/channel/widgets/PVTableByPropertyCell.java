@@ -77,7 +77,7 @@ public class PVTableByPropertyCell implements ChannelQueryAdaptable {
 
 	@Override
 	public Collection<Channel> toChannels() {
-		return AdaptableUtilities.toChannels(toChannelQueries());
+		return getChannels();
 	}
 
 	@Override
@@ -87,6 +87,8 @@ public class PVTableByPropertyCell implements ChannelQueryAdaptable {
 
 	@Override
 	public Collection<ChannelQuery> toChannelQueries() {
+		if (query == null)
+			return null;
 		return Collections.singletonList(ChannelQuery.query(getQuery()).result(getChannels(), null).build());
 	}
 }
