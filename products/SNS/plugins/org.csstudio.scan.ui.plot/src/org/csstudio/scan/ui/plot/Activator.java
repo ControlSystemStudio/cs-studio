@@ -22,6 +22,7 @@ public class Activator extends AbstractUIPlugin
     private static Activator plugin;
 
     /** {@inheritDoc} */
+    @Override
     public void start(BundleContext context) throws Exception
     {
         super.start(context);

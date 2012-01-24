@@ -15,13 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-
-import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.command.SetCommand;
 import org.junit.Test;
