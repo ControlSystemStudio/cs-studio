@@ -34,7 +34,7 @@ public class WrappableTextFigure extends TextFigure{
 	private Viewport viewport;
 	private ScrollPane scrollPane;
 	private boolean transparent;
-	private boolean oldSelectable;
+	private boolean oldSelectable = true;
 	public WrappableTextFigure() {
 		this(false);
 	}

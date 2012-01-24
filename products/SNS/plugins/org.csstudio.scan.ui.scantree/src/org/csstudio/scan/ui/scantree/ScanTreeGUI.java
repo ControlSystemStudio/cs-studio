@@ -269,6 +269,7 @@ public class ScanTreeGUI
     {
         this.commands = commands;
         tree_view.setInput(commands);
+        tree_view.expandAll();
     }
     
     /** Perform full GUI refresh */

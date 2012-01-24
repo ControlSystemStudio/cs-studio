@@ -8,7 +8,9 @@
 package org.csstudio.scan.ui.scantree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -25,9 +27,17 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 @SuppressWarnings("nls")
 public class CommandsInfo
 {
+    /** Singleton instance */
     private static CommandsInfo instance = null;
+    
+    /** Default instances for each available command */
     final private ScanCommand[] commands;
+    
+    /** Icon for each command, indexed by name of command class */
     final private ImageRegistry registry = new ImageRegistry();
+    
+    /** GUI name for each command, indexed by command class */
+    final private Map<Class<?>, String> command_names = new HashMap<Class<?>, String>();
     
     /** @return Singleton instance
      *  @throws Exception on error creating the initial instance
@@ -50,11 +60,14 @@ public class CommandsInfo
         for (IConfigurationElement config : configs)
         {
             final String plugin_id = config.getContributor().getName();
+            final String name = config.getAttribute("name");
             final String icon_path = config.getAttribute("icon");
             
             // Instantiate command
             final ScanCommand command = (ScanCommand) config.createExecutableExtension("class");
             commands.add(command);
+            
+            command_names.put(command.getClass(), name);
 
             // Get icon
             final ImageDescriptor icon = AbstractUIPlugin.imageDescriptorFromPlugin(plugin_id, icon_path);
@@ -78,4 +91,17 @@ public class CommandsInfo
         final String command_name = command.getClass().getName();
         return registry.get(command_name);
     }
+
+    /** Get GUI name for commmand
+     *  @param command Command
+     *  @return Associated GUI name
+     */
+    public String getName(final ScanCommand command)
+    {
+        final String command_name = command_names.get(command.getClass());
+        if (command_name != null)
+            return command_name;
+        return "Scan Command";
+    }
+
 }

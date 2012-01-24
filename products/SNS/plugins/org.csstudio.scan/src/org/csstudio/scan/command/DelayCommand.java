@@ -17,7 +17,6 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
 /** {@link ScanCommand} that delays the scan for some time
@@ -26,12 +25,10 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class DelayCommand extends ScanCommand
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("delay", "Delay (seconds)", Double.class)
+        new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
     };
     
     private double seconds;
@@ -64,7 +61,7 @@ public class DelayCommand extends ScanCommand
     }
 
 	/**@param seconds Delay in seconds */
-	public void setSeconds(final double seconds)
+	public void setSeconds(final Double seconds)
 	{
 	    this.seconds = seconds;
 	}

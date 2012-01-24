@@ -66,7 +66,7 @@ public class ScanClientDemo
         commands.wait("readback", 5.0, 0.1);
         commands.log("xpos", "ypos", "setpoint", "readback");
 
-        final long id = server.submitScan("Client Demo", commands.getCommands());
+        final long id = server.submitScan("Client Demo", commands.getXML());
 
         while (true)
         {
@@ -89,7 +89,7 @@ public class ScanClientDemo
         final CommandSequence commands = new CommandSequence();
         commands.loop("xpos", 1, 5, 1, new LogCommand("xpos"));
 
-        final long id = server.submitScan("Pause Demo", commands.getCommands());
+        final long id = server.submitScan("Pause Demo", commands.getXML());
 
         // Wait for it to run
         while (true)
@@ -141,14 +141,14 @@ public class ScanClientDemo
         commands.loop("xpos", 1, 5, 1, new LogCommand("xpos"));
 
         // Try to abort a scan right away
-        long id = server.submitScan("Abort Demo1", commands.getCommands());
+        long id = server.submitScan("Abort Demo1", commands.getXML());
         server.abort(id);
         dumpInfos(server);
         ScanInfo info = server.getScanInfo(id);
         assertEquals(ScanState.Aborted, info.getState());
 
         // Abort another scan after it ran for some time
-        id = server.submitScan("Abort Demo2", commands.getCommands());
+        id = server.submitScan("Abort Demo2", commands.getXML());
         while (true)
         {
             info = server.getScanInfo(id);

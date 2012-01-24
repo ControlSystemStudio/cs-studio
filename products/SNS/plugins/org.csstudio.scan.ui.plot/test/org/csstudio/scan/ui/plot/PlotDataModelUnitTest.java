@@ -18,6 +18,7 @@ import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
@@ -41,7 +42,7 @@ public class PlotDataModelUnitTest
         commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
                                      new LogCommand("xpos", "readback"),
                                      new DelayCommand(2.0)));
-        final long id = server.submitScan("PlotDemo", commands);
+        final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
         ScanServerConnector.disconnect(server);
         // Scan continues...
         return id;

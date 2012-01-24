@@ -137,9 +137,9 @@ public class StringTableEditor extends Composite
 		});
 	}
 
-	/** Initialize
+	/** Create a string list editor which is a table with only one column. 
 	 *  @param parent Parent widget
-	 *  @param items Array of items, will be changed in-place
+	 *  @param items List of strings, will be changed in-place
 	 */
 	public StringTableEditor(final Composite parent, final List<String> items)
 	{
