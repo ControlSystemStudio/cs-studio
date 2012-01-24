@@ -3,7 +3,7 @@
   	<extensionContent id="org.csstudio.channel.intro" style="channel-intro.css" name="PVTable by Property intro Extension" path="tutorials/@">
 		<group style-id="content-group" id="org.csstudio.channel.intro-group" label="Channel applications">
        		<link label="Channel Viewer" 
-       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.display.channelviewer/html/channelViewer.html&amp;embed=true" 
+       		url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.channel.widgets/html/channel-viewer.html&amp;embed=true" 
        		id="cfviewer-link" style-id="content-link">
           		<text>The Channel Viewer allows to query the Channel Finder directory service for a list of channels with their property and tags.</text>
        		</link>
