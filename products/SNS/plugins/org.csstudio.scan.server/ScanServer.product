@@ -34,6 +34,8 @@
       <plugin id="org.csstudio.platform.libs.epics"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.scan"/>
+      <plugin id="org.csstudio.scan.custom"/>
+      <plugin id="org.csstudio.scan.custom.impl"/>
       <plugin id="org.csstudio.scan.server"/>
       <plugin id="org.csstudio.utility.pv"/>
       <plugin id="org.csstudio.utility.pv.epics"/>

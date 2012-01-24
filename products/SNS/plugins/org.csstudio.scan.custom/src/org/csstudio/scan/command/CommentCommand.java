@@ -20,7 +20,6 @@ import java.io.PrintStream;
 import org.w3c.dom.Element;
 
 /** Example for a custom command, added to scan system via extension point.
- *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
