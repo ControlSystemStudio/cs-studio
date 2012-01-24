@@ -19,7 +19,6 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.data.ScanData;
 
 /** RMI interface for the scan server engine
@@ -83,10 +82,10 @@ public interface ScanServer extends Remote
 
     /** Query server for the commands in a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
-     *  @return {@link ScanCommand}s for that scan on the server or <code>null</code>
+     *  @return Scan commands in XML format for that scan on the server or <code>null</code>
      *  @throws RemoteException on error in remote access
      */
-    public List<ScanCommand> getScanCommands(long id) throws RemoteException;
+    public String getScanCommands(long id) throws RemoteException;
     
     /** Get serial of last logged sample.
      *  

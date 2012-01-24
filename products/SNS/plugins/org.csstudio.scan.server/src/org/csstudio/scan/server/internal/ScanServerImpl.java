@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
@@ -212,11 +213,18 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public List<ScanCommand> getScanCommands(long id) throws RemoteException
+    public String getScanCommands(long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
-        if (scan != null)
-            return scan.getScanCommands();
+        try
+        {
+            final Scan scan = findScan(id);
+            if (scan != null)
+                return XMLCommandWriter.toXMLString(scan.getScanCommands());
+        }
+        catch (Exception ex)
+        {
+            throw new RemoteException(ex.getMessage(), ex);
+        }
         return null;
     }
     
