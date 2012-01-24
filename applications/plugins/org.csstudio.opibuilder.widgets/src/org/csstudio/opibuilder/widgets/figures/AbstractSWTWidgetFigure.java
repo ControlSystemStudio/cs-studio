@@ -11,9 +11,8 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -59,7 +58,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	private boolean updateFlag;
 	private UpdateListener updateManagerListener;
 	private AncestorListener ancestorListener;
-	protected AbstractContainerModel parentModel;
+	protected EditPart parentEditPart;
 	protected Composite composite;
 	protected AbstractBaseEditPart editPart;
 
@@ -81,9 +80,10 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		super();
 		this.editPart = editpart;
 		this.composite = (Composite) editpart.getViewer().getControl();
-		this.parentModel = editpart.getWidgetModel().getParent();
+		this.parentEditPart = editpart.getParent();
 		this.runmode = editpart.getExecutionMode() == ExecutionMode.RUN_MODE;
-		if (!(parentModel instanceof DisplayModel)) {
+		
+		if (!isDirectlyOnDisplay()) {
 			wrapComposite = new Composite(composite, SWT.NO_BACKGROUND);
 			wrapComposite.setLayout(null);
 			wrapComposite.setEnabled(runmode);
@@ -171,6 +171,13 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		
 	}
 
+	/**
+	 * @return true if this widget is directly put on a display.
+	 */
+	private boolean isDirectlyOnDisplay(){
+		return parentEditPart instanceof DisplayEditpart;
+	}
+	
 	@Override
 	protected void layout() {
 		super.layout();
@@ -259,7 +266,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		// the first time.
 		if (!updateFlag) {
 			updateFlag = true;
-			if (!(parentModel instanceof DisplayModel)) {
+			if (!isDirectlyOnDisplay()) {
 				updateManagerListener = new UpdateListener() {
 					public void notifyPainting(Rectangle damage,
 							@SuppressWarnings("rawtypes") Map dirtyRegions) {
