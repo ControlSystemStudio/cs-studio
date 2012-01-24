@@ -90,7 +90,6 @@
       <plugin id="org.eclipse.equinox.p2.repository"/>
       <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
       <plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
-      <plugin id="org.eclipse.equinox.p2.transport.ecf"/>
       <plugin id="org.eclipse.equinox.p2.updatesite"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
@@ -117,7 +116,6 @@
       <plugin id="org.remotercp.service.authorization"/>
       <plugin id="org.remotercp.service.connection"/>
       <plugin id="org.remotercp.service.preferences"/>
-      <plugin id="org.remotercp.service.provisioning"/>
       <plugin id="org.remotercp.util"/>
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
