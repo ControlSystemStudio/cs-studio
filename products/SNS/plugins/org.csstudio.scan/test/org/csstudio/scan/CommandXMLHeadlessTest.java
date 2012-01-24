@@ -19,9 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
@@ -44,11 +41,7 @@ public class CommandXMLHeadlessTest
     {
         final List<ScanCommand> commands = DemoCommands.createDemoCommands();
         
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XMLCommandWriter.write(out, commands);
-        out.close();
-        
-        xml = out.toString();
+        xml = XMLCommandWriter.toXMLString(commands);
         System.out.println(xml);
         assertTrue(xml.startsWith("<?xml"));
         assertTrue(xml.contains("<commands>"));
@@ -60,16 +53,11 @@ public class CommandXMLHeadlessTest
         assertNotNull(xml);
         assertTrue(xml.length() > 0);
 
-        final InputStream in = new ByteArrayInputStream(xml.getBytes());
-        final List<ScanCommand> commands = reader.readXMLStream(in);
-        in.close();
+        final List<ScanCommand> commands = reader.readXMLString(xml);
         assertNotNull(commands);
         
         // When turned back into XML, result should match
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-        XMLCommandWriter.write(out, commands);
-        out.close();
-        final String copy = out.toString();
+        final String copy = XMLCommandWriter.toXMLString(commands);
         System.out.println("Read from XML:");
         System.out.println(copy);
         assertEquals(xml, copy);

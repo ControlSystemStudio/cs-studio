@@ -20,15 +20,12 @@ import java.io.PrintStream;
 import org.w3c.dom.Element;
 
 /** Example for a custom command, added to scan system via extension point.
- *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class CommentCommand extends ScanCommand
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = 1L;
-    
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("comment", "Comment", String.class),
@@ -91,6 +88,8 @@ public class CommentCommand extends ScanCommand
     @Override
     public String toString()
     {
-        return "Comment: " + comment;
+        if (comment == null  ||  comment.isEmpty())
+            return "-- Empty Comment --";
+        return comment;
     }
 }

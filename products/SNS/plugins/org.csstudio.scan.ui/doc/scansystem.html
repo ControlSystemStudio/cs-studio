@@ -3,6 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
   <title>Scan System</title>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
 </head>
 <body>
 
@@ -57,7 +58,8 @@ as it would appear in the <a href="#editor">Scan Editor</a>.
 What follows is a description of all available commands.
 </p>
 
-<h3><img src="../icons/setcommand.gif"/>&nbsp;Set Command</h3>
+
+<h3><img src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</h3>
 <p>This command sets a device to a desired value.
 </p>
 <p>Parameters:</p>
@@ -71,7 +73,7 @@ will write the value 1.0 to the "setpoint" device.
 </p>
 
 
-<h3><img src="../icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
 <p>This command waits for a device to reach a desired value.
 </p>
 <p>Parameters:</p>
@@ -90,7 +92,7 @@ the exact desired value.
 </p>
 
 
-<h3><img src="../icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
 <p>This command changes a device from a start to an end value.
 It is at the core of most scans.
 </p>
@@ -136,7 +138,7 @@ If these "xpos" and "ypos" devices are for example connected to stepper motors,
 the alternating scan will be faster and reduce wear on the motors.
 </p>
 
-<h3><img src="../icons/logcommand.gif"/>&nbsp;Log Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</h3>
 <p>Send values of devices to the log.
 </p>
 <p>Parameters:</p>
@@ -149,7 +151,7 @@ will send the current value of the "ypos" and "readback"
 devices to the log.
 </p>
 
-<h3><img src="../icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
 <p>This command simply delays the scan for a configurable
 number of seconds.
 </p>
@@ -246,12 +248,14 @@ or the toolbar button <img src="../icons/run.png"/>.
 <p>It lists which scans have been submitted to the server
 and their state:
 <ul>
-<li>Finished - OK: Scan has been executed until it finished without errors.
-<li>Aborted: The scan was aborted by the user.
+<li>Finished - OK: Scan has been executed until it finished without errors.</li>
+<li>Aborted: The scan was aborted by the user.</li>
 <li>Running...: This scan is currently being executed. The "%" column displays the
     progress, and the "Command" column shows the currently active command.
+</li>
 <li>Idle: The scan has been submitted to the scan server and will be executed
-when previously queued scans have been handled.
+    when previously queued scans have been handled.
+</li>
 </ul>
 </p>
 

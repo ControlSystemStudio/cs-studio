@@ -19,6 +19,8 @@ import java.util.List;
 
 import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandFactory;
+import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scantree.Activator;
@@ -54,7 +56,9 @@ public class OpenScanTreeAction extends Action
         {
             // Fetch commands from server
             final ScanServer server = ScanServerConnector.connect();
-            final List<ScanCommand> commands = server.getScanCommands(info.getId());
+            final String xml_commands = server.getScanCommands(info.getId());
+            final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+            final List<ScanCommand> commands = reader.readXMLString(xml_commands);
             ScanServerConnector.disconnect(server);
             // Open in editor
             final ScanEditor editor = ScanEditor.createInstance();

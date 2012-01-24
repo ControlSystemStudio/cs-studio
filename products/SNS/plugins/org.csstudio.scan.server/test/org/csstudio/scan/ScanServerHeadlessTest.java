@@ -82,8 +82,8 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
-            server.submitScan("My Test 1", commands.getCommands());
-            long id = server.submitScan("My Test 2", commands.getCommands());
+            server.submitScan("My Test 1", commands.getXML());
+            long id = server.submitScan("My Test 2", commands.getXML());
 
             System.out.println("All Scans on server:");
             List<ScanInfo> infos = server.getScanInfos();
@@ -115,7 +115,7 @@ public class ScanServerHeadlessTest implements Runnable
 
 
             // Submit scan again, and pause it early on
-            id = server.submitScan("My Test 3", commands.getCommands());
+            id = server.submitScan("My Test 3", commands.getXML());
             // Wait for thread to start
             while (true)
             {
