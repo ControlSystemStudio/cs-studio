@@ -6,26 +6,31 @@
       <command
             class="org.csstudio.scan.command.DelayCommand"
             icon="icons/delaycommand.gif"
+            id="delay"
             name="Delay">
       </command>
       <command
             class="org.csstudio.scan.command.LogCommand"
             icon="icons/logcommand.gif"
+            id="log"
             name="Log">
       </command>
       <command
             class="org.csstudio.scan.command.LoopCommand"
             icon="icons/loopcommand.gif"
+            id="loop"
             name="Loop">
       </command>
       <command
             class="org.csstudio.scan.command.SetCommand"
             icon="icons/setcommand.gif"
+            id="set"
             name="Set">
       </command>
       <command
             class="org.csstudio.scan.command.WaitCommand"
             icon="icons/waitcommand.gif"
+            id="wait"
             name="Wait">
       </command>
    </extension>

@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.ScanServerImpl;
+import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 

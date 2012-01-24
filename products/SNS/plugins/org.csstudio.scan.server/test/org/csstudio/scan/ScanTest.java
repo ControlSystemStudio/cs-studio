@@ -25,16 +25,16 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
-import org.csstudio.scan.command.LoopCommandImpl;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.server.Scan;
-import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ScanContextImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link Scan}
@@ -60,7 +60,7 @@ public class ScanTest
         devices.addPVDevice("readback", "readback");
 
         // Setup context
-        final ScanContext context = new ScanContext(devices);
+        final ScanContextImpl context = new ScanContextImpl(devices);
 
         // Configure a scan
         final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0,

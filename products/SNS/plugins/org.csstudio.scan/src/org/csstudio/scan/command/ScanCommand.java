@@ -17,12 +17,18 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
 import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
 
 /** Description of a scan server command
  * 
  *  <p>Used by the client to describe commands to the server.
+ *  
+ *  <p>This class offers generic property access
+ *  based on introspection, assuming that the actual command has
+ *  suitable 'getter' and 'setter'.
  *
  *  @author Kay Kasemir
  */
@@ -33,8 +39,79 @@ abstract public class ScanCommand implements Serializable
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    // TODO public ScanCommandProperty[] getProperties();
+    /** @return Descriptions of Properties for this command */
+    abstract public ScanCommandProperty[] getProperties();
     
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example unknown property ID
+     */
+    public void setProperty(final String property_id, final Object value) throws Exception
+    {
+        for (ScanCommandProperty property : getProperties())
+            if (property.getID().equals(property_id))
+            {
+                setProperty(property, value);
+                return;
+            }
+        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+    }
+
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example no suitable "setter"
+     */
+    public void setProperty(final ScanCommandProperty property, final Object value) throws Exception
+    {
+        final String meth_name = getMethodName("set", property.getID());
+        final Method method = getClass().getMethod(meth_name, property.getType());
+        method.invoke(this, value);
+    }
+    
+    /** Get a command's property
+     *  @param property_id ID of the property to set
+     *  @return Value
+     *  @throws Exception on error, for example unknown property ID
+     */
+    public Object getProperty(final String property_id) throws Exception
+    {
+        for (ScanCommandProperty property : getProperties())
+            if (property.getID().equals(property_id))
+                return getProperty(property);
+        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+    }
+
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example no suitable "getter"
+     */
+    public Object getProperty(final ScanCommandProperty property) throws Exception
+    {
+        final String meth_name = getMethodName("get", property.getID());
+        final Method method = getClass().getMethod(meth_name);
+        return method.invoke(this);
+    }
+    
+    /** Construct method name
+     *  @param get_set Method prefix "get" or "set"
+     *  @param property_id Property ID like "device_name"
+     *  @return Method name like "setDeviceName"
+     */
+    private String getMethodName(final String get_set, final String property_id)
+    {
+        final String[] sections = property_id.split("_");
+        final StringBuilder result = new StringBuilder(get_set);
+        for (String sec : sections)
+        {
+            result.append(sec.substring(0, 1).toUpperCase());
+            result.append(sec.substring(1));
+        }
+        return result.toString();
+    }
+
     /** Write the command (and its sub-commands) in an XML format.
      * 
      *  <p>A command called AbcCommand should write itself as a tag "abc"
@@ -46,8 +123,13 @@ abstract public class ScanCommand implements Serializable
      */
     abstract public void writeXML(PrintStream out, final int level);
 
-    // TODO public static ScanCommand fromXML(final Element element) throws Exception
-    // But can't be static
+    /** Read command parameters from XML element
+     *  @param factory ScanCommandFactory to use in case inner scan commands,
+     *                 for example a loop body, need to be created
+     *  @param element
+     *  @throws Exception on error, for example missing essential data
+     */
+    abstract public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception;
     
     /** Write indentation
      *  @param out Where to print

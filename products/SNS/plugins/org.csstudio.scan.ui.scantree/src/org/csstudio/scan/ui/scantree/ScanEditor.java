@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.ScanServer;
@@ -115,7 +116,8 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         {
             try
             {
-                final List<ScanCommand> commands = XMLCommandReader.readXMLStream(file.getContents());
+                final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+                final List<ScanCommand> commands = reader.readXMLStream(file.getContents());
                 gui.setCommands(commands);
             }
             catch (Exception ex)

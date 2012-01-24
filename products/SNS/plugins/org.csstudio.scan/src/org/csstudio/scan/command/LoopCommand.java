@@ -47,6 +47,14 @@ public class LoopCommand extends ScanCommand
     /** Serialization ID */
     final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("start", "Initial Value", Double.class),
+        new ScanCommandProperty("end", "Final Value", Double.class),
+        new ScanCommandProperty("stepsize", "Step Size", Double.class),
+    };
+    
     private String device_name;
     private double start;
     private double end;
@@ -96,6 +104,13 @@ public class LoopCommand extends ScanCommand
         this.start = start;
         this.end = end;
         this.body = body;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
     
 	/** @return Device name */
@@ -159,6 +174,7 @@ public class LoopCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
@@ -181,20 +197,20 @@ public class LoopCommand extends ScanCommand
         out.println("</loop>");
     }
 
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        final String device = DOMHelper.getSubelementString(element, "device");
-        final double start = DOMHelper.getSubelementDouble(element, "start");
-        final double end = DOMHelper.getSubelementDouble(element, "end");
-        final double step = DOMHelper.getSubelementDouble(element, "step");
+        // Read body first, so we don't update other loop params
+        // if this fails
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
-        final List<ScanCommand> body = XMLCommandReader.readCommands(body_node.getFirstChild());
-        return new LoopCommand(device, start, end, step, body);
+        final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
+
+        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setStart(DOMHelper.getSubelementDouble(element, "start"));
+        setEnd(DOMHelper.getSubelementDouble(element, "end"));
+        setStepsize(DOMHelper.getSubelementDouble(element, "step"));
+        setBody(body);
     }
 
     /** {@inheritDoc} */

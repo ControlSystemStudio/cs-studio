@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.server;
+package org.csstudio.scan.server.internal;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -48,7 +48,7 @@ class ScanQueueItem implements Callable<Object>
     public Object call() throws Exception
     {
         System.out.println("== " + scan.getName());
-        final ScanContext context = new ScanContext(devices);
+        final ScanContextImpl context = new ScanContextImpl(devices);
         scan.execute(context);
         return null;
     }

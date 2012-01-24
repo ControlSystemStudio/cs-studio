@@ -17,6 +17,7 @@ import org.eclipse.ui.views.properties.IPropertySource;
  */
 abstract public class ScanCommandAdapter<C extends ScanCommand> implements IPropertySource
 {
+    // TODO Replace with generic adapter based on ScanCommand.getProperties()
     final private ScanEditor editor;
     private C command;
     

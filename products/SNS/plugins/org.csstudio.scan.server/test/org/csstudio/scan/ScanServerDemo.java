@@ -16,7 +16,7 @@
 package org.csstudio.scan;
 
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.ScanServerImpl;
+import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 

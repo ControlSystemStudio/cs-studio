@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.command;
+package org.csstudio.scan.commandimpl;
 
 import java.util.Date;
 import java.util.logging.Level;
@@ -23,15 +23,17 @@ import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
+import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
-/** {@link CommandImpl} that reads data from devices and logs it
+/** {@link ScanCommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LogCommandImpl extends CommandImpl<LogCommand>
+public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 {
 	/** Initialize
 	 *  @param command Command description
