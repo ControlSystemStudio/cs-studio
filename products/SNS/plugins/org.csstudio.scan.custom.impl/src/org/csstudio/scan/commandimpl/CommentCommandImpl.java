@@ -38,5 +38,6 @@ public class CommentCommandImpl extends ScanCommandImpl<CommentCommand>
     public void execute(final ScanContext context) throws Exception
     {
         System.out.println("Comment: " + command.getComment());
+        context.workPerformed(1);
     }
 }
