@@ -85,7 +85,7 @@ public class WaitCommand extends ScanCommand
     }
     
     /** @param desired_value Desired value */
-    public void setDesiredValue(final double desired_value)
+    public void setDesiredValue(final Double desired_value)
     {
         this.desired_value = desired_value;
     }
@@ -97,7 +97,7 @@ public class WaitCommand extends ScanCommand
     }
 
     /** @param tolerance Tolerance */
-    public void setTolerance(final double tolerance)
+    public void setTolerance(final Double tolerance)
     {
         this.tolerance = tolerance;
     }

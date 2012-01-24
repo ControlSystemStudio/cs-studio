@@ -19,6 +19,7 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;

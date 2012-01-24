@@ -52,7 +52,7 @@ public class LoopCommand extends ScanCommand
         new ScanCommandProperty("device_name", "Device Name", String.class),
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
-        new ScanCommandProperty("stepsize", "Step Size", Double.class),
+        new ScanCommandProperty("step_size", "Step Size", Double.class),
     };
     
     private String device_name;
@@ -132,13 +132,19 @@ public class LoopCommand extends ScanCommand
     }
 
     /** @param start Initial loop value */
-    public void setStart(final double start)
+    public void setStart(final Double start)
     {
         this.start = start;
     }
 
+    /** @return Loop end value */
+    public double getEnd()
+    {
+        return end;
+    }
+
     /** @param end Final loop value */
-    public void setEnd(final double end)
+    public void setEnd(final Double end)
     {
         this.end = end;
     }
@@ -150,7 +156,7 @@ public class LoopCommand extends ScanCommand
     }
 
     /** @param stepsize Increment of the loop variable */
-    public void setStepsize(final double stepsize)
+    public void setStepSize(final Double stepsize)
     {
         this.stepsize = stepsize;
     }
@@ -167,12 +173,6 @@ public class LoopCommand extends ScanCommand
         this.body = body;
     }
     
-    /** @return Loop end value */
-    public double getEnd()
-    {
-        return end;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void writeXML(final PrintStream out, final int level)
@@ -209,7 +209,7 @@ public class LoopCommand extends ScanCommand
         setDeviceName(DOMHelper.getSubelementString(element, "device"));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
-        setStepsize(DOMHelper.getSubelementDouble(element, "step"));
+        setStepSize(DOMHelper.getSubelementDouble(element, "step"));
         setBody(body);
     }
 

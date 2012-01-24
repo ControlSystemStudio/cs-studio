@@ -24,12 +24,25 @@ import org.w3c.dom.Element;
 
 /** Description of a scan server command
  * 
- *  <p>Used by the client to describe commands to the server.
+ *  <p>Used by the client to describe commands to the server,
+ *  and returned by the server to describe elements of a Scan.
  *  
  *  <p>This class offers generic property access
  *  based on introspection, assuming that the actual command has
- *  suitable 'getter' and 'setter'.
- *
+ *  suitable 'getter' and 'setter' methods.
+ *  A property with ID "some_property" must have associated "getSomeProperty"
+ *  and "setSomeProperty" methods, i.e. using a CamelCase version
+ *  of the property ID.
+ *  The setter must accept an Object like Double, not a plain type like double.
+ *  
+ *  <p>Supported property types:
+ *  <ul>
+ *  <li><code>Double</code>
+ *  <li><code>String</code>
+ *  <li><code>String[]</code>
+ *  <li><code>Object</code> - Will be edited as String,
+ *                         and if possible converted to Double
+ *  </ul>
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -139,5 +152,14 @@ abstract public class ScanCommand implements Serializable
     {
         for (int i=0; i<level; ++i)
             out.print("  ");
+    }
+    
+    /** @return Debug representation.
+     *          Derived classes should provide their command name with properties
+     */
+    @Override
+    public String toString()
+    {
+        return getClass().getName();
     }
 }

@@ -31,7 +31,7 @@ public class DelayCommand extends ScanCommand
 
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("delay", "Delay (seconds)", Double.class)
+        new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
     };
     
     private double seconds;
@@ -64,7 +64,7 @@ public class DelayCommand extends ScanCommand
     }
 
 	/**@param seconds Delay in seconds */
-	public void setSeconds(final double seconds)
+	public void setSeconds(final Double seconds)
 	{
 	    this.seconds = seconds;
 	}
