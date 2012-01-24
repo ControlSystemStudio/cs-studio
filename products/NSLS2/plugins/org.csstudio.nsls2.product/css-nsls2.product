@@ -5,10 +5,6 @@
 
    <aboutInfo>
       <image path="/org.csstudio.nsls2.product/icons/about.png"/>
-      <text>
-         Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net
-version: 3.0.1.qualifier
-      </text>
    </aboutInfo>
 
    <configIni use="default">
