@@ -10,7 +10,7 @@
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.channel.views.ChannelViewer"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
             id="org.csstudio.channel.views.ChannelViewer"
             name="Channel Viewer"
             restorable="true">
@@ -47,7 +47,7 @@
             locationURI="menu:display">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
                label="Channel Viewer"
                style="push">
             <parameter
@@ -91,7 +91,7 @@
             locationURI="popup:org.csstudio.ui.menu.popup.channelquery">
          <command
                commandId="org.csstudio.channel.views.OpenChannelViewer"
-               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-finder.png"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
                label="Channel Viewer"
                style="push">
          </command>
