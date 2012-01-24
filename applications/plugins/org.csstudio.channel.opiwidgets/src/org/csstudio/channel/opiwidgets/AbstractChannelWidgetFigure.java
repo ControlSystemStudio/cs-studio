@@ -9,7 +9,6 @@ import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 
 /**
  * Base class for all figures that are based on SWTWidgets and channel finder.
@@ -30,52 +29,51 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 	 */
 	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
+		widget = createWidget(composite);
+		selectionProvider = retrieveSelectionProvider(widget);
+	}
+
+	/**
+	 * Implement to create the widget to be wrapped.
+	 * 
+	 * @param parent the widget parent
+	 * @return the new widget
+	 */
+	protected abstract T createWidget(Composite parent);
+	
+	/**
+	 * Returns the selection provider to be used for pop-ups. By default, if the
+	 * widget is itself an ISelectionProvider, the widget is returned.
+	 * 
+	 * @param widget the widget
+	 * @return the selection provider or null
+	 */
+	protected ISelectionProvider retrieveSelectionProvider(T widget) {
+		if (widget instanceof ISelectionProvider) {
+			return (ISelectionProvider) widget;
+		}
+		return null;
 	}
 	
-	protected T widget;
-	protected ISelectionProvider selectionProvider;
-	protected Control control;
+	private final T widget;
+	private final ISelectionProvider selectionProvider;
 
 	@Override
 	public T getSWTWidget() {
 		return widget;
 	}
 	
+	/**
+	 * The selection provider to be used for the pop-up.
+	 * 
+	 * @return the selection provider or null
+	 */
 	public ISelectionProvider getSelectionProvider() {
 		return selectionProvider;
-	}
-	
-	public Control getControlForPopup() {
-		return control;
-	}
-	
-	public Channel[] getSelectedChannels() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), Channel.class);
-	}
-	
-	public ChannelQuery[] getSelectedChannelQuery() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), ChannelQuery.class);
-	}
-	
-	public ProcessVariable[] getSelectedProcessVariables() {
-		if (selectionProvider == null)
-			return null;
-		return AdapterUtil.convert(getSelectionProvider().getSelection(), ProcessVariable.class);
 	}
 	
 	public boolean isRunMode() {
 		return runmode;
 	}
 	
-	@Override
-	public void dispose() {
-		if(runmode) {
-			super.dispose();
-			getSWTWidget().dispose();
-		}
-	}
 }

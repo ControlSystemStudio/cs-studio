@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="scancommandimpl" name="Scan Command Implementation" schema="schema/scancommandimpl.exsd"/>
    <extension
          id="application"
          point="org.eclipse.core.runtime.applications">
@@ -24,6 +25,34 @@
                value="ScanServer">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.csstudio.scan.server.scancommandimpl">
+      <imp_factory
+            command="org.csstudio.scan.command.DelayCommand"
+            factory="org.csstudio.scan.commandimpl.DelayCommandImplFactory"
+            name="Delay">
+      </imp_factory>
+      <imp_factory
+            command="org.csstudio.scan.command.LogCommand"
+            factory="org.csstudio.scan.commandimpl.LogCommandImplFactory"
+            name="Log">
+      </imp_factory>
+      <imp_factory
+            command="org.csstudio.scan.command.LoopCommand"
+            factory="org.csstudio.scan.commandimpl.LoopCommandImplFactory"
+            name="Loop">
+      </imp_factory>
+      <imp_factory
+            command="org.csstudio.scan.command.SetCommand"
+            factory="org.csstudio.scan.commandimpl.SetCommandImplFactory"
+            name="Set">
+      </imp_factory>
+      <imp_factory
+            command="org.csstudio.scan.command.WaitCommand"
+            factory="org.csstudio.scan.commandimpl.WaitCommandImplFactory"
+            name="Wait">
+      </imp_factory>
    </extension>
 
 </plugin>

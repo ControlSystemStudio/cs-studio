@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.nsls2.eclipse.feature"
       label="CSS-NSLS-II Eclipse plugins"
-      version="3.0.0.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">

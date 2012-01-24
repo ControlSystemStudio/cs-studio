@@ -35,7 +35,12 @@ public class FilterConditionArrayStringDAO  extends DAO
 {
 	public static void copyFilterConditionArrayString(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyFilterConditionArrayString(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyFilterConditionArrayString(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyFilterConditionArrayString(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyFilterConditionArrayString(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupFilterConditionArrayString(Connection masterDB) throws SQLException

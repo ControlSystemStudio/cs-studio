@@ -71,6 +71,15 @@ public interface TODO
      *  
      *  Done Load/Save scan as XML
      *  
+     *  TODO Extension point for commands
+     *  
+     *  TODO 'Automatically' log values for LoopCommand, SetCommand, ...
+     *       Unclear which value to use:
+     *       The one written? An associated readback (when?)?
+     *  
+     *  TODO put callback? Maybe support Channel Access put-callback,
+     *       or add a wait-for-value to the set command?
+     *
      *  TODO Other scan configuration GUIs.
      *       'Spreadsheet' of loop variable, start/end?
      *       Process block GUI?
@@ -91,9 +100,6 @@ public interface TODO
      *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
      *  
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
-     *
-     *  TODO put callback? Maybe support Channel Access put-callback,
-     *       or add a wait-for-value to the set command?
      *
      *  TODO RMI timeout?
      *  System.setProperty("sun.rmi.transport.tcp.responseTimeout", "10000");

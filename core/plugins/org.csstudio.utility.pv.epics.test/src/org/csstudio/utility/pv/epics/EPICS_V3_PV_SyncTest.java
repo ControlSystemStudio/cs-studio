@@ -13,8 +13,6 @@ import static org.junit.Assert.fail;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.utility.pv.PV;
-import org.csstudio.utility.pv.epics.EPICS_V3_PV;
-import org.csstudio.utility.pv.epics.PVContext;
 import org.junit.Test;
 
 /** These tests require the soft-IOC database from lib/test.db.
@@ -26,23 +24,11 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_SyncTest
 {
-    /** Get a PV.
-     *
-     *  <b>This is where the implementation is hard-coded!</b>
-     *
-     *  @return PV
-     */
-    static private PV getPV(final String name)
-    {
-        PVContext.use_pure_java = false;
-        return new EPICS_V3_PV(name);
-    }
-
     @Test
     public void testSyncGet() throws Exception
     {
-        final PV fred = getPV("fred");
-        final IValue value = fred.getValue(10.0); // 50,000.0 seconds seems a bit high
+        final PV fred = TestUtil.getPV("fred");
+        final IValue value = fred.getValue(10.0);
         System.out.println(value);
         fred.stop();
     }
@@ -50,7 +36,7 @@ public class EPICS_V3_PV_SyncTest
     @Test
     public void testTimeout() throws Exception
     {
-        final PV none = getPV("does_not_exist");
+        final PV none = TestUtil.getPV("does_not_exist");
         final long start = System.currentTimeMillis();
         final int timeout_secs = 5;
         try
@@ -64,7 +50,7 @@ public class EPICS_V3_PV_SyncTest
                          ex.getMessage());
         }
         finally
-        {   // Even if we never suceeded, there are resources to clean up
+        {   // Even if we never succeeded, there are resources to clean up
             none.stop();
         }
         final long end = System.currentTimeMillis();
@@ -80,9 +66,9 @@ public class EPICS_V3_PV_SyncTest
         // implementation.
         // A 'real' program would use
         // PV fred = new PVFactory.createPV("fred");
-        final PV fred = getPV("fred");
-        final PV janet = getPV("janet");
-        final PV longs = getPV("longs");
+        final PV fred = TestUtil.getPV("fred");
+        final PV janet = TestUtil.getPV("janet");
+        final PV longs = TestUtil.getPV("longs");
 
         final double timeout_secs = 5.0;
         System.out.println(fred.getValue(timeout_secs));

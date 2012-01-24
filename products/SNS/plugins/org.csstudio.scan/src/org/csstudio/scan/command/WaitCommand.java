@@ -24,14 +24,27 @@ import org.w3c.dom.Element;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitCommand extends BaseCommand
+public class WaitCommand extends ScanCommand
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
+        new ScanCommandProperty("tolerance", "Tolerance", Double.class),
+    };
+    
     private String device_name;
     private double desired_value;
     private double tolerance;
+
+    /** Initialize empty wait command */
+    public WaitCommand()
+    {
+        this("device", 0.0, 0.1);
+    }
 
     /** Initialize
      *  @param device_name Name of device to check
@@ -44,6 +57,13 @@ public class WaitCommand extends BaseCommand
         this.device_name = device_name;
         this.desired_value = desired_value;
 	    this.tolerance = tolerance;
+    }
+
+	/** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
 	/** @return Device name */
@@ -83,6 +103,7 @@ public class WaitCommand extends BaseCommand
     }
     
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
@@ -92,17 +113,13 @@ public class WaitCommand extends BaseCommand
         		    "</wait>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        final String device = DOMHelper.getSubelementString(element, "device");
-        final double value = DOMHelper.getSubelementDouble(element, "value");
-        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance");
-        return new WaitCommand(device, value, tolerance);
+        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setDesiredValue(DOMHelper.getSubelementDouble(element, "value"));
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
     }
     
     /** {@inheritDoc} */

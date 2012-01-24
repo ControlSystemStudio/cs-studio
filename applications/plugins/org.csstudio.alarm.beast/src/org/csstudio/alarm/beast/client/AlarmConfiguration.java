@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.client;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -127,7 +128,8 @@ public class AlarmConfiguration
      */
     public String[] listConfigurations() throws Exception
     {
-		final Statement statement = rdb.getConnection().createStatement();
+		final Connection connection = rdb.getConnection();
+        final Statement statement = connection.createStatement();
     	final List<String> names = new ArrayList<String>();
     	try
     	{
@@ -138,6 +140,7 @@ public class AlarmConfiguration
     	finally
     	{
     		statement.close();
+    		connection.commit();
     	}
     	// Convert to plain array
         return names.toArray(new String[names.size()]);
@@ -223,8 +226,9 @@ public class AlarmConfiguration
             final boolean create,
             final IProgressMonitor monitor, final DelayCheck monitor_update_delay) throws Exception
     {
+        final Connection connection = rdb.getConnection();
         final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
+            connection.prepareStatement(sql.sel_configuration_by_name);
         try
         {
             statement.setString(1, root_name);
@@ -245,6 +249,7 @@ public class AlarmConfiguration
         finally
         {
             statement.close();
+            connection.commit();
             closeStatements();
         }
     }
@@ -550,6 +555,11 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
+        }
         finally
         {
             statement.close();
@@ -582,6 +592,11 @@ public class AlarmConfiguration
             statement.setInt(2, item.getID());
             statement.executeUpdate();
             rdb.getConnection().commit();
+        }
+        catch (SQLException ex)
+        {
+            rdb.getConnection().rollback();
+            throw ex;
         }
         finally
         {
@@ -695,8 +710,9 @@ public class AlarmConfiguration
     @SuppressWarnings("nls")
     public void readPVConfig(final AlarmTreePV pv) throws Exception
     {
+        final Connection connection = rdb.getConnection();
         if (sel_pv_by_id_statement == null)
-            sel_pv_by_id_statement = rdb.getConnection()
+            sel_pv_by_id_statement = connection
                 .prepareStatement(sql.sel_pv_by_id);
         sel_pv_by_id_statement.setInt(1, pv.getID());
         final ResultSet result = sel_pv_by_id_statement.executeQuery();
@@ -711,6 +727,7 @@ public class AlarmConfiguration
         pv.setCount(result.getInt(6));
         pv.setFilter(result.getString(7));
         config_reader.readGuidanceDisplaysCommands(pv);
+        connection.commit();
     }
 
     /**Update guidance/displays/commands in RDB by id

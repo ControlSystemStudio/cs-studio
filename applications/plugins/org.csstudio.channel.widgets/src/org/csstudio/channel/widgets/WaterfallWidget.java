@@ -1,41 +1,46 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
-import static org.epics.pvmanager.util.TimeDuration.hz;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
+import static org.epics.pvmanager.extra.ExpressionLanguage.*;
+import static org.epics.pvmanager.util.TimeDuration.*;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.Property;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -45,16 +50,14 @@ import org.epics.pvmanager.extra.WaterfallPlot;
 import org.epics.pvmanager.extra.WaterfallPlotParameters;
 import org.epics.pvmanager.util.TimeDuration;
 
-import com.swtdesigner.ResourceManager;
-
-public class WaterfallWidget extends AbstractChannelQueryResultWidget {
+public class WaterfallWidget extends AbstractChannelQueryResultWidget
+implements ConfigurableWidget, ISelectionProvider {
 	
 	private VImageDisplay imageDisplay;
 	private RangeWidget rangeWidget;
 	private WaterfallPlotParameters parameters = WaterfallPlotParameters.defaults();
 	private WaterfallPlot plot;
-	private CLabel errorLabel;
-	private Label errorImage;
+	private ErrorBar errorBar;
 	private GridData gd_rangeWidget;
 	private boolean editable = true;
 	
@@ -62,11 +65,6 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	
 	public String getSortProperty() {
 		return sortProperty;
-	}
-	
-	public void openConfigurationDialog(int x, int y) {
-		WaterfallParametersDialog dialog = new WaterfallParametersDialog(getShell(), SWT.NORMAL);
-		dialog.open(this, x, y);
 	}
 
 	/**
@@ -92,10 +90,13 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 		
 		rangeWidget = new RangeWidget(this, SWT.NONE);
 		rangeWidget.addRangeListener(new RangeListener() {
@@ -114,22 +115,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		
 		imageDisplay = new VImageDisplay(this);
 		imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		imageDisplay.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (editable && e.button == 3) {
-					Point position = new Point(e.x, e.y);
-					position = getDisplay().map(WaterfallWidget.this, null, position);
-					openConfigurationDialog(position.x, position.y);
-				}
-			}
-		});
 		imageDisplay.setStretched(SWT.HORIZONTAL);
-		GridLayout gl_imageDisplay = new GridLayout(2, false);
-		gl_imageDisplay.marginLeft = 1;
-		gl_imageDisplay.marginWidth = 0;
-		gl_imageDisplay.marginHeight = 0;
-		imageDisplay.setLayout(gl_imageDisplay);
 		imageDisplay.addControlListener(new ControlListener() {
 			
 			@Override
@@ -145,19 +131,15 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 			}
 		});
 		
-		errorImage = new Label(imageDisplay, SWT.NONE);
-		errorImage.setImage(ResourceManager.getPluginImage("org.eclipse.ui", "/icons/full/obj16/warn_tsk.gif"));
-		errorImage.setVisible(false);
-		
-		errorLabel = new CLabel(imageDisplay, SWT.NONE);
-		GridData gd_errorLabel = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_errorLabel.widthHint = 221;
-		errorLabel.setLayoutData(gd_errorLabel);
-		errorLabel.setText("");
-		errorLabel.setVisible(false);
-		
 		// Set the parameters to the default
 		parametersChanged();
+	}
+	
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		imageDisplay.setMenu(menu);
 	}
 	
 	// The pv name for waveform
@@ -227,17 +209,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	
 	// Displays the last error generated
 	private void setLastError(Exception ex) {
-		if (!isDisposed()) {
-			if (ex == null) {
-				errorImage.setVisible(false);
-				errorLabel.setVisible(false);
-			} else {
-				errorImage.setVisible(true);
-				errorLabel.setVisible(true);
-				errorLabel.setToolTipText(ex.getMessage());
-				errorLabel.setText(ex.getMessage());
-			}
-		}
+		errorBar.setException(ex);
 	}
 	
 	private void parametersChanged() {
@@ -262,10 +234,6 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 			pv.close();
 			pv = null;
 		}
-		
-		// Clean up old image and previous error
-		imageDisplay.setVImage(null);
-		setLastError(null);
 		
 		if (waveformPVName != null && !waveformPVName.trim().isEmpty()) {
 			int color = (getBackground().getRed() << 16) + (getBackground().getGreen() << 8) + getBackground().getBlue();
@@ -336,12 +304,21 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		return parameters;
 	}
 	
-	public boolean isScrollDown() {
-		return parameters.isScrollDown();
+	public int getScrollDirection() {
+		if (parameters.isScrollDown())
+			return SWT.DOWN;
+		else
+			return SWT.UP;
 	}
 	
-	public void setScrollDown(boolean scrollDown) {
-		setWaterfallPlotParameters(parameters.with(scrollDown(scrollDown)));
+	public void setScrollDirection(int direction) {
+		if (direction == SWT.UP) {
+			setWaterfallPlotParameters(parameters.with(scrollDown(false)));
+		} else if (direction == SWT.DOWN) {
+			setWaterfallPlotParameters(parameters.with(scrollDown(true)));
+		} else {
+			throw new IllegalArgumentException("Scroll direction must be SWT.UP or SWT.DOWN");
+		}
 	}
 	
 	public boolean isAdaptiveRange() {
@@ -373,7 +350,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @param showRange true if range should be displayed
 	 */
-	public void setShowRange(boolean showRange) {
+	public void setShowTimeAxis(boolean showRange) {
 		rangeWidget.setVisible(showRange);
 		
 		// Making the range invisible is not enough to not show it.
@@ -394,7 +371,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	 * 
 	 * @return true if the range is displayed
 	 */
-	public boolean isShowRange() {
+	public boolean isShowTimeAxis() {
 		return rangeWidget.isVisible();
 	}
 
@@ -408,6 +385,10 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 	protected void queryCleared() {
 		setWaveformPVName(null);
 		setScalarPVNames(null);
+		
+		// Clean up old image and previous error
+		imageDisplay.setVImage(null);
+		setLastError(null);
 	}
 	
 	private Result result;
@@ -417,6 +398,7 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 		if (result == null)
 			return;
 		
+		setLastError(result.exception);
 		this.result = result;
 		List<String> channelNames = null;
 		Exception ex = result.exception;
@@ -470,6 +452,72 @@ public class WaterfallWidget extends AbstractChannelQueryResultWidget {
 			setWaveformPVName(finalChannels.get(0));
 		} else
 			setScalarPVNames(finalChannels);
+	}
+
+
+	private boolean configurable = true;
+
+	private WaterfallConfigurationDialog dialog;
+
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new WaterfallConfigurationDialog(this);
+		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldConfigurable = configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldConfigurable,
+				configurable);
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
+	}
+
+	private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
+	
+	@Override
+	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+		PropertyChangeListener propListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("channelQuery".equals(event.getPropertyName()))
+					listener.selectionChanged(new SelectionChangedEvent(WaterfallWidget.this, getSelection()));
+			}
+		};
+		listenerMap.put(listener, propListener);
+		addPropertyChangeListener(propListener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return new StructuredSelection(new WaterfallSelection(getChannelQuery(), this));
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		removePropertyChangeListener(listenerMap.remove(listener));
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
 	}
 
 }

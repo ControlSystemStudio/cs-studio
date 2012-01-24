@@ -120,7 +120,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
 
         try {
-            writerService = Jms2OraPlugin.getDefault().getMessageWriterService();
+            writerService = Jms2OraActivator.getDefault().getMessageWriterService();
             if (writerService.isServiceReady()) {
                 LOG.info("Message writer service available.");
             } else {
@@ -133,7 +133,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         }
 
         try {
-            persistenceService = Jms2OraPlugin.getDefault().getPersistenceWriterService();
+            persistenceService = Jms2OraActivator.getDefault().getPersistenceWriterService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error(e.getMessage());
             throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());

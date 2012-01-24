@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
 import org.eclipse.jface.viewers.ISelection;
@@ -72,10 +72,14 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		});
 		
 		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
 		table = new VTableDisplay(this);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.addSelectionListener(new SelectionListener() {
@@ -92,9 +96,6 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 				widgetSelected(e);
 			}
 		});
-		
-		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
@@ -369,16 +370,13 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	@Override
 	protected void queryCleared() {
 		setChannels(null);
+		errorBar.setException(null);
 	}
 
 	@Override
 	protected void queryExecuted(Result result) {
-		Exception e = result.exception;
-		if (e == null) {
-			setChannels(result.channels);
-		} else {
-			errorBar.setException(e);
-		}
+		errorBar.setException(result.exception);
+		setChannels(result.channels);
 	}
 	
 }

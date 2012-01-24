@@ -14,6 +14,10 @@ import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgetActions.OpenOPIInViewAction;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
 
@@ -55,6 +59,21 @@ public class ScriptUtil {
 		action.setPropertyValue(OpenDisplayAction.PROP_PATH, opiPath);
 		action.setPropertyValue(OpenDisplayAction.PROP_MACROS, macrosInput);
 		action.run();
+	}
+	
+	/**
+	 * Close current active OPI.
+	 */
+	public static void closeCurrentOPI(){
+		IWorkbenchPage activePage = 
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IWorkbenchPart activePart = activePage.getActivePart();
+		
+		if(activePart instanceof IEditorPart){
+			activePage.closeEditor((IEditorPart) activePart, false);
+		}else if(activePart instanceof IViewPart){
+			activePage.hideView((IViewPart) activePart);
+		}
 	}
 	
 

@@ -30,7 +30,6 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
-org.csstudio.display.channelviewer
 org.csstudio.display.multichannelviewer
 org.csstudio.display.waterfall
 org.csstudio.email
@@ -96,6 +95,7 @@ org.csstudio.utility.channelfinder
 org.csstudio.utility.channelfinder.ui
 org.csstudio.utility.clock
 org.csstudio.utility.ldap
+org.csstudio.utility.olog
 org.csstudio.utility.olog.ui
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics

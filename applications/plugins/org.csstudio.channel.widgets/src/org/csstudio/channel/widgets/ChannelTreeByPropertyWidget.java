@@ -1,7 +1,7 @@
 package org.csstudio.channel.widgets;
 
-import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
@@ -10,13 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.utility.pvmanager.widgets.ErrorBar;
+import org.csstudio.ui.util.widgets.ErrorBar;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,14 +32,12 @@ import org.eclipse.ui.IMemento;
  * 
  */
 public class ChannelTreeByPropertyWidget extends AbstractChannelQueryResultWidget
-implements ConfigurableWidget {
+implements ConfigurableWidget, ISelectionProvider {
 	
 	private Tree tree;
 	private ErrorBar errorBar;
-	private ISelectionProvider treeSelectionProvider;
+	private ISelectionProvider selectionProvider;
 	private List<String> properties = new ArrayList<String>();
-	private String selectionPv = null;
-	private LocalUtilityPvManagerBridge selectionWriter = null;
 	private ChannelTreeByPropertyModel model;
 	
 	@Override
@@ -50,34 +46,11 @@ implements ConfigurableWidget {
 		tree.setMenu(menu);
 	}
 	
-	/**
-	 * The selection provider with the selected data in the tree,
-	 * in terms of ChannelTreeByPropertyNode objects.
-	 * Provided to add pop-up menu.
-	 * 
-	 * @return the selection provider
-	 */
-	public ISelectionProvider getTreeSelectionProvider() {
-		return treeSelectionProvider;
-	}
-	
 	public ChannelTreeByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
 		
-		// Close PV on dispose
-		addDisposeListener(new DisposeListener() {
-			
-			@Override
-			public void widgetDisposed(DisposeEvent e) {
-				if (selectionWriter != null) {
-					selectionWriter.close();
-					selectionWriter = null;
-				}
-			}
-		});
-		
 		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
@@ -126,24 +99,7 @@ implements ConfigurableWidget {
 		});
 		tree.setItemCount(0);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		tree.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if (selectionWriter != null && tree.getSelectionCount() > 0) {
-					selectionWriter.write(tree.getSelection()[0].getText());
-				}
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-		});
-		treeSelectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
-	}
-	
-	private void setLastException(Exception ex) {
-		errorBar.setException(ex);
+		selectionProvider = SelectionProviders.treeItemDataSelectionProvider(tree);
 	}
 	
 	private boolean showChannelNames = true;
@@ -185,6 +141,7 @@ implements ConfigurableWidget {
 	protected void queryCleared() {
 		tree.setItemCount(0);
 		tree.clearAll(true);
+		errorBar.setException(null);
 	}
 	
 	@Override
@@ -212,34 +169,6 @@ implements ConfigurableWidget {
 		}
 		if (model.getRoot().getChildrenNames() != null) {
 			tree.setItemCount(model.getRoot().getChildrenNames().size());
-		}
-	}
-	
-	/**
-	 * The pv that is going to be used to broadcast the selection of the tree.
-	 * 
-	 * @return a pv name
-	 */
-	public String getSelectionPv() {
-		return selectionPv;
-	}
-	
-	/**
-	 * Changes the pv that is going to be used to broadcast the selection of the tree.
-	 * 
-	 * @param selectionPv a pv name
-	 */
-	public void setSelectionPv(String selectionPv) {
-		this.selectionPv = selectionPv;
-		if (selectionPv == null || selectionPv.trim().isEmpty()) {
-			// Close PVManager
-			if (selectionWriter != null) {
-				selectionWriter.close();
-				selectionWriter = null;
-			}
-			
-		} else {
-			selectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
 	}
 	
@@ -308,4 +237,26 @@ implements ConfigurableWidget {
 	public void configurationDialogClosed() {
 		dialog = null;
 	}
+
+	@Override
+	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
+	}
+	
 }

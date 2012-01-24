@@ -23,7 +23,7 @@
 
 package org.csstudio.alarm.jms2ora.util;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
@@ -57,11 +57,11 @@ public final class MessageFilter {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
 
-        timePeriod = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_PERIOD, 120000, null);
-        watchdogWaitTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_WAIT, 60000, null);
+        timePeriod = prefs.getLong(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.WATCHDOG_PERIOD, 120000, null);
+        watchdogWaitTime = prefs.getLong(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.WATCHDOG_WAIT, 60000, null);
 
-        final int sendBound = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_SEND_BOUND, 100, null);
-        final int maxSentMessages = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_MAX_SENT_MESSAGES, 6, null);
+        final int sendBound = prefs.getInt(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.FILTER_SEND_BOUND, 100, null);
+        final int maxSentMessages = prefs.getInt(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.FILTER_MAX_SENT_MESSAGES, 6, null);
         messageContainer = new MessageFilterContainer(sendBound, maxSentMessages);
 
         watchdog = new WatchDog();

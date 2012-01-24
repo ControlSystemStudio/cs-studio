@@ -10,24 +10,17 @@ package org.csstudio.utility.pv.epics;
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_Byte;
-import gov.aps.jca.dbr.DBR_CTRL_Double;
-import gov.aps.jca.dbr.DBR_CTRL_Int;
 import gov.aps.jca.dbr.DBR_Double;
+import gov.aps.jca.dbr.DBR_Enum;
 import gov.aps.jca.dbr.DBR_Float;
 import gov.aps.jca.dbr.DBR_Int;
 import gov.aps.jca.dbr.DBR_LABELS_Enum;
 import gov.aps.jca.dbr.DBR_Short;
 import gov.aps.jca.dbr.DBR_String;
-import gov.aps.jca.dbr.DBR_TIME_Byte;
-import gov.aps.jca.dbr.DBR_TIME_Double;
-import gov.aps.jca.dbr.DBR_TIME_Enum;
-import gov.aps.jca.dbr.DBR_TIME_Float;
-import gov.aps.jca.dbr.DBR_TIME_Int;
-import gov.aps.jca.dbr.DBR_TIME_Short;
-import gov.aps.jca.dbr.DBR_TIME_String;
 import gov.aps.jca.dbr.GR;
 import gov.aps.jca.dbr.PRECISION;
 import gov.aps.jca.dbr.Status;
+import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.dbr.TimeStamp;
 
 import org.csstudio.data.values.IEnumeratedMetaData;
@@ -101,32 +94,7 @@ public class DBR_Helper
             final DBR_LABELS_Enum labels = (DBR_LABELS_Enum)dbr;
             return ValueFactory.createEnumeratedMetaData(labels.getLabels());
         }
-        else if (dbr instanceof DBR_CTRL_Double)
-        {
-            final DBR_CTRL_Double ctrl = (DBR_CTRL_Double)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            ctrl.getPrecision(),
-                            ctrl.getUnits());
-        }
-        else if (dbr instanceof DBR_CTRL_Int)
-        {
-            final DBR_CTRL_Int ctrl = (DBR_CTRL_Int)dbr;
-            return ValueFactory.createNumericMetaData(
-                            ctrl.getLowerDispLimit().doubleValue(),
-                            ctrl.getUpperDispLimit().doubleValue(),
-                            ctrl.getLowerWarningLimit().doubleValue(),
-                            ctrl.getUpperWarningLimit().doubleValue(),
-                            ctrl.getLowerAlarmLimit().doubleValue(),
-                            ctrl.getUpperAlarmLimit().doubleValue(),
-                            0, // no precision
-                            ctrl.getUnits());
-        }else if (dbr instanceof GR)
+        else if (dbr instanceof GR)
         {
             final GR ctrl = (GR)dbr;
             return ValueFactory.createNumericMetaData(
@@ -211,124 +179,67 @@ public class DBR_Helper
     public static IValue decodeValue(final boolean plain,
                            final IMetaData meta, final DBR dbr) throws Exception
     {
-        ITimestamp time = null;
-        ISeverity severity = null;
-        String status = "";
-        if (plain)
+        final ITimestamp time;
+        final ISeverity severity;
+        final String status;
+        
+        if (dbr instanceof TIME)
+        {
+            final TIME tss = (TIME) dbr;
+            time = createTimeFromEPICS(tss.getTimeStamp());
+            severity = SeverityUtil.forCode(tss.getSeverity().getValue());
+            status = decodeStatus(tss.getStatus());
+        }
+        else
         {
             time = TimestampFactory.now();
             severity = SeverityUtil.forCode(0);
+            status = "";
         }
+        
         if (dbr.isDOUBLE())
         {
-            double v[];
-            if (plain)
-                v = ((DBR_Double)dbr).getDoubleValue();
-            else
-            {
-                final DBR_TIME_Double dt = (DBR_TIME_Double) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getDoubleValue();
-            }
+            final double v[] = ((DBR_Double)dbr).getDoubleValue();
             return ValueFactory.createDoubleValue(time, severity,
                         status, (INumericMetaData)meta, quality, v);
         }
         else if (dbr.isFLOAT())
         {
-            float v[];
-            if (plain)
-                v = ((DBR_Float)dbr).getFloatValue();
-            else
-            {
-                final DBR_TIME_Float dt = (DBR_TIME_Float) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getFloatValue();
-            }
+            final float v[] = ((DBR_Float)dbr).getFloatValue();
             return ValueFactory.createDoubleValue(time, severity,
                             status, (INumericMetaData)meta, quality,
                             float2double(v));
         }
         else if (dbr.isINT())
         {
-            int v[];
-            if (plain)
-                v = ((DBR_Int)dbr).getIntValue();
-            else
-            {
-                final DBR_TIME_Int dt = (DBR_TIME_Int) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getIntValue();
-            }
+            final int v[] = ((DBR_Int)dbr).getIntValue();
             return ValueFactory.createLongValue(time, severity,
                             status, (INumericMetaData)meta, quality,
                             int2long(v));
         }
         else if (dbr.isSHORT())
         {
-            short v[];
-            if (plain)
-                v = ((DBR_Short)dbr).getShortValue();
-            else
-            {
-                final DBR_TIME_Short dt = (DBR_TIME_Short) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getShortValue();
-            }
+            final short v[] = ((DBR_Short)dbr).getShortValue();
             return ValueFactory.createLongValue(time, severity,
                                 status, (INumericMetaData)meta, quality,
                                 short2long(v));
         }
         else if (dbr.isSTRING())
         {
-            String v[];
-            if (plain)
-                v = ((DBR_String)dbr).getStringValue();
-            else
-            {
-                final DBR_TIME_String dt = (DBR_TIME_String) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getStringValue();
-            }
+            final String v[] = ((DBR_String)dbr).getStringValue();
             return ValueFactory.createStringValue(time, severity,
                                 status, quality, v);
         }
         else if (dbr.isENUM())
         {
-            short v[];
-            // 'plain' mode would subscribe to SHORT,
-            // so this must be a TIME_Enum:
-            final DBR_TIME_Enum dt = (DBR_TIME_Enum) dbr;
-            severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-            status = decodeStatus(dt.getStatus());
-            time = createTimeFromEPICS(dt.getTimeStamp());
-            v = dt.getEnumValue();
+            final short v[] = ((DBR_Enum)dbr).getEnumValue();
             return ValueFactory.createEnumeratedValue(time, severity,
                                 status, (IEnumeratedMetaData)meta, quality,
                                 short2int(v));
         }
         else if (dbr.isBYTE())
         {
-            byte[] v;
-            if (plain)
-                v = ((DBR_Byte)dbr).getByteValue();
-            else
-            {
-                final DBR_TIME_Byte dt = (DBR_TIME_Byte) dbr;
-                severity = SeverityUtil.forCode(dt.getSeverity().getValue());
-                status = decodeStatus(dt.getStatus());
-                time = createTimeFromEPICS(dt.getTimeStamp());
-                v = dt.getByteValue();
-            }
+            final byte[] v = ((DBR_Byte)dbr).getByteValue();
             return ValueFactory.createLongValue(time, severity,
                                 status, (INumericMetaData)meta, quality,
                                 byte2long(v));

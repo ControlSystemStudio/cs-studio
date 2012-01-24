@@ -33,8 +33,8 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.ScanServerImpl;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link ScanServer}

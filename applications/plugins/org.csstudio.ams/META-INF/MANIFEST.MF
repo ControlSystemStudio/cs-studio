@@ -32,5 +32,6 @@ Export-Package: org.csstudio.ams,
  org.csstudio.ams.filter.ui,
  org.csstudio.ams.gui,
  org.csstudio.ams.internal,
- org.csstudio.ams.internal.pages
+ org.csstudio.ams.internal.pages,
+ org.hsqldb
 Bundle-Vendor: DESY <css-developer@desy.de>, Markus Moeller

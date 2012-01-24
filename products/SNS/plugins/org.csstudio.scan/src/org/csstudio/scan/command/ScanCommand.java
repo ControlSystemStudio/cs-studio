@@ -15,31 +15,129 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.PrintStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 
-/** Information about a command in a scan
- *
+import org.csstudio.scan.server.ScanServer;
+import org.w3c.dom.Element;
+
+/** Description of a scan server command
+ * 
  *  <p>Used by the client to describe commands to the server.
- *
- *  <p>Also used by the server as the base class for
- *  most command implementations.
- *  Needs to be <code>Serializable</code> to allow RMI
- *  to pass the data from the client to the server.
- *  By sharing the <code>...Command</code> classes between
- *  the server and client we avoid problems with RMI
- *  having to dynamically create the types across JVMs.
- *
- *  <p>Originally just called 'Command', but that clashed
- *  with the PyDev Command class that's used inside the
- *  PyDev shell executing in the Eclipse Command view.
- *  The easiest way around that issue seemed a rename
- *  of the basic scan command.
+ *  
+ *  <p>This class offers generic property access
+ *  based on introspection, assuming that the actual command has
+ *  suitable 'getter' and 'setter'.
  *
  *  @author Kay Kasemir
  */
-public interface ScanCommand extends Serializable
+@SuppressWarnings("nls")
+abstract public class ScanCommand implements Serializable
 {
-    /** @return One-line text representation of the command */
-	@Override
-    public String toString();
+    // TODO Transfer commands as XML so Serializable is no longer necessary
+    /** Serialization ID */
+    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+
+    /** @return Descriptions of Properties for this command */
+    abstract public ScanCommandProperty[] getProperties();
+    
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example unknown property ID
+     */
+    public void setProperty(final String property_id, final Object value) throws Exception
+    {
+        for (ScanCommandProperty property : getProperties())
+            if (property.getID().equals(property_id))
+            {
+                setProperty(property, value);
+                return;
+            }
+        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+    }
+
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example no suitable "setter"
+     */
+    public void setProperty(final ScanCommandProperty property, final Object value) throws Exception
+    {
+        final String meth_name = getMethodName("set", property.getID());
+        final Method method = getClass().getMethod(meth_name, property.getType());
+        method.invoke(this, value);
+    }
+    
+    /** Get a command's property
+     *  @param property_id ID of the property to set
+     *  @return Value
+     *  @throws Exception on error, for example unknown property ID
+     */
+    public Object getProperty(final String property_id) throws Exception
+    {
+        for (ScanCommandProperty property : getProperties())
+            if (property.getID().equals(property_id))
+                return getProperty(property);
+        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+    }
+
+    /** Set a command's property
+     *  @param property_id ID of the property to set
+     *  @param value New value
+     *  @throws Exception on error, for example no suitable "getter"
+     */
+    public Object getProperty(final ScanCommandProperty property) throws Exception
+    {
+        final String meth_name = getMethodName("get", property.getID());
+        final Method method = getClass().getMethod(meth_name);
+        return method.invoke(this);
+    }
+    
+    /** Construct method name
+     *  @param get_set Method prefix "get" or "set"
+     *  @param property_id Property ID like "device_name"
+     *  @return Method name like "setDeviceName"
+     */
+    private String getMethodName(final String get_set, final String property_id)
+    {
+        final String[] sections = property_id.split("_");
+        final StringBuilder result = new StringBuilder(get_set);
+        for (String sec : sections)
+        {
+            result.append(sec.substring(0, 1).toUpperCase());
+            result.append(sec.substring(1));
+        }
+        return result.toString();
+    }
+
+    /** Write the command (and its sub-commands) in an XML format.
+     * 
+     *  <p>A command called AbcCommand should write itself as a tag "abc"
+     *  so that the {@link XMLCommandReader} can later determine
+     *  which class to use for reading the command back from XML.
+     *  
+     *  @param out {@link PrintStream}
+     *  @param level Indentation level
+     */
+    abstract public void writeXML(PrintStream out, final int level);
+
+    /** Read command parameters from XML element
+     *  @param factory ScanCommandFactory to use in case inner scan commands,
+     *                 for example a loop body, need to be created
+     *  @param element
+     *  @throws Exception on error, for example missing essential data
+     */
+    abstract public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception;
+    
+    /** Write indentation
+     *  @param out Where to print
+     *  @param level Indentation level
+     */
+    protected void writeIndent(final PrintStream out, final int level)
+    {
+        for (int i=0; i<level; ++i)
+            out.print("  ");
+    }
 }

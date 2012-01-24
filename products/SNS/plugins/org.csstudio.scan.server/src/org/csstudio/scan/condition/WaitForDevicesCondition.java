@@ -15,11 +15,10 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
-import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 
-/** {@link CommandImpl} that delays the scan until all {@link Device}s are 'ready'
+/** {@link Condition} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
 public class WaitForDevicesCondition implements Condition, DeviceListener

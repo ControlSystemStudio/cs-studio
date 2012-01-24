@@ -15,17 +15,8 @@
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory
-            adaptableType="org.csstudio.channel.widgets.ChannelTreeByPropertyNode"
-            class="org.csstudio.channel.widgets.ChannelTreeByPropertyNodeAdapterFactory">
-         <adapter
-               type="[Lgov.bnl.channelfinder.api.Channel;">
-         </adapter>
-         <adapter
-               type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
-         </adapter>
-         <adapter
-               type="org.csstudio.channel.widgets.ConfigurableWidget">
-         </adapter>
+            adaptableType="org.csstudio.channel.widgets.ProcessVariableAdaptable"
+            class="org.csstudio.channel.widgets.CommonAdapterFactory">
          <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
@@ -34,20 +25,28 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="org.csstudio.channel.widgets.PVTableByPropertyCell"
-            class="org.csstudio.channel.widgets.PVTableByPropertyCellAdapterFactory">
-         <adapter
+            adaptableType="org.csstudio.channel.widgets.ChannelAdaptable"
+            class="org.csstudio.channel.widgets.CommonAdapterFactory">
+        <adapter
+               type="gov.bnl.channelfinder.api.Channel">
+         </adapter>
+        <adapter
                type="[Lgov.bnl.channelfinder.api.Channel;">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.channel.widgets.ChannelQueryAdaptable"
+            class="org.csstudio.channel.widgets.CommonAdapterFactory">
+         <adapter
+               type="gov.bnl.channelfinder.api.ChannelQuery">
          </adapter>
          <adapter
                type="[Lgov.bnl.channelfinder.api.ChannelQuery;">
          </adapter>
-         <adapter
-               type="org.csstudio.csdata.ProcessVariable">
-         </adapter>
-         <adapter
-               type="[Lorg.csstudio.csdata.ProcessVariable;">
-         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.channel.widgets.ConfigurableWidgetAdaptable"
+            class="org.csstudio.channel.widgets.CommonAdapterFactory">
          <adapter
                type="org.csstudio.channel.widgets.ConfigurableWidget">
          </adapter>

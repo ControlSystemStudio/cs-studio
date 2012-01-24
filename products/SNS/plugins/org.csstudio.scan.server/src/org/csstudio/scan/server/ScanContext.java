@@ -16,18 +16,12 @@
 package org.csstudio.scan.server;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import org.csstudio.scan.command.CommandImpl;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
-import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.logger.MemoryDataLogger;
+import org.csstudio.scan.server.internal.Scan;
 
-/** Context in which the {@link CommandImpl}s of a {@link Scan} are executed.
+/** Context in which the {@link ScanCommandImpl}s of a {@link Scan} are executed.
  *
  *  <ul>
  *  <li>{@link Device}s with which commands can interact.
@@ -38,164 +32,37 @@ import org.csstudio.scan.logger.MemoryDataLogger;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public class ScanContext
+public interface ScanContext
 {
-    final private DeviceContext devices;
-
-	final private MemoryDataLogger data_logger = new MemoryDataLogger();
-
-	final private AtomicLong work_performed = new AtomicLong();
-
-	private volatile boolean run = true;
-
-	private boolean paused = false;
-
-	private volatile CommandImpl<?> current_command = null;
-
-	public ScanContext(final DeviceContext devices)
-    {
-	    this.devices = devices;
-    }
-
-    /** Start all devices
-     *  @throws Exception on error with a device
-     */
-	void startDevices() throws Exception
-	{
-	    devices.startDevices();
-	}
-
-    /** Stop all devices */
-	void stopDevices()
-    {
-        devices.stopDevices();
-    }
-
 	/** Get a device by name
 	 *  @param name
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */
-	public Device getDevice(final String name) throws Exception
-	{
-	    return devices.getDevice(name);
-	}
-
+	public Device getDevice(final String name) throws Exception;
+	
     /** @return All Devices */
-    public Device[] getDevices()
-    {
-        return devices.getDevices();
-    }
+    public Device[] getDevices();
 
-    /** @return {@link DataLogger} of this scan */
-    public DataLogger getDataLogger()
-    {
-        return data_logger;
-    }
-
-    /** @param commands {@link CommandImpl}s to execute
+    /** @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
-    public void execute(final List<CommandImpl<?>> commands) throws Exception
-    {
-        for (CommandImpl<?> command : commands)
-        {
-            if (! run)
-                return;
-            execute(command);
-        }
-    }
+    public void execute(final List<ScanCommandImpl<?>> commands) throws Exception;
 
-    /** @param command {@link CommandImpl} to execute
+    /** @param command {@link ScanCommandImpl} to execute
      *  @throws Exception on error in executing the command
      */
-    public void execute(final CommandImpl<?> command) throws Exception
-    {
-        synchronized (this)
-        {
-            while (paused)
-            {
-                wait();
-            }
-        }
-        try
-        {
-            current_command = command;
-            command.execute(this);
-        }
-        catch (InterruptedException ex)
-        {
-            final String message = "Command aborted: " + command.toString();
-            Logger.getLogger(getClass().getName()).log(Level.INFO, message, ex);
-            throw ex;
-        }
-        catch (Exception ex)
-        {
-            final String message = "Command failed: " + command.toString();
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, message, ex);
-            throw ex;
-        }
-    }
-
-    /** Ask next command execution to pause
-     *  @see ScanContext#resume()
-     */
-    synchronized void pause()
-    {
-        paused = true;
-    }
-
-    /** Resume from pause
-     *  @see ScanContext#pause()
-     */
-    synchronized void resume()
-    {
-        paused = false;
-        notifyAll();
-    }
-
-    /** Request abort of command execution
-     *  Will not interrupt a command that is right
-     *  now executed.
-     *  For that, the corresponding engine thread
-     *  needs to be interrupted.
-     */
-    void abort()
-    {
-        run = false;
-    }
+    public void execute(final ScanCommandImpl<?> command) throws Exception;
 
     /** Log a sample, i.e. add it to the data set produced by the
 	 *  scan
 	 *  @param sample {@link ScanSample}
 	 */
-	public void logSample(final ScanSample sample)
-	{
-		data_logger.log(sample);
-	}
+	public void logSample(final ScanSample sample);
 
 	/** Inform scan context that work has been performed.
-	 *  Meant to be called by {@link CommandImpl}s
+	 *  Meant to be called by {@link ScanCommandImpl}s
 	 *  @param work_units Number of performed work units
 	 */
-	public void workPerformed(final int work_units)
-	{
-	    work_performed.addAndGet(work_units);
-	}
-
-	/** @return Number of work units that have so far been executed */
-    public long getWorkPerformed()
-    {
-        return work_performed.get();
-    }
-
-    /** @return String representation of current command */
-    public String getCurrentCommand()
-    {
-        final CommandImpl<?> command = current_command;
-        if (command == null)
-            return "";
-        return command.toString();
-    }
+	public void workPerformed(final int work_units);
 }

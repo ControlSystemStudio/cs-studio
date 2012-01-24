@@ -71,6 +71,8 @@ public class ChannelQuery {
 	}
 	
 	private volatile Result result;
+	// Guarded by this: will keep track whether a query is already running
+	private boolean running = false;
 
 	private List<ChannelQueryListener> listeners = new CopyOnWriteArrayList<ChannelQueryListener>();
 
@@ -219,6 +221,13 @@ public class ChannelQuery {
 	}
 
 	private void execute() {
+		// If it's already running, do nothing
+		synchronized (this) {
+			if (running)
+				return;
+			running = true;
+		}
+		
 		queryExecutor.execute(new Runnable() {
 
 			@Override
@@ -231,6 +240,9 @@ public class ChannelQuery {
 					localResult = new Result(e, null);
 				} finally {
 					result = localResult;
+					synchronized (this) {
+						running = false;
+					}
 					fireGetQueryResult(localResult);
 				}
 			}

@@ -37,7 +37,12 @@ public abstract class FilterConditionDAO extends DAO
 {
 	public static void copyFilterCondition(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyFilterCondition(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyFilterCondition(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyFilterCondition(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyFilterCondition(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupFilterCondition(Connection masterDB) throws SQLException

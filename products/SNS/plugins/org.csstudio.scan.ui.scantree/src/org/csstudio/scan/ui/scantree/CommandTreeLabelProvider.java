@@ -33,8 +33,15 @@ public class CommandTreeLabelProvider extends CellLabelProvider implements ILabe
     @Override
     public Image getImage(final Object element)
     {
-        final ScanCommand command = (ScanCommand) element;
-        return CommandImages.getImage(command);
+        try
+        {
+            final ScanCommand command = (ScanCommand) element;
+            return CommandsInfo.getInstance().getImage(command);
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
     
     /** {@inheritDoc} */

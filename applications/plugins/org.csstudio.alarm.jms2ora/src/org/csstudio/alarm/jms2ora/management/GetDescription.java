@@ -23,7 +23,7 @@
  */
 package org.csstudio.alarm.jms2ora.management;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
@@ -46,7 +46,7 @@ public class GetDescription implements IManagementCommand {
     public CommandResult execute(CommandParameters parameters) {
         
         IPreferencesService prefs = Platform.getPreferencesService();
-        String desc = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
+        String desc = prefs.getString(Jms2OraActivator.PLUGIN_ID,
                                       PreferenceConstants.DESCRIPTION,
                                       "I am a simple but happy application.", null);
         

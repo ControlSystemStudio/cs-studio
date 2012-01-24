@@ -102,15 +102,15 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
-		fd_lblPvName.left = new FormAttachment(0, 10);
-		fd_lblPvName.top = new FormAttachment(0, 13);
+		fd_lblPvName.left = new FormAttachment(0, 5);
+		fd_lblPvName.top = new FormAttachment(0, 8);
 		lblPvName.setLayoutData(fd_lblPvName);
 		lblPvName.setText("Query:");
 		
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE,
 				Activator.getDefault().getDialogSettings(), "channeltreebypropertyview.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 10);
+		fd_combo.top = new FormAttachment(0, 5);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
 		inputBar.setLayoutData(fd_combo);
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
@@ -126,16 +126,16 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		treeWidget = new ChannelTreeByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
-		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
-		fd_waterfallComposite.left = new FormAttachment(0, 10);
-		fd_waterfallComposite.right = new FormAttachment(100, -10);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -5);
+		fd_waterfallComposite.left = new FormAttachment(0, 5);
+		fd_waterfallComposite.right = new FormAttachment(100, -5);
 		treeWidget.setLayoutData(fd_waterfallComposite);
 		
 		btnProperties = new Button(parent, SWT.NONE);
 		fd_combo.right = new FormAttachment(btnProperties, -6);
 		FormData fd_btnProperties = new FormData();
-		fd_btnProperties.top = new FormAttachment(0, 10);
-		fd_btnProperties.right = new FormAttachment(100, -10);
+		fd_btnProperties.top = new FormAttachment(0, 5);
+		fd_btnProperties.right = new FormAttachment(100, -5);
 		btnProperties.setLayoutData(fd_btnProperties);
 		btnProperties.setText("Properties");
 		btnProperties.addSelectionListener(new SelectionAdapter() {
@@ -149,7 +149,7 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		treeWidget.loadState(memento);
 		inputBar.setChannelQuery(treeWidget.getChannelQuery());
 		
-		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget.getTreeSelectionProvider());
+		PopupMenuUtil.installPopupForView(treeWidget, getSite(), treeWidget);
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
 	}
 }

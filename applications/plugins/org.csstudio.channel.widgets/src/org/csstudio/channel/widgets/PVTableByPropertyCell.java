@@ -1,12 +1,15 @@
 package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
 
 import java.util.Collection;
+import java.util.Collections;
 
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
 
-public class PVTableByPropertyCell {
+public class PVTableByPropertyCell implements ChannelQueryAdaptable {
 	
 	private String query;
 	private Collection<Channel> channels;
@@ -70,5 +73,22 @@ public class PVTableByPropertyCell {
 	
 	public boolean isCell() {
 		return cell;
+	}
+
+	@Override
+	public Collection<Channel> toChannels() {
+		return getChannels();
+	}
+
+	@Override
+	public Collection<ProcessVariable> toProcesVariables() {
+		return AdaptableUtilities.toProcessVariables(toChannels());
+	}
+
+	@Override
+	public Collection<ChannelQuery> toChannelQueries() {
+		if (query == null)
+			return null;
+		return Collections.singletonList(ChannelQuery.query(getQuery()).result(getChannels(), null).build());
 	}
 }

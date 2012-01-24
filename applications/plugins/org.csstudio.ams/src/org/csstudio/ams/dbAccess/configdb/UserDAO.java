@@ -41,7 +41,12 @@ public abstract class UserDAO extends DAO
 
 	public static void copyUser(Connection masterDB, Connection localDB) throws SQLException 
 	{
-		copyUser(masterDB, localDB, DB_BACKUP_SUFFIX, "");
+		copyUser(masterDB, localDB, DB_BACKUP_SUFFIX);
+	}
+	
+	public static void copyUser(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException 
+	{
+		copyUser(masterDB, localDB, masterDbSuffix, "");
 	}
 	
 	public static void backupUser(Connection masterDB) throws SQLException

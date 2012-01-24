@@ -1,13 +1,19 @@
 package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ChannelTreeByPropertyNode {
+import org.csstudio.csdata.ProcessVariable;
+
+public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, ChannelQueryAdaptable {
 	
 	// The model that contains the node, used to access all data
 	// common to all nodes
@@ -145,6 +151,43 @@ public class ChannelTreeByPropertyNode {
 		}
 		
 		return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
+	}
+	
+	private void includePropertyAndValue(Map<String, String> map) {
+		if (getPropertyName() != null) {
+			map.put(getPropertyName(), getDisplayName());
+		}
+		if (parentNode != null) {
+			parentNode.includePropertyAndValue(map);
+		}
+	}
+	
+	public Map<String, String> getPropertiesAndValues() {
+		Map<String, String> map = new HashMap<String, String>();
+		includePropertyAndValue(map);
+		return map;
+	}
+
+	@Override
+	public Collection<Channel> toChannels() {
+		return getNodeChannels();
+	}
+
+	@Override
+	public Collection<ProcessVariable> toProcesVariables() {
+		return AdaptableUtilities.toProcessVariables(toChannels());
+	}
+
+	@Override
+	public Collection<ChannelQuery> toChannelQueries() {
+		if (!isSubQuery())
+			return null;
+		return Collections.singleton(ChannelQuery.query(getSubQuery()).result(getNodeChannels(), null).build());
+	}
+
+	@Override
+	public ConfigurableWidget toConfigurableWidget() {
+		return model.getWidget();
 	}
 
 }
