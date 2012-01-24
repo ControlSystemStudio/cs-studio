@@ -4,6 +4,7 @@ edu.msu.nscl.olog.api
 gov.bnl.channelfinder.api
 javax.annotation
 net.coobird.thumbnailator
+org.apache.commons.collections
 org.apache.commons.httpclient
 org.apache.jackrabbit
 org.apache.log4j
