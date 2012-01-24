@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -29,15 +28,12 @@ import org.w3c.dom.Node;
 @SuppressWarnings("nls")
 public class LogCommand extends ScanCommand
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("device_names", "Device Names", String[].class)
     };
 
-    
     private String[] device_names;
 
     /** Initialize empty log command */

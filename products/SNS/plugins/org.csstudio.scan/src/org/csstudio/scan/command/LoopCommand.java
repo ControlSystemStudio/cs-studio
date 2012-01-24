@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
 /** Command that performs a loop
@@ -44,9 +43,7 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class LoopCommand extends ScanCommand
 {
-    /** Serialization ID */
-    final  private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("device_name", "Device Name", String.class),

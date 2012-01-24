@@ -17,7 +17,6 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
 /** {@link CommandImpl} that delays the scan until a device reaches a certain value
@@ -26,9 +25,7 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class WaitCommand extends ScanCommand
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("device_name", "Device Name", String.class),

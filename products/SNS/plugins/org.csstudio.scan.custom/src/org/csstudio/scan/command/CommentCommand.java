@@ -25,9 +25,7 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 public class CommentCommand extends ScanCommand
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = 1L;
-    
+    /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("comment", "Comment", String.class),

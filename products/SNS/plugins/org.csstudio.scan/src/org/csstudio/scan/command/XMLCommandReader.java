@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -35,9 +36,20 @@ public class XMLCommandReader
     {
         this.factory = factory;
     }
+
+    /** Read scan commands from XML string
+     *  @param xml_text XML text that contains commands
+     *  @return List of {@link ScanCommand}s
+     *  @throws Exception on error: Unknown commands, missing command-specific details
+     */
+    public List<ScanCommand> readXMLString(final String xml_text) throws Exception
+    {
+        final InputStream stream = new ByteArrayInputStream(xml_text.getBytes());
+        return readXMLStream(stream);
+    }
     
     /** Read scan commands from XML stream
-     *  @param in XML stream that contain commands
+     *  @param in XML stream that contains commands
      *  @return List of {@link ScanCommand}s
      *  @throws Exception on error: Unknown commands, missing command-specific details
      */
@@ -50,7 +62,7 @@ public class XMLCommandReader
     }
 
     /** Read scan commands from XML document
-     *  @param doc Document that contain commands
+     *  @param doc Document that contains commands
      *  @return List of {@link ScanCommand}s
      *  @throws Exception on error: Unknown commands, missing command-specific details
      */

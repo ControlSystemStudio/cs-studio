@@ -16,10 +16,8 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.lang.reflect.Method;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
 /** Description of a scan server command
@@ -41,17 +39,13 @@ import org.w3c.dom.Element;
  *  <li><code>String</code>
  *  <li><code>String[]</code>
  *  <li><code>Object</code> - Will be edited as String,
- *                         and if possible converted to Double
+ *                            and if possible converted to Double
  *  </ul>
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class ScanCommand implements Serializable
+abstract public class ScanCommand
 {
-    // TODO Transfer commands as XML so Serializable is no longer necessary
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
     /** @return Descriptions of Properties for this command */
     abstract public ScanCommandProperty[] getProperties();
     

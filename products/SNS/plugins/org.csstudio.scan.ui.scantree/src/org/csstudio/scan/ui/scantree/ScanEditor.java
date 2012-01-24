@@ -175,7 +175,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         try
         {
             final ScanServer server = ScanServerConnector.connect();
-            server.submitScan(name, commands);
+            server.submitScan(name, XMLCommandWriter.toXMLString(commands));
             ScanServerConnector.disconnect(server);
         }
         catch (Exception ex)
