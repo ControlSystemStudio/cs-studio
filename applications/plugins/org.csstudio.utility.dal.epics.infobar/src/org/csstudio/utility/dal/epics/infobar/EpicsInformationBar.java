@@ -1,10 +1,11 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.dal.epics.infobar;
 
 import java.util.Properties;
 
+import org.csstudio.dal.epics.EPICSPlug;
 import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -19,11 +20,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
-import org.epics.css.dal.epics.EPICSPlug;
 
 /**
  * @author jhatje
- * 
+ *
  */
 public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 
@@ -40,7 +40,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 
 	/**
 	 * Creates a new toolbar with an id.
-	 * 
+	 *
 	 * @param id
 	 *            the id.
 	 */
@@ -53,31 +53,31 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	 */
 	@Override
 	protected Control createControl(final Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
+		final Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
-		Button button = new Button(composite, SWT.NONE);
-		Font font = button.getFont();
+		final Button button = new Button(composite, SWT.NONE);
+		final Font font = button.getFont();
 		font.getFontData()[0].setHeight(6);
         button.setCursor(new Cursor(null, SWT.CURSOR_HELP));
 //		button.setFont(font)
 //		GridData layoutData = GridDataFactory.swtDefaults().align(SWT.FILL, SWT.FILL).indent(0,-5).create();
-		GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT,22).align(SWT.FILL, SWT.TOP).indent(0,-2).create();
+		final GridData layoutData = GridDataFactory.swtDefaults().hint(SWT.DEFAULT,22).align(SWT.FILL, SWT.TOP).indent(0,-2).create();
         button.setLayoutData(layoutData);
 		if (EpicsPlugin.getDefault().usePureJava()) {
 			button.setText("Pure Java");
 		} else {
 			button.setText("JNI");
 		}
-		
+
 		button.addSelectionListener(new SelectionListener() {
 
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void widgetSelected(final SelectionEvent e) {
 				showInfoDialog();
 			}
 
 			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
+			public void widgetDefaultSelected(final SelectionEvent e) {
 				showInfoDialog();
 			}
 		});
@@ -86,13 +86,13 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	}
 
 	private void showInfoDialog() {
-		StringBuilder sb = new StringBuilder();
-		EPICSPlug instance = null;
+		final StringBuilder sb = new StringBuilder();
+		final EPICSPlug instance = null;
 		readEpicsPref(sb);
 		MessageDialog.openInformation(null, "Epics Info", sb.toString());
 	}
 
-	private void readEpicsPref(StringBuilder sb) {
+	private void readEpicsPref(final StringBuilder sb) {
 		sb.append("Epics libs preferences:\n");
 		if (EpicsPlugin.getDefault().usePureJava()) {
 			sb.append("Channel Access libs: PURE JAVA");
@@ -101,10 +101,10 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		}
 	}
 
-	private void readEpicsPlugContex(StringBuilder sb, EPICSPlug instance) {
+	private void readEpicsPlugContex(final StringBuilder sb, EPICSPlug instance) {
 		try {
 			instance = (EPICSPlug) EPICSPlug.getInstance(new Properties());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -127,15 +127,15 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 			appendBoolProperty(EPICSPlug.PROPERTY_USE_COMMON_EXECUTOR, sb,
 					instance);
 			appendBoolProperty(EPICSPlug.USE_JNI, sb, instance);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			sb.append(e.getMessage());
 		}
 	}
 
-	private void appendIntProperty(String propKey, StringBuilder sb,
-			EPICSPlug instance) {
+	private void appendIntProperty(final String propKey, final StringBuilder sb,
+			final EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Integer integerProperty = new Integer(System.getProperty(propKey, null));
+		final Integer integerProperty = new Integer(System.getProperty(propKey, null));
 		if (integerProperty == null) {
 			sb.append("NULL");
 		} else {
@@ -144,10 +144,10 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		sb.append("\n");
 	}
 
-	private void appendLongProperty(String propKey, StringBuilder sb,
-			EPICSPlug instance) {
+	private void appendLongProperty(final String propKey, final StringBuilder sb,
+			final EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Long property = new Long(System.getProperty(propKey, null));
+		final Long property = new Long(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -156,10 +156,10 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		sb.append("\n");
 	}
 
-	private void appendDoubleProperty(String propKey, StringBuilder sb,
-			EPICSPlug instance) {
+	private void appendDoubleProperty(final String propKey, final StringBuilder sb,
+			final EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Double property = new Double(System.getProperty(propKey, null));
+		final Double property = new Double(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -168,10 +168,10 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		sb.append("\n");
 	}
 
-	private void appendBoolProperty(String propKey, StringBuilder sb,
-			EPICSPlug instance) {
+	private void appendBoolProperty(final String propKey, final StringBuilder sb,
+			final EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Boolean property = new Boolean(System.getProperty(propKey, null));
+		final Boolean property = new Boolean(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -180,10 +180,10 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 		sb.append("\n");
 	}
 
-	private void appendStringProperty(String propKey, StringBuilder sb,
-			EPICSPlug instance) {
+	private void appendStringProperty(final String propKey, final StringBuilder sb,
+			final EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		String property = new String(System.getProperty(propKey, null));
+		final String property = new String(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -194,7 +194,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 
 	/**
 	 * Returns <code>true</code>.
-	 * 
+	 *
 	 * @return <code>true</code>.
 	 */
 	@Override
