@@ -88,6 +88,8 @@ public class CommentCommand extends ScanCommand
     @Override
     public String toString()
     {
-        return "Comment: " + comment;
+        if (comment == null  ||  comment.isEmpty())
+            return "-- Empty Comment --";
+        return comment;
     }
 }
