@@ -39,6 +39,7 @@ public class ScriptInfo
 	}
 	
 	/** @return Debug representation */
+    @Override
     public String toString()
 	{
 		return description + ": Command '" + script + "'";
