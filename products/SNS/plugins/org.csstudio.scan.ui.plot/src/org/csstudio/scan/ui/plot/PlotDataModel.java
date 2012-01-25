@@ -26,11 +26,12 @@ import org.eclipse.swt.widgets.Display;
 @SuppressWarnings("nls")
 public class PlotDataModel implements Runnable
 {
+    /** Plot update period in ms */
+    final private long update_period;
+
     /** Scan model */
     final private ScanInfoModel model;
 
-    // TODO Check synchronization
-    
     /** @see #run() */
     private volatile Thread update_thread;
 
@@ -51,13 +52,14 @@ public class PlotDataModel implements Runnable
     
     /** Mostly to please FindBugs: Flag that update thread was woken early */
     private boolean wake_early = false;
-    
+
     /** Initialize
      *  @throws Exception on error connecting to scan server
      *  @see #dispose()
      */
     public PlotDataModel(final Display display) throws Exception
     {
+        update_period = Preferences.getUpdatePeriod();
         model = ScanInfoModel.getInstance();
         plot_data = new PlotDataProvider(display);
     }
@@ -141,7 +143,7 @@ public class PlotDataModel implements Runnable
             {
                 try
                 {
-                    wait(1000);
+                    wait(update_period);
                 }
                 catch (InterruptedException e)
                 {
