@@ -29,13 +29,15 @@ public class PreferencePage	extends FieldEditorPreferencePage
 	}
 	
 	/** {@inheritDoc} */
-	public void init(final IWorkbench workbench)
+	@Override
+    public void init(final IWorkbench workbench)
 	{
 		// NOP
 	}
 	
 	/** {@inheritDoc} */
-	public void createFieldEditors()
+	@Override
+    public void createFieldEditors()
 	{
 		final Composite parent = getFieldEditorParent();
 
