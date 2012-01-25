@@ -1,7 +1,10 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<LINK href="alarm.css" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+
 <title>Alarm System</title>
 </head>
 
@@ -1257,6 +1260,44 @@ from the message throttle.
 </p>
 
 
+<h3>Annunciator Settings</h3>
+<p>
+The Annunciator has its own preference settings.
+In principle, this would allow use of one annunciator
+for multiple alarm systems.
+</p>
+<ul>
+<li>URL: JMS server URL. Usually has to match the URL used by the Alarm Server
+    and client GUI, but allows use of the Annunciator in other setups, for example
+    by pointing to the URL of a JMS mirror for multiple alarm server setups.
+</li>
+<li>Topics: Comma-separated list of JMS TOPICS. Typically those used by Alarm
+    Servers.
+</li>
+<li>Translation File: The computer speech library is imperfect. Especially 
+    abbreviations are better spelled out ("Mebbit" instead of "MEBT").
+    A translations file can include such translations which are automatically
+    applied to all received TEXT before it is annunciated.<br>
+    Specify the full path to a file that contains this:
+    <pre>
+# File of translations
+# Format:
+#       some_regular_expression_pattern = translation
+
+INVALID=in valid
+MEBT=mebbit
+    </pre>
+    To avoid confusion, though, it's usually better to <u>not</u> use
+    translations and instead change the annunication text in the Alarm Server
+    configuration.
+</li>
+<li>Severities: Comma-separated list of recognized severities, highest priority first.
+</li>
+<li>Threshold: Number of queued messages beyond which messages are cleared.
+</li>
+<li>Message History: Number of past messages shown in the annunciator history.
+</li>
+</ul>
 
 </body>
 </html>

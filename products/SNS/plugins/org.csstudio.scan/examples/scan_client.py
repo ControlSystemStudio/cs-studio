@@ -59,7 +59,7 @@ class ScanClient(object):
           
         @return Scan ID
         """
-        self.id = self.server.submitScan(name, command_sequence.getCommands())
+        self.id = self.server.submitScan(name, command_sequence.getXML())
         return self.id
 
     def waitUntilDone(self, id=-1):
