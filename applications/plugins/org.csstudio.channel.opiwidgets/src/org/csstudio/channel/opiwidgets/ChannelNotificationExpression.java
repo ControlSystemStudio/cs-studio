@@ -131,7 +131,13 @@ public class ChannelNotificationExpression {
 		return builder.toString();
 	}
 
-	public Object notification(Collection<Channel> channels) {
+	public String notification(Collection<Channel> channels) {
+		if (channels.size() == 1)
+			return notification(channels.iterator().next());
+		
+		if (channels.isEmpty())
+			return "";
+					
 		List<String> commonValues = new ArrayList<String>();
 		for (String propertyName : getRequiredProperties()) {
 			Collection<String> values = ChannelUtil.getPropValues(channels, propertyName);
