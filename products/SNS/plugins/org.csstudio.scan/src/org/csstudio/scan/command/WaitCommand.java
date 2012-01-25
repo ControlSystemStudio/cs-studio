@@ -19,7 +19,7 @@ import java.io.PrintStream;
 
 import org.w3c.dom.Element;
 
-/** {@link CommandImpl} that delays the scan until a device reaches a certain value
+/** Command that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -30,17 +30,19 @@ public class WaitCommand extends ScanCommand
     {
         new ScanCommandProperty("device_name", "Device Name", String.class),
         new ScanCommandProperty("desired_value", "Desired Value", Double.class),
-        new ScanCommandProperty("tolerance", "Tolerance", Double.class),
+        new ScanCommandProperty("comparison", "Comparison", Comparison.class),
+        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
     };
     
     private String device_name;
     private double desired_value;
     private double tolerance;
+    private Comparison comparison;
 
     /** Initialize empty wait command */
     public WaitCommand()
     {
-        this("device", 0.0, 0.1);
+        this("device", 0.0, Comparison.EQUALS, 0.1);
     }
 
     /** Initialize
@@ -48,11 +50,25 @@ public class WaitCommand extends ScanCommand
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
      */
+    public WaitCommand(final String device_name,
+            final double desired_value, final double tolerance)
+    {
+        this(device_name, desired_value, Comparison.EQUALS, tolerance);
+    }
+
+    /** Initialize
+     *  @param device_name Name of device to check
+     *  @param desired_value Desired value of the device
+     *  @param comparison Comparison to use
+     *  @param tolerance Numeric tolerance when checking value
+     */
 	public WaitCommand(final String device_name,
-	        final double desired_value, final double tolerance)
+	        final double desired_value, final Comparison comparison,
+	        final double tolerance)
     {
         this.device_name = device_name;
         this.desired_value = desired_value;
+	    this.comparison = comparison;
 	    this.tolerance = tolerance;
     }
 
@@ -87,6 +103,18 @@ public class WaitCommand extends ScanCommand
         this.desired_value = desired_value;
     }
 
+    /** @return Desired comparison */
+    public Comparison getComparison()
+    {
+        return comparison;
+    }
+
+    /** @param comparison Desired comparison */
+    public void setComparison(final Comparison comparison)
+    {
+        this.comparison = comparison;
+    }
+
     /** @return Tolerance */
     public double getTolerance()
     {
@@ -106,6 +134,7 @@ public class WaitCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<wait><device>" + device_name + "</device>" +
         		    "<value>" + desired_value + "</value>" +
+                    "<comparison>" + comparison.name() + "</comparison>" +
                     "<tolerance>" + tolerance + "</tolerance>" +
         		    "</wait>");
     }
@@ -116,6 +145,14 @@ public class WaitCommand extends ScanCommand
     {
         setDeviceName(DOMHelper.getSubelementString(element, "device"));
         setDesiredValue(DOMHelper.getSubelementDouble(element, "value"));
+        try
+        {
+            setComparison(Comparison.valueOf(DOMHelper.getSubelementString(element, "comparison")));
+        }
+        catch (Throwable ex)
+        {
+            setComparison(Comparison.EQUALS);
+        }
         setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
     }
     
@@ -123,6 +160,8 @@ public class WaitCommand extends ScanCommand
 	@Override
 	public String toString()
 	{
-	    return "Wait for '" + device_name + "' to reach " + desired_value + " (+-" + tolerance + ")";
+	    if (comparison == Comparison.EQUALS)
+	        return "Wait for '" + device_name + "' " + comparison + " " + desired_value + " (+-" + tolerance + ")";
+        return "Wait for '" + device_name + "' " + comparison + " " + desired_value;
 	}
 }

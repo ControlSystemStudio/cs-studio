@@ -19,7 +19,7 @@ import java.io.PrintStream;
 
 import org.w3c.dom.Element;
 
-/** {@link ScanCommand} that delays the scan for some time
+/** Command that delays the scan for some time
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

@@ -71,7 +71,18 @@ public interface TODO
      *  
      *  Done Load/Save scan as XML
      *  
-     *  TODO Extension point for commands
+     *  Done Extension point for (basic sequential) commands.
+     *       All commands are based on extension points
+     *       for description and implementation.
+     *       Loop has special handling in Scan Tree Editor.
+     *       Addition of an If-Then-Else command would also
+     *       require special handling.
+     *  
+     *  TODO Scan Monitor does not appear "re-connected"
+     *       until a new scan is submitted.
+     *       
+     *  TODO Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
+     *       not just "at" the desired value
      *  
      *  TODO 'Automatically' log values for LoopCommand, SetCommand, ...
      *       Unclear which value to use:
@@ -83,9 +94,6 @@ public interface TODO
      *  TODO Other scan configuration GUIs.
      *       'Spreadsheet' of loop variable, start/end?
      *       Process block GUI?
-     *  
-     *  TODO Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
-     *       not just "at" the desired value
      *  
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.

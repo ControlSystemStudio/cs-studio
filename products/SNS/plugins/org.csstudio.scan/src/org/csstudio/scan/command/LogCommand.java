@@ -22,7 +22,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-/** {@link CommandImpl} that reads data from devices and logs it
+/** Command that reads data from devices and logs it
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")

@@ -19,7 +19,7 @@ import java.io.PrintStream;
 
 import org.w3c.dom.Element;
 
-/** {@link ScanCommand} that sets a device to a value
+/** Command that sets a device to a value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
