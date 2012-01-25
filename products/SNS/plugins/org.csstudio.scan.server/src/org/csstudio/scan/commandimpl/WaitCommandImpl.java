@@ -47,7 +47,8 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         final Device device = context.getDevice(command.getDeviceName());
 
         final DeviceValueCondition condition =
-            new DeviceValueCondition(device, command.getDesiredValue(), command.getTolerance());
+            new DeviceValueCondition(device, command.getComparison(),
+                    command.getDesiredValue(), command.getTolerance());
         condition.await();
         context.workPerformed(1);
     }

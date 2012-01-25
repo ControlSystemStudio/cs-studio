@@ -15,37 +15,87 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
+import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 
-/** Condition that waits for a Device to reach a certain value
+/** Condition that waits for a Device to reach a certain value.
+ * 
+ *  <p>For absolute checks (Comparison.EQUALS, ABOVE, ...) the current
+ *  value of the device is monitored.
+ *  
+ *  <p>For relative checks (INCREASED_BY, DECREASED_BY), the reference
+ *  point is the initial value of the device when await() was called,
+ *  resetting in case the desired value is changed while await() is
+ *  pending.
+ *  
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DeviceValueCondition implements DeviceListener
 {
+    /** Device to monitor */
     final private Device device;
+    
+    /** Comparison */
+    final private Comparison comparison;
+    
+    /** Desired value of device */
     private double desired_value;
+    
+    /** Tolerance to use for Comparison.EQUALS */
     final private double tolerance;
-    private volatile boolean at_desired_value;
+
+    /** Initial value to await Comparison.INCREASE_BY/DECREASE_BY */
+    private volatile double initial_value = Double.NaN;
+    
+    /** Updated by device listener */
+    private volatile boolean is_condition_met;
+    
+    /** Updated by device listener */
     private volatile Exception error = null;
 
+    /** Initialize with zero for tolerance
+     *  @param device {@link Device} where values should be read
+     *  @param comparison Comparison to use
+     *  @param desired_value Desired numeric value of device
+     */
+    public DeviceValueCondition(final Device device, final Comparison comparison, final double desired_value)
+    {
+        this(device, comparison, desired_value, 0.0);
+    }
+    
     /** Initialize
      *  @param device {@link Device} where values should be read
+     *  @param comparison Comparison to use
      *  @param desired_value Desired numeric value of device
      *  @param tolerance Tolerance, e.g. 0.1
      */
-    public DeviceValueCondition(final Device device, final double desired_value, final double tolerance)
+    public DeviceValueCondition(final Device device, final Comparison comparison, final double desired_value, final double tolerance)
     {
         this.device = device;
+        this.comparison = comparison;
         this.tolerance = Math.abs(tolerance);
         setDesiredValue(desired_value);
     }
 
     /** @param desired_value (New) desired value, replacing the one set at initialization time */
     public void setDesiredValue(final double desired_value)
-    {
+    {   // Invalidate initial value
+        initial_value = Double.NaN;
         this.desired_value = desired_value;
+    }
+
+    /** @param value Value that may be <code>null</code>
+     *  @return double or NaN
+     */
+    private double getSafeDouble(final IValue value)
+    {
+        if (value == null)
+            return Double.NaN;
+        return ValueUtil.getDouble(value);
     }
 
     /** Wait for value of device to reach the desired value (within tolerance)
@@ -53,6 +103,9 @@ public class DeviceValueCondition implements DeviceListener
      */
     public void await() throws Exception
     {
+        // Set initial value, if device is connected
+        initial_value = getSafeDouble(device.read());
+        
         device.addListener(this);
         try
         {
@@ -62,8 +115,8 @@ public class DeviceValueCondition implements DeviceListener
             // 3. ... but that's before we call wait, so we wait forever
             synchronized (this)
             {
-                at_desired_value = check();
-                while (! at_desired_value)
+                is_condition_met = isConditionMet();
+                while (! is_condition_met)
                 {   // Wait for update from device
                     wait();
                     if (error != null)
@@ -77,10 +130,33 @@ public class DeviceValueCondition implements DeviceListener
         }
     }
 
-    private boolean check() throws Exception
+    /** Determine if the condition is currently met
+     *  @return <code>true</code> if condition is met
+     *  @throws Exception on error reading from the device
+     */
+    public boolean isConditionMet() throws Exception
     {
-        final double value = ValueUtil.getDouble(device.read());
-        return Math.abs(desired_value - value) <= tolerance;
+        final double value = getSafeDouble(device.read());
+        // Note that these need to fail "safe" if any of the values are NaN
+        switch (comparison)
+        {
+        case EQUALS:
+            return Math.abs(desired_value - value) <= tolerance;
+        case AT_LEAST:
+            return value >= desired_value;
+        case ABOVE:
+            return value > desired_value;
+        case AT_MOST:
+            return value <= desired_value;
+        case BELOW:
+            return value < desired_value;
+        case INCREASE_BY:
+            return value >= initial_value + desired_value;
+        case DECREASE_BY:
+            return value <= initial_value - desired_value;
+        default:
+            throw new Error("Condition not implemented: " + comparison);
+        }
     }
 
     /** Trigger another check of device's value
@@ -93,11 +169,13 @@ public class DeviceValueCondition implements DeviceListener
         {
             try
             {
-                at_desired_value = check();
+                if (Double.isNaN(initial_value))
+                    initial_value = getSafeDouble(device.read());
+                is_condition_met = isConditionMet();
             }
             catch (Exception ex)
             {
-                at_desired_value = false;
+                is_condition_met = false;
                 error = ex;
             }
             // Notify await() so it can check again.

@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.junit.Assert.*;
+
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
@@ -26,7 +29,7 @@ import org.junit.Test;
 public class DeviceValueConditionHeadlessTest
 {
     @Test(timeout=5000)
-    public void testPVDevice() throws Exception
+    public void testEqualsConditionWithRampPV() throws Exception
     {
         // Device with local PV, updated by test
         final PVDevice device = new PVDevice("demo", "loc://my_pv");
@@ -58,7 +61,8 @@ public class DeviceValueConditionHeadlessTest
         ramp.start();
 
         // Wait for values on ramp
-        final DeviceValueCondition condition = new DeviceValueCondition(device, 3.0, 0.5);
+        final DeviceValueCondition condition =
+                new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.5);
         condition.await();
         System.out.println("Value reached 3!");
 
@@ -71,7 +75,114 @@ public class DeviceValueConditionHeadlessTest
 
         System.out.println("Checking for value that is already close to 2, i.e. possibly no updates");
         condition.setDesiredValue(2.0);
+        assertTrue(condition.isConditionMet());
         condition.await();
+
+        ramp.join();
+        device.stop();
+    }
+    
+    
+    @Test(timeout=5000)
+    public void testStaticConditions() throws Exception
+    {
+        // Device with local PV, updated by test
+        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        device.start();
+        device.write(1.0);
+
+        // EQUALS
+        {
+            final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001);
+            assertFalse(equals.isConditionMet());
+            device.write(2.0);
+            assertTrue(equals.isConditionMet());
+            
+            equals.setDesiredValue(3.0);
+            assertFalse(equals.isConditionMet());
+            device.write(3.0);
+            assertTrue(equals.isConditionMet());
+        }
+        
+        // AT_LEAST
+        {
+            device.write(0.0);
+            final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0);
+            assertFalse(above.isConditionMet());
+            device.write(1.0);
+            assertFalse(above.isConditionMet());
+            device.write(2.0);
+            assertTrue(above.isConditionMet()); // 2 >= 2
+            
+            above.setDesiredValue(3.0);
+            assertFalse(above.isConditionMet());
+            device.write(3.0);
+            assertTrue(above.isConditionMet());
+            device.write(4.0);
+            assertTrue(above.isConditionMet());
+        }
+
+        // BELOW
+        {
+            device.write(4.0);
+            final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0);
+            assertFalse(below.isConditionMet());
+            device.write(2.0);
+            assertFalse(below.isConditionMet()); // ! (2.0 < 2.0)
+            device.write(1.8);
+            assertTrue(below.isConditionMet());
+            
+            below.setDesiredValue(1.5);
+            assertFalse(below.isConditionMet());
+            device.write(1.0);
+            assertTrue(below.isConditionMet());
+            device.write(-4.0);
+            assertTrue(below.isConditionMet());
+        }
+        
+        device.stop();
+    }
+    
+    
+    @Test(timeout=5000)
+    public void testIncreasedByConditionWithRampPV() throws Exception
+    {
+        // Device with local PV, updated by test
+        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        device.start();
+        device.write(1.0);
+
+        // Thread that ramps PV from 1 to 5
+        final Thread ramp = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    for (int i=1; i<=5; ++i)
+                    {
+                        Thread.sleep(500l);
+                        System.out.println("Setting value to " + i);
+                        device.write(Double.valueOf(i));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+
+        }, "RampValues");
+        ramp.start();
+
+        // Wait for values on ramp
+        final DeviceValueCondition condition =
+                new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0);
+        assertFalse(condition.isConditionMet());
+        System.out.println("Initial value: " + device.read());
+        condition.await();
+        System.out.println("Value increased by 3!");
 
         ramp.join();
         device.stop();

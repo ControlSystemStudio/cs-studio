@@ -81,7 +81,7 @@ public interface TODO
      *  TODO Scan Monitor does not appear "re-connected"
      *       until a new scan is submitted.
      *       
-     *  TODO Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
+     *  Done Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
      *       not just "at" the desired value
      *  
      *  TODO 'Automatically' log values for LoopCommand, SetCommand, ...

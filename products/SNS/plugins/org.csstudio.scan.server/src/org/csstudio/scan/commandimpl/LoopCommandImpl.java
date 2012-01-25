@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
@@ -66,7 +67,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	{
 		final Device device = context.getDevice(command.getDeviceName());
         final DeviceValueCondition reach_value =
-                new DeviceValueCondition(device, command.getStart(), command.getStepSize()/10.0);
+                new DeviceValueCondition(device, Comparison.EQUALS,
+                        command.getStart(), command.getStepSize()/10.0);
 
 		Logger.getLogger(getClass().getName()).log(Level.FINE,
 				"Loop: {0} = {1} .. {2}, stepping {3}",

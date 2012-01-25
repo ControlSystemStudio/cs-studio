@@ -21,12 +21,27 @@ package org.csstudio.scan.command;
 @SuppressWarnings("nls")
 public enum Comparison
 {
+    /** Value is at desired value, within tolerance */
     EQUALS("="),
+
+    /** Value above desired value, '>' */
     ABOVE(">"),
+
+    /** Value at or above desired value, '>=' */
+    AT_LEAST(">="),
+
+    /** Value below desired value, '<' */
     BELOW("<"),
+
+    /** Value at or below desired value, '<=' */
+    AT_MOST("<="),
+
+    /** Value has increased by some amount */
     INCREASE_BY("to increase by"),
+
+    /** Value has decreased by some amount */
     DECREASE_BY("to decrease by");
-    
+
     final private String label;
 
     /** Initialize
@@ -36,7 +51,7 @@ public enum Comparison
     {
         this.label = label;
     }
-    
+
     /** @return Label, i.e. text representation meant for GUI
      *  @see #name()
      */

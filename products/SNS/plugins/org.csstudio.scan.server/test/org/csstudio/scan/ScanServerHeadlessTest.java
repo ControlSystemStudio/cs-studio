@@ -24,6 +24,7 @@ import java.rmi.registry.Registry;
 import java.util.List;
 
 import org.csstudio.scan.command.CommandSequence;
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
@@ -111,7 +112,7 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
-            new DeviceValueCondition(pv, 5.0, 0.1).await();
+            new DeviceValueCondition(pv, Comparison.EQUALS, 5.0, 0.1).await();
 
 
             // Submit scan again, and pause it early on

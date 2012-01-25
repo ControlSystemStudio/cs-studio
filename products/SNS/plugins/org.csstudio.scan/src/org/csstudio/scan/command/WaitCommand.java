@@ -29,8 +29,8 @@ public class WaitCommand extends ScanCommand
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
         new ScanCommandProperty("device_name", "Device Name", String.class),
-        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
         new ScanCommandProperty("comparison", "Comparison", Comparison.class),
+        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
         new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
     };
     
@@ -42,10 +42,10 @@ public class WaitCommand extends ScanCommand
     /** Initialize empty wait command */
     public WaitCommand()
     {
-        this("device", 0.0, Comparison.EQUALS, 0.1);
+        this("device", Comparison.EQUALS, 0.0, 0.1);
     }
 
-    /** Initialize
+    /** Initialize for 'equals'
      *  @param device_name Name of device to check
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
@@ -53,17 +53,17 @@ public class WaitCommand extends ScanCommand
     public WaitCommand(final String device_name,
             final double desired_value, final double tolerance)
     {
-        this(device_name, desired_value, Comparison.EQUALS, tolerance);
+        this(device_name, Comparison.EQUALS, desired_value, tolerance);
     }
 
     /** Initialize
      *  @param device_name Name of device to check
-     *  @param desired_value Desired value of the device
      *  @param comparison Comparison to use
+     *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
      */
 	public WaitCommand(final String device_name,
-	        final double desired_value, final Comparison comparison,
+	        final Comparison comparison, final double desired_value,
 	        final double tolerance)
     {
         this.device_name = device_name;
