@@ -20,11 +20,14 @@ public abstract class ChannelSelectionNotification {
 		@Override
 		public void selectionChanged(SelectionChangedEvent event) {
 			if (event.getSelection() instanceof IStructuredSelection) {
-				String notificationString = notificationFor(((IStructuredSelection) event.getSelection()).getFirstElement());
-				if (notificationString != null) {
-					notification.write(notificationString);
-				} else {
-					notification.write(notificationString);
+				Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
+				if (element != null) {
+					String notificationString = notificationFor(element);
+					if (notificationString != null) {
+						notification.write(notificationString);
+					} else {
+						notification.write("");
+					}
 				}
 			} else {
 				notification.write("");
