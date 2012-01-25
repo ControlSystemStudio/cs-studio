@@ -36,12 +36,18 @@ public class CommandXMLHeadlessTest
 {
     private static String xml;
     
+    // Static method to write static member to please FindBugs
+    private static void storeXML(final String xml)
+    {
+        CommandXMLHeadlessTest.xml = xml;
+    }
+    
     @Test
     public void testWriteXML() throws Exception
     {
         final List<ScanCommand> commands = DemoCommands.createDemoCommands();
         
-        xml = XMLCommandWriter.toXMLString(commands);
+        storeXML(XMLCommandWriter.toXMLString(commands));
         System.out.println(xml);
         assertTrue(xml.startsWith("<?xml"));
         assertTrue(xml.contains("<commands>"));
