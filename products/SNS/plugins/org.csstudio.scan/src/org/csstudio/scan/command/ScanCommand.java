@@ -35,11 +35,11 @@ import org.w3c.dom.Element;
  *  
  *  <p>Supported property types:
  *  <ul>
- *  <li><code>Double</code>
- *  <li><code>String</code>
- *  <li><code>String[]</code>
- *  <li><code>Object</code> - Will be edited as String,
- *                            and if possible converted to Double
+ *  <li><code>Double</code> - Edited as number "5", "1e-20" etc.
+ *  <li><code>String</code> - Edited as text
+ *  <li><code>String[]</code> - Edited as comma-separated list of strings
+ *  <li><code>Enum</code> - Allows selection among the <code>toString()</code> values of the Enum
+ *  <li><code>Object</code> - Edited as String, and if possible converted to Double
  *  </ul>
  *  @author Kay Kasemir
  */

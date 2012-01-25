@@ -35,6 +35,7 @@ public class GenericCommandAdapter implements IPropertySource
      *  @param command {@link ScanCommand}
      *  @throws Exception if command cannot be adapted
      */
+    @SuppressWarnings("unchecked")
     public GenericCommandAdapter(final ScanEditor editor, final ScanCommand command) throws Exception
     {
         this.editor = editor;
@@ -59,6 +60,8 @@ public class GenericCommandAdapter implements IPropertySource
                 descriptors[i] = new StringOrDoublePropertyDescriptor(id, name);
             else if (property.getType() == String[].class)
                 descriptors[i] = new StringArrayPropertyDescriptor(id, name);
+            else if (property.getType().isEnum())
+                descriptors[i] = new EnumPropertyDescriptor(id, name, (Class<? extends Enum<?>>) property.getType());
             else
                 throw new Exception(command.getClass().getName()
                         + ", Property '" + id
