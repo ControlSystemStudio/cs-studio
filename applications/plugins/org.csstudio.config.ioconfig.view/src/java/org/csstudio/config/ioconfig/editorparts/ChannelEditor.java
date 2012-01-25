@@ -88,11 +88,11 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
 
         public void setChannelName(@Nonnull final ChannelDBO channel,
                                    @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-            if (moduleChannelPrototype.getType() != channel.getChannelStructure()
+            if (moduleChannelPrototype.getType() != channel.getParent()
                     .getStructureType()) {
-                channel.getChannelStructure()
+                channel.getParent()
                 .setStructureType(moduleChannelPrototype.getType());
-                if (channel.getChannelStructure().isSimple()) {
+                if (channel.getParent().isSimple()) {
                     channel.setChannelType(moduleChannelPrototype.getType());
                 }
             }
@@ -130,7 +130,7 @@ public class ChannelEditor extends AbstractNodeEditor<ChannelDBO> {
                     .toArray(new ModuleChannelPrototypeDBO[0]);
                 final ModuleChannelPrototypeDBO moduleChannelPrototype =
                     array[channel
-                          .getChannelStructure()
+                          .getParent()
                           .getSortIndex()];
                 channel.setStatusAddressOffset(moduleChannelPrototype.getShift());
                 channel.setChannelNumber(moduleChannelPrototype.getOffset());

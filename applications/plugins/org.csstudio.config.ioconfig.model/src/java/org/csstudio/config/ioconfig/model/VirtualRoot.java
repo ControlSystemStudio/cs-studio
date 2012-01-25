@@ -29,15 +29,16 @@ import javax.annotation.Nullable;
 
 
 /**
- * Virtual Root 
- * 
+ * Virtual Root
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 11.05.2011
  */
+
 public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, FacilityDBO> {
-    
+
     private static final long serialVersionUID = -296484498706601307L;
 
     private static final VirtualRoot INSTANCE = new VirtualRoot();
@@ -47,7 +48,7 @@ public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, Facil
     private VirtualRoot() {
         // Don't instantiate
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -56,7 +57,7 @@ public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, Facil
     public VirtualRoot getParent() {
         throw new UnsupportedOperationException(VirtualRoot.class + " does not feature a parent node.");
     }
-    
+
     /**
      * have no nodeType
      */
@@ -65,7 +66,7 @@ public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, Facil
     public NodeType getNodeType() {
         return null;
     }
-    
+
     @Override
     @CheckForNull
     protected VirtualRoot copyParameter(@Nullable final VirtualRoot parent) throws PersistenceException {
@@ -80,12 +81,12 @@ public final class VirtualRoot extends AbstractNodeSharedImpl<VirtualRoot, Facil
     public FacilityDBO createChild() throws PersistenceException {
         return new FacilityDBO();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {
         visitor.visit(this);
-    }    
+    }
 }

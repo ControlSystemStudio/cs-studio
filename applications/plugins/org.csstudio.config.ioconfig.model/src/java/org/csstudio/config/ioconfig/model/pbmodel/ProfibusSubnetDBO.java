@@ -87,6 +87,13 @@ public class ProfibusSubnetDBO extends AbstractNodeSharedImpl<IocDBO, MasterDBO>
         super(ioc);
     }
 
+    @Override
+    @Nonnull
+    @Transient
+    public IocDBO getParent() {
+        return super.getParent();
+    }
+
     @CheckForNull
     public String getBaudRate() {
         return _baudRate;

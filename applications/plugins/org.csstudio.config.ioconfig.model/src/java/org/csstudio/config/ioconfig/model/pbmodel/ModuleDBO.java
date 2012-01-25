@@ -87,6 +87,13 @@ INodeWithPrototype {
         slave.addChild(this);
     }
 
+    @Override
+    @Nonnull
+    @Transient
+    public SlaveDBO getParent() {
+        return super.getParent();
+    }
+
     /**
      * {@inheritDoc}
      */

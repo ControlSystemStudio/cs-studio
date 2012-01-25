@@ -31,17 +31,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
 import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
-import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -85,7 +84,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
      */
     protected AbstractHibernateManager() {
         super();
-        CLASSES.add(VirtualRoot.class);
+//        CLASSES.add(VirtualRoot.class);
         CLASSES.add(NodeImageDBO.class);
         CLASSES.add(ChannelDBO.class);
         CLASSES.add(ChannelStructureDBO.class);

@@ -30,10 +30,10 @@ import javax.annotation.Nonnull;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
- * 
+ *
  * Calculate the EPICS Address String for a Channel.
  * The ChannelType and the StatusAddressOffset was set when it changed.
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
@@ -41,7 +41,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
  */
 public final class EpicsAddressStringBuilder {
 
-    
+
     private final ChannelDBO _channelDBO;
 
     /**
@@ -50,7 +50,7 @@ public final class EpicsAddressStringBuilder {
     public EpicsAddressStringBuilder(@Nonnull final ChannelDBO channelDBO) {
         _channelDBO = channelDBO;
     }
-    
+
     /**
      * Calculate the EPICS Address String for a Channel.
      * The ChannelType and the StatusAddressOffset of the channel was <b>set</b> when it changed!
@@ -68,7 +68,7 @@ public final class EpicsAddressStringBuilder {
         sb.append("'");
         return sb.toString();
     }
-    
+
     private void assembleEpicsAddressType(@Nonnull final StringBuilder sb) throws PersistenceException {
         sb.append(" 'T=");
         final GSDModuleDBO gsdModule = _channelDBO.getModule().getGSDModule();
@@ -89,9 +89,9 @@ public final class EpicsAddressStringBuilder {
             }
         }
     }
-    
+
     private void setChannelType(@Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) throws PersistenceException {
-        if (_channelDBO.getChannelStructure().isSimple()) {
+        if (_channelDBO.getParent().isSimple()) {
             _channelDBO.setChannelTypeNonHibernate(moduleChannelPrototype.getType());
         } else {
             _channelDBO.setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
@@ -105,30 +105,30 @@ public final class EpicsAddressStringBuilder {
             sb.append(",O=" + byteOrdering);
         }
     }
-    
+
     private void appendDataType(@Nonnull final StringBuilder sb,
                                 @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
-        if (_channelDBO.getChannelType() == DataType.BIT && !_channelDBO.getChannelStructure().isSimple()) {
-            sb.append(_channelDBO.getChannelStructure().getStructureType().getType());
+        if (_channelDBO.getChannelType() == DataType.BIT && !_channelDBO.getParent().isSimple()) {
+            sb.append(_channelDBO.getParent().getStructureType().getType());
             sb.append(_channelDBO.getBitPostion());
         } else {
             sb.append(moduleChannelPrototype.getType().getType());
         }
     }
-    
+
     private void appendMaximum(@Nonnull final StringBuilder sb,
                                @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if (moduleChannelPrototype.getMaximum() != null) {
             sb.append(",H=" + moduleChannelPrototype.getMaximum());
         }
     }
-    
+
     private void appendMinimum(@Nonnull final StringBuilder sb,
                                @Nonnull final ModuleChannelPrototypeDBO moduleChannelPrototype) {
         if (moduleChannelPrototype.getMinimum() != null) {
             sb.append(",L=" + moduleChannelPrototype.getMinimum());
         }
     }
-    
-    
+
+
 }

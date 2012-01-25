@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -134,7 +133,7 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
             LOG.warn("", e);
             setEpicsAddressString("");
         }
-        setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
+        setDirty(isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString()));
     }
 
     /**
@@ -163,7 +162,7 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
                     .getModuleChannelPrototypeNH();
             final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
                     .toArray(new ModuleChannelPrototypeDBO[0]);
-            final Short sortIndex = getChannelStructure().getSortIndex();
+            final Short sortIndex = getParent().getSortIndex();
             final ModuleChannelPrototypeDBO moduleChannelPrototype = array[sortIndex];
             setStatusAddressOffset(moduleChannelPrototype.getShift());
             setChannelNumber(moduleChannelPrototype.getOffset());
@@ -215,12 +214,22 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
     }
 
     /**
-     * @return the parent {@link ChannelStructureDBO}.
+     * {@inheritDoc}
      */
-    @ManyToOne
+    @Override
     @Nonnull
-    public ChannelStructureDBO getChannelStructure() {
-        return getParent();
+    @Transient
+    public ChannelStructureDBO getParent() {
+        return super.getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public void setParent(@Nonnull final ChannelStructureDBO parent) {
+        super.setParent(parent);
     }
 
     /**
@@ -272,7 +281,7 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
     @Transient
     @CheckForNull
     public GSDFileDBO getGSDFile() {
-        return getChannelStructure().getModule().getGSDFile();
+        return getModule().getGSDFile();
     }
 
     /**
@@ -290,13 +299,13 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
     @Transient
     @Nonnull
     public ModuleDBO getModule() {
-        return getChannelStructure().getModule();
+        return getParent().getModule();
     }
 
     public int getNextFreeChannelNumberFromParent(final int channelNumber) {
         int cNumber = channelNumber;
         if (channelNumber > 0) {
-            final SortedMap<Short, ChannelDBO> headMap = getChannelStructure().getChildrenAsMap()
+            final SortedMap<Short, ChannelDBO> headMap = getParent().getChildrenAsMap()
                     .headMap(getSortIndex());
             if (!headMap.isEmpty()) {
                 final ChannelDBO channel = headMap.get(headMap.lastKey());

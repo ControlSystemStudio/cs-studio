@@ -168,4 +168,13 @@ public class DummyRepository implements IRepository {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nonnull final Collection<String> ioNames) throws PersistenceException {
+        return null;
+    }
+
 }

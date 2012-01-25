@@ -61,6 +61,12 @@ public class FacilityDBO extends AbstractNodeSharedImpl<VirtualRoot, IocDBO> {
         return copy;
     }
 
+    @Transient
+    @Override
+    public VirtualRoot getParent() {
+        return super.getParent();
+    }
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException

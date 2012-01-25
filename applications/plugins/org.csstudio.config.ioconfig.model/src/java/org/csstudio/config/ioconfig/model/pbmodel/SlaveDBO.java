@@ -57,6 +57,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Slave")
+//@SecondaryTable(name="nodeDB", pkJoinColumns = @)
 public class SlaveDBO extends AbstractNodeSharedImpl<MasterDBO, ModuleDBO> {
 
     private static final Logger LOG = LoggerFactory.getLogger(SlaveDBO.class);
@@ -120,6 +121,13 @@ public class SlaveDBO extends AbstractNodeSharedImpl<MasterDBO, ModuleDBO> {
     private SlaveDBO(@Nonnull final MasterDBO master, final int stationAddress) throws PersistenceException {
         super(master);
         moveSortIndex(stationAddress);
+    }
+
+    @Override
+    @Nonnull
+    @Transient
+    public MasterDBO getParent() {
+        return super.getParent();
     }
 
     // CHECKSTYLE OFF: StrictDuplicateCode
@@ -361,7 +369,7 @@ public class SlaveDBO extends AbstractNodeSharedImpl<MasterDBO, ModuleDBO> {
         // Move a exist Node
         final SlaveDBO moveNode = getParent().getChildrenAsMap().get(index);
         if(moveNode != null) {
-            moveNode.moveSortIndex( (index + 1));
+            moveNode.moveSortIndex( index + 1);
         }
         setSortIndexNonHibernate(index);
     }

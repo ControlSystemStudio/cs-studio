@@ -152,6 +152,13 @@ public class MasterDBO extends AbstractNodeSharedImpl<ProfibusSubnetDBO, SlaveDB
         super(profibusSubnet);
     }
 
+    @Override
+    @Nonnull
+    @Transient
+    public ProfibusSubnetDBO getParent() {
+        return super.getParent();
+    }
+
     // CHECKSTYLE OFF: StrictDuplicateCode
     @Override
     public void accept(@Nonnull final INodeVisitor visitor) {

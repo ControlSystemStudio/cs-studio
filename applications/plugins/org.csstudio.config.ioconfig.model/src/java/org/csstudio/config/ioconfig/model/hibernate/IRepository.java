@@ -185,6 +185,12 @@ public interface IRepository {
      */
     @Nonnull
     List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable Collection<String> pvName) throws PersistenceException;
+    /**
+     * @param pvName
+     * @return
+     */
+    @Nonnull
+    List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nullable Collection<String> ioNames) throws PersistenceException;
 
     /**
      * Close all resources that the Repository need.

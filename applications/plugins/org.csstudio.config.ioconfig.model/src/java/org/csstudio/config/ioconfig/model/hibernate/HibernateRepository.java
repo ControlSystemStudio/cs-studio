@@ -12,16 +12,20 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
+import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -37,6 +41,101 @@ import org.slf4j.LoggerFactory;
  * @since 03.06.2009
  */
 public class HibernateRepository implements IRepository {
+
+    /**
+     * @author hrickens
+     * @since 24.01.2012
+     */
+    private final class LoadChannelHibernateCallback implements IHibernateCallback {
+        private final String _ioName;
+
+        /**
+         * Constructor.
+         * @param ioName
+         */
+        protected LoadChannelHibernateCallback(@Nonnull final String ioName) {
+            _ioName = ioName;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        @CheckForNull
+        public ChannelDBO execute(@Nonnull final Session session) {
+            if (_ioName == null) {
+                return null;
+            }
+            ChannelDBO channel;
+            if(true) {
+                channel = useTreeWalkWay(session);
+            } else {
+                /* TODO (hrickens)[25.01.2012]: Das ist der gewünschte Weg. Funktioniert leider
+                 * nicht da Hibernate mit der Momentanen konfiguration mit den Genarics nicht
+                 * zurecht kommt. Es gibt vieleicht eine Möglichkeit die Funktioniert die aber eine
+                 * Konfiguration über XML und Subclasses ntig macht.
+                 * (siehe z.b.
+                 *      Buch: Hibernate Das Praxisbuch für Entwickler /s.260 Mappping-Beispiele)
+                 */
+                channel = useRegularWay(session);
+            }
+            return channel;
+        }
+
+        @CheckForNull
+        private ChannelDBO useRegularWay(@Nonnull final Session session) {
+            final Query createQuery = session.createQuery("select c from "
+                    + ChannelDBO.class.getName() + " c where c.ioName like ?");
+            createQuery.setString(0, _ioName);
+            final ChannelDBO nodes = (ChannelDBO) createQuery.uniqueResult();
+            return nodes;
+        }
+
+        @CheckForNull
+        private ChannelDBO useTreeWalkWay(@Nonnull final Session session) {
+
+            final ArrayList<BigDecimal> ids = climbTreeUp(_ioName, session);
+            ChannelDBO channel = null;
+            AbstractNodeSharedImpl<?,?> nodeImpl = null;
+            if (ids.size() == 7) {
+                final BigDecimal remove = ids.remove(6);
+                final Query createQuery = session.createQuery(String
+                        .format("select f from %s f where f.id = '%d'",
+                                FacilityDBO.class.getName(),
+                                remove.intValue()));
+                try {
+                    nodeImpl = (AbstractNodeSharedImpl<?,?>) createQuery.uniqueResult();
+                    channel = climbeTreeDown2Channel(nodeImpl, ids, _ioName);
+                } catch (final ObjectNotFoundException e) {
+                    LOG.debug("Query: Object not found = " + createQuery.getQueryString());
+                    channel = null;
+                }
+            }
+            return channel;
+        }
+
+        @Nonnull
+        private ArrayList<BigDecimal> climbTreeUp(@Nonnull final String ioName,
+                                 @Nonnull final Session session) {
+            final ArrayList<BigDecimal> ids = new ArrayList<BigDecimal>();
+            SQLQuery createSQLQuery = session.createSQLQuery(String.format("select n.parent_id from DDB_PROFIBUS_Channel c, DDB_NODE n where c.ioName like '%s' AND c.id = n.id",ioName));
+            Object uniqueResult = createSQLQuery.uniqueResult();
+            if (uniqueResult instanceof BigDecimal) {
+                BigDecimal parentId = (BigDecimal) uniqueResult;
+                ids.add(parentId);
+                while(parentId!=null) {
+                    createSQLQuery = session.createSQLQuery(String.format("select n.parent_id from DDB_NODE n where n.id = '%d'",parentId.intValue()));
+                    uniqueResult = createSQLQuery.uniqueResult();
+                    if (uniqueResult instanceof BigDecimal) {
+                        parentId = (BigDecimal) uniqueResult;
+                        ids.add(parentId);
+                    } else {
+                        parentId = null;
+                    }
+                }
+
+            }
+            return ids;
+        }
+    }
 
     /**
      * @author hrickens
@@ -97,6 +196,40 @@ public class HibernateRepository implements IRepository {
         } else {
             _instance = HibernateManager.getInstance();
         }
+    }
+
+    @CheckForNull
+    public final ChannelDBO climbeTreeDown2Channel(@SuppressWarnings("rawtypes") @Nonnull final AbstractNodeSharedImpl parentNode,
+                                             @Nonnull final List<BigDecimal> ids, @Nonnull final String ioName) {
+        ChannelDBO channel = null;
+        if(ids.isEmpty()) {
+            if (parentNode instanceof ChannelStructureDBO) {
+                final ChannelStructureDBO parent = (ChannelStructureDBO) parentNode;
+                channel = getChannelWithIOName(parent.getChildren(), ioName);
+            }
+        } else {
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            final Set<AbstractNodeSharedImpl> nodes = parentNode.getChildren();
+            final BigDecimal remove = ids.remove(ids.size() - 1);
+            for (@SuppressWarnings("rawtypes") final AbstractNodeSharedImpl node : nodes) {
+                if (node.getId() == remove.intValue()) {
+                    channel = climbeTreeDown2Channel(node, ids, ioName);
+                }
+            }
+        }
+        return channel;
+    }
+
+    @CheckForNull
+    private ChannelDBO getChannelWithIOName(@Nonnull final Set<ChannelDBO> nodes,
+                                            @Nonnull final String ioName) {
+        ChannelDBO channel = null;
+        for (final ChannelDBO node : nodes) {
+            if (node.getIoName().equals(ioName)) {
+                channel = node;
+            }
+        }
+        return channel;
     }
 
     @Override
@@ -273,21 +406,7 @@ public class HibernateRepository implements IRepository {
     @Override
     @CheckForNull
     public final ChannelDBO loadChannel(@Nullable final String ioName) throws PersistenceException {
-        final IHibernateCallback hibernateCallback = new IHibernateCallback() {
-            @SuppressWarnings("unchecked")
-            @Override
-            @CheckForNull
-            public ChannelDBO execute(@Nonnull final Session session) {
-                if (ioName == null) {
-                    return null;
-                }
-                final Query createQuery = session.createQuery("select c from "
-                        + ChannelDBO.class.getName() + " c where c.ioName like ?");
-                createQuery.setString(0, ioName);
-                final ChannelDBO nodes = (ChannelDBO) createQuery.uniqueResult();
-                return nodes;
-            }
-        };
+        final IHibernateCallback hibernateCallback = new LoadChannelHibernateCallback(ioName);
         return _instance.doInDevDBHibernateLazy(hibernateCallback);
     }
 
@@ -303,7 +422,8 @@ public class HibernateRepository implements IRepository {
                     return null;
                 }
                 final Query createQuery = session.createQuery("select c from "
-                        + ChannelDBO.class.getName() + " c where c.intern_id like ?");
+//                        + ChannelDBO.class.getName() + " c where c.intern_id like ?");
+                        + ChannelDBO.class.getName() + " c where c.intern_id = ?");
                 createQuery.setString(0, internId);
                 final ChannelDBO nodes = (ChannelDBO) createQuery.uniqueResult();
                 return nodes;
@@ -354,6 +474,38 @@ public class HibernateRepository implements IRepository {
                         statement.append(" OR ");
                     }
                     statement.append(String.format("pv.epicsName = '%s'", string));
+                    notFirst = true;
+                }
+                final Query createQuery = session.createQuery(statement.toString());
+                final List<PV2IONameMatcherModelDBO> list = createQuery.list();
+                return list;
+            }
+        };
+        return _instance.doInDevDBHibernateEager(hibernateCallback);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public final List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nullable final Collection<String> ioName) throws PersistenceException {
+        final IHibernateCallback hibernateCallback = new IHibernateCallback() {
+            @SuppressWarnings("unchecked")
+            @Override
+            @CheckForNull
+            public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
+                if (ioName == null || ioName.isEmpty()) {
+                    return null;
+                }
+                final StringBuilder statement = new StringBuilder("select pv from ")
+                .append(PV2IONameMatcherModelDBO.class.getName()).append(" pv where ");
+                boolean notFirst = false;
+                for (final String string : ioName) {
+                    if (notFirst) {
+                        statement.append(" OR ");
+                    }
+                    statement.append(String.format("pv.ioName = '%s'", string));
                     notFirst = true;
                 }
                 return session.createQuery(statement.toString()).list();

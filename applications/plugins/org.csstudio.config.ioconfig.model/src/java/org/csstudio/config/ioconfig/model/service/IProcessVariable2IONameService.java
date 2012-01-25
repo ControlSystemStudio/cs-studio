@@ -39,10 +39,16 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 public interface IProcessVariable2IONameService {
 
     @CheckForNull
-    String getIOName(@Nonnull final String pvName);
+    String getIOName(@Nonnull final String pvName) throws PersistenceException;
 
     @CheckForNull
     INode getNode(@Nonnull final String pvName) throws PersistenceException;
+
+    @Nonnull
+    Map<String, String> getPVNames(@Nonnull final Collection<String> ioNames) throws PersistenceException;
+
+    @CheckForNull
+    String getPVName(@Nonnull final String ioName) throws PersistenceException;
 
     @Nonnull
     Map<String, INode> getNodes(@Nonnull final Collection<String> pvName) throws PersistenceException, NodeNotFoundException;

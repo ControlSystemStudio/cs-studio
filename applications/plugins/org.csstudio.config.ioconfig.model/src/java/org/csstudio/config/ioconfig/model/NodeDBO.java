@@ -46,6 +46,7 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Parent;
 
 /**
  *
@@ -62,7 +63,7 @@ import org.hibernate.annotations.Cascade;
 public class NodeDBO<P extends NodeDBO, C extends NodeDBO> extends NamedDBClass implements
         Comparable<NodeDBO<P, C>>, IDocumentable, Serializable {
     private static final long serialVersionUID = 1L;
-    @Transient
+    @Parent
     private P _parent;
     private Set<C> _children = new HashSet<C>();
     private String _description;
@@ -156,7 +157,7 @@ public class NodeDBO<P extends NodeDBO, C extends NodeDBO> extends NamedDBClass 
         this._documents.add(document);
     }
 
-    @Column(name = "INTERN_ID", nullable = false, length = 20)
+    @Column(name = "INTERN_ID", nullable = true, length = 20)
     @CheckForNull
     public String getKrykNo() {
         return _krykNo;
@@ -172,7 +173,7 @@ public class NodeDBO<P extends NodeDBO, C extends NodeDBO> extends NamedDBClass 
         _krykNo = krykNo;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @Nonnull
     public P getParent() {
         return _parent;
@@ -207,11 +208,9 @@ public class NodeDBO<P extends NodeDBO, C extends NodeDBO> extends NamedDBClass 
         this._description = description;
     }
 
-    @SuppressWarnings("deprecation")
     @OneToMany(mappedBy = "parent", targetEntity = NodeDBO.class, fetch = FetchType.LAZY, cascade = {
-            CascadeType.PERSIST, CascadeType.MERGE })
-    @Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-            org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+            CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval=true)
+    @Cascade( org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     @Nonnull
     public Set<C> getChildren() {
         return _children;

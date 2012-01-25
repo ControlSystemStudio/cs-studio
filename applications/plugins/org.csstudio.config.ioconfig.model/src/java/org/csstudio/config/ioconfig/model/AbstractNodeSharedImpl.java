@@ -88,6 +88,14 @@ public abstract class AbstractNodeSharedImpl<P extends NodeDBO, C extends NodeDB
         return (INode) getParent();
     }
 
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public P getParent() {
+//        return super.getParent();
+//    }
+
     /**
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.

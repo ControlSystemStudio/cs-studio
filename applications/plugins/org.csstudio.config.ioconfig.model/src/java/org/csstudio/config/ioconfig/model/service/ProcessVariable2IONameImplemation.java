@@ -49,25 +49,36 @@ public class ProcessVariable2IONameImplemation implements IProcessVariable2IONam
 
     private static final Logger LOG = LoggerFactory
             .getLogger(ProcessVariable2IONameImplemation.class);
-    
+
     /**
      * {@inheritDoc}
+     * @throws PersistenceException
      */
     @Override
     @CheckForNull
-    public String getIOName(@Nonnull final String internId) {
-        return null;
+    public String getIOName(@Nonnull final String pvName) throws PersistenceException {
+        final ArrayList<String> pvNames = new ArrayList<String>();
+        pvNames.add(pvName);
+        final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(pvNames);
+        String ioName = null;
+        if(pv2ioNameMatchers!=null&&pv2ioNameMatchers.size()>0) {
+            final PV2IONameMatcherModelDBO pv2ioNameMatcherModelDBO = pv2ioNameMatchers.get(0);
+            if(pv2ioNameMatcherModelDBO!=null) {
+                ioName = pv2ioNameMatcherModelDBO.getIoName();
+            }
+        }
+        return ioName;
     }
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     @Override
     @CheckForNull
-    public INode getNode(@Nonnull final String internId) throws PersistenceException {
+    public INode getNode(@Nonnull final String pvName) throws PersistenceException {
         final ArrayList<String> list = new ArrayList<String>();
-        list.add(internId);
+        list.add(pvName);
         final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(list);
         if(pv2ioNameMatchers!=null) {
             for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
@@ -85,14 +96,14 @@ public class ProcessVariable2IONameImplemation implements IProcessVariable2IONam
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException 
-     * @throws NodeNotFoundException 
+     * @throws PersistenceException
+     * @throws NodeNotFoundException
      */
     @Override
     @Nonnull
-    public Map<String, INode> getNodes(@Nonnull final Collection<String> internId) throws PersistenceException, NodeNotFoundException {
+    public Map<String, INode> getNodes(@Nonnull final Collection<String> pvName) throws PersistenceException, NodeNotFoundException {
         final Map<String, INode> nodes = new HashMap<String, INode>();
-        final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(internId);
+        final List<PV2IONameMatcherModelDBO> pv2ioNameMatchers = getPV2IONameMatchers(pvName);
         if (pv2ioNameMatchers != null && !pv2ioNameMatchers.isEmpty()) {
             for (final PV2IONameMatcherModelDBO pv2ioNameMatcher : pv2ioNameMatchers) {
                 ChannelDBO value;
@@ -115,6 +126,36 @@ public class ProcessVariable2IONameImplemation implements IProcessVariable2IONam
         List<PV2IONameMatcherModelDBO> matchers;
         matchers = Repository.loadPV2IONameMatcher(pvName);
         return matchers;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws PersistenceException
+     */
+    @Override
+    @Nonnull
+    public Map<String,String> getPVNames(@Nonnull final Collection<String> ioNames) throws PersistenceException {
+        final HashMap<String, String> pvNames = new HashMap<String, String>();
+        final List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher = Repository.loadIOName2PVMatcher(ioNames);
+        if(loadIOName2PVMatcher!=null) {
+            for (final PV2IONameMatcherModelDBO pv2ioNameMatcherModelDBO : loadIOName2PVMatcher) {
+                pvNames.put(pv2ioNameMatcherModelDBO.getIoName(), pv2ioNameMatcherModelDBO.getEpicsName());
+            }
+        }
+        return pvNames;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws PersistenceException
+     */
+    @Override
+    @CheckForNull
+    public String getPVName(@Nonnull final String ioName) throws PersistenceException {
+        final ArrayList<String> ioNames = new ArrayList<String>();
+        ioNames.add(ioName);
+        final Map<String, String> pvNames = getPVNames(ioNames);
+        return pvNames.get(ioName);
     }
 
 }

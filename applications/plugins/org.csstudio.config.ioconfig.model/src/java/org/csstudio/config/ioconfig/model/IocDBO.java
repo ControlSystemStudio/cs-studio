@@ -60,6 +60,13 @@ public class IocDBO extends AbstractNodeSharedImpl<FacilityDBO, ProfibusSubnetDB
         super(facility);
     }
 
+    @Override
+    @Nonnull
+    @Transient
+    public FacilityDBO getParent() {
+        return super.getParent();
+    }
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
