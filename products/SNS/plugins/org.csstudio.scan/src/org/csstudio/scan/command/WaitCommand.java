@@ -35,9 +35,9 @@ public class WaitCommand extends ScanCommand
     };
     
     private String device_name;
+    private Comparison comparison;
     private double desired_value;
     private double tolerance;
-    private Comparison comparison;
 
     /** Initialize empty wait command */
     public WaitCommand()

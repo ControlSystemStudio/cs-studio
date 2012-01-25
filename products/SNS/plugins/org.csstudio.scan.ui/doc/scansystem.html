@@ -79,17 +79,37 @@ will write the value 1.0 to the "setpoint" device.
 <p>Parameters:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
+<li>Comparison: How the current value of the device is compared to the desired value.</li>
 <li>Desired Value: Desired value of the device.</li>
-<li>Tolerance: Difference between the actual valud of the device and the desired value that is considered "good enough".</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".
+</li>
 </ul>
-<p>Example:
-<code>Wait for 'readback' to reach 1.0 (+-0.1)</code>
+<p>Examples:
+</p>
+<p>
+<code>Wait for 'readback' = 1.0 (+-0.1)</code>
 will wait until the value of the "readback" device reaches the value 1.0+-0.1,
 i.e. is within the range of 0.9 ... 1.1.
 Because of rounding errors and control system noise you should never
-set the tolerance to 0.0, because your device might never reach
-the exact desired value.
+set the tolerance to 0.0 for the equality ('=') check,
+because your device might never reach the exact desired value.
+Configure a small tolerance like 0.001 to allow for rounding errors.
 </p>
+<p>
+<code>Wait for 'readback' > 5.0</code>
+will wait until the value of the "readback" device
+is above 5.0.
+</p>
+<p>
+<code>Wait for 'readback' to increase by 5.0</code>
+will wait until the value of the "readback" device
+increases by 5.0.
+Assuming that the value was 10.0 when we reached this
+wait command, the value would have to grow to at least
+15.0 for the wait command to finish.
+</p>
+
 
 
 <h3><img src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
