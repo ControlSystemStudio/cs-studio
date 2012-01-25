@@ -37,12 +37,8 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetWithNotific
 		return properties;
 	}
 	
-	public String getSelectionExpression() {
-		String selectionExpression = super.getSelectionExpression();
-		if (selectionExpression != null) {
-			return selectionExpression;
-		}
-		
+	@Override
+	protected String defaultSelectionExpression() {
 		if (isShowChannelNames()) {
 			return "#(Channel Name)";
 		} else {

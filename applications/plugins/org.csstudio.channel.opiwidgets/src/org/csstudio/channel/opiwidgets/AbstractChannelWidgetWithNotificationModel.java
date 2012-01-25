@@ -33,7 +33,11 @@ public abstract class AbstractChannelWidgetWithNotificationModel extends Abstrac
 			return selectionExpression;
 		}
 		
-		return null;
+		return defaultSelectionExpression();
+	}
+	
+	protected String defaultSelectionExpression() {
+		return "#(Channel Name)";
 	}
 
 }
