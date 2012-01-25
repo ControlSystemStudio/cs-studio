@@ -1,5 +1,6 @@
 package org.csstudio.channel.opiwidgets;
 
+import org.csstudio.channel.widgets.PVTableByPropertyCell;
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
@@ -14,14 +15,27 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 	protected PVTableByPropertyFigure doCreateFigure() {
 		PVTableByPropertyFigure figure = new PVTableByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-//		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	
-	private static void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
+	private ChannelSelectionNotification notification;
+	
+	private void configure(PVTableByPropertyWidget widget, PVTableByPropertyModel model, boolean runMode) {
 		if (runMode) {
 			widget.setChannelQuery(model.getChannelQuery());
-			widget.setRowSelectionPv(model.getRowSelectionPvName());
+			if (notification != null) {
+				notification.close();
+				notification = null;
+			}
+			if (model.getSelectionPv() != null && !model.getSelectionPv().isEmpty()) {
+				notification = new ChannelSelectionNotification(model.getSelectionPv(), model.getSelectionExpression(), widget) {
+					
+					@Override
+					protected String notificationFor(Object selection) {
+						return getNotificationExpression().notification(((PVTableByPropertyCell) selection).getChannels());
+					}
+				};
+			}
 		}
 		widget.setRowProperty(model.getRowProperty());
 		widget.setColumnProperty(model.getColumnProperty());
@@ -41,7 +55,8 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 		setPropertyChangeHandler(PVTableByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.ROW_PROPERTY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.COLUMN_PROPERTY, reconfigure);
-		setPropertyChangeHandler(PVTableByPropertyModel.ROW_SELECTION_PV_NAME, reconfigure);
+		setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_EXPRESSION, reconfigure);
+		setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_PV, reconfigure);
 	}
 	
 }
