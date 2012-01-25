@@ -264,12 +264,51 @@ and to remove completed scans from the server, i.e. scans that have either finis
 </p>
 
 
-<h2><a name="programmatic">Programmatic Access</a></h2> 
-<p>For now refer to <code>org.csstudio.scan/examples</code>
-</p>
-<p>
+<h2><a name="plot">Scan Plot</a></h2> 
+<p>The Scan Plot can be used to track the progress of a scan.
+Data for devices that are "logged" is accessible to the plot.
 </p>
 
+<img src="scan_plot.png" width="80%"/>
+
+<p>Access the scan plotmonitor via the menu <code>CSS/Scan/Scan Plot</code>
+</p>
+<p>Selectors in the toolbar of the plot allow selection of the following:
+<ul>
+<li>Scan: Select from which scan on the server to retrieve data.</li>
+<li>X Axis: Select the device to display on the X axis.</li>
+<li>Y Axis: Select the device to display on the X axis.</li>
+</ul>
+</p>
+
+
+<h2><a name="programmatic">Programmatic Access</a></h2>
+<p>A key feature of the scan system is that scans can be submitted
+from various sources:
+</p>
+<ul>
+<li>Jython script, i.e. using the Python language,
+    either edited, executed and debugged from within CSS
+    or from the command line
+</li>
+<li>CSS 'BOY' operator interface panels.
+</li>
+<li>Any Java tool.
+</li>
+<li>Applications that interface to Java like Matlab.
+</li>
+</ul>
+
+<p>This provides a lot of options to programmers.
+At the same time, the details can be hidden behind
+for example a 'BOY' operator interface panel,
+so even users with no programming experience can
+then configure and execute these scans.
+</p>
+
+<p>For now refer to <code>org.csstudio.scan/examples</code>
+for details.
+</p>
 
 </body>
 </html>

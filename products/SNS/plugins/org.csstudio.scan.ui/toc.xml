@@ -5,4 +5,8 @@
     <topic label="Overview" href="doc/scansystem.html#overview"/>
     <topic label="Commands" href="doc/scansystem.html#commands"/>
     <topic label="Scan Server" href="doc/scansystem.html#server"/>
+    <topic label="Scan Editor" href="doc/scansystem.html#editor"/>
+    <topic label="Scan Monitor" href="doc/scansystem.html#monitor"/>
+    <topic label="Scan Plot" href="doc/scansystem.html#plot"/>
+    <topic label="Programmatic Access" href="doc/scansystem.html#programmatic"/>
 </toc>
