@@ -10,5 +10,12 @@
             name="Logbook">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="changelog.xml"
+            primary="false">
+      </toc>
+   </extension>
 
 </plugin>

@@ -85,6 +85,20 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 				}
 			}
 		});
+		table.addListener(SWT.MouseUp, new Listener() {
+			
+			@Override
+			public void handleEvent(Event event) {
+				ViewerCell cell = tableViewer.getCell(new Point(event.x, event.y));
+				if (cell == null) {
+					setSelection(null);
+				} else {
+					int row = ((VTableContentProvider.VTableRow) cell.getElement()).getRow();
+					int column = cell.getColumnIndex();
+					setSelection(new StructuredSelection(new VTableDisplayCell(row, column)));
+				}
+			}
+		});
 		tableViewer.setContentProvider(new VTableContentProvider());
 		tableViewer.setLabelProvider(getCellLabelProvider());
         VTableToolTipSupport.enableFor(tableViewer,ToolTip.NO_RECREATE);
