@@ -89,9 +89,8 @@ org.csstudio.utility.pvmanager.widgets.test
 org.csstudio.utility.speech
 org.csstudio.ui.util
 org.csstudio.platform
-org.csstudio.platform.libs.dal
-org.csstudio.platform.libs.dal.ui
-org.csstudio.platform.libs.dal.epics
+org.csstudio.dal
+org.csstudio.dal.epics
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.glazedlists
