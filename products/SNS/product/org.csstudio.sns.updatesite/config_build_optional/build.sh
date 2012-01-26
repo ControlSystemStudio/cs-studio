@@ -18,9 +18,9 @@ java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
   -Dbase=$ECLIPSE_BASE \
   -Ddeltapack=$DELTAPACK \
   -Dqualifier=$QUALIFIER \
-   > build.log 2>&1
+   > $BUILDDIR/$PROD.log 2>&1
    
-tail build.log
+tail $BUILDDIR/$PROD.log
 
 # Cute way to signal we're done
 # play /usr/share/system-config-soundcard/sound-sample.wav

@@ -72,7 +72,15 @@ org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
 org.csstudio.remote/**
-org.csstudio.scan*/**
+org.csstudio.scan/**
+org.csstudio.scan.client/**
+org.csstudio.scan.custom/**
+org.csstudio.scan.custom.impl/**
+org.csstudio.scan.server/**
+org.csstudio.scan.ui/**
+org.csstudio.scan.ui.plot/**
+org.csstudio.scan.ui.scanmonitor/**
+org.csstudio.scan.ui.scantree/**
 org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.ldapAuthorization/**
@@ -81,6 +89,7 @@ org.csstudio.sns.mpsbypasses/**
 org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
+org.csstudio.sns.updatesite/**
 org.csstudio.startup/**
 org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**

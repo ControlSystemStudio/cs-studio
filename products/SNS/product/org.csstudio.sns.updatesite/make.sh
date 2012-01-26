@@ -22,6 +22,7 @@ PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_optional"
 # Build products and optional feature
 for prod in $PRODS
 do
+    export PROD=$prod
     echo $prod
     (cd $prod; sh build.sh)
     echo Done with $prod
@@ -31,7 +32,7 @@ OK=1
 # Each build log contains 2(!) "BUILD SUCCESSFUL" lines
 for prod in $PRODS
 do
-    if [ `cat $prod/build.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
+    if [ `cat $BUILDDIR/$prod.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
     then
         echo OK: $prod
     else
@@ -43,22 +44,22 @@ done
 if [ $OK = 1 ]
 then
     echo Collecting ZIP files
-    mkdir -p apps
+    mkdir -p $BUILDDIR/apps
     
     ## Basic EPICS
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-macosx.$OSWIN.x86.zip  CSS_EPICS_$VERSION css.app/Contents/MacOS/css apps/epics_css_$VERSION-macosx.$OSWIN.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86_64.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION css.exe                    apps/epics_css_$VERSION-win32.win32.x86.zip
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip CSS_EPICS_$VERSION css.exe                    apps/epics_css_$VERSION-win32.win32.x86_64.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-macosx.$OSWIN.x86.zip  CSS_EPICS_$VERSION apps/epics_css_$VERSION-macosx.$OSWIN.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86_64.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86_64.zip
 
     ## SNS CSS
     # OS X
-    sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-macosx.$OSWIN.x86.zip   CSS_$VERSION    css.app/Contents/MacOS/css    apps/sns_css_$VERSION-macosx.$OSWIN.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip       CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip    CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86_64.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip     CSS_$VERSION    css.exe                       apps/sns_css_$VERSION-win32.win32.x86.zip
-	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip  CSS_$VERSION    css.exe                       apps/sns_css_$VERSION-win32.win32.x86_64.zip
+    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.$OSWIN.x86.zip      CSS_$VERSION      apps/sns_css_$VERSION-macosx.$OSWIN.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip          CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip       CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86_64.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip        CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86.zip
+	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip     CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86_64.zip
 
     ## Optional feature is already in buildRepo
 

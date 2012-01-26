@@ -18,7 +18,7 @@
     <property name="workspace_dir" value="${env.WORKSPACE}" />
     
     <!-- Build directory -->
-    <property name="build_dir" value="build" />
+    <property name="build_dir" value="/tmp/build" />
 	
     <!-- Zip all the source files -->
     <target name="check_vars" unless="env.VERSION">
@@ -118,7 +118,7 @@
          Use build dir, but don't include the  local.list
     -->
     <target name="zip_sources" depends="check_vars">
-        <zip destfile="apps/sns_css_src_${env.VERSION}.zip">
+        <zip destfile="${build_dir}/apps/sns_css_src_${env.VERSION}.zip">
             <fileset dir="${repo_dir}/core/plugins" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>

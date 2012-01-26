@@ -20,7 +20,7 @@ QUALIFIER=`date "+%Y%m%d"`
 
 export ECLIPSE=$ECLIPSE_BASE/eclipse
 
-export BUILDDIR=$TOP/products/SNS/product/org.csstudio.sns.updatesite/build
+export BUILDDIR=/tmp/build
 
 # This can be empty unless you happen to have more than one version of
 # org.eclipse.pde.build_*, as can happen after installing updates
