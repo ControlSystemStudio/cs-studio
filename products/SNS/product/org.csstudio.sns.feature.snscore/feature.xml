@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.snscore"
       label="Core CSS Components specific to SNS"
-      version="3.0.1.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt;, Xihui Chen &lt;chenx1@ornl.gov&gt; - SNS">
 
    <description>
@@ -34,10 +34,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <requires>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.logbook" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.expressions"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.intro"/>
       <import plugin="org.eclipse.ui.intro.universal"/>
@@ -47,7 +47,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.logging.ui" version="0.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
@@ -55,11 +54,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.workspace" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.ldapAuthorization" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.200" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.jaasAuthentication" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.sns.startuphelper" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

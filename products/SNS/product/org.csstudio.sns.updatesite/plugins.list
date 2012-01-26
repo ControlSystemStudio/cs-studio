@@ -72,13 +72,7 @@ org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
 org.csstudio.remote/**
-org.csstudio.scan/**
-org.csstudio.scan.client/**
-org.csstudio.scan.server/**
-org.csstudio.scan.ui/**
-org.csstudio.scan.ui.plot/**
-org.csstudio.scan.ui.scanmonitor/**
-org.csstudio.scan.ui.scantree/**
+org.csstudio.scan*/**
 org.csstudio.sns.dummyAuthorization/**
 org.csstudio.sns.jms2rdb/**
 org.csstudio.sns.ldapAuthorization/**
