@@ -22,7 +22,7 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.util.ColorAndFontUtil;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * Color rule Alarm, translated from an ADL file.

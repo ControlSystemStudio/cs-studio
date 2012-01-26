@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
-import org.epics.css.dal.context.AbstractApplicationContext;
-import org.epics.css.dal.spi.DefaultPropertyFactoryService;
-import org.epics.css.dal.spi.LinkPolicy;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.context.AbstractApplicationContext;
+import org.csstudio.dal.spi.DefaultPropertyFactoryService;
+import org.csstudio.dal.spi.LinkPolicy;
+import org.csstudio.dal.spi.PropertyFactory;
 
 /**
  * A property factory provider.

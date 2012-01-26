@@ -37,15 +37,6 @@
               label="Synoptic Display Studio"
               menubarPath="css/display/"
               style="push"/>
-        <action
-              class="org.csstudio.sds.ui.internal.runmode.OpenAsShellMenuAction"
-              definitionId="org.csstudio.sds.ui.displayRunAsShell"
-              icon="icons/run.gif"
-              id="org.csstudio.sds.ui.internal.runmode.OpenAsShellMenuAction"
-              label="Display in Run Mode"
-              style="push"
-              toolbarPath="run">
-        </action>
         <!--
         <action
               class="org.csstudio.sds.ui.internal.runmode.OpenAsViewMenuAction"

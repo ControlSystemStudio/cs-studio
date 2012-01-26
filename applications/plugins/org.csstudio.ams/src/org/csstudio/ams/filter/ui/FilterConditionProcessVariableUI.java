@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 public class FilterConditionProcessVariableUI extends FilterConditionUI {
 

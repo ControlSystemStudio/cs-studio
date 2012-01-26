@@ -32,11 +32,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -56,7 +55,7 @@ import org.slf4j.LoggerFactory;
 @Entity
 @BatchSize(size = 32)
 @Table(name = "ddb_Profibus_Channel")
-public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf> {
+public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, VirtualLeaf> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelDBO.class);
     private static final long serialVersionUID = 1L;
@@ -134,7 +133,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
             LOG.warn("", e);
             setEpicsAddressString("");
         }
-        setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
+        setDirty(isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString()));
     }
 
     /**
@@ -163,7 +162,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
                     .getModuleChannelPrototypeNH();
             final ModuleChannelPrototypeDBO[] array = moduleChannelPrototypes
                     .toArray(new ModuleChannelPrototypeDBO[0]);
-            final Short sortIndex = getChannelStructure().getSortIndex();
+            final Short sortIndex = getParent().getSortIndex();
             final ModuleChannelPrototypeDBO moduleChannelPrototype = array[sortIndex];
             setStatusAddressOffset(moduleChannelPrototype.getShift());
             setChannelNumber(moduleChannelPrototype.getOffset());
@@ -215,12 +214,22 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     }
 
     /**
-     * @return the parent {@link ChannelStructureDBO}.
+     * {@inheritDoc}
      */
-    @ManyToOne
+    @Override
     @Nonnull
-    public ChannelStructureDBO getChannelStructure() {
-        return getParent();
+    @Transient
+    public ChannelStructureDBO getParent() {
+        return super.getParent();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public void setParent(@Nonnull final ChannelStructureDBO parent) {
+        super.setParent(parent);
     }
 
     /**
@@ -272,7 +281,7 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     @Transient
     @CheckForNull
     public GSDFileDBO getGSDFile() {
-        return getChannelStructure().getModule().getGSDFile();
+        return getModule().getGSDFile();
     }
 
     /**
@@ -290,13 +299,13 @@ public class ChannelDBO extends AbstractNodeDBO<ChannelStructureDBO, VirtualLeaf
     @Transient
     @Nonnull
     public ModuleDBO getModule() {
-        return getChannelStructure().getModule();
+        return getParent().getModule();
     }
 
     public int getNextFreeChannelNumberFromParent(final int channelNumber) {
         int cNumber = channelNumber;
         if (channelNumber > 0) {
-            final SortedMap<Short, ChannelDBO> headMap = getChannelStructure().getChildrenAsMap()
+            final SortedMap<Short, ChannelDBO> headMap = getParent().getChildrenAsMap()
                     .headMap(getSortIndex());
             if (!headMap.isEmpty()) {
                 final ChannelDBO channel = headMap.get(headMap.lastKey());

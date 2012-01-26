@@ -28,7 +28,7 @@ import org.csstudio.sds.components.model.MenuButtonModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.CursorStyleEnum;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  * @author hrickens

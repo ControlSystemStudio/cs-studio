@@ -8,7 +8,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
@@ -54,9 +54,9 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
         } else if (parent instanceof ChannelStructureDBO) {
             final ChannelStructureDBO cs = (ChannelStructureDBO) parent;
             return handleChannelStructure(cs);
-        } else if (parent instanceof AbstractNodeDBO) {
-            return ((AbstractNodeDBO<?, ?>) parent).getChildrenAsMap().values()
-                    .toArray(new AbstractNodeDBO[0]);
+        } else if (parent instanceof AbstractNodeSharedImpl) {
+            return ((AbstractNodeSharedImpl<?, ?>) parent).getChildrenAsMap().values()
+                    .toArray(new AbstractNodeSharedImpl[0]);
         }
         return new NamedDBClass[0];
     }
@@ -77,8 +77,8 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
     @Override
     @CheckForNull
     public Object getParent(@Nullable final Object child) {
-        if (child instanceof AbstractNodeDBO) {
-            return ((AbstractNodeDBO<?, ?>) child).getParent();
+        if (child instanceof AbstractNodeSharedImpl) {
+            return ((AbstractNodeSharedImpl<?, ?>) child).getParent();
         }
         return null;
     }
@@ -111,19 +111,19 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
     @Nonnull
     private Object[] handleChannelStructure(@Nonnull final ChannelStructureDBO cs) {
         if (cs.isSimple()) {
-            return cs.getChildrenAsMap().values().toArray(new AbstractNodeDBO[0]);
+            return cs.getChildrenAsMap().values().toArray(new AbstractNodeSharedImpl[0]);
         }
-        final Collection<? extends AbstractNodeDBO<?, ?>> values = cs.getChildrenAsMap().values();
+        final Collection<? extends AbstractNodeSharedImpl<?, ?>> values = cs.getChildrenAsMap().values();
         if (cs.getChildrenAsMap().containsKey((short) -1)) {
             values.remove(values.iterator().next());
         }
-        return values.toArray(new AbstractNodeDBO[0]);
+        return values.toArray(new AbstractNodeSharedImpl[0]);
     }
 
     @Nonnull
     private Object[] handleModule(@Nonnull final ModuleDBO module) {
         final Collection<ChannelStructureDBO> values = module.getChildrenAsMap().values();
-        final List<AbstractNodeDBO<?, ?>> list = new ArrayList<AbstractNodeDBO<?, ?>>(values.size());
+        final List<AbstractNodeSharedImpl<?, ?>> list = new ArrayList<AbstractNodeSharedImpl<?, ?>>(values.size());
         for (final ChannelStructureDBO channelStructure : values) {
             if (channelStructure.isSimple()) {
                 list.addAll(channelStructure.getChildrenAsMap().values());
@@ -131,7 +131,7 @@ class ProfibusTreeContentProvider implements ITreeContentProvider {
                 list.add(channelStructure);
             }
         }
-        return list.toArray(new AbstractNodeDBO[list.size()]);
+        return list.toArray(new AbstractNodeSharedImpl[list.size()]);
     }
 
 }

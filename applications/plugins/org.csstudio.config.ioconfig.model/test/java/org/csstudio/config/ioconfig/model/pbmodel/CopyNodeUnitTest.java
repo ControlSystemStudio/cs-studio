@@ -109,7 +109,7 @@ public class CopyNodeUnitTest {
             assertEquals(channel.isDigital(), copy.isDigital());
             assertEquals(channel.isInput(), copy.isInput());
             assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
-            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
+            assertEquals(channel.getParent(), copy.getParent());
             assertEquals(channel.getChannelType(), copy.getChannelType());
             assertEquals(channel.getChSize(), copy.getChSize());
             assertEquals(channel.getCurrenUserParamDataIndex(), copy.getCurrenUserParamDataIndex());
@@ -133,7 +133,7 @@ public class CopyNodeUnitTest {
             assertEquals(channel.isDigital(), copy.isDigital());
             assertEquals(channel.isInput(), copy.isInput());
             assertEquals(channel.getChannelNumber(), copy.getChannelNumber());
-            assertEquals(channel.getChannelStructure(), copy.getChannelStructure());
+            assertEquals(channel.getParent(), copy.getParent());
             assertEquals(channel.getChannelType(), copy.getChannelType());
             assertEquals(channel.getChSize(), copy.getChSize());
             assertEquals(channel, copy);

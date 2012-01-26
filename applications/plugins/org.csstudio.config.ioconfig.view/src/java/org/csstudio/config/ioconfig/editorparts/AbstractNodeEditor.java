@@ -33,7 +33,7 @@ import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -95,7 +95,7 @@ import org.slf4j.LoggerFactory;
  * @param <T>
  * @since 31.03.2010
  */
-public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends EditorPart implements INodeConfig {
+public abstract class AbstractNodeEditor<T extends AbstractNodeSharedImpl<?,?>> extends EditorPart implements INodeConfig {
 
     /**
      *
@@ -629,11 +629,11 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
 
             if (getNode() instanceof FacilityDBO || obj == null) {
                 getProfiBusTreeView().getTreeViewer().setInput(getNode());
-            } else if (obj instanceof AbstractNodeDBO) {
+            } else if (obj instanceof AbstractNodeSharedImpl) {
                 if (getNode().getParent() == null) {
                     try {
                         @SuppressWarnings("rawtypes")
-                        final AbstractNodeDBO nodeParent = (AbstractNodeDBO) obj;
+                        final AbstractNodeSharedImpl nodeParent = (AbstractNodeSharedImpl) obj;
                         getNode().moveSortIndex(nodeParent.getfirstFreeStationAddress());
                         nodeParent.addChild(getNode());
                     } catch (final PersistenceException e) {
@@ -948,7 +948,7 @@ public abstract class AbstractNodeEditor<T extends AbstractNodeDBO<?,?>> extends
         try {
             final T node = getNode();
             progressMonitor.beginTask("Save " + node, 3);
-            final AbstractNodeDBO<?,?> parent = node.getParent();
+            final AbstractNodeSharedImpl<?,?> parent = (AbstractNodeSharedImpl<?, ?>) node.getParent();
             progressMonitor.worked(1);
             try {
                 if (parent == null) {

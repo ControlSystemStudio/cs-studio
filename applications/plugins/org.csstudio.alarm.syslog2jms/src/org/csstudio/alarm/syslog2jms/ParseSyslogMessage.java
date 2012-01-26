@@ -7,6 +7,8 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseSyslogMessage implements Runnable {
 	
@@ -14,6 +16,9 @@ public class ParseSyslogMessage implements Runnable {
 	private JmsSimpleProducer jmsProducer = null;
 	private InetAddress inetAddress = null;
 	private int port = 0;
+	
+	/** The class logger */
+    private static final Logger LOG = LoggerFactory.getLogger(Syslog2JmsApplication.class);
 
 	ParseSyslogMessage ( String message, JmsSimpleProducer jmsProducer, InetAddress inetAddress, int port) {
 		this.message = message;
@@ -285,7 +290,11 @@ public class ParseSyslogMessage implements Runnable {
 		    	
 		        jmsProducer.sendMessage(mapMessage);
 		    }
-	    }
+	    } catch (javax.jms.IllegalStateException e1) {
+			// session is invalid or closed - create a new one!
+			e1.printStackTrace();
+			LOG.info("JMS session invalid or closed");
+		}
 	        catch (JMSException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

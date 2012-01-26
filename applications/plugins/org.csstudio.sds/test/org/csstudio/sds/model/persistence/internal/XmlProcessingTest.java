@@ -37,7 +37,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.WidgetProperty;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 import org.junit.Test;
 
 /**

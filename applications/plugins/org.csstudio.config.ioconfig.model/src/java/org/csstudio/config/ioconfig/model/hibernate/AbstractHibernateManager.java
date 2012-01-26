@@ -31,16 +31,16 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
 import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
-import org.csstudio.config.ioconfig.model.VirtualRoot;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -84,7 +84,7 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
      */
     protected AbstractHibernateManager() {
         super();
-        CLASSES.add(VirtualRoot.class);
+//        CLASSES.add(VirtualRoot.class);
         CLASSES.add(NodeImageDBO.class);
         CLASSES.add(ChannelDBO.class);
         CLASSES.add(ChannelStructureDBO.class);
@@ -95,7 +95,8 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         CLASSES.add(GSDModuleDBO.class);
         CLASSES.add(IocDBO.class);
         CLASSES.add(FacilityDBO.class);
-        CLASSES.add(AbstractNodeDBO.class);
+        CLASSES.add(NodeDBO.class);
+        CLASSES.add(AbstractNodeSharedImpl.class);
         CLASSES.add(GSDFileDBO.class);
         CLASSES.add(ModuleChannelPrototypeDBO.class);
         CLASSES.add(DocumentDBO.class);
@@ -164,13 +165,13 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
     public final <T> T doInDevDBHibernateLazy(@Nonnull final IHibernateCallback hibernateCallback) throws PersistenceException {
         initSessionFactoryDevDB();
         _trx = null;
-        if (_sessionLazy == null) {
-            if (_sessionFactoryDevDB == null) {
-                initSessionFactoryDevDB();
-            }
-            _sessionLazy = _sessionFactoryDevDB.openSession();
-        }
         try {
+            if (_sessionLazy == null) {
+                if (_sessionFactoryDevDB == null) {
+                    initSessionFactoryDevDB();
+                }
+                _sessionLazy = _sessionFactoryDevDB.openSession();
+            }
             _trx = _sessionLazy.getTransaction();
             _trx.setTimeout(_timeout);
             _trx.begin();
@@ -209,13 +210,8 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
             setChanged();
             notifyObservers();
         } catch (final HibernateException e) {
-            System.out.println(" DB connection test 1!");
-            // TODO (hrickens): session handling fehlgeschlagen. Mussn noch gehändlet werden!
-            e.printStackTrace();
-        } catch (final Exception e) {
-            System.out.println(" DB connection test 2!");
-            // TODO: handle exception
-            e.printStackTrace();
+            LOG.error("Can't init device database:",e);
+            throw e;
         }
     }
 

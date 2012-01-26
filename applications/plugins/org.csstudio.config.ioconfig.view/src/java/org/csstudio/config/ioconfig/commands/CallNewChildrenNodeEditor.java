@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.internal.localization.Messages;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -49,17 +49,17 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
      * @throws PersistenceException
      */
     @Override
-    protected void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> parentNode,
+    protected void openNodeEditor(@Nonnull final AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>,AbstractNodeSharedImpl<?,?>> parentNode,
                                   @Nonnull final IWorkbenchPage page) throws PartInitException,
                                   PersistenceException {
-        final AbstractNodeDBO<?, ?> createChild = parentNode.createChild();
+        final AbstractNodeSharedImpl<?, ?> createChild = parentNode.createChild();
         final String id = NodeEditorHandler.getEditorIdFor(createChild);
 
-        if ((AbstractNodeDBO<?, ?>) createChild != null && id != null) {
-            final String nodeType = ((AbstractNodeDBO<?, ?>) createChild).getNodeType().getName();
+        if ((AbstractNodeSharedImpl<?, ?>) createChild != null && id != null) {
+            final String nodeType = ((AbstractNodeSharedImpl<?, ?>) createChild).getNodeType().getName();
             if (id.equals(ModuleEditor.ID)) {
-                ((AbstractNodeDBO<?, ?>) createChild).setName(" "); //$NON-NLS-1$
-                ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
+                ((AbstractNodeSharedImpl<?, ?>) createChild).setName(" "); //$NON-NLS-1$
+                ((AbstractNodeSharedImpl<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
                 final NodeEditorInput input = new NodeEditorInput(createChild,true);
                 page.openEditor(input, id);
             } else {
@@ -69,11 +69,11 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
                 idialog.setBlockOnOpen(true);
                 if (idialog.open() == Window.OK) {
                     // TODO: (hrickens) set the right max station Address
-                    ((AbstractNodeDBO<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
+                    ((AbstractNodeSharedImpl<?, ?>) createChild).setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress());
                     if(idialog.getValue()!=null&&!idialog.getValue().isEmpty()) {
-                        ((AbstractNodeDBO<?, ?>) createChild).setName(idialog.getValue());
+                        ((AbstractNodeSharedImpl<?, ?>) createChild).setName(idialog.getValue());
                     } else {
-                        ((AbstractNodeDBO<?, ?>) createChild).setName(nodeType);
+                        ((AbstractNodeSharedImpl<?, ?>) createChild).setName(nodeType);
                     }
                     final NodeEditorInput input = new NodeEditorInput(createChild,true);
                     page.openEditor(input, id);

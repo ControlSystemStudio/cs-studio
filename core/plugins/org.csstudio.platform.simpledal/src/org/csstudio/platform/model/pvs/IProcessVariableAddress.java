@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.model.pvs;
 
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.RemoteInfo;
 
 /**
  * A process variable address provides consistent and convinient access to the

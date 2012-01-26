@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.INodeVisitor;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
@@ -27,7 +27,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
   **/
 @Entity
 @Table(name = "ddb_Profibus_Subnet")
-public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
+public class ProfibusSubnetDBO extends AbstractNodeSharedImpl<IocDBO, MasterDBO> {
 
     private static final long serialVersionUID = 1L;
     /** Subnet baud rate. */
@@ -85,6 +85,13 @@ public class ProfibusSubnetDBO extends AbstractNodeDBO<IocDBO, MasterDBO> {
      */
     public ProfibusSubnetDBO(@Nonnull final IocDBO ioc) throws PersistenceException {
         super(ioc);
+    }
+
+    @Override
+    @Nonnull
+    @Transient
+    public IocDBO getParent() {
+        return super.getParent();
     }
 
     @CheckForNull

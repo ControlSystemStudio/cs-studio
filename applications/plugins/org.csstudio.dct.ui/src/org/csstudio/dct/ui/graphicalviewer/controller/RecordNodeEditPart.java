@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.dal.Timestamp;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.ui.UiExecutionService;
 import org.csstudio.dct.ui.graphicalviewer.model.Connection;
@@ -36,20 +37,19 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.css.dal.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Controller for {@link RecordNode}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class RecordNodeEditPart extends AbstractGraphicalEditPart implements NodeEditPart, PropertyChangeListener, IProcessVariableValueListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(RecordNodeEditPart.class);
-    
+
 	private ConnectionAnchor anchorRight, anchorLeft, anchorTop, anchorBottom;
 
 	private ChopboxAnchor anchorCenter;
@@ -82,28 +82,28 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 
 		getCastedModel().addPropertyChangeListener(this);
 
-		IRecord record = getCastedModel().getElement();
+		final IRecord record = getCastedModel().getElement();
 
 		if (!record.isAbstract()) {
 			try {
-				String name = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
-				String resolvedName = ResolutionUtil.resolve(name, record);
-				IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(resolvedName);
+				final String name = AliasResolutionUtil.getEpicsNameFromHierarchy(record);
+				final String resolvedName = ResolutionUtil.resolve(name, record);
+				final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(resolvedName);
 				ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService().register(this, pv, ValueType.DOUBLE);
 
-				RecordFigure figure = (RecordFigure) getFigure();
+				final RecordFigure figure = (RecordFigure) getFigure();
 
 				// .. set initial color for the connection state
 				figure.setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(ConnectionState.INITIAL)));
 
 				// .. prepare record information for tooltip
-				Map<String, String> fields = record.getFinalFields();
+				final Map<String, String> fields = record.getFinalFields();
 
-				List<String> keys = new ArrayList<String>(fields.keySet());
+				final List<String> keys = new ArrayList<String>(fields.keySet());
 				Collections.sort(keys);
-				LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
-				for (String key : keys) {
-					String value = fields.get(key);
+				final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+				for (final String key : keys) {
+					final String value = fields.get(key);
 
 					if (value != null && value.length() > 0) {
 						infos.put(key, value);
@@ -111,7 +111,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 				}
 				figure.setRecordInformation(infos);
 
-			} catch (AliasResolutionException e) {
+			} catch (final AliasResolutionException e) {
 				LOG.error("Error: ", e);
 			}
 		}
@@ -125,7 +125,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	public void deactivate() {
 		getCastedModel().removePropertyChangeListener(this);
 
-		List l = getTargetConnections();
+		final List l = getTargetConnections();
 		for (int i = 0; i < l.size(); i++) {
 			((EditPart) l.get(i)).deactivate();
 		}
@@ -138,12 +138,12 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	 */
 	@Override
 	protected IFigure createFigure() {
-		RecordFigure figure = new RecordFigure(getCastedModel().getCaption());
+		final RecordFigure figure = new RecordFigure(getCastedModel().getCaption());
 
 		outgoingAnchors = new ArrayList<ConnectionAnchor>();
 
 		for (int i = 0; i < getCastedModel().getSourceConnections().size(); i++) {
-			ConnectionAnchor a = new ConnectionAnchor(figure);
+			final ConnectionAnchor a = new ConnectionAnchor(figure);
 			a.offsetH = 70;
 			a.offsetV = i * 5 + 3;
 			outgoingAnchors.add(a);
@@ -152,7 +152,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 		incomingAnchors = new ArrayList<ConnectionAnchor>();
 
 		for (int i = 0; i < getCastedModel().getTargetConnections().size(); i++) {
-			ConnectionAnchor a = new ConnectionAnchor(figure);
+			final ConnectionAnchor a = new ConnectionAnchor(figure);
 			a.offsetH = 0;
 			a.offsetV = i * 5 + 3;
 			incomingAnchors.add(a);
@@ -177,7 +177,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 		Color fgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
 
 		// .. render passive records with white background color
-		String scanFieldSetting = getCastedModel().getElement().getFinalFields().get("SCAN");
+		final String scanFieldSetting = getCastedModel().getElement().getFinalFields().get("SCAN");
 		if ("passive".equalsIgnoreCase(scanFieldSetting)) {
 			bgcolor = CustomMediaFactory.getInstance().getColor(255, 255, 255);
 			fgcolor = CustomMediaFactory.getInstance().getColor(0, 0, 0);
@@ -195,37 +195,37 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	/**
 	 *{@inheritDoc}
 	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(ConnectionEditPart connectionEditpart) {
-		Connection connection = (Connection) connectionEditpart.getModel();
-		int index = getCastedModel().getSourceConnections().indexOf(connection);
+	public AbstractConnectionAnchor getSourceConnectionAnchor(final ConnectionEditPart connectionEditpart) {
+		final Connection connection = (Connection) connectionEditpart.getModel();
+		final int index = getCastedModel().getSourceConnections().indexOf(connection);
 		return anchorCenter;
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public AbstractConnectionAnchor getSourceConnectionAnchor(Request request) {
+	public AbstractConnectionAnchor getSourceConnectionAnchor(final Request request) {
 		return null;
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(ConnectionEditPart connectionEditpart) {
+	public AbstractConnectionAnchor getTargetConnectionAnchor(final ConnectionEditPart connectionEditpart) {
 		return anchorCenter;
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public AbstractConnectionAnchor getTargetConnectionAnchor(Request request) {
+	public AbstractConnectionAnchor getTargetConnectionAnchor(final Request request) {
 		return null;
 	}
 
 	/**
 	 *{@inheritDoc}
 	 */
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(final PropertyChangeEvent evt) {
 
 	}
 
@@ -257,7 +257,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 			public void run() {
 				getCastedFigure().setConnectionIndictorColor(CustomMediaFactory.getInstance().getColor(colors.get(connectionState)));
 
-				LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
+				final LinkedHashMap<String, String> infos = new LinkedHashMap<String, String>();
 				infos.put("State:", connectionState.name());
 
 				getCastedFigure().setConnectionInformation(infos);
@@ -276,7 +276,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	/**
 	 *{@inheritDoc}
 	 */
-	public void valueChanged(final Object value, Timestamp timestamp) {
+	public void valueChanged(final Object value, final Timestamp timestamp) {
 	}
 
 	private RecordNode getCastedModel() {
@@ -284,7 +284,7 @@ public class RecordNodeEditPart extends AbstractGraphicalEditPart implements Nod
 	}
 
 	private void createOrUpdateAnchorsLocations() {
-		Dimension size = new Dimension(70, 30);
+		final Dimension size = new Dimension(70, 30);
 
 		anchorLeft.offsetH = 0;
 		anchorLeft.offsetV = size.height / 2;

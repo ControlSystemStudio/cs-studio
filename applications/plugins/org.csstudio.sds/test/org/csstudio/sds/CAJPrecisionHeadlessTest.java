@@ -46,10 +46,10 @@ import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.eclipse.core.runtime.FileLocator;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -289,7 +289,7 @@ public class CAJPrecisionHeadlessTest {
         System.setProperty("dal.plugs", "EPICS");
         System.setProperty("dal.plugs.default", "EPICS");
         System.setProperty("dal.propertyfactory.EPICS",
-                           "org.epics.css.dal.epics.PropertyFactoryImpl");
+                           "org.csstudio.dal.epics.PropertyFactoryImpl");
         System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "YES");
         System.setProperty("com.cosylab.epics.caj.CAJContext.connection_timeout", "30.0");
         System.setProperty("com.cosylab.epics.caj.CAJContext.beacon_period", "15.0");

@@ -2,15 +2,15 @@ package org.csstudio.sds.internal.connection;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
+import org.csstudio.dal.DataExchangeException;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
 
 public class SinglePropertyReadConnector implements ChannelListener {
 	private final ChannelInputProcessor channelInputProcessor;
 	private final ValueType valueType;
-	private org.epics.css.dal.context.ConnectionState latestConnectionState;
+	private org.csstudio.dal.context.ConnectionState latestConnectionState;
 	private final String characteristic;
 
 	public SinglePropertyReadConnector(final ChannelInputProcessor channelInputProcessor, final ValueType valueType, final String characteristic) {
@@ -50,7 +50,7 @@ public class SinglePropertyReadConnector implements ChannelListener {
 	 */
 	@Override
     public void channelStateUpdate(final AnyDataChannel channel) {
-		final org.epics.css.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
+		final org.csstudio.dal.context.ConnectionState state = channel.getProperty().getConnectionState();
 
 		// .. handle connection state
 		if (latestConnectionState != state) {

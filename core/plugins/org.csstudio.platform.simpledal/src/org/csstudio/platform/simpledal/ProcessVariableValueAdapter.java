@@ -21,7 +21,7 @@
  */
 package org.csstudio.platform.simpledal;
 
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 /**
  * Classical adapter for {@link IProcessVariableValueListener} with empty

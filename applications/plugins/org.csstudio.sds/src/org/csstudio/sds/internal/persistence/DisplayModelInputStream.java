@@ -35,7 +35,7 @@ import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.WidgetProperty;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;

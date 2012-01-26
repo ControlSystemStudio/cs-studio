@@ -1,6 +1,6 @@
 package org.csstudio.sds.ui.internal.connectionview;
 
-import org.epics.css.dal.context.ConnectionState;
+import org.csstudio.dal.context.ConnectionState;
 
 public class ConnectionDescriptor {
 

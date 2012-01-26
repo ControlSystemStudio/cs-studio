@@ -66,80 +66,80 @@ import org.eclipse.ui.PlatformUI;
  * @since 17.08.2010
  */
 public class DocumentContent {
-    
+
     protected static final Logger LOG = CentralLogger.getInstance()
             .getLogger(DocumentContent.class);
-    
+
     private ListViewer _pvList;
-    
+
     private Collection<IProcessVariable> _processVariables = new HashSet<IProcessVariable>();
-    
+
     /**
      * A List with all Process Variables to show the Documents
      */
     private TableViewer _foundsDocumentsTable;
-    
+
     private MessageArea _messageArea;
-    
+
     /**
      * @param parent
      */
     public void createPVList(final Composite parent) {
-        Composite pvListMain = new Composite(parent, SWT.NONE);
+        final Composite pvListMain = new Composite(parent, SWT.NONE);
         pvListMain.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
         pvListMain.setLayout(new GridLayout(2, false));
-        
+
         final Text text = new Text(pvListMain, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         text.setText("");
-        
-        Button button = new Button(pvListMain, SWT.PUSH);
+
+        final Button button = new Button(pvListMain, SWT.PUSH);
         button.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
         button.setText("Add");
-        
+
         _pvList = new ListViewer(pvListMain);
         _pvList.getList().setLayoutData(GridDataFactory.fillDefaults().grab(false, true).span(2, 1)
                                                 .create());
         _pvList.setLabelProvider(new IProcessVariableLabelProvider());
         _pvList.setContentProvider(new ArrayContentProvider());
-        
+
         button.addSelectionListener(new SelectionAdapter() {
-            
+
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 getProcessVariables().add(new ProcessVariable(text.getText()));
                 update();
             }
-            
+
         });
         createMenu(_pvList);
     }
-    
+
     public void createDocumentView(final Composite parent) {
         _foundsDocumentsTable = DocumentTableBuilder.createDocumentTable(parent);
         DocumentTableBuilder.makeMenus(_foundsDocumentsTable);
     }
-    
+
     /**
      * @param processVariables
      */
     public void setProcessVariables(final IProcessVariable[] processVariables) {
         _processVariables = new HashSet<IProcessVariable>(Arrays.asList(processVariables));
-        
+
     }
-    
+
     protected Collection<IProcessVariable> getProcessVariables() {
         return _processVariables;
     }
-    
+
     protected TableViewer getFoundsDocumentsTable() {
         return _foundsDocumentsTable;
     }
-    
+
     protected MessageArea getMessageArea() {
         return _messageArea;
     }
-    
+
     /**
      * Creation of the message area. This must be called by each subclass in createPartControl.
      *
@@ -148,61 +148,61 @@ public class DocumentContent {
     public void createMessageArea(final Composite parent) {
         _messageArea = new MessageArea(parent);
     }
-    
+
     /**
-     * @throws PersistenceException 
+     * @throws PersistenceException
      *
      */
     public void update() {
         _pvList.setInput(_processVariables);
         callIoNameService(_processVariables);
     }
-    
+
     /**
      * @param pvList
      */
     private void createMenu(final ListViewer viewer) {
-        Menu menu = new Menu(viewer.getControl());
-        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        final Menu menu = new Menu(viewer.getControl());
+        final MenuItem showItem = new MenuItem(menu, SWT.PUSH);
         showItem.addSelectionListener(new RemoveChannelListener(viewer));
         showItem.setText("&Remove");
         showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ELCL_REMOVE));
-        
-        MenuItem saveItem = new MenuItem(menu, SWT.PUSH);
+
+        final MenuItem saveItem = new MenuItem(menu, SWT.PUSH);
         saveItem.addSelectionListener(new RemoveAllChannelsListener(viewer));
         saveItem.setText("Remove &All");
         saveItem.setImage(PlatformUI.getWorkbench().getSharedImages()
                 .getImage(ISharedImages.IMG_ELCL_REMOVEALL));
-        
+
         viewer.getList().setMenu(menu);
     }
-    
+
     /**
      * @param processVariables
-     * @throws PersistenceException 
+     * @throws PersistenceException
      */
     protected void callIoNameService(final Collection<IProcessVariable> processVariables) {
-        Thread thread = new Thread() {
+        final Thread thread = new Thread() {
             /**
              * {@inheritDoc}
              */
             @Override
             public void run() {
-                ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
-                Collection<String> pcNames = new HashSet<String>(processVariables.size());
-                for (IProcessVariable iProcessVariable : processVariables) {
+                final ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
+                final Collection<String> pcNames = new HashSet<String>(processVariables.size());
+                for (final IProcessVariable iProcessVariable : processVariables) {
                     pcNames.add(iProcessVariable.getName());
                 }
                 Collection<INode> nodes;
                 try {
                     nodes = pv2IOName.getNodes(pcNames).values();
-                    Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
+                    final Collection<HierarchyDocument> hierarchyDocuments = new HashSet<HierarchyDocument>();
                     addNodes(hierarchyDocuments, nodes);
                     getFoundsDocumentsTable().getTable().setEnabled(true);
                     getFoundsDocumentsTable().setInput(hierarchyDocuments);
                     getMessageArea().hide();
-                } catch (NodeNotFoundException nnfe) {
+                } catch (final NodeNotFoundException nnfe) {
                     getFoundsDocumentsTable().getTable().setEnabled(true);
                     switch (nnfe.getState()) {
                         case DCT:
@@ -215,7 +215,7 @@ public class DocumentContent {
                             break;
                     }
                     getMessageArea().hide();
-                } catch (PersistenceException e) {
+                } catch (final PersistenceException e) {
                     LOG.error(e);
                     getMessageArea().showMessage(SWT.ERROR, "Device Database Error",
                                                  e.getLocalizedMessage());
@@ -225,38 +225,38 @@ public class DocumentContent {
                     getFoundsDocumentsTable().getTable().setEnabled(false);
                 }
             }
-            
+
         };
         Display.getCurrent().asyncExec(thread);
     }
-    
+
     /**
      * @param all
      * @param nodes
      */
     protected void addNodes(final Collection<HierarchyDocument> all, final Collection<INode> nodes) {
-        for (INode iNode : nodes) {
+        for (final INode iNode : nodes) {
             addDocuments(all, iNode);
-            INode parent = iNode.getParent();
+            final INode parent = iNode.getParentAsINode();
             addParent(all, parent);
         }
     }
-    
+
     /**
      * @param all
      * @param iNode
      */
     private void addDocuments(final Collection<HierarchyDocument> all, final INode iNode) {
-        Set<DocumentDBO> documents = iNode.getDocuments();
+        final Set<DocumentDBO> documents = iNode.getDocuments();
         if(iNode instanceof INodeWithPrototype) {
-            INodeWithPrototype new_name = (INodeWithPrototype) iNode;
+            final INodeWithPrototype new_name = (INodeWithPrototype) iNode;
             documents.addAll(new_name.getPrototypeDocuments());
-        } 
-        for (DocumentDBO document : documents) {
+        }
+        for (final DocumentDBO document : documents) {
             all.add(new HierarchyDocument(iNode, document));
         }
     }
-    
+
     /**
      * @param all
      * @param parent
@@ -264,21 +264,21 @@ public class DocumentContent {
     private void addParent(final Collection<HierarchyDocument> all, final INode parent) {
         if (parent != null) {
             addDocuments(all, parent);
-            addParent(all, parent.getParent());
+            addParent(all, parent.getParentAsINode());
         }
     }
-    
+
     private class RemoveAllChannelsListener implements SelectionListener {
-        
+
         private final ListViewer _viewer;
-        
+
         /**
          * Constructor.
          */
         public RemoveAllChannelsListener(final ListViewer viewer) {
             _viewer = viewer;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -286,7 +286,7 @@ public class DocumentContent {
         public void widgetDefaultSelected(final SelectionEvent e) {
             setProcessVariables();
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -294,29 +294,29 @@ public class DocumentContent {
         public void widgetSelected(final SelectionEvent e) {
             setProcessVariables();
         }
-        
+
         /**
-         * 
+         *
          */
         private void setProcessVariables() {
-            Collection<IProcessVariable> processVariables = getProcessVariables();
+            final Collection<IProcessVariable> processVariables = getProcessVariables();
             processVariables.clear();
             _viewer.setInput(processVariables);
         }
-        
+
     }
-    
+
     private class RemoveChannelListener implements SelectionListener {
-        
+
         private final ListViewer _viewer;
-        
+
         /**
          * Constructor.
          */
         public RemoveChannelListener(final ListViewer viewer) {
             _viewer = viewer;
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -324,18 +324,18 @@ public class DocumentContent {
         public void widgetDefaultSelected(final SelectionEvent e) {
             remove();
         }
-        
+
         /**
          *
          */
         private void remove() {
-            StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
-            List<?> list = selection.toList();
-            Collection<IProcessVariable> processVariables = getProcessVariables();
+            final StructuredSelection selection = (StructuredSelection) _viewer.getSelection();
+            final List<?> list = selection.toList();
+            final Collection<IProcessVariable> processVariables = getProcessVariables();
             processVariables.removeAll(list);
             _viewer.setInput(processVariables);
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -343,9 +343,9 @@ public class DocumentContent {
         public void widgetSelected(final SelectionEvent e) {
             remove();
         }
-        
+
     }
-    
+
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
      * FIXME (hrickens) This is a copy of the inner class of the AlarmTreeView.
@@ -355,22 +355,22 @@ public class DocumentContent {
          * The message area which can display error messages inside the view part.
          */
         private final Composite _messageAreaComposite;
-        
+
         /**
          * The icon displayed in the message area.
          */
         private final Label _messageAreaIcon;
-        
+
         /**
          * The message displayed in the message area.
          */
         private final Label _messageAreaMessage;
-        
+
         /**
          * The description displayed in the message area.
          */
         private final Label _messageAreaDescription;
-        
+
         public MessageArea(final Composite parent) {
             _messageAreaComposite = new Composite(parent, SWT.NONE);
             final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 3,
@@ -379,18 +379,18 @@ public class DocumentContent {
             _messageAreaComposite.setVisible(false);
             _messageAreaComposite.setLayoutData(messageAreaLayoutData);
             _messageAreaComposite.setLayout(new GridLayout(2, false));
-            
+
             _messageAreaIcon = new Label(_messageAreaComposite, SWT.NONE);
             _messageAreaIcon.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false,
                                                         1, 2));
             _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(SWT.ICON_WARNING));
-            
+
             _messageAreaMessage = new Label(_messageAreaComposite, SWT.WRAP);
             _messageAreaMessage.setText("Test3");
             // Be careful if changing the GridData below! The label will not wrap
             // correctly for some settings.
             _messageAreaMessage.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-            
+
             _messageAreaDescription = new Label(_messageAreaComposite, SWT.WRAP);
             _messageAreaDescription.setText("Test4");
             // Be careful if changing the GridData below! The label will not wrap
@@ -398,7 +398,7 @@ public class DocumentContent {
             _messageAreaDescription
                     .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         }
-        
+
         /**
          * Sets the message displayed in the message area of this view part.
          *
@@ -413,16 +413,16 @@ public class DocumentContent {
             _messageAreaMessage.setText(message);
             _messageAreaDescription.setText(description);
             _messageAreaComposite.layout();
-            
+
             show();
         }
-        
+
         public void show() {
             _messageAreaComposite.setVisible(true);
             ((GridData) _messageAreaComposite.getLayoutData()).exclude = false;
             _messageAreaComposite.getParent().layout();
         }
-        
+
         /**
          * Hides the message displayed in this view part.
          */

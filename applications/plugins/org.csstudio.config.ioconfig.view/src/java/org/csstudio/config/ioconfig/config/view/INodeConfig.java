@@ -23,7 +23,7 @@ package org.csstudio.config.ioconfig.config.view;
 
 import javax.annotation.CheckForNull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 
 /**
  * @author hrickens
@@ -38,6 +38,6 @@ public interface INodeConfig extends IHasDocumentableObject {
     * @return the documentable object.
     */
     @CheckForNull
-    AbstractNodeDBO<?,?> getNode();
+    AbstractNodeSharedImpl<?,?> getNode();
 
 }

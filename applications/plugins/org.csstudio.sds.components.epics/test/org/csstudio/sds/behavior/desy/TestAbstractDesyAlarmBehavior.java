@@ -22,7 +22,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  * TODO (hrickens) : 

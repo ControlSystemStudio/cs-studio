@@ -22,8 +22,8 @@
 package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.IRule;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * TODO (hrickens) :

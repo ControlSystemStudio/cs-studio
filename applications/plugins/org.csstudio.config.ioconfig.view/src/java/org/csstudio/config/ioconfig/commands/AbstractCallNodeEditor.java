@@ -24,7 +24,7 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
 import org.csstudio.config.ioconfig.view.MainView;
@@ -63,7 +63,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         if (window != null) {
             final IWorkbenchPage page = window.getActivePage();
             
-            final AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>> obj = getCallerNode(page);
+            final AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>, AbstractNodeSharedImpl<?,?>> obj = getCallerNode(page);
             
             if (obj != null) {
                 try {
@@ -85,7 +85,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    private AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>> getCallerNode(@Nonnull final IWorkbenchPage page) {
+    private AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>, AbstractNodeSharedImpl<?,?>> getCallerNode(@Nonnull final IWorkbenchPage page) {
         //TODO: I think that is not the right way to do this.
         final MainView view = (MainView) page.findView(MainView.ID);
         // Get the selection
@@ -93,15 +93,15 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         if ( selection != null && selection instanceof IStructuredSelection) {
             final Object obj = ((IStructuredSelection) selection).getFirstElement();
             // If we had a selection lets open the editor
-            if ( obj != null && obj instanceof AbstractNodeDBO) {
-                return (AbstractNodeDBO<AbstractNodeDBO<?,?>, AbstractNodeDBO<?,?>>) obj;
+            if ( obj != null && obj instanceof AbstractNodeSharedImpl) {
+                return (AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>, AbstractNodeSharedImpl<?,?>>) obj;
             }
         }
         return null;
     }
     
     
-    protected abstract void openNodeEditor(@Nonnull final AbstractNodeDBO<AbstractNodeDBO<?,?>,AbstractNodeDBO<?,?>> parentNode,
+    protected abstract void openNodeEditor(@Nonnull final AbstractNodeSharedImpl<AbstractNodeSharedImpl<?,?>,AbstractNodeSharedImpl<?,?>> parentNode,
                                            @Nonnull IWorkbenchPage page) throws PartInitException, PersistenceException;
     
     

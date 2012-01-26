@@ -1,10 +1,10 @@
 package org.csstudio.platform.internal.dal;
 
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * DAL Tests. This test class concentrates on functionalities that receive

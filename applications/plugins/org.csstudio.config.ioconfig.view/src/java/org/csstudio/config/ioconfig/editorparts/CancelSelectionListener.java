@@ -3,7 +3,8 @@ package org.csstudio.config.ioconfig.editorparts;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -17,7 +18,7 @@ import org.eclipse.swt.events.SelectionListener;
  * @param <T> the Editor to perform the cancel action
  *
  */
-final class CancelSelectionListener<T extends AbstractNodeDBO<?,?>> implements SelectionListener {
+final class CancelSelectionListener<T extends AbstractNodeSharedImpl<?,?>> implements SelectionListener {
 
     private final AbstractNodeEditor<?> _abstractNodeEditor;
 
@@ -59,7 +60,7 @@ final class CancelSelectionListener<T extends AbstractNodeDBO<?,?>> implements S
                 // hrickens (01.10.2010): Beim Cancel einer neuen Facility
                 // macht nur Perfrom close Sinn.
                 @SuppressWarnings("rawtypes")
-                final AbstractNodeDBO parent = node.getParent();
+                final NodeDBO parent = node.getParent();
                 if (parent != null) {
                     parent.removeChild(node);
                 }

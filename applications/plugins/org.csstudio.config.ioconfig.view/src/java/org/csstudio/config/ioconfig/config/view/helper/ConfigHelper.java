@@ -36,7 +36,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NodeImageDBO;
@@ -125,13 +125,13 @@ public final class ConfigHelper {
      */
     private static final class SpinnerModifyListener implements ModifyListener {
         private final ProfiBusTreeView _profiBusTreeView;
-        private final AbstractNodeDBO<?,?> _node;
+        private final AbstractNodeSharedImpl<?,?> _node;
         private final Spinner _indexSpinner;
         private boolean _doIt = true;
         private int _lastValue;
 
         protected SpinnerModifyListener(@Nonnull final ProfiBusTreeView profiBusTreeView,
-                                        @Nonnull final AbstractNodeDBO<?,?> node,
+                                        @Nonnull final AbstractNodeSharedImpl<?,?> node,
                                         @Nonnull final Spinner indexSpinner) {
             _profiBusTreeView = profiBusTreeView;
             _node = node;
@@ -225,13 +225,13 @@ public final class ConfigHelper {
     }
 
     @CheckForNull
-    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node) {
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeSharedImpl<?,?> node) {
         return getImageFromNode(node, -1, -1);
     }
 
     // CHECKSTYLE OFF: CyclomaticComplexity
     @CheckForNull
-    public static Image getImageFromNode(@CheckForNull final AbstractNodeDBO<?,?> node, final int width, final int height) {
+    public static Image getImageFromNode(@CheckForNull final AbstractNodeSharedImpl<?,?> node, final int width, final int height) {
         Image image = null;
         if (node != null) {
             final NodeImageDBO icon = node.getIcon();
@@ -297,7 +297,7 @@ public final class ConfigHelper {
      */
     @Nonnull
     public static Spinner getIndexSpinner(@Nonnull final Composite parent,
-                                          @Nonnull final AbstractNodeDBO<?,?> node,
+                                          @Nonnull final AbstractNodeSharedImpl<?,?> node,
                                           @Nonnull final ModifyListener modifyListener,
                                           @Nonnull final String label,
                                           @Nonnull final ProfiBusTreeView profiBusTreeView, final int max) {

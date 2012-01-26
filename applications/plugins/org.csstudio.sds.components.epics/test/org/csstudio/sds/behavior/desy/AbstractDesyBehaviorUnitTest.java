@@ -23,7 +23,7 @@ package org.csstudio.sds.behavior.desy;
 
 import static org.junit.Assert.assertEquals;
 
-import org.epics.css.dal.DataExchangeException;
+import org.csstudio.dal.DataExchangeException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,7 +51,7 @@ public class AbstractDesyBehaviorUnitTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#handleValueType(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.sds.model.TextTypeEnum, java.lang.String, org.epics.css.dal.simple.AnyData)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#handleValueType(org.csstudio.sds.model.AbstractWidgetModel, org.csstudio.sds.model.TextTypeEnum, java.lang.String, org.csstudio.dal.simple.AnyData)}.
      * @throws DataExchangeException
      */
     @Test

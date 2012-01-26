@@ -5,7 +5,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.SWT;
@@ -47,8 +47,8 @@ class ProfiBusViewLabelProvider extends ColumnLabelProvider {
     @Override
     @CheckForNull
     public Image getImage(@Nullable final Object obj) {
-        if (obj instanceof AbstractNodeDBO) {
-            final AbstractNodeDBO<?,?> node = (AbstractNodeDBO<?,?>) obj;
+        if (obj instanceof AbstractNodeSharedImpl) {
+            final AbstractNodeSharedImpl<?,?> node = (AbstractNodeSharedImpl<?,?>) obj;
             return ConfigHelper.getImageFromNode(node);
         }
         return null;

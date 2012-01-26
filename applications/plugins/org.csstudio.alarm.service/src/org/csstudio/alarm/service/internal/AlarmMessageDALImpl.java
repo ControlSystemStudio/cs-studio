@@ -28,12 +28,12 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.SimpleProperty;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.SimpleProperty;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.MetaData;
+import org.csstudio.dal.simple.Severity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

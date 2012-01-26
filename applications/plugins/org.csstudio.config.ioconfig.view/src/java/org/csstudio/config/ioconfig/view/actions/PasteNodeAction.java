@@ -26,7 +26,8 @@ import java.util.SortedMap;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.NodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.view.DeviceDatabaseErrorDialog;
@@ -58,14 +59,14 @@ public class PasteNodeAction extends Action {
     @Override
     public void run() {
         final Object firstElement = _profiBusTreeView.getSelectedNodes().getFirstElement();
-        AbstractNodeDBO<?, ?> selectedNode;
-        if (firstElement instanceof AbstractNodeDBO) {
-            selectedNode = (AbstractNodeDBO<?, ?>) firstElement;
+        AbstractNodeSharedImpl<?, ?> selectedNode;
+        if (firstElement instanceof AbstractNodeSharedImpl) {
+            selectedNode = (AbstractNodeSharedImpl<?, ?>) firstElement;
         } else {
             return;
         }
 
-        for (final AbstractNodeDBO<?, ?> node2Copy : _profiBusTreeView
+        for (final AbstractNodeSharedImpl<?, ?> node2Copy : _profiBusTreeView
                 .getCopiedNodesReferenceList()) {
             try {
                 if (node2Copy instanceof FacilityDBO) {
@@ -83,15 +84,15 @@ public class PasteNodeAction extends Action {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void copy2Parent(@Nonnull final AbstractNodeDBO selectedNode,
-                             @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
-        AbstractNodeDBO<?, ?> copy = null;
+    private void copy2Parent(@Nonnull final AbstractNodeSharedImpl selectedNode,
+                             @Nonnull final AbstractNodeSharedImpl node2Copy) throws PersistenceException {
+        AbstractNodeSharedImpl<?, ?> copy = null;
         if (_profiBusTreeView.isMove()) {
-            final AbstractNodeDBO oldParent = node2Copy.getParent();
+            final NodeDBO oldParent = node2Copy.getParent();
             oldParent.removeChild(node2Copy);
-            final SortedMap<Short, AbstractNodeDBO<AbstractNodeDBO<?, ?>, AbstractNodeDBO<?, ?>>> childrenAsMap = selectedNode
+            final SortedMap<Short, AbstractNodeSharedImpl<AbstractNodeSharedImpl<?, ?>, AbstractNodeSharedImpl<?, ?>>> childrenAsMap = selectedNode
                     .getChildrenAsMap();
-            final AbstractNodeDBO<?, ?> node = childrenAsMap.get(node2Copy.getSortIndex());
+            final AbstractNodeSharedImpl<?, ?> node = childrenAsMap.get(node2Copy.getSortIndex());
             if (node != null) {
                 final int freeStationAddress = selectedNode.getfirstFreeStationAddress();
                 node2Copy.setSortIndex(freeStationAddress);
@@ -115,13 +116,13 @@ public class PasteNodeAction extends Action {
      * @throws PersistenceException
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void copy2Sibling(@Nonnull final AbstractNodeDBO<?, ?> selectedNode,
-                              @Nonnull final AbstractNodeDBO node2Copy) throws PersistenceException {
-        AbstractNodeDBO<?, ?> nodeCopy = null;
+    private void copy2Sibling(@Nonnull final AbstractNodeSharedImpl<?, ?> selectedNode,
+                              @Nonnull final AbstractNodeSharedImpl node2Copy) throws PersistenceException {
+        AbstractNodeSharedImpl<?, ?> nodeCopy = null;
         if (_profiBusTreeView.isMove()) {
-            final AbstractNodeDBO oldParent = node2Copy.getParent();
+            final NodeDBO oldParent = node2Copy.getParent();
             oldParent.removeChild(node2Copy);
-            final AbstractNodeDBO parent = selectedNode.getParent();
+            final NodeDBO parent = selectedNode.getParent();
             node2Copy.setSortIndex((int) selectedNode.getSortIndex());
             parent.addChild(node2Copy);
             parent.save();

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
@@ -84,7 +84,7 @@ public final class DDBSchemaExport {
         classes.add(GSDModuleDBO.class);
         classes.add(IocDBO.class);
         classes.add(FacilityDBO.class);
-        classes.add(AbstractNodeDBO.class);
+        classes.add(AbstractNodeSharedImpl.class);
         classes.add(GSDFileDBO.class);
         classes.add(ModuleChannelPrototypeDBO.class);
         classes.add(DocumentDBO.class);

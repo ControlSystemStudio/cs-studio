@@ -36,7 +36,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SearchNodeDBO;
@@ -617,17 +617,17 @@ public class SearchDialog extends Dialog {
         }
         if (nodeIds.size() > 0) {
             @SuppressWarnings("rawtypes")
-            AbstractNodeDBO selectedNode;
+            AbstractNodeSharedImpl selectedNode;
             final Integer facilityID = nodeIds.remove(0);
             selectedNode = Repository.load(FacilityDBO.class, facilityID);
             final Iterator<Integer> iterator = nodeIds.iterator();
             while (iterator.hasNext()) {
                 final Integer nextId = iterator.next();
                 @SuppressWarnings({ "unchecked", "rawtypes" })
-                final Set<AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO>> children = selectedNode
+                final Set<AbstractNodeSharedImpl<AbstractNodeSharedImpl, AbstractNodeSharedImpl>> children = selectedNode
                         .getChildren();
                 for (@SuppressWarnings("rawtypes")
-                final AbstractNodeDBO<AbstractNodeDBO, AbstractNodeDBO> abstractNodeDBO : children) {
+                final AbstractNodeSharedImpl<AbstractNodeSharedImpl, AbstractNodeSharedImpl> abstractNodeDBO : children) {
                     if (abstractNodeDBO.getId() == nextId) {
                         selectedNode = abstractNodeDBO;
                     }
@@ -637,7 +637,7 @@ public class SearchDialog extends Dialog {
         }
     }
 
-    private void showNode(@CheckForNull final AbstractNodeDBO<?, ?> node) {
+    private void showNode(@CheckForNull final AbstractNodeSharedImpl<?, ?> node) {
         if (node != null) {
             _profiBusTreeView.getViewer().setSelection(new StructuredSelection(node));
         }

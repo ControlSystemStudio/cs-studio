@@ -23,8 +23,8 @@ import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  * Default DESY-Behavior for the {@link ActionButtonModel} widget with Connection state.

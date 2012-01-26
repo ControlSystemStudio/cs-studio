@@ -34,9 +34,10 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
+import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
@@ -50,14 +51,14 @@ import org.slf4j.LoggerFactory;
  * @since 27.08.2009
  */
 public class LogbookDocumentService implements IDocumentService {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(LogbookDocumentService.class);
-    
+
     private boolean canOpenDocument(@CheckForNull final File createTempFile) {
         return createTempFile != null && createTempFile.isFile()
         && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
     }
-    
+
     /**
      * Get all Document from a Node.
      * @throws PersistenceException
@@ -65,17 +66,17 @@ public class LogbookDocumentService implements IDocumentService {
     @Nonnull
     List<IDocument> getAllDocumentsFromNode(final int nodeId) throws PersistenceException {
         final List<IDocument> docList = new ArrayList<IDocument>();
-        AbstractNodeDBO<?, ?> load = Repository.load(AbstractNodeDBO.class, nodeId);
+        INode load = Repository.load(AbstractNodeSharedImpl.class, nodeId);
         while (load != null) {
             final Set<DocumentDBO> documents = load.getDocuments();
             if(documents != null) {
                 docList.addAll(documents);
             }
-            load = load.getParent();
+            load = load.getParentAsINode();
         }
         return docList;
     }
-    
+
     /**
      * {@inheritDoc}
      * @throws PersistenceException
@@ -101,7 +102,7 @@ public class LogbookDocumentService implements IDocumentService {
             }
         }
     }
-    
+
     @Override
     public void saveDocumentAs(@Nonnull final String id, @Nonnull final File file) {
         // TODO Implement save Document as File!

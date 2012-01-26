@@ -2,14 +2,14 @@ package org.csstudio.platform.internal.simpledal.dal;
 
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.DataExchangeException;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.context.ConnectionEvent;
-import org.epics.css.dal.context.LinkAdapter;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.DataExchangeException;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.context.ConnectionEvent;
+import org.csstudio.dal.context.LinkAdapter;
 
 /**
  * Utility methods for accessing characteristics and dealing with DAL

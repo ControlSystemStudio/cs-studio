@@ -40,7 +40,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
  */
 @Entity
 @Table(name = "ddb_Ioc")
-public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
+public class IocDBO extends AbstractNodeSharedImpl<FacilityDBO, ProfibusSubnetDBO> {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,6 +58,13 @@ public class IocDBO extends AbstractNodeDBO<FacilityDBO, ProfibusSubnetDBO> {
      */
     public IocDBO(@Nonnull final FacilityDBO facility) throws PersistenceException {
         super(facility);
+    }
+
+    @Override
+    @Nonnull
+    @Transient
+    public FacilityDBO getParent() {
+        return super.getParent();
     }
 
     /**

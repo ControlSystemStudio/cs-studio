@@ -159,4 +159,22 @@ public class DummyRepository implements IRepository {
         return dbClass;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public ChannelDBO loadChannelWithInternId(@Nonnull final String internId) throws PersistenceException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nonnull final Collection<String> ioNames) throws PersistenceException {
+        return null;
+    }
+
 }

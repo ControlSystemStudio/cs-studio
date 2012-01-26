@@ -58,7 +58,7 @@ import org.eclipse.gef.tools.SelectionTool;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS

@@ -46,6 +46,8 @@ import org.slf4j.LoggerFactory;
 public class ArchiveEngineApplication implements IApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArchiveEngineApplication.class);
+    private static final java.util.logging.Logger julLOG = java.util.logging.Logger.getLogger(ArchiveEngineApplication.class.getName());
+
 
     /** Request file */
     private String _engineName;
@@ -106,6 +108,7 @@ public class ArchiveEngineApplication implements IApplication {
 
         final IServiceProvider provider = new ServiceProvider();
         LOG.info("DESY Archive Engine Version {} - START.", provider.getPreferencesService().getVersion());
+        julLOG.info("DESY Archive Engine Version {} - START.");
 
         final String[] args = (String[]) context.getArguments().get("application.args");
         if (!getSettings(args)) {
