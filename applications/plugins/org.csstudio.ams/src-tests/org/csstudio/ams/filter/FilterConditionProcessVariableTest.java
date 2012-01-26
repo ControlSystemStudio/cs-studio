@@ -42,7 +42,7 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.RemoteInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

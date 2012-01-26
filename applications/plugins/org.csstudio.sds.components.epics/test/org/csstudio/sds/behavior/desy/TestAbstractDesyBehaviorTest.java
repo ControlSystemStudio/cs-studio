@@ -24,10 +24,10 @@ package org.csstudio.sds.behavior.desy;
 import static org.junit.Assert.assertEquals;
 
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.Severity;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderStyle(org.epics.css.dal.context.ConnectionState)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderStyle(org.csstudio.dal.context.ConnectionState)}.
      */
     @Test
     public void testDetermineBorderStyle() {
@@ -58,7 +58,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBackgroundColor(org.epics.css.dal.context.ConnectionState)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBackgroundColor(org.csstudio.dal.context.ConnectionState)}.
      */
     @Test
     public void testDetermineBackgroundColor() {
@@ -69,7 +69,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderColor(org.epics.css.dal.context.ConnectionState)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderColor(org.csstudio.dal.context.ConnectionState)}.
      */
     @Test
     public void testDetermineBorderColor() {
@@ -80,7 +80,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderWidth(org.epics.css.dal.context.ConnectionState)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderWidth(org.csstudio.dal.context.ConnectionState)}.
      */
     @Test
     public void testDetermineBorderWidth() {
@@ -91,7 +91,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderStyleBySeverity(org.epics.css.dal.simple.Severity)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderStyleBySeverity(org.csstudio.dal.simple.Severity)}.
      */
     @Test
     public void testDetermineBorderStyleBySeverity() {
@@ -103,7 +103,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderWidthBySeverity(org.epics.css.dal.simple.Severity)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineBorderWidthBySeverity(org.csstudio.dal.simple.Severity)}.
      */
     @Test
     public void testDetermineBorderWidthBySeverity() {
@@ -115,7 +115,7 @@ public class TestAbstractDesyBehaviorTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineColorBySeverity(org.epics.css.dal.simple.Severity, java.lang.String)}.
+     * Test method for {@link org.csstudio.sds.behavior.desy.AbstractDesyBehavior#determineColorBySeverity(org.csstudio.dal.simple.Severity, java.lang.String)}.
      */
     @Test
     public void testDetermineColorBySeverity() {

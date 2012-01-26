@@ -5,11 +5,11 @@ import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.IPropertyChangeListener;
-import org.epics.css.dal.ResponseEvent;
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.ResponseEvent;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 @SuppressWarnings("unchecked")
 public class SinglePropertyWriteConnector implements IPropertyChangeListener {

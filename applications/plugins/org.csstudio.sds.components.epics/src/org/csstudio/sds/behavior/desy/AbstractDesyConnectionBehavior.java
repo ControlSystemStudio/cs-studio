@@ -23,11 +23,11 @@ import java.util.Set;
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.Severity;
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.Severity;
 
 /**
  * TODO (hrickens) :

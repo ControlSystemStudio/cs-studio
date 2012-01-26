@@ -3,13 +3,13 @@ package org.csstudio.platform.internal.dal;
 import junit.framework.TestCase;
 
 import org.csstudio.dal.DalPlugin;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.MetaData;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.MetaData;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Test class for a connection problem with initially unavailable channels in

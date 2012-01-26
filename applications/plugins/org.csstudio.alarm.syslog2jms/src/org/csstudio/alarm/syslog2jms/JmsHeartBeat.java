@@ -5,6 +5,8 @@ import javax.jms.MapMessage;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 	/**
 	 * send a JMS message every beaconInterval
@@ -20,6 +22,10 @@ import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 	    private JmsSimpleProducer jmsProducer;
 	    private String localHostName = "";
 	    
+	    /** The class logger */
+	    private static final Logger LOG = LoggerFactory.getLogger(Syslog2JmsApplication.class);
+
+	    
 		/**
 		 * @param checkInterval
 		 *            The time between two checks for IOCs which are offline.
@@ -28,7 +34,7 @@ import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 			this.beaconInterval = beaconInterval;
 			this.jmsProducer = jmsProducer;
 			this.localHostName = localHostName;
-			CentralLogger.getInstance().info(this, "Starting JmsBeacon for @" + beaconInterval + " ms");
+			LOG.info("Starting JmsBeacon for @" + beaconInterval + " ms");
 			this.start();
 		}
 
@@ -58,7 +64,13 @@ import org.csstudio.platform.utility.jms.JmsSimpleProducer;
 				        jmsProducer.sendMessage(message);
 				        
 				    }
-				} catch (JMSException e1) {
+				} catch (javax.jms.IllegalStateException e1) {
+					// session is invalid or closed - create a new one!
+					e1.printStackTrace();
+					LOG.info("JMS session invalid or closed");
+					// this.jmsProducer = Syslog2JmsApplication.initJmsBeacon();
+				}
+				catch (JMSException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}

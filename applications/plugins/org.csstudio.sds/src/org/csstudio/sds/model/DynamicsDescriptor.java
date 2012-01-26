@@ -29,7 +29,7 @@ import java.util.Map;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.internal.rules.DirectConnectionRule;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * Descriptor for the dynamic behavior of <code>ElementProperties</code>.

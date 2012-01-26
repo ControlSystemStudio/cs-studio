@@ -28,8 +28,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.sds.model.BorderStyleEnum;
-import org.epics.css.dal.DynamicValueCondition;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueCondition;
+import org.csstudio.dal.DynamicValueState;
 import org.junit.Before;
 import org.junit.Test;
 

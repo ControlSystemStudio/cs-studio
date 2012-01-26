@@ -70,9 +70,9 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.progress.UIJob;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 

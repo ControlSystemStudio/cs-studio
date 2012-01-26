@@ -28,7 +28,7 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * DAL based implementation of the AlarmService.

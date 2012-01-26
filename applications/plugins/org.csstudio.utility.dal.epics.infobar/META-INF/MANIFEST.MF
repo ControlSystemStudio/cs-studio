@@ -7,8 +7,8 @@ Bundle-Vendor: Jan Hatje <jan.hatje@desy.de> - DESY
 Bundle-Activator: org.csstudio.utility.dal.epics.infobar.EpicsInfoBarActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform.libs.dal.epics;bundle-version="1.3.0",
- org.csstudio.platform.libs.dal;bundle-version="1.3.0",
+ org.csstudio.dal.epics;bundle-version="1.0.0",
+ org.csstudio.dal;bundle-version="1.0.0",
  org.csstudio.platform.libs.epics
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

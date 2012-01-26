@@ -15,7 +15,7 @@ import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
-import org.epics.css.dal.Timestamp;
+import org.csstudio.dal.Timestamp;
 
 /**
  * @author Goesta Steen, TR, MW

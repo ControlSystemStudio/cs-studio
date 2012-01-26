@@ -12,7 +12,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 public class ConnectionView extends ViewPart {
 

@@ -34,35 +34,35 @@ public enum ConnectionState {
      */
     UNKNOWN(null),
 
-    INITIAL(org.epics.css.dal.context.ConnectionState.INITIAL),
+    INITIAL(org.csstudio.dal.context.ConnectionState.INITIAL),
 
     /**
      * If connection is valid and connected.
      */
-    CONNECTED(org.epics.css.dal.context.ConnectionState.CONNECTED),
+    CONNECTED(org.csstudio.dal.context.ConnectionState.CONNECTED),
 
     /**
      * If the connection get lost in case of any problem.
      */
-    CONNECTION_LOST(org.epics.css.dal.context.ConnectionState.CONNECTION_LOST),
+    CONNECTION_LOST(org.csstudio.dal.context.ConnectionState.CONNECTION_LOST),
 
     /**
      * If the connection to the PV failed or failed in re-connect.
      */
-    CONNECTION_FAILED(org.epics.css.dal.context.ConnectionState.CONNECTION_FAILED),
+    CONNECTION_FAILED(org.csstudio.dal.context.ConnectionState.CONNECTION_FAILED),
 
     /**
      * If connection get disposed / disconnected.
      */
-    DISCONNECTED(org.epics.css.dal.context.ConnectionState.DISCONNECTED);
+    DISCONNECTED(org.csstudio.dal.context.ConnectionState.DISCONNECTED);
     
-    private org.epics.css.dal.context.ConnectionState _dalState;
+    private org.csstudio.dal.context.ConnectionState _dalState;
     
     /**
      * Constructor.
      * @param dalState
      */
-    private ConnectionState(org.epics.css.dal.context.ConnectionState dalState) {
+    private ConnectionState(org.csstudio.dal.context.ConnectionState dalState) {
         _dalState = dalState;
     }
     
@@ -71,7 +71,7 @@ public enum ConnectionState {
      * 
      * @return The DAL-state of this state.
      */
-    public org.epics.css.dal.context.ConnectionState getDalState() {
+    public org.csstudio.dal.context.ConnectionState getDalState() {
         return _dalState;
     }
     
@@ -83,7 +83,7 @@ public enum ConnectionState {
      * @return The matching state of this type, {@link ConnectionState.UNKNOWN}
      *         if not avail.
      */
-    public static ConnectionState translate(org.epics.css.dal.context.ConnectionState dalState) {
+    public static ConnectionState translate(org.csstudio.dal.context.ConnectionState dalState) {
         
         ConnectionState result = UNKNOWN;
         
@@ -94,11 +94,11 @@ public enum ConnectionState {
         }
         
         // TODO:
-        // If the incomming state is org.epics.css.dal.context.ConnectionState.OPERATIONAL,
+        // If the incomming state is org.csstudio.dal.context.ConnectionState.OPERATIONAL,
         // the result value is always UNKNOWN
         // because the old ConnectionState enum does not contain such a state.
         // This causes always an error in the application DepartmentDecision (NAMS)
-        if ((result == UNKNOWN) && (dalState == org.epics.css.dal.context.ConnectionState.OPERATIONAL)) {
+        if ((result == UNKNOWN) && (dalState == org.csstudio.dal.context.ConnectionState.OPERATIONAL)) {
             result = ConnectionState.CONNECTED;
         }
         

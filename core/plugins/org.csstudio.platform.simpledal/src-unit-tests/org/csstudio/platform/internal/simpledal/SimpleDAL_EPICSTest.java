@@ -15,13 +15,13 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.epics.css.dal.CharacteristicInfo;
-import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.DoubleSeqAccess;
-import org.epics.css.dal.DynamicValueProperty;
-import org.epics.css.dal.SequencePropertyCharacteristics;
-import org.epics.css.dal.Timestamp;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.CharacteristicInfo;
+import org.csstudio.dal.DoubleProperty;
+import org.csstudio.dal.DoubleSeqAccess;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.SequencePropertyCharacteristics;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.dal.spi.PropertyFactory;
 
 public class SimpleDAL_EPICSTest extends TestCase {
 	
@@ -188,26 +188,26 @@ public class SimpleDAL_EPICSTest extends TestCase {
 			.getPropertyFactory(ia.getControlSystem());
 			DynamicValueProperty pp= factory.getPropertyFamily().getFirst("PV_AO_11");
 			assertNotNull(pp);
-			//assertEquals(org.epics.css.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
+			//assertEquals(org.csstudio.dal.context.ConnectionState.INITIAL, pp.getConnectionState());
 			
 			connectionService.writeValueAsynchronously(ia, 10.0, ValueType.DOUBLE, null);
 			double d= connectionService.readValueSynchronously(ia, ValueType.DOUBLE);
 			assertEquals(10.0, d, 0.0001);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			assertEquals(org.csstudio.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 
 			assertNotNull(l.value);
 			assertNotNull(l.state);
 			assertNull(l.error);
 			
 			Thread.sleep(3100);
-			assertEquals(org.epics.css.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
+			assertEquals(org.csstudio.dal.context.ConnectionState.CONNECTED, pp.getConnectionState());
 			
 			connectionService.unregister(l);
 			
 			l.value=null;
 			Thread.sleep(1100);
 			assertNull(l.value);
-			//assertEquals(org.epics.css.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
+			//assertEquals(org.csstudio.dal.context.ConnectionState.DESTROYED, pp.getConnectionState());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

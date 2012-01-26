@@ -3,15 +3,15 @@ package org.csstudio.platform.internal.simpledal;
 import junit.framework.TestCase;
 
 import org.csstudio.dal.DalPlugin;
-import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.DynamicValueListener;
-import org.epics.css.dal.Request;
-import org.epics.css.dal.ResponseEvent;
-import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.DynamicValueEvent;
+import org.csstudio.dal.DynamicValueListener;
+import org.csstudio.dal.Request;
+import org.csstudio.dal.ResponseEvent;
+import org.csstudio.dal.ResponseListener;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.RemoteInfo;
 
 public class SimpleDALBrokerTest extends TestCase {
 	

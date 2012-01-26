@@ -21,12 +21,12 @@
  */
  package org.csstudio.platform.internal.simpledal;
 
-import org.epics.css.dal.DoubleProperty;
-import org.epics.css.dal.StringProperty;
-import org.epics.css.dal.impl.DefaultApplicationContext;
-import org.epics.css.dal.spi.DefaultPropertyFactoryService;
-import org.epics.css.dal.spi.LinkPolicy;
-import org.epics.css.dal.spi.PropertyFactory;
+import org.csstudio.dal.DoubleProperty;
+import org.csstudio.dal.StringProperty;
+import org.csstudio.dal.impl.DefaultApplicationContext;
+import org.csstudio.dal.spi.DefaultPropertyFactoryService;
+import org.csstudio.dal.spi.LinkPolicy;
+import org.csstudio.dal.spi.PropertyFactory;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -46,7 +46,7 @@ public class DalCacheBugTest {
 		System.setProperty("dal.plugs", "EPICS");
 		System.setProperty("dal.plugs.default", "EPICS");
 		System.setProperty("dal.propertyfactory.EPICS",
-				"org.epics.css.dal.epics.PropertyFactoryImpl");
+				"org.csstudio.dal.epics.PropertyFactoryImpl");
 
 		System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list",
 				"YES");

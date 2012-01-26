@@ -27,7 +27,7 @@ import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.internal.model.logic.RuleEngine;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.WidgetProperty;
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * A channel input process encapsulates the logical rules that have to be
@@ -129,7 +129,7 @@ public final class ChannelInputProcessor {
 	 * @param state
 	 *            the current connection state
 	 */
-	public void connectionStateChanged(org.epics.css.dal.context.ConnectionState state) {
+	public void connectionStateChanged(org.csstudio.dal.context.ConnectionState state) {
 		if (_connectionStatePropertyValues != null
 				&& _connectionStatePropertyValues.containsKey(state)) {
 			applyValueToProperty(_connectionStatePropertyValues.get(state));

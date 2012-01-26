@@ -20,10 +20,10 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.SixteenBinaryBarModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *

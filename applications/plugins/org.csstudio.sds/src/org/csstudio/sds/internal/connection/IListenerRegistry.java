@@ -5,8 +5,8 @@ import java.beans.PropertyChangeListener;
 import org.csstudio.sds.model.IPropertyChangeListener;
 import org.csstudio.sds.model.WidgetProperty;
 import org.eclipse.gef.EditPart;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
 
 /**
  * A listener registry maintains listeners that have been created for connecting

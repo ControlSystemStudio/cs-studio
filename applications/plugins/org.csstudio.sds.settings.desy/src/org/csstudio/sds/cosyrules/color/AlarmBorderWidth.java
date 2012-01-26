@@ -1,6 +1,6 @@
 package org.csstudio.sds.cosyrules.color;
 
-import org.epics.css.dal.DynamicValueState;
+import org.csstudio.dal.DynamicValueState;
 
 /**
  * Rule to control the border width dependent on the severity.

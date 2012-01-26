@@ -37,12 +37,12 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
-import org.epics.css.dal.context.ConnectionState;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
-import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.context.ConnectionState;
+import org.csstudio.dal.simple.AnyDataChannel;
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

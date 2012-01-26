@@ -27,7 +27,7 @@ package org.csstudio.platform.internal.model.pvs;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
-import org.epics.css.dal.simple.RemoteInfo;
+import org.csstudio.dal.simple.RemoteInfo;
 
 /**
  * {@link IProcessVariableAddress} implementation.

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.eclipse.core.runtime.IPath;
-import org.epics.css.dal.simple.SimpleDALBroker;
+import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * Collects runtime information for a display.

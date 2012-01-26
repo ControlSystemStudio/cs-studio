@@ -41,8 +41,8 @@ import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.MetaData;
+import org.csstudio.dal.simple.AnyData;
+import org.csstudio.dal.simple.MetaData;
 
 /**
  *
