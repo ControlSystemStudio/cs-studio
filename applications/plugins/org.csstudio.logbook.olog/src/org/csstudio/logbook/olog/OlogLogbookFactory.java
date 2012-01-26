@@ -11,7 +11,7 @@ import org.csstudio.logbook.ILogbookFactory;
 
 import edu.msu.nscl.olog.api.Logbook;
 import edu.msu.nscl.olog.api.OlogClient;
-import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
+import edu.msu.nscl.olog.api.OlogClientManager;
 
 /**
  * @author Delphy Nypaver Armstrong
@@ -21,7 +21,7 @@ import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
  * 
  */
 public class OlogLogbookFactory implements ILogbookFactory {
-	final private OlogClient client = OlogClientBuilder.serviceURL().create();
+	final private OlogClient client = OlogClientManager.getClient();
 
 	/**
 	 * @throws Exception
@@ -51,7 +51,7 @@ public class OlogLogbookFactory implements ILogbookFactory {
 	 */
 	@Override
 	public String getDefaultLogbook() {
-		return "default olog logbook";
+		return "Operations";
 	}
 
 	/*

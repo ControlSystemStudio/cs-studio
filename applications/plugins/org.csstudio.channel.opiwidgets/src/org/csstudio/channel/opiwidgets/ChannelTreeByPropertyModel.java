@@ -7,19 +7,19 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 
-public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
+public class ChannelTreeByPropertyModel extends AbstractChannelWidgetWithNotificationModel {
 	
 	public final String ID = "org.csstudio.channel.opiwidgets.ChannelTreeByProperty"; //$NON-NLS-1$
 	
 	public static final String CONFIGURABLE = "configurable"; //$NON-NLS-1$	
 	public static final String TREE_PROPERTIES = "tree_properties"; //$NON-NLS-1$	
-	public static final String SELECTION_PV_NAME = "selection_pv_name"; //$NON-NLS-1$	
+	public static final String SHOW_CHANNEL_NAMES = "show_channel_names"; //$NON-NLS-1$	
 	
 	@Override
 	protected void configureProperties() {
 		addProperty(new BooleanProperty(CONFIGURABLE, "Configurable", WidgetPropertyCategory.Behavior, false));
-		addProperty(new StringProperty(TREE_PROPERTIES, "Tree properties", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(SELECTION_PV_NAME, "Selection PV Name", WidgetPropertyCategory.Basic, ""));
+		addProperty(new StringProperty(TREE_PROPERTIES, "Tree Properties", WidgetPropertyCategory.Basic, ""));
+		addProperty(new BooleanProperty(SHOW_CHANNEL_NAMES, "Show Channel Names", WidgetPropertyCategory.Basic, true));
 	}
 
 	@Override
@@ -37,12 +37,21 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetModel {
 		return properties;
 	}
 	
-	public String getSelectionPvName() {
-		return getCastedPropertyValue(SELECTION_PV_NAME);
+	@Override
+	protected String defaultSelectionExpression() {
+		if (isShowChannelNames()) {
+			return "#(Channel Name)";
+		} else {
+			return "#(" + getTreeProperties().get(getTreeProperties().size() - 1) + ")";
+		}
 	}
 	
 	public boolean getConfigurable() {
 		return getCastedPropertyValue(CONFIGURABLE);
+	}
+	
+	public boolean isShowChannelNames() {
+		return getCastedPropertyValue(SHOW_CHANNEL_NAMES);
 	}
 
 }

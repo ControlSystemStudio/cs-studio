@@ -1,13 +1,9 @@
 package org.csstudio.scan.ui.scantree;
 
-import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.csstudio.scan.command.DelayCommand;
-import org.csstudio.scan.command.LogCommand;
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.command.WaitCommand;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -55,15 +51,15 @@ public class CommandListView extends ViewPart
         table_viewer.setLabelProvider(new CommandTreeLabelProvider());
         table_viewer.setContentProvider(new ArrayContentProvider());
         
-        final String device_name = "device"; //$NON-NLS-1$
-        table_viewer.setInput(new ScanCommand[]
+        try
         {
-            new DelayCommand(1.0),
-            new LogCommand(device_name),
-            new LoopCommand(device_name, 1.0, 10.0, 1.0, new ArrayList<ScanCommand>()),
-            new SetCommand(device_name, 1.0),
-            new WaitCommand(device_name, 1.0, 0.1),
-        });
+            table_viewer.setInput(CommandsInfo.getInstance().getCommands());
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName())
+                .log(Level.WARNING, "Cannot obtain list of commands", ex); //$NON-NLS-1$
+        }
     }
     
     /** @return Currently selected scan command or <code>null</code> */

@@ -19,21 +19,29 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-/** {@link CommandImpl} that reads data from devices and logs it
+/** Command that reads data from devices and logs it
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class LogCommand extends BaseCommand
+public class LogCommand extends ScanCommand
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
+    /** Configurable properties of this command */
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_names", "Device Names", String[].class)
+    };
 
     private String[] device_names;
 
+    /** Initialize empty log command */
+    public LogCommand()
+    {
+        this("device");
+    }
+    
 	/** Initialize
 	 *  @param device_names List of device names
 	 */
@@ -49,6 +57,13 @@ public class LogCommand extends BaseCommand
     {
         this(new String[] { device_name });
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
+    }
 
 	/** @return Names of devices to read and log */
     public String[] getDeviceNames()
@@ -63,6 +78,7 @@ public class LogCommand extends BaseCommand
     }
 
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
@@ -80,12 +96,9 @@ public class LogCommand extends BaseCommand
         out.println("</log>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
         final List<String> devices = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
@@ -100,7 +113,7 @@ public class LogCommand extends BaseCommand
             devices.add(text_node.getNodeValue());
             node = DOMHelper.findNextElementNode(node, "device");
         }
-        return new LogCommand(devices.toArray(new String[devices.size()]));
+        setDeviceNames(devices.toArray(new String[devices.size()]));
     }
     
     /** {@inheritDoc} */

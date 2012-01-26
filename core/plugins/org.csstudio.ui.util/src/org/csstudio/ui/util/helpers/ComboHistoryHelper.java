@@ -18,7 +18,9 @@ import org.eclipse.swt.widgets.Combo;
  * Decorates a Combo box to maintain the history.
  * <p>
  * Newly entered items are added to the top of the combo list, dropping last
- * items off the list when reaching a configurable maximum list size.
+ * items off the list when reaching a configurable maximum list size. If an item
+ * is selected/entered again, it will pop at the beginning of the list (so
+ * that continuously used items are not lost).
  * <p>
  * You must
  * <ul>
@@ -77,6 +79,7 @@ public abstract class ComboHistoryHelper {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				String new_entry = ComboHistoryHelper.this.combo.getText();
 				addEntry(new_entry);
+				ComboHistoryHelper.this.combo.select(0);
 				newSelection(new_entry);
 			}
 
@@ -84,6 +87,8 @@ public abstract class ComboHistoryHelper {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				String name = ComboHistoryHelper.this.combo.getText();
+				addEntry(name);
+				ComboHistoryHelper.this.combo.select(0);
 				newSelection(name);
 			}
 		});
@@ -109,10 +114,12 @@ public abstract class ComboHistoryHelper {
 		if (newEntry.trim().isEmpty())
 			return;
 		
-		// Avoid duplicates
-		for (int i = 0; i < combo.getItemCount(); ++i)
-			if (combo.getItem(i).equals(newEntry))
-				return;
+		// Remove if present, so that is
+		// re-added on top
+		int entry = -1;
+		while ((entry = combo.indexOf(newEntry)) != -1) {
+			combo.remove(entry);
+		}
 		
 		// Maybe remove oldest, i.e. bottom-most, entry
 		if (combo.getItemCount() >= max)
@@ -127,19 +134,23 @@ public abstract class ComboHistoryHelper {
 
 	/** Load persisted list values. */
 	public void loadSettings() {
-		IDialogSettings pvs = settings.getSection(tag);
-		if (pvs == null)
-			return;
-		String values[] = pvs.getArray(TAG);
-		if (values != null)
-			for (int i = values.length-1; i >= 0; i--)
-				// Load as if they were entered, i.e. skip duplicates
-				addEntry(values[i]);
+		if (settings != null) {
+			IDialogSettings pvs = settings.getSection(tag);
+			if (pvs == null)
+				return;
+			String values[] = pvs.getArray(TAG);
+			if (values != null)
+				for (int i = values.length-1; i >= 0; i--)
+					// Load as if they were entered, i.e. skip duplicates
+					addEntry(values[i]);
+		}
 	}
 
 	/** Save list values to persistent storage. */
 	public void saveSettings() {
-		IDialogSettings values = settings.addNewSection(tag);
-		values.put(TAG, combo.getItems());
+		if (settings != null) {
+			IDialogSettings values = settings.addNewSection(tag);
+			values.put(TAG, combo.getItems());
+		}
 	}
 }

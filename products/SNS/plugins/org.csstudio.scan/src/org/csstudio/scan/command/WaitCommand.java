@@ -17,33 +17,66 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
-/** {@link CommandImpl} that delays the scan until a device reaches a certain value
+/** Command that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitCommand extends BaseCommand
+public class WaitCommand extends ScanCommand
 {
-    /** Serialization ID */
-    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("comparison", "Comparison", Comparison.class),
+        new ScanCommandProperty("desired_value", "Desired Value", Double.class),
+        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
+    };
+    
     private String device_name;
+    private Comparison comparison;
     private double desired_value;
     private double tolerance;
 
-    /** Initialize
+    /** Initialize empty wait command */
+    public WaitCommand()
+    {
+        this("device", Comparison.EQUALS, 0.0, 0.1);
+    }
+
+    /** Initialize for 'equals'
      *  @param device_name Name of device to check
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
      */
+    public WaitCommand(final String device_name,
+            final double desired_value, final double tolerance)
+    {
+        this(device_name, Comparison.EQUALS, desired_value, tolerance);
+    }
+
+    /** Initialize
+     *  @param device_name Name of device to check
+     *  @param comparison Comparison to use
+     *  @param desired_value Desired value of the device
+     *  @param tolerance Numeric tolerance when checking value
+     */
 	public WaitCommand(final String device_name,
-	        final double desired_value, final double tolerance)
+	        final Comparison comparison, final double desired_value,
+	        final double tolerance)
     {
         this.device_name = device_name;
         this.desired_value = desired_value;
+	    this.comparison = comparison;
 	    this.tolerance = tolerance;
+    }
+
+	/** {@inheritDoc} */
+    @Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
     }
 
 	/** @return Device name */
@@ -65,9 +98,21 @@ public class WaitCommand extends BaseCommand
     }
     
     /** @param desired_value Desired value */
-    public void setDesiredValue(final double desired_value)
+    public void setDesiredValue(final Double desired_value)
     {
         this.desired_value = desired_value;
+    }
+
+    /** @return Desired comparison */
+    public Comparison getComparison()
+    {
+        return comparison;
+    }
+
+    /** @param comparison Desired comparison */
+    public void setComparison(final Comparison comparison)
+    {
+        this.comparison = comparison;
     }
 
     /** @return Tolerance */
@@ -77,38 +122,46 @@ public class WaitCommand extends BaseCommand
     }
 
     /** @param tolerance Tolerance */
-    public void setTolerance(final double tolerance)
+    public void setTolerance(final Double tolerance)
     {
         this.tolerance = tolerance;
     }
     
     /** {@inheritDoc} */
+    @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
         out.println("<wait><device>" + device_name + "</device>" +
         		    "<value>" + desired_value + "</value>" +
+                    "<comparison>" + comparison.name() + "</comparison>" +
                     "<tolerance>" + tolerance + "</tolerance>" +
         		    "</wait>");
     }
     
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        final String device = DOMHelper.getSubelementString(element, "device");
-        final double value = DOMHelper.getSubelementDouble(element, "value");
-        final double tolerance = DOMHelper.getSubelementDouble(element, "tolerance");
-        return new WaitCommand(device, value, tolerance);
+        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setDesiredValue(DOMHelper.getSubelementDouble(element, "value"));
+        try
+        {
+            setComparison(Comparison.valueOf(DOMHelper.getSubelementString(element, "comparison")));
+        }
+        catch (Throwable ex)
+        {
+            setComparison(Comparison.EQUALS);
+        }
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
     }
     
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
-	    return "Wait for '" + device_name + "' to reach " + desired_value + " (+-" + tolerance + ")";
+	    if (comparison == Comparison.EQUALS)
+	        return "Wait for '" + device_name + "' " + comparison + " " + desired_value + " (+-" + tolerance + ")";
+        return "Wait for '" + device_name + "' " + comparison + " " + desired_value;
 	}
 }

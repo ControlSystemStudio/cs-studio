@@ -146,7 +146,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 				pv.removeListener(loadItemsFromPVListener);
 			}
 		}
-		((ComboFigure)getFigure()).dispose();
+//		((ComboFigure)getFigure()).dispose();
 	}
 
 	/**

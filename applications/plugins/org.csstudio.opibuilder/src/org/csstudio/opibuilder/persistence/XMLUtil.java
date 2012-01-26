@@ -33,6 +33,7 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.osgi.framework.Version;
 
 /**The utility class for XML related operation.
  * @author Xihui Chen
@@ -155,7 +156,7 @@ public class XMLUtil {
 			 XMLElementToWidget(root, displayModel);
 			 
 			 //check version
-			 if(displayModel.getBOYVersion().compareTo(
+			 if(compareVersion(displayModel.getBOYVersion(),
 					 OPIBuilderPlugin.getDefault().getBundle().getVersion()) > 0){				
 				final String message = displayModel.getOpiFilePath() == null ? "This OPI"
 						: displayModel.getOpiFilePath().lastSegment()
@@ -265,6 +266,35 @@ public class XMLUtil {
 			}
 		}
 		return rootWidgetModel;
+	}
+	
+	
+	/**Compare version without comparing qualifier.
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	private static int compareVersion(Version v1, Version v2) {
+		if (v2 == v1) { 
+			return 0;
+		}
+
+		int result = v1.getMajor() - v2.getMajor();
+		if (result != 0) {
+			return result;
+		}
+
+		result = v1.getMinor() - v2.getMinor();
+		if (result != 0) {
+			return result;
+		}
+
+		result = v1.getMicro() - v2.getMicro();
+		if (result != 0) {
+			return result;
+		}
+
+		return 0;
 	}
 
 }

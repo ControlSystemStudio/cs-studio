@@ -32,7 +32,7 @@ abstract public class AbstractSendEMailAction extends Action
             final String body)
     {
         super(Messages.SendEmail,
-              Activator.getImageDescriptor("icons/email.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/mail-send-16.png")); //$NON-NLS-1$
         this.shell = shell;
         this.from = from;
         this.subject = subject;
@@ -48,7 +48,7 @@ abstract public class AbstractSendEMailAction extends Action
             final String subject)
     {
         super(Messages.SendEmail,
-              Activator.getImageDescriptor("icons/email.gif")); //$NON-NLS-1$
+              Activator.getImageDescriptor("icons/mail-send-16.png")); //$NON-NLS-1$
         this.shell = shell;
         this.from = from;
         this.subject = subject;

@@ -129,7 +129,7 @@ abstract public class ElogDialog extends TitleAreaDialog
     {
         // Title, title image, handle image disposal
         final Image title_image =
-            Activator.getImageDescriptor("icons/elog_image.png").createImage(); //$NON-NLS-1$
+            Activator.getImageDescriptor("icons/logentry-edit-48.png").createImage(); //$NON-NLS-1$
         setTitle(Messages.ELog_Dialog_DialogTitle);
         setMessage(message);
         setTitleImage(title_image);

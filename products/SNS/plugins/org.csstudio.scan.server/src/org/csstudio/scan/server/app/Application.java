@@ -18,7 +18,7 @@ package org.csstudio.scan.server.app;
 import java.util.concurrent.CountDownLatch;
 
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.ScanServerImpl;
+import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;

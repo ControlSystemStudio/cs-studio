@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY base plugin
 Bundle-Description: Base plugin of BOY
 Bundle-SymbolicName: org.csstudio.opibuilder;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.OPIBuilderPlugin
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui;resolution:=optional;visibility:=reexport,
- org.eclipse.core.runtime,
+ org.eclipse.core.runtime;visibility:=reexport,
  org.eclipse.gef;visibility:=reexport,
  org.csstudio.utility.pv;bundle-version="1.2.0";visibility:=reexport,
  org.eclipse.ui.views;bundle-version="3.3.0";resolution:=optional;visibility:=reexport,
@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional;visibility:=reexport,
  org.csstudio.java;bundle-version="3.0.0";visibility:=reexport,
  org.csstudio.csdata;bundle-version="3.0.0";visibility:=reexport,
  org.jdom;bundle-version="1.1.0";visibility:=reexport,
- org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional,
+ org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional;visibility:=reexport,
  org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional;visibility:=reexport,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
  org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional

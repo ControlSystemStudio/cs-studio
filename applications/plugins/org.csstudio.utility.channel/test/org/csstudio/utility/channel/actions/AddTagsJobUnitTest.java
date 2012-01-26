@@ -7,6 +7,7 @@ import static gov.bnl.channelfinder.api.Channel.Builder.channel;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 import static org.junit.Assert.assertTrue;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.api.Tag;
 
@@ -14,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
 
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.junit.After;
@@ -40,7 +40,7 @@ public class AddTagsJobUnitTest {
 	@Before
 	public void setUp() throws Exception {
 		try {
-			client = CFClientManager.getClient();
+			client = ChannelFinder.getClient();
 			ch1 = channel("cssUnitTestChannel1").owner("css");
 			ch2 = channel("cssUnitTestChannel1").owner("css");
 			client.set(ch1);

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.utility.olog.ui.PreferencePage"
+            id="org.csstudio.utility.olog.ui.preferencepage"
+            name="Logbook">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="changelog.xml"
+            primary="false">
+      </toc>
+   </extension>
+
+</plugin>

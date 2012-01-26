@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.nsls2.core.feature"
       label="CSS Core"
-      version="3.0.0.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
@@ -328,7 +328,70 @@
          unpack="false"/>
 
    <plugin
-         id="gov.bnl.channelfinder.api"
+         id="org.csstudio.utility.olog.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="edu.msu.nscl.olog.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.coobird.thumbnailator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.jackrabbit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logbook.olog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logbook.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.loc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.log4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.olog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.collections"
          download-size="0"
          install-size="0"
          version="0.0.0"

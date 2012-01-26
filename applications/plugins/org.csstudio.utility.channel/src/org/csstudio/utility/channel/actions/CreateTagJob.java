@@ -1,10 +1,10 @@
 package org.csstudio.utility.channel.actions;
 
+import gov.bnl.channelfinder.api.ChannelFinder;
 import gov.bnl.channelfinder.api.ChannelFinderException;
 import gov.bnl.channelfinder.api.Tag;
 
 import org.csstudio.utility.channelfinder.Activator;
-import org.csstudio.utility.channelfinder.CFClientManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,7 +21,7 @@ public class CreateTagJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
-			CFClientManager.getClient().set(tag);
+			ChannelFinder.getClient().set(tag);
 		} catch (ChannelFinderException e) {
 			return new Status(Status.ERROR,
 					Activator.PLUGIN_ID,

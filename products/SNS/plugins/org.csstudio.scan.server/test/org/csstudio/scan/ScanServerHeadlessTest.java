@@ -24,6 +24,7 @@ import java.rmi.registry.Registry;
 import java.util.List;
 
 import org.csstudio.scan.command.CommandSequence;
+import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
@@ -33,8 +34,8 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.ScanServerImpl;
 import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link ScanServer}
@@ -82,8 +83,8 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
-            server.submitScan("My Test 1", commands.getCommands());
-            long id = server.submitScan("My Test 2", commands.getCommands());
+            server.submitScan("My Test 1", commands.getXML());
+            long id = server.submitScan("My Test 2", commands.getXML());
 
             System.out.println("All Scans on server:");
             List<ScanInfo> infos = server.getScanInfos();
@@ -111,11 +112,11 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
-            new DeviceValueCondition(pv, 5.0, 0.1).await();
+            new DeviceValueCondition(pv, Comparison.EQUALS, 5.0, 0.1).await();
 
 
             // Submit scan again, and pause it early on
-            id = server.submitScan("My Test 3", commands.getCommands());
+            id = server.submitScan("My Test 3", commands.getXML());
             // Wait for thread to start
             while (true)
             {

@@ -7,14 +7,11 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelUtil;
-import gov.bnl.channelfinder.api.ChannelQuery;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,15 +19,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
-import org.csstudio.utility.pvmanager.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -48,14 +44,13 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 
-public class PVTableByPropertyWidget extends Composite implements ISelectionProvider {
+public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider {
 	
 	private static final int MAX_COLUMNS = 200;
 	private static final int MAX_CELLS = 50000;
 	
 	private VTableDisplay table;
 	private ErrorBar errorBar;
-	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
 	public PVTableByPropertyWidget(Composite parent, int style) {
 		super(parent, style);
@@ -77,10 +72,14 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		});
 		
 		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 0;
+		gridLayout.verticalSpacing = 5;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
+		
+		errorBar = new ErrorBar(this, SWT.NONE);
+		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		
 		table = new VTableDisplay(this);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		table.addSelectionListener(new SelectionListener() {
@@ -98,9 +97,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			}
 		});
 		
-		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
-		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
 			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
@@ -113,20 +109,21 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			}
 		});
 		
-		changeSupport.addPropertyChangeListener("channelQuery", new PropertyChangeListener() {
-			
+		selectionProvider = new AbstractSelectionProviderWrapper(table, this) {
 			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				queryChannels();
+			protected ISelection transform(IStructuredSelection selection) {
+				VTableDisplayCell cell = (VTableDisplayCell) selection.getFirstElement();
+				if (cell != null)
+					return new StructuredSelection(new PVTableByPropertyCell(cell, PVTableByPropertyWidget.this));
+				return new StructuredSelection();
 			}
-		});
+		};
 	}
 	
 	private void setLastException(Exception ex) {
 		errorBar.setException(ex);
 	}
 	
-	private String channelQuery;
 	private String rowProperty;
 	private String columnProperty;
 	
@@ -146,14 +143,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			}
 		}
 	};
-	
-    public void addPropertyChangeListener( PropertyChangeListener listener ) {
-        changeSupport.addPropertyChangeListener( listener );
-    }
-
-    public void removePropertyChangeListener( PropertyChangeListener listener ) {
-    	changeSupport.removePropertyChangeListener( listener );
-    }
     
 	private void reconnect() {
 		if (pv != null) {
@@ -180,16 +169,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
 		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
-	}
-	
-	public String getChannelQuery() {
-		return channelQuery;
-	}
-	
-	public void setChannelQuery(String channelQuery) {
-		String oldValue = this.channelQuery;
-		this.channelQuery = channelQuery;
-		changeSupport.firePropertyChange("channelQuery", oldValue, channelQuery);
 	}
 	
 	public String getRowProperty() {
@@ -222,30 +201,6 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 		Collection<Channel> oldChannels = this.channels;
 		this.channels = channels;
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
-	}
-	
-	private void queryChannels() {
-		setChannels(null);
-		ChannelQuery query = ChannelQuery.Builder.query(channelQuery).create();
-		query.execute(new ChannelQueryListener() {
-			
-			@Override
-			public void queryExecuted(final Result result) {
-				SWTUtil.swtThread().execute(new Runnable() {
-					
-					@Override
-					public void run() {
-						Exception e = result.exception;
-						if (e == null) {
-							setChannels(result.channels);
-						} else {
-							errorBar.setException(e);
-						}
-					}
-				});
-				
-			}
-		});
 	}
 	
 	private void computeTableChannels() {
@@ -352,48 +307,28 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 			rowSelectionWriter = new LocalUtilityPvManagerBridge(selectionPv);
 		}
 	}
+	
+	private AbstractSelectionProviderWrapper selectionProvider;
 
 	@Override
 	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
-		table.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				listener.selectionChanged(new SelectionChangedEvent(PVTableByPropertyWidget.this, getSelection()));
-			}
-			
-			@Override
-			public int hashCode() {
-				return listener.hashCode();
-			}
-			
-			@Override
-			public boolean equals(Object obj) {
-				return listener.equals(obj);
-			}
-		});
+		selectionProvider.addSelectionChangedListener(listener);
 	}
 
 	@Override
 	public ISelection getSelection() {
-		ISelection tableSelection = table.getSelection();
-		if (tableSelection instanceof IStructuredSelection) {
-			VTableDisplayCell cell = (VTableDisplayCell) ((IStructuredSelection) tableSelection).getFirstElement();
-			if (cell != null)
-				return new StructuredSelection(new PVTableByPropertyCell(cell, this));
-		}
-		return new StructuredSelection();
+		return selectionProvider.getSelection();
 	}
 
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
-		table.removeSelectionChangedListener(listener);
+		selectionProvider.removeSelectionChangedListener(listener);
 	}
 
 	@Override
 	public void setSelection(ISelection selection) {
-		throw new UnsupportedOperationException("Not implemented yet");		
+		selectionProvider.setSelection(selection);
 	}
 
 	public Collection<Channel> getChannelsAt(int row, int column) {
@@ -430,6 +365,18 @@ public class PVTableByPropertyWidget extends Composite implements ISelectionProv
 
 	public List<String> getRowPropertyValues() {
 		return rowNames;
+	}
+
+	@Override
+	protected void queryCleared() {
+		setChannels(null);
+		errorBar.setException(null);
+	}
+
+	@Override
+	protected void queryExecuted(Result result) {
+		errorBar.setException(result.exception);
+		setChannels(result.channels);
 	}
 	
 }

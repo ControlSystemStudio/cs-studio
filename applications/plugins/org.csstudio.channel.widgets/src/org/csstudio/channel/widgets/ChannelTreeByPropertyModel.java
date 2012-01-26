@@ -18,9 +18,10 @@ class ChannelTreeByPropertyModel {
 	List<String> properties;
 	private ChannelTreeByPropertyNode root;
 	final String query;
+	private final boolean showChannelNames;
 	
 	public ChannelTreeByPropertyModel(String query, Collection<Channel> allChannels, List<String> properties,
-			ChannelTreeByPropertyWidget widget) {
+			ChannelTreeByPropertyWidget widget, boolean showChannelNames) {
 		if (allChannels == null) {
 			allChannels = Collections.emptyList();
 		}
@@ -29,9 +30,10 @@ class ChannelTreeByPropertyModel {
 		// have a value for all properties
 		this.allChannels = new ArrayList<Channel>(ChannelUtil.filterbyProperties(allChannels, properties));
 		this.properties = properties;
-		this.root = new ChannelTreeByPropertyNode(this, null, "");
 		this.query = query;
 		this.widget = widget;
+		this.showChannelNames = showChannelNames;
+		this.root = new ChannelTreeByPropertyNode(this, null, "");
 	}
 	
 	public ChannelTreeByPropertyNode getRoot() {
@@ -126,5 +128,9 @@ class ChannelTreeByPropertyModel {
 			return new Node(this, childrenNames.get(index));
 		}
 		
+	}
+
+	public boolean isShowChannelNames() {
+		return showChannelNames;
 	}
 }

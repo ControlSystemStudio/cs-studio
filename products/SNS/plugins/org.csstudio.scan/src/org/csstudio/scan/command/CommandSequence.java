@@ -173,4 +173,12 @@ public class CommandSequence
     {
         return commands;
     }
+
+    /** @return Commands formatted as XML text
+     *  @throws Exception on error
+     */
+    public String getXML() throws Exception
+    {
+        return XMLCommandWriter.toXMLString(commands);
+    }
 }

@@ -37,7 +37,7 @@ public final class LocalDataSource extends DataSource {
     @Override
     protected ChannelHandler<?> createChannel(String channelName) {
         // Parse the channel name
-        List<Object> parsedTokens = FunctionParser.parseFunction(channelName);
+        List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
         if (parsedTokens == null || parsedTokens.size() > 2)
             throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
         

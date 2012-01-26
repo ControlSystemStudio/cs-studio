@@ -17,20 +17,28 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.server.ScanServer;
 import org.w3c.dom.Element;
 
-/** {@link ScanCommand} that delays the scan for some time
+/** Command that delays the scan for some time
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DelayCommand extends BaseCommand
+public class DelayCommand extends ScanCommand
 {
-    /** Serialization ID */
-    private static final long serialVersionUID = ScanServer.SERIAL_VERSION;
-
+    /** Configurable properties of this command */
+    final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
+    {
+        new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
+    };
+    
     private double seconds;
 
+    /** Initialize delay with 1 second */
+    public DelayCommand()
+    {
+        this(1.0);
+    }
+    
 	/** Initialize
 	 *  @param seconds Delay in seconds
 	 */
@@ -39,34 +47,38 @@ public class DelayCommand extends BaseCommand
 	    this.seconds = seconds;
     }
 
-	/** @return Delay in seconds */
+    /** {@inheritDoc} */
+	@Override
+    public ScanCommandProperty[] getProperties()
+    {
+        return properties;
+    }
+
+    /** @return Delay in seconds */
 	public double getSeconds()
     {
         return seconds;
     }
 
 	/**@param seconds Delay in seconds */
-	public void setSeconds(final double seconds)
+	public void setSeconds(final Double seconds)
 	{
 	    this.seconds = seconds;
 	}
 	
     /** {@inheritDoc} */
-	public void writeXML(final PrintStream out, final int level)
+	@Override
+    public void writeXML(final PrintStream out, final int level)
 	{
 	    writeIndent(out, level);
 	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
 	}
 	
-    /** Create from XML 
-     *  @param element XML element for this command
-     *  @return ScanCommand
-     *  @throws Exception on error, for example missing configuration element
-     */
-    public static ScanCommand fromXML(final Element element) throws Exception
+    /** {@inheritDoc} */
+	@Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
 	{
-	    final double seconds = DOMHelper.getSubelementDouble(element, "seconds");
-	    return new DelayCommand(seconds);
+        setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
 	}
 	
     /** {@inheritDoc} */

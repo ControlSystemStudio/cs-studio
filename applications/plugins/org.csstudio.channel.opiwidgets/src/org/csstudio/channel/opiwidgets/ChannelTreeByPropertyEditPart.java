@@ -1,12 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
-import gov.bnl.channelfinder.api.ChannelQuery;
-
 import org.csstudio.channel.widgets.ChannelTreeByPropertyWidget;
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.widgets.Composite;
 
 public class ChannelTreeByPropertyEditPart
 extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeByPropertyModel> {
@@ -18,17 +14,25 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 	protected ChannelTreeByPropertyFigure doCreateFigure() {
 		ChannelTreeByPropertyFigure figure = new ChannelTreeByPropertyFigure(this);
 		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		registerPopup(figure.getSWTWidget());
 		return figure;
 	}
 	
-	private static void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
+	private ChannelTreeByPropertySelectionNotification notification;
+	private void configure(ChannelTreeByPropertyWidget widget, ChannelTreeByPropertyModel model, boolean runMode) {
 		if (runMode) {
-			widget.setChannelQuery(ChannelQuery.Builder.query(model.getChannelQuery()).create());
-			widget.setSelectionPv(model.getSelectionPvName());
+			widget.setChannelQuery(model.getChannelQuery());
+			if (notification != null) {
+				notification.close();
+				notification = null;
+			}
+			if (model.getSelectionPv() != null && !model.getSelectionPv().isEmpty()) {
+				notification = new ChannelTreeByPropertySelectionNotification(model.getSelectionPv(),
+					model.getSelectionExpression(), widget);
+			}
 		}
 		widget.setProperties(model.getTreeProperties());
 		widget.setConfigurable(model.getConfigurable());
+		widget.setShowChannelNames(model.isShowChannelNames());
 	}
 
 	@Override
@@ -44,7 +48,8 @@ extends AbstractChannelWidgetEditPart<ChannelTreeByPropertyFigure, ChannelTreeBy
 		};
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(ChannelTreeByPropertyModel.TREE_PROPERTIES, reconfigure);
-		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV_NAME, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_PV, reconfigure);
+		setPropertyChangeHandler(ChannelTreeByPropertyModel.SELECTION_EXPRESSION, reconfigure);
 	}
 	
 }

@@ -31,9 +31,9 @@ cmds = [
   LoopCommand('xpos', 1, 5, 0.1,
     [
       SetCommand('setpoint', 1),
-      WaitForValueCommand('readback', 1.0, 0.5),
+      WaitCommand('readback', 1.0, 0.5),
       SetCommand('setpoint', 5),
-      WaitForValueCommand('readback', 3.0, 0.5),
+      WaitCommand('readback', 3.0, 0.5),
       LogCommand([ 'xpos', 'readback' ])
     ]),
 ]

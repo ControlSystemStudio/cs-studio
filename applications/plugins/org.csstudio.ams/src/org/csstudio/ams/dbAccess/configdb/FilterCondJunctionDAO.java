@@ -39,9 +39,14 @@ public abstract class FilterCondJunctionDAO extends DAO
 
     public static void copyFilterCondJunction(Connection masterDB, Connection localDB) throws SQLException
     {
-        copyFilterCondJunction(masterDB, localDB, DB_BACKUP_SUFFIX, "");        
+        copyFilterCondJunction(masterDB, localDB, DB_BACKUP_SUFFIX);        
     }   
    
+    public static void copyFilterCondJunction(Connection masterDB, Connection localDB, String masterDbSuffix) throws SQLException
+    {
+    	copyFilterCondJunction(masterDB, localDB, masterDbSuffix, "");        
+    }   
+    
     public static void backupFilterCondJunction(Connection masterDB) throws SQLException
     {
         copyFilterCondJunction(masterDB, masterDB, "", DB_BACKUP_SUFFIX);

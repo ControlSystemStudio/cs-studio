@@ -3,6 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
   <title>Scan System</title>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
 </head>
 <body>
 
@@ -57,7 +58,8 @@ as it would appear in the <a href="#editor">Scan Editor</a>.
 What follows is a description of all available commands.
 </p>
 
-<h3><img src="../icons/setcommand.gif"/>&nbsp;Set Command</h3>
+
+<h3><img src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</h3>
 <p>This command sets a device to a desired value.
 </p>
 <p>Parameters:</p>
@@ -71,26 +73,46 @@ will write the value 1.0 to the "setpoint" device.
 </p>
 
 
-<h3><img src="../icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
 <p>This command waits for a device to reach a desired value.
 </p>
 <p>Parameters:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
+<li>Comparison: How the current value of the device is compared to the desired value.</li>
 <li>Desired Value: Desired value of the device.</li>
-<li>Tolerance: Difference between the actual valud of the device and the desired value that is considered "good enough".</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".
+</li>
 </ul>
-<p>Example:
-<code>Wait for 'readback' to reach 1.0 (+-0.1)</code>
+<p>Examples:
+</p>
+<p>
+<code>Wait for 'readback' = 1.0 (+-0.1)</code>
 will wait until the value of the "readback" device reaches the value 1.0+-0.1,
 i.e. is within the range of 0.9 ... 1.1.
 Because of rounding errors and control system noise you should never
-set the tolerance to 0.0, because your device might never reach
-the exact desired value.
+set the tolerance to 0.0 for the equality ('=') check,
+because your device might never reach the exact desired value.
+Configure a small tolerance like 0.001 to allow for rounding errors.
+</p>
+<p>
+<code>Wait for 'readback' > 5.0</code>
+will wait until the value of the "readback" device
+is above 5.0.
+</p>
+<p>
+<code>Wait for 'readback' to increase by 5.0</code>
+will wait until the value of the "readback" device
+increases by 5.0.
+Assuming that the value was 10.0 when we reached this
+wait command, the value would have to grow to at least
+15.0 for the wait command to finish.
 </p>
 
 
-<h3><img src="../icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
+
+<h3><img src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
 <p>This command changes a device from a start to an end value.
 It is at the core of most scans.
 </p>
@@ -136,7 +158,7 @@ If these "xpos" and "ypos" devices are for example connected to stepper motors,
 the alternating scan will be faster and reduce wear on the motors.
 </p>
 
-<h3><img src="../icons/logcommand.gif"/>&nbsp;Log Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</h3>
 <p>Send values of devices to the log.
 </p>
 <p>Parameters:</p>
@@ -149,7 +171,7 @@ will send the current value of the "ypos" and "readback"
 devices to the log.
 </p>
 
-<h3><img src="../icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
+<h3><img src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
 <p>This command simply delays the scan for a configurable
 number of seconds.
 </p>
@@ -246,12 +268,14 @@ or the toolbar button <img src="../icons/run.png"/>.
 <p>It lists which scans have been submitted to the server
 and their state:
 <ul>
-<li>Finished - OK: Scan has been executed until it finished without errors.
-<li>Aborted: The scan was aborted by the user.
+<li>Finished - OK: Scan has been executed until it finished without errors.</li>
+<li>Aborted: The scan was aborted by the user.</li>
 <li>Running...: This scan is currently being executed. The "%" column displays the
     progress, and the "Command" column shows the currently active command.
+</li>
 <li>Idle: The scan has been submitted to the scan server and will be executed
-when previously queued scans have been handled.
+    when previously queued scans have been handled.
+</li>
 </ul>
 </p>
 
@@ -260,12 +284,51 @@ and to remove completed scans from the server, i.e. scans that have either finis
 </p>
 
 
-<h2><a name="programmatic">Programmatic Access</a></h2> 
-<p>For now refer to <code>org.csstudio.scan/examples</code>
-</p>
-<p>
+<h2><a name="plot">Scan Plot</a></h2> 
+<p>The Scan Plot can be used to track the progress of a scan.
+Data for devices that are "logged" is accessible to the plot.
 </p>
 
+<img src="scan_plot.png" width="80%"/>
+
+<p>Access the scan plotmonitor via the menu <code>CSS/Scan/Scan Plot</code>
+</p>
+<p>Selectors in the toolbar of the plot allow selection of the following:
+<ul>
+<li>Scan: Select from which scan on the server to retrieve data.</li>
+<li>X Axis: Select the device to display on the X axis.</li>
+<li>Y Axis: Select the device to display on the X axis.</li>
+</ul>
+</p>
+
+
+<h2><a name="programmatic">Programmatic Access</a></h2>
+<p>A key feature of the scan system is that scans can be submitted
+from various sources:
+</p>
+<ul>
+<li>Jython script, i.e. using the Python language,
+    either edited, executed and debugged from within CSS
+    or from the command line
+</li>
+<li>CSS 'BOY' operator interface panels.
+</li>
+<li>Any Java tool.
+</li>
+<li>Applications that interface to Java like Matlab.
+</li>
+</ul>
+
+<p>This provides a lot of options to programmers.
+At the same time, the details can be hidden behind
+for example a 'BOY' operator interface panel,
+so even users with no programming experience can
+then configure and execute these scans.
+</p>
+
+<p>For now refer to <code>org.csstudio.scan/examples</code>
+for details.
+</p>
 
 </body>
 </html>

@@ -8,6 +8,7 @@
 package org.csstudio.scan.command;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class XMLCommandWriter
 {
-    /**
+    /** Write XML-formatted commands into stream
      *  @param stream Where to write the commands
      *  @param commands Commands to write as XML to output stream 
      *  @throws Exception on error
@@ -30,11 +31,22 @@ public class XMLCommandWriter
         out.println("<commands>");
         for (ScanCommand command : commands)
         {
-            if (! (command instanceof BaseCommand))
-                throw new Exception("Cannot write " + command.getClass().getName() + " to XML");
-            ((BaseCommand)command).writeXML(out, 1);
+            command.writeXML(out, 1);
         }
         out.println("</commands>");
         out.flush();
+    }
+    
+    /** Convert commands to XML-formatted commands into stream
+     *  @param commands Commands
+     *  @return XML-formatted document text for the commands
+     *  @throws Exception on error
+     */
+    public static String toXMLString(final List<ScanCommand> commands) throws Exception
+    {
+        final ByteArrayOutputStream out = new ByteArrayOutputStream();
+        write(out, commands);
+        out.close();
+        return out.toString();
     }
 }

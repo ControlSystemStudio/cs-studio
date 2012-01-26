@@ -35,7 +35,7 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.eclipse.core.runtime.Platform;
@@ -71,12 +71,12 @@ public final class MessageFileHandler implements FilenameFilter {
     private MessageFileHandler() {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
+        String temp = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
         if(!temp.endsWith("/")) {
             temp += "/";
         }
 
-        objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/", null);
+        objectDir = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/", null);
         objectDir = temp + objectDir;
 
         createObjectFolder();

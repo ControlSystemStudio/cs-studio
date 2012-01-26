@@ -4,6 +4,8 @@
 <toc label="CSS - NSLS-II" topic="html/intro.html">
 	<topic label="Change Log">
     <anchor id="changelog"/>
+    <topic href="html/changes-3.1.0.html" label="3.1.0 Changes">
+    </topic>
     <topic href="html/changes-3.0.2.html" label="3.0.2 Changes">
     </topic>
     <topic href="html/changes-3.0.1.html" label="3.0.1 Changes">

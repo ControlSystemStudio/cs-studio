@@ -108,6 +108,13 @@ public class GUI implements ModelListener, IMenuListener, ISelectionProvider
                 {
                     if (table.isDisposed())
                         return;
+                    // If currently in a cell editor, do not refresh the table
+                    // because that would close the cell editor
+                    if (table_viewer.isCellEditorActive())
+                    {   // re-schedule
+                        GUI.this.gui_update_throttle.trigger(cell);
+                        return;
+                    }
                     if (cell == null)
                         table_viewer.refresh();
                     else

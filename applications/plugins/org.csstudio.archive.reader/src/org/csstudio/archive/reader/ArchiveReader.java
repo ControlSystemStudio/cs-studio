@@ -98,6 +98,13 @@ public interface ArchiveReader
      *  <p>
      *  The search should be case-insensitive, but details can depend
      *  on the implementation.
+     *  <p>
+     *  It is not fully defined how to handle an empty pattern.
+     *  Ideally, the result would be empty.
+     *  To locate <u>all</u> channels in the archive, the user
+     *  needs to specifically search for "*".
+     *  But some existing implementations return all channels
+     *  for an empty pattern...
      *
      *  @param key Key of archive to search.
      *  @param glob_pattern Pattern for channel name with '*' or '?'.
@@ -109,8 +116,8 @@ public interface ArchiveReader
 
     /** Find channel in given sub-archive via regular expression search.
      *  <p>
-     *  The search should be case-insensitive, but details can depend
-     *  on the implementation.
+     *  For case-sensitivity and handling of empty regular expression refer to
+     *  <code>getNamesByPattern</code>
      *
      *  @param key Key of archive to search.
      *  @param reg_exp Regular Expression for channel name.

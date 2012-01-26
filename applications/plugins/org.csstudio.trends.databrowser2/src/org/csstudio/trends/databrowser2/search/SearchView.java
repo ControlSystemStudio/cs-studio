@@ -344,9 +344,11 @@ public class SearchView extends ViewPart
         // Warn when searching ALL channels
         if (pattern_txt.length() <= 0)
     	{
-        	MessageDialog.openInformation(pattern.getShell(),
+            MessageDialog.openInformation(pattern.getShell(),
                     Messages.Search,
-                    Messages.SearchPatternConfirmMessage);
+                    Messages.SearchPatternEmptyMessage);
+            // Aborted, move focus to search pattern
+            pattern.setFocus();
             return;
     	}
 

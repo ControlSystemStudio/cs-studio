@@ -1,10 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
-import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.channel.widgets.WaterfallWidget;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.utility.pvmanager.widgets.WaterfallWidget;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.widgets.Composite;
 
 public class WaterfallEditPart
 extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
@@ -21,11 +19,11 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 	
 	private static void configure(WaterfallWidget widget, WaterfallModel model, boolean runMode) {
 		if (runMode)
-			widget.setInputText(model.getChannelQuery());
-		widget.setShowRange(model.isShowRange());
+			widget.setChannelQuery(model.getChannelQuery());
+		widget.setShowTimeAxis(model.isShowTimeAxis());
 		widget.setAdaptiveRange(model.isAdaptiveRange());
-		widget.setPixelDuration(model.getPixelDuration());
-		widget.setScrollDown(model.isScrollDown());
+		widget.setPixelDuration(model.getResolution());
+		widget.setScrollDirection(model.getScrollDirection());
 		widget.setSortProperty(model.getSortProperty());
 	}
 
@@ -41,10 +39,10 @@ extends AbstractChannelWidgetEditPart<WaterfallFigure, WaterfallModel> {
 			}
 		};
 		setPropertyChangeHandler(WaterfallModel.CHANNEL_QUERY, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.ADAPTIVE_RANGE, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.PIXEL_DURATION, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.SCROLL_DOWN, reconfigure);
-		setPropertyChangeHandler(WaterfallModel.SHOW_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.VALUE_RANGE, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.RESOLUTION, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SCROLL_DIRECTION, reconfigure);
+		setPropertyChangeHandler(WaterfallModel.SHOW_TIME_AXIS, reconfigure);
 		setPropertyChangeHandler(WaterfallModel.SORT_PROPERTY, reconfigure);
 	}
 	

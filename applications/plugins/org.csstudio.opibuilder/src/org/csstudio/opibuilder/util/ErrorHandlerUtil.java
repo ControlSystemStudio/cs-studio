@@ -3,7 +3,9 @@ package org.csstudio.opibuilder.util;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
 /**
  * The utility class help to handle exceptions.
@@ -25,9 +27,17 @@ public class ErrorHandlerUtil {
 		if(writeToConsole)
 			ConsoleService.getInstance().writeError(message + "\n" + exception);
 		if(popErrorDialog){
-			if(DisplayUtils.getDisplay() != null)
-				MessageDialog.openError(
-						DisplayUtils.getDisplay().getActiveShell(), "Error",	message);
+			if(DisplayUtils.getDisplay() != null){
+				IStatus status = new Status(IStatus.ERROR, OPIBuilderPlugin.PLUGIN_ID,
+						exception.getLocalizedMessage(), exception);
+				ExceptionDetailsErrorDialog.openError(
+						DisplayUtils.getDisplay().getActiveShell(),
+						"Error", message, 
+						status);
+//				MessageDialog.openError(
+//						DisplayUtils.getDisplay().getActiveShell(), "Error",	message);				
+			}
+
 		}
 	}
 	

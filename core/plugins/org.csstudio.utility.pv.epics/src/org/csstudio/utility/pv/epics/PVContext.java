@@ -128,7 +128,7 @@ public class PVContext
         command_thread = null;
         if (cleanup == false)
         {
-            Activator.getLogger().fine("JCA not longer used, but kept open.");
+            Activator.getLogger().fine("JCA no longer used, but kept open.");
             return;
         }
         try

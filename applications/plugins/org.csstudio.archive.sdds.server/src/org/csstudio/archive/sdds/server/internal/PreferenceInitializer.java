@@ -44,7 +44,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         final IEclipsePreferences node = new DefaultScope().getNode(SddsServerActivator.PLUGIN_ID);
 
         // Use JMX instead of XMPP to stop the server
-        node.put(ServerPreferenceKey.P_USE_JMX, "false");
+        node.putBoolean(ServerPreferenceKey.P_USE_JMX, false);
 
         // XMPP server
         node.put(ServerPreferenceKey.P_XMPP_SERVER, "xmpp.where.ever");
@@ -57,15 +57,19 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
         // AAPI default port
         // look at http://www-kryo.desy.de/documents/EPICS/DESY/General/Archiver/AAPI/ArchiveProtocol2.5.htm
-        node.put(ServerPreferenceKey.P_SERVER_PORT, "4056");
+        node.putInt(ServerPreferenceKey.P_SERVER_PORT, 4056);
 
         // Byte order within SDDS files
-        node.put(ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, "false");
+        node.putBoolean(ServerPreferenceKey.P_SDDS_LITTLE_ENDIAN, false);
 
         // Use previous record not older than x seconds
-        node.put(ServerPreferenceKey.P_VALID_RECORD_BEFORE, "3600");
+        node.putLong(ServerPreferenceKey.P_VALID_RECORD_BEFORE, 3600L);
 
         // max. number of samples per request
-        node.put(ServerPreferenceKey.P_MAX_SAMPLES_PER_REQUEST, "10000");
+        node.putInt(ServerPreferenceKey.P_MAX_SAMPLES_PER_REQUEST, 10000);
+
+        node.putBoolean(ServerPreferenceKey.P_IGNORE_BIG_FILES, true);
+
+        node.putLong(ServerPreferenceKey.P_MAX_FILE_SIZE, 5242880L);
     }
 }

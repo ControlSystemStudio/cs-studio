@@ -11,9 +11,8 @@ import java.util.Map;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -25,7 +24,11 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.UpdateListener;
 import org.eclipse.draw2d.Viewport;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartListener;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MenuDetectEvent;
+import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
@@ -55,7 +58,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	private boolean updateFlag;
 	private UpdateListener updateManagerListener;
 	private AncestorListener ancestorListener;
-	protected AbstractContainerModel parentModel;
+	protected EditPart parentEditPart;
 	protected Composite composite;
 	protected AbstractBaseEditPart editPart;
 
@@ -77,14 +80,23 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		super();
 		this.editPart = editpart;
 		this.composite = (Composite) editpart.getViewer().getControl();
-		this.parentModel = editpart.getWidgetModel().getParent();
+		this.parentEditPart = editpart.getParent();
 		this.runmode = editpart.getExecutionMode() == ExecutionMode.RUN_MODE;
-		if (!(parentModel instanceof DisplayModel)) {
+		
+		if (!isDirectlyOnDisplay()) {
 			wrapComposite = new Composite(composite, SWT.NO_BACKGROUND);
 			wrapComposite.setLayout(null);
 			wrapComposite.setEnabled(runmode);
 			wrapComposite.moveAbove(null);
 		}
+		
+		editpart.addEditPartListener(new EditPartListener.Stub(){
+			@Override
+			public void partDeactivated(EditPart editpart) {
+				dispose();
+			}
+		});
+		
 		// the widget should has the same relative position as its parent
 		// container.
 		ancestorListener = new AncestorListener.Stub() {
@@ -113,16 +125,19 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 				if(wrapComposite==null)
 					swtWidget.moveAbove(null);
 				swtWidget.setEnabled(runmode);
-				// select the combo when mouse down
-				swtWidget
-						.addMouseListener(new org.eclipse.swt.events.MouseAdapter() {
-							@Override
-							public void mouseDown(
-									org.eclipse.swt.events.MouseEvent e) {
-								editPart.getViewer().select(editPart);								
-							}
-						});
+				// select the swt widget when menu about to show
 
+				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
+					
+					@Override
+					public void menuDetected(MenuDetectEvent e) {
+						editPart.getViewer().select(editPart);								
+
+					}
+				};
+				
+				addMenuDetectListener(swtWidget, menuDetectListener);
+				
 				// update tooltip
 				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget, 
 						new MouseTrackAdapter() {
@@ -137,10 +152,32 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 				swtWidget.setMenu(editPart.getViewer().getContextMenu()
 						.createContextMenu(composite));
 			}
+
+			/**Add menu detect listener recursively to all children widgets inside the SWT Widget.
+			 * @param swtWidget
+			 * @param menuDetectListener
+			 */
+			private void addMenuDetectListener(final Control swtWidget,
+					MenuDetectListener menuDetectListener) {
+				swtWidget.addMenuDetectListener(menuDetectListener);
+				//hack for composite widget with multiple children.
+				if(swtWidget instanceof Composite){
+					for(Control control : ((Composite)swtWidget).getChildren()){
+						addMenuDetectListener(control, menuDetectListener);						
+					}
+				}
+			}
 		});
 		
 	}
 
+	/**
+	 * @return true if this widget is directly put on a display.
+	 */
+	private boolean isDirectlyOnDisplay(){
+		return parentEditPart instanceof DisplayEditpart;
+	}
+	
 	@Override
 	protected void layout() {
 		super.layout();
@@ -229,7 +266,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		// the first time.
 		if (!updateFlag) {
 			updateFlag = true;
-			if (!(parentModel instanceof DisplayModel)) {
+			if (!isDirectlyOnDisplay()) {
 				updateManagerListener = new UpdateListener() {
 					public void notifyPainting(Rectangle damage,
 							@SuppressWarnings("rawtypes") Map dirtyRegions) {

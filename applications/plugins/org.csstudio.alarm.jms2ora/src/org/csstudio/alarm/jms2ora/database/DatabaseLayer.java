@@ -39,7 +39,7 @@ import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.Jms2OraActivator;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.platform.utility.rdb.RDBUtil;
@@ -85,12 +85,12 @@ public class DatabaseLayer {
     public DatabaseLayer(final String url, final String user, final String password) {
 
         final IPreferencesService prefs = Platform.getPreferencesService();
-        String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
+        String temp = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
         if(temp.endsWith("/") == false) {
             temp += "/";
         }
 
-        objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.META_DATA_DIRECTORY, "columns/", null);
+        objectDir = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.META_DATA_DIRECTORY, "columns/", null);
         objectDir = temp + objectDir;
 
         this.url = url;

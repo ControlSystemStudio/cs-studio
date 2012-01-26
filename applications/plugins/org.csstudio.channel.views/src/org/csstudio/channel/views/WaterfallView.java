@@ -1,13 +1,17 @@
 package org.csstudio.channel.views;
 
-import org.csstudio.channel.widgets.MultiChannelWaterfallWidget;
-import org.csstudio.ui.util.helpers.ComboHistoryHelper;
-import org.eclipse.jface.viewers.ComboViewer;
+import gov.bnl.channelfinder.api.ChannelQuery;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import org.csstudio.channel.widgets.ChannelQueryInputBar;
+import org.csstudio.channel.widgets.PopupMenuUtil;
+import org.csstudio.channel.widgets.WaterfallWidget;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
@@ -55,22 +59,18 @@ public class WaterfallView extends ViewPart {
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
 		// Save the currently selected variable
-		if (combo.getText() != null) {
-			memento.putString(MEMENTO_PVNAME, combo.getText());
+		if (inputBar.getChannelQuery() != null) {
+			memento.putString(MEMENTO_PVNAME, inputBar.getChannelQuery().getQuery());
 		}
 	}
 	
-	public void setPVName(String name) {
-		combo.setText(name);
-		resolveAndSetPVName(name);
+	public void setChannelQuery(ChannelQuery query) {
+		inputBar.setChannelQuery(query);
+		waterfallComposite.setChannelQuery(query);
 	}
 	
-	private Combo combo;
-	private MultiChannelWaterfallWidget waterfallComposite;
-	
-	private void resolveAndSetPVName(String text) {
-		waterfallComposite.setInputText(text);
-	}
+	private ChannelQueryInputBar inputBar;
+	private WaterfallWidget waterfallComposite;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -78,40 +78,42 @@ public class WaterfallView extends ViewPart {
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
 		FormData fd_lblPvName = new FormData();
-		fd_lblPvName.top = new FormAttachment(0, 13);
-		fd_lblPvName.left = new FormAttachment(0, 10);
+		fd_lblPvName.top = new FormAttachment(0, 8);
+		fd_lblPvName.left = new FormAttachment(0, 5);
 		lblPvName.setLayoutData(fd_lblPvName);
-		lblPvName.setText("PV Name:");
+		lblPvName.setText("Query:");
 		
-		ComboViewer comboViewer = new ComboViewer(parent, SWT.NONE);
-		combo = comboViewer.getCombo();
+		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
+				Activator.getDefault().getDialogSettings(), "waterfall.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 10);
+		fd_combo.top = new FormAttachment(0, 5);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
-		fd_combo.right = new FormAttachment(100, -10);
-		combo.setLayoutData(fd_combo);
+		fd_combo.right = new FormAttachment(100, -5);
+		inputBar.setLayoutData(fd_combo);
+		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("channelQuery".equals(event.getPropertyName())) {
+					setChannelQuery((ChannelQuery) event.getNewValue());
+				}
+			}
+		});
 		
-		waterfallComposite = new MultiChannelWaterfallWidget(parent, SWT.NONE);
+		waterfallComposite = new WaterfallWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
-		fd_waterfallComposite.bottom = new FormAttachment(100, -10);
-		fd_waterfallComposite.left = new FormAttachment(0, 10);
-		fd_waterfallComposite.top = new FormAttachment(combo, 6);
-		fd_waterfallComposite.right = new FormAttachment(combo, 0, SWT.RIGHT);
+		fd_waterfallComposite.bottom = new FormAttachment(100, -5);
+		fd_waterfallComposite.left = new FormAttachment(0, 5);
+		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
+		fd_waterfallComposite.right = new FormAttachment(inputBar, 0, SWT.RIGHT);
 		waterfallComposite.setLayoutData(fd_waterfallComposite);
 		
-		ComboHistoryHelper name_helper =
-			new ComboHistoryHelper(Activator.getDefault()
-				.getDialogSettings(), "WaterfallPVs", combo, 20, true) {
-			@Override
-			public void newSelection(final String pv_name) {
-				resolveAndSetPVName(pv_name);
-			}
-		};
-		name_helper.loadSettings();
-		
 		if (memento != null && memento.getString(MEMENTO_PVNAME) != null) {
-			setPVName(memento.getString(MEMENTO_PVNAME));
+			setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_PVNAME)).build());
 		}
+		
+		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
+		PopupMenuUtil.installPopupForView(waterfallComposite, getSite(), waterfallComposite);
 	}
 
 }

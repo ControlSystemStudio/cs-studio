@@ -104,7 +104,7 @@ public class EMailSenderDialog extends TitleAreaDialog
     {
         // Title, title image, handle image disposal
         final Image title_image =
-            Activator.getImageDescriptor("icons/email_image.png").createImage(); //$NON-NLS-1$
+            Activator.getImageDescriptor("icons/mail-edit-48.png").createImage(); //$NON-NLS-1$
         setTitle(Messages.SendEmail);
         setMessage(Messages.EmailDialogMessage);
         setTitleImage(title_image);

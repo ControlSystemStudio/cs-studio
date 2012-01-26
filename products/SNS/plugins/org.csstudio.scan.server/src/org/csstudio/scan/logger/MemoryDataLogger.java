@@ -51,13 +51,15 @@ public class MemoryDataLogger implements DataLogger
     }
 
     /** @return Serial of last sample in scan data */
-	public synchronized long getLastScanDataSerial()
+	@Override
+    public synchronized long getLastScanDataSerial()
 	{
 	    return last_serial;
 	}
 	
     /** @return {@link ScanData} with copy of currently logged data */
-	public synchronized ScanData getScanData()
+	@Override
+    public synchronized ScanData getScanData()
 	{
 		return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
 	}

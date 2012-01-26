@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Example for Custom Scan Command Implementation
+Bundle-SymbolicName: org.csstudio.scan.custom.impl;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.csstudio.scan.custom;bundle-version="1.0.0",
+ org.csstudio.scan.server;bundle-version="1.0.0"

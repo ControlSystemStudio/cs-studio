@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.nsls2.eclipse.feature"
       label="CSS-NSLS-II Eclipse plugins"
-      version="3.0.0.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">
@@ -786,6 +786,34 @@
 
    <plugin
          id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.lucene.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.xml.resolver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.xml.serializer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"

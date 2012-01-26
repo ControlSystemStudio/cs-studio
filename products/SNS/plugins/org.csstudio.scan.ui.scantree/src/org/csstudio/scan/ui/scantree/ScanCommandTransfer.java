@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
@@ -86,7 +87,8 @@ public class ScanCommandTransfer extends ByteArrayTransfer
         {
             final byte[] bytes = (byte[]) super.nativeToJava(transferData);
             final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
-            final List<ScanCommand> commands = XMLCommandReader.readXMLStream(stream);
+            final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+            final List<ScanCommand> commands = reader.readXMLStream(stream);
             stream.close();
             
             if (commands.size() >= 1)

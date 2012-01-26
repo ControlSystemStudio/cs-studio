@@ -68,14 +68,6 @@ public class MessageHelper
         return message;
     }
     
-
-    /**
-     * The method compares the property <code>CLASS</code> that contains the check id.
-     * 
-     * @param content
-     * @param mapMessage
-     * @return
-     */
     public boolean isAmsAnswer(Hashtable<String, String> content, MapMessage mapMessage)
     {
         Hashtable<String, String> receivedMessageContent = null;
@@ -127,23 +119,18 @@ public class MessageHelper
         return amsAnswer;
     }
     
-    /**
-     * 
-     * @param message
-     * @return
-     */
-    public boolean isAnswerFromSmsConnector(MapMessage message)
+    public boolean isAnswerFromSmsDeliveryWorker(MapMessage mapMsg)
     {
         Hashtable<String, String> answer = null;
         String value;
         boolean success = false;
         
-        answer = extractContent(message);
+        answer = extractContent(mapMsg);
         
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         //  CLASS = <check id>
@@ -158,7 +145,7 @@ public class MessageHelper
             if(answer.containsKey("APPLICATION-ID") && success)
             {
                 value = answer.get("APPLICATION-ID");
-                success = (value.compareTo("SmsConnector") == 0);
+                success = (value.compareTo("SmsDeliveryWorker") == 0);
             }
             else
             {
@@ -179,7 +166,7 @@ public class MessageHelper
         return success;
     }
     
-    public boolean isAnswerFromSmsConnector(Hashtable<String, String> content)
+    public boolean isAnswerFromSmsDeliveryWorker(Hashtable<String, String> content)
     {
         String value;
         boolean success = false;
@@ -187,7 +174,7 @@ public class MessageHelper
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
@@ -202,7 +189,7 @@ public class MessageHelper
             if(content.containsKey("APPLICATION-ID") && success)
             {
                 value = content.get("APPLICATION-ID");
-                success = (value.compareTo("SmsConnector") == 0);
+                success = (value.compareTo("SmsDeliveryWorker") == 0);
             }
             else
             {
@@ -223,16 +210,16 @@ public class MessageHelper
         return success;
     }
 
-    public CheckResult getAnswerFromSmsConnector(MapMessage message, Hashtable<String, String> sentMessage)
+    public CheckResult getAnswerFromSmsDeliveryWorker(MapMessage mapMsg, Hashtable<String, String> sentMessage)
     {
         Hashtable<String, String> answer = null;
-        CheckResult result = CheckResult.NONE;;
+        CheckResult result = CheckResult.NONE;
         String value = null;
         boolean success = false;
         
-        answer = extractContent(message);
+        answer = extractContent(mapMsg);
         
-        if(isAnswerFromSmsConnector(answer) == false)
+        if(isAnswerFromSmsDeliveryWorker(answer) == false)
         {
             return CheckResult.NONE;
         }
@@ -240,7 +227,7 @@ public class MessageHelper
         // Check the content
         // The message has to contain this properties:
         //  NAME = AMS_SYSTEM_CHECK_ANSWER
-        //  APPLICATION-ID = SmsConnector
+        //  APPLICATION-ID = SmsDeliveryWorker
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
@@ -299,33 +286,22 @@ public class MessageHelper
         return result;
     }
     
-    /**
-     * 
-     * @return
-     */
-    public String getErrorText()
-    {
+    public String getErrorText() {
         return errorText;
     }
     
-    /**
-     * 
-     * @param mm
-     * @return
-     */
-    public Hashtable<String, String> extractContent(MapMessage mm)
-    {
+    public Hashtable<String, String> extractContent(MapMessage mapMsg) {
         Hashtable<String, String> result = new Hashtable<String, String>();
         Enumeration<?> keys = null;
         String key = null;
         
         try
         {
-            keys = mm.getMapNames();
+            keys = mapMsg.getMapNames();
             while(keys.hasMoreElements())
             {
                 key = (String)keys.nextElement();
-                result.put(key, mm.getString(key));
+                result.put(key, mapMsg.getString(key));
             }
         }
         catch(JMSException jmse)
@@ -341,20 +317,21 @@ public class MessageHelper
      * @author Markus Moeller
      *
      */
-    public enum MessageType
-    {
-        SYSTEM("System"), SMS_CONNECTOR("SmsConnector");
+    public enum MessageType {
         
-        private String value;
+        SYSTEM("System"),
+        SMS_DELIVERY_WORKER("SmsDeliveryWorker"),
+        ALL_DELIVERY_WORKER("*");
         
-        private MessageType(String value)
-        {
-            this.value = value;
+        private String name;
+        
+        private MessageType(String n) {
+            this.name = n;
         }
         
-        public String toString()
-        {
-            return value;
+        @Override
+        public String toString() {
+            return name;
         }
     }
     

@@ -27,7 +27,6 @@ package org.csstudio.ams.distributor;
  * @author Markus Moeller
  *
  */
-@SuppressWarnings("hiding")
 public class ConnectorTopic {
     
     /** Name of the topic */
