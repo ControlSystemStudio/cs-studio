@@ -354,7 +354,7 @@ public class GUI implements ScanInfoModelListener
                 if (table.isDisposed())
                     return;
                 // Received update -> enable table and display info
-                table_viewer.getTable().setEnabled(true);
+                table.setEnabled(true);
                 table_viewer.refresh();
             }
         });
@@ -375,7 +375,7 @@ public class GUI implements ScanInfoModelListener
                 if (table.isDisposed())
                     return;
                 // Disable table to indicate communication problem
-                table_viewer.getTable().setEnabled(false);
+                table.setEnabled(false);
             }
         });
     }
