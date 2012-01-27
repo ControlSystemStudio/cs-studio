@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -150,7 +150,7 @@ public class CommandSequence
     public void wait(final String device_name, final double desired_value,
          final double tolerance)
     {
-        commands.add(new WaitCommand(device_name, desired_value, tolerance));
+        commands.add(new WaitCommand(device_name, Comparison.EQUALS, desired_value, tolerance, 0.0));
     }
 
     // Note: This was called 'print' which causes warnings in a PyDev python

@@ -4,18 +4,21 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
@@ -62,7 +65,7 @@ public class DeviceValueConditionHeadlessTest
 
         // Wait for values on ramp
         final DeviceValueCondition condition =
-                new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.5);
+                new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.5, 0.0);
         condition.await();
         System.out.println("Value reached 3!");
 
@@ -81,8 +84,8 @@ public class DeviceValueConditionHeadlessTest
         ramp.join();
         device.stop();
     }
-    
-    
+
+
     @Test(timeout=5000)
     public void testStaticConditions() throws Exception
     {
@@ -93,27 +96,27 @@ public class DeviceValueConditionHeadlessTest
 
         // EQUALS
         {
-            final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001);
+            final DeviceValueCondition equals = new DeviceValueCondition(device, Comparison.EQUALS, 2.0, 0.001, 0.0);
             assertFalse(equals.isConditionMet());
             device.write(2.0);
             assertTrue(equals.isConditionMet());
-            
+
             equals.setDesiredValue(3.0);
             assertFalse(equals.isConditionMet());
             device.write(3.0);
             assertTrue(equals.isConditionMet());
         }
-        
+
         // AT_LEAST
         {
             device.write(0.0);
-            final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0);
+            final DeviceValueCondition above = new DeviceValueCondition(device, Comparison.AT_LEAST, 2.0, 10.0, 0.0);
             assertFalse(above.isConditionMet());
             device.write(1.0);
             assertFalse(above.isConditionMet());
             device.write(2.0);
             assertTrue(above.isConditionMet()); // 2 >= 2
-            
+
             above.setDesiredValue(3.0);
             assertFalse(above.isConditionMet());
             device.write(3.0);
@@ -125,13 +128,13 @@ public class DeviceValueConditionHeadlessTest
         // BELOW
         {
             device.write(4.0);
-            final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0);
+            final DeviceValueCondition below = new DeviceValueCondition(device, Comparison.BELOW, 2.0, 10.0, 0.0);
             assertFalse(below.isConditionMet());
             device.write(2.0);
             assertFalse(below.isConditionMet()); // ! (2.0 < 2.0)
             device.write(1.8);
             assertTrue(below.isConditionMet());
-            
+
             below.setDesiredValue(1.5);
             assertFalse(below.isConditionMet());
             device.write(1.0);
@@ -139,11 +142,11 @@ public class DeviceValueConditionHeadlessTest
             device.write(-4.0);
             assertTrue(below.isConditionMet());
         }
-        
+
         device.stop();
     }
-    
-    
+
+
     @Test(timeout=5000)
     public void testIncreasedByConditionWithRampPV() throws Exception
     {
@@ -178,13 +181,52 @@ public class DeviceValueConditionHeadlessTest
 
         // Wait for values on ramp
         final DeviceValueCondition condition =
-                new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0);
+                new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, 0.0);
         assertFalse(condition.isConditionMet());
         System.out.println("Initial value: " + device.read());
         condition.await();
         System.out.println("Value increased by 3!");
 
         ramp.join();
+        device.stop();
+    }
+
+
+    @Test(timeout=4000)
+    public void testTimeout() throws Exception
+    {
+        // Device with local PV, updated by test
+        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        device.start();
+        device.write(1.0);
+
+        // Wait for 1 second, never happens
+        DeviceValueCondition condition =
+            new DeviceValueCondition(device, Comparison.INCREASE_BY, 3.0, 0.0, 1.0);
+        try
+        {
+            condition.await();
+            fail("Consition did not time out");
+        }
+        catch (Exception ex)
+        {
+            assertEquals("Timeout while waiting for demo", ex.getMessage());
+            System.out.println("Received correct timeout for INCREASE_BY");
+        }
+
+        condition =
+            new DeviceValueCondition(device, Comparison.EQUALS, 3.0, 0.1, 1.0);
+        try
+        {
+            condition.await();
+            fail("Consition did not time out");
+        }
+        catch (Exception ex)
+        {
+            assertEquals("Timeout while waiting for demo", ex.getMessage());
+            System.out.println("Received correct timeout for EQUALS");
+        }
+
         device.stop();
     }
 }
