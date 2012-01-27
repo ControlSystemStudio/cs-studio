@@ -49,6 +49,20 @@ class ScanClient(object):
         self.server = ScanServerConnector.connect()
         # Scan ID
         self.id = -1
+        
+    def checkServer(self):
+        """
+        Attempt to call the server, and try to re-connect on error.
+        
+        The server could be restarted, or there could have been
+        a network issue between the time we originally connected
+        to the server and now, which would invalidate the original
+        server connection.
+        """
+        try:
+            self.server.getInfo()
+        except:
+            self.server = ScanServerConnector.connect()
 
     def submit(self, name, command_sequence):
         """
@@ -59,6 +73,7 @@ class ScanClient(object):
           
         @return Scan ID
         """
+        self.checkServer()
         self.id = self.server.submitScan(name, command_sequence.getXML())
         return self.id
 
@@ -68,6 +83,7 @@ class ScanClient(object):
         
         @param id Scan ID, defaulting to the last submitted scan
         """
+        self.checkServer()
         if id == -1:
         	id = self.id
         while True:
