@@ -173,7 +173,10 @@ public class PreferencePage extends FieldEditorPreferencePage
                 new int[] { 100, 50, 500 },
                 new ArchiveDataSourceEditor(parent.getShell()));
         addField(archives);
-        
+
+        addField(new BooleanFieldEditor(Preferences.PROMPT_FOR_ERRORS,
+                "Display archive errors in dialog (or simply log)?", parent));
+
         addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
                 "Use default archives, ignoring *.plt file?", parent));
     }
