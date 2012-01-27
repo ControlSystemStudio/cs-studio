@@ -19,18 +19,18 @@ import org.csstudio.trends.databrowser2.ui.Plot;
 import org.w3c.dom.Element;
 
 /** Information about a Plot Annotation
- * 
+ *
  *  <p>In the current implementation the plot library actually
  *  tracks the currently active annotations.
- *  
+ *
  *  <p>This class is used by the model to read initial annotations
  *  from the {@link Model}'s XML file,
  *  and to later read them back from the {@link Plot} for writing
  *  them to the XML file.
- *  
+ *
  *  <p>The info keeps less detail than the actual annotation in the XYGraph
  *  to reduce dependence on the plotting library.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class AnnotationInfo
@@ -73,8 +73,8 @@ public class AnnotationInfo
         return axis;
     }
 
-    
-	@Override
+	@SuppressWarnings("nls")
+    @Override
 	public String toString()
 	{
 		return "Annotation for axis " + axis + ": '" + title + "' @ " + timestamp + ", " + value;
@@ -90,8 +90,6 @@ public class AnnotationInfo
         XMLWriter.XML(writer, 3, Model.TAG_TIME, timestamp);
         XMLWriter.XML(writer, 3, Model.TAG_VALUE, value);
 
-        
-        
         XMLWriter.XML(writer, 3, Model.TAG_NAME, title);
         XMLWriter.XML(writer, 3, Model.TAG_AXIS, axis);
         XMLWriter.end(writer, 2, Model.TAG_ANNOTATION);
@@ -110,8 +108,8 @@ public class AnnotationInfo
         final ITimestamp timestamp = TimestampFactory.fromCalendar(calendar);
         final double value = DOMHelper.getSubelementDouble(node, Model.TAG_VALUE, 0.0);
         final int axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
-		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation");
-        
+		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation"); //$NON-NLS-1$
+
         return new AnnotationInfo(timestamp, value, axis, title);
     }
 }

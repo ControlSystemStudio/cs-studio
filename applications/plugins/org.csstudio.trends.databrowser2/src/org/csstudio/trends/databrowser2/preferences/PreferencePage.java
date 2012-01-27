@@ -32,9 +32,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(FieldEditorPreferencePage.GRID);
-        // TODO Use InstanceScope.INSTANCE instead of new InstanceScope()
-        //      once everybody updates to Eclipse 3.7
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.PLUGIN_ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.PLUGIN_ID));
         setMessage(Messages.PrefPage_Title);
     }
 
@@ -175,9 +173,9 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(archives);
 
         addField(new BooleanFieldEditor(Preferences.PROMPT_FOR_ERRORS,
-                "Display archive errors in dialog (or simply log)?", parent));
+                Messages.PromptForErrors_Label, parent));
 
         addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
-                "Use default archives, ignoring *.plt file?", parent));
+                Messages.UseDefaultArchives_Label, parent));
     }
 }

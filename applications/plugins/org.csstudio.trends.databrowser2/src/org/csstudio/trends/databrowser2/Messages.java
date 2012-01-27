@@ -173,6 +173,7 @@ public class Messages extends NLS
     public static String PrefPage_TraceLineWidth;
     public static String PrefPage_UpdatePeriod;
     public static String PrintSnapshot;
+    public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
     public static String RegularExpression;
@@ -242,6 +243,7 @@ public class Messages extends NLS
     public static String URL;
     public static String URL_Lbl;
     public static String UseDefaultArchives;
+    public static String UseDefaultArchives_Label;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
