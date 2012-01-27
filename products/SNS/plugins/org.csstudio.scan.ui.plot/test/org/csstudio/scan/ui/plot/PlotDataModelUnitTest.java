@@ -7,7 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class PlotDataModelUnitTest
 {
-    /** Execute a scan that logs something 
+    /** Execute a scan that logs something
      *  @return ID of submitted scan
      */
     private long startDemoScan() throws Exception
@@ -39,7 +41,7 @@ public class PlotDataModelUnitTest
         final ScanServer server = ScanServerConnector.connect();
 
         final List<ScanCommand> commands = new ArrayList<ScanCommand>();
-        commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
+        commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0, 0.0,
                                      new LogCommand("xpos", "readback"),
                                      new DelayCommand(2.0)));
         final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
@@ -52,23 +54,23 @@ public class PlotDataModelUnitTest
     public void testPlotData() throws Exception
     {
         final long id = startDemoScan();
-        
+
         // Wait for model to obtain scans
         final PlotDataModel model = new PlotDataModel(null);
         model.start();
-        
+
         ScanInfo scan = model.getScan(id);
         while (scan == null)
         {
             Thread.sleep(100);
             scan = model.getScan(id);
         }
-        
+
         final List<ScanInfo> infos = model.getScanInfos();
         for (ScanInfo info : infos)
             System.out.println(info);
         assertTrue(infos.contains(scan));
-        
+
         model.selectScan(scan.getId());
         model.selectXDevice("xpos");
         model.selectYDevice("readback");
@@ -83,7 +85,7 @@ public class PlotDataModelUnitTest
             {
                 System.out.println("\n" + scan);
                 System.out.println("Last data serial: " + data.getLastSerial());
-                
+
                 for (int i=0; i<data.getSize(); ++i)
                     System.out.println(data.getSample(i));
             }
@@ -101,7 +103,7 @@ public class PlotDataModelUnitTest
     public void testListener() throws Exception
     {
         final long id = startDemoScan();
-        
+
         // Wait for model to obtain scans
         final PlotDataModel model = new PlotDataModel(null);
         model.start();
@@ -111,13 +113,13 @@ public class PlotDataModelUnitTest
             Thread.sleep(100);
             scan = model.getScan(id);
         }
-        
+
         model.selectScan(scan.getId());
         model.selectXDevice("xpos");
         model.selectYDevice("readback");
 
         final AtomicInteger updates = new AtomicInteger();
-        
+
         final PlotDataProvider data = model.getPlotData();
         data.addDataProviderListener(new IDataProviderListener()
         {
@@ -146,9 +148,9 @@ public class PlotDataModelUnitTest
             Thread.sleep(500);
             scan = model.getScan(id);
         }
-        
+
         model.stop();
-        
+
         assertEquals(3, updates.get());
     }
 }

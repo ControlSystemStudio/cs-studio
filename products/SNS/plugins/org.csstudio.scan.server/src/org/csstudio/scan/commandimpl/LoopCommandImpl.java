@@ -66,10 +66,10 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	public void execute(final ScanContext context) throws Exception
 	{
 		final Device device = context.getDevice(command.getDeviceName());
-		// TODO add timeout to loop
         final DeviceValueCondition reach_value =
                 new DeviceValueCondition(device, Comparison.EQUALS,
-                        command.getStart(), command.getStepSize()/10.0, 0.0);
+                        command.getStart(), command.getStepSize()/10.0,
+                        command.getTimeout());
 
 		Logger.getLogger(getClass().getName()).log(Level.FINE,
 				"Loop: {0} = {1} .. {2}, stepping {3}",

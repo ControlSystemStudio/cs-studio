@@ -64,7 +64,7 @@ public class ScanEngineTest
 
         final Scan scan_x = new Scan("Scan Motor X",
             new LoopCommandImpl(
-                new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                new LoopCommand("xpos", 1.0, 5.0, 1.0, 0.0,
                     new DelayCommand(1.0),
                     new LogCommand("xpos")
                 )
@@ -73,7 +73,7 @@ public class ScanEngineTest
 
         final Scan scan_y = new Scan("Scan Motor Y",
             new LoopCommandImpl(
-                new LoopCommand("ypos", 1.0, 5.0, 1.0,
+                new LoopCommand("ypos", 1.0, 5.0, 1.0, 0.0,
                     new DelayCommand(1.0),
                     new LogCommand("ypos"))));
 
@@ -152,7 +152,7 @@ public class ScanEngineTest
 
         final Scan scan = new Scan("Scan Motor X",
             new LoopCommandImpl(
-                new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                new LoopCommand("xpos", 1.0, 5.0, 1.0, 0.0,
                     new LogCommand("xpos")
                 )
             )
