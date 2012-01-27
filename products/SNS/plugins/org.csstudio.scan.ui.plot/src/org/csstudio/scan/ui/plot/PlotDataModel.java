@@ -40,16 +40,16 @@ public class PlotDataModel implements Runnable
 
     /** Devices in current scan */
     private volatile List<String> devices = null;
-    
+
     /** Device used for 'X' axis */
     private volatile String x_axis_device = null;
 
     /** Device used for 'Y' axis */
     private volatile String y_axis_device = null;
-    
+
     /** Data for X/Y axes */
     final private PlotDataProvider plot_data;
-    
+
     /** Mostly to please FindBugs: Flag that update thread was woken early */
     private boolean wake_early = false;
 
@@ -63,7 +63,7 @@ public class PlotDataModel implements Runnable
         model = ScanInfoModel.getInstance();
         plot_data = new PlotDataProvider(display);
     }
-    
+
     /** Start the model */
     public void start()
     {
@@ -71,7 +71,7 @@ public class PlotDataModel implements Runnable
         update_thread.setDaemon(true);
         update_thread.start();
     }
-    
+
     /** Must be called to release resources */
     public void stop()
     {
@@ -89,7 +89,7 @@ public class PlotDataModel implements Runnable
     }
 
     /** Runnable of the update thread.
-     * 
+     *
      *  Fetches scan data from selected scan,
      *  then picks the X and Y data
      *  and notifies listeners.
@@ -102,7 +102,7 @@ public class PlotDataModel implements Runnable
             final ScanInfo scan = getScan(selected_scan_id);
             final String x_device = x_axis_device;
             final String y_device = y_axis_device;
-            
+
             if (scan == null)
                 devices = null;
             else
@@ -136,7 +136,7 @@ public class PlotDataModel implements Runnable
             }
             if (devices == null)
                 plot_data.clear();
-            
+
             // Wait for next update period
             // or early wake from waveUpdateThread()
             synchronized (this)
@@ -161,6 +161,7 @@ public class PlotDataModel implements Runnable
      */
     private void waveUpdateThread()
     {
+        plot_data.clear();
         synchronized (this)
         {   // Findbugs gives 'naked notify' warning. Ignore.
             wake_early = true;
@@ -201,7 +202,7 @@ public class PlotDataModel implements Runnable
     {
         return devices;
     }
-    
+
     /** @param device_name Device to use for "X" axis */
     public void selectXDevice(final String device_name)
     {
@@ -215,7 +216,7 @@ public class PlotDataModel implements Runnable
         y_axis_device = device_name;
         waveUpdateThread();
     }
-    
+
     /** @return Data of selected scan */
     public PlotDataProvider getPlotData()
     {
