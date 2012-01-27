@@ -169,18 +169,19 @@ class ScanNd(ScanClient):
         cmds = CommandSequence()
         for scan in scans:
             body = CommandSequence()
-            # Add loop variable and log
-            log.insert(0, scan[0])
-            body.log(log)
-            
-            # Add previous cmds
+
+            # Add cmds from inner loop
             body.add(cmds)
             
-            # Within loop
+            # Innermost loop logs
+            if len(log) > 0:
+                body.log(log)
+                log = []
+            
+            # Wrap in loop which then becomes cmds to next loop 'up'
             cmds = CommandSequence()
             cmds.loop(scan[0], scan[1], scan[2], scan[3], body)
             
-            log = []
             
         id = self.submit(name, cmds)
         if __name__ == '__main__':
@@ -191,6 +192,7 @@ class ScanNd(ScanClient):
 # Create 'scan' command
 scan = ScanNd()
 
+scan('Reversing 2D', ('xpos', 1, 10), ('ypos', 1, 10, -0.5), 'readback')
         
 if __name__ == '__main__':
     print 'Welcome to the scan system'

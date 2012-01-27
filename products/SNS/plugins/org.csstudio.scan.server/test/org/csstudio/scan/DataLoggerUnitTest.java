@@ -4,18 +4,22 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Date;
 
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
@@ -36,9 +40,11 @@ public class DataLoggerUnitTest
     {
 		for (int x=0; x<5; ++x)
 		{
-			logger.log(ScanSampleFactory.createSample("x", Double.valueOf(x)));
+		    final Date now = new Date();
+		    final long serial = ScanSampleFactory.getNextSerial();
+			logger.log(ScanSampleFactory.createSample("x", now, serial, Double.valueOf(x)));
 			for (int y=0; y<5; ++y)
-				logger.log(ScanSampleFactory.createSample("y", Double.valueOf(y)));
+				logger.log(ScanSampleFactory.createSample("y", now, serial, Double.valueOf(y)));
 		}
     }
 
@@ -56,9 +62,9 @@ public class DataLoggerUnitTest
         System.out.println("MemoryDataLogger:");
         final MemoryDataLogger logger = new MemoryDataLogger();
         assertTrue(logger.getLastScanDataSerial() < 0);
-        
+
         logData(logger);
-        
+
         final ScanData data = logger.getScanData();
         assertEquals(2, data.getDevices().size());
         assertNotNull(data.getSamples("x"));
@@ -67,7 +73,7 @@ public class DataLoggerUnitTest
             System.out.println(sample);
         assertEquals(5, data.getSamples("x").size());
         assertEquals(5*5, data.getSamples("y").size());
-        
+
         assertEquals(data.getSamples("y").get(5*5-1).getSerial(),
                      logger.getLastScanDataSerial());
     }

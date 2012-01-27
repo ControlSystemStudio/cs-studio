@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -210,7 +209,7 @@ public class DeviceValueConditionHeadlessTest
         }
         catch (Exception ex)
         {
-            assertEquals("Timeout while waiting for demo", ex.getMessage());
+            assertTrue(ex.getMessage().contains("Timeout"));
             System.out.println("Received correct timeout for INCREASE_BY");
         }
 
@@ -223,7 +222,7 @@ public class DeviceValueConditionHeadlessTest
         }
         catch (Exception ex)
         {
-            assertEquals("Timeout while waiting for demo", ex.getMessage());
+            assertTrue(ex.getMessage().contains("Timeout"));
             System.out.println("Received correct timeout for EQUALS");
         }
 

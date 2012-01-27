@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -18,6 +18,9 @@ package org.csstudio.scan.server.app;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
@@ -55,6 +58,7 @@ public class ConsoleCommands implements CommandProvider
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
         buf.append("\tscans           - List all scans\n");
+        buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
         buf.append("\tabort  ID       - Abort scan with given ID\n");
@@ -75,7 +79,7 @@ public class ConsoleCommands implements CommandProvider
             // The user is probably most interested in the most recent
             // scan.
             // List is provided most-recent-first because that
-            // is best for GUI tools: Table, drop-down, ... 
+            // is best for GUI tools: Table, drop-down, ...
             // On console, it's best to list the most recent _last_
             // so that it's still visible while all the older scans
             // have already scrolled 'up' in the terminal.
@@ -92,6 +96,40 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
+
+    /** 'data' command */
+    public Object _data(final CommandInterpreter intp)
+    {
+        final String arg = intp.nextArgument();
+        if (arg == null)
+        {
+            intp.println("Syntax:");
+            intp.println("   data  ID-of-scan");
+            return null;
+        }
+        try
+        {
+            final long id = Long.parseLong(arg.trim());
+            // Dump data
+            final ScanData data = server.getScanData(id);
+            final SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+            while (sheet.hasNext())
+            {
+                final List<ScanSample> line = sheet.getSamples();
+                for (ScanSample sample : line)
+                    System.out.print(sample + "  ");
+                System.out.println();
+            }
+            // Dump scan info
+            System.out.println(server.getScanInfo(id));
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return null;
+    }
+
 
     /** 'pause' command */
     public Object _pause(final CommandInterpreter intp)

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
@@ -108,7 +109,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         reach_value.setDesiredValue(value);
         reach_value.await();
 
-        // TODO Log the device's value
+        // Log the device's value
+        context.logSample(ScanSampleFactory.createSample(device.getName(), device.read()));
 
         // Execute loop body
     	context.execute(implementation);
