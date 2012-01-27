@@ -111,21 +111,9 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         // TODO Log the device's value
 
         // Execute loop body
-        try
-        {
-        	context.execute(implementation);
-        }
-        catch (InterruptedException ex)
-        {   // Pass interruption of body command up
-            throw ex;
-        }
-        catch (Throwable ex)
-        {
-        	final String message = toString() + " body failed";
-        	Logger.getLogger(getClass().getName()).log(Level.WARNING, message, ex);
-        	throw new Exception(message, ex);
-        }
-        // If there are no commands that inc. the work units, do it yourself
+    	context.execute(implementation);
+
+    	// If there are no commands that inc. the work units, do it yourself
         if (implementation.size() <= 0)
             context.workPerformed(1);
     }
