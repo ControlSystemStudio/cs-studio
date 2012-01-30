@@ -34,7 +34,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *
  *  <p>When started, it connects to the channel, fetches
  *  meta data, and subscribes to value updates.
- *  
+ *
  *  <p>It also subscribes to updates of the meta data
  *  via the DBE_PROPERTY event introduced in EPICS R3.14.11.
  *  All IOCs will send initial meta data, and new IOCs may
@@ -44,7 +44,7 @@ import org.eclipse.core.runtime.PlatformObject;
  *  is still needed for the gateway.
  *  For IOCs, this means we receive meta data from the initial
  *  fetch as well as via an one initial subscription value...
- *  
+ *
  *  @see PV
  *  @author Kay Kasemir
  */
@@ -173,7 +173,7 @@ public class EPICS_V3_PV extends PlatformObject
             }
         }
     };
-    
+
     /** Listener to a get-callback for data. */
     private class GetCallbackListener implements GetListener
     {
@@ -409,6 +409,7 @@ public class EPICS_V3_PV extends PlatformObject
                 return;
     		final Channel channel = ch_ref.getChannel();
             final Logger logger = Activator.getLogger();
+            final DBRType type;
             try
             {
             	// TODO Instead of another channel.addMonitor(),
@@ -417,7 +418,7 @@ public class EPICS_V3_PV extends PlatformObject
             	//      So even with N PVs for the same channel, it's
             	//      only one subscription on the network instead of
             	//      N subscriptions.
-                final DBRType type = DBR_Helper.getTimeType(plain,
+                type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;
                 logger.log(Level.FINER, "{0} subscribed as {1} ({2})",
@@ -426,16 +427,25 @@ public class EPICS_V3_PV extends PlatformObject
                 subscription = channel.addMonitor(type,
                        channel.getElementCount(),
                        mask.getMask(), this);
-
-                if (! (plain || type.isSTRING()))
-                {
-                    final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-                    meta_subscription = channel.addMonitor(meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
-                }
             }
             catch (final Exception ex)
             {
                 logger.log(Level.SEVERE, name + " subscribe error", ex);
+                return;
+            }
+            if (plain || type.isSTRING())
+                return;
+            // Subscription for property updates may fail because not
+            // all CA servers support it at this point
+            try
+            {
+                final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
+                meta_subscription = channel.addMonitor(meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
+            }
+            catch (final Exception ex)
+            {
+                logger.log(Level.INFO, name + " meta data subscribe error", ex);
+                return;
             }
 		}
     }
@@ -686,7 +696,7 @@ public class EPICS_V3_PV extends PlatformObject
             log.finer(name + " monitor while not subscribed (" + state.name() + ")");
             return;
         }
-        
+
         if (ev == null)
         {
         	log.warning(name + " MonitorEvent is null.");
