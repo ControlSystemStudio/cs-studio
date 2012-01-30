@@ -26,6 +26,7 @@ public class ChannelViewerEditPart extends
 		if (runMode) {
 			channelViewerWidget.setChannelQuery(channelViewerModel.getChannelQuery());
 		}
+		channelViewerWidget.setConfigurable(channelViewerModel.isConfigurable());
 	}
 
 	@Override
@@ -39,7 +40,8 @@ public class ChannelViewerEditPart extends
 				return false;
 			}
 		};
-		setPropertyChangeHandler(PVTableByPropertyModel.CHANNEL_QUERY, reconfigure);
+		setPropertyChangeHandler(ChannelViewerModel.CHANNEL_QUERY, reconfigure);
+		setPropertyChangeHandler(ChannelViewerModel.CONFIGURABLE, reconfigure);
 	}
 
 }
