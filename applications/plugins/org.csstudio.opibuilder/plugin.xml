@@ -192,7 +192,7 @@
                icon="icons/macro.png"
                id="org.csstudio.opibuilder.showMacrosAction"
                label="Show Macros"
-               menubarPath="print"
+               menubarPath="org.eclipse.gef.group.edit"
                tooltip="Show detail infomation of PV">
          </action>
       </objectContribution>

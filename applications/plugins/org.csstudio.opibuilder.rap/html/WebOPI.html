@@ -11,11 +11,8 @@
 <h2>WebOPI</h2>
 <h3>Introduction</h3>
 <p>
-The dreams to bring your control system to web browser come true!
-</p>
-<p>
 WebOPI aims to provide web access to Operator Interfaces (OPI) that 
-were created in CSS BOY, the Best OPI, Yet. With WebOPI, people can 
+were created in CSS BOY (Best OPI, Yet). With WebOPI, people can 
 seamlessly visit their OPIs from anywhere in the world at any time 
 via a web-browser-equipped device such as a PC, laptop, tablet or 
 smart phone. The WebOPI is built upon the Eclipse Rich Ajax Platform (RAP),
@@ -32,6 +29,8 @@ any additional work, you can easily deploy OPIs created in BOY on a Tomcat Web
 <img height=300  src="img/WebOPI_iPod.JPG">
 </p>
 
+<h3>Download</h3>
+<p>See <a href="http://sourceforge.net/apps/trac/cs-studio/wiki/webopi">WebOPI home page</a>.</p>
 <h3>Install</h3>
 <p>In principle, WebOPI can be 
 deployed on all Servlet Containers that implement the Servlet API 2.3 through 3.0. 
@@ -39,12 +38,15 @@ This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere.
 Only Tomcat and Glassfish have been tested for WebOPI so far. </p>
 <h5>Deploy WebOPI on Tomcat</h5>
 <p>Requirement: Java 1.6 and up. Apache Tomcat 7.0.x.</p>
-<p>WebOPI is a Web Archive (WAR) file deployed on <a href="http://tomcat.apache.org/">
+<p>WebOPI is a Web Archive (WAR) file that can be deployed on <a href="http://tomcat.apache.org/">
 Tomcat</a> server. If you do not have Tomcat server available, 
 then the first step would be installing Tomcat server.</p>
 
 <p>After Tomcat server installed, copy WebOPI WAR file (webopi.war) to
  <code>$CATALINA_HOME/webapps/</code> ($CATALINA_HOME is the root of your Tomcat installation). </p>
+ 
+ <p>For other Servlet Containers, please refer to 
+ their own manuals about how to deploy Web Archive (WAR) on them.</p>
  
  <h3>Configure</h3>
  <p>The preferences of WebOPI are configured in <code>$(user.dir)/css_rap.ini</code>. 
@@ -78,9 +80,12 @@ org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM
 <p>In above example, EPICS configuration items are same as in CSS. Most items in WebOPI configuration
 are same as in BOY, but there are some additional items:</p> 
 <ul>
-<li>opi_repository: It is a start path to the directory where the OPI files are placed. It can also 
-be an URL path,for example: http://mysite.com/opi_files/. All other file paths such as startup_opi, color_file
-can be relative path relative to opi_repository, but they could also be absolute paths.</li>
+<li>opi_repository: It is a start path to the directory where the OPI files are placed. If you put your 
+BOY opi files under this directory, you will be able to access them from WebOPI via relative path to this directory.
+This path can also 
+be an URL path,for example: <code>http://mysite.com/opi_files/</code>. All other file paths used in preference file
+such as startup_opi, color_file, can also be a relative path relative to this path,
+but they could also be absolute paths.</li>
 <li>startup_opi: The default start up OPI when no OPI is specified in URL.</li>
 <li>mobile_startup_opi (optional): The default start up OPI for mobile URL.</li>
 </ul> 
@@ -105,8 +110,8 @@ a relative path to opi_repository. For example: <br>
 <br><code>http://your_site.com/webopi/w?opi=http://mysite.com/opis/widgets/1_2_Image.opi</code><br>
 <code>http://your_site.com/webopi/w?opi=/user/local/me/widgets/1_2_Image.opi</code><br>
 <code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi</code><br>
-
-
+</p>
+<p>
 You can also append macros to the opi file as the macros input of the opi. For example:
 <br>
 <code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi|m1=hello|m2=I'm BOY</code>
@@ -138,6 +143,16 @@ It also allows to use macros in URL, for example:
 
 The macros are defined in the preference file with the item <code>macros</code>.
 </p>
+
+
+<h3>Debug URL</h3>
+<p>To show debug and logging information, you can append <code>rap?startup=debug</code> to <code>webopi/</code>.
+For example: <br>   <code>http://your_site.com/webopi/rap?startup=debug</code>. 
+<br> If you want to show more lines,
+you can append <code>&lines=number</code>. 
+For example, <br><code>http://your_site.com/webopi/rap?startup=debug&lines=500</code>.</p>
+
+<p>So far, Debug URL only works for Tomcat server.</p>
 
 <h3> Known Issues</h3>
 <p> 
