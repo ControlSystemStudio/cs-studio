@@ -24,6 +24,9 @@ perl -p -i -e 's/(org\.eclipse\.equinox\.p2\.reconciler\.dropins,.+),false/\1,tr
 # Eclipse 3.6 started to create this directory in the product.
 rm -rf $product/readme
 
+# OS X product sometimes includes an incomplete Eclipse.app directory?
+rm -rf $product/Eclipse.app
+
 # Create new ZIP
 rm -f $final
 zip -qr $final $product
