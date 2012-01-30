@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Olog
+Bundle-Name: CSS Olog support
 Bundle-SymbolicName: org.csstudio.utility.olog;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.olog.Activator
@@ -13,3 +13,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.olog
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Provides the common Olog client for CSS.
