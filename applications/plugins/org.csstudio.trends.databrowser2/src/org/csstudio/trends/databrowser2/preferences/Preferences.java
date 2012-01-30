@@ -48,6 +48,7 @@ public class Preferences
                                URLS = "urls",
                                ARCHIVES = "archives",
                                USE_DEFAULT_ARCHIVES = "use_default_archives",
+                               PROMPT_FOR_ERRORS="prompt_for_errors",
                                ARCHIVE_RESCALE = "archive_rescale";
 
     public static double getTimeSpan()
@@ -147,7 +148,16 @@ public class Preferences
             return false;
         return prefs.getBoolean(Activator.PLUGIN_ID, USE_DEFAULT_ARCHIVES, false, null);
     }
-    
+
+    /** @return <code>true</code> to prompt for errors */
+    static public boolean doPromptForErrors()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return false;
+        return prefs.getBoolean(Activator.PLUGIN_ID, PROMPT_FOR_ERRORS, false, null);
+    }
+
     /** @return Archive rescale setting */
     static public ArchiveRescale getArchiveRescale()
     {

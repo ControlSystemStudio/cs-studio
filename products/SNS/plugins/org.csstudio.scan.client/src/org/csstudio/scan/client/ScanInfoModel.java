@@ -62,6 +62,9 @@ public class ScanInfoModel
 
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
+    
+    /** Have we sent connection error to listeners? */
+    private volatile boolean had_connection_error = false;
 
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
@@ -205,19 +208,24 @@ public class ScanInfoModel
         try
         {
             final List<ScanInfo> update = getServer().getScanInfos();
-            if (update.equals(infos))
+            if (update.equals(infos) && !had_connection_error)
                 return;
             // Received new information, remember and notify listeners
             infos = update;
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
+            had_connection_error = false;
         }
         catch (RemoteException ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
             infos = Collections.emptyList();
-            for (ScanInfoModelListener listener : listeners)
-                listener.connectionError();
+            if (! had_connection_error)
+            {   // Notify listeners once we get into the error state
+                for (ScanInfoModelListener listener : listeners)
+                    listener.connectionError();
+                had_connection_error = true;
+            }
             // Wait a little
             Thread.sleep(1000);
             try

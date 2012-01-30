@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -32,28 +32,19 @@ public class WaitCommand extends ScanCommand
         new ScanCommandProperty("comparison", "Comparison", Comparison.class),
         new ScanCommandProperty("desired_value", "Desired Value", Double.class),
         new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
+        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
     };
-    
+
     private String device_name;
     private Comparison comparison;
     private double desired_value;
     private double tolerance;
+    private double timeout;
 
     /** Initialize empty wait command */
     public WaitCommand()
     {
-        this("device", Comparison.EQUALS, 0.0, 0.1);
-    }
-
-    /** Initialize for 'equals'
-     *  @param device_name Name of device to check
-     *  @param desired_value Desired value of the device
-     *  @param tolerance Numeric tolerance when checking value
-     */
-    public WaitCommand(final String device_name,
-            final double desired_value, final double tolerance)
-    {
-        this(device_name, Comparison.EQUALS, desired_value, tolerance);
+        this("device", Comparison.EQUALS, 0.0, 0.1, 0.0);
     }
 
     /** Initialize
@@ -64,12 +55,13 @@ public class WaitCommand extends ScanCommand
      */
 	public WaitCommand(final String device_name,
 	        final Comparison comparison, final double desired_value,
-	        final double tolerance)
+	        final double tolerance, final double timeout)
     {
         this.device_name = device_name;
         this.desired_value = desired_value;
 	    this.comparison = comparison;
 	    this.tolerance = tolerance;
+	    this.timeout = timeout;
     }
 
 	/** {@inheritDoc} */
@@ -96,7 +88,7 @@ public class WaitCommand extends ScanCommand
     {
         return desired_value;
     }
-    
+
     /** @param desired_value Desired value */
     public void setDesiredValue(final Double desired_value)
     {
@@ -126,19 +118,45 @@ public class WaitCommand extends ScanCommand
     {
         this.tolerance = tolerance;
     }
-    
+
+    /** @return Timeout in seconds */
+    public double getTimeout()
+    {
+        return timeout;
+    }
+
+    /** @param timeout Time out in seconds */
+    public void setTimeout(final Double timeout)
+    {
+        this.timeout = timeout;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
-        out.println("<wait><device>" + device_name + "</device>" +
-        		    "<value>" + desired_value + "</value>" +
-                    "<comparison>" + comparison.name() + "</comparison>" +
-                    "<tolerance>" + tolerance + "</tolerance>" +
-        		    "</wait>");
+        out.println("<wait>");
+        writeIndent(out, level+1);
+        out.println("<device>" + device_name + "</device>");
+        writeIndent(out, level+1);
+        out.println("<value>" + desired_value + "</value>");
+        writeIndent(out, level+1);
+        out.println("<comparison>" + comparison.name() + "</comparison>");
+        if (tolerance > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<tolerance>" + tolerance + "</tolerance>");
+        }
+        if (timeout > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<timeout>" + timeout + "</timeout>");
+        }
+        writeIndent(out, level);
+        out.println("</wait>");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
@@ -154,14 +172,26 @@ public class WaitCommand extends ScanCommand
             setComparison(Comparison.EQUALS);
         }
         setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
+        try
+        {
+            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
+        }
+        catch (Throwable ex)
+        {
+            setTimeout(0.0);
+        }
     }
-    
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
+	    final StringBuilder buf = new StringBuilder();
+	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ").append(desired_value);
 	    if (comparison == Comparison.EQUALS)
-	        return "Wait for '" + device_name + "' " + comparison + " " + desired_value + " (+-" + tolerance + ")";
-        return "Wait for '" + device_name + "' " + comparison + " " + desired_value;
+	        buf.append(" (+-").append(tolerance).append(")");
+	    if (timeout > 0)
+            buf.append(" (").append(timeout).append(" sec timeout)");
+        return buf.toString();
 	}
 }

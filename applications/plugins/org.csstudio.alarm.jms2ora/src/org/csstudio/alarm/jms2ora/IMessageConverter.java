@@ -24,11 +24,10 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import javax.annotation.Nonnull;
 import org.csstudio.alarm.jms2ora.util.RawMessage;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 29.08.2011
@@ -40,5 +39,5 @@ public interface IMessageConverter {
      * 
      * @param m - The raw message. It is just a copy of the JMS MapMessage.
      */
-    void putRawMessage(RawMessage m);
+    void putRawMessage(@Nonnull RawMessage m);
 }

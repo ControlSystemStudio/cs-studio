@@ -82,7 +82,6 @@ public class Activator extends AbstractUIPlugin
     }
 
     /** @return Version code */
-    @SuppressWarnings({ "unchecked" })
     public String getVersion()
     {
         final Dictionary<String, String> headers = getBundle().getHeaders();

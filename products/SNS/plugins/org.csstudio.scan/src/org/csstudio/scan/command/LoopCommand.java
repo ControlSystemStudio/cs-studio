@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -38,6 +38,9 @@ import org.w3c.dom.Element;
  *  this enables a 'reverse' toggle:
  *  The direction of the loop will change every time it is executed.
  *
+ *  <p>The loop checks if the device actually reaches the desired value
+ *  with a timeout.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -50,29 +53,32 @@ public class LoopCommand extends ScanCommand
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),
+        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
     };
-    
+
     private String device_name;
     private double start;
     private double end;
     private double stepsize;
+    private double timeout;
 	private List<ScanCommand> body;
 
     /** Initialize empty loop */
     public LoopCommand()
     {
-        this("device", 0, 10, 1, new ScanCommand[0]);
+        this("device", 0, 10, 1, 0.0, new ScanCommand[0]);
     }
-	
+
 	/** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
+     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Optional loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize,
+            final double end, final double stepsize, final double timeout,
             final ScanCommand... body)
     {
         this.device_name = device_name;
@@ -87,10 +93,11 @@ public class LoopCommand extends ScanCommand
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
+     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize,
+            final double end, final double stepsize, final double timeout,
             final List<ScanCommand> body)
     {
         this.device_name = device_name;
@@ -102,20 +109,20 @@ public class LoopCommand extends ScanCommand
         this.end = end;
         this.body = body;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ScanCommandProperty[] getProperties()
     {
         return properties;
     }
-    
+
 	/** @return Device name */
     public String getDeviceName()
     {
         return device_name;
     }
-    
+
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
@@ -158,6 +165,18 @@ public class LoopCommand extends ScanCommand
         this.stepsize = stepsize;
     }
 
+    /** @return Timeout in seconds */
+    public double getTimeout()
+    {
+        return timeout;
+    }
+
+    /** @param timeout Time out in seconds */
+    public void setTimeout(final Double timeout)
+    {
+        this.timeout = timeout;
+    }
+
     /** @return Descriptions for loop body */
     public List<ScanCommand> getBody()
     {
@@ -169,7 +188,7 @@ public class LoopCommand extends ScanCommand
     {
         this.body = body;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void writeXML(final PrintStream out, final int level)
@@ -185,6 +204,11 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
         writeIndent(out, level+1);
+        if (timeout > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<timeout>" + timeout + "</timeout>");
+        }
         out.println("<body>");
         for (ScanCommand cmd : body)
             cmd.writeXML(out, level + 2);
@@ -207,6 +231,14 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
+        try
+        {
+            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
+        }
+        catch (Throwable ex)
+        {
+            setTimeout(0.0);
+        }
         setBody(body);
     }
 
@@ -214,6 +246,10 @@ public class LoopCommand extends ScanCommand
 	@Override
 	public String toString()
 	{
-	    return "Loop '" + device_name + "' = " + start + " ... " + end + ", step "  + stepsize;
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Loop '").append(device_name).append("' = ").append(start).append(" ... ").append(end).append(", step ").append(stepsize);
+        if (timeout > 0.0)
+            buf.append(" (").append(timeout).append(" sec timeout)");
+        return buf.toString();
 	}
 }

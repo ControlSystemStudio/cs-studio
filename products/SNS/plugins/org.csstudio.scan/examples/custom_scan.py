@@ -28,12 +28,12 @@ client.waitUntilDone()
 # as a python list
 cmds = [
   DelayCommand(2.0),
-  LoopCommand('xpos', 1, 5, 0.1,
+  LoopCommand('xpos', 1, 5, 0.1, 0.0,
     [
       SetCommand('setpoint', 1),
-      WaitCommand('readback', 1.0, 0.5),
+      WaitCommand('readback', Comparison.EQUALS, 1.0, 0.5, 0.0),
       SetCommand('setpoint', 5),
-      WaitCommand('readback', 3.0, 0.5),
+      WaitCommand('readback', Comparison.EQUALS, 3.0, 0.5, 0.0),
       LogCommand([ 'xpos', 'readback' ])
     ]),
 ]

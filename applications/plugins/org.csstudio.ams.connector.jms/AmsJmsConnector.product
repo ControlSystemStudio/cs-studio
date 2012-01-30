@@ -23,8 +23,11 @@
    </vm>
 
    <plugins>
+      <plugin id="com.google.common"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.mysql.jdbc"/>
+      <plugin id="javax.annotation"/>
+      <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
       <plugin id="org.apache.commons.el"/>
@@ -38,6 +41,7 @@
       <plugin id="org.csstudio.ams.connector.jms"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
+      <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -50,6 +54,7 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
       <plugin id="org.csstudio.ui.preferences"/>
+      <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.compare"/>
@@ -94,6 +99,8 @@
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.concurrent"/>
       <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin"/>
+      <plugin id="org.eclipse.equinox.frameworkadmin.equinox"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
@@ -103,16 +110,23 @@
       <plugin id="org.eclipse.equinox.p2.core"/>
       <plugin id="org.eclipse.equinox.p2.director"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
       <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
       <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
       <plugin id="org.eclipse.equinox.p2.operations"/>
+      <plugin id="org.eclipse.equinox.p2.publisher"/>
       <plugin id="org.eclipse.equinox.p2.repository"/>
+      <plugin id="org.eclipse.equinox.p2.touchpoint.eclipse"/>
+      <plugin id="org.eclipse.equinox.p2.touchpoint.natives"/>
+      <plugin id="org.eclipse.equinox.p2.transport.ecf"/>
+      <plugin id="org.eclipse.equinox.p2.updatesite"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
       <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.help"/>
       <plugin id="org.eclipse.help.appserver"/>
@@ -151,6 +165,7 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jdom"/>
       <plugin id="org.jivesoftware.smack"/>
+      <plugin id="org.joda.time"/>
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.mortbay.jetty.server"/>

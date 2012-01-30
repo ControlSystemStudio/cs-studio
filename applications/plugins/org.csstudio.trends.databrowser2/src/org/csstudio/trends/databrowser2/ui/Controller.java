@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.csdata.ProcessVariable;
@@ -654,26 +655,34 @@ public class Controller implements ArchiveFetchJobListener
     }
 
     /** @see ArchiveFetchJobListener */
+    @SuppressWarnings("nls")
     @Override
     public void archiveFetchFailed(final ArchiveFetchJob job,
             final ArchiveDataSource archive, final Exception error)
     {
-        if (display == null  ||  display.isDisposed())
-            return;
-        display.asyncExec(new Runnable()
+        final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
+                job.getPVItem().getDisplayName());
+        final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
+                error.getMessage(), archive.getUrl());
+
+        if (Preferences.doPromptForErrors())
         {
-            @Override
-            public void run()
+            if (display == null  ||  display.isDisposed())
+                return;
+            display.asyncExec(new Runnable()
             {
-                if (display.isDisposed())
-                    return;
-                final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
-                            job.getPVItem().getDisplayName());
-                final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
-                        error.getMessage(), archive.getUrl());
-                new ErrorDetailDialog(shell, Messages.Information, message, detail).open();
-                job.getPVItem().removeArchiveDataSource(archive);
-            }
-        });
+                @Override
+                public void run()
+                {
+                    if (display.isDisposed())
+                        return;
+                    new ErrorDetailDialog(shell, Messages.Information, message, detail).open();
+                    job.getPVItem().removeArchiveDataSource(archive);
+                }
+            });
+        }
+        else
+            Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                    "No archived data for " + job.getPVItem().getDisplayName(), error);
     }
 }

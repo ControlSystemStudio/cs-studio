@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not getEnd()orsed by the SSG authors.
  ******************************************************************************/
@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
@@ -36,7 +37,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     final private boolean reverse;
 	final private List<ScanCommandImpl<?>> implementation;
 	private int direction = 1;
-	
+
     /** Initialize
      *  @param command Command description
      */
@@ -68,7 +69,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 		final Device device = context.getDevice(command.getDeviceName());
         final DeviceValueCondition reach_value =
                 new DeviceValueCondition(device, Comparison.EQUALS,
-                        command.getStart(), command.getStepSize()/10.0);
+                        command.getStart(), command.getStepSize()/10.0,
+                        command.getTimeout());
 
 		Logger.getLogger(getClass().getName()).log(Level.FINE,
 				"Loop: {0} = {1} .. {2}, stepping {3}",
@@ -77,7 +79,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 		final double start = Math.min(command.getStart(), command.getEnd());
         final double end   = Math.max(command.getStart(), command.getEnd());
         final double step  = direction * command.getStepSize();
-        
+
 		if (step > 0)
     		for (double value = start; value <= end; value += step)
     		    executeStep(context, device, reach_value, value);
@@ -106,25 +108,14 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         // .. wait for device to reach value
         reach_value.setDesiredValue(value);
         reach_value.await();
-        
-        // TODO Log the device's value
-        
+
+        // Log the device's value
+        context.logSample(ScanSampleFactory.createSample(device.getName(), device.read()));
+
         // Execute loop body
-        try
-        {
-        	context.execute(implementation);
-        }
-        catch (InterruptedException ex)
-        {   // Pass interruption of body command up
-            throw ex;
-        }
-        catch (Throwable ex)
-        {
-        	final String message = toString() + " body failed";
-        	Logger.getLogger(getClass().getName()).log(Level.WARNING, message, ex);
-        	throw new Exception(message, ex);
-        }
-        // If there are no commands that inc. the work units, do it yourself
+    	context.execute(implementation);
+
+    	// If there are no commands that inc. the work units, do it yourself
         if (implementation.size() <= 0)
             context.workPerformed(1);
     }

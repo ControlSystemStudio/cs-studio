@@ -78,11 +78,12 @@ public interface TODO
      *       Addition of an If-Then-Else command would also
      *       require special handling.
      *  
-     *  TODO Scan Monitor does not appear "re-connected"
-     *       until a new scan is submitted.
+     *  Done Scan Monitor appears "re-connected" when server is re-started.
      *       
-     *  Done Extend WaitForValueCommand to also allow waiting for value to be above or below some threshold,
+     *  Done Extend WaitCommand to also allow waiting for value to be above or below some threshold,
      *       not just "at" the desired value
+     *       
+     *  Done WaitCommand has a timeout
      *  
      *  TODO 'Automatically' log values for LoopCommand, SetCommand, ...
      *       Unclear which value to use:

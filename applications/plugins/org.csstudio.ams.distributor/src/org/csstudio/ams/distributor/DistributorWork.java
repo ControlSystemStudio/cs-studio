@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -24,7 +25,6 @@ package org.csstudio.ams.distributor;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
@@ -33,7 +33,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -45,7 +44,6 @@ import javax.jms.Session;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import org.csstudio.ams.AMSException;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
@@ -1491,7 +1489,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 						+ txt);
 				return user;
 			}
-
+			
+			// This condition is checked if one tries to change his/her status
+			// via SMS to inactive.
 			if (status == 0) // only check if want to set 0 - Inactive
 			{
 				int iActiveCount = 0;

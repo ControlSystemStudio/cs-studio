@@ -20,10 +20,11 @@ import org.eclipse.ui.part.FileEditorInput;
  *  for Data Browser "plt" files.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class OpenDisplayFile implements IOpenDisplayAction
 {
 	/** {@inheritDoc} */
-	@Override
+    @Override
 	public void openDisplay(final String path, final String data) throws Exception
 	{
         final IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
@@ -32,7 +33,7 @@ public class OpenDisplayFile implements IOpenDisplayAction
         final IFile file = (IFile) resource;
         if (! file.exists())
         	throw new Exception("File  '" + file + "' does not exist in workspace");
-    	
+
     	// Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance(new FileEditorInput(file));
         if (editor == null)

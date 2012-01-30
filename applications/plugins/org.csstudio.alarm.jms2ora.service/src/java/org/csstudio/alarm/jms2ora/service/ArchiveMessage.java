@@ -114,11 +114,12 @@ public class ArchiveMessage implements Serializable {
         return unknownContent.size();
     }
 
+    @Nonnull
     public String getUnknownProperty(final int index) {
         return unknownContent.get(index);
     }
 
-    public void addUnknownProperty(final String value) {
+    public void addUnknownProperty(@Nonnull final String value) {
         unknownContent.add(value);
     }
 
@@ -138,6 +139,7 @@ public class ArchiveMessage implements Serializable {
         return discard;
     }
 
+    @Nonnull
     @Override
     public String toString() {
 
@@ -168,6 +170,7 @@ public class ArchiveMessage implements Serializable {
         return result;
     }
 
+    @Nonnull
     public String toStringWithoutEventtime() {
 
         String temp = null;
@@ -199,7 +202,7 @@ public class ArchiveMessage implements Serializable {
         return result;
     }
 
-    public boolean isEqual(final ArchiveMessage mc) {
+    public boolean isEqual(@Nonnull final ArchiveMessage mc) {
 
         boolean result;
         String temp;
@@ -215,6 +218,7 @@ public class ArchiveMessage implements Serializable {
         return result;
     }
 
+    @Nonnull
     public String toPrintableString() {
 
         String temp = null;
