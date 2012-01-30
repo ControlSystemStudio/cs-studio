@@ -69,7 +69,9 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      */
     @Override
     public void writeMessageContent(final ArchiveMessage content) {
-        fileHandler.writeMessageContentToFile(content);
+        Vector<ArchiveMessage> message = new Vector<ArchiveMessage>();
+        message.add(content);
+        fileHandler.writeMessagesToFile(message);
     }
 
     /**
@@ -77,8 +79,7 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      */
     @Override
     public void writeMessages(final Vector<ArchiveMessage> messages) {
-        // TODO Auto-generated method stub
-
+        fileHandler.writeMessagesToFile(messages);
     }
 
     /**

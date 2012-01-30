@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,6 +22,7 @@
  *
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
+
 package org.csstudio.alarm.jms2ora.management;
 
 import org.csstudio.alarm.jms2ora.Jms2OraActivator;
@@ -32,17 +34,16 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
- * TODO (Markus Moeller) : 
- * 
  * @author Markus Moeller
  * @version 
  * @since 22.06.2011
  */
 public class GetDescription implements IManagementCommand {
     
-    /* (non-Javadoc)
+    /**
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
         
         IPreferencesService prefs = Platform.getPreferencesService();

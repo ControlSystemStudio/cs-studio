@@ -31,29 +31,14 @@
          </stringParameter>
       </command>
       <command
-            class="org.csstudio.alarm.jms2ora.management.DeleteAllMessageFiles"
-            id="org.csstudio.alarm.jms2ora.DeleteAllMessageFiles"
-            label="Delete All Message Files">
-      </command>
-      <command
-            class="org.csstudio.alarm.jms2ora.management.GetMessageFileContent"
-            id="org.csstudio.alarm.jms2ora.GetMessageFileContent"
-            label="Get Message File Content">
-      </command>
-      <command
-            class="org.csstudio.alarm.jms2ora.management.GetNameOfMessageFiles"
-            id="org.csstudio.alarm.jms2ora.GetNameOfMessageFiles"
-            label="Get Name Of Message Files">
-      </command>
-      <command
             class="org.csstudio.alarm.jms2ora.management.GetNumberOfMessageFiles"
             id="org.csstudio.alarm.jms2ora.GetNumberOfMessageFiles"
             label="Get Number Of Message Files">
       </command>
       <command
-            class="org.csstudio.alarm.jms2ora.management.GetQueuedMessages"
-            id="org.csstudio.alarm.jms2ora.GetQueuedMessages"
-            label="Get Queued Messages">
+            class="org.csstudio.alarm.jms2ora.management.GetQueueSize"
+            id="org.csstudio.alarm.jms2ora.GetQueueSize"
+            label="Get Queue Size">
       </command>
       <command
             class="org.csstudio.alarm.jms2ora.management.GetDescription"

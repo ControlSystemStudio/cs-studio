@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public class MetaDataDao implements IMessageArchiveDao {
     
     /** The logger of this class */
-    private Logger LOG = LoggerFactory.getLogger(MetaDataDao.class);
+    private static Logger LOG = LoggerFactory.getLogger(MetaDataDao.class);
     
     /** The connection handler */
     private OracleConnectionHandler connectionHandler;
