@@ -63,13 +63,14 @@ public class MessageConverter extends Thread implements IMessageConverter {
 
     private boolean working;
 
-    public MessageConverter(final IMessageProcessor processor, final StatisticCollector c) {
+    public MessageConverter(@Nonnull final IMessageProcessor processor, @Nonnull final StatisticCollector c) {
         messageProcessor = processor;
         messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator();
         lock = new Object();
         working = true;
+        this.start();
     }
 
     @Override
@@ -82,16 +83,19 @@ public class MessageConverter extends Thread implements IMessageConverter {
             synchronized (lock) {
                 try {
                     lock.wait();
+                    LOG.debug("Waking up...");
                 } catch (final InterruptedException ie) {
                     LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
                 }
             }
 
             if (rawMessages.size() > 0) {
-
-                // TODO: Convert the messages
                 final Vector<RawMessage> convertMe = new Vector<RawMessage>(rawMessages);
+                rawMessages.removeAll(convertMe);
                 final Vector<ArchiveMessage> am = contentCreator.convertRawMessages(convertMe);
+                messageProcessor.putArchiveMessages(am);
+                am.clear();
+                convertMe.clear();
             }
         }
 
@@ -103,8 +107,11 @@ public class MessageConverter extends Thread implements IMessageConverter {
     }
 
     @Override
-    public final synchronized void putRawMessage(@Nonnull final RawMessage m) {
+    public final void putRawMessage(@Nonnull final RawMessage m) {
         rawMessages.add(m);
+        synchronized (lock) {
+            lock.notify();
+        }
     }
 
     /**

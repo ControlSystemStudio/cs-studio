@@ -39,4 +39,6 @@ public interface RemotelyAccesible {
      * @return Number of messages in the queue
      */
     int getMessageQueueSize();
+    
+    int getNumberOfMessageFiles();
 }

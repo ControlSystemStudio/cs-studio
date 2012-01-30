@@ -24,6 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -73,7 +74,9 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
 
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 15000;
+    private static long SLEEPING_TIME = 1000;
+    
+    private static int PROCESSING_WAIT_TIME = 1;
 
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
@@ -115,7 +118,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         messageConverter = new MessageConverter(this, collector);
 
         nextProcessingTime = new LocalTime();
-        nextProcessingTime = nextProcessingTime.plusMinutes(5);
+        nextProcessingTime = nextProcessingTime.plusMinutes(PROCESSING_WAIT_TIME);
 
         archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
 
@@ -158,6 +161,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      * {@inheritDoc}
      */
     @Override
+    public final synchronized void putArchiveMessages(@Nonnull final Collection<ArchiveMessage> m) {
+        archiveMessages.addAll(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void run() {
 
         Vector<ArchiveMessage> storeMe;
@@ -186,7 +197,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                     LOG.debug(createStatisticString());
                 }
 
-                nextProcessingTime = nextProcessingTime.plusMinutes(5);
+                nextProcessingTime = nextProcessingTime.plusMinutes(PROCESSING_WAIT_TIME);
             }
 
             if(running) {
@@ -210,20 +221,18 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         int writtenToDb = 0;
         int writtenToHd = 0;
 
-        if (true/* TODO: messageAcceptor.getQueueSize() > 0*/) {
+        if (!archiveMessages.isEmpty()) {
 
-         // TODO: storeMe = messageAcceptor.getCurrentMessages();
-         // TODO: success = writerService.writeMessage(storeMe);
-            success = true;
+            storeMe = this.getMessagesToArchive();
+            success = writerService.writeMessage(storeMe);
             if(!success) {
 
                 // Store the message in a file, if it was not possible to write it to the DB.
-                // TODO: persistenceService.writeMessages(storeMe);
-
-                writtenToHd++;
+                persistenceService.writeMessages(storeMe);
+                writtenToHd = storeMe.size();
 
             } else {
-                writtenToDb++;
+                writtenToDb = storeMe.size();
             }
         }
 
@@ -241,16 +250,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         return stoppedClean;
     }
 
-    @Nonnull
-    public final ReturnValue processMessages() {
-
-        final ReturnValue result = ReturnValue.PM_RETURN_OK;
-
-        //writerService.writeMessage(archiveMessages.);
-
-        return result;
-    }
-
     /**
      *
      * @return Vector object that contains the messages in the queue
@@ -261,6 +260,8 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         if (!archiveMessages.isEmpty()) {
             result = new Vector<ArchiveMessage>(archiveMessages);
             archiveMessages.removeAll(result);
+        } else {
+            result = new Vector<ArchiveMessage>();
         }
         return result;
     }
@@ -301,6 +302,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      */
     public final int getCompleteQueueSize() {
         return messageConverter.getQueueSize() + archiveMessages.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNumberOfMessageFiles() {
+        return persistenceService.getNumberOfMessageFiles();
     }
 
     public final synchronized void stopWorking() {

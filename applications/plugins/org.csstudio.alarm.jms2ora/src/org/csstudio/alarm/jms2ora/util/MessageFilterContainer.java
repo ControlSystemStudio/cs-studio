@@ -59,14 +59,14 @@ public class MessageFilterContainer {
     /**
      * Standard constructor
      */
-    public MessageFilterContainer(final int sendBound, final int maxSentMessages) {
+    public MessageFilterContainer(final int bound, final int maxSent) {
         messages = new Hashtable<String, Long>();
         messageTime = new Hashtable<Long, Long>();
         messageCount = new Hashtable<Long, Integer>();
         freeIds = new Vector<Long>();
         nextId = 1;
-        this.sendBound = sendBound;
-        this.maxSentMessages = maxSentMessages;
+        this.sendBound = bound;
+        this.maxSentMessages = maxSent;
     }
 
     /**
@@ -128,11 +128,6 @@ public class MessageFilterContainer {
         return blockIt;
     }
 
-    /**
-     *
-     * @param mc
-     * @return
-     */
     public final boolean containsMessageContent(final ArchiveMessage mc) {
         String data = null;
 
@@ -141,11 +136,6 @@ public class MessageFilterContainer {
         return messages.containsKey(data);
     }
 
-    /**
-     *
-     * @param timeDiff
-     * @return
-     */
     public synchronized int removeInvalidContent(final long timePeriod) {
         Enumeration<Long> tableId = null;
         long ct = 0;
@@ -170,11 +160,6 @@ public class MessageFilterContainer {
         return count;
     }
 
-    /**
-     *
-     * @param value
-     * @return
-     */
     public final synchronized String getMessageById(final long value) {
         Enumeration<String> messageKey = null;
         String key = null;
@@ -192,18 +177,10 @@ public class MessageFilterContainer {
         return key;
     }
 
-    /**
-     *
-     * @return
-     */
     public int size() {
         return messages.size();
     }
 
-    /**
-     *
-     * @return
-     */
     public long getNextId() {
         return nextId;
     }
