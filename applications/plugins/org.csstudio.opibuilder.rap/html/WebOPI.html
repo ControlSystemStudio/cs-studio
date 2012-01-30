@@ -33,25 +33,26 @@ any additional work, you can easily deploy OPIs created in BOY on a Tomcat Web
 </p>
 
 <h3>Install</h3>
-<p>Only Tomcat Server has been tested. In principle, it can be 
+<p>In principle, WebOPI can be 
 deployed on all Servlet Containers that implement the Servlet API 2.3 through 3.0. 
-This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere. </p>
-<h5>Install on Tomcat</h5>
+This includes Tomcat, Jetty, Glassfish, JBoss and WebSphere. 
+Only Tomcat and Glassfish have been tested for WebOPI so far. </p>
+<h5>Deploy WebOPI on Tomcat</h5>
 <p>Requirement: Java 1.6 and up. Apache Tomcat 7.0.x.</p>
 <p>WebOPI is a Web Archive (WAR) file deployed on <a href="http://tomcat.apache.org/">
 Tomcat</a> server. If you do not have Tomcat server available, 
 then the first step would be installing Tomcat server.</p>
 
 <p>After Tomcat server installed, copy WebOPI WAR file (webopi.war) to
- <code>$CATALINA_HOME/webapps/</code> ($CATALINA_HOME represents the root of your Tomcat installation). </p>
+ <code>$CATALINA_HOME/webapps/</code> ($CATALINA_HOME is the root of your Tomcat installation). </p>
  
  <h3>Configure</h3>
  <p>The preferences of WebOPI are configured in <code>$(user.dir)/css_rap.ini</code>. 
  On Tomcat, <code>$(user.dir)</code> is same as <code>$CATALINA_HOME/webapps/</code>.
  If it is running inside Eclipse, <code>$(user.dir)</code> is the installation directory of Eclipse.
  After WebOPI is properly configured, you can start Tomcat using 
- <code>$CATALINA_HOME/bin/startup.sh</code>. (You need to restart Tomcat server each time after you
- make changes to the configuration.)</p>
+ <code>$CATALINA_HOME/bin/startup.sh</code>. (You need to restart Tomcat server every time after you
+ have made changes to the configuration.)</p>
  
  <p>
  css_rap.ini follows the same format of plugin_customization.ini as in CSS product.  
@@ -75,10 +76,11 @@ org.csstudio.opibuilder/opi_gui_refresh_cycle=200
 org.csstudio.opibuilder/macros="N","North"|"W","West"|"SYS","LLRF"|"SubSys","HPM"</pre>
 
 <p>In above example, EPICS configuration items are same as in CSS. Most items in WebOPI configuration
-are same as in BOY, but there are there additional items:</p> 
+are same as in BOY, but there are some additional items:</p> 
 <ul>
-<li>opi_repository: It is a path to the directory where the OPI files are placed. It can also 
-be an URL path,for example: http://mysite.com/opi_files/ </li>
+<li>opi_repository: It is a start path to the directory where the OPI files are placed. It can also 
+be an URL path,for example: http://mysite.com/opi_files/. All other file paths such as startup_opi, color_file
+can be relative path relative to opi_repository, but they could also be absolute paths.</li>
 <li>startup_opi: The default start up OPI when no OPI is specified in URL.</li>
 <li>mobile_startup_opi (optional): The default start up OPI for mobile URL.</li>
 </ul> 
@@ -97,9 +99,14 @@ be <code>http://your_site.com/your_name</code>.
 Once after you connected to above URL, it will automatically append <code>/w</code> to the URL. 
 </p>
 <p>Using above URL will open the <code>startup_opi</code> specified in css_rap.ini. To open other OPIs, 
-you can directly append <code>?opi=path/to/opi.opi</code> to the URL. It can be either relative 
-or absolute path. For example: <br>
+you can directly append <code>?opi=path/to/opi.opi</code> to the URL. It can be either an absolute path (
+local file path on web server or http URL) or 
+a relative path to opi_repository. For example: <br>
+<br><code>http://your_site.com/webopi/w?opi=http://mysite.com/opis/widgets/1_2_Image.opi</code><br>
+<code>http://your_site.com/webopi/w?opi=/user/local/me/widgets/1_2_Image.opi</code><br>
 <code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi</code><br>
+
+
 You can also append macros to the opi file as the macros input of the opi. For example:
 <br>
 <code>http://your_site.com/webopi/w?opi=widgets/1_2_Image.opi|m1=hello|m2=I'm BOY</code>
