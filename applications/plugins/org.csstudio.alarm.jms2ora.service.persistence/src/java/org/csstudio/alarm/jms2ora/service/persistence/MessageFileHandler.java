@@ -32,9 +32,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
-
+import java.util.Vector;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.DataDirectory;
 import org.csstudio.alarm.jms2ora.service.DataDirectoryException;
@@ -59,7 +61,7 @@ public class MessageFileHandler implements FilenameFilter {
     private final DataDirectory dataDirectories;
 
     /** Prefix for the file names */
-    private final String prefix = "message_";
+    private final String prefix = "message-";
 
     public MessageFileHandler() {
         final IPreferencesService prefs = Platform.getPreferencesService();
@@ -72,7 +74,7 @@ public class MessageFileHandler implements FilenameFilter {
      */
     @Override
     public boolean accept(final File dir, final String name) {
-        return name.toLowerCase().matches(prefix + "\\d{8}_\\d{9}.ser");
+        return name.toLowerCase().matches(prefix + "\\d{8}-\\d{9}-\\d+.ser");
     }
 
     /**
@@ -256,39 +258,47 @@ public class MessageFileHandler implements FilenameFilter {
      *
      * @param content - The MessageContent object that have to be stored on disk.
      */
-    public void writeMessageContentToFile(final ArchiveMessage content) {
+    public void writeMessagesToFile(final Vector<ArchiveMessage> content) {
 
-        if(!content.hasContent()) {
-            LOG.info("Message does not contain content.");
+        if (content.isEmpty()) {
             return;
         }
-
+        
         if(dataDirectories.existsDataDirectory() == false) {
             LOG.warn("Object folder does not exist. Message cannot be stored.");
             return;
         }
 
         final GregorianCalendar cal = new GregorianCalendar();
-        final SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
-        final String fn = prefix + dfm.format(cal.getTime());
-
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-
-        try {
-            fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + fn + ".ser");
-            oos = new ObjectOutputStream(fos);
-
-            // Write the MessageContent object to disk
-            oos.writeObject(content);
-        } catch(final Exception e) {
-            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
-        } finally {
-            if(oos != null){try{oos.close();}catch(final IOException ioe){/* Can be ignored */}}
-            if(fos != null){try{fos.close();}catch(final IOException ioe){/* Can be ignored */}}
-
-            oos = null;
-            fos = null;
+        final SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd-HHmmssSSS");
+        final Date date = cal.getTime();
+        final String dateString = dfm.format(date);
+        DecimalFormat nf = new DecimalFormat("#");
+        nf.setMinimumIntegerDigits(String.valueOf(content.size()).length());
+        
+        int count = 1;
+        for (ArchiveMessage o : content) {
+        
+            String fn = prefix + dateString + "-" + nf.format(count++);
+            
+            FileOutputStream fos = null;
+            ObjectOutputStream oos = null;
+    
+            try {
+                fos = new FileOutputStream(dataDirectories.getDataDirectoryAsString() + fn + ".ser");
+                oos = new ObjectOutputStream(fos);
+    
+                // Write the MessageContent object to disk
+                oos.writeObject(o);
+            } catch(final Exception e) {
+                LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+            } finally {
+                if(oos != null){try{oos.close();}catch(final IOException ioe){/* Can be ignored */}}
+                if(fos != null){try{fos.close();}catch(final IOException ioe){/* Can be ignored */}}
+    
+                oos = null;
+                fos = null;
+            }
         }
     }
 
