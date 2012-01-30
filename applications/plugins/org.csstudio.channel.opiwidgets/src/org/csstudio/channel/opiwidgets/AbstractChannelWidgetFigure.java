@@ -1,12 +1,7 @@
 package org.csstudio.channel.opiwidgets;
 
-import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelQuery;
-
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure;
-import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 
@@ -29,7 +24,7 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 	 */
 	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
-		widget = createWidget(composite);
+		widget = createWidget(getParentComposite());
 		selectionProvider = retrieveSelectionProvider(widget);
 	}
 
