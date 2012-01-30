@@ -29,10 +29,8 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-
 import oracle.jdbc.OracleDriver;
 import oracle.jdbc.pool.OracleDataSource;
-
 import org.csstudio.alarm.jms2ora.service.ConnectionInfo;
 import org.csstudio.alarm.jms2ora.service.MessageArchiveConnectionException;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
@@ -43,8 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
@@ -87,7 +83,7 @@ public class OracleConnectionHandler {
             }
         }
 
-        if (driverFound == false) {
+        if (!driverFound) {
             try {
                 driver = new OracleDriver();
                 DriverManager.registerDriver(driver);
@@ -169,7 +165,7 @@ public class OracleConnectionHandler {
      *
      * @return ConnectionInfo
      */
-    public ConnectionInfo getConnectionInfo() {
+    public final ConnectionInfo getConnectionInfo() {
         return this.conInfo;
     }
 }

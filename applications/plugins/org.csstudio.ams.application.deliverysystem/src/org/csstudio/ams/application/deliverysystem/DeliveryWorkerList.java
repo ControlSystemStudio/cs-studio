@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,44 +23,49 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.application.deliverysystem.internal;
+package org.csstudio.ams.application.deliverysystem;
 
-import org.csstudio.ams.application.deliverysystem.Activator;
-import org.csstudio.domain.desy.preferences.AbstractPreference;
+import java.util.Vector;
+import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 
 /**
  * TODO (mmoeller) : 
  * 
  * @author mmoeller
  * @version 1.0
- * @since 19.12.2011
+ * @since 18.01.2012
  */
-public class DeliverySystemPreference<T> extends AbstractPreference<T> {
-
-    public static final DeliverySystemPreference<String> XMPP_SERVER =
-            new DeliverySystemPreference<String>("xmppServer", "krynfs.desy.de");
+public class DeliveryWorkerList {
     
-    public static final DeliverySystemPreference<String> XMPP_USER =
-            new DeliverySystemPreference<String>("xmppUser", "ams-delivery-system");
-
-    public static final DeliverySystemPreference<String> XMPP_PASSWORD =
-            new DeliverySystemPreference<String>("xmppPassword", "ams");
-
-    public static final DeliverySystemPreference<String> DELIVERY_WORKER_LIST =
-            new DeliverySystemPreference<String>("deliveryWorkerList", "");
-
-    private DeliverySystemPreference(final String keyAsString, final T defaultValue) {
-        super(keyAsString, defaultValue);
+    private Vector<String> allWorker;
+    
+    public DeliveryWorkerList() {
+        allWorker = new Vector<String>();
+        String workerLine = DeliverySystemPreference.DELIVERY_WORKER_LIST.getValue();
+        if (workerLine != null) {
+            String[] workerName = workerLine.split(",");
+            for (String o : workerName) {
+                if (o != null) {
+                    if (o.trim().length() > 0) {
+                        allWorker.add(o.trim());
+                    }
+                }
+            }
+        }
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected Class<? extends AbstractPreference<T>> getClassType() {
-        return (Class<? extends AbstractPreference<T>>) DeliverySystemPreference.class;
+    
+    public boolean isEmpty() {
+        return allWorker.isEmpty();
     }
-
-    @Override
-    public String getPluginID() {
-        return Activator.PLUGIN_ID;
+    
+    public boolean containsWorker(String className) {
+        String simpleName = null;
+        if (className != null) {
+            String[] path = className.split("\\.");
+            if (path.length > 0) {
+                simpleName = path[path.length - 1];
+            }
+        }
+        return allWorker.contains(simpleName);
     }
 }

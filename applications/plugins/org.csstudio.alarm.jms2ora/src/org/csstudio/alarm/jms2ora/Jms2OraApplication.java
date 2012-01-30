@@ -26,6 +26,8 @@ package org.csstudio.alarm.jms2ora;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.jms2ora.management.GetNumberOfMessageFiles;
+import org.csstudio.alarm.jms2ora.management.GetQueueSize;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
@@ -54,6 +56,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 60000;
 
+    /** Time to sleep in ms */
+    private static final long WAITFORTHREAD = 20000;
+    
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
 
@@ -74,9 +79,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
     /** Flag that indicates whether or not the application should stop. */
     private boolean shutdown;
-
-    /** Time to sleep in ms */
-    private static final long WAITFORTHREAD = 20000;
 
     public Jms2OraApplication() {
         lock = new Object();
@@ -169,12 +171,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
         context.applicationRunning();
 
-
         while (running) {
             synchronized (lock) {
                 try {
                     lock.wait(SLEEPING_TIME);
-                } catch(final InterruptedException ie) { /* Can be ignored */}
+                } catch(final InterruptedException ie) {
+                    LOG.info("lock.wait() has been interrupted.");
+                }
             }
 
             // TODO: Check the worker...
@@ -188,7 +191,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
             try {
                 messageProcessor.join(WAITFORTHREAD);
-            } catch(final InterruptedException ie) { /* Can be ignored */ }
+            } catch(final InterruptedException ie) {
+                LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
+            }
 
             if(messageProcessor.stoppedClean()) {
                 LOG.info("Restart/Exit: Thread stopped clean.");
@@ -200,6 +205,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         }
 
         if (xmppService != null) {
+            synchronized (xmppService) {
+                try {
+                    xmppService.wait(500);
+                } catch (InterruptedException ie) {
+                    LOG.info("xmppService.wait(500) has been interrupted.");
+                }
+            }
             xmppService.disconnect();
         }
 
@@ -225,6 +237,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     	    return;
     	}
 
+    	GetQueueSize.staticInject(this);
+    	GetNumberOfMessageFiles.staticInject(this);
+    	
     	try {
 			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
 			xmppService = sessionService;
@@ -280,5 +295,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     @Override
     public int getMessageQueueSize() {
         return messageProcessor.getCompleteQueueSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNumberOfMessageFiles() {
+        return messageProcessor.getNumberOfMessageFiles();
     }
 }

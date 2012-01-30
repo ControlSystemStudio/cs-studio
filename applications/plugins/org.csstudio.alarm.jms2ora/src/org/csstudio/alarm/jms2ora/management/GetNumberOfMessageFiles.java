@@ -23,7 +23,7 @@
 
 package org.csstudio.alarm.jms2ora.management;
 
-import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
+import org.csstudio.alarm.jms2ora.RemotelyAccesible;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -33,14 +33,23 @@ import org.csstudio.platform.management.IManagementCommand;
  *
  */
 public class GetNumberOfMessageFiles implements IManagementCommand {
-    /* (non-Javadoc)
+
+    private static RemotelyAccesible object = null;
+
+    /**
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
+    @Override
     public CommandResult execute(CommandParameters parameters) {
-        String result = null;
         
-        result = Integer.toString(MessageFileHandler.getInstance().getMessageFilesNumber());
-
-        return CommandResult.createMessageResult(result);
+        if (object != null) {
+            return CommandResult.createMessageResult(Integer.toString(object.getNumberOfMessageFiles()));
+        }
+        
+        return CommandResult.createFailureResult("\nERROR: Cannot get the number of message files. The object reference is null.");
+    }
+    
+    public static void staticInject(RemotelyAccesible o) {
+        object = o;
     }
 }

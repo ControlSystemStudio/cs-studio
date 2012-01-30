@@ -41,8 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
@@ -106,6 +104,8 @@ public class MessageDao implements IMessageArchiveDao {
         if (messages.isEmpty()) {
             return true;
         }
+        
+        LOG.info("Number of messages to write: {}", messages.size());
         
         Connection con = null;
         try {
@@ -221,6 +221,8 @@ public class MessageDao implements IMessageArchiveDao {
                 try{contentStatement.close();}catch(SQLException sqle){/*Ignore Me*/}
                 contentStatement=null;
             }
+            
+            connectionHandler.disconnect();
         }
         
         return success;
