@@ -74,7 +74,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
 
     /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 1000;
+    private static long SLEEPING_TIME = 10000;
     
     private static int PROCESSING_WAIT_TIME = 1;
 
@@ -192,7 +192,9 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                     persistenceService.writeMessages(storeMe);
                     LOG.warn("Could not store the message in the database. Message is written on disk.");
                 }
-
+                
+                collector.addStoredMessages(storeMe.size());
+                
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(createStatisticString());
                 }
@@ -212,6 +214,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 }
 
                 LOG.debug("Waked up...");
+                LOG.debug("Next processing time: {}", nextProcessingTime.toString());
             }
         }
 

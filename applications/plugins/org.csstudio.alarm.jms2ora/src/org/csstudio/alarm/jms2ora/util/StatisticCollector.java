@@ -28,24 +28,33 @@ import org.csstudio.alarm.jms2ora.VersionInfo;
 import org.csstudio.platform.statistic.Collector;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
  */
 public class StatisticCollector {
 
-    /** Class that collects statistic informations. Query it via XMPP. */
+    /**
+     * Provides the number of received messages
+     */
     private final Collector receivedMessages;
 
-    /** Class that collects statistic informations. Query it via XMPP. */
+    /**
+     *  Contains the number of filtered messages.
+     *  Messages will be filtered if they have the same content
+     *  and are delivered in a short time interval
+     */
     private final Collector filteredMessages;
 
-    /** Class that collects statistic informations. Query it via XMPP. */
+    /**
+     *  Messages will be discard if one ore more properties matches some defined criteria
+     *  (e.g. the property TYPE is test)
+     */
     private final Collector discardedMessages;
 
-    /** Class that collects statistic informations. Query it via XMPP. */
+    /**
+     * Remembers the number of stored messages
+     */
     private final Collector storedMessages;
 
     public StatisticCollector() {
@@ -105,5 +114,10 @@ public class StatisticCollector {
 
     public void incrementStoredMessages() {
         storedMessages.incrementValue();
+    }
+    
+    public void addStoredMessages(int value) {
+        double current = storedMessages.getActualValue().getValue();
+        storedMessages.setValue(value + current);
     }
 }
