@@ -20,7 +20,7 @@
     <!-- Build directory -->
     <property name="build_dir" value="${env.BUILDDIR}" />
 	
-    <!-- Zip all the source files -->
+    <!-- Check environment variables -->
     <target name="check_vars" unless="env.VERSION">
         <fail message="VERSION is undefined"/>
     </target>
