@@ -21,14 +21,12 @@
 */
 package org.csstudio.config.ioconfig.model.service;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 
 /**
@@ -42,17 +40,9 @@ public interface IInternId2IONameService {
     @CheckForNull
     String getIOName(@Nonnull final String pvName);
 
-    @CheckForNull
-    INode getNode(@Nonnull final String internId) throws PersistenceException;
+    @Nonnull
+    Set<IDocument> getDocuments(@Nonnull final String internId) throws PersistenceException;
 
     @Nonnull
-    Map<String, INode> getNodes(@Nonnull final Collection<String> internId) throws PersistenceException, NodeNotFoundException;
-
-    @Nonnull
-    IDocument getDocuments(@Nonnull final String internId) throws PersistenceException;
-
-    @Nonnull
-    String getProcessVariable(@Nonnull final String internId) throws PersistenceException;
-
-
+    String getProcessVariables(@Nonnull final String internId) throws PersistenceException;
 }

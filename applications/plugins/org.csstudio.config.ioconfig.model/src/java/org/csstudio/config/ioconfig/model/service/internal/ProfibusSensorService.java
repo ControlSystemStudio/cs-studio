@@ -22,7 +22,7 @@
 /*
  * $Id: ProfibusSensorService.java,v 1.2 2009/09/10 12:17:29 hrickens Exp $
  */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
 import java.util.ArrayList;
 import java.util.List;
