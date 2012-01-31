@@ -75,6 +75,8 @@ public class BIN_gn_gr_rt implements IRule {
             if (arguments.length >= 4 && compare(arguments[0], arguments[5])) {
                 return "${Blau}";
             }
+
+            return null;
         }
         return ColorAndFontUtil.toHex(138, 43, 226);
     }
