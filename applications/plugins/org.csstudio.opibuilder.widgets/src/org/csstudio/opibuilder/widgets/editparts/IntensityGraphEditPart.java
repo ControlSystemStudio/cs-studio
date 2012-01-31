@@ -41,11 +41,13 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 
 
 	private boolean innerTrig;
+	
+	private IntensityGraphFigure graph;
 
 	@Override
 	protected IFigure doCreateFigure() {
 		IntensityGraphModel model = getWidgetModel();
-		IntensityGraphFigure graph = new IntensityGraphFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
+		graph = new IntensityGraphFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		graph.setMin(model.getMinimum());
 		graph.setMax(model.getMaximum());
 		graph.setDataWidth(model.getDataWidth());
@@ -355,10 +357,18 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 			axis.setForegroundColor(CustomMediaFactory.getInstance().getColor(((OPIColor)newValue).getRGBValue()));
 			break;
 		case MAX:
-			axis.setRange(axis.getRange().getLower(), (Double)newValue);
+			String axisID = (axis == graph.getXAxis())? 
+					IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;				
+			double lower = (Double) getPropertyValue(
+					IntensityGraphModel.makeAxisPropID(axisID, AxisProperty.MIN.propIDPre));
+			axis.setRange(lower, (Double)newValue);
 			break;
 		case MIN:
-			axis.setRange((Double)newValue, axis.getRange().getUpper());
+			String axisID2 = (axis == graph.getXAxis())? 
+					IntensityGraphModel.X_AXIS_ID : IntensityGraphModel.Y_AXIS_ID;				
+			double upper = (Double) getPropertyValue(
+					IntensityGraphModel.makeAxisPropID(axisID2, AxisProperty.MAX.propIDPre));
+			axis.setRange((Double)newValue, upper);
 			break;
 		case SCALE_FONT:
 			axis.setFont(((OPIFont)newValue).getSWTFont());

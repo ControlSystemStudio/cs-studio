@@ -33,7 +33,6 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -742,16 +741,16 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			
 			setCropRight(toBeCropRight);
 			setCropBottom(toBeCropBottom);
-			graphArea.repaint();
+			graphArea.repaint();	
+			
 			t1 = xAxis.getPositionValue(start.x, false);
 			t2 = xAxis.getPositionValue(end.x, false);
-			xAxis.setRange(t1, t2);			
+			xAxis.setRange(t1, t2, true);			
 			t1 = yAxis.getPositionValue(start.y, false);
 			t2 = yAxis.getPositionValue(end.y, false);
-			yAxis.setRange(t1, t2);			
-	
-		
+			yAxis.setRange(t1, t2,true);	
 	}
+	
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
