@@ -2,24 +2,35 @@ package org.csstudio.config.ioconfig.model;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.service.IDocumentService;
+import org.csstudio.config.ioconfig.model.service.IInternId2IONameService;
+import org.csstudio.config.ioconfig.model.service.IProcessVariable2IONameService;
+import org.csstudio.config.ioconfig.model.service.internal.InternId2IONameImplemation;
+import org.csstudio.config.ioconfig.model.service.internal.LogbookDocumentService;
+import org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation;
+import org.csstudio.config.ioconfig.model.service.internal.ProfiBusIoNameService;
+import org.csstudio.config.ioconfig.model.service.internal.ProfibusSensorService;
+import org.csstudio.dct.ISensorIdService;
+import org.csstudio.dct.IoNameService;
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.servicelocator.ServiceLocatorFactory;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
 public class IOConfigActivator extends AbstractCssPlugin {
-    
+
     /**
      *  The plug-in ID.
      */
     public static final String PLUGIN_ID = "org.csstudio.config.ioconfig.model";
-    
+
     /**
      *  The shared instance
      */
     private static IOConfigActivator INSTANCE;
-    
+
     /**
      * The constructor
      */
@@ -29,7 +40,7 @@ public class IOConfigActivator extends AbstractCssPlugin {
         }
         INSTANCE = this;
     }
-    
+
     /**
      * Returns the shared instance
      *
@@ -39,15 +50,19 @@ public class IOConfigActivator extends AbstractCssPlugin {
     public static IOConfigActivator getDefault() {
         return INSTANCE;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doStart(@Nonnull final BundleContext context) throws Exception {
-        // nothing to start
+        ServiceLocatorFactory.registerServiceWithTracker("LogbookDocumentService", context, IDocumentService.class, new LogbookDocumentService());
+        ServiceLocatorFactory.registerServiceWithTracker("InternId2IONameImplemation", context, IInternId2IONameService.class, new InternId2IONameImplemation());
+        ServiceLocatorFactory.registerServiceWithTracker("ProcessVariable2IONameImplemation", context, IProcessVariable2IONameService.class, new ProcessVariable2IONameImplemation());
+        ServiceLocatorFactory.registerServiceWithTracker("ProfiBusIoNameService", context, IoNameService.class, new ProfiBusIoNameService());
+        ServiceLocatorFactory.registerServiceWithTracker("ProfibusSensorService", context, ISensorIdService.class, new ProfibusSensorService());
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -55,7 +70,7 @@ public class IOConfigActivator extends AbstractCssPlugin {
     protected void doStop(@Nonnull final BundleContext context) throws Exception {
         // nothing to stop
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -64,5 +79,5 @@ public class IOConfigActivator extends AbstractCssPlugin {
     public String getPluginId() {
         return PLUGIN_ID;
     }
-    
+
 }

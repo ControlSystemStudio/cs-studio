@@ -15,6 +15,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.model.service.internal.Channel4ServicesDBO;
 
 /**
  *
@@ -177,7 +178,7 @@ public interface IRepository {
      * @return The the selected Channel or null when not found!
      */
     @CheckForNull
-    ChannelDBO loadChannelWithInternId(@Nullable String internId) throws PersistenceException;
+    Channel4ServicesDBO loadChannelWithInternId(@Nullable String internId) throws PersistenceException;
 
     /**
      * @param pvName
@@ -190,7 +191,7 @@ public interface IRepository {
      * @return
      */
     @Nonnull
-    List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nullable Collection<String> ioNames) throws PersistenceException;
+    PV2IONameMatcherModelDBO loadIOName2PVMatcher(@Nullable String ioNames) throws PersistenceException;
 
     /**
      * Close all resources that the Repository need.

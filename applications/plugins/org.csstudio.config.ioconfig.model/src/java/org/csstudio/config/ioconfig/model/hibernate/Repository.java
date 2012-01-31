@@ -31,6 +31,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
@@ -39,6 +40,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.SensorsDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
+import org.csstudio.config.ioconfig.model.service.internal.Channel4ServicesDBO;
 
 /**
  * @author gerke
@@ -247,6 +249,17 @@ public final class Repository {
     }
 
     /**
+     * Load the Channel selected by the INTERN_ID
+     * @param internId the selection INTERN_ID.
+     * @return The the selected Channel or null when not found!
+     */
+    @CheckForNull
+    public static Channel4ServicesDBO loadChannelWithInternId(@Nullable final String internId) throws PersistenceException{
+        final Channel4ServicesDBO channel = _REPOSITORY.loadChannelWithInternId(internId);
+        return channel;
+    }
+
+    /**
      * Load the short Description (max. 40 character) selected by the IO Name.
      * @param ioName the selection IO-Name.
      * @return The the short Description or null when not found!
@@ -262,8 +275,8 @@ public final class Repository {
     }
 
     @CheckForNull
-    public static List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nonnull final Collection<String> pvName) throws PersistenceException {
-        return _REPOSITORY.loadIOName2PVMatcher(pvName);
+    public static PV2IONameMatcherModelDBO loadIOName2PVMatcher(@Nonnull final String ioNames) throws PersistenceException {
+        return _REPOSITORY.loadIOName2PVMatcher(ioNames);
     }
 
 

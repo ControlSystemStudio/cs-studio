@@ -32,10 +32,11 @@ import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.INodeWithPrototype;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.service.IProcessVariable2IONameService;
 import org.csstudio.config.ioconfig.model.service.NodeNotFoundException;
-import org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.servicelocator.ServiceLocator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
@@ -189,7 +190,7 @@ public class DocumentContent {
              */
             @Override
             public void run() {
-                final ProcessVariable2IONameImplemation pv2IOName = new ProcessVariable2IONameImplemation();
+                final IProcessVariable2IONameService pv2IOName = ServiceLocator.getService(IProcessVariable2IONameService.class);
                 final Collection<String> pcNames = new HashSet<String>(processVariables.size());
                 for (final IProcessVariable iProcessVariable : processVariables) {
                     pcNames.add(iProcessVariable.getName());

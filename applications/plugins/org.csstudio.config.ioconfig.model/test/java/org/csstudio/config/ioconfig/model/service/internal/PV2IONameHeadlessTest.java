@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +34,7 @@ import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.HibernateRepository;
 import org.csstudio.config.ioconfig.model.hibernate.HibernateTestManager;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
+import org.csstudio.config.ioconfig.model.service.NodeNotFoundException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -82,7 +83,7 @@ public class PV2IONameHeadlessTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation#getIOName(java.lang.String)}.
+     * Test method for {@link org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation#getIOName(java.lang.String)}.
      * @throws PersistenceException
      */
     @Test
@@ -95,7 +96,7 @@ public class PV2IONameHeadlessTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation#getNode(java.lang.String)}.
+     * Test method for {@link org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation#getNode(java.lang.String)}.
      * @throws PersistenceException
      */
     @Test
@@ -108,7 +109,7 @@ public class PV2IONameHeadlessTest {
     }
 
     /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation#getNodes(java.util.Collection)}.
+     * Test method for {@link org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation#getNodes(java.util.Collection)}.
      * @throws NodeNotFoundException
      * @throws PersistenceException
      */
@@ -120,21 +121,21 @@ public class PV2IONameHeadlessTest {
         assertEquals("AO 0", nodes.get(_PV_NAME_VALUE).getName());
     }
 
-    /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation#getPVNames(java.util.Collection)}.
-     * @throws PersistenceException
-     */
-    @Test
-    public void testGetPVNames() throws PersistenceException {
-        final Map<String, String> pvNames = _PV2IO_NAME_IMPL.getPVNames(_IO_NAMES);
-        assertNotNull(pvNames);
-        assertNull(pvNames.get(_IO_NAME_NULL));
-        assertNotNull(pvNames.get(_IO_NAME_VALUE));
-        assertEquals(_PV_NAME_VALUE, pvNames.get(_IO_NAME_VALUE));
-    }
+//    /**
+//     * Test method for {@link org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation#getPVNames(java.util.Collection)}.
+//     * @throws PersistenceException
+//     */
+//    @Test
+//    public void testGetPVNames() throws PersistenceException {
+//        final Map<String, String> pvNames = _PV2IO_NAME_IMPL.getPVNames(_IO_NAMES);
+//        assertNotNull(pvNames);
+//        assertNull(pvNames.get(_IO_NAME_NULL));
+//        assertNotNull(pvNames.get(_IO_NAME_VALUE));
+//        assertEquals(_PV_NAME_VALUE, pvNames.get(_IO_NAME_VALUE));
+//    }
 
     /**
-     * Test method for {@link org.csstudio.config.ioconfig.model.service.ProcessVariable2IONameImplemation#getPVName(java.lang.String)}.
+     * Test method for {@link org.csstudio.config.ioconfig.model.service.internal.ProcessVariable2IONameImplemation#getPVName(java.lang.String)}.
      * @throws PersistenceException
      */
     @Test

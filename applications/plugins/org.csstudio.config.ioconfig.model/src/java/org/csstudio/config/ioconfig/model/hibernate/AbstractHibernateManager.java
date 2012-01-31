@@ -50,6 +50,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
+import org.csstudio.config.ioconfig.model.service.internal.Channel4ServicesDBO;
+import org.csstudio.config.ioconfig.model.service.internal.Node4ServicesDBO;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -103,6 +105,8 @@ public abstract class AbstractHibernateManager extends Observable implements IHi
         CLASSES.add(SearchNodeDBO.class);
         CLASSES.add(SensorsDBO.class);
         CLASSES.add(PV2IONameMatcherModelDBO.class);
+        CLASSES.add(Node4ServicesDBO.class);
+        CLASSES.add(Channel4ServicesDBO.class);
     }
 
     protected abstract void buildConfig();

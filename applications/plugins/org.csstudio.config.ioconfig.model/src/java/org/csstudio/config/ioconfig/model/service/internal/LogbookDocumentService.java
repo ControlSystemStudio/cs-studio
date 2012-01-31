@@ -22,7 +22,7 @@
 /*
  * $Id: LogbookDocumentService.java,v 1.3 2010/08/20 13:33:08 hrickens Exp $
  */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -40,6 +40,7 @@ import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
+import org.csstudio.config.ioconfig.model.service.IDocumentService;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

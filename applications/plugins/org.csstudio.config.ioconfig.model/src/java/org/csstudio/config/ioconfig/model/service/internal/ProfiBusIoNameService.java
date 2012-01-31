@@ -22,7 +22,7 @@
 /*
  * $Id: ProfiBusIoNameService.java,v 1.3 2009/12/08 07:36:02 hrickens Exp $
  */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
 import java.util.ArrayList;
 import java.util.List;
