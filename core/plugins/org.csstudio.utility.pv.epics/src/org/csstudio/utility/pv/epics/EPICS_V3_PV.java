@@ -444,7 +444,7 @@ public class EPICS_V3_PV extends PlatformObject
             }
             catch (final Exception ex)
             {
-                logger.log(Level.INFO, name + " meta data subscribe error", ex);
+                logger.log(Level.FINE, name + " meta data subscribe error", ex);
                 return;
             }
 		}
