@@ -18,7 +18,7 @@
     <property name="workspace_dir" value="${env.WORKSPACE}" />
     
     <!-- Build directory -->
-    <property name="build_dir" value="/tmp/build" />
+    <property name="build_dir" value="${env.BUILDDIR}" />
 	
     <!-- Zip all the source files -->
     <target name="check_vars" unless="env.VERSION">
@@ -132,6 +132,10 @@
                 <exclude name="**/classes/**"/>
             </fileset>
             <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/product" includesfile="extra.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>
