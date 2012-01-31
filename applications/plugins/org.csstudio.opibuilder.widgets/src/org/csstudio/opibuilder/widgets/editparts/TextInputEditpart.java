@@ -182,7 +182,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 						Object result;
 						if(getWidgetModel().getFormat() != FormatEnum.STRING
 								&& text.trim().indexOf(SPACE)!=-1){
-							result = parseStringArray(text.split(" +"));//StringSplitter.splitIgnoreInQuotes(text.trim(), SPACE, true));
+							result = parseStringArray(text);
 						}else
 							result = parseString(text);
 						setPVValue(AbstractPVWidgetModel.PROP_PVNAME, result);
@@ -344,7 +344,14 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		return -1;
 	}
 	
-	private Object parseStringArray(final String[] texts) throws ParseException{		
+	/**If the text has spaces in the string and the PV is numeric array type,
+	 * it will return an array of numeric values. 
+	 * @param text
+	 * @return
+	 * @throws ParseException
+	 */
+	private Object parseStringArray(final String text) throws ParseException{	
+		String[] texts = text.split(" +"); //$NON-NLS-1$
 		IValue pvValue = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		if((pvValue instanceof IDoubleValue && (((IDoubleValue) pvValue).getValues().length > 1)) 
 				||(pvValue instanceof ILongValue && (((ILongValue) pvValue).getValues().length > 1))){
@@ -358,11 +365,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			}
 			return result;
 		}
-		if(pvValue instanceof IStringValue && ((IStringValue)pvValue).getValues().length>1){
-			return texts;
-		}
+//		if(pvValue instanceof IStringValue && ((IStringValue)pvValue).getValues().length>1){
+//			return texts;
+//		}
 		
-		return parseString(texts[0]);
+		return parseString(text);
 	}
 
 	/**
