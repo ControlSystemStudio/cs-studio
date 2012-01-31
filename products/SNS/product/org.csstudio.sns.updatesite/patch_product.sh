@@ -20,19 +20,12 @@ unzip -q $orig
 # Unclear how to do that in p2.inf, so using perl
 perl -p -i -e 's/(org\.eclipse\.equinox\.p2\.reconciler\.dropins,.+),false/\1,true/;' $product/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info    
 
-# * Remove readme/readme_eclipse.html 
-# Eclipse 3.6 started to create this directory in the product.
-rm -rf $product/readme
-
-# OS X product sometimes includes an incomplete Eclipse.app directory?
-rm -rf $product/Eclipse.app
-
 # Create new ZIP
 rm -f $final
 zip -qr $final $product
     
 # Cleanup
 rm -rf $product
-rm $orig
+# rm $orig
 
 echo Created $final
