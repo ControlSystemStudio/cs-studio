@@ -53,7 +53,6 @@ org.csstudio.logging.ui/**
 org.csstudio.navigator.applaunch/**
 org.csstudio.openfile/**
 org.csstudio.opibuilder/**
-org.csstudio.opibuilder.rap/**
 org.csstudio.opibuilder.adl2boy/**
 org.csstudio.opibuilder.converter/**
 org.csstudio.opibuilder.editor/**
@@ -61,7 +60,6 @@ org.csstudio.opibuilder.examples/**
 org.csstudio.opibuilder.rcp/**
 org.csstudio.opibuilder.widgets/**
 org.csstudio.opibuilder.widgets.rcp/**
-org.csstudio.opibuilder.widgets.rap/**
 org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
@@ -74,8 +72,6 @@ org.csstudio.platform.libs.jmock/**
 org.csstudio.platform.libs.jms/**
 org.csstudio.platform.utility.jms/**
 org.csstudio.platform.utility.rdb/**
-org.csstudio.rap.core/**
-org.csstudio.rap.ui.util/**
 org.csstudio.remote/**
 org.csstudio.scan/**
 org.csstudio.scan.client/**
@@ -101,7 +97,6 @@ org.csstudio.swt.widgets/**
 org.csstudio.swt.widgets.rcp/**
 org.csstudio.swt.xygraph/**
 org.csstudio.swt.xygraph.rcp/**
-org.csstudio.swt.xygraph.rap/**
 org.csstudio.trends.databrowser2/**
 org.csstudio.trends.databrowser2.opiwidget/**
 org.csstudio.ui.help/**
