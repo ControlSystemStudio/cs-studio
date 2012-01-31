@@ -14,6 +14,9 @@
       <plugin id="org.csstudio.opibuilder.widgets"/>
       <plugin id="org.csstudio.opibuilder.widgets.rap" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.epics.macosx" fragment="true"/>
+      <plugin id="org.csstudio.platform.libs.epics.win32" fragment="true"/>
       <plugin id="org.csstudio.rap.core"/>
       <plugin id="org.csstudio.rap.ui.util"/>
       <plugin id="org.csstudio.swt.widgets"/>
