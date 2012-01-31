@@ -30,8 +30,8 @@ package org.csstudio.alarm.jms2ora;
 public class VersionInfo
 {
     public static final String NAME = "Jms2Ora";
-    public static final String VERSION = " 2.3.3";
-    public static final String BUILD = " - BUILD 2011-06-22 14:00";
+    public static final String VERSION = " 3.0.0";
+    public static final String BUILD = " - BUILD 2012-01-31 16:00";
     
     public static String getAll()
     {

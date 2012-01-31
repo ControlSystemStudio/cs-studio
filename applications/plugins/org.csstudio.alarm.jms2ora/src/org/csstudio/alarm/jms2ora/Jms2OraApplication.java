@@ -71,9 +71,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** The ECF service */
     private ISessionService xmppService;
 
-    /** Name of the folder that holds the stored message content */
-    //private String objectDir;
-
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
 

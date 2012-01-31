@@ -59,6 +59,13 @@ public class MessageDao implements IMessageArchiveDao {
     /** The service that reads the meta data */
     private IMetaDataReader metaDataReaderService;
     
+    /**
+     * This flag indicates if a log message have to generated. If the connection causes an exception
+     * we will get an cycle of log messages that cause new log messages that causes log messages ...
+     * We have to break this chain!!!!!
+     */
+    private boolean blockLog;
+
     /** The SQL fragment for the INSERT statement */
     private final String INSERT_SQL = "INSERT INTO message (id,msg_type_id,datum";
     
@@ -78,17 +85,23 @@ public class MessageDao implements IMessageArchiveDao {
      * Constructor. Oh, really?
      */
     public MessageDao() {
-
+        blockLog = false;
         connectionHandler = new OracleConnectionHandler(false);
-        
         metaDataServiceTracker = new MetaDataReaderServiceTracker(Activator.getContext());
         metaDataServiceTracker.open();
-        
         metaDataReaderService = (IMetaDataReader) metaDataServiceTracker.getService();
-        
         messageCol = metaDataReaderService.getMessageProperties();
     }
     
+    private void logError(String msg) {
+        if (!blockLog) {
+            LOG.error(msg);
+            blockLog = true;
+        } else {
+            LOG.warn(msg);
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -111,7 +124,7 @@ public class MessageDao implements IMessageArchiveDao {
         try {
             con = connectionHandler.getConnection();
         } catch (MessageArchiveConnectionException mace) {
-            LOG.error("[*** MessageArchiveConnectionException ***]: " + mace.getMessage());
+            logError("[*** MessageArchiveConnectionException ***]: " + mace.getMessage());
         }
         
         if (con == null) {
@@ -124,10 +137,10 @@ public class MessageDao implements IMessageArchiveDao {
         LOG.info("The new ID's: messageID = {}, contentID = {}", messageId, contentId);
         
         if ((messageId == -1) || (contentId == -1)) {
-            LOG.error("Cannot get the new ID: messageID = {}, contentID = {}", messageId, contentId);
+            logError("Cannot get the new ID: messageID = " + messageId + ", contentID = " + contentId);
             return false;
         }
-        
+                
         // Get names of columns of table MESSAGE
         String[] keys = new String[messageCol.size()];
         keys = messageCol.keySet().toArray(keys);
@@ -202,14 +215,15 @@ public class MessageDao implements IMessageArchiveDao {
             contentStatement.executeBatch();
             
             con.commit();
+            blockLog = false;
             success = true;
             
         } catch (SQLException sqle) {
-            LOG.error("[*** SQLException ***]: " + sqle.getMessage());
+            logError("[*** SQLException ***]: " + sqle.getMessage());
             try {
                 con.rollback(savePoint);
             } catch (SQLException e) {
-                LOG.error("Rollback FAILED: " + sqle.getMessage());
+                logError("Rollback FAILED: " + sqle.getMessage());
             }
         } finally {
             if(messageStatement!=null) {
@@ -250,7 +264,7 @@ public class MessageDao implements IMessageArchiveDao {
                 result += 1;
             }
         } catch(Exception e) {
-            LOG.error("[*** Exception ***]: getNextId(): " + e.getMessage());
+            LOG.warn("[*** Exception ***]: getNextId(): " + e.getMessage());
             result = -1;
         } finally {
             if(rsMsg!=null){try{rsMsg.close();}catch(SQLException sqle){/*Ignore me*/}rsMsg=null;}

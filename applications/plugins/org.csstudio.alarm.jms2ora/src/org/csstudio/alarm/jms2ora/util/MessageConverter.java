@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
  * @version 1.0
  * @since 29.08.2011
@@ -67,7 +65,7 @@ public class MessageConverter extends Thread implements IMessageConverter {
         messageProcessor = processor;
         messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
-        contentCreator = new MessageContentCreator();
+        contentCreator = new MessageContentCreator(c);
         lock = new Object();
         working = true;
         this.start();
@@ -82,8 +80,9 @@ public class MessageConverter extends Thread implements IMessageConverter {
 
             synchronized (lock) {
                 try {
-                    lock.wait();
-                    LOG.debug("Waking up...");
+                    if (rawMessages.isEmpty()) {
+                        lock.wait();
+                    }
                 } catch (final InterruptedException ie) {
                     LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
                 }

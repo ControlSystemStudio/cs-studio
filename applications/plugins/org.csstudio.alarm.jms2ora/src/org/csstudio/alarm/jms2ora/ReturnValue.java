@@ -25,8 +25,6 @@
 package org.csstudio.alarm.jms2ora;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author Markus Moeller
  * @version 
  * @since 17.06.2010
@@ -56,24 +54,16 @@ public enum ReturnValue {
      * @param errorNumber
      * @param errorString
      */
-    private ReturnValue(int errorNumber, String errorString) {
+    private ReturnValue(int errNumber, String errString) {
         
-        this.errorNumber = errorNumber;
-        this.errorString = errorString;
+        this.errorNumber = errNumber;
+        this.errorString = errString;
     }
     
-    /**
-     * 
-     * @return
-     */
     public int getErrorNumber() {
         return errorNumber;
     }
     
-    /**
-     * 
-     * @return
-     */
     public String getErrorMessage() {
         return errorString;
     }
