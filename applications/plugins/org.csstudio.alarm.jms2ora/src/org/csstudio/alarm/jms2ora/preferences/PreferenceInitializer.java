@@ -53,6 +53,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.DISCARD_TYPES , "");
         prefs.put(PreferenceConstants.DISCARD_NAMES, "");
         prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION , "");
+        prefs.put(PreferenceConstants.MESSAGE_PROCESSOR_SLEEPING_TIME , "30000");
+        prefs.put(PreferenceConstants.TIME_BETWEEN_STORAGE , "60");
         prefs.put(PreferenceConstants.WATCHDOG_WAIT, "");
         prefs.put(PreferenceConstants.WATCHDOG_PERIOD , "");
         prefs.put(PreferenceConstants.FILTER_SEND_BOUND, "");

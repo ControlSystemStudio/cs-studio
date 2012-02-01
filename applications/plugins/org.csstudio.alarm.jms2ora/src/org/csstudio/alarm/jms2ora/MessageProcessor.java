@@ -72,12 +72,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageProcessor extends Thread implements IMessageProcessor {
 
-
-    /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 10000;
-    
-    private static int PROCESSING_WAIT_TIME = 1;
-
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
@@ -95,8 +89,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
     private final MessageConverter messageConverter;
 
+    /** Time to sleep in ms */
+    private long msgProcessorSleepingTime;
+    
+    /** Min. waiting (in sec.) time before a new storage will be started */
+    private int timeBetweenStorage;
+
     /** The object holds the last processing time of the messages */
-    private LocalTime nextProcessingTime;
+    private LocalTime nextStorageTime;
 
     /** Indicates if the application was initialized or not */
     private final boolean initialized;
@@ -112,13 +112,16 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      *
      * Oh, really
      */
-    public MessageProcessor() throws ServiceNotAvailableException {
+    public MessageProcessor(long sleepingTime, int storageWaitTime) throws ServiceNotAvailableException {
 
         collector = new StatisticCollector();
         messageConverter = new MessageConverter(this, collector);
-
-        nextProcessingTime = new LocalTime();
-        nextProcessingTime = nextProcessingTime.plusMinutes(PROCESSING_WAIT_TIME);
+        
+        timeBetweenStorage = storageWaitTime;
+        msgProcessorSleepingTime = sleepingTime;
+        
+        nextStorageTime = new LocalTime();
+        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
 
         archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
 
@@ -181,7 +184,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
             final LocalTime now = new LocalTime();
 
-            if ((now.isAfter(nextProcessingTime) || archiveMessages.size() >= 1000) && running) {
+            if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
 
                 storeMe = this.getMessagesToArchive();
 
@@ -199,14 +202,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                     LOG.debug(createStatisticString());
                 }
 
-                nextProcessingTime = nextProcessingTime.plusMinutes(PROCESSING_WAIT_TIME);
+                nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
             }
 
             if(running) {
 
                 synchronized (this) {
                     try {
-                        wait(SLEEPING_TIME);
+                        wait(msgProcessorSleepingTime);
                     } catch(final InterruptedException ie) {
                         LOG.error("[*** InterruptedException ***]: run(): wait(): " + ie.getMessage());
                         running = false;
@@ -214,7 +217,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 }
 
                 LOG.debug("Waked up...");
-                LOG.debug("Next processing time: {}", nextProcessingTime.toString());
+                LOG.debug("Next processing time: {}", nextStorageTime.toString());
             }
         }
 
