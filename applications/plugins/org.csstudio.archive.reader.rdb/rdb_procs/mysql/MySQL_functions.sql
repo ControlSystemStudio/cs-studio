@@ -32,6 +32,7 @@ DROP PROCEDURE IF EXISTS get_browser_data;
 -- Debug stuff
 -- You can skip this if all the "call log ..." calls below are commented out
 -- *************************************************************
+/*
 DROP TABLE IF EXISTS log;
 CREATE TABLE log
 (
@@ -51,7 +52,7 @@ BEGIN
 END
 |
 DELIMITER ;
-
+*/
 
 -- *************************************************************
 -- FUNCTION GET_COUNT_BY_DATE_RANGE
@@ -128,6 +129,8 @@ BEGIN
     DECLARE v_start_time INT;
     DECLARE v_for_bucket DOUBLE;
 
+    -- TODO Get actual start time
+
     set v_start_time = UNIX_TIMESTAMP(p_start_time);
     set v_delta_time = UNIX_TIMESTAMP(p_end_time) - v_start_time;
     set v_for_bucket = v_delta_time / (p_reduction_nbr - 1);
@@ -159,8 +162,8 @@ BEGIN
 
     SET v_count = get_count_by_date_range(p_chan_id, p_start_time, p_end_time);
     
-    call log('Actual value count:');
-    call log(v_count);
+    -- call log('Actual value count:');
+    -- call log(v_count);
     
     IF v_count < p_reduction_nbr THEN
         SET v_return = 1;else 
@@ -179,6 +182,8 @@ BEGIN
         select REPLACE(@l_cur_base_query, 'p_end_time', CONCAT('\'', p_end_time, '\'')) into @l_cur_base_query;
         select REPLACE(@l_cur_base_query, 'p_chan_id', p_chan_id) into @l_cur_base_query;
         
+        -- call log(@l_cur_base_query);
+        
         PREPARE stmt FROM @l_cur_base_query;
         EXECUTE stmt;
     ELSE
@@ -187,7 +192,9 @@ BEGIN
         select REPLACE(@l_cur_with_bucket, 'p_end_time', CONCAT('\'', p_end_time, '\'')) into @l_cur_with_bucket;
         select REPLACE(@l_cur_with_bucket, 'p_chan_id', p_chan_id) into @l_cur_with_bucket;
         select REPLACE(@l_cur_with_bucket, 'v_for_bucket', v_for_bucket) into @l_cur_with_bucket;
-        
+
+        -- call log(@l_cur_with_bucket);
+       
         PREPARE stmt FROM @l_cur_with_bucket;
         EXECUTE stmt;
     END IF;
