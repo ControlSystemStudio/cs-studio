@@ -45,16 +45,21 @@
             id="org.csstudio.alarm.jms2ora.GetDescription"
             label="Get Description">
       </command>
+      <command
+            class="org.csstudio.alarm.jms2ora.management.GetVersionMgmtCommand"
+            id="org.csstudio.alarm.jms2ora.GetVersion"
+            label="Get Version">
+      </command>
    </extension>
    <extension
          id="Jms2OraProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId"
-            name="Jms2OraProduct">
+            name="Jms2Ora">
          <property
                name="appName"
-               value="Jms2OraProduct">
+               value="Jms2Ora">
          </property>
       </product>
    </extension>
