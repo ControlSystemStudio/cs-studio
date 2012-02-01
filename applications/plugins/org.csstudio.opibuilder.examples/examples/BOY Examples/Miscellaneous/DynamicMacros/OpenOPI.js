@@ -10,6 +10,6 @@ if(widgetController.getExternalObject(flagName) == null){
 	macroInput.put("pv", PVUtil.getString(pvArray[0]));		
 	
 	//Open an OPI with the new Macro Input.
-	ScriptUtil.openOPI(widgetController, "embeddedOPI.opi", false, macroInput);
+	ScriptUtil.openOPI(widgetController, "embeddedOPI.opi", 0, macroInput);
 
 }
