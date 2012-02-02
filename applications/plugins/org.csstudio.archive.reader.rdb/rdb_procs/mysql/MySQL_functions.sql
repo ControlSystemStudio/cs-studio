@@ -249,9 +249,20 @@ END
 |
 DELIMITER ;
 
-
+-- Allow anybody to execute the stored procedure
 GRANT EXECUTE ON PROCEDURE get_browser_data TO '%'@'%';
 GRANT EXECUTE ON PROCEDURE get_browser_data TO '%'@'localhost';
+
+-- With the above GRANTs it will be possible to execute get_browser_data()
+-- from a mysql shell connected as user 'archive',
+-- but from JDBC there will be a strange error
+-- java.sql.SQLException:
+-- User does not have access to metadata required to determine stored procedure parameter types.
+-- If rights can not be granted, configure connection with "noAccessToProcedureBodies=true"...
+--
+-- The following GRANTs allow access from JDBC:
+GRANT SELECT ON mysql.proc TO archive@localhost;
+GRANT SELECT ON mysql.proc TO archive@'%';
 
 SELECT db, name, type, security_type, definer FROM mysql.proc;
 
