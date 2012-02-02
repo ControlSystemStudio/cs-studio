@@ -154,6 +154,17 @@ For example, <br><code>http://your_site.com/webopi/rap?startup=debug&lines=500</
 
 <p>So far, Debug URL only works for Tomcat server.</p>
 
+<h3>Uninstall</h3>
+
+<p>
+For Tomcat server:
+Shutdown tomcat server first. Remove <code>webopi.war</code> and <code>webopi</code> folder under <code>webapps/</code> directory. 
+Remove <code>$CATALINA_HOME/work/Catalina/localhost/webopi</code>.
+</p><p>
+Before redeploy WebOPI, a full uninstall is required.
+
+</p>
+
 <h3> Known Issues</h3>
 <p> 
 Here is the list of things that are not supported in WebOPI, please avoid to use these functions in your OPI if you want to deploy it on web.
