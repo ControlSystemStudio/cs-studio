@@ -53,9 +53,6 @@ abstract public class ModelItem
     /** Y-Axis */
     private AxisConfig axis = null;
     
-    /** Waveform Index */
-    private int waveform_index = 0;
-
     /** Initialize
      *  @param name Name of the PV or the formula
      */
@@ -240,21 +237,23 @@ abstract public class ModelItem
         fireItemLookChanged();
     }
     
-    /** @return Waveform index */
+    /** 
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.
+     * If it is not overridden, this method always return 0.   
+     * @return Waveform index */
     public int getWaveformIndex()
     {
-        return waveform_index;
+        return 0;
     }
 
-    /** @param index New waveform index */
+    /** 
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.   
+     * @param index New waveform index */
     public void setWaveformIndex(int index)
     {
-        if (index < 0)
-            index = 0;
-        if (index == this.waveform_index)
-            return;
-        this.waveform_index = index;
-        fireItemLookChanged();
+    	// Do nothing.
     }
 
     /** @return Samples held by this item */
