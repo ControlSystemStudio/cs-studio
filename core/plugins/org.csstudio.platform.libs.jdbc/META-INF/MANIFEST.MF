@@ -5,11 +5,11 @@ Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
 Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  libs/ojdbc6_g.jar,
- libs/mysql-connector-java-5.0.4-bin.jar,
- libs/postgresql-8.2-511.jdbc4.jar
+ libs/postgresql-8.2-511.jdbc4.jar,
+ libs/mysql-connector-java-5.1.18-bin.jar
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
  com.mysql.jdbc.util,
@@ -39,3 +39,4 @@ Export-Package: com.mysql.jdbc,
  org.csstudio.platform.libs.jdbc,
  org.gjt.mm.mysql,
  org.postgresql
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
