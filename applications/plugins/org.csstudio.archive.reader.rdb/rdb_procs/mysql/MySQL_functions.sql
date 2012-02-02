@@ -175,9 +175,11 @@ BEGIN
     -- Ignores the nanosecs, but that's more than "good enough"
     -- as soon as we average over more than a second.
     --
-    -- Determines the returned smpl_time as the median of the
-    -- samples in a bucket. Could also just return the 'center'
-    -- of the bucket, saving a few min() & max() calls.
+    -- Determines the returned smpl_time as the min, i.e. 'left'
+    -- edge of the bucket.
+    -- That way the 'average' sample will always be displayed just
+    -- before special values like "Archive off" or "Channel Disconnected",
+    -- avoiding problems where the plot appears to continue after such events.
     SET @l_cur_with_bucket = 
        'SELECT -1 wb, smpl_time, severity_id, status_id, NULL min_val, NULL max_val, NULL avg_val, str_val, 1 cnt
         FROM sample 
@@ -185,10 +187,9 @@ BEGIN
         AND smpl_time BETWEEN p_start_time AND p_end_time
         AND str_val is not null
         UNION ALL
-          SELECT wb, FROM_UNIXTIME((min_smpl + max_smpl)/2) smpl_time, NULL severity_id, NULL status_id, min_val, max_val, avg_val, NULL str_val, cnt
+          SELECT wb, min_smpl smpl_time, NULL severity_id, NULL status_id, min_val, max_val, avg_val, NULL str_val, cnt
           FROM(SELECT floor((UNIX_TIMESTAMP(smpl_time) - v_start_time)/ v_for_bucket) wb,
-                      UNIX_TIMESTAMP(min(smpl_time)) min_smpl,
-                      UNIX_TIMESTAMP(max(smpl_time)) max_smpl,
+                      MIN(smpl_time) min_smpl,
                       MIN(<tag>) min_val, MAX(<tag>) max_val, AVG(<tag>) avg_val,
                       COUNT(*) cnt
                FROM sample
