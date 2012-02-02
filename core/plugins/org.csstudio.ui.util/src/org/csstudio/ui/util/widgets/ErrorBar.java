@@ -85,11 +85,5 @@ public class ErrorBar extends Composite {
 			getParent().layout();
 		}
 	}
-	
-
-	@Override
-	protected void checkSubclass() {
-		// Disable the check that prevents subclassing of SWT components
-	}
 
 }
