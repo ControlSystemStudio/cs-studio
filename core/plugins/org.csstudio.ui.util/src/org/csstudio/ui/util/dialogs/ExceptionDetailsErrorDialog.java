@@ -642,5 +642,12 @@ public class ExceptionDetailsErrorDialog extends IconAndMessageDialog {
 				title, null, 
 				status);
 	}
+	
+	public static int openError(Shell shell, String title, String message, Exception ex) {
+		IStatus status = new Status(IStatus.ERROR, Activator.ID, message, ex);
+		return ExceptionDetailsErrorDialog.openError(shell,
+				title, null, 
+				status);
+	}
 
 }
