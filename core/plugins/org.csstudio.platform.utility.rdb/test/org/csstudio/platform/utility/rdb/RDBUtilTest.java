@@ -61,7 +61,7 @@ public class RDBUtilTest
     {
         final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
         final Connection connection = rdb.getConnection();
-        //System.out.println("Connection: " + connection);
+        System.out.println("Connection: " + connection);
     }
 
 
@@ -83,13 +83,13 @@ public class RDBUtilTest
             try
             {
                 final Connection connection = rdb.getConnection();
-                //System.out.println("Connection: " + connection);
+                System.out.println("Connection: " + connection);
             }
             catch (final Exception e)
             {
-                //System.out.println("Error: " + e.getMessage());
+                System.out.println("Error: " + e.getMessage());
             }
-            //Thread.sleep(5000);
+            Thread.sleep(5000);
         }
     }
 }
