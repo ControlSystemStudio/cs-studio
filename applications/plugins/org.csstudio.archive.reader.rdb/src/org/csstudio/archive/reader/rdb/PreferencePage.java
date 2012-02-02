@@ -63,9 +63,9 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         setMessage(Messages.PreferenceTitle);
         final Composite parent = getFieldEditorParent();
-        
+
         addField(new StringFieldEditor(RDBArchivePreferences.USER, Messages.User, parent));
-        addField(new PasswordFieldEditor(RDBArchivePreferences.PASSWORD, Messages.Password, parent, Activator.ID));
+        addField(new PasswordFieldEditor(RDBArchivePreferences.PASSWORD, Messages.Password, parent, org.csstudio.archive.rdb.Activator.ID));
         addField(new StringFieldEditor(RDBArchivePreferences.SCHEMA, Messages.Schema, parent));
         addField(new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
         {
