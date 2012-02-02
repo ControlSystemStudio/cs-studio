@@ -45,7 +45,7 @@ public class DalPlugin extends Plugin implements PropertyFactoryService {
 	/**
 	 * The ID of this plugin.
 	 */
-	public static final String ID = "org.csstudio.platform.libs.dal"; //$NON-NLS-1$
+	public static final String ID = "org.csstudio.dal"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the <code>plugs</code> extension point.
@@ -121,7 +121,8 @@ public class DalPlugin extends Plugin implements PropertyFactoryService {
 	 * Creates factory for default plug by further calling {@link DalPlugin#getPropertyFactory(AbstractApplicationContext, LinkPolicy, String)}.
 	 *
 	 */
-	public PropertyFactory getPropertyFactory(final AbstractApplicationContext ctx,
+	@Override
+    public PropertyFactory getPropertyFactory(final AbstractApplicationContext ctx,
 			final LinkPolicy linkPolicy) {
 
 		// find default
@@ -137,7 +138,8 @@ public class DalPlugin extends Plugin implements PropertyFactoryService {
 	 * <li>tries to load factory by calling {@link DefaultPropertyFactoryService}, this is fallback procedure, it does no use extension points.</li>
 	 * </ul>
 	 */
-	public PropertyFactory getPropertyFactory(final AbstractApplicationContext ctx,
+	@Override
+    public PropertyFactory getPropertyFactory(final AbstractApplicationContext ctx,
 			final LinkPolicy linkPolicy, final String plugName) {
 
 		final PropertyFactoryService pfs= PlugRegistry.getInstance().getPropertyFactoryService(plugName);
