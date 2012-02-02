@@ -32,6 +32,13 @@ public class PVSamples extends PlotSamples
 
     /** Live samples. Should start after end of historic samples */
     final private LiveSamples live = new LiveSamples();
+    
+    /** @param index Waveform index to show */
+    public void setWaveformIndex(int index)
+    {
+    	live.setWaveformIndex(index);
+    	history.setWaveformIndex(index);
+    }
 
     /** @return Maximum number of live samples in ring buffer */
     public int getLiveCapacity()

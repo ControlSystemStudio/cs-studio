@@ -86,9 +86,13 @@ public class PVItem extends ModelItem implements PVListener
     {
         if (index < 0)
             index = 0;
-        if (index == this.waveform_index)
+        if (index == waveform_index)
             return;
-        this.waveform_index = index;
+        waveform_index = index;
+
+        // change all the index of samples in this instance
+        samples.setWaveformIndex(waveform_index);
+        
         fireItemLookChanged();
     }
 

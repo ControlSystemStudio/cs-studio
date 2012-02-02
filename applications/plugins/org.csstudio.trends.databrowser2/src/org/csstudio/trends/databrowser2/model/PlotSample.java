@@ -38,7 +38,9 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-
+    
+    /** Waveform index */
+    private int waveform_index = 0;
 
     /** Initialize with valid control system value
      *  @param source Info about the source of this sample
@@ -70,6 +72,18 @@ public class PlotSample implements ISample
              ValueFactory.createDoubleValue(TimestampFactory.fromDouble(x),
                ok_severity, ok_severity.toString(), dummy_meta,
                IValue.Quality.Original, new double[] { y }));
+    }
+    
+    /** @return Waveform index */
+    public int getWaveformIndex()
+    {
+    	return waveform_index;
+    }
+    
+    /** @param index Waveform index to plot */
+    public void setWaveformIndex(int index)
+    {
+    	this.waveform_index = index;
     }
 
     /** @return Source of the data */
@@ -106,7 +120,7 @@ public class PlotSample implements ISample
     public double getYValue()
     {
         if (value.getSeverity().hasValue())
-            return ValueUtil.getDouble(value);
+            return ValueUtil.getDouble(value, waveform_index);
         // No numeric value. Plot shows NaN as marker.
         return Double.NaN;
     }
