@@ -19,17 +19,19 @@
 * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
 * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
-import org.csstudio.config.ioconfig.model.INode;
 import org.csstudio.config.ioconfig.model.PersistenceException;
+import org.csstudio.config.ioconfig.model.hibernate.Repository;
+import org.csstudio.config.ioconfig.model.service.IInternId2IONameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,44 +53,45 @@ public class InternId2IONameImplemation implements IInternId2IONameService {
     @Override
     @CheckForNull
     public String getIOName(@Nonnull final String internId) {
-        return null;
+        String ioName = null;
+        Channel4ServicesDBO loadChannelWithInternId;
+        try {
+            loadChannelWithInternId = Repository.loadChannelWithInternId(internId);
+            if (loadChannelWithInternId!=null) {
+                ioName = loadChannelWithInternId.getIoName();
+            }
+        } catch (final PersistenceException e) {
+            LOG.warn("Can't load channel", e);
+        }
+        return ioName;
     }
+
 
     /**
      * {@inheritDoc}
-     * @throws PersistenceException
      */
     @Override
     @CheckForNull
-    public INode getNode(@Nonnull final String internId) throws PersistenceException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws PersistenceException
-     * @throws NodeNotFoundException
-     */
-    @Override
-    @Nonnull
-    public Map<String, INode> getNodes(@Nonnull final Collection<String> internId) throws PersistenceException, NodeNotFoundException {
-        return null;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public IDocument getDocuments(final String internId) throws PersistenceException {
-        return null;
+    public Set<IDocument> getDocuments(@Nonnull final String internId) throws PersistenceException {
+        final Set<IDocument> hashSet = new HashSet<IDocument>();
+        final Channel4ServicesDBO loadChannelWithInternId = Repository.loadChannelWithInternId(internId);
+        if(loadChannelWithInternId!=null) {
+            final Set<DocumentDBO> documents = loadChannelWithInternId.getDocuments();
+            hashSet.addAll(documents);
+        }
+        return hashSet;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public String getProcessVariable(final String internId) throws PersistenceException {
+    @CheckForNull
+    public String getProcessVariables(@Nonnull final String internId) throws PersistenceException {
+        final Channel4ServicesDBO loadChannelWithInternId = Repository.loadChannelWithInternId(internId);
+        if(loadChannelWithInternId!=null) {
+            return loadChannelWithInternId.getProcesVariable();
+        }
         return null;
     }
 

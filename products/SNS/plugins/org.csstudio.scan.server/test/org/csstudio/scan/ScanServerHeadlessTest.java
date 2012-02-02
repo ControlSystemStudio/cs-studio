@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -51,7 +51,7 @@ import org.junit.Test;
 public class ScanServerHeadlessTest implements Runnable
 {
     private volatile Throwable client_error = null;
-    
+
     /** @return Demo scan sequence */
     private CommandSequence createCommands() throws Exception
     {
@@ -112,7 +112,7 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
-            new DeviceValueCondition(pv, Comparison.EQUALS, 5.0, 0.1).await();
+            new DeviceValueCondition(pv, Comparison.EQUALS, 5.0, 0.1, 0.0).await();
 
 
             // Submit scan again, and pause it early on
@@ -151,7 +151,7 @@ public class ScanServerHeadlessTest implements Runnable
                     break;
                 Thread.sleep(100);
             }
-            
+
             // Fetch data
             System.out.println("Logged data:");
             final ScanData data = server.getScanData(id);
@@ -195,7 +195,7 @@ public class ScanServerHeadlessTest implements Runnable
         client.start();
         // Wait for client to finish
         client.join();
-        
+
         if (client_error != null)
         {
             client_error.printStackTrace();

@@ -36,7 +36,7 @@ public class PlotDataProvider implements IDataProvider
     private List<SampleAdapter> samples = new ArrayList<SampleAdapter>();
     private Range xrange = new Range(0, 0);
     private Range yrange = new Range(0, 0);
-    
+
     /** Initialize
      *  @param display Display to use for listener notifications, <code>null</code> for update thread
      */
@@ -44,7 +44,7 @@ public class PlotDataProvider implements IDataProvider
     {
         this.display = display;
     }
-    
+
     /** Remove all samples */
     public void clear()
     {
@@ -83,7 +83,7 @@ public class PlotDataProvider implements IDataProvider
             // Add sample
             final SampleAdapter sample = new SampleAdapter(samples.get(0), samples.get(1));
             new_samples.add(sample);
-            
+
             // Update ranges
             double d = sample.getXValue();
             if (!Double.isNaN(d)  &&  !new_xrange.inRange(d))
@@ -141,7 +141,7 @@ public class PlotDataProvider implements IDataProvider
     {
         return last_serial;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int getSize()

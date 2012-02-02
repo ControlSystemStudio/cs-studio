@@ -24,6 +24,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
+import org.csstudio.config.ioconfig.model.service.internal.Channel4ServicesDBO;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
@@ -412,24 +413,22 @@ public class HibernateRepository implements IRepository {
 
     @Override
     @CheckForNull
-    public final ChannelDBO loadChannelWithInternId(@Nullable final String internId) throws PersistenceException {
+    public final Channel4ServicesDBO loadChannelWithInternId(@Nullable final String internId) throws PersistenceException {
         final IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @CheckForNull
-            public ChannelDBO execute(@Nonnull final Session session) {
+            public Channel4ServicesDBO execute(@Nonnull final Session session) {
                 if (internId == null) {
                     return null;
                 }
-                final Query createQuery = session.createQuery("select c from "
-//                        + ChannelDBO.class.getName() + " c where c.intern_id like ?");
-                        + ChannelDBO.class.getName() + " c where c.intern_id = ?");
-                createQuery.setString(0, internId);
-                final ChannelDBO nodes = (ChannelDBO) createQuery.uniqueResult();
+                final Query createQuery = session.createQuery("select c from "+ Channel4ServicesDBO.class.getName() + " c where c.krykNo = '"+internId+"'");
+                final Channel4ServicesDBO nodes = (Channel4ServicesDBO) createQuery.uniqueResult();
                 return nodes;
             }
         };
-        return _instance.doInDevDBHibernateLazy(hibernateCallback);
+//        return _instance.doInDevDBHibernateLazy(hibernateCallback);
+        return _instance.doInDevDBHibernateEager(hibernateCallback);
     }
 
     /**
@@ -457,19 +456,19 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     @CheckForNull
-    public final List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) throws PersistenceException {
+    public final List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> ioName) throws PersistenceException {
         final IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @CheckForNull
             public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
-                if (pvName == null || pvName.isEmpty()) {
+                if (ioName == null || ioName.isEmpty()) {
                     return null;
                 }
                 final StringBuilder statement = new StringBuilder("select pv from ")
                         .append(PV2IONameMatcherModelDBO.class.getName()).append(" pv where ");
                 boolean notFirst = false;
-                for (final String string : pvName) {
+                for (final String string : ioName) {
                     if (notFirst) {
                         statement.append(" OR ");
                     }
@@ -489,26 +488,19 @@ public class HibernateRepository implements IRepository {
      */
     @Override
     @CheckForNull
-    public final List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher(@Nullable final Collection<String> ioName) throws PersistenceException {
+    public final PV2IONameMatcherModelDBO loadIOName2PVMatcher(@Nullable final String ioName) throws PersistenceException {
         final IHibernateCallback hibernateCallback = new IHibernateCallback() {
             @SuppressWarnings("unchecked")
             @Override
             @CheckForNull
-            public List<PV2IONameMatcherModelDBO> execute(@Nonnull final Session session) {
+            public PV2IONameMatcherModelDBO execute(@Nonnull final Session session) {
                 if (ioName == null || ioName.isEmpty()) {
                     return null;
                 }
                 final StringBuilder statement = new StringBuilder("select pv from ")
                 .append(PV2IONameMatcherModelDBO.class.getName()).append(" pv where ");
-                boolean notFirst = false;
-                for (final String string : ioName) {
-                    if (notFirst) {
-                        statement.append(" OR ");
-                    }
-                    statement.append(String.format("pv.ioName = '%s'", string));
-                    notFirst = true;
-                }
-                return session.createQuery(statement.toString()).list();
+                statement.append(String.format("pv.ioName = '%s'", ioName));
+                return (PV2IONameMatcherModelDBO) session.createQuery(statement.toString()).uniqueResult();
             }
         };
         return _instance.doInDevDBHibernateEager(hibernateCallback);

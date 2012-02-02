@@ -393,14 +393,13 @@ public class PlotArea extends Figure {
 		        {
 		            final double t1 = axis.getPositionValue(start.x, false);
 		            final double t2 = axis.getPositionValue(end.x, false);
-		            Range range = getNewRange(axis, t1, t2);
-		            axis.setRange(range);
+		            axis.setRange(t1, t2, true);
 		        }
 		        for(Axis axis : xyGraph.getYAxisList())
 		        {
 		            final double t1 = axis.getPositionValue(start.y, false);
 		            final double t2 = axis.getPositionValue(end.y, false);
-		            axis.setRange(getNewRange(axis, t1, t2));
+		            axis.setRange(t1, t2, true);
 		        }
 		        break;
 			case HORIZONTAL_ZOOM:
@@ -408,7 +407,7 @@ public class PlotArea extends Figure {
 		        {
 		            final double t1 = axis.getPositionValue(start.x, false);
 		            final double t2 = axis.getPositionValue(end.x, false);
-		            axis.setRange(getNewRange(axis, t1, t2));
+		            axis.setRange(t1, t2, true);
 		        }
 		        break;
 			case VERTICAL_ZOOM:
@@ -416,7 +415,7 @@ public class PlotArea extends Figure {
 		        {
 		            final double t1 = axis.getPositionValue(start.y, false);
 		            final double t2 = axis.getPositionValue(end.y, false);
-		            axis.setRange(getNewRange(axis, t1, t2));
+		            axis.setRange(t1, t2, true);
 		        }
 				break;
 			case PANNING:
@@ -443,22 +442,7 @@ public class PlotArea extends Figure {
 			start = null;
             end = null;
 			PlotArea.this.repaint();
-		}
-
-		/**Get the new Range which will honor its original range direction.
-		 * @param axis the axis whose range should be honored
-		 * @param t1 start	
-		 * @param t2 end
-		 * @return the new range
-		 */
-		private Range getNewRange(Axis axis, final double t1, final double t2) {
-			Range range;
-			if(axis.getRange().isMinBigger()){
-				range = new Range(t1>t2? t1:t2, t1>t2?t2:t1);
-			}else
-				range = new Range(t1>t2? t2:t1, t1>t2?t1:t2);
-			return range;
-		}
+		}	
 
 	    /** Pan axis according to start/end from mouse listener */
 	    private void pan()

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -213,8 +213,7 @@ public class GUI implements ScanInfoModelListener
                 final String error = info.getError();
                 if (error != null)
                 {
-                    return NLS.bind(Messages.ErrorMsgFmt,
-                            error.getClass().getName(), error);
+                    return NLS.bind(Messages.ErrorMsgFmt, error);
                 }
                 else
                     return Messages.NoError;
@@ -354,7 +353,7 @@ public class GUI implements ScanInfoModelListener
                 if (table.isDisposed())
                     return;
                 // Received update -> enable table and display info
-                table_viewer.getTable().setEnabled(true);
+                table.setEnabled(true);
                 table_viewer.refresh();
             }
         });
@@ -375,7 +374,7 @@ public class GUI implements ScanInfoModelListener
                 if (table.isDisposed())
                     return;
                 // Disable table to indicate communication problem
-                table_viewer.getTable().setEnabled(false);
+                table.setEnabled(false);
             }
         });
     }

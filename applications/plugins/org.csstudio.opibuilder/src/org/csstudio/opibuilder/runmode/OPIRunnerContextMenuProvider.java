@@ -9,6 +9,8 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.actions.AboutWebOPIAction;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
@@ -26,6 +28,7 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -66,17 +69,24 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		
 		ActionRegistry actionRegistry =
 			(ActionRegistry) opiRuntime.getAdapter(ActionRegistry.class);
-		if(!SWT.getPlatform().startsWith("rap")){ //$NON-NLS-1$
+		if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 				WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, 
 				WorkbenchWindowService.getInstance().getCompactModeAction(activeWindow));
 		}
 		
+		
+		
 		//actionRegistry.getAction(CompactModeAction.ID));
 
 		// ELog and EMail actions may not be available
 		SingleSourceHelper.appendRCPRuntimeActionsToMenu(actionRegistry, menu);
+		if(OPIBuilderPlugin.isRAP()){
+			menu.add(new Separator("additions")); //$NON-NLS-1$
+			menu.add(new AboutWebOPIAction());
+		}
+			
 
 //		MenuManager cssMenu = new MenuManager("CSS", "css");
 //		cssMenu.add(new Separator("additions")); //$NON-NLS-1$

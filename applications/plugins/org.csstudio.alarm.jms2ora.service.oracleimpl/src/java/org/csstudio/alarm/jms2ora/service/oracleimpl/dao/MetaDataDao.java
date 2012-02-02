@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 public class MetaDataDao implements IMessageArchiveDao {
     
     /** The logger of this class */
-    private Logger LOG = LoggerFactory.getLogger(MetaDataDao.class);
+    private static Logger LOG = LoggerFactory.getLogger(MetaDataDao.class);
     
     /** The connection handler */
     private OracleConnectionHandler connectionHandler;
@@ -247,8 +247,8 @@ public class MetaDataDao implements IMessageArchiveDao {
             saveColumnNames();
             
         } catch(Exception e) {
-            LOG.error("[*** Exception ***]: Cannot read the table column names: " + e.getMessage());
-            LOG.error("Using stored column names.");
+            LOG.warn("[*** Exception ***]: Cannot read the table column names: " + e.getMessage());
+            LOG.warn("Using stored column names.");
             readColumnNames();
         } finally {
             close();
@@ -268,7 +268,7 @@ public class MetaDataDao implements IMessageArchiveDao {
             // Write the MessageContent object to disk
             messageCol = (Hashtable<String, Integer>)ois.readObject();            
         } catch(Exception e) {
-            LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
+            LOG.warn("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
             messageCol = new Hashtable<String, Integer>();
         } finally {
             if(ois != null){try{ois.close();}catch(IOException ioe){/*Ignore me*/}}

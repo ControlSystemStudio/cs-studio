@@ -29,10 +29,8 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
-
 import oracle.jdbc.OracleDriver;
 import oracle.jdbc.pool.OracleDataSource;
-
 import org.csstudio.alarm.jms2ora.service.ConnectionInfo;
 import org.csstudio.alarm.jms2ora.service.MessageArchiveConnectionException;
 import org.csstudio.alarm.jms2ora.service.oracleimpl.Activator;
@@ -43,8 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
  * @version 1.0
  * @since 19.08.2011
@@ -67,6 +63,13 @@ public class OracleConnectionHandler {
     private final ThreadLocal<Connection> connection;
 
     private final boolean _autoCommit;
+    
+    /**
+     * This flag indicates if a log message have to generated. If the connection causes an exception
+     * we will get an cycle of log messages that cause new log messages that causes log messages ...
+     * We have to break this chain!!!!!
+     */
+    private boolean blockLog;
 
     /**
      * Constructor.
@@ -76,7 +79,8 @@ public class OracleConnectionHandler {
         _autoCommit = autoCommit;
         connection = new ThreadLocal<Connection>();
         connection.set(null);
-
+        blockLog = false;
+        
         boolean driverFound = false;
 
         final Enumeration<Driver> drivers = DriverManager.getDrivers();
@@ -87,12 +91,12 @@ public class OracleConnectionHandler {
             }
         }
 
-        if (driverFound == false) {
+        if (!driverFound) {
             try {
                 driver = new OracleDriver();
                 DriverManager.registerDriver(driver);
             } catch (final SQLException sqle) {
-                LOG.error("Cannot register OracleDriver.");
+                logError("Cannot register OracleDriver.");
             }
         }
 
@@ -109,10 +113,19 @@ public class OracleConnectionHandler {
             dataSource.setPassword(password);
             dataSource.setURL(dbUrl);
         } catch (final SQLException sqle) {
-            LOG.error("[*** SQLException ***]: {}", sqle.getMessage());
+            logError("[*** SQLException ***]: " + sqle.getMessage());
         }
     }
 
+    private void logError(String msg) {
+        if (!blockLog) {
+            LOG.error(msg);
+            blockLog = true;
+        } else {
+            LOG.warn(msg);
+        }
+    }
+    
     private void connect() throws MessageArchiveConnectionException {
 
         Connection con = connection.get();
@@ -131,9 +144,10 @@ public class OracleConnectionHandler {
             con = dataSource.getConnection();
             con.setAutoCommit(_autoCommit);
             connection.set(con);
+            blockLog = false;
         } catch (final SQLException sqle) {
             connection.set(null);
-            LOG.error("[*** SQLException ***]: {}", sqle.getMessage());
+            logError("[*** SQLException ***]: " + sqle.getMessage());
             throw new MessageArchiveConnectionException(sqle.getMessage());
         }
     }
@@ -169,7 +183,7 @@ public class OracleConnectionHandler {
      *
      * @return ConnectionInfo
      */
-    public ConnectionInfo getConnectionInfo() {
+    public final ConnectionInfo getConnectionInfo() {
         return this.conInfo;
     }
 }

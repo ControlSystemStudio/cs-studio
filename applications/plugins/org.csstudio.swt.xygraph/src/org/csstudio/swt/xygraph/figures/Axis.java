@@ -333,7 +333,7 @@ public class Axis extends LinearScale{
         }
 
 		// Update axis
-		setRange(tempMin, tempMax);
+		setRange(tempMin, tempMax, true);
 		repaint();
 		return true;
 	}
@@ -650,7 +650,7 @@ public class Axis extends LinearScale{
             t1 = getRange().getLower() + r1 * factor * l;
             t2 = getRange().getUpper() - r2 * factor * l;
         }
-        setRange(t1, t2);
+        setRange(t1, t2, true);
     }
 
     /**
@@ -827,10 +827,7 @@ public class Axis extends LinearScale{
         {
             final double t1 = getPositionValue(isHorizontal() ? start.x : start.y, false);
             final double t2 = getPositionValue(isHorizontal() ? end.x   : end.y,   false);
-            if(getRange().isMinBigger()){
-            	setRange(t1>t2? t1:t2, t1>t2?t2:t1);
-			}else
-				setRange(t1>t2? t2:t1, t1>t2?t1:t2);
+            setRange(t1, t2, true);
         }
 
 		/** Perform the in or out zoom according to zoomType */

@@ -42,6 +42,46 @@ Web page is in a separate JEE Project.
      from various versions into one big repo.
   2) apps/* application binaries and source snapshot
      Also copied to update site.
+
+push_web.sh will copy the apps and the repo for this version
+to the web server.
+
+** Check List
+- make.sh finishes without errors
+- Check from direct build output, or later from
+  https://ics-web.sns.ornl.gov/css/updates/apps:
+  epics_css_*.zip and sns_css_*.zip unpack OK
+  and run on Linux, OS X, Windows, 32 and 64 bit
+  - Icon
+  - Welcome page
+  - Data Browser:
+    SNS version can search for PVs "DTL_LLRF*Load"
+    and plot some of them w/ historic data.
+    Basic EPICS version can plot sim://sine
+  - BOY:
+    Install OPI Examples, run main.opi, edit main.opi
+    
+- Download an older version from web page.
+  When started for the first time, it may prompt for
+  an update to the latest version in the repository.
+  Cancel that.
+  Use menu Help, Install New Software..., Available Software Sites...
+  to edit the SNS update site.
+  Change it from
+    http://ics-web.sns.ornl.gov/css/updates/
+  to
+    http://ics-web.sns.ornl.gov/css/updates/repo3.1.0
+  meaning: Point it to _only_ the repo for the version just built.
+  Now restart the product, and it should prompt for an update
+  to the version just built.
+  Updated product should be OK.
+  
+- Use update site to install "Optional SNS Control Room Tools"
+  into SNS CSS product. Should then have alarm tools in menu.
+
+Once all looks good, update the web site:
+Html pages link to the current app ZIP files,
+overall combined repo includes the latest repo.
   
 
 ** Example for manual build in IDE: Build Basic EPICS

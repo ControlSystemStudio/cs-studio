@@ -5,6 +5,14 @@
          point="org.csstudio.opibuilder.widget">
       <widget
             category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.ChannelViewerEditPart"
+            icon="platform:/plugin/org.csstudio.channel.widgets/icons/channel-viewer-16.png"
+            model_class="org.csstudio.channel.opiwidgets.ChannelViewerModel"
+            name="Channel Viewer"
+            typeId="org.csstudio.channel.opiwidgets.ChannelViewer">
+      </widget>
+      <widget
+            category="Multi-channel"
             editpart_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyEditPart"
             icon="platform:/plugin/org.csstudio.channel.widgets/icons/tree-property-16.png"
             model_class="org.csstudio.channel.opiwidgets.ChannelTreeByPropertyModel"

@@ -53,6 +53,7 @@ import org.slf4j.LoggerFactory;
  *  @author Markus Moeller
  *
  */
+@Deprecated
 public class DatabaseLayer {
 
     /** The class logger */

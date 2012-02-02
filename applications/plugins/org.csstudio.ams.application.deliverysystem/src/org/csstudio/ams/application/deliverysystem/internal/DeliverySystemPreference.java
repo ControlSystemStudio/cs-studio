@@ -46,6 +46,9 @@ public class DeliverySystemPreference<T> extends AbstractPreference<T> {
     public static final DeliverySystemPreference<String> XMPP_PASSWORD =
             new DeliverySystemPreference<String>("xmppPassword", "ams");
 
+    public static final DeliverySystemPreference<String> DELIVERY_WORKER_LIST =
+            new DeliverySystemPreference<String>("deliveryWorkerList", "");
+
     private DeliverySystemPreference(final String keyAsString, final T defaultValue) {
         super(keyAsString, defaultValue);
     }

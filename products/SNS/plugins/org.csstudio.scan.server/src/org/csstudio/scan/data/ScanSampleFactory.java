@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -17,6 +17,11 @@ package org.csstudio.scan.data;
 
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.ITimestamp;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 
 /** Factory for {@link ScanSample} instances
  *  @author Kay Kasemir
@@ -33,23 +38,50 @@ public class ScanSampleFactory
         return serials.incrementAndGet();
     }
 
-    /** Create ScanSample for value with 'now' as time stamp
+    /** Create ScanSample for control system value
 	 *  @param device_name Name of the device that provided the sample
-	 *  @param value Value that has a {@link ScanSample} wrapper
+     *  @param value IValue
 	 *  @return {@link ScanSample}
 	 *  @throws IllegalArgumentException if the value type is not handled
 	 */
 	public static ScanSample createSample(final String device_name,
-			final Object value) throws IllegalArgumentException
+			final IValue value) throws IllegalArgumentException
 	{
-		return createSample(device_name, new Date(), getNextSerial(), value);
+		return createSample(device_name, getNextSerial(), value);
 	}
 
-    /** Create ScanSample for value
+    /** Create ScanSample for control system value
+     *  @param device_name Name of the device that provided the sample
+     *  @param serial Serial to identify when the sample was taken
+     *  @param value IValue
+     *  @return {@link ScanSample}
+     *  @throws IllegalArgumentException if the value type is not handled
+     */
+    public static ScanSample createSample(final String device_name,
+            final long serial, final IValue value) throws IllegalArgumentException
+    {
+        final Date date = getDate(value.getTime());
+        // Log strings as text, rest as double
+        if (value instanceof IStringValue)
+            return createSample(device_name, date, serial, ValueUtil.getString(value));
+        else
+            return createSample(device_name, date, serial, ValueUtil.getDouble(value));
+    }
+
+    /** @param time IValue timestamp
+     *  @return Date
+     */
+    private static Date getDate(final ITimestamp time)
+    {
+        final long milli = time.seconds()*1000l + time.nanoseconds() / 1000000l;
+        return new Date(milli);
+    }
+
+    /** Create ScanSample for plain number or text value
 	 *  @param device_name Name of the device that provided the sample
 	 *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
-	 *  @param value Value that has a {@link ScanSample} wrapper
+	 *  @param value Value (Number, String)
 	 *  @return {@link ScanSample}
 	 *  @throws IllegalArgumentException if the value type is not handled
 	 */

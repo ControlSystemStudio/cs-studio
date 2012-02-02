@@ -24,6 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -71,10 +72,6 @@ import org.slf4j.LoggerFactory;
  */
 public class MessageProcessor extends Thread implements IMessageProcessor {
 
-
-    /** Time to sleep in ms */
-    private static long SLEEPING_TIME = 15000;
-
     /** The class logger */
     private static final Logger LOG = LoggerFactory.getLogger(MessageProcessor.class);
 
@@ -92,8 +89,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
     private final MessageConverter messageConverter;
 
+    /** Time to sleep in ms */
+    private long msgProcessorSleepingTime;
+    
+    /** Min. waiting (in sec.) time before a new storage will be started */
+    private int timeBetweenStorage;
+
     /** The object holds the last processing time of the messages */
-    private LocalTime nextProcessingTime;
+    private LocalTime nextStorageTime;
 
     /** Indicates if the application was initialized or not */
     private final boolean initialized;
@@ -109,13 +112,16 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      *
      * Oh, really
      */
-    public MessageProcessor() throws ServiceNotAvailableException {
+    public MessageProcessor(long sleepingTime, int storageWaitTime) throws ServiceNotAvailableException {
 
         collector = new StatisticCollector();
         messageConverter = new MessageConverter(this, collector);
-
-        nextProcessingTime = new LocalTime();
-        nextProcessingTime = nextProcessingTime.plusMinutes(5);
+        
+        timeBetweenStorage = storageWaitTime;
+        msgProcessorSleepingTime = sleepingTime;
+        
+        nextStorageTime = new LocalTime();
+        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
 
         archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
 
@@ -158,6 +164,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      * {@inheritDoc}
      */
     @Override
+    public final synchronized void putArchiveMessages(@Nonnull final Collection<ArchiveMessage> m) {
+        archiveMessages.addAll(m);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void run() {
 
         Vector<ArchiveMessage> storeMe;
@@ -170,7 +184,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
             final LocalTime now = new LocalTime();
 
-            if ((now.isAfter(nextProcessingTime) || archiveMessages.size() >= 1000) && running) {
+            if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
 
                 storeMe = this.getMessagesToArchive();
 
@@ -181,19 +195,21 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                     persistenceService.writeMessages(storeMe);
                     LOG.warn("Could not store the message in the database. Message is written on disk.");
                 }
-
+                
+                collector.addStoredMessages(storeMe.size());
+                
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(createStatisticString());
                 }
 
-                nextProcessingTime = nextProcessingTime.plusMinutes(5);
+                nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
             }
 
             if(running) {
 
                 synchronized (this) {
                     try {
-                        wait(SLEEPING_TIME);
+                        wait(msgProcessorSleepingTime);
                     } catch(final InterruptedException ie) {
                         LOG.error("[*** InterruptedException ***]: run(): wait(): " + ie.getMessage());
                         running = false;
@@ -201,6 +217,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 }
 
                 LOG.debug("Waked up...");
+                LOG.debug("Next processing time: {}", nextStorageTime.toString());
             }
         }
 
@@ -210,20 +227,18 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         int writtenToDb = 0;
         int writtenToHd = 0;
 
-        if (true/* TODO: messageAcceptor.getQueueSize() > 0*/) {
+        if (!archiveMessages.isEmpty()) {
 
-         // TODO: storeMe = messageAcceptor.getCurrentMessages();
-         // TODO: success = writerService.writeMessage(storeMe);
-            success = true;
+            storeMe = this.getMessagesToArchive();
+            success = writerService.writeMessage(storeMe);
             if(!success) {
 
                 // Store the message in a file, if it was not possible to write it to the DB.
-                // TODO: persistenceService.writeMessages(storeMe);
-
-                writtenToHd++;
+                persistenceService.writeMessages(storeMe);
+                writtenToHd = storeMe.size();
 
             } else {
-                writtenToDb++;
+                writtenToDb = storeMe.size();
             }
         }
 
@@ -241,16 +256,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         return stoppedClean;
     }
 
-    @Nonnull
-    public final ReturnValue processMessages() {
-
-        final ReturnValue result = ReturnValue.PM_RETURN_OK;
-
-        //writerService.writeMessage(archiveMessages.);
-
-        return result;
-    }
-
     /**
      *
      * @return Vector object that contains the messages in the queue
@@ -261,6 +266,8 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         if (!archiveMessages.isEmpty()) {
             result = new Vector<ArchiveMessage>(archiveMessages);
             archiveMessages.removeAll(result);
+        } else {
+            result = new Vector<ArchiveMessage>();
         }
         return result;
     }
@@ -301,6 +308,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      */
     public final int getCompleteQueueSize() {
         return messageConverter.getQueueSize() + archiveMessages.size();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNumberOfMessageFiles() {
+        return persistenceService.getNumberOfMessageFiles();
     }
 
     public final synchronized void stopWorking() {

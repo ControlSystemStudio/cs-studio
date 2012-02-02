@@ -65,6 +65,7 @@ org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.libs.epics/**
 org.csstudio.platform.libs.epics.linux/**
 org.csstudio.platform.libs.epics.macosx/**
+org.csstudio.platform.libs.epics.win32/**
 org.csstudio.platform.libs.epics.ui/**
 org.csstudio.platform.libs.jdbc/**
 org.csstudio.platform.libs.jmock/**
@@ -74,6 +75,8 @@ org.csstudio.platform.utility.rdb/**
 org.csstudio.remote/**
 org.csstudio.scan/**
 org.csstudio.scan.client/**
+org.csstudio.scan.custom/**
+org.csstudio.scan.custom.impl/**
 org.csstudio.scan.server/**
 org.csstudio.scan.ui/**
 org.csstudio.scan.ui.plot/**
@@ -87,6 +90,7 @@ org.csstudio.sns.mpsbypasses/**
 org.csstudio.sns.passwordprovider/**
 org.csstudio.sns.product/**
 org.csstudio.sns.startuphelper/**
+org.csstudio.sns.updatesite/**
 org.csstudio.startup/**
 org.csstudio.swt.chart/**
 org.csstudio.swt.widgets/**

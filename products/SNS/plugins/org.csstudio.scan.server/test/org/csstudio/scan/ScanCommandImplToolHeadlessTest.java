@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -36,13 +36,13 @@ public class ScanCommandImplToolHeadlessTest
     public void testImplementScanCommand() throws Exception
     {
         final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
-        
+
         final ScanCommand delay = new DelayCommand(1.0);
         ScanCommandImpl<?> impl = tool.implement(delay);
         assertSame(delay, impl.getCommand());
         assertSame(DelayCommandImpl.class, impl.getClass());
 
-        final LoopCommand loop = new LoopCommand("device", 1, 10, 1, delay);
+        final LoopCommand loop = new LoopCommand("device", 1, 10, 1, 0.0, delay);
         impl = tool.implement(loop);
         assertSame(loop, impl.getCommand());
         assertSame(LoopCommandImpl.class, impl.getClass());

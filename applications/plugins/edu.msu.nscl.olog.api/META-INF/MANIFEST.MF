@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Olog ClientAPI
+Bundle-Name: Olog Client Library
 Bundle-SymbolicName: edu.msu.nscl.olog.api;singleton:=true
 Bundle-Version: 2.0.1.qualifier
 Require-Bundle: org.csstudio.platform.libs.jersey,
@@ -13,3 +13,4 @@ Export-Package: edu.msu.nscl.olog.api
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-Activator: org.csstudio.utility.olog.Activator
 Bundle-ActivationPolicy: lazy
+Bundle-Description: Olog Client Library

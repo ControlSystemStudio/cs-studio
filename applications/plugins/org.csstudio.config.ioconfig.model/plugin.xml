@@ -4,7 +4,7 @@
    <extension
          point="org.csstudio.dct.ionameservices">
       <ionameservice
-            class="org.csstudio.config.ioconfig.model.service.ProfiBusIoNameService"
+            class="org.csstudio.config.ioconfig.model.service.internal.ProfiBusIoNameService"
             id="org.csstudio.config.ioconfig.model.service.ProfiBusIoNameService"
             name="IO Name Service">
       </ionameservice>
@@ -18,7 +18,7 @@
    <extension
          point="org.csstudio.dct.sensoridservices">
       <sensoridservice
-            class="org.csstudio.config.ioconfig.model.service.ProfibusSensorService"
+            class="org.csstudio.config.ioconfig.model.service.internal.ProfibusSensorService"
             id="org.csstudio.config.ioconfig.model.service.profibussensorservice"
             name="Profibus Sensor Service">
       </sensoridservice>

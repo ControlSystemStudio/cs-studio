@@ -12,6 +12,7 @@ import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -32,7 +33,7 @@ public class CopyPvToClipboard extends AbstractHandler
     {
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final ProcessVariable[] pv_names = AdapterUtil.convert(selection, ProcessVariable.class);
-
+        
         // Create string with "PV" or "PV1, PV2, PV3"
         final StringBuilder pvs = new StringBuilder();
         for (ProcessVariable pv : pv_names)
@@ -40,6 +41,11 @@ public class CopyPvToClipboard extends AbstractHandler
             if (pvs.length() > 0)
                 pvs.append(", ");
             pvs.append(pv.getName());
+        }
+        
+        if(pvs.length() ==0){
+        	MessageDialog.openError(null, "Empty PV Name", "PV name is empty! Nothing will be copied.");
+        	return null;
         }
 
         // Copy as text to clipboard

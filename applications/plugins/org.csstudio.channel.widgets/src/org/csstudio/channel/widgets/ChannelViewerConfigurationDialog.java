@@ -11,7 +11,7 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ChannelViewerConfigurationDialog
 		extends
-		AbstractConfigurationDialog<ChannelViewerWidget, ChannelsViewConfigurationPanel> {
+		AbstractConfigurationDialog<ChannelViewerWidget, ChannelViewerConfigurationPanel> {
 
 	protected ChannelViewerConfigurationDialog(ChannelViewerWidget widget) {
 		super(widget, SWT.DIALOG_TRIM, "Configure Channel Viewer");
@@ -49,9 +49,9 @@ public class ChannelViewerConfigurationDialog
 	}
 
 	@Override
-	protected ChannelsViewConfigurationPanel createConfigurationComposite(
+	protected ChannelViewerConfigurationPanel createConfigurationComposite(
 			Shell shell) {
-		return new ChannelsViewConfigurationPanel(shell, SWT.None);
+		return new ChannelViewerConfigurationPanel(shell, SWT.None);
 	}
 
 }

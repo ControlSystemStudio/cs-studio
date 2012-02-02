@@ -19,7 +19,7 @@
 * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
 * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 */
-package org.csstudio.config.ioconfig.model.service;
+package org.csstudio.config.ioconfig.model.service.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +35,8 @@ import org.csstudio.config.ioconfig.model.PV2IONameMatcherModelDBO;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.hibernate.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
+import org.csstudio.config.ioconfig.model.service.IProcessVariable2IONameService;
+import org.csstudio.config.ioconfig.model.service.NodeNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,29 +135,14 @@ public class ProcessVariable2IONameImplemation implements IProcessVariable2IONam
      * @throws PersistenceException
      */
     @Override
-    @Nonnull
-    public Map<String,String> getPVNames(@Nonnull final Collection<String> ioNames) throws PersistenceException {
-        final HashMap<String, String> pvNames = new HashMap<String, String>();
-        final List<PV2IONameMatcherModelDBO> loadIOName2PVMatcher = Repository.loadIOName2PVMatcher(ioNames);
-        if(loadIOName2PVMatcher!=null) {
-            for (final PV2IONameMatcherModelDBO pv2ioNameMatcherModelDBO : loadIOName2PVMatcher) {
-                pvNames.put(pv2ioNameMatcherModelDBO.getIoName(), pv2ioNameMatcherModelDBO.getEpicsName());
-            }
-        }
-        return pvNames;
-    }
-
-    /**
-     * {@inheritDoc}
-     * @throws PersistenceException
-     */
-    @Override
     @CheckForNull
     public String getPVName(@Nonnull final String ioName) throws PersistenceException {
-        final ArrayList<String> ioNames = new ArrayList<String>();
-        ioNames.add(ioName);
-        final Map<String, String> pvNames = getPVNames(ioNames);
-        return pvNames.get(ioName);
+        final PV2IONameMatcherModelDBO loadIOName2PVMatcher = Repository.loadIOName2PVMatcher(ioName);
+        String pvName = "";
+        if(loadIOName2PVMatcher!=null) {
+                pvName = loadIOName2PVMatcher.getEpicsName();
+        }
+        return pvName;
     }
 
 }

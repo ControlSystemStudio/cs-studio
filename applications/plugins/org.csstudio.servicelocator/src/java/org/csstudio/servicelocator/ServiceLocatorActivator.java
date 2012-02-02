@@ -1,6 +1,5 @@
-
 /*
- * Copyright (c) 2009 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,29 +18,30 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
+ * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
+package org.csstudio.servicelocator;
 
-package org.csstudio.alarm.jms2ora.management;
-
-import org.csstudio.alarm.jms2ora.util.MessageFileHandler;
-import org.csstudio.platform.management.CommandParameters;
-import org.csstudio.platform.management.CommandResult;
-import org.csstudio.platform.management.IManagementCommand;
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * @author Markus Moeller
- *
+ * Controls the life cycle of the service locator
+ * 
+ * @author jpenning
+ * @since 25.01.2012
  */
-public class DeleteAllMessageFiles implements IManagementCommand {
-
-    /* (non-Javadoc)
-     * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
-     */
+public class ServiceLocatorActivator implements BundleActivator {
+    
     @Override
-    public CommandResult execute(final CommandParameters parameters) {
-
-        final String result = "\n" + Integer.toString(MessageFileHandler.getInstance().deleteAllMessageFiles());
-
-        return CommandResult.createMessageResult(result);
+    public void start(BundleContext context) throws Exception {
+        // nothing to do
     }
+    
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        ServiceLocator.close();
+    }
+    
 }

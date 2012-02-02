@@ -5,13 +5,13 @@ import org.csstudio.swt.xygraph.dataprovider.Sample;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.Trace.BaseLine;
 import org.csstudio.swt.xygraph.figures.Trace.ErrorBarType;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
-import org.csstudio.swt.xygraph.linearscale.Range;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.draw2d.Figure;
@@ -21,10 +21,7 @@ import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -167,18 +164,6 @@ class XYGraphTest extends Figure {
 				}
 				if((ke.getState() == SWT.CONTROL) && (ke.keycode == 'x')){
 					xyGraph.performAutoScale();
-				}
-				if((ke.getState() == SWT.CONTROL) && (ke.keycode == 's')){
-					final ImageLoader loader = new ImageLoader();
-					loader.data = new ImageData[]{xyGraph.getImage().getImageData()};
-					  final FileDialog dialog = new FileDialog(Display.getDefault().getShells()[0], SWT.SAVE);
-					    dialog
-					        .setFilterNames(new String[] {"PNG Files", "All Files (*.*)" });
-					    dialog.setFilterExtensions(new String[] { "*.png", "*.*" }); // Windows
-					    final String path = dialog.open();
-					    if((path != null) && !path.equals("")) {
-                            loader.save(path, SWT.IMAGE_PNG);
-                        }
 				}
 				if((ke.getState() == SWT.CONTROL) && (ke.keycode + 'a' -97 == 't')){
 					switch (xyGraph.getZoomType()) {

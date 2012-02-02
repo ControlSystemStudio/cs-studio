@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser2.feature"
       label="Data Browser"
-      version="3.0.2.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -39,7 +39,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.archive.rdb" version="3.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
@@ -57,11 +56,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.archive.reader" version="2.0.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.data" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.trends.databrowser2" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.csstudio.auth" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.openfile" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.archive.rdb" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help"/>
    </requires>
 
    <plugin

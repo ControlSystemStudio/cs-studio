@@ -15,13 +15,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
-public class ChannelsViewConfigurationPanel extends
+public class ChannelViewerConfigurationPanel extends
 		AbstractConfigurationComposite {
 
 	private StringListSelectionWidget propertyListWidget;
 	private StringListSelectionWidget tagListWidget;
 
-	public ChannelsViewConfigurationPanel(Composite parent, int style) {
+	public ChannelViewerConfigurationPanel(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new GridLayout(1, false));
 
@@ -67,26 +67,6 @@ public class ChannelsViewConfigurationPanel extends
 									event.getOldValue(), event
 											.getNewValue()));
 				}
-			}
-		});
-
-		final Button showChannelNames = new Button(this, SWT.CHECK);
-		showChannelNames.setText("show channels");
-		showChannelNames.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				changeSupport.firePropertyChange("showChannelNames",
-						!showChannelNames.getSelection(),
-						showChannelNames.getSelection());
-
-			}
-
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				changeSupport.firePropertyChange("showChannelNames",
-						!showChannelNames.getSelection(),
-						showChannelNames.getSelection());
 			}
 		});
 

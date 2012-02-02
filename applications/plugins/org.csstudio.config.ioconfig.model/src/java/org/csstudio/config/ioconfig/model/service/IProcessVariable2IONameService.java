@@ -44,9 +44,6 @@ public interface IProcessVariable2IONameService {
     @CheckForNull
     INode getNode(@Nonnull final String pvName) throws PersistenceException;
 
-    @Nonnull
-    Map<String, String> getPVNames(@Nonnull final Collection<String> ioNames) throws PersistenceException;
-
     @CheckForNull
     String getPVName(@Nonnull final String ioName) throws PersistenceException;
 

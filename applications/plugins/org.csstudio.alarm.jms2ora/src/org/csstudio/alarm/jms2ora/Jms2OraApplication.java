@@ -24,8 +24,13 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
 import javax.annotation.Nonnull;
-
+import org.csstudio.alarm.jms2ora.management.GetNumberOfMessageFiles;
+import org.csstudio.alarm.jms2ora.management.GetQueueSize;
+import org.csstudio.alarm.jms2ora.management.GetVersionMgmtCommand;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
@@ -54,6 +59,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 60000;
 
+    /** Time to sleep in ms */
+    private static final long WAITFORTHREAD = 20000;
+    
     /** The MessageProcessor does all the work on messages */
     private MessageProcessor messageProcessor;
 
@@ -66,17 +74,11 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     /** The ECF service */
     private ISessionService xmppService;
 
-    /** Name of the folder that holds the stored message content */
-    //private String objectDir;
-
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
 
     /** Flag that indicates whether or not the application should stop. */
     private boolean shutdown;
-
-    /** Time to sleep in ms */
-    private static final long WAITFORTHREAD = 20000;
 
     public Jms2OraApplication() {
         lock = new Object();
@@ -161,20 +163,31 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             return IApplication.EXIT_OK;
         }
 
+        long sleep = prefs.getLong(Jms2OraActivator.PLUGIN_ID,
+                                   PreferenceConstants.MESSAGE_PROCESSOR_SLEEPING_TIME,
+                                   30000L,
+                                   null);
+        
+        int storageWait = prefs.getInt(Jms2OraActivator.PLUGIN_ID,
+                                       PreferenceConstants.TIME_BETWEEN_STORAGE,
+                                       60,
+                                       null);
+        
         // Create an object from this class
-        messageProcessor = new MessageProcessor();
+        messageProcessor = new MessageProcessor(sleep, storageWait);
         messageProcessor.start();
 
         Jms2OraActivator.getDefault().addSessionServiceListener(this);
 
         context.applicationRunning();
 
-
         while (running) {
             synchronized (lock) {
                 try {
                     lock.wait(SLEEPING_TIME);
-                } catch(final InterruptedException ie) { /* Can be ignored */}
+                } catch(final InterruptedException ie) {
+                    LOG.info("lock.wait() has been interrupted.");
+                }
             }
 
             // TODO: Check the worker...
@@ -188,7 +201,9 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
             try {
                 messageProcessor.join(WAITFORTHREAD);
-            } catch(final InterruptedException ie) { /* Can be ignored */ }
+            } catch(final InterruptedException ie) {
+                LOG.info("messageProcessor.join(WAITFORTHREAD) has been interrupted.");
+            }
 
             if(messageProcessor.stoppedClean()) {
                 LOG.info("Restart/Exit: Thread stopped clean.");
@@ -200,6 +215,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         }
 
         if (xmppService != null) {
+            synchronized (xmppService) {
+                try {
+                    xmppService.wait(500);
+                } catch (InterruptedException ie) {
+                    LOG.info("xmppService.wait(500) has been interrupted.");
+                }
+            }
             xmppService.disconnect();
         }
 
@@ -225,6 +247,26 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     	    return;
     	}
 
+    	GetQueueSize.staticInject(this);
+    	GetNumberOfMessageFiles.staticInject(this);
+        final File file = new File(".eclipseproduct");
+        if (file.exists()) {
+            final URI uri = file.toURI();
+            String path;
+            try {
+                path = uri.toURL().getPath();
+                if (path != null) {
+                    
+                    LOG.info("Path to version file: {}", path);
+                    GetVersionMgmtCommand.injectStaticObject(path);
+                }
+            } catch (MalformedURLException e) {
+                LOG.warn("[*** MalformedURLException ***]: {}", e.getMessage());
+            }
+        } else {
+            LOG.warn("File '.eclipseproduct' does not exist.");
+        }
+
     	try {
 			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
 			xmppService = sessionService;
@@ -232,7 +274,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 		    LOG.warn("XMPP connection is not available: {}", e.toString());
 		}
     }
-
 
     /**
      * {@inheritDoc}
@@ -280,5 +321,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
     @Override
     public int getMessageQueueSize() {
         return messageProcessor.getCompleteQueueSize();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getNumberOfMessageFiles() {
+        return messageProcessor.getNumberOfMessageFiles();
     }
 }

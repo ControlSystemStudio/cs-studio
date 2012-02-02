@@ -61,7 +61,11 @@ public class CommonAdapterFactory implements IAdapterFactory {
 		if (adaptableObject instanceof ConfigurableWidgetAdaptable) {
 			if (adapterType == ConfigurableWidget.class) {
 				ConfigurableWidgetAdaptable configurableWidgetAdaptable = (ConfigurableWidgetAdaptable) adaptableObject;
-				return configurableWidgetAdaptable.toConfigurableWidget();
+				if (configurableWidgetAdaptable != null && configurableWidgetAdaptable.toConfigurableWidget() != null &&
+						configurableWidgetAdaptable.toConfigurableWidget().isConfigurable())
+					return configurableWidgetAdaptable.toConfigurableWidget();
+				else
+					return null;
 			}
 
 		}

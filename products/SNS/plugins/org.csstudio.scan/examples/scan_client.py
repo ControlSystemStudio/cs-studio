@@ -49,6 +49,20 @@ class ScanClient(object):
         self.server = ScanServerConnector.connect()
         # Scan ID
         self.id = -1
+        
+    def checkServer(self):
+        """
+        Attempt to call the server, and try to re-connect on error.
+        
+        The server could be restarted, or there could have been
+        a network issue between the time we originally connected
+        to the server and now, which would invalidate the original
+        server connection.
+        """
+        try:
+            self.server.getInfo()
+        except:
+            self.server = ScanServerConnector.connect()
 
     def submit(self, name, command_sequence):
         """
@@ -59,6 +73,7 @@ class ScanClient(object):
           
         @return Scan ID
         """
+        self.checkServer()
         self.id = self.server.submitScan(name, command_sequence.getXML())
         return self.id
 
@@ -68,6 +83,7 @@ class ScanClient(object):
         
         @param id Scan ID, defaulting to the last submitted scan
         """
+        self.checkServer()
         if id == -1:
         	id = self.id
         while True:
@@ -153,18 +169,19 @@ class ScanNd(ScanClient):
         cmds = CommandSequence()
         for scan in scans:
             body = CommandSequence()
-            # Add loop variable and log
-            log.insert(0, scan[0])
-            body.log(log)
-            
-            # Add previous cmds
+
+            # Add cmds from inner loop
             body.add(cmds)
             
-            # Within loop
+            # Innermost loop logs
+            if len(log) > 0:
+                body.log(log)
+                log = []
+            
+            # Wrap in loop which then becomes cmds to next loop 'up'
             cmds = CommandSequence()
             cmds.loop(scan[0], scan[1], scan[2], scan[3], body)
             
-            log = []
             
         id = self.submit(name, cmds)
         if __name__ == '__main__':
@@ -175,6 +192,7 @@ class ScanNd(ScanClient):
 # Create 'scan' command
 scan = ScanNd()
 
+scan('Reversing 2D', ('xpos', 1, 10), ('ypos', 1, 10, -0.5), 'readback')
         
 if __name__ == '__main__':
     print 'Welcome to the scan system'

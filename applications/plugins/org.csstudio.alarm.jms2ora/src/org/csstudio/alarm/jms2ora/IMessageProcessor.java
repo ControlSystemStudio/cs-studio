@@ -24,11 +24,11 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Collection;
+import javax.annotation.Nonnull;
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 28.08.2011
@@ -36,15 +36,27 @@ import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 public interface IMessageProcessor {
     
     /**
-     * The method delivers a raw message.
+     * The method delivers a ArchiveMessage object.
      * 
-     * @param m - The raw message. It is just a copy of the JMS MapMessage.
+     * @param m - The message to be archived.
      */
-    void putArchiveMessage(ArchiveMessage m);
-    
+    void putArchiveMessage(@Nonnull ArchiveMessage m);
+
+    /**
+     * The method delivers a collection of ArchiveMessage objects.
+     * 
+     * @param m - The message to be archived.
+     */
+    void putArchiveMessages(@Nonnull Collection<ArchiveMessage> m);
+
     /**
      * Returns the number of current messages stored in the queue
      * @return The number messages that are stored in the queue
      */
     int getArchiveMessageQueueSize();
+    
+    /**
+     * Returns the number of persisted messages
+     */
+    int getNumberOfMessageFiles();
 }
