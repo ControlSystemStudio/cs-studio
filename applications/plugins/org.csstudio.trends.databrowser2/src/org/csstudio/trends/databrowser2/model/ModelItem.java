@@ -52,6 +52,9 @@ abstract public class ModelItem
 
     /** Y-Axis */
     private AxisConfig axis = null;
+    
+    /** Waveform Index */
+    private int waveform_index = 0;
 
     /** Initialize
      *  @param name Name of the PV or the formula
@@ -236,6 +239,23 @@ abstract public class ModelItem
         this.axis = axis;
         fireItemLookChanged();
     }
+    
+    /** @return Waveform index */
+    public int getWaveformIndex()
+    {
+        return waveform_index;
+    }
+
+    /** @param index New waveform index */
+    public void setWaveformIndex(int index)
+    {
+        if (index < 0)
+            index = 0;
+        if (index == this.waveform_index)
+            return;
+        this.waveform_index = index;
+        fireItemLookChanged();
+    }
 
     /** @return Samples held by this item */
     abstract public PlotSamples getSamples();
@@ -263,6 +283,8 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
         Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
+        
+        /* TODO: save waveform index into XML file */  
     }
 
     /** Load common XML configuration elements into this item
@@ -290,5 +312,7 @@ abstract public class ModelItem
         {
             trace_type = TraceType.AREA;
         }
+        
+        /* TODO: restore waveform index from XML file */  
     }
 }

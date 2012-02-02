@@ -248,6 +248,8 @@ public class Messages extends NLS
     public static String ValueAxisName;
     public static String ValueColumn;
     public static String WaveformAmplitude;
+    public static String WaveformIndexCol;
+    public static String WaveformIndexColTT;
     public static String WaveformIndex;
     public static String WaveformStatus;
     public static String WaveformTimeSelector;
