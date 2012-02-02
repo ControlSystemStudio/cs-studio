@@ -29,6 +29,8 @@
       <plugin id="javax.mail"/>
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
+      <plugin id="org.csstudio.dal"/>
+      <plugin id="org.csstudio.dal.epics"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
@@ -45,7 +47,6 @@
       <plugin id="org.csstudio.nams.service.regelwerkbuilder"/>
       <plugin id="org.csstudio.nams.service.regelwerkbuilder.impl.confstore"/>
       <plugin id="org.csstudio.platform"/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.easymock"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
