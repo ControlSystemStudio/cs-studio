@@ -23,6 +23,11 @@
 
 package org.csstudio.ams.distributor;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -74,8 +79,11 @@ import org.csstudio.ams.dbAccess.configdb.UserTObject;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsMultipleProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.hsqldb.jdbcDriver;
+import org.osgi.framework.Bundle;
 
 /*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
  *  auch dieser Connector nicht angesteuert wird??? */
@@ -116,17 +124,37 @@ public class DistributorWork extends Thread implements AmsConstants,
 	private final ConfigurationSynchronizer synchronizer;
 
 	public DistributorWork(final java.sql.Connection localDatabaseConnection,
-			final ConfigurationSynchronizer synch) throws ReplicationException {
+			               final ConfigurationSynchronizer synch)
+			                       throws ReplicationException {
+	    
 		localAppDb = localDatabaseConnection;
 		this.synchronizer = synch;
-
+		
+		// Get the path for the SQL script
+		Bundle amsBundle = Platform.getBundle(AmsActivator.PLUGIN_ID);
+		Enumeration<URL> entries = amsBundle.findEntries("resource", "createMemoryCache.sql", true);
+		File sqlFile = null;
+		if (entries.hasMoreElements()) {
+		    
+		    try {
+		        URL fileUrl = FileLocator.toFileURL(entries.nextElement());
+		        URI fileUri = fileUrl.toURI();
+		        Log.log(Log.DEBUG, fileUri.toString());
+		        sqlFile = new File(fileUri);
+            } catch (URISyntaxException e) {
+                throw new ReplicationException(e);
+            } catch (IOException e) {
+                throw new ReplicationException(e);
+            }
+		}
+		
 		// Copy application db into cache db
 		try {
 			DriverManager.registerDriver(new jdbcDriver());
 			memoryCacheDb = DriverManager.getConnection(
 					"jdbc:hsqldb:mem:memConfigDB", "sa", "");
 			ConfigReplicator.replicateConfigurationToHsql(localAppDb,
-					memoryCacheDb);
+					memoryCacheDb, sqlFile);
 		} catch (SQLException sqlException) {
 			throw new ReplicationException(sqlException);
 		}
