@@ -7,12 +7,12 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.propsheet;
 
-import org.csstudio.apputil.ui.dialog.ErrorDialog;
 import org.csstudio.swt.xygraph.undo.IUndoableCommand;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.FormulaInput;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /** Undo-able command to change a FormulaItem's expression and inputs
@@ -49,7 +49,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
         }
         catch (Exception ex)
         {
-            ErrorDialog.open(shell, Messages.Error, ex.getMessage());
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
             // Exit before registering for undo because there's nothing to undo
             return;
         }
@@ -67,7 +67,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
         }
         catch (Exception ex)
         {
-            ErrorDialog.open(shell, Messages.Error, ex.getMessage());
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 
@@ -81,7 +81,7 @@ public class ChangeFormulaCommand implements IUndoableCommand
         }
         catch (Exception ex)
         {
-            ErrorDialog.open(shell, Messages.Error, ex.getMessage());
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 
