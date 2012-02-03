@@ -23,13 +23,10 @@
 
 package org.csstudio.ams.configReplicator;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
@@ -54,6 +51,8 @@ import org.csstudio.ams.dbAccess.configdb.TopicDAO;
 import org.csstudio.ams.dbAccess.configdb.UserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
+import org.hsqldb.util.SqlFile;
+import org.hsqldb.util.SqlToolError;
 
 public class ConfigReplicator implements AmsConstants {
 	
@@ -154,22 +153,40 @@ public class ConfigReplicator implements AmsConstants {
 	
 	/**
 	 * Copying configuration from one database to another.
-	 * @throws SQLException 
+	 * @throws ReplicationException 
 	 */
 	public static void replicateConfigurationToHsql(Connection masterDB,
-			Connection localDB) throws ReplicationException {
-		InputStream resourceAsStream = ConfigReplicator.class
-				.getResourceAsStream("hsqldb_create.sql");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				resourceAsStream));
-		StringBuffer stringBuffer = new StringBuffer();
+			                                        Connection localDB,
+			                                        File sqlScript)
+			                                                throws ReplicationException {
+		
+	    try {
+            SqlFile sqlFile = new SqlFile(sqlScript, false, null);
+            sqlFile.execute(localDB, false);
+            Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
+        } catch (IOException e) {
+            throw new ReplicationException(e);
+        } catch (SqlToolError e) {
+            throw new ReplicationException(e);
+        } catch (SQLException e) {
+            throw new ReplicationException(e);
+        }
+	    
+//	    InputStream resourceAsStream = ConfigReplicator.class
+//				.getResourceAsStream("createMemoryCache.sql");
+//		
+//	    BufferedReader reader = new BufferedReader(new InputStreamReader(
+//				resourceAsStream));
+//		
+//	    StringBuffer stringBuffer = new StringBuffer();
+		
 		try {
-			while (reader.ready()) {
-				stringBuffer.append(reader.readLine() + "\n");
-			}
-			reader.close();
-			String sqlString = stringBuffer.toString();
-			localDB.prepareStatement(sqlString).execute();
+//			while (reader.ready()) {
+//				stringBuffer.append(reader.readLine() + "\n");
+//			}
+//			reader.close();
+//			String sqlString = stringBuffer.toString();
+//			localDB.prepareStatement(sqlString).execute();
 			Log.log(Log.INFO, "Start copying master configuration.");
 			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB, "");
 			FilterConditionDAO.copyFilterCondition(masterDB, localDB, "");
@@ -202,8 +219,6 @@ public class ConfigReplicator implements AmsConstants {
 
 			Log.log(Log.INFO, "Replicating configuration finished.");
 
-		} catch (IOException e) {
-			throw new ReplicationException(e);
 		} catch (SQLException e) {
 			throw new ReplicationException(e);
 		}
