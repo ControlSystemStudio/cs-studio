@@ -24,8 +24,10 @@ import org.eclipse.swt.widgets.Text;
 
 /** Dialog for error messages that uses a tray to optionally
  *  display more detail
+ *  @deprecated Use ExceptionDetailsErrorDialog from org.csstudio.ui.util
  *  @author Kay Kasemir
  */
+@Deprecated
 public class ErrorDetailDialog  extends TrayDialog
 {
     final String title;

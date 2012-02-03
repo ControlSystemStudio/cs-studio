@@ -24,8 +24,11 @@ import org.eclipse.swt.widgets.Text;
  *  uses a text box for the error message, which allows users
  *  to copy/paste the error out into an email etc.
  *
+ *  @deprecated Use ExceptionDetailsErrorDialog from org.csstudio.ui.util
+
  *  @author Kay Kasemir
  */
+@Deprecated
 public class ErrorDialog extends Dialog
 {
     final private String title;

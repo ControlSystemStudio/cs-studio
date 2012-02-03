@@ -10,10 +10,13 @@ package org.csstudio.archive.reader.rdb;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-/** Access to RDB archive preferences
- *  <p>
- *  See preferences.ini for explanation of settings
- *  
+/** Access to preferences for the RDB archive reader.
+ *
+ *  <p>See preferences.ini for explanation of settings.
+ *
+ *  <p>Note that most RDB archive settings are in the
+ *  plugin org.csstudio.archive.rdb.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
