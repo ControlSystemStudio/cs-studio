@@ -7,12 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.writer.rdb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.writer.WriteChannel;
-import org.csstudio.archive.writer.rdb.RDBArchiveWriter;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
@@ -53,7 +52,7 @@ public class RDBArchiveWriterTest
 			System.out.println("Running write test with old array_val table");
 		writer = new RDBArchiveWriter(url, user, password, schema, use_blob);
 	}
-	
+
 	@After
 	public void close()
 	{
@@ -69,7 +68,7 @@ public class RDBArchiveWriterTest
 		WriteChannel channel = writer.getChannel(name);
 		System.out.println(channel);
 		assertNotNull(channel);
-		
+
 		if (array_name == null)
 			return;
 		channel = writer.getChannel(array_name);
@@ -113,7 +112,7 @@ public class RDBArchiveWriterTest
 		writer.addSample(channel, sample);
 		writer.flush();
 	}
-	
+
 	@Test
 	public void testWriteLongEnumText() throws Exception
 	{
@@ -144,27 +143,35 @@ public class RDBArchiveWriterTest
 				IValue.Quality.Original,
 				new long[] { 42 });
 		writer.addSample(channel, sample);
-		
+
 		writer.flush();
 	}
-	
+
 	final private static int TEST_DURATION_SECS = 60;
 	final private static long FLUSH_COUNT = 500;
-	
+
 	/* PostgreSQL 9 Test Results:
-	 * 
+	 *
 	 * HP Compact 8000 Elite Small Form Factor,
 	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
 	 * Hitachi Hds721025cla382 250gb Sata 7200rpm
-	 * 
+	 *
 	 * Flush Count  100, 500, 1000: ~7000 samples/sec, no big difference
-	 * 
+	 *
 	 * After deleting the constraints of sample.channel_id to channel,
 	 * severity_id and status_id to sev. and status tables: ~12000 samples/sec,
 	 * i.e. almost twice as much.
-	 * 
+	 *
 	 * JProfiler shows most time spent in 'flush', some in addSample()'s call to setTimestamp(),
 	 * but overall time is in RDB, not Java.
+	 *
+	 *
+	 * MySQL Test Results:
+	 *
+	 * iMac8,1    2.8GHz Intel Core 2 Duo, 4GB RAM
+	 *
+	 * Without rewriteBatchedStatements=true:  ~7000 samples/sec
+	 * With rewriteBatchedStatements=true   : ~21000 samples/sec
 	 */
  	@Ignore
 	@Test
@@ -172,7 +179,7 @@ public class RDBArchiveWriterTest
 	{
 		if (writer == null)
 			return;
-		
+
 		System.out.println("Write test: Adding samples to " + name + " for " + TEST_DURATION_SECS + " secs");
 		final WriteChannel channel = writer.getChannel(name);
 		final INumericMetaData meta =
@@ -197,7 +204,7 @@ public class RDBArchiveWriterTest
 		while (System.currentTimeMillis() < end);
 		writer.flush();
 		timer.stop();
-		
+
 		System.out.println("Wrote " + count + " samples in " + timer);
 		System.out.println(count / timer.getSeconds() + " samples/sec");
 	}
