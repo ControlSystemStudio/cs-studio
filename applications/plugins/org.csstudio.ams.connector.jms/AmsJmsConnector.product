@@ -39,6 +39,7 @@
       <plugin id="org.apache.tools.ant"/>
       <plugin id="org.csstudio.ams"/>
       <plugin id="org.csstudio.ams.connector.jms"/>
+      <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
