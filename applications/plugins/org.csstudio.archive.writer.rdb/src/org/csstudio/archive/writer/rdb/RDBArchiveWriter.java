@@ -9,6 +9,7 @@ package org.csstudio.archive.writer.rdb;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -36,6 +37,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 /** ArchiveWriter implementation for RDB
  *  @author Kay Kasemir
  *  @author Lana Abadie (PostgreSQL for original RDBArchive code)
+ *  @author Laurent Philippe (Use read-only connection when possible for MySQL load balancing)
  */
 @SuppressWarnings("nls")
 public class RDBArchiveWriter implements ArchiveWriter
@@ -47,11 +49,11 @@ public class RDBArchiveWriter implements ArchiveWriter
     final private static String NOT_A_NUMBER_SEVERITY = "INVALID";
 
     final private int SQL_TIMEOUT_SECS = RDBArchivePreferences.getSQLTimeoutSecs();
-    
+
     final private int MAX_TEXT_SAMPLE_LENGTH = Preferences.getMaxStringSampleLength();
-    
+
     final private boolean use_array_blob;
-        
+
     /** RDB connection */
     final private RDBUtil rdb;
 
@@ -60,13 +62,13 @@ public class RDBArchiveWriter implements ArchiveWriter
 
     /** Cache of channels by name */
     final private Map<String, RDBWriteChannel> channels = new HashMap<String, RDBWriteChannel>();
-    
+
     /** Severity (ID, name) cache */
     private SeverityCache severities;
-    
+
     /** Status (ID, name) cache */
     private StatusCache stati;
-    
+
     /** Prepared statement for inserting 'double' samples */
     private PreparedStatement insert_double_sample = null;
 
@@ -90,7 +92,7 @@ public class RDBArchiveWriter implements ArchiveWriter
 
     /** Counter for accumulated samples in 'String' batch */
     private int batched_txt_inserts = 0;
-    
+
     /** Copy of batched samples, used to display batch errors */
     private final List<RDBWriteChannel> batched_channel = new ArrayList<RDBWriteChannel>();
     private final List<IValue> batched_samples = new ArrayList<IValue>();
@@ -124,9 +126,15 @@ public class RDBArchiveWriter implements ArchiveWriter
         severities = new SeverityCache(rdb, sql);
         stati = new StatusCache(rdb, sql);
         // Assert Auto-commit is off because this code commits as needed
+        // Note that 'reads' also need to be committed because otherwise
+        // this can happen:
+        // Program A SELECTs channel names.
+        // Program B INSERTs/UPDATEs channel names.
+        // Program A SELECTs channel names again, but doesn't see B's
+        // changes because it's still in the same transaction.
         rdb.getConnection().setAutoCommit(false);
     }
-    
+
     @Override
     public WriteChannel getChannel(final String name) throws Exception
     {
@@ -134,8 +142,11 @@ public class RDBArchiveWriter implements ArchiveWriter
         RDBWriteChannel channel = channels.get(name);
         if (channel == null)
         {
+            final Connection connection = rdb.getConnection();
+            connection.setReadOnly(true);
+
             // Get channel information from RDB
-            final PreparedStatement statement = rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
+            final PreparedStatement statement = connection.prepareStatement(sql.channel_sel_by_name);
             try
             {
                 statement.setString(1, name);
@@ -144,11 +155,13 @@ public class RDBArchiveWriter implements ArchiveWriter
                     throw new Exception("Unknown channel " + name);
                 channel = new RDBWriteChannel(name, result.getInt(1));
                 result.close();
+                connection.commit();
                 channels.put(name, channel);
             }
             finally
             {
                 statement.close();
+                connection.setReadOnly(false);
             }
         }
         return channel;
@@ -167,7 +180,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             rdb_channel.setMetaData(meta);
         }
         batchSample(rdb_channel, sample);
-        
+
         batched_channel.add(rdb_channel);
         batched_samples.add(sample);
     }
@@ -196,6 +209,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             NumericMetaDataHelper.delete(rdb, sql, channel);
             NumericMetaDataHelper.insert(rdb, sql, channel, (INumericMetaData) meta);
         }
+        rdb.getConnection().commit();
     }
 
     /** Perform 'batched' insert for sample.
@@ -219,7 +233,7 @@ public class RDBArchiveWriter implements ArchiveWriter
         else if (sample instanceof ILongValue)
         {
             final long[] num = ((ILongValue)sample).getValues();
-            
+
             // Handle arrays as double
             // TODO Support Long arrays 'l' and Integer 'i'
             if (num.length > 1)
@@ -243,7 +257,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             batchTextSamples(channel, stamp, severity, status, txt);
         }
     }
-    
+
     /** Helper for batchSample: Add double sample(s) to batch. */
     private void batchDoubleSamples(final RDBWriteChannel channel,
             final Timestamp stamp, final Severity severity,
@@ -387,7 +401,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             }
         }
     }
-    
+
     /** Helper for batchSample: Add long sample to batch.  */
     private void batchLongSamples(final RDBWriteChannel channel,
             final Timestamp stamp, final Severity severity,
@@ -428,7 +442,7 @@ public class RDBArchiveWriter implements ArchiveWriter
         completeAndBatchInsert(insert_txt_sample, channel, stamp, severity, status);
         ++batched_txt_inserts;
     }
-    
+
     /** Helper for batchSample:
      *  Set the parameters common to all insert statements, add to batch.
      */
@@ -521,7 +535,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             batched_samples.clear();
         }
     }
-    
+
     /** Submit and clear the batch, or roll back on error */
     private void checkBatchExecution(final PreparedStatement insert) throws Exception
     {
@@ -554,7 +568,7 @@ public class RDBArchiveWriter implements ArchiveWriter
             throw ex;
         }
     }
-    
+
     /** The batched insert failed, so try to insert this channel's sample
      *  individually, mostly to debug errors
      *  @param channel
@@ -627,7 +641,7 @@ public class RDBArchiveWriter implements ArchiveWriter
                 insert_txt_sample.setInt(3, severity.getId());
                 insert_txt_sample.setInt(4, status.getId());
                 insert_txt_sample.setString(5, txt);
-                insert_txt_sample.setBoolean(6, false);                
+                insert_txt_sample.setBoolean(6, false);
                 // MySQL nanosecs
                 if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_txt_sample.setInt(7, stamp.getNanos());
