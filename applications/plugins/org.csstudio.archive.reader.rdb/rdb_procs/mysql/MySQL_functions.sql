@@ -1,4 +1,4 @@
--- Stored functions and procedures 
+-- Stored functions and procedures
 -- for server-side determination of "optimized"
 -- samples, similar to Oracle implementation.
 --
@@ -45,6 +45,7 @@ DROP FUNCTION IF EXISTS get_count_by_date_range;
 DROP FUNCTION IF EXISTS get_actual_start_time;
 DROP FUNCTION IF EXISTS get_sample_datatype;
 DROP PROCEDURE IF EXISTS get_browser_data;
+DROP PROCEDURE IF EXISTS get_browser_data_on_row;
 
 
 # The default delimiter ';' will cause errors with the
@@ -167,7 +168,8 @@ DELIMITER ;
 --
 -- Otherwise about p_reduction_nbr min/max/average samples
 -- are computed.
--- Any non-numeric samples are returned _before_ the averaged data.
+--
+-- Any non-numeric samples are returned as is with 'wb -1'.
 -- *************************************************************
 DELIMITER |
 CREATE PROCEDURE get_browser_data(IN p_chan_id INT, IN p_start_time TIMESTAMP,  IN p_end_time TIMESTAMP,  IN p_reduction_nbr INT)
@@ -204,17 +206,21 @@ BEGIN
         WHERE channel_id = p_chan_id 
         AND smpl_time BETWEEN p_start_time AND p_end_time
         AND str_val is not null
+        
         UNION ALL
-          SELECT wb, min_smpl smpl_time, NULL severity_id, NULL status_id, min_val, max_val, avg_val, NULL str_val, cnt
-          FROM(SELECT floor((UNIX_TIMESTAMP(smpl_time) - v_start_time)/ v_for_bucket) wb,
+        
+        SELECT wb, min_smpl smpl_time, NULL severity_id, NULL status_id, min_val, max_val, avg_val, NULL str_val, cnt
+        FROM( SELECT FLOOR((UNIX_TIMESTAMP(smpl_time) - v_start_time)/ v_for_bucket) wb,
                       MIN(smpl_time) min_smpl,
                       MIN(<tag>) min_val, MAX(<tag>) max_val, AVG(<tag>) avg_val,
                       COUNT(*) cnt
-               FROM sample
-               WHERE channel_id = p_chan_id
-               AND smpl_time BETWEEN p_start_time AND p_end_time
-               GROUP BY wb) bucket
-            ORDER by smpl_time';
+              FROM sample
+              WHERE channel_id = p_chan_id
+              AND smpl_time BETWEEN p_start_time AND p_end_time
+              GROUP BY wb
+            ) bucket
+        
+        ORDER BY smpl_time';
 
     -- Get actual start time, because there may not be a sample at p_start_time
     SET v_act_start_time = get_actual_start_time(p_chan_id, p_start_time);
@@ -268,6 +274,130 @@ END
 |
 DELIMITER ;
 
+
+-- *************************************************************
+-- PROCEDURE get_browser_data_on_row
+--
+-- p_chan_id      : Channel ID
+-- p_start_time   : Start time
+-- p_end_time     : End time
+-- p_reduction_nbr: Number of desired values. Must be > 1!
+--
+-- If there are less than p_reduction_nbr actual values,
+-- the raw data is returned.
+--
+-- Otherwise about p_reduction_nbr min/max/average samples
+-- are computed based on equal number of sample fragment.
+--
+-- Any non-numeric samples are returned as is with 'wb -1'.
+-- *************************************************************
+DELIMITER |
+CREATE PROCEDURE get_browser_data_on_row(IN p_chan_id INT, IN p_start_time TIMESTAMP,  IN p_end_time TIMESTAMP,  IN p_reduction_nbr INT)
+SQL SECURITY INVOKER
+BEGIN
+    DECLARE v_act_start_time TIMESTAMP;
+    DECLARE v_count INT;
+    DECLARE v_start_time INT;
+    DECLARE v_delta_time INT;
+    DECLARE v_for_bucket DOUBLE;
+    DECLARE v_datatype VARCHAR(9);
+    DECLARE v_return_raw BOOL DEFAULT FALSE;
+    SET @row = 0;
+
+    -- Query for raw data
+    SET @l_cur_base_query =
+       'SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs
+        FROM sample
+        WHERE channel_id = p_chan_id
+        AND smpl_time BETWEEN p_start_time AND p_end_time
+        ORDER BY smpl_time, nanosecs';
+        
+    -- Query for averaged, 'optimized' data
+    -- Ignores the nanosecs, but that's more than "good enough"
+    -- as soon as we average over more than a second.
+    --
+    -- Determines the returned smpl_time as the median of the
+    -- samples in a bucket. Could also just return the 'center'
+    -- of the bucket, saving a few min() & max() calls.
+    SET @l_cur_with_bucket =
+       'SELECT -1 wb, smpl_time, severity_id, status_id, NULL min_val, NULL max_val, NULL avg_val, str_val, 1 cnt
+        FROM sample 
+        WHERE channel_id = p_chan_id 
+        AND smpl_time BETWEEN p_start_time AND p_end_time
+        AND str_val is not null
+        
+        UNION ALL
+        
+        SELECT wb, min_smpl smpl_time, NULL severity_id, NULL status_id, min_val, max_val, avg_val, NULL str_val, cnt
+        FROM (
+            SELECT FLOOR(r / v_for_bucket) wb,
+                   MIN(smpl_time) min_smpl,
+                   MIN(float_val) min_val, MAX(float_val) max_val, AVG(float_val) avg_val,
+                   COUNT(*) cnt
+            FROM (
+               SELECT @row := @row + 1 r, smpl_time, float_val
+               FROM sample
+               WHERE channel_id = p_chan_id
+               AND smpl_time BETWEEN p_start_time AND p_end_time
+             ) bucket
+         GROUP BY wb) bucket_median
+            
+         ORDER BY smpl_time';
+
+    -- Get actual start time, because there may not be a sample at p_start_time
+    SET v_act_start_time = get_actual_start_time(p_chan_id, p_start_time);
+    -- call log(CONCAT('Requested start time:', p_start_time));
+    -- call log(CONCAT('Actual start time   :', v_act_start_time));
+    
+    SET v_count = get_count_by_date_range(p_chan_id, v_act_start_time, p_end_time);
+    -- call log(CONCAT('Raw value count:', v_count));
+    
+    SET v_start_time = UNIX_TIMESTAMP(v_act_start_time);
+    SET v_delta_time = UNIX_TIMESTAMP(p_end_time) - v_start_time;
+    SET v_for_bucket = v_count / (p_reduction_nbr - 1);
+    
+    IF v_count < p_reduction_nbr THEN
+        -- Only few samples, return raw data
+        SET v_return_raw = TRUE;
+    ELSE 
+        -- Determine what data to return
+        SET v_datatype = get_sample_datatype(p_chan_id, v_act_start_time, p_end_time);
+        
+        IF v_datatype is not null THEN
+            SELECT REPLACE(@l_cur_with_bucket, '<tag>', v_datatype) into @l_cur_with_bucket;
+        ELSE
+            -- Fall back to raw data if averaging is not possible
+            SET v_return_raw = TRUE;
+        END IF;
+    END IF;
+    
+    IF v_return_raw THEN
+        SELECT REPLACE(@l_cur_base_query, 'p_start_time',CONCAT('\'', v_act_start_time, '\'')) into @l_cur_base_query;
+        SELECT REPLACE(@l_cur_base_query, 'p_end_time', CONCAT('\'', p_end_time, '\'')) into @l_cur_base_query;
+        SELECT REPLACE(@l_cur_base_query, 'p_chan_id', p_chan_id) into @l_cur_base_query;
+        
+        -- call log(@l_cur_base_query);
+        
+        PREPARE stmt FROM @l_cur_base_query;
+        EXECUTE stmt;
+    ELSE
+        SELECT REPLACE(@l_cur_with_bucket, 'p_start_time',CONCAT('\'', v_act_start_time, '\'')) into @l_cur_with_bucket;
+        SELECT REPLACE(@l_cur_with_bucket, 'v_start_time',  v_start_time) into @l_cur_with_bucket;
+        SELECT REPLACE(@l_cur_with_bucket, 'p_end_time', CONCAT('\'', p_end_time, '\'')) into @l_cur_with_bucket;
+        SELECT REPLACE(@l_cur_with_bucket, 'p_chan_id', p_chan_id) into @l_cur_with_bucket;
+        SELECT REPLACE(@l_cur_with_bucket, 'v_for_bucket', v_for_bucket) into @l_cur_with_bucket;
+
+        -- call log(@l_cur_with_bucket);
+       
+        PREPARE stmt FROM @l_cur_with_bucket;
+        EXECUTE stmt;
+    END IF;
+END
+|
+DELIMITER ;
+
+
+
 -- Allow anybody to execute the stored procedure
 GRANT EXECUTE ON PROCEDURE get_browser_data TO '%'@'%';
 GRANT EXECUTE ON PROCEDURE get_browser_data TO '%'@'localhost';
@@ -299,4 +429,7 @@ call get_browser_data(1, '2012-02-01 17:00:00', '2012-02-01 17:15:00', 50);
 call get_browser_data(1, '2012-02-05 17:00:00', '2012-02-06 17:15:00', 50);
 -- call dump;
 
+call get_browser_data_on_row(1, '2012-02-01 17:00:00', '2012-02-01 17:15:00', 50);
+
+call get_browser_data(1, '2012-02-01 17:00:00', '2012-02-02 11:15:00', 50);
 
