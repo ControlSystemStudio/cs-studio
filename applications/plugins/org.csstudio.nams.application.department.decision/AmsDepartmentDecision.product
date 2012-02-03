@@ -47,6 +47,7 @@
       <plugin id="org.csstudio.nams.service.regelwerkbuilder"/>
       <plugin id="org.csstudio.nams.service.regelwerkbuilder.impl.confstore"/>
       <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.easymock"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -118,7 +119,6 @@
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
-      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator.manipulator"/>
