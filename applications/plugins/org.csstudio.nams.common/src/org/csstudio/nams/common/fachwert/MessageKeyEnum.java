@@ -58,6 +58,10 @@ public enum MessageKeyEnum {
 	/**
 	 * XXX Comment
 	 */
+	GROUP("GROUP"),
+	/**
+	 * XXX Comment
+	 */
 	HOST("HOST"),
 	/**
 	 * XXX Comment
