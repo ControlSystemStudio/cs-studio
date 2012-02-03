@@ -8,10 +8,11 @@
 package org.csstudio.ui.menu.pvscript;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.*;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /** Preference Page, registered in plugin.xml
@@ -24,17 +25,17 @@ public class PreferencePage	extends FieldEditorPreferencePage
 	public PreferencePage()
 	{
         super(FieldEditorPreferencePage.GRID);
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID));
 		setDescription(Messages.PreferencePageMessage);
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
     public void init(final IWorkbench workbench)
 	{
 		// NOP
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
     public void createFieldEditors()
@@ -44,7 +45,7 @@ public class PreferencePage	extends FieldEditorPreferencePage
 		// Editing a plain string preference is easy:
 		addField(new BooleanFieldEditor(Preferences.PREV_INDIVIDUAL,
 				Messages.PrefEdit_IndividualScripts, parent));
-		
+
 		// A preference string that's really an encoded list of
 		// complex objects needs a custom editor
 		addField(new ScriptInfoFieldEditor(parent));

@@ -41,10 +41,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(GRID);
-        // TODO For Eclipse 3.7, use InstanceScope.INSTANCE
-        // ITER with Eclipse 3.6 needs new InstanceScope()
-        @SuppressWarnings("deprecation")
-        final IScopeContext scope = new InstanceScope();
+        final IScopeContext scope = InstanceScope.INSTANCE;
 		rdb_prefs = new ScopedPreferenceStore(scope,
         		org.csstudio.archive.rdb.Activator.ID);
         reader_prefs = new ScopedPreferenceStore(scope,
