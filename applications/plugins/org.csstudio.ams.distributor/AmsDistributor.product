@@ -39,6 +39,7 @@
       <plugin id="org.apache.tools.ant"/>
       <plugin id="org.csstudio.ams"/>
       <plugin id="org.csstudio.ams.distributor"/>
+      <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
@@ -148,6 +149,8 @@
       <plugin id="org.eclipse.team.ui"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.carbon" fragment="true"/>
+      <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.console"/>
       <plugin id="org.eclipse.ui.editors"/>
       <plugin id="org.eclipse.ui.forms"/>
