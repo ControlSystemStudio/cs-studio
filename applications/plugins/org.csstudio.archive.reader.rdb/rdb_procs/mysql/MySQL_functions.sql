@@ -11,13 +11,31 @@
 -- @author Laurent Philippe (Ganil, original code)
 -- @author Kay Kasemir (get_actual_start_time, comments)
 
+
+-- #####################################################################
+-- READ THESE NOTES:
+-- #####################################################################
+
 # This file should not contain any 'tab' characters!
 # When pasting the content of this file into an MySQL command-line shell,
 # the tabs can otherwise trigger command-completion at the wrong moment.
 
-# Note that MySQL assigns a "definer" to stored functions and procedures.
-# You may want to execute this while connected as the "archive" database
-# owner, not root.
+# MySQL assigns a "definer" to stored functions and procedures.
+# MySQL will execute a procedure in a thread that belongs to the definer.
+# Only the definer can cancel() a call to the procedure.
+# This implies that you should create the get_browser_data procedure
+# under the MySQL user who will later read data.
+# That may be a read-only account like "reports" with a commonly
+# known password, different from an "archive" user that for example
+# archive engines use to write data.
+
+-- #####################################################################
+-- #####################################################################
+
+-- Ideally, the rest can be 'pasted' into a MySQL shell,
+-- but you may still prefer to adjust for example permissions
+-- for your needs.
+
 
 USE archive;
 
