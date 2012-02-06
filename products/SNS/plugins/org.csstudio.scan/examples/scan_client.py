@@ -192,8 +192,6 @@ class ScanNd(ScanClient):
 # Create 'scan' command
 scan = ScanNd()
 
-scan('Reversing 2D', ('xpos', 1, 10), ('ypos', 1, 10, -0.5), 'readback')
-        
 if __name__ == '__main__':
     print 'Welcome to the scan system'
     # print 'Running in %s' % os.getcwd()

@@ -13,21 +13,49 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.server.app;
+package org.csstudio.scan.device;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import java.io.Serializable;
 
-/** Scan server preferences
+/** Information about a device
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Preferences
+public class DeviceInfo implements Serializable
 {
-	/** @return Path to the default beamline information file */
-	public static String getBeamlineConfigPath()
+	/** Serialization ID */
+	final private static long serialVersionUID = 1L;
+
+	final private String name;
+
+	final private String alias;
+
+	/** Initialize
+	 *  @param name Device name as understood by the control system
+	 *  @param alias Alias, may be preferred for GUI
+	 */
+	public DeviceInfo(final String name, final String alias)
+    {
+	    this.name = name;
+	    this.alias = alias;
+    }
+
+	/** @return Name of the device */
+	public String getName()
 	{
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getString(Activator.ID, "beamline_config", "examples/beamline.xml", null);
+		return name;
+	}
+
+	/** @return Alias of the device */
+    public String getAlias()
+    {
+        return alias;
+    }
+
+	/** @return Debug representation */
+    @Override
+	public String toString()
+	{
+		return alias + " [" + name + "]";
 	}
 }
