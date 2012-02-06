@@ -19,7 +19,7 @@ public class ChannelViewerFigure extends AbstractChannelWidgetFigure<ChannelView
 	}
 
 	@Override
-	protected ChannelViewerWidget createWidget(Composite parent) {
+	protected ChannelViewerWidget createSWTWidget(Composite parent, int style) {
 		return new ChannelViewerWidget(parent, SWT.None);
 	}
 
