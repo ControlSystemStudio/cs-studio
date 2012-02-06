@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.device.DeviceContextFile;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
@@ -37,13 +36,12 @@ public class DeviceContextFileHeadlessTest
 	@Test
 	public void testReadDeviceContextFile() throws Exception
 	{
-		final DeviceContext devices = DeviceContextFile.read("examples/beamline.xml");
-		assertEquals(4, devices.getDevices().length);
+		final DeviceContext context = DeviceContext.getDefault();
 
-		for (Device device : devices.getDevices())
+		for (Device device : context.getDevices())
 			System.out.println(device);
 
-		final Device device = devices.getDevice("xpos");
+		final Device device = context.getDevice("xpos");
 		assertNotNull(device);
 		assertEquals("xpos", device.getName());
 		assertEquals(PVDevice.class, device.getClass());

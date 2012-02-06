@@ -21,7 +21,7 @@ import java.util.List;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
-import org.csstudio.scan.server.DeviceInfo;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.internal.ScanServerImpl;
@@ -107,7 +107,7 @@ public class ConsoleCommands implements CommandProvider
         {
             final DeviceInfo[] infos = server.getDeviceInfos();
             for (DeviceInfo info : infos)
-                intp.println(info.getInfo());
+                intp.println(info);
         }
         catch (RemoteException ex)
         {

@@ -17,14 +17,12 @@ package org.csstudio.scan.device;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.scan.server.app.Activator;
 import org.csstudio.scan.server.app.Preferences;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 
 /** Context that maintains {@link Device}s: Create, start, get, stop.
  *
@@ -43,15 +41,24 @@ public class DeviceContext
     /** @return Default {@link DeviceContext}, initialized from preferences */
     public static DeviceContext getDefault() throws Exception
     {
-    	final String path = Preferences.getDeviceConfigPath();
+    	final String path = Preferences.getBeamlineConfigPath();
         final InputStream config_stream;
         // Absolute file system path?
-        if (path.startsWith("/"))
+        if (path.startsWith("platform:"))
+        {   // Path within platform, for example
+            // platform:/plugin/org.csstudio.scan/....
+            final URL url = new URL(path);
+            config_stream = url.openStream();
+        }
+        else
         	config_stream = new FileInputStream(path);
-        else // Path within plugin
-        	config_stream = FileLocator.openStream(
-        		Activator.getInstance().getBundle(), new Path(path), false);
-		return DeviceContextFile.read(config_stream);
+        final DeviceInfo[] infos = BeamlineDeviceInfoReader.read(config_stream);
+
+        // Create context with those devices
+        final DeviceContext context = new DeviceContext();
+        for (DeviceInfo info : infos)
+            context.addPVDevice(info.getAlias(), info.getName());
+		return context;
     }
 
     /** Initialize empty device context
