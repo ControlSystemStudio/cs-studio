@@ -54,8 +54,11 @@ public class PersistEngineDataManager {
     /**
      * The thread pool executor for the periodically scheduled workers.
      */
+//    private final ScheduledThreadPoolExecutor _executor =
+//        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(2, _cpus + 1));
+//jhatje 2.2.12: set to 1 Thread
     private final ScheduledThreadPoolExecutor _executor =
-        (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(Math.max(2, _cpus + 1));
+            (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(1);
 
     /**
      * Sorted set for submitted periodic workers - decreasing by period
