@@ -120,10 +120,12 @@ public class DistributorStart implements IApplication,
 
         ConfigDbProperties dbProp = new ConfigDbProperties(dbType, dbCon, user, pwd);
         java.sql.Connection localDatabaseConnection = null;
+        java.sql.Connection cacheDatabaseConnection = null;
         //java.sql.Connection masterDatabaseConnection = null;
         try {
             localDatabaseConnection = AmsConnectionFactory.getApplicationDB();
-
+            cacheDatabaseConnection = AmsConnectionFactory.getMemoryCacheDB();
+            
             // Create a JMS sender connection
             final ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
             final Connection senderConnection = senderConnectionFactory.createConnection();
@@ -137,12 +139,18 @@ public class DistributorStart implements IApplication,
 
             // Create the synchronizer object for the database synchronization
             final ConfigurationSynchronizer synchronizer =
-                new ConfigurationSynchronizer(localDatabaseConnection, dbProp, commandSenderSession, commandMessageProducer);
+                new ConfigurationSynchronizer(localDatabaseConnection,
+                                              cacheDatabaseConnection,
+                                              dbProp,
+                                              commandSenderSession,
+                                              commandMessageProducer);
             final Thread synchronizerThread = new Thread(synchronizer);
             synchronizerThread.start();
 
             // Create the receiver connections
-            final DistributorWork worker = new DistributorWork(localDatabaseConnection, synchronizer);
+            final DistributorWork worker = new DistributorWork(localDatabaseConnection,
+                                                               cacheDatabaseConnection,
+                                                               synchronizer);
             final String[] receiverURLs = new String[] {
                     prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
                     prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2)
@@ -184,6 +192,7 @@ public class DistributorStart implements IApplication,
         } catch (final SQLException e) {
             Log.log(this, Log.FATAL, "Could not connect to the database servers", e);
         } finally {
+            AmsConnectionFactory.closeConnection(cacheDatabaseConnection);
             AmsConnectionFactory.closeConnection(localDatabaseConnection);
         }
 

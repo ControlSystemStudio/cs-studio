@@ -30,6 +30,7 @@ class ConfigurationSynchronizer implements Runnable {
     }
     
     private final Connection _localDatabaseConnection;
+    private final Connection _cacheDatabaseConnection;
     private final ConfigDbProperties dbProperties;
     private SynchronizerState _state;
     private boolean _stopped = false;
@@ -40,10 +41,12 @@ class ConfigurationSynchronizer implements Runnable {
      * Creates a new synchronizer object.
      */
     public ConfigurationSynchronizer(Connection localDatabaseConnection,
+                                     Connection cacheDatabaseConnection,
                                      ConfigDbProperties prop,
                                      Session jmsSession,
                                      MessageProducer jmsProducer) {
         _localDatabaseConnection = localDatabaseConnection;
+        _cacheDatabaseConnection = cacheDatabaseConnection;
         dbProperties = prop;
         _jmsSession = jmsSession;
         _jmsProducer = jmsProducer;
@@ -157,8 +160,8 @@ class ConfigurationSynchronizer implements Runnable {
         Connection masterDatabaseConnection = null;
         try {
             masterDatabaseConnection = AmsConnectionFactory.getConfigurationDB(dbProperties);
-            ConfigReplicator.replicateConfiguration(masterDatabaseConnection,
-                                                    _localDatabaseConnection);
+            ConfigReplicator.replicateConfiguration(masterDatabaseConnection, _localDatabaseConnection);
+            ConfigReplicator.replicateConfigurationToHsql(_localDatabaseConnection, _cacheDatabaseConnection);
             AmsConnectionFactory.closeConnection(masterDatabaseConnection);
         } catch (Exception e) {
             Log.log(this, Log.FATAL, "Could not replicateConfiguration", e);
