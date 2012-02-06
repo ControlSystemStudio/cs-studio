@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -26,12 +26,12 @@ import org.csstudio.scan.server.app.Preferences;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 
-/** Context that maintains {@link Device}s: Create, start, get, stop. 
- * 
+/** Context that maintains {@link Device}s: Create, start, get, stop.
+ *
  *  <p>This is currently handling PV devices.
  *  Fundamentally, another type of device might
  *  be added in the future.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -53,15 +53,15 @@ public class DeviceContext
         		Activator.getInstance().getBundle(), new Path(path), false);
 		return DeviceContextFile.read(config_stream);
     }
-    
+
     /** Initialize empty device context
      *  @see #getDefault()
      */
     public DeviceContext()
     {
-        
+        // NOP
     }
-    
+
     /** Add a PV-based {@link Device} to the context.
      *  When adding a device with a name
      *  that is already in the context,
