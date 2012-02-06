@@ -19,33 +19,33 @@ import org.eclipse.ui.internal.browser.BrowserViewer;
  *
  */
 @SuppressWarnings("restriction")
-public class WebBrowserFigure extends AbstractWebBrowserFigure {
+public class WebBrowserFigure extends AbstractWebBrowserFigure<BrowserViewer> {
 
 
 	private BrowserViewer browserViewer;
 	private Browser browser;
 		
 	public WebBrowserFigure(AbstractBaseEditPart editPart, boolean showToolbar) {
-		super(editPart);
-		browserViewer = new BrowserViewer(getParentComposite(),
-				showToolbar ? BrowserViewer.BUTTON_BAR
-						| BrowserViewer.LOCATION_BAR : SWT.None);
-		browserViewer.setLayoutData(null);
-		browser = browserViewer.getBrowser();
+		super(editPart, showToolbar ? BrowserViewer.BUTTON_BAR
+				| BrowserViewer.LOCATION_BAR : SWT.None);
 	}
 	
 	public void setUrl(String url){
 		if(runmode && url.trim().length() > 0)
 			browserViewer.setURL(url);
-	}	
-	
-	@Override
-	public Composite getSWTWidget() {		
-		return browserViewer;
-	}		
+	}
 
 	public Browser getBrowser() {
 		return browser;
+	}
+
+	@Override
+	protected  BrowserViewer createSWTWidget(Composite parent, int style) {
+		browserViewer = new BrowserViewer(parent, style);
+		browserViewer.setLayoutData(null);
+		browser = browserViewer.getBrowser();
+		return browserViewer;
+		
 	}
 	
 }

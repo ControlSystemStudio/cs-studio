@@ -52,31 +52,43 @@ so change its order with change order action will only be reflected after reopen
  * @author Xihui Chen
  * 
  */
-public abstract class AbstractSWTWidgetFigure extends Figure {
+public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure {
 
 	protected boolean runmode;
+	protected AbstractBaseEditPart editPart;
+	
 	private boolean updateFlag;
 	private UpdateListener updateManagerListener;
 	private AncestorListener ancestorListener;
-	protected EditPart parentEditPart;
-	protected Composite composite;
-	protected AbstractBaseEditPart editPart;
-
+	private EditPart parentEditPart;
+	private Composite composite;
+	
 	/**
 	 * A composite that will be resized to show part of the widget if needed.
 	 */
-	protected Composite wrapComposite;
+	private Composite wrapComposite;
 
-	protected boolean isIntersectViewPort = true;
+	private boolean isIntersectViewPort = true;
 
-	protected boolean isShowing = true;
+	private boolean isShowing = true;
 	
 	private Rectangle oldClientArea;
+	
+	private T swtWidget;
 
+	/**Construct the figure with SWT.NONE as style bit.
+	 * @param editpart the editpart that holds this figure
+	 */
+	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart){
+		this(editpart, SWT.NONE);
+	}
+	
 	/**Construct the figure.
 	 * @param editpart the editpart that holds this figure.
+	 * @param style style of the SWT widget, 
+	 * which will be passed to {@link #createSWTWidget(Composite, int)}.
 	 */
-	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart) {
+	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart, final int style) {
 		super();
 		this.editPart = editpart;
 		this.composite = (Composite) editpart.getViewer().getControl();
@@ -89,6 +101,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 			wrapComposite.setEnabled(runmode);
 			wrapComposite.moveAbove(null);
 		}
+		
+		swtWidget=createSWTWidget(getParentComposite(), style);
 		
 		editpart.addEditPartListener(new EditPartListener.Stub(){
 			@Override
@@ -117,7 +131,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		composite.getDisplay().asyncExec(new Runnable() {
 			
 			public void run() {
-				final Control swtWidget = getSWTWidget();
+//				final Control swtWidget = getSWTWidget();
 				if (swtWidget == null) {
 					throw new RuntimeException("getSWTWidget() returns null!");
 				}
@@ -187,21 +201,28 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		}
 	}
 
-	/**Get the SWT widget. 
-	 *<b>Note: </b> 
-	 * The SWT widget should be created in the composite returned from {@link #getParentComposite()}. 
-	 * @return the swt widget.
+	/**Get the SWT widget on this figure. 
+	 * @return the SWT widget.
 	 */
-	abstract public Control getSWTWidget();
-
-	public Composite getComposite() {
-		return composite;
+	public T getSWTWidget(){
+		return swtWidget;
 	}
+
+	/**Create the SWT widget.This method will be call in constructor
+	 *  {@link #AbstractSWTWidgetFigure(AbstractBaseEditPart, int)}
+	 * @param parent the parent composite.
+	 * @param style style of the SWT widget, 
+	 * which is passed from the constructor 
+	 * {@link #AbstractSWTWidgetFigure(AbstractBaseEditPart, int)}
+	 * @return the SWT widget.
+	 */
+	abstract protected T createSWTWidget(Composite parent, int style);
+	
 
 	/**
 	 * @return the composite
 	 */
-	public Composite getParentComposite() {
+	private Composite getParentComposite() {
 		if (wrapComposite != null)
 			return wrapComposite;
 		else
@@ -322,6 +343,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 			if (isIntersectViewPort) {
 				// if the SWT widget is cut by viewPort
 				if (!viewPortArea.contains(clientArea)) {
+					translateToAbsolute(viewPortArea);
+					translateToAbsolute(clientArea);
 					Rectangle intersection = viewPortArea.getIntersection(clientArea);					
 					org.eclipse.swt.graphics.Rectangle oldBounds = wrapComposite.getBounds();
 					if (oldBounds.x != (rect.x + intersection.x	- clientArea.x) ||
@@ -373,10 +396,10 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	}
 
 	/**
-	 * Dispose SWT widget. Subclass should dispose its widget before calling super.dispose()
-	 * because the parent composite might be disposed from here.  
+	 * Dispose SWT widget. The SWT widget will be automatically disposed when widget
+	 * editpart is deactivated. Subclass should not dispose the SWT widget again.
 	 */
-	public void dispose() {
+	protected void dispose() {
 		if (updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
 		removeAncestorListener(ancestorListener);
