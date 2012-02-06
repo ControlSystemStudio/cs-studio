@@ -23,7 +23,13 @@
 
 package org.csstudio.ams.distributor;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -35,15 +41,19 @@ import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
+import org.csstudio.ams.configReplicator.ConfigReplicator;
+import org.csstudio.ams.configReplicator.ReplicationException;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.osgi.framework.Bundle;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
@@ -121,11 +131,32 @@ public class DistributorStart implements IApplication,
         ConfigDbProperties dbProp = new ConfigDbProperties(dbType, dbCon, user, pwd);
         java.sql.Connection localDatabaseConnection = null;
         java.sql.Connection cacheDatabaseConnection = null;
-        //java.sql.Connection masterDatabaseConnection = null;
+        
         try {
             localDatabaseConnection = AmsConnectionFactory.getApplicationDB();
             cacheDatabaseConnection = AmsConnectionFactory.getMemoryCacheDB();
             
+            // Get the path for the SQL script
+            Bundle amsBundle = Platform.getBundle(AmsActivator.PLUGIN_ID);
+            Enumeration<URL> entries = amsBundle.findEntries("resource", "createMemoryCache.sql", true);
+            File sqlFile = null;
+            if (entries.hasMoreElements()) {
+                
+                try {
+                    URL fileUrl = FileLocator.toFileURL(entries.nextElement());
+                    URI fileUri = fileUrl.toURI();
+                    Log.log(Log.DEBUG, fileUri.toString());
+                    sqlFile = new File(fileUri);
+                } catch (URISyntaxException e) {
+                    throw new ReplicationException(e);
+                } catch (IOException e) {
+                    throw new ReplicationException(e);
+                }
+            }
+            
+            // Create the cache db
+            ConfigReplicator.createMemoryCacheDb(cacheDatabaseConnection, sqlFile);
+
             // Create a JMS sender connection
             final ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
             final Connection senderConnection = senderConnectionFactory.createConnection();
