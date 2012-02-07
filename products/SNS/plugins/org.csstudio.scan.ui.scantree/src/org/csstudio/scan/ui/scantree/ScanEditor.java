@@ -18,6 +18,7 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
 import org.eclipse.core.resources.IFile;
@@ -68,6 +69,9 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     /** @see #isDirty() */
     private boolean is_dirty = false;
 
+    /** @return Devices available on scan server */
+    private volatile DeviceInfo[] devices = null;
+
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
      *  @return ScanEditor or <code>null</code> on error
@@ -106,6 +110,34 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         setSite(site);
         setInput(input);
+
+        // Use background Job to obtain device list
+        final Job job = new Job(Messages.SubmitScan)
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        devices = server.getDeviceInfos();
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            Messages.DeviceListFetchError, ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -162,6 +194,12 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     public void scanTreeChanged()
     {
         setDirty(true);
+    }
+
+    /** @return Devices available on scan server */
+    public DeviceInfo[] getDevices()
+    {
+        return devices;
     }
 
     /** Submit scan in GUI to server */

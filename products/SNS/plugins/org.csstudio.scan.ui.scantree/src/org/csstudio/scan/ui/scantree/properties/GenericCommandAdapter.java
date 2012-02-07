@@ -10,11 +10,9 @@ package org.csstudio.scan.ui.scantree.properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scantree.CommandsInfo;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -59,7 +57,7 @@ public class GenericCommandAdapter implements IPropertySource
                 descriptors[i] = new TextPropertyDescriptor(id, name);
             else if (property.getType() == DeviceInfo.class)
             {   // Try to offer list of devices
-                final DeviceInfo[] devices = getDevices();
+                final DeviceInfo[] devices = editor.getDevices();
                 if (devices != null)
                     descriptors[i] = new DeviceInfoPropertyDescriptor(id, name, devices);
                 else // Fall back to editing device names as string
@@ -79,29 +77,6 @@ public class GenericCommandAdapter implements IPropertySource
                         + "': Cannot handle properties of type " + property.getType().getName());
             descriptors[i].setCategory(CommandsInfo.getInstance().getName(command));
         }
-    }
-
-    /** @return Devices supported by scan server on <code>null</code> */
-    private DeviceInfo[] getDevices()
-    {
-        try
-        {
-            // TODO Fetch list of devices in Job
-            final ScanServer server = ScanServerConnector.connect();
-            try
-            {
-                return server.getDeviceInfos();
-            }
-            finally
-            {
-                ScanServerConnector.disconnect(server);
-            }
-        }
-        catch (Exception ex)
-        {
-            Logger.getLogger(getClass().getName()).log(Level.INFO, "Cannot list devices", ex);
-        }
-        return null;
     }
 
     /** GUI (editor) refresh */
