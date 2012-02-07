@@ -55,22 +55,30 @@ public enum DatabaseType {
 	 * oder "jdbc:hsqldb:mem:namsconfigurator". User "sa", password "".
 	 */
 	HSQL_1_8_0_10_FOR_TEST(
-			"HSQL database engine 1.8.x or higher for test purposes",
-			"org.hsqldb.jdbcDriver", HSQLDialect.class);
+			"HSQL database engine 1.8.x for test purposes",
+			"org.hsqldb.jdbcDriver", HSQLDialect.class),
 
-	private final String driverName;
+    /**
+     * Treiber und Dialect für HSQL. "jdbc:hsqldb:file:namsconfigurator.db"
+     * oder "jdbc:hsqldb:mem:namsconfigurator". User "sa", password "".
+     */
+    HSQL_2_2_8(
+            "HSQL database engine 2.2.8",
+            "org.hsqldb.jdbc.JDBCDriver", HSQLDialect.class);
+
+    private final String driverName;
 	private final Class<? extends Dialect> hibernateDialect;
 	private final String humanReadableName;
 
-	DatabaseType(final String humanReadableName, final String driverName,
-			final Class<? extends Dialect> hibernateDialect) {
-		this.humanReadableName = humanReadableName;
-		Contract.requireNotNull("driverName", driverName);
-		Contract.require(driverName.length() > 0, "driverName.length() > 0");
-		Contract.requireNotNull("hibernateDialect", hibernateDialect);
+	DatabaseType(final String readableName, final String driver,
+			final Class<? extends Dialect> dialect) {
+		this.humanReadableName = readableName;
+		Contract.requireNotNull("driverName", driver);
+		Contract.require(driver.length() > 0, "driverName.length() > 0");
+		Contract.requireNotNull("hibernateDialect", dialect);
 
-		this.driverName = driverName;
-		this.hibernateDialect = hibernateDialect;
+		this.driverName = driver;
+		this.hibernateDialect = dialect;
 	}
 
 	public String getDriverName() {
