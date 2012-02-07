@@ -158,7 +158,9 @@ public abstract class AbstractGsdPropertyModel {
         if (stringValue.contains(",")) {
             final List<Integer> valueList = new ArrayList<Integer>();
             GsdFileParser.addValues2IntList(extUserPrmDataConst.getValue(), valueList);
-            index = 0;
+            if(index==null) {
+                index = 0;
+            }
             for (final Integer value : valueList) {
                 _gsdExtUserPrmDataConstMap.put(index++, value);
             }

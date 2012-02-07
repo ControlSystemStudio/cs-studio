@@ -76,13 +76,6 @@ public class ChannelStructureDBO extends AbstractNodeSharedImpl<ModuleDBO, Chann
         buildChildren(type, isInput, name);
     }
 
-    @Override
-    @Nonnull
-    @Transient
-    public ModuleDBO getParent() {
-        return super.getParent();
-    }
-
     /**
      * Constructor.
      * Build ChannelStructure with simple = false and build his children.
@@ -94,6 +87,13 @@ public class ChannelStructureDBO extends AbstractNodeSharedImpl<ModuleDBO, Chann
         setName("Struct of " + channelPrototype.getName());
         setStructureType(channelPrototype.getType());
         buildChildren(channelPrototype);
+    }
+
+    @Override
+    @Nonnull
+    @Transient
+    public ModuleDBO getParent() {
+        return super.getParent();
     }
 
     // TODO (hrickens) [27.07.2011]: kann weg. Nur die Tests müssen noch umgestellt werden!
