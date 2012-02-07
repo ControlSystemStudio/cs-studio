@@ -40,7 +40,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     /** Initialize */
     public PreferencePage()
     {
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Plugin.ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Plugin.ID));
         setMessage(Messages.PreferencePage_Title);
     }
 

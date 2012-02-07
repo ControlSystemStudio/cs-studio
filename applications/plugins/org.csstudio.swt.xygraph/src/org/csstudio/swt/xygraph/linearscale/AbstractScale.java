@@ -328,6 +328,22 @@ public abstract class AbstractScale extends Figure{
 	    setRange(range.getLower(), range.getUpper());
 	}
 
+	/**Set the range with option to honor its original direction.
+	 * @param t1 value 1 of the range
+	 * @param t2 value 2 of the range
+	 * @param honorOriginDirection if true, the start and end value of the range
+	 * will set according to its original direction.
+	 */
+	public void setRange(double t1, double t2, boolean honorOriginDirection){
+		if(honorOriginDirection){
+			if(getRange().isMinBigger()){
+				setRange(t1>t2? t1:t2, t1>t2?t2:t1);
+			}else
+				setRange(t1>t2? t2:t1, t1>t2?t1:t2);
+		}else
+			setRange(t1, t2);
+	}
+	
     /**set the scale range
      * @param lower the lower limit
      * @param upper the upper limit

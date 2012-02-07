@@ -4,7 +4,7 @@
 	<classpathentry exported="true" kind="lib" path="libs/ojdbc6_g.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="libs/mysql-connector-java-5.0.4-bin.jar"/>
-	<classpathentry kind="lib" path="libs/postgresql-8.2-511.jdbc4.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mysql-connector-java-5.1.18-bin.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/postgresql-8.2-511.jdbc4.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

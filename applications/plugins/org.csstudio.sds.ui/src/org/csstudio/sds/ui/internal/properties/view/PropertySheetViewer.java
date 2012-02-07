@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.properties.view;
@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.dal.ui.dnd.rfc.IProcessVariableAdressReceiver;
+import org.csstudio.dal.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
-import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
@@ -82,7 +82,7 @@ import org.eclipse.swt.widgets.Widget;
  * <p>
  * This viewer also supports the optional catogorization of the first level
  * <code>IPropertySheetEntry</code> s by using instances of <code>PropertySheetCategory</code>.
- * 
+ *
  * @author Sven Wende
  */
 final class PropertySheetViewer extends Viewer {
@@ -104,12 +104,12 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Tree widget.
      */
-    private Tree _tree;
+    private final Tree _tree;
 
     /**
      * Tree editor.
      */
-    private TreeEditor _treeEditor;
+    private final TreeEditor _treeEditor;
 
     /**
      * The column labels of the tree.
@@ -119,7 +119,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Index of the column with cell editor support.
      */
-    private int _columnToEdit = 1;
+    private final int _columnToEdit = 1;
 
     /**
      * A cell editor reference.
@@ -154,7 +154,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Cell editor activation listeners.
      */
-    private ListenerList _activationListeners = new ListenerList();
+    private final ListenerList _activationListeners = new ListenerList();
 
     /**
      * The property sheet sorter.
@@ -169,7 +169,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Creates a property sheet viewer on a newly-created tree control under the given parent. The
      * viewer has no input, and no root entry.
-     * 
+     *
      * @param parent
      *            the parent control
      */
@@ -189,15 +189,16 @@ final class PropertySheetViewer extends Viewer {
         // create a new tree editor
         _treeEditor = new TreeEditor(_tree);
 
-        TreeViewer viewer = new TreeViewer(_tree);
+        final TreeViewer viewer = new TreeViewer(_tree);
 
         ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(viewer.getControl(),
                 DND.DROP_COPY | DND.DROP_NONE, new IProcessVariableAdressReceiver() {
-                    public void receive(IProcessVariableAddress[] pvs, DropTargetEvent event) {
+                    @Override
+                    public void receive(final IProcessVariableAddress[] pvs, final DropTargetEvent event) {
                         if (event.item != null
                                 && event.item.getData() instanceof IPropertySheetEntry) {
-                            IPropertySheetEntry entry = (IPropertySheetEntry) event.item.getData();
-                            DynamicsDescriptor[] descriptors = entry.getDynamicsDescriptors();
+                            final IPropertySheetEntry entry = (IPropertySheetEntry) event.item.getData();
+                            final DynamicsDescriptor[] descriptors = entry.getDynamicsDescriptors();
                             DynamicsDescriptor dynamicsDescriptor;
                             if (descriptors == null || descriptors.length == 0
                                     || descriptors[0] == null) {
@@ -206,14 +207,14 @@ final class PropertySheetViewer extends Viewer {
                                 dynamicsDescriptor = entry.getDynamicsDescriptors()[0].clone();
                             }
 
-                            for (IProcessVariableAddress pv : pvs) {
+                            for (final IProcessVariableAddress pv : pvs) {
                                 dynamicsDescriptor.addInputChannel(new ParameterDescriptor(pv
                                         .getFullName()));
                             }
 
-                            DynamicAspectsWizard wizard = (DynamicAspectsWizard) entry
+                            final DynamicAspectsWizard wizard = entry
                                     .getDynamicsDescriptionConfigurationWizard();
-                            
+
                 			if (wizard != null) {
                 				if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
                 						.getActiveShell(), wizard)) {
@@ -231,7 +232,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Adds a IWidgetSelectionListener.
-     * 
+     *
      * @param listener
      *            The IWidgetSelectionListener, which should be added
      */
@@ -243,7 +244,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Activate a cell editor for the given selected tree item.
-     * 
+     *
      * @param item
      *            the selected tree item
      */
@@ -252,7 +253,7 @@ final class PropertySheetViewer extends Viewer {
         _tree.showSelection();
 
         // Get the entry for this item
-        IPropertySheetEntry activeEntry = (IPropertySheetEntry) item.getData();
+        final IPropertySheetEntry activeEntry = (IPropertySheetEntry) item.getData();
 
         // Get the cell editor for the entry.
         // Note that the editor parent must be the Tree control
@@ -264,7 +265,7 @@ final class PropertySheetViewer extends Viewer {
             _cellEditor.activate();
 
             // if the cell editor has no control we can stop now
-            Control control = _cellEditor.getControl();
+            final Control control = _cellEditor.getControl();
             if (control == null) {
                 _cellEditor.deactivate();
                 _cellEditor = null;
@@ -275,7 +276,7 @@ final class PropertySheetViewer extends Viewer {
             _cellEditor.addListener(_editorListener);
 
             // set the layout of the tree editor to match the cell editor
-            CellEditor.LayoutData layout = _cellEditor.getLayoutData();
+            final CellEditor.LayoutData layout = _cellEditor.getLayoutData();
             _treeEditor.horizontalAlignment = layout.horizontalAlignment;
             _treeEditor.grabHorizontal = layout.grabHorizontal;
             _treeEditor.minimumWidth = layout.minimumWidth;
@@ -295,7 +296,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Adds a cell editor activation listener. Has no effect if an identical activation listener is
      * already registered.
-     * 
+     *
      * @param listener
      *            a cell editor activation listener
      */
@@ -309,9 +310,9 @@ final class PropertySheetViewer extends Viewer {
     private void addColumns() {
 
         // create the columns
-        TreeColumn[] columns = _tree.getColumns();
+        final TreeColumn[] columns = _tree.getColumns();
         for (int i = 0; i < _columnLabels.length; i++) {
-            String string = _columnLabels[i];
+            final String string = _columnLabels[i];
             if (string != null) {
                 TreeColumn column;
                 if (i < columns.length) {
@@ -328,8 +329,8 @@ final class PropertySheetViewer extends Viewer {
 
             @Override
             public void controlResized(final ControlEvent e) {
-                Rectangle area = _tree.getClientArea();
-                TreeColumn[] cols = _tree.getColumns();
+                final Rectangle area = _tree.getClientArea();
+                final TreeColumn[] cols = _tree.getColumns();
 
                 if (area.width > 0) {
                     cols[0].setWidth(area.width * 60 / 100);
@@ -354,28 +355,28 @@ final class PropertySheetViewer extends Viewer {
      * Asks the entry currently being edited to apply its current cell editor value.
      */
     private void applyEditorValue() {
-        TreeItem treeItem = _treeEditor.getItem();
+        final TreeItem treeItem = _treeEditor.getItem();
         // treeItem can be null when view is opened
         if (treeItem == null || treeItem.isDisposed()) {
             return;
         }
-        IPropertySheetEntry entry = (IPropertySheetEntry) treeItem.getData();
+        final IPropertySheetEntry entry = (IPropertySheetEntry) treeItem.getData();
         entry.applyEditorValue();
     }
 
     /**
      * Creates the child items for the given widget (item or tree). This method is called when the
      * item is expanded for the first time or when an item is assigned as the root of the tree.
-     * 
+     *
      * @param widget
      *            TreeItem or Tree to create the children in.
      */
     private void createChildren(final Widget widget) {
         // get the current child items
-        TreeItem[] childItems = getChildItems(widget);
+        final TreeItem[] childItems = getChildItems(widget);
 
         if (childItems.length > 0) {
-            Object data = childItems[0].getData();
+            final Object data = childItems[0].getData();
             if (data != null) {
                 // children already there!
                 return;
@@ -385,8 +386,8 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // get the children and create their tree items
-        Object node = widget.getData();
-        List children = getChildren(node);
+        final Object node = widget.getData();
+        final List children = getChildren(node);
         if (children.isEmpty()) {
             // this item does't actually have any children
             return;
@@ -402,14 +403,17 @@ final class PropertySheetViewer extends Viewer {
      */
     private void createEditorListener() {
         _editorListener = new ICellEditorListener() {
+            @Override
             public void cancelEditor() {
                 deactivateCellEditor();
             }
 
+            @Override
             public void editorValueChanged(final boolean oldValidState, final boolean newValidState) {
                 // Do nothing
             }
 
+            @Override
             public void applyEditorValue() {
                 // Do nothing
             }
@@ -421,26 +425,29 @@ final class PropertySheetViewer extends Viewer {
      */
     private void createEntryListener() {
         _entryListener = new IPropertySheetEntryListener() {
+            @Override
             public void childEntriesChanged(final IPropertySheetEntry entry) {
                 // update the children of the given entry
                 if (entry == _rootEntry) {
                     updateChildrenOf(entry, _tree);
                 } else {
-                    TreeItem item = findItem(entry);
+                    final TreeItem item = findItem(entry);
                     if (item != null) {
                         updateChildrenOf(entry, item);
                     }
                 }
             }
 
+            @Override
             public void valueChanged(final IPropertySheetEntry entry) {
                 // update the given entry
-                TreeItem item = findItem(entry);
+                final TreeItem item = findItem(entry);
                 if (item != null) {
                     updateEntry(entry, item);
                 }
             }
 
+            @Override
             public void errorMessageChanged(final IPropertySheetEntry entry) {
                 // update the error message
                 setErrorMessage(entry.getErrorText());
@@ -451,7 +458,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Creates a new tree item, sets the given entry or category (node)in its user data field, and
      * adds a listener to the node if it is an entry.
-     * 
+     *
      * @param node
      *            the entry or category associated with this item
      * @param parent
@@ -503,24 +510,23 @@ final class PropertySheetViewer extends Viewer {
      * Sends out a selection changed event for the entry tree to all registered listeners.
      */
     private void entrySelectionChanged() {
-        SelectionChangedEvent changeEvent = new SelectionChangedEvent(this, getSelection());
+        final SelectionChangedEvent changeEvent = new SelectionChangedEvent(this, getSelection());
         fireSelectionChanged(changeEvent);
     }
 
     /**
      * Return a tree item in the property sheet that has the same entry in its user data field as
      * the supplied entry. Return <code>null</code> if there is no such item.
-     * 
+     *
      * @param entry
      *            the entry to serach for
      * @return the TreeItem for the entry or <code>null</code> if there isn't one.
      */
     protected TreeItem findItem(final IPropertySheetEntry entry) {
         // Iterate through treeItems to find item
-        TreeItem[] items = _tree.getItems();
-        for (int i = 0; i < items.length; i++) {
-            TreeItem item = items[i];
-            TreeItem findItem = findItem(entry, item);
+        final TreeItem[] items = _tree.getItems();
+        for (final TreeItem item : items) {
+            final TreeItem findItem = findItem(entry, item);
             if (findItem != null) {
                 return findItem;
             }
@@ -531,7 +537,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Return a tree item in the property sheet that has the same entry in its user data field as
      * the supplied entry. Return <code>null</code> if there is no such item.
-     * 
+     *
      * @param entry
      *            the entry to search for
      * @param item
@@ -545,10 +551,9 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // recurse over children
-        TreeItem[] items = item.getItems();
-        for (int i = 0; i < items.length; i++) {
-            TreeItem childItem = items[i];
-            TreeItem findItem = findItem(entry, childItem);
+        final TreeItem[] items = item.getItems();
+        for (final TreeItem childItem : items) {
+            final TreeItem findItem = findItem(entry, childItem);
             if (findItem != null) {
                 return findItem;
             }
@@ -558,12 +563,12 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Notifies all registered cell editor activation listeners of a cell editor activation.
-     * 
+     *
      * @param activatedCellEditor
      *            the activated cell editor
      */
     private void fireCellEditorActivated(final CellEditor activatedCellEditor) {
-        Object[] listeners = _activationListeners.getListeners();
+        final Object[] listeners = _activationListeners.getListeners();
         for (int i = 0; i < listeners.length; ++i) {
             ((ICellEditorActivationListener) listeners[i]).cellEditorActivated(activatedCellEditor);
         }
@@ -571,12 +576,12 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Notifies all registered cell editor activation listeners of a cell editor deactivation.
-     * 
+     *
      * @param activatedCellEditor
      *            the deactivated cell editor
      */
     private void fireCellEditorDeactivated(final CellEditor activatedCellEditor) {
-        Object[] listeners = _activationListeners.getListeners();
+        final Object[] listeners = _activationListeners.getListeners();
         for (int i = 0; i < listeners.length; ++i) {
             ((ICellEditorActivationListener) listeners[i])
                     .cellEditorDeactivated(activatedCellEditor);
@@ -586,7 +591,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Returns the active cell editor of this property sheet viewer or <code>null</code> if no cell
      * editor is active.
-     * 
+     *
      * @return the active cell editor
      */
     public CellEditor getActiveCellEditor() {
@@ -595,7 +600,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Gets child items.
-     * 
+     *
      * @param widget
      *            the widget
      * @return child tree items
@@ -612,7 +617,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Returns the sorted children of the given category or entry.
-     * 
+     *
      * @param node
      *            a category or entry
      * @return the children of the given category or entry (element type
@@ -641,10 +646,10 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Returns the child entries of the given entry.
-     * 
+     *
      * @param entry
      *            The entry to search
-     * 
+     *
      * @return the children of the given entry (element type <code>IPropertySheetEntry</code>)
      */
     private List getChildren(final IPropertySheetEntry entry) {
@@ -653,8 +658,8 @@ final class PropertySheetViewer extends Viewer {
         // defualt category, return the categories
         if (entry == _rootEntry && _isShowingCategories) {
             if (_categories.length > 1
-                    || (_categories.length == 1 && !_categories[0].getCategoryName().equals(
-                            Messages.PropertyViewer_misc))) {
+                    || _categories.length == 1 && !_categories[0].getCategoryName().equals(
+                            Messages.PropertyViewer_misc)) {
                 return Arrays.asList(_categories);
             }
         }
@@ -665,10 +670,10 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Returns the child entries of the given category.
-     * 
+     *
      * @param category
      *            The category to search
-     * 
+     *
      * @return the children of the given category (element type <code>IPropertySheetEntry</code>)
      */
     private List getChildren(final PropertySheetCategory category) {
@@ -685,7 +690,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Returns the entries which match the current filter.
-     * 
+     *
      * @param entries
      *            the entries to filter
      * @return the entries which match the current filter (element type
@@ -699,15 +704,14 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // check each entry for the filter
-        List filteredEntries = new ArrayList(entries.length);
-        for (int i = 0; i < entries.length; i++) {
-            IPropertySheetEntry entry = entries[i];
+        final List filteredEntries = new ArrayList(entries.length);
+        for (final IPropertySheetEntry entry : entries) {
             if (entry != null) {
-                String[] filters = entry.getFilters();
+                final String[] filters = entry.getFilters();
                 boolean expert = false;
                 if (filters != null) {
-                    for (int j = 0; j < filters.length; j++) {
-                        if (filters[j].equals(IPropertySheetEntry.FILTER_ID_EXPERT)) {
+                    for (final String filter : filters) {
+                        if (filter.equals(IPropertySheetEntry.FILTER_ID_EXPERT)) {
                             expert = true;
                             break;
                         }
@@ -723,14 +727,14 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Returns a sorted list of <code>IPropertySheetEntry</code> entries.
-     * 
+     *
      * @param unsortedEntries
      *            unsorted list of <code>IPropertySheetEntry</code>
      * @return a sorted list of the specified entries
      */
     @SuppressWarnings("unchecked")
     private List getSortedEntries(final List unsortedEntries) {
-        IPropertySheetEntry[] propertySheetEntries = (IPropertySheetEntry[]) unsortedEntries
+        final IPropertySheetEntry[] propertySheetEntries = (IPropertySheetEntry[]) unsortedEntries
                 .toArray(new IPropertySheetEntry[unsortedEntries.size()]);
         _sorter.sort(propertySheetEntries);
         return Arrays.asList(propertySheetEntries);
@@ -749,7 +753,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Returns the root entry for this property sheet viewer. The root entry is not visible in the
      * viewer.
-     * 
+     *
      * @return the root entry or <code>null</code>.
      */
     public IPropertySheetEntry getRootEntry() {
@@ -771,11 +775,10 @@ final class PropertySheetViewer extends Viewer {
         if (_tree.getSelectionCount() == 0) {
             return StructuredSelection.EMPTY;
         }
-        TreeItem[] sel = _tree.getSelection();
-        List entries = new ArrayList(sel.length);
-        for (int i = 0; i < sel.length; i++) {
-            TreeItem ti = sel[i];
-            Object data = ti.getData();
+        final TreeItem[] sel = _tree.getSelection();
+        final List entries = new ArrayList(sel.length);
+        for (final TreeItem ti : sel) {
+            final Object data = ti.getData();
             if (data instanceof IPropertySheetEntry) {
                 entries.add(data);
             }
@@ -786,7 +789,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Selection in the viewer occurred. Check if there is an active cell editor. If yes, deactivate
      * it and check if a new cell editor must be activated.
-     * 
+     *
      * @param selection
      *            the TreeItem that is selected
      */
@@ -798,15 +801,15 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // get the new selection
-        TreeItem[] sel = new TreeItem[] { selection };
+        final TreeItem[] sel = new TreeItem[] { selection };
         if (sel.length == 0) {
             setMessage(null);
             setErrorMessage(null);
         } else {
-            Object object = sel[0].getData(); // assume single selection
+            final Object object = sel[0].getData(); // assume single selection
             if (object instanceof IPropertySheetEntry) {
                 // get the entry for this item
-                IPropertySheetEntry activeEntry = (IPropertySheetEntry) object;
+                final IPropertySheetEntry activeEntry = (IPropertySheetEntry) object;
 
                 // display the description for the item
                 setMessage(activeEntry.getDescription());
@@ -821,7 +824,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * The expand icon for a node in this viewer has been selected to collapse a subtree. Deactivate
      * the cell editor
-     * 
+     *
      * @param event
      *            the SWT tree event
      */
@@ -840,7 +843,7 @@ final class PropertySheetViewer extends Viewer {
      * children before the item is expanded now that it is being expanded we have to create the real
      * child items
      * </p>
-     * 
+     *
      * @param event
      *            the SWT tree event
      */
@@ -875,7 +878,7 @@ final class PropertySheetViewer extends Viewer {
 		_tree.addSelectionListener(new SelectionAdapter() {
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 			@Override
@@ -889,7 +892,7 @@ final class PropertySheetViewer extends Viewer {
 
 			/*
 			 * (non-Javadoc)
-			 * 
+			 *
 			 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
 			 */
 			@Override
@@ -903,27 +906,29 @@ final class PropertySheetViewer extends Viewer {
 			public void mouseDown(final MouseEvent event) {
 				// only activate if there is a cell editor
 				if (event.button == 1 && event.stateMask == 0) {
-					Point pt = new Point(event.x, event.y);
-					TreeItem item = _tree.getItem(pt);
+					final Point pt = new Point(event.x, event.y);
+					final TreeItem item = _tree.getItem(pt);
 					if (item != null) {
 						handleSelect(item);
 					}
 				}else  if (event.button == 1 && event.stateMask == SWT.MOD1) {
-                    Point pt = new Point(event.x, event.y);
-                    TreeItem item = _tree.getItem(pt);
+                    final Point pt = new Point(event.x, event.y);
+                    final TreeItem item = _tree.getItem(pt);
                     openDynamicWizard(item);
                 }
 			}
 		});
-		
+
 		// Add a tree listener to expand and collapse which
 		// allows for lazy creation of children
 		_tree.addTreeListener(new TreeListener() {
-			public void treeExpanded(final TreeEvent event) {
+			@Override
+            public void treeExpanded(final TreeEvent event) {
 				handleTreeExpand(event);
 			}
 
-			public void treeCollapsed(final TreeEvent event) {
+			@Override
+            public void treeCollapsed(final TreeEvent event) {
 				handleTreeCollapse(event);
 			}
 		});
@@ -938,7 +943,7 @@ final class PropertySheetViewer extends Viewer {
 					// The following will simulate a reselect
 					setInput(getInput());
 				} else if (e.stateMask==SWT.MOD1&&(e.keyCode==SWT.CR||e.keyCode==SWT.KEYPAD_CR)) {
-				    TreeItem[] selection = _tree.getSelection();
+				    final TreeItem[] selection = _tree.getSelection();
 				    if(selection!=null&&selection.length>0) {
 				        openDynamicWizard(selection[0]);
 				    }
@@ -949,7 +954,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Update the status line based on the data of item.
-     * 
+     *
      * @param item
      *            the item
      */
@@ -960,17 +965,17 @@ final class PropertySheetViewer extends Viewer {
         // Update the status line
         if (item != null) {
             if (item.getData() instanceof PropertySheetEntry) {
-                PropertySheetEntry psEntry = (PropertySheetEntry) item.getData();
+                final PropertySheetEntry psEntry = (PropertySheetEntry) item.getData();
 
                 // For entries, show the description if any, else show the label
-                String desc = psEntry.getDescription();
+                final String desc = psEntry.getDescription();
                 if (desc != null && desc.length() > 0) {
                     setMessage(psEntry.getDescription());
                 } else {
                     setMessage(psEntry.getDisplayName());
                 }
             } else if (item.getData() instanceof PropertySheetCategory) {
-                PropertySheetCategory psCat = (PropertySheetCategory) item.getData();
+                final PropertySheetCategory psCat = (PropertySheetCategory) item.getData();
                 setMessage(psCat.getCategoryName());
             }
         }
@@ -993,7 +998,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Removes the given cell editor activation listener from this viewer. Has no effect if an
      * identical activation listener is not registered.
-     * 
+     *
      * @param listener
      *            a cell editor activation listener
      */
@@ -1004,12 +1009,12 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Remove the given item from the tree. Remove our listener if the item's user data is a an
      * entry then set the user data to null
-     * 
+     *
      * @param item
      *            the item to remove
      */
     private void removeItem(final TreeItem item) {
-        Object data = item.getData();
+        final Object data = item.getData();
         if (data instanceof IPropertySheetEntry) {
             ((IPropertySheetEntry) data).removePropertySheetEntryListener(_entryListener);
         }
@@ -1022,10 +1027,10 @@ final class PropertySheetViewer extends Viewer {
      */
     public void resetProperties() {
         // Determine the selection
-        IStructuredSelection selection = (IStructuredSelection) getSelection();
+        final IStructuredSelection selection = (IStructuredSelection) getSelection();
 
         // Iterate over entries and reset them
-        Iterator itr = selection.iterator();
+        final Iterator itr = selection.iterator();
         while (itr.hasNext()) {
             ((IPropertySheetEntry) itr.next()).resetPropertyValue();
         }
@@ -1033,7 +1038,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Sets the error message to be displayed in the status line.
-     * 
+     *
      * @param errorMessage
      *            the message to be displayed, or <code>null</code>
      */
@@ -1051,7 +1056,7 @@ final class PropertySheetViewer extends Viewer {
      * <p>
      * The input must be an <code>Object[]</code> or <code>null</code>.
      * </p>
-     * 
+     *
      * @param newInput
      *            the input of this viewer, or <code>null</code> if none
      */
@@ -1063,18 +1068,18 @@ final class PropertySheetViewer extends Viewer {
         deactivateCellEditor();
 
         // set the new input to the root entry
-        Object[] objects = (Object[]) newInput;
+        final Object[] objects = (Object[]) newInput;
         // if (objects==null || (objects.length>0 && (objects[0] instanceof
         // DisplayEditPart || objects[0] instanceof AbstractWidgetEditPart)) ) {
         _input = objects;
         if (_input != null
                 && _input.length > 0
                 && (_input[0] instanceof AbstractWidgetEditPart || _input[0] instanceof AbstractContainerEditPart)) {
-            for (IWidgetSelectionListener listener : _widgetListener) {
+            for (final IWidgetSelectionListener listener : _widgetListener) {
                 listener.handleWidgetSelection(_input);
             }
         } else {
-            for (IWidgetSelectionListener listener : _widgetListener) {
+            for (final IWidgetSelectionListener listener : _widgetListener) {
                 listener.handleWidgetSelection(null);
             }
         }
@@ -1093,7 +1098,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Sets the message to be displayed in the status line. This message is displayed when there is
      * no error message.
-     * 
+     *
      * @param message
      *            the message to be displayed, or <code>null</code>
      */
@@ -1107,7 +1112,7 @@ final class PropertySheetViewer extends Viewer {
     /**
      * Sets the root entry for this property sheet viewer. The root entry is not visible in the
      * viewer.
-     * 
+     *
      * @param root
      *            the root entry
      */
@@ -1145,7 +1150,7 @@ final class PropertySheetViewer extends Viewer {
      * The default sorter sorts categories and entries alphabetically. A viewer update needs to be
      * triggered after the sorter has changed.
      * </p>
-     * 
+     *
      * @param sorter
      *            the sorter to set (<code>null</code> will reset to the default sorter)
      * @since 3.1
@@ -1160,7 +1165,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Sets the status line manager this view will use to show messages.
-     * 
+     *
      * @param manager
      *            the status line manager
      */
@@ -1195,7 +1200,7 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // get all the filtered child entries of the root
-        List childEntries = getFilteredEntries(_rootEntry.getChildEntries());
+        final List childEntries = getFilteredEntries(_rootEntry.getChildEntries());
 
         // if the list is empty, just set an empty categories array
         if (childEntries.size() == 0) {
@@ -1204,14 +1209,14 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // cache old categories by their descriptor name
-        Map categoryCache = new HashMap(_categories.length * 2 + 1);
-        for (int i = 0; i < _categories.length; i++) {
-            _categories[i].removeAllEntries();
-            categoryCache.put(_categories[i].getCategoryName(), _categories[i]);
+        final Map categoryCache = new HashMap(_categories.length * 2 + 1);
+        for (final PropertySheetCategory _categorie : _categories) {
+            _categorie.removeAllEntries();
+            categoryCache.put(_categorie.getCategoryName(), _categorie);
         }
 
         // create a list of categories to get rid of
-        List categoriesToRemove = new ArrayList(Arrays.asList(_categories));
+        final List categoriesToRemove = new ArrayList(Arrays.asList(_categories));
 
         // Determine the categories
         PropertySheetCategory misc = (PropertySheetCategory) categoryCache
@@ -1222,8 +1227,8 @@ final class PropertySheetViewer extends Viewer {
         boolean addMisc = false;
 
         for (int i = 0; i < childEntries.size(); i++) {
-            IPropertySheetEntry childEntry = (IPropertySheetEntry) childEntries.get(i);
-            String categoryName = childEntry.getCategory();
+            final IPropertySheetEntry childEntry = (IPropertySheetEntry) childEntries.get(i);
+            final String categoryName = childEntry.getCategory();
             if (categoryName == null) {
                 misc.addEntry(childEntry);
                 addMisc = true;
@@ -1250,14 +1255,14 @@ final class PropertySheetViewer extends Viewer {
         // Rather than just sorting categoryCache.values(), we'd like the
         // original order to be preserved
         // (with misc added at the end, if needed) before passing to the sorter.
-        ArrayList categoryList = new ArrayList();
-        Set seen = new HashSet(childEntries.size());
+        final ArrayList categoryList = new ArrayList();
+        final Set seen = new HashSet(childEntries.size());
         for (int i = 0; i < childEntries.size(); i++) {
-            IPropertySheetEntry childEntry = (IPropertySheetEntry) childEntries.get(i);
-            String categoryName = childEntry.getCategory();
+            final IPropertySheetEntry childEntry = (IPropertySheetEntry) childEntries.get(i);
+            final String categoryName = childEntry.getCategory();
             if (categoryName != null && !seen.contains(categoryName)) {
                 seen.add(categoryName);
-                PropertySheetCategory category = (PropertySheetCategory) categoryCache
+                final PropertySheetCategory category = (PropertySheetCategory) categoryCache
                         .get(categoryName);
                 if (category != null) {
                     categoryList.add(category);
@@ -1268,7 +1273,7 @@ final class PropertySheetViewer extends Viewer {
             categoryList.add(misc);
         }
 
-        PropertySheetCategory[] categoryArray = (PropertySheetCategory[]) categoryList
+        final PropertySheetCategory[] categoryArray = (PropertySheetCategory[]) categoryList
                 .toArray(new PropertySheetCategory[categoryList.size()]);
         _sorter.sort(categoryArray);
         _categories = categoryArray;
@@ -1276,7 +1281,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Update the category (but not its parent or children).
-     * 
+     *
      * @param category
      *            the category to update
      * @param item
@@ -1307,7 +1312,7 @@ final class PropertySheetViewer extends Viewer {
      * Update the child entries or categories of the given entry or category. If the given node is
      * the root entry and we are showing categories then the child entries are categories, otherwise
      * they are entries.
-     * 
+     *
      * @param node
      *            the entry or category whose children we will update
      * @param widget
@@ -1335,9 +1340,9 @@ final class PropertySheetViewer extends Viewer {
         }
         if (item != null && !item.getExpanded()) {
             // remove all children
-            for (int i = 0; i < childItems.length; i++) {
-                if (childItems[i].getData() != null) {
-                    removeItem(childItems[i]);
+            for (final TreeItem childItem : childItems) {
+                if (childItem.getData() != null) {
+                    removeItem(childItem);
                 }
             }
 
@@ -1363,23 +1368,23 @@ final class PropertySheetViewer extends Viewer {
             // update the categories
             updateCategories();
         }
-        List children = getChildren(node);
+        final List children = getChildren(node);
 
         // remove items
-        Set set = new HashSet(childItems.length * 2 + 1);
+        final Set set = new HashSet(childItems.length * 2 + 1);
 
-        for (int i = 0; i < childItems.length; i++) {
-            Object data = childItems[i].getData();
+        for (final TreeItem childItem : childItems) {
+            final Object data = childItem.getData();
             if (data != null) {
-                Object e = data;
-                int ix = children.indexOf(e);
+                final Object e = data;
+                final int ix = children.indexOf(e);
                 if (ix < 0) { // not found
-                    removeItem(childItems[i]);
+                    removeItem(childItem);
                 } else { // found
                     set.add(e);
                 }
             } else if (data == null) { // the dummy
-                childItems[i].dispose();
+                childItem.dispose();
             }
         }
 
@@ -1390,9 +1395,9 @@ final class PropertySheetViewer extends Viewer {
         }
 
         // add new items
-        int newSize = children.size();
+        final int newSize = children.size();
         for (int i = 0; i < newSize; i++) {
-            Object el = children.get(i);
+            final Object el = children.get(i);
             if (!set.contains(el)) {
                 createItem(el, widget, i);
             }
@@ -1411,7 +1416,7 @@ final class PropertySheetViewer extends Viewer {
         // This ensures that the children are in the correct order
         // are showing the correct values.
         for (int i = 0; i < newSize; i++) {
-            Object el = children.get(i);
+            final Object el = children.get(i);
             if (el instanceof IPropertySheetEntry) {
                 updateEntry((IPropertySheetEntry) el, childItems[i]);
             } else {
@@ -1426,7 +1431,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Update the given entry (but not its children or parent).
-     * 
+     *
      * @param entry
      *            the entry we will update
      * @param item
@@ -1465,7 +1470,7 @@ final class PropertySheetViewer extends Viewer {
         item.setText(1, entry.getValueAsString());
         item.setText(2, "" + entry.isDynamicallySampled());
 
-        Image image = entry.getImage();
+        final Image image = entry.getImage();
         if (item.getImage(1) != image) {
             item.setImage(1, image);
         }
@@ -1476,7 +1481,7 @@ final class PropertySheetViewer extends Viewer {
 
     /**
      * Updates the "+"/"-" icon of the tree item from the given entry or category.
-     * 
+     *
      * @param node
      *            the entry or category
      * @param item
@@ -1492,8 +1497,8 @@ final class PropertySheetViewer extends Viewer {
             category = (PropertySheetCategory) node;
         }
 
-        boolean hasPlus = item.getItemCount() > 0;
-        boolean needsPlus = category != null || entry.hasChildEntries();
+        final boolean hasPlus = item.getItemCount() > 0;
+        final boolean needsPlus = category != null || entry.hasChildEntries();
         boolean removeAll = false;
         boolean addDummy = false;
 
@@ -1506,9 +1511,9 @@ final class PropertySheetViewer extends Viewer {
         }
         if (removeAll) {
             // remove all children
-            TreeItem[] items = item.getItems();
-            for (int i = 0; i < items.length; i++) {
-                removeItem(items[i]);
+            final TreeItem[] items = item.getItems();
+            for (final TreeItem item2 : items) {
+                removeItem(item2);
             }
         }
 
@@ -1517,13 +1522,13 @@ final class PropertySheetViewer extends Viewer {
             // plus sign
         }
     }
-    private void openDynamicWizard(TreeItem item) {
+    private void openDynamicWizard(final TreeItem item) {
         if (item != null) {
-            IPropertySheetEntry entry = (IPropertySheetEntry) item.getData();
+            final IPropertySheetEntry entry = (IPropertySheetEntry) item.getData();
             // Open Wizard
             if (entry != null) {
-                DynamicAspectsWizard wizard = entry.getDynamicsDescriptionConfigurationWizard();
-                
+                final DynamicAspectsWizard wizard = entry.getDynamicsDescriptionConfigurationWizard();
+
     			if (wizard != null) {
     				if(Window.OK ==ModalWizardDialog.open(Display.getCurrent()
     						.getActiveShell(), wizard)) {

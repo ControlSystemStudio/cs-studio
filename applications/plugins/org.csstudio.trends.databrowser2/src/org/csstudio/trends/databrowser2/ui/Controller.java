@@ -14,7 +14,6 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
@@ -37,6 +36,7 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
@@ -662,8 +662,6 @@ public class Controller implements ArchiveFetchJobListener
     {
         final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
                 job.getPVItem().getDisplayName());
-        final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
-                error.getMessage(), archive.getUrl());
 
         if (Preferences.doPromptForErrors())
         {
@@ -676,7 +674,7 @@ public class Controller implements ArchiveFetchJobListener
                 {
                     if (display.isDisposed())
                         return;
-                    new ErrorDetailDialog(shell, Messages.Information, message, detail).open();
+                    ExceptionDetailsErrorDialog.openError(shell, Messages.Information, message, error);
                     job.getPVItem().removeArchiveDataSource(archive);
                 }
             });

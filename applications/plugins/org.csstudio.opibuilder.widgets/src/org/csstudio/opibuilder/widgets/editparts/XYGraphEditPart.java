@@ -323,10 +323,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				axis.setLogScale((Boolean)newValue);
 				break;
 			case MAX:
-				axis.setRange(axis.getRange().getLower(), (Double)newValue);
+				double lower = (Double) getPropertyValue(
+						XYGraphModel.makeAxisPropID(AxisProperty.MIN.propIDPre, axisList.indexOf(axis)));
+				axis.setRange(lower, (Double)newValue);
 				break;
 			case MIN:
-				axis.setRange((Double)newValue, axis.getRange().getUpper());
+				double upper = (Double) getPropertyValue(
+						XYGraphModel.makeAxisPropID(AxisProperty.MAX.propIDPre, axisList.indexOf(axis)));
+				axis.setRange((Double)newValue, upper);
 				break;
 			case PRIMARY:
 				axis.setPrimarySide((Boolean)newValue);

@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.IValue;
+import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -440,11 +441,15 @@ public class EPICS_V3_PV extends PlatformObject
             try
             {
                 final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-                meta_subscription = channel.addMonitor(meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
+                
+                //TODO: Remove this line if CAJ has been updated to support DBE_PROPERTY
+                if(!EpicsPlugin.getDefault().usePureJava())
+                	meta_subscription = channel.addMonitor(
+                			meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
             }
             catch (final Exception ex)
             {
-                logger.log(Level.INFO, name + " meta data subscribe error", ex);
+                logger.log(Level.FINE, name + " meta data subscribe error", ex);
                 return;
             }
 		}
@@ -591,37 +596,36 @@ public class EPICS_V3_PV extends PlatformObject
     @Override
     public void connectionChanged(final ConnectionEvent ev)
     {
-    	// This runs in a CA thread
-        if (ev.isConnected())
-        {   // Transfer to JCACommandThread to avoid deadlocks
-        	// The connect event can actually happen 'right away'
-        	// when the channel is created, before we even get to assign
-        	// the channel_ref. So use the channel from the event, not
-        	// the channel_ref which might still be null.
-            PVContext.scheduleCommand(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    handleConnected((Channel) ev.getSource());
-                }
-            });
-        }
-        else
+
+        // This runs in a CA thread
+        // Transfer to JCACommandThread to avoid deadlocks
+        PVContext.scheduleCommand(new Runnable()
         {
-            Activator.getLogger().log(Level.FINEST, "{0} disconnected", name);
-            state = State.Disconnected;
-            connected = false;
-            PVContext.scheduleCommand(new Runnable()
+            @Override
+            public void run()
             {
-                @Override
-                public void run()
+                // The connect event can actually happen 'right away'
+                // when the channel is created, before we even get to assign
+                // the channel_ref. So use the channel from the event, not
+                // the channel_ref which might still be null.
+                final Channel channel = (Channel) ev.getSource();
+                // This runs a little later than the original connectionChanged(),
+                // so check the current state of the channel
+                if (channel.getConnectionState() == ConnectionState.CONNECTED)
                 {
+                    handleConnected(channel);
+                }
+                else
+                {
+                    Activator.getLogger().log(Level.FINEST, "{0} disconnected", name);
+                    state = State.Disconnected;
+                    connected = false;
                     unsubscribe();
                     fireDisconnected();
                 }
-            });
-        }
+            }
+        });
+
     }
 
     /** PV is connected.

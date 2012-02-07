@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Xihui Chen
  *
  */
-public class ComboFigure extends AbstractSWTWidgetFigure {
+public class ComboFigure extends AbstractSWTWidgetFigure<Combo> {
 
 	
 	Triangle selector;
@@ -45,9 +45,14 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 			selector.setDirection(PositionConstants.SOUTH);
 			selector.setFill(true);
 			add(selector);
-		}		
-		combo = new Combo(getParentComposite(), SWT.DROP_DOWN | SWT.READ_ONLY);
+		}				
 		
+	}
+	
+	@Override
+	protected Combo createSWTWidget(Composite parent, int style) {
+		combo= new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		return combo;
 	}
 	
 	@Override
@@ -78,22 +83,9 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 		combo.setText(text);
 	}
 	
-	/**
-	 * @return the SWT combo in the combo figure.
-	 */
-	public Combo getCombo() {
-		return combo;
-	}
-	
 	public Dimension getAutoSizeDimension(){
 		return new Dimension(getBounds().width, 
 				combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + getInsets().getHeight());
-	}
-
-
-	@Override
-	public Composite getSWTWidget() {		
-		return combo;
-	}		
+	}	
 	
 }

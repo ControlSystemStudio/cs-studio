@@ -1,8 +1,9 @@
 package org.csstudio.apputil.ui.workbench;
 
-import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -53,7 +54,7 @@ public class OpenViewAction extends Action
     /** @param id ID of the view to open
      *  @param label Action label
      */
-    public OpenViewAction(String id, String label)
+    public OpenViewAction(final String id, final String label)
     {
         super(label);
         this.id = id;
@@ -63,28 +64,37 @@ public class OpenViewAction extends Action
      *  @param label Action label
      *  @param icon Icon
      */
-    public OpenViewAction(String id, String label,
-            ImageDescriptor icon)
+    public OpenViewAction(final String id, final String label,
+            final ImageDescriptor icon)
     {
         super(label, icon);
         this.id = id;
     }
 
+    /** Open the view
+     *  @return {@link IViewPart} or <code>null</code>
+     */
     @SuppressWarnings("nls")
-    @Override
-    public void run()
+    final protected IViewPart doShowView()
     {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         try
         {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
-            page.showView(id);
+            final IWorkbenchPage page = window.getActivePage();
+            return page.showView(id);
         }
         catch (Exception ex)
         {
-            new ErrorDetailDialog(null, "Error", "Error opening view '" + id + "'",
-                    ex.getClass().getName() + ", " + ex.getMessage()).open();
+            ExceptionDetailsErrorDialog.openError(window.getShell(),
+                    "Error", "Error opening view '" + id + "'", ex);
         }
+        return null;
+    }
+
+    @Override
+    public void run()
+    {
+        doShowView();
     }
 }

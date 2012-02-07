@@ -17,6 +17,7 @@ import java.sql.Statement;
  *  <p>
  *  The find... calls keep the prepared statement open for re-use.
  *  @author Kay Kasemir
+ *  @author Laurent Philippe Switch connection to readonly to MySQL load balancing
  */
 @SuppressWarnings("nls")
 public class StringIDHelper
@@ -28,7 +29,7 @@ public class StringIDHelper
     private PreparedStatement sel_by_name = null;
     private PreparedStatement sel_by_id = null;
     private Connection connection = null;
-    
+
     /** Construct helper
      *  @param rdb RDBUTil
      *  @param table Name of RDB table
@@ -54,7 +55,7 @@ public class StringIDHelper
         this.id_column = id_column;
         this.name_column = name_column;
     }
-    
+
     /** Must be called for cleanup when no longer needed */
     public void dispose()
     {
@@ -85,17 +86,33 @@ public class StringIDHelper
      */
     public StringID find(final String name) throws Exception
     {
-        Connection tempConnection = rdb.getConnection();       	
-    	if (sel_by_name == null || connection != tempConnection) {
-    		connection = tempConnection;
-            sel_by_name = connection.prepareStatement(
-                "SELECT " + id_column + " FROM " + table +
-                " WHERE "+ name_column + "=?");
-    	}
-        sel_by_name.setString(1, name);
-        final ResultSet result = sel_by_name.executeQuery();
-        if (result.next())
-            return new StringID(result.getInt(1), name);
+        final Connection tempConnection = rdb.getConnection();
+        final boolean was_readonly = tempConnection.isReadOnly();
+        if (! was_readonly)
+            tempConnection.setReadOnly(true);
+        try
+        {
+        	if (sel_by_name == null || connection != tempConnection)
+        	{
+        		connection = tempConnection;
+                sel_by_name = connection.prepareStatement(
+                    "SELECT " + id_column + " FROM " + table +
+                    " WHERE "+ name_column + "=?");
+        	}
+            sel_by_name.setString(1, name);
+            final ResultSet result = sel_by_name.executeQuery();
+            if (result.next())
+            {
+                final int id = result.getInt(1);
+                result.close();
+                return new StringID(id, name);
+            }
+        }
+        finally
+        {
+            if (! was_readonly)
+                tempConnection.setReadOnly(false);
+        }
         return null;
     }
 
@@ -106,17 +123,33 @@ public class StringIDHelper
      */
     public StringID find(final int id) throws Exception
     {
-    	Connection tempConnection = rdb.getConnection();       	
-        if (sel_by_id == null || connection != tempConnection) {
-        	connection = tempConnection;
-            sel_by_id = connection.prepareStatement(
-                    "SELECT " + name_column + " FROM " + table +
-                    " WHERE "+ id_column + "=?");
-        }
-        sel_by_id.setInt(1, id);
-        final ResultSet result = sel_by_id.executeQuery();
-        if (result.next())
-            return new StringID(id, result.getString(1));
+        final Connection tempConnection = rdb.getConnection();
+        final boolean was_readonly = tempConnection.isReadOnly();
+        if (! was_readonly)
+            tempConnection.setReadOnly(true);
+    	try
+    	{
+        	if (sel_by_id == null || connection != tempConnection)
+        	{
+            	connection = tempConnection;
+                sel_by_id = connection.prepareStatement(
+                        "SELECT " + name_column + " FROM " + table +
+                        " WHERE "+ id_column + "=?");
+            }
+            sel_by_id.setInt(1, id);
+            final ResultSet result = sel_by_id.executeQuery();
+            if (result.next())
+            {
+                final String text = result.getString(1);
+                result.close();
+                return new StringID(id, text);
+            }
+    	}
+    	finally
+    	{
+    	    if (! was_readonly)
+    	        tempConnection.setReadOnly(false);
+    	}
         return null;
     }
 
@@ -150,10 +183,14 @@ public class StringIDHelper
             insert.close();
         }
     }
-    
+
     private int getNextID() throws Exception
     {
-        final Statement statement = rdb.getConnection().createStatement();
+        final Connection tempConnection = rdb.getConnection();
+        final boolean was_readonly = tempConnection.isReadOnly();
+        if (! was_readonly)
+            tempConnection.setReadOnly(true);
+    	final Statement statement = tempConnection.createStatement();
         try
         {
             final ResultSet res = statement.executeQuery(
@@ -161,6 +198,7 @@ public class StringIDHelper
             if (res.next())
             {
                 final int id = res.getInt(1);
+                res.close();
                 if (id > 0)
                     return id + 1;
             }
@@ -169,6 +207,8 @@ public class StringIDHelper
         finally
         {
             statement.close();
+            if (! was_readonly)
+                tempConnection.setReadOnly(false);
         }
     }
 }

@@ -60,6 +60,9 @@ public class MessageContentCreator {
     /** Hashtable with message properties. Key -> name, value -> database table id  */
     private Hashtable<String, Long> msgProperty;
 
+    /** Class that collects statistic informations. Query it via XMPP. */
+    private final StatisticCollector collector;
+
     /** Service for reading the meta data of the database tables */
     private IMetaDataReader metaDataService;
 
@@ -76,8 +79,10 @@ public class MessageContentCreator {
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
     private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
 
-    public MessageContentCreator() {
-
+    public MessageContentCreator(StatisticCollector coll) {
+        
+        collector = coll;
+        
         final IPreferencesService prefs = Platform.getPreferencesService();
 
         try {
@@ -242,7 +247,7 @@ public class MessageContentCreator {
             if(discardNames.contains(propName)) {
 
                 msgContent.setDiscard(true);
-
+                collector.incrementDiscardedMessages();
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -344,6 +349,7 @@ public class MessageContentCreator {
         if(messageFilter.shouldBeBlocked(msgContent)) {
             LOG.debug("Block it!");
             msgContent.deleteContent();
+            collector.incrementFilteredMessages();
         } else {
             LOG.debug("Process it!");
         }

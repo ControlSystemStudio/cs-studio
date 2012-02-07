@@ -9,7 +9,6 @@ package org.csstudio.trends.databrowser2.propsheet;
 
 import java.util.ArrayList;
 
-import org.csstudio.apputil.ui.dialog.ErrorDialog;
 import org.csstudio.apputil.ui.formula.FormulaDialog;
 import org.csstudio.apputil.ui.formula.InputItem;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
@@ -18,6 +17,7 @@ import org.csstudio.trends.databrowser2.model.FormulaInput;
 import org.csstudio.trends.databrowser2.model.FormulaItem;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
@@ -82,7 +82,7 @@ public class EditFormulaDialog
         }
         catch (final Exception ex)
         {
-            ErrorDialog.open(shell, Messages.Error, ex.getMessage());
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
             return false;
         }
         return true;

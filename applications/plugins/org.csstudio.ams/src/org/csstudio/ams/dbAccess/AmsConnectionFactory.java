@@ -32,6 +32,8 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.util.StringUtil;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.hsqldb.jdbcDriver;
 import com.mysql.jdbc.Driver;
@@ -107,6 +109,36 @@ public class AmsConnectionFactory {
                 pwd);
     }
 
+    public static Connection getMemoryCacheDB() throws SQLException {
+        
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        String dbType = prefs.getString(AmsActivator.PLUGIN_ID,
+                                        AmsPreferenceKey.P_CACHE_DATABASE_TYPE,
+                                        "HSQLDB",
+                                        null);
+        
+        if(dbType.toUpperCase().indexOf("HSQLDB") > -1) {
+            DriverManager.registerDriver(new jdbcDriver());
+        }
+        
+        String dbUrl = prefs.getString(AmsActivator.PLUGIN_ID,
+                                       AmsPreferenceKey.P_CACHE_DATABASE_CONNECTION,
+                                       "jdbc:hsqldb:mem:memConfigDB",
+                                       null);
+
+        String dbUser = prefs.getString(AmsActivator.PLUGIN_ID,
+                                        AmsPreferenceKey.P_CACHE_DATABASE_USER,
+                                        "SA",
+                                        null);
+
+        String dbPassword = prefs.getString(AmsActivator.PLUGIN_ID,
+                                            AmsPreferenceKey.P_CACHE_DATABASE_PASSWORD,
+                                            "",
+                                            null);
+
+        return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+    }
+    
     public static void closeConnection(final Connection conDb) {
         try {
             if (conDb != null) {

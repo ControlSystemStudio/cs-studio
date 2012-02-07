@@ -95,7 +95,7 @@ public class ComboProperty extends AbstractWidgetProperty {
 		 try {
 			return Integer.parseInt(propElement.getValue());
 		} catch (NumberFormatException e) {
-			return Boolean.parseBoolean(propElement.getValue())? 0 : 1;
+			return Boolean.parseBoolean(propElement.getValue())? 1 : 0;
 		}			
 	}
 

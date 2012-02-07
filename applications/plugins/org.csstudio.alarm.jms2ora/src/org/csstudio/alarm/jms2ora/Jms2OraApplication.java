@@ -24,10 +24,13 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URI;
 import javax.annotation.Nonnull;
-
 import org.csstudio.alarm.jms2ora.management.GetNumberOfMessageFiles;
 import org.csstudio.alarm.jms2ora.management.GetQueueSize;
+import org.csstudio.alarm.jms2ora.management.GetVersionMgmtCommand;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
 import org.csstudio.alarm.jms2ora.util.Hostname;
@@ -70,9 +73,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
     /** The ECF service */
     private ISessionService xmppService;
-
-    /** Name of the folder that holds the stored message content */
-    //private String objectDir;
 
     /** Flag that indicates whether or not the application is/should running */
     private boolean running;
@@ -163,8 +163,18 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             return IApplication.EXIT_OK;
         }
 
+        long sleep = prefs.getLong(Jms2OraActivator.PLUGIN_ID,
+                                   PreferenceConstants.MESSAGE_PROCESSOR_SLEEPING_TIME,
+                                   30000L,
+                                   null);
+        
+        int storageWait = prefs.getInt(Jms2OraActivator.PLUGIN_ID,
+                                       PreferenceConstants.TIME_BETWEEN_STORAGE,
+                                       60,
+                                       null);
+        
         // Create an object from this class
-        messageProcessor = new MessageProcessor();
+        messageProcessor = new MessageProcessor(sleep, storageWait);
         messageProcessor.start();
 
         Jms2OraActivator.getDefault().addSessionServiceListener(this);
@@ -239,7 +249,24 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 
     	GetQueueSize.staticInject(this);
     	GetNumberOfMessageFiles.staticInject(this);
-    	
+        final File file = new File(".eclipseproduct");
+        if (file.exists()) {
+            final URI uri = file.toURI();
+            String path;
+            try {
+                path = uri.toURL().getPath();
+                if (path != null) {
+                    
+                    LOG.info("Path to version file: {}", path);
+                    GetVersionMgmtCommand.injectStaticObject(path);
+                }
+            } catch (MalformedURLException e) {
+                LOG.warn("[*** MalformedURLException ***]: {}", e.getMessage());
+            }
+        } else {
+            LOG.warn("File '.eclipseproduct' does not exist.");
+        }
+
     	try {
 			sessionService.connect(xmppInfo.getXmppUser(), xmppInfo.getXmppPassword(), xmppInfo.getXmppServer());
 			xmppService = sessionService;
@@ -247,7 +274,6 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
 		    LOG.warn("XMPP connection is not available: {}", e.toString());
 		}
     }
-
 
     /**
      * {@inheritDoc}

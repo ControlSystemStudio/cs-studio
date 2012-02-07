@@ -14,7 +14,7 @@ import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 
 /** (Menu) action to add command to tree
- * 
+ *
  *  <p>Opens CommandListView and displays guidance.
  *  @author Kay Kasemir
  */
@@ -28,8 +28,8 @@ public class AddCommandAction extends OpenViewAction
     @Override
     public void run()
     {
-        super.run();
         MessageDialog.openInformation(null, Messages.AddCommandTitle,
             Messages.AddCommandMessage);
+        super.run();
     }
 }

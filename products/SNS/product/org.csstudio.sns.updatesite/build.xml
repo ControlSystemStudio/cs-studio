@@ -18,9 +18,9 @@
     <property name="workspace_dir" value="${env.WORKSPACE}" />
     
     <!-- Build directory -->
-    <property name="build_dir" value="/tmp/build" />
+    <property name="build_dir" value="${env.BUILDDIR}" />
 	
-    <!-- Zip all the source files -->
+    <!-- Check environment variables -->
     <target name="check_vars" unless="env.VERSION">
         <fail message="VERSION is undefined"/>
     </target>
@@ -119,6 +119,7 @@
     -->
     <target name="zip_sources" depends="check_vars">
         <zip destfile="${build_dir}/apps/sns_css_src_${env.VERSION}.zip">
+        	<!-- Plugins from core, apps, product -->
             <fileset dir="${repo_dir}/core/plugins" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
@@ -135,11 +136,27 @@
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>
-            <fileset dir="${repo_dir}/products/SNS/product" includesfile="features.list">
+        	
+            <!-- Extra plugins from apps, product -->
+            <fileset dir="${repo_dir}/applications/plugins" includesfile="extra.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/plugins" includesfile="extra.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/product" includesfile="extra.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+
+            <!-- Features from apps, product -->
+            <fileset dir="${repo_dir}/applications/features" includesfile="features.list">
                <exclude name="**/bin/**"/>
                <exclude name="**/classes/**"/>
             </fileset>
-            <fileset dir="${repo_dir}/applications/features" includesfile="features.list">
+        	<fileset dir="${repo_dir}/products/SNS/product" includesfile="features.list">
                <exclude name="**/bin/**"/>
                <exclude name="**/classes/**"/>
             </fileset>

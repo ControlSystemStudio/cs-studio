@@ -11,6 +11,8 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import oracle.jdbc.OracleTypes;
 
@@ -20,15 +22,18 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.platform.utility.rdb.RDBUtil;
+import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.
  *  @author Kay Kasemir
+ *  @author Laurent Philippe - MySQL support
  */
 @SuppressWarnings("nls")
 public class StoredProcedureValueIterator extends AbstractRDBValueIterator
 {
-    final String stored_procedure;
+    final private String stored_procedure;
 
     /** Values received from the stored procedure */
     private IValue values[] = null;
@@ -66,21 +71,49 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
     private void executeProcedure(final ITimestamp start, final ITimestamp end,
             final int count) throws Exception
     {
-        final CallableStatement statement = reader.getRDB().getConnection().prepareCall(
-            "begin ? := " + stored_procedure + " .get_browser_data(?, ?, ?, ?); end;");
+        final String sql;
+        final Dialect dialect = reader.getRDB().getDialect();
 
+        switch (dialect)
+        {
+        case MySQL:
+            sql = "{call " + stored_procedure + "(?, ?, ?, ?)}";
+        	break;
+        case Oracle:
+            sql = "begin ? := " + stored_procedure + "(?, ?, ?, ?); end;";
+            break;
+        default:
+            throw new Exception("Stored procedure data readout not supported for " + dialect);
+
+        }
+
+        final CallableStatement statement =
+                reader.getRDB().getConnection().prepareCall(sql);
         reader.addForCancellation(statement);
         try
         {
-            statement.registerOutParameter(1, OracleTypes.CURSOR);
-            statement.setInt(2, channel_id);
-            statement.setTimestamp(3, start.toSQLTimestamp());
-            statement.setTimestamp(4, end.toSQLTimestamp());
-            statement.setInt(5, count);
-            statement.setFetchDirection(ResultSet.FETCH_FORWARD);
-            statement.setFetchSize(1000);
-            statement.execute();
-            final ResultSet result = (ResultSet) statement.getObject(1);
+        	final ResultSet result;
+
+        	if (dialect == RDBUtil.Dialect.MySQL)
+        	{	 //MySQL
+        		 statement.setInt(1, channel_id);
+                 statement.setTimestamp(2, start.toSQLTimestamp());
+                 statement.setTimestamp(3, end.toSQLTimestamp());
+                 statement.setInt(4, count);
+                 result = statement.executeQuery();
+        	}
+        	else
+        	{	//ORACLE
+        		statement.registerOutParameter(1, OracleTypes.CURSOR);
+                statement.setInt(2, channel_id);
+                statement.setTimestamp(3, start.toSQLTimestamp());
+                statement.setTimestamp(4, end.toSQLTimestamp());
+                statement.setInt(5, count);
+                statement.setFetchDirection(ResultSet.FETCH_FORWARD);
+                statement.setFetchSize(1000);
+                statement.execute();
+                result = (ResultSet) statement.getObject(1);
+        	}
             result.setFetchSize(1000);
 
             // Determine result type: min/max/average table or
@@ -101,6 +134,8 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             if (! RDBArchiveReader.isCancellation(ex))
                 throw ex;
             // Else: Not a real error; return empty iterator
+            Logger.getLogger(getClass().getName()).log(Level.FINE,
+                    "Stored procedure cancelled", ex);
         }
         finally
         {

@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.logbook.ui;
 
-import org.csstudio.apputil.ui.dialog.ErrorDialog;
 import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -170,8 +170,8 @@ public class ELogEntryView extends ViewPart
         }
         catch (Exception ex)
         {
-            ErrorDialog.open(getSite().getShell(), Messages.Error,
-                    NLS.bind(Messages.LogEntry_ErrorCannotConnectFMT, ex.getMessage()));
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error,
+                    NLS.bind(Messages.LogEntry_ErrorCannotConnectFMT, ex.getMessage()), ex);
             return;
         }
         try
@@ -180,8 +180,8 @@ public class ELogEntryView extends ViewPart
         }
         catch (Exception ex)
         {
-            ErrorDialog.open(getSite().getShell(), Messages.Error,
-                    NLS.bind(Messages.LogEntry_ErrorFMT, ex.getMessage()));
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error,
+                    NLS.bind(Messages.LogEntry_ErrorFMT, ex.getMessage()), ex);
             return;
         }
         password.setText(""); //$NON-NLS-1$

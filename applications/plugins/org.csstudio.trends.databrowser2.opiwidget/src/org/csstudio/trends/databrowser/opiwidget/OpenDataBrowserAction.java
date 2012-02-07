@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
-import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.trends.databrowser2.editor.DataBrowserEditor;
 import org.csstudio.trends.databrowser2.editor.DataBrowserModelEditorInput;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -46,10 +46,10 @@ public class OpenDataBrowserAction extends DataBrowserWidgetAction
         }
         catch (Exception ex)
         {
-            new ErrorDetailDialog(page.getActivePart().getSite().getShell(),
+            ExceptionDetailsErrorDialog.openError(page.getActivePart().getSite().getShell(),
                 Messages.Error,
                 NLS.bind(Messages.OpenDataBrowserErrorFmt, filename.toString()),
-                NLS.bind(Messages.ErrorDetailFmt, filename.toString(), ex.getMessage())).open();
+                ex);
         }
     }
 	/**Get the IFile from IPath.

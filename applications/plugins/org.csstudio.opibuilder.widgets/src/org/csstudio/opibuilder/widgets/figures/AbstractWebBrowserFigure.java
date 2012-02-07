@@ -12,15 +12,17 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.widgets.Control;
 
 /**Figure for a web browser widget.
  * @author Xihui Chen
  *
  */
-public abstract class AbstractWebBrowserFigure extends AbstractSWTWidgetFigure {	
+public abstract class AbstractWebBrowserFigure <T extends Control> extends AbstractSWTWidgetFigure<T> {	
 	
-	public AbstractWebBrowserFigure(AbstractBaseEditPart editPart) {
-		super(editPart);
+
+	public AbstractWebBrowserFigure(AbstractBaseEditPart editpart, int style) {
+		super(editpart, style);
 	}
 
 	public abstract void setUrl(String url);

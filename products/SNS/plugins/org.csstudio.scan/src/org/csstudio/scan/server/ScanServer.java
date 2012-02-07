@@ -20,6 +20,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.device.DeviceInfo;
 
 /** RMI interface for the scan server engine
  *

@@ -54,6 +54,12 @@ public class PreferenceConstants {
     public static final String FILTER_SEND_BOUND = "filterSendBound";
     public static final String FILTER_MAX_SENT_MESSAGES = "filterMaxSentMessages";
     
+    /** Waiting time (in ms) of the MessageProcessor thread */
+    public static final String MESSAGE_PROCESSOR_SLEEPING_TIME = "msgProcessorSleepingTime";
+    
+    /** Min. waiting time (in seconds) before next storage will be started */ 
+    public static final String TIME_BETWEEN_STORAGE = "timeBetweenStorage";
+
     /** Flag that indicates if empty message properties have to be stored */
     public static final String STORE_EMPTY_VALUES = "storeEmptyValues";
     

@@ -30,7 +30,7 @@ implements IWorkbenchPreferencePage
     {
         super(GRID);
         // Note prefs are in the basic EMail plugin, not in the GUI plugin!
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
                 org.csstudio.email.Activator.ID));
     }
 

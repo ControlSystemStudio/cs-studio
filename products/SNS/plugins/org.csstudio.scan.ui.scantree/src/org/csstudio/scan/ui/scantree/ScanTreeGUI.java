@@ -50,10 +50,10 @@ public class ScanTreeGUI
 {
     /** Listener */
     final private ScanTreeGUIListener listener;
-    
+
     /** Commands displayed and edited in this GUI */
     private List<ScanCommand> commands = new ArrayList<ScanCommand>();
-    
+
     /** Tree that shows commands */
     private TreeViewer tree_view;
 
@@ -82,7 +82,7 @@ public class ScanTreeGUI
         tree_view.setUseHashlookup(true);
         tree_view.setContentProvider(new CommandTreeContentProvider());
         tree_view.setLabelProvider(new CommandTreeLabelProvider());
-        
+
         // Double-click opens property panel
         tree_view.addDoubleClickListener(new IDoubleClickListener()
         {
@@ -92,7 +92,7 @@ public class ScanTreeGUI
                 new OpenPropertiesAction().run();
             }
         });
-        
+
         ColumnViewerToolTipSupport.enableFor(tree_view);
     }
 
@@ -107,13 +107,15 @@ public class ScanTreeGUI
         manager.add(new Separator());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenCommandListAction());
-        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/scantree.gif"), //$NON-NLS-1$
+        manager.add(new Separator());
+        manager.add(new OpenPerspectiveAction(Activator.getImageDescriptor("icons/perspective.gif"), //$NON-NLS-1$
                 Messages.OpenScanTreePerspective, Perspective.ID));
-        
+        manager.add(new Separator("additions")); //$NON-NLS-1$
+
         final Menu menu = manager.createContextMenu(tree_view.getControl());
         tree_view.getControl().setMenu(menu);
     }
-    
+
     /** @return Currently selected scan command or <code>null</code> */
     public ScanCommand getSelectedCommand()
     {
@@ -122,21 +124,21 @@ public class ScanTreeGUI
             return null;
         return (ScanCommand) sel.getFirstElement();
     }
-    
+
     /** Information about Pointer location relative to a tree item */
     static class TreeItemInfo
     {
         enum Section { UPPER, CENTER, LOWER };
         final public ScanCommand command;
         final public Section section;
-        
+
         public TreeItemInfo(final ScanCommand command, final Section section)
         {
             this.command = command;
             this.section = section;
         }
     };
-    
+
     /** Determine where mouse pointer is relative to a tree item
      *  @param x Mouse coordinate
      *  @param y Mouse coordinate
@@ -150,7 +152,7 @@ public class ScanTreeGUI
         final ViewerCell cell = tree_view.getCell(point);
         if (cell == null)
             return null;
-        
+
         final ScanCommand command = (ScanCommand) cell.getElement();
 
         final Rectangle bounds = cell.getBounds();
@@ -162,7 +164,7 @@ public class ScanTreeGUI
         else
             return new TreeItemInfo(command, TreeItemInfo.Section.CENTER);
     }
-    
+
     /** Add drag-and-drop support */
     private void addDragDrop()
     {
@@ -173,7 +175,7 @@ public class ScanTreeGUI
         tree_view.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
         {
             private ScanCommand command = null;
-            
+
             @Override
             public void dragStart(final DragSourceEvent event)
             {
@@ -181,13 +183,13 @@ public class ScanTreeGUI
                 if (command == null)
                     event.doit = false;
             }
-            
+
             @Override
             public void dragSetData(final DragSourceEvent event)
             {
                 event.data = command;
             }
-            
+
             @Override
             public void dragFinished(final DragSourceEvent event)
             {
@@ -199,7 +201,7 @@ public class ScanTreeGUI
                 refresh();
             }
         });
-        
+
         tree_view.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DropTargetAdapter()
         {
             @Override
@@ -229,7 +231,7 @@ public class ScanTreeGUI
                 if (! (event.data instanceof ScanCommand))
                     return;
                 final ScanCommand dropped_command = (ScanCommand) event.data;
-                
+
                 // Determine _where_ it was dropped
                 final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
                 if (target == null)
@@ -257,13 +259,13 @@ public class ScanTreeGUI
             }
         });
     }
-    
+
     /** Set focus */
     public void setFocus()
     {
         tree_view.getTree().setFocus();
     }
-    
+
     /** @param commands Commands to display/edit */
     public void setCommands(final List<ScanCommand> commands)
     {
@@ -271,7 +273,7 @@ public class ScanTreeGUI
         tree_view.setInput(commands);
         tree_view.expandAll();
     }
-    
+
     /** Perform full GUI refresh */
     public void refresh()
     {
@@ -279,13 +281,13 @@ public class ScanTreeGUI
         if (listener != null)
             listener.scanTreeChanged();
     }
-    
+
     /** @return Commands displayed/edited in GUI */
     public List<ScanCommand> getCommands()
     {
         return commands;
     }
-    
+
     /** @param command Command that has been updated, requiring a refresh of the GUI */
     public void refreshCommand(final ScanCommand command)
     {

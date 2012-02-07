@@ -54,7 +54,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		final ComboModel model = getWidgetModel();
 		updatePropSheet(model.isItemsFromPV());
 		ComboFigure comboFigure = new ComboFigure(this);
-		combo = comboFigure.getCombo();
+		combo = comboFigure.getSWTWidget();
 		
 		List<String> items = getWidgetModel().getItems();
 

@@ -41,7 +41,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
         // i.e. they are specific to the workspace instance.
         final IPreferenceStore store =
-            new ScopedPreferenceStore(new InstanceScope(), PREF_QUALIFIER_ID);
+            new ScopedPreferenceStore(InstanceScope.INSTANCE, PREF_QUALIFIER_ID);
         setPreferenceStore(store);
         setMessage(Messages.Preferences_Message);
     }

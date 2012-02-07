@@ -276,11 +276,28 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart{
 			return pvMap.get(controlPVPropId);
 		return null;
 	}
+	/**
+	 * @return the first PV name.
+	 */
 	public String getName() {
 		 if(getWidgetModel().getPVMap().isEmpty())
-			 return "";
+			 return ""; //$NON-NLS-1$
 		return (String)((StringProperty)getWidgetModel().getPVMap().keySet().toArray()[0])
 			.getPropertyValue();
+	}
+	
+	/**
+	 * @return A String array with all PV names from PV properties.
+	 */
+	public String[] getAllPVNames(){
+		if(getWidgetModel().getPVMap().isEmpty())
+			 return new String[]{""}; //$NON-NLS-1$
+		String[] result = new String[getWidgetModel().getPVMap().size()];
+		int i=0;
+		for(StringProperty sp : getWidgetModel().getPVMap().keySet()){
+			result[i++] = (String) sp.getPropertyValue();
+		}
+		return result;
 	}
 	
 	/**Get the PV corresponding to the <code>PV Name</code> property. 
