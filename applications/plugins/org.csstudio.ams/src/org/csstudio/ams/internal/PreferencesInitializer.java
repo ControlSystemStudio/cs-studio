@@ -47,6 +47,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         final IEclipsePreferences node = new DefaultScope().getNode(AmsActivator.PLUGIN_ID);
 
         // database settings
+        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION, "Oracle10g");
         node.put(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION, "jdbc:oracle:thin:@(DESCRIPTION =" +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv01.desy.de)(PORT = 1521))" +
         "(ADDRESS = (PROTOCOL = TCP)(HOST = dbsrv02.desy.de)(PORT = 1521))" +
@@ -63,12 +64,18 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
           ")" +
         ")" +
         ")");
-        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_USER, "krykams");
+        node.put(AmsPreferenceKey.P_CONFIG_DATABASE_USER, "KRYKAMS");
         node.put(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD, "krykams");
+        
+        node.put(AmsPreferenceKey.P_APP_DATABASE_TYPE, "Derby");
         node.put(AmsPreferenceKey.P_APP_DATABASE_CONNECTION, "jdbc:derby://krykderby.desy.de/amsdb;create=true");
         node.put(AmsPreferenceKey.P_APP_DATABASE_USER, "APP");
         node.put(AmsPreferenceKey.P_APP_DATABASE_PASSWORD, "APP");
-        node.put(AmsPreferenceKey.P_APP_DATABASE_TYPE, "Derby");
+
+        node.put(AmsPreferenceKey.P_CACHE_DATABASE_TYPE, "HSQLDB");
+        node.put(AmsPreferenceKey.P_CACHE_DATABASE_CONNECTION, "jdbc:hsqldb:mem:memConfigDB");
+        node.put(AmsPreferenceKey.P_CACHE_DATABASE_USER, "SA");
+        node.put(AmsPreferenceKey.P_CACHE_DATABASE_PASSWORD, "");
 
         // filter key field of message
         node.put(AmsPreferenceKey.P_FILTER_KEYFIELDS,

@@ -63,6 +63,7 @@ public class FacilityDBO extends AbstractNodeSharedImpl<VirtualRoot, IocDBO> {
 
     @Transient
     @Override
+    @CheckForNull
     public VirtualRoot getParent() {
         return super.getParent();
     }

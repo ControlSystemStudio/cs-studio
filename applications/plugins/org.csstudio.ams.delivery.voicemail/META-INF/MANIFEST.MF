@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Voicemail Delivery
+Bundle-SymbolicName: org.csstudio.ams.delivery.voicemail
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.ams.delivery.voicemail.VoiceMailDeliveryActivator
+Bundle-Vendor: Markus Moeller <Markus.Moeller@desy.de>
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.platform.libs.jms;bundle-version="1.1.1",
+ org.csstudio.platform.utility.jms;bundle-version="1.1.3"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Import-Package: org.csstudio.ams.delivery,
+ org.csstudio.ams.delivery.action,
+ org.csstudio.ams.delivery.device,
+ org.csstudio.ams.delivery.jms,
+ org.csstudio.ams.delivery.message,
+ org.csstudio.ams.delivery.queue,
+ org.csstudio.ams.delivery.service
+Bundle-ClassPath: .,
+ lib/capi.jar,
+ lib/maryclient.jar,
+ lib/signalproc.jar
