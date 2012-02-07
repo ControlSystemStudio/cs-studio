@@ -151,43 +151,75 @@ public class ConfigReplicator implements AmsConstants {
 		// All O.K.
 	}
 	
+	public static void createMemoryCacheDb(Connection cacheDb, File sqlScript) throws ReplicationException {
+	    
+	    Log.log(Log.INFO, "Creating memory cache database.");
+	    try {
+	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
+	        sqlFile.execute(cacheDb, false);
+	        Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
+	    } catch (IOException e) {
+	        throw new ReplicationException(e);
+	    } catch (SqlToolError e) {
+	        throw new ReplicationException(e);
+	    } catch (SQLException e) {
+	        throw new ReplicationException(e);
+	    }
+	       
+//	    InputStream resourceAsStream =
+//	            ConfigReplicator.class.getResourceAsStream("createMemoryCache.sql");
+//	    BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+//	    StringBuffer stringBuffer = new StringBuffer();
+//	    
+//	    try {
+//	        while (reader.ready()) {
+//    	        stringBuffer.append(reader.readLine() + "\n");
+//    	    }
+//    	    reader.close();
+//    	    String sqlString = stringBuffer.toString();
+//    	    cacheDb.prepareStatement(sqlString).execute();
+//	    } catch (IOException e) {
+//	        throw new ReplicationException(e);
+//	    } catch (SQLException e) {
+//	        throw new ReplicationException(e);
+//      }
+	}
+	
 	/**
 	 * Copying configuration from one database to another.
 	 * @throws ReplicationException 
 	 */
 	public static void replicateConfigurationToHsql(Connection masterDB,
-			                                        Connection localDB,
-			                                        File sqlScript)
+			                                        Connection localDB)
 			                                                throws ReplicationException {
-		
-	    try {
-            SqlFile sqlFile = new SqlFile(sqlScript, false, null);
-            sqlFile.execute(localDB, false);
-            Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
-        } catch (IOException e) {
-            throw new ReplicationException(e);
-        } catch (SqlToolError e) {
-            throw new ReplicationException(e);
-        } catch (SQLException e) {
-            throw new ReplicationException(e);
-        }
-	    
-//	    InputStream resourceAsStream = ConfigReplicator.class
-//				.getResourceAsStream("createMemoryCache.sql");
-//		
-//	    BufferedReader reader = new BufferedReader(new InputStreamReader(
-//				resourceAsStream));
-//		
-//	    StringBuffer stringBuffer = new StringBuffer();
-		
+			    		
 		try {
-//			while (reader.ready()) {
-//				stringBuffer.append(reader.readLine() + "\n");
-//			}
-//			reader.close();
-//			String sqlString = stringBuffer.toString();
-//			localDB.prepareStatement(sqlString).execute();
-			Log.log(Log.INFO, "Start copying master configuration.");
+            Log.log(Log.INFO, "Start deleting memory cache configuration.");           
+            FilterCondJunctionDAO.removeAll(localDB);           
+            FilterCondNegationDAO.removeAll(localDB);
+            FilterCondFilterCondDAO.removeAll(localDB);
+            
+            FilterConditionTypeDAO.removeAll(localDB);
+            FilterConditionDAO.removeAll(localDB);
+            FilterConditionStringDAO.removeAll(localDB);
+            FilterConditionArrayStringDAO.removeAll(localDB);
+            FilterConditionArrayStringValuesDAO.removeAll(localDB);
+            FilterConditionProcessVariableDAO.removeAll(localDB);
+            CommonConjunctionFilterConditionDAO.removeAll(localDB);
+            
+            FilterConditionTimeBasedDAO.removeAll(localDB);
+            FilterDAO.removeAll(localDB);
+            FilterFilterConditionDAO.removeAll(localDB);
+            TopicDAO.removeAll(localDB);
+            FilterActionTypeDAO.removeAll(localDB);
+            
+            FilterActionDAO.removeAll(localDB);
+            FilterFilterActionDAO.removeAll(localDB);
+            UserDAO.removeAll(localDB);
+            UserGroupDAO.removeAll(localDB);
+            UserGroupUserDAO.removeAll(localDB);
+
+			Log.log(Log.INFO, "Start copying master configuration to memory cache database.");
 			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB, "");
 			FilterConditionDAO.copyFilterCondition(masterDB, localDB, "");
 			FilterConditionStringDAO.copyFilterConditionString(masterDB,
