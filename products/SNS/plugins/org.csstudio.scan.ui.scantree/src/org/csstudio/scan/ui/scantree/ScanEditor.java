@@ -25,7 +25,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -171,24 +174,37 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         if (sep > 0)
             name = name.substring(0, sep);
 
-        // TODO Use Job to submit scan to server
-        try
+        final String scan_name = name;
+
+        // Use background Job to submit scan to server
+        final Job job = new Job(Messages.SubmitScan)
         {
-            final ScanServer server = ScanServerConnector.connect();
-            try
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
             {
-                server.submitScan(name, XMLCommandWriter.toXMLString(commands));
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR,
+                            Activator.PLUGIN_ID,
+                            NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
+                            ex);
+                }
+                return Status.OK_STATUS;
             }
-            finally
-            {
-                ScanServerConnector.disconnect(server);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(getSite().getShell(), Messages.Error,
-                NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()));
-        }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
