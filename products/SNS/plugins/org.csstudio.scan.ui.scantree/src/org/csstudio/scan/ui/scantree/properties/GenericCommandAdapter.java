@@ -10,8 +10,11 @@ package org.csstudio.scan.ui.scantree.properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandProperty;
+import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scantree.CommandsInfo;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -40,7 +43,7 @@ public class GenericCommandAdapter implements IPropertySource
     {
         this.editor = editor;
         this.command = command;
-        
+
         final ScanCommandProperty[] properties = command.getProperties();
         descriptors = new PropertyDescriptor[properties.length];
         for (int i=0; i<properties.length; ++i)
@@ -54,6 +57,14 @@ public class GenericCommandAdapter implements IPropertySource
             final String name = Integer.toString(i+1) + ". " + property.getName();
             if (property.getType() == String.class)
                 descriptors[i] = new TextPropertyDescriptor(id, name);
+            else if (property.getType() == DeviceInfo.class)
+            {   // Try to offer list of devices
+                final DeviceInfo[] devices = getDevices();
+                if (devices != null)
+                    descriptors[i] = new DeviceInfoPropertyDescriptor(id, name, devices);
+                else // Fall back to editing device names as string
+                    descriptors[i] = new TextPropertyDescriptor(id, name);
+            }
             else if (property.getType() == Double.class)
                 descriptors[i] = new DoublePropertyDescriptor(id, name);
             else if (property.getType() == Object.class)
@@ -70,6 +81,29 @@ public class GenericCommandAdapter implements IPropertySource
         }
     }
 
+    /** @return Devices supported by scan server on <code>null</code> */
+    private DeviceInfo[] getDevices()
+    {
+        try
+        {
+            // TODO Fetch list of devices in Job
+            final ScanServer server = ScanServerConnector.connect();
+            try
+            {
+                return server.getDeviceInfos();
+            }
+            finally
+            {
+                ScanServerConnector.disconnect(server);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.INFO, "Cannot list devices", ex);
+        }
+        return null;
+    }
+
     /** GUI (editor) refresh */
     protected void refreshCommand()
     {
@@ -83,7 +117,7 @@ public class GenericCommandAdapter implements IPropertySource
     {
         return descriptors;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public Object getEditableValue()
@@ -113,14 +147,14 @@ public class GenericCommandAdapter implements IPropertySource
         }
         return null;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void setPropertyValue(final Object id, final Object value)
     {
         try
         {
-            command.setProperty((String) id, value); 
+            command.setProperty((String) id, value);
             refreshCommand();
         }
         catch (Exception ex)
@@ -130,7 +164,7 @@ public class GenericCommandAdapter implements IPropertySource
             // Ignore, keeping original value
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void resetPropertyValue(final Object id)

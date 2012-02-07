@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
@@ -19,36 +20,34 @@ import org.eclipse.swt.events.TraverseListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-/** CellEditor for Enum-type value
+/** CellEditor for String that refers to DeviceInfo
  *
  *  <p>Implementation based on ComboBoxCellEditor of
  *  Eclipse 3.7.1 which is not intended to be sub-classed.
  *  While ComboBoxCellEditor uses Integer for a value,
- *  this editor uses the Enum itself as a value,
- *  utilizing the toString() (not the name()!) representation for options.
+ *  this editor uses String.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class EnumCellEditor extends CellEditor
+public class DeviceInfoCellEditor extends CellEditor
 {
-    final private Class<? extends Enum<?>> enum_type;
+    private DeviceInfo[] devices;
     final private String[] labels;
     private CCombo combo;
 
     /** Initialize
      *  @param parent Parent widget
-     *  @param enum_type Enum that defines the possible values of this editor
+     *  @param devices Available devices
      */
-    public EnumCellEditor(final Composite parent, final Class<? extends Enum<?>> enum_type)
+    public DeviceInfoCellEditor(final Composite parent, DeviceInfo[] devices)
     {
         super(parent);
-        this.enum_type = enum_type;
 
-        final Enum<?>[] enum_vals = enum_type.getEnumConstants();
-        labels = new String[enum_vals.length];
+        this.devices = devices;
+        labels = new String[devices.length];
         for (int i=0; i<labels.length; ++i)
-            labels[i] = enum_vals[i].toString();
+            labels[i] = devices[i].getAlias();
 
         combo.setItems(labels);
         combo.select(0);
@@ -95,7 +94,7 @@ public class EnumCellEditor extends CellEditor
         {
             @Override
             public void focusLost(FocusEvent e) {
-                EnumCellEditor.this.focusLost();
+                DeviceInfoCellEditor.this.focusLost();
             }
         });
     }
@@ -124,8 +123,8 @@ public class EnumCellEditor extends CellEditor
     protected Object doGetValue()
     {
         final String label = combo.getText();
-        final Enum<?>[] options = enum_type.getEnumConstants();
-        return options[getSelectionIndex(label)];
+        // Actually same as "return label"
+        return devices[getSelectionIndex(label)].getAlias();
     }
 
     /** @param value Enum-typed value that should define
@@ -134,8 +133,8 @@ public class EnumCellEditor extends CellEditor
     @Override
     protected void doSetValue(final Object value)
     {
-        if (! (value instanceof Enum))
-            throw new Error("EnumCellEditor called with " + value.getClass().getName());
+        if (! (value instanceof String))
+            throw new Error("DeviceInfoCellEditor called with " + value.getClass().getName());
 
         combo.select(getSelectionIndex(value.toString()));
     }

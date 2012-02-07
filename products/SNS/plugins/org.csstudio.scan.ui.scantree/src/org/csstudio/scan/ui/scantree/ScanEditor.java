@@ -43,12 +43,12 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /** Eclipse Editor for the Scan Tree
- *  
+ *
  *  <p>Displays the scan tree and uses
  *  it as selection provider.
  *  {@link ScanCommandAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanEditor extends EditorPart implements ScanTreeGUIListener
@@ -95,7 +95,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return createInstance(new EmptyEditorInput());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -160,23 +160,29 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         setDirty(true);
     }
-    
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = gui.getCommands();
-        
+
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
         if (sep > 0)
             name = name.substring(0, sep);
-        
-        // Use Job to submit?
+
+        // TODO Use Job to submit scan to server
         try
         {
             final ScanServer server = ScanServerConnector.connect();
-            server.submitScan(name, XMLCommandWriter.toXMLString(commands));
-            ScanServerConnector.disconnect(server);
+            try
+            {
+                server.submitScan(name, XMLCommandWriter.toXMLString(commands));
+            }
+            finally
+            {
+                ScanServerConnector.disconnect(server);
+            }
         }
         catch (Exception ex)
         {
@@ -223,7 +229,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             return false;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSave(final IProgressMonitor monitor)
@@ -235,7 +241,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         else // Input is EmptyEditorInput, no file, yet
             saveToFile(monitor, file);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSaveAs()
@@ -249,7 +255,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             setPartName(file.getName());
         }
     }
-    
+
     /** Prompt for file name
      *  @param old_file Old file name or <code>null</code>
      *  @return IFile for new file name
@@ -282,7 +288,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return is_dirty;
     }
-    
+
     /** Update the 'dirty' flag
      *  @param dirty <code>true</code> if model changed and needs to be saved
      */

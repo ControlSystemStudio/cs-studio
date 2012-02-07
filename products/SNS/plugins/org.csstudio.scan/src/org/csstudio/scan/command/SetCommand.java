@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -17,6 +17,7 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
+import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Command that sets a device to a value
@@ -28,10 +29,10 @@ public class SetCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", String.class),
+        new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
         new ScanCommandProperty("value", "Value", Object.class),
     };
-    
+
     private String device_name;
 	private Object value;
 
@@ -40,7 +41,7 @@ public class SetCommand extends ScanCommand
     {
         this("device", 0.0);
     }
-	
+
 	/** Initialize
 	 *  @param device_name Name of device
 	 *  @param value Value to write to the device
@@ -75,7 +76,7 @@ public class SetCommand extends ScanCommand
     {
         return value;
     }
-    
+
     /** @param value Value to write to the device */
     public void setValue(final Object value)
     {
@@ -89,7 +90,7 @@ public class SetCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<set><device>" + device_name + "</device><value>" + value + "</value></set>");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
@@ -97,7 +98,7 @@ public class SetCommand extends ScanCommand
         setDeviceName(DOMHelper.getSubelementString(element, "device"));
         setValue(DOMHelper.getSubelementDouble(element, "value"));
     }
-    
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()
