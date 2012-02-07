@@ -27,17 +27,20 @@ public class DeviceInfo implements Serializable
 	final private static long serialVersionUID = 1L;
 
 	final private String name;
-
 	final private String alias;
+	final private boolean scan;
+	final private boolean log;
 
 	/** Initialize
 	 *  @param name Device name as understood by the control system
-	 *  @param alias Alias, may be preferred for GUI
+	 *  @param alias Alias for the device that is used in GUI and scans
 	 */
-	public DeviceInfo(final String name, final String alias)
+	public DeviceInfo(final String name, final String alias, final boolean scan, final boolean log)
     {
 	    this.name = name;
 	    this.alias = alias;
+	    this.scan = scan;
+	    this.log = log;
     }
 
 	/** @return Name of the device */
@@ -52,10 +55,28 @@ public class DeviceInfo implements Serializable
         return alias;
     }
 
-	/** @return Debug representation */
+    /** @return <code>true</code> if device can be scanned */
+	public boolean isScannable()
+    {
+        return scan;
+    }
+
+    /** @return <code>true</code> if device can be logged/monitored */
+    public boolean isLoggable()
+    {
+        return log;
+    }
+
+    /** @return Debug representation */
     @Override
 	public String toString()
 	{
-		return alias + " [" + name + "]";
+        final StringBuilder buf = new StringBuilder();
+        buf.append(alias).append(" [").append(name).append("]");
+        if (log)
+            buf.append(" (loggable)");
+        if (scan)
+            buf.append(" (scannable)");
+        return buf.toString();
 	}
 }

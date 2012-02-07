@@ -123,7 +123,7 @@ public class DeviceValueCondition implements DeviceListener
                         if (ms_left > 0)
                             wait(ms_left);
                         else
-                            throw new Exception("Timeout while waiting for " + device.getName()
+                            throw new Exception("Timeout while waiting for " + device
                                     + " " + comparison + " " + desired_value);
                     }
                     else // No timeout, wait forever

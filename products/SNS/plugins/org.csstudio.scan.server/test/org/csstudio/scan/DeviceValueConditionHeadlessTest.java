@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.condition.DeviceValueCondition;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.PVDevice;
 import org.junit.Test;
 
@@ -30,11 +31,16 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DeviceValueConditionHeadlessTest
 {
+    private PVDevice getDemoDevice() throws Exception
+    {
+        return new PVDevice(new DeviceInfo("loc://my_pv", "demo", true, true));
+    }
+
     @Test(timeout=5000)
     public void testEqualsConditionWithRampPV() throws Exception
     {
         // Device with local PV, updated by test
-        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
 
@@ -89,7 +95,7 @@ public class DeviceValueConditionHeadlessTest
     public void testStaticConditions() throws Exception
     {
         // Device with local PV, updated by test
-        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
 
@@ -150,7 +156,7 @@ public class DeviceValueConditionHeadlessTest
     public void testIncreasedByConditionWithRampPV() throws Exception
     {
         // Device with local PV, updated by test
-        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
 
@@ -195,7 +201,7 @@ public class DeviceValueConditionHeadlessTest
     public void testTimeout() throws Exception
     {
         // Device with local PV, updated by test
-        final PVDevice device = new PVDevice("demo", "loc://my_pv");
+        final PVDevice device = getDemoDevice();
         device.start();
         device.write(1.0);
 

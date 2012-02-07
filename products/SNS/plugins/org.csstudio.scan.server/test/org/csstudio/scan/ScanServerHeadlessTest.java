@@ -31,6 +31,7 @@ import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -70,7 +71,7 @@ public class ScanServerHeadlessTest implements Runnable
         try
         {
             // Pre-set xpos
-            final Device pv = new PVDevice("xpos", "motor_x");
+            final Device pv = new PVDevice(new DeviceInfo("xpos", "motor_x", true, true));
             pv.start();
             new WaitForDevicesCondition(pv).await();
             pv.write(0.0);

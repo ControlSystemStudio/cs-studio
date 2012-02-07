@@ -32,6 +32,7 @@ import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.internal.Scan;
@@ -55,10 +56,10 @@ public class ScanTest
 
         // Configure devices for beamline
         final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("xpos", "motor_x");
-        devices.addPVDevice("ypos", "motor_y");
-        devices.addPVDevice("setpoint", "setpoint");
-        devices.addPVDevice("readback", "readback");
+        devices.addPVDevice(new DeviceInfo("motor_x", "xpos", true, true));
+        devices.addPVDevice(new DeviceInfo("motor_y", "ypos", true, true));
+        devices.addPVDevice(new DeviceInfo("setpoint", "setpoint", true, true));
+        devices.addPVDevice(new DeviceInfo("readback", "readback", true, true));
 
         // Setup context
         final ScanContextImpl context = new ScanContextImpl(devices);

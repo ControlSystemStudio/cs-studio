@@ -24,6 +24,7 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.Scan;
@@ -38,37 +39,45 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class LoopCommandHeadlessTest
 {
+    private DeviceContext getDemoContext() throws Exception
+    {
+        final DeviceContext context = new DeviceContext();
+        context.addPVDevice(new DeviceInfo("loc://counter", "counter", true, true));
+        context.addPVDevice(new DeviceInfo("loc://other", "other", true, true));
+        return context;
+    }
+
     @Test(timeout=5000)
     public void testLoopCommand() throws Throwable
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("counter", "loc://counter");
-        final Device counter = devices.getDevice("counter");
+        final DeviceContext devices = getDemoContext();
+        final Device counter = devices.getDeviceByAlias("counter");
         devices.startDevices();
+        try
+        {
+            counter.write(2.0);
+            assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        counter.write(2.0);
-        assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
+            final ScanContext context = new ScanContextImpl(devices);
+            final ScanCommandImpl<?> loop = new LoopCommandImpl(
+                    new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0,
+                        new LogCommand("counter")));
+            System.out.println(loop);
 
-        final ScanContext context = new ScanContextImpl(devices);
-        final ScanCommandImpl<?> loop = new LoopCommandImpl(
-                new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0,
-                    new LogCommand("counter")));
-        System.out.println(loop);
-
-        context.execute(loop);
-        assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
-
-        devices.stopDevices();
+            context.execute(loop);
+            assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
+        }
+        finally
+        {
+            devices.stopDevices();
+        }
     }
 
 
     @Test(timeout=5000)
     public void testLoopCommandWorkunits() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("counter", "loc://counter");
-        devices.addPVDevice("other", "loc://other");
-
+        final DeviceContext devices = getDemoContext();
         final ScanContextImpl context = new ScanContextImpl(devices);
 
         final LoopCommandImpl loop1 = new LoopCommandImpl(new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0));
@@ -92,73 +101,79 @@ public class LoopCommandHeadlessTest
     @Test(timeout=5000)
     public void testOtherLoops() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("counter", "loc://counter");
-        final Device counter = devices.getDevice("counter");
+        final DeviceContext devices = getDemoContext();
+        final Device counter = devices.getDeviceByAlias("counter");
         devices.startDevices();
+        try
+        {
+            final ScanContext context = new ScanContextImpl(devices);
 
-        final ScanContext context = new ScanContextImpl(devices);
+            // Downward loop 5, 4, 3, 2, 1
+            counter.write(4.0);
+            assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
+            LoopCommandImpl loop = new LoopCommandImpl(
+                new LoopCommand("counter", 5.0, 1.0, -1.0, 0.0,
+                    new LogCommand("counter")));
+            System.out.println(loop);
+            context.execute(loop);
+            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        // Downward loop 5, 4, 3, 2, 1
-        counter.write(4.0);
-        assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
-        LoopCommandImpl loop = new LoopCommandImpl(
-            new LoopCommand("counter", 5.0, 1.0, -1.0, 0.0,
-                new LogCommand("counter")));
-        System.out.println(loop);
-        context.execute(loop);
-        assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+            // Step 2: 1, 3, 5, 7, 9
+            loop = new LoopCommandImpl(
+                new LoopCommand("counter", 1.0, 10.0, 2.0, 0.0,
+                    new LogCommand("counter")));
+            System.out.println(loop);
+            context.execute(loop);
+            assertEquals(9.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        // Step 2: 1, 3, 5, 7, 9
-        loop = new LoopCommandImpl(
-            new LoopCommand("counter", 1.0, 10.0, 2.0, 0.0,
-                new LogCommand("counter")));
-        System.out.println(loop);
-        context.execute(loop);
-        assertEquals(9.0, ValueUtil.getDouble(counter.read()), 0.1);
-
-        // Down 3: 8, 5, 2
-        loop = new LoopCommandImpl(
-            new LoopCommand("counter", 8.0, 0.0, -3.0, 0.0,
-                new LogCommand("counter")));
-        System.out.println(loop);
-        context.execute(loop);
-        assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
-
-        devices.stopDevices();
+            // Down 3: 8, 5, 2
+            loop = new LoopCommandImpl(
+                new LoopCommand("counter", 8.0, 0.0, -3.0, 0.0,
+                    new LogCommand("counter")));
+            System.out.println(loop);
+            context.execute(loop);
+            assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
+        }
+        finally
+        {
+            devices.stopDevices();
+        }
     }
 
 
     @Test(timeout=5000)
     public void testReversingLoop() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("counter", "loc://counter");
-        final Device counter = devices.getDevice("counter");
+        final DeviceContext devices = getDemoContext();
+        final Device counter = devices.getDeviceByAlias("counter");
         devices.startDevices();
+        try
+        {
+            // 1 .. 5, but stepping down -> Creates 'reversing' loop
+            LoopCommandImpl loop = new LoopCommandImpl(
+                    new LoopCommand("counter", 1.0, 5.0, -1.0, 0.0,
+                        new LogCommand("counter")));
+            System.out.println(loop);
 
-        // 1 .. 5, but stepping down -> Creates 'reversing' loop
-        LoopCommandImpl loop = new LoopCommandImpl(
-                new LoopCommand("counter", 1.0, 5.0, -1.0, 0.0,
-                    new LogCommand("counter")));
-        System.out.println(loop);
+            final ScanContext context = new ScanContextImpl(devices);
 
-        final ScanContext context = new ScanContextImpl(devices);
+            // Downward loop 5, 4, 3, 2, 1
+            counter.write(4.0);
+            assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
+            context.execute(loop);
+            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        // Downward loop 5, 4, 3, 2, 1
-        counter.write(4.0);
-        assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
-        context.execute(loop);
-        assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+            // On the next iteration, the loop toggles to an upward 1...5
+            context.execute(loop);
+            assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-        // On the next iteration, the loop toggles to an upward 1...5
-        context.execute(loop);
-        assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
-
-        // And then again down 5...1
-        context.execute(loop);
-        assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
-
-        devices.stopDevices();
+            // And then again down 5...1
+            context.execute(loop);
+            assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
+        }
+        finally
+        {
+            devices.stopDevices();
+        }
     }
 }

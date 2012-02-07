@@ -110,7 +110,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         reach_value.await();
 
         // Log the device's value
-        context.logSample(ScanSampleFactory.createSample(device.getName(), device.read()));
+        context.logSample(ScanSampleFactory.createSample(device.getInfo().getAlias(), device.read()));
 
         // Execute loop body
     	context.execute(implementation);
