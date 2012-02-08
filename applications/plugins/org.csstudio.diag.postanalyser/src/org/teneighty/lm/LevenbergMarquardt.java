@@ -1,18 +1,18 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2006 Fran Lattanzio
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -49,10 +49,11 @@ import java.util.Arrays;
  * <p>
  * This class does not support serialization or cloning; it does, however,
  * supports <code>equals(Object)</code> and <code>hashCode()</code>.
- * 
+ *
  * @author Fran Lattanzio
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("nls")
 public class LevenbergMarquardt
 	extends Object
 {
@@ -197,7 +198,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param length the length of the input data.
 	 * @param dim the dimension of the input data.
 	 * @throws IllegalArgumentException If <code>length</code> or
@@ -239,7 +240,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Has the points data been set along all dimensions?
-	 * 
+	 *
 	 * @return boolean true if data has been set along all dimensions.
 	 */
 	public final boolean isDataSet()
@@ -250,7 +251,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Is this LM ready to be solved/stepped/iterated?
-	 * 
+	 *
 	 * @return boolean true if ready.
 	 */
 	public final boolean isReady()
@@ -261,7 +262,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Has this LM been iterated at least once?
-	 * 
+	 *
 	 * @return boolean true if iterated once.
 	 */
 	public final boolean isIterated()
@@ -274,7 +275,7 @@ public class LevenbergMarquardt
 	 * Determine if this instance has reached it's stopping point.
 	 * <p>
 	 * If you want more control over the stopping criteria, override this method.
-	 * 
+	 *
 	 * @return boolean <code>true</code> if done.
 	 */
 	public boolean isFinished()
@@ -286,7 +287,7 @@ public class LevenbergMarquardt
 	/**
 	 * Solve this LM system; more precisely, iterate until <code>isFinished</code>
 	 * returns <code>false</code>.
-	 * 
+	 *
 	 * @see #isFinished()
 	 */
 	public final void solve()
@@ -298,7 +299,7 @@ public class LevenbergMarquardt
 	/**
 	 * Iterate the specified number of steps, or until stop criterion are reached,
 	 * using the specified lambda value.
-	 * 
+	 *
 	 * @param lamb the new lambda value.
 	 * @param steps the (maximum) number times to step.
 	 * @return double the next suggested value for lambda.
@@ -321,7 +322,7 @@ public class LevenbergMarquardt
 	 * Iterate the specified number of steps, or until stop criterion are reached.
 	 * <p>
 	 * This is the method that actually does stuff...
-	 * 
+	 *
 	 * @param steps the number times to step.
 	 * @return double the next suggested value for lambda.
 	 * @throws IllegalArgumentException If <code>steps</code> is not greater
@@ -388,7 +389,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Do one fit iteration, using the current internal lambda value.
-	 * 
+	 *
 	 * @return double the next suggested lambda value.
 	 * @throws IllegalStateException If this object is not ready to iterate.
 	 * @see #step(double)
@@ -404,7 +405,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Do one fit iteration, using the specified lambda value.
-	 * 
+	 *
 	 * @param lamb the lambda value to use.
 	 * @return double the next suggested lambda value.
 	 * @throws IllegalStateException If this object is not ready to iterate.
@@ -433,7 +434,7 @@ public class LevenbergMarquardt
 	 * <li>The current parameter setting.</li>
 	 * <li>The weights.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @see #reset()
 	 */
 	public final void clear()
@@ -459,7 +460,7 @@ public class LevenbergMarquardt
 	 * <li>The current lambda value.</li>
 	 * <li>The current parameter setting.</li>
 	 * </ol>
-	 * 
+	 *
 	 * @see #clear()
 	 */
 	public final void reset()
@@ -555,7 +556,7 @@ public class LevenbergMarquardt
 	/**
 	 * Compute chi-squared error, with the specified weights, and the specified
 	 * parameter vector.
-	 * 
+	 *
 	 * @param parameters the parameters to the cost function.
 	 * @return double the chi-squared error.
 	 */
@@ -577,7 +578,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the cost function.
-	 * 
+	 *
 	 * @return CostFunction the function.
 	 */
 	public final CostFunction getCostFunction()
@@ -588,7 +589,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set the cost function.
-	 * 
+	 *
 	 * @param function the new value for function.
 	 * @throws NullPointerException If <code>function</code> is
 	 *         <code>null</code>.
@@ -632,7 +633,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the parameters.
-	 * 
+	 *
 	 * @return double[] the parameters.
 	 * @throws IllegalStateException If no iteration has occured.
 	 */
@@ -645,7 +646,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the parameters, storing them in the specified location.
-	 * 
+	 *
 	 * @param storein the array in which to store the parameters.
 	 * @return double[] the parameters.
 	 * @throws IllegalStateException If no iteration has occured.
@@ -670,7 +671,7 @@ public class LevenbergMarquardt
 
 	/**
      * Get one of the fit parameters.
-     * 
+     *
      * @param index Index of the parameter to get.
      * @return The parameter.
      * @throws IllegalStateException If no iteration has occurred.
@@ -684,12 +685,12 @@ public class LevenbergMarquardt
         return cur_params[index];
     }
 
-	
+
 	/**
 	 * Get guess.
 	 * <p>
 	 * The returned array is a clone of the internal representation of the guess.
-	 * 
+	 *
 	 * @return double[] the guess.
 	 * @throws IllegalStateException If no cost function has been set.
 	 */
@@ -702,7 +703,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get guess, storring it in the specified array.
-	 * 
+	 *
 	 * @param storein the place to store the guess.
 	 * @return double[] the guess (<code>storein</code> is returned).
 	 * @throws IllegalStateException If no cost function has been set.
@@ -727,7 +728,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set the guess (the inital parameter vector).
-	 * 
+	 *
 	 * @param guess the new value for guess.
 	 * @throws NullPointerException If <code>guess</code> is <code>null</code>.
 	 * @throws IndexOutOfBoundsException If copying would cause access of data
@@ -746,7 +747,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the data points, along the specified dimension.
-	 * 
+	 *
 	 * @param dim the dimension along which to get.
 	 * @return double[][] the points.
 	 * @throws IndexOutOfBoundsException If copying would cause access of data
@@ -765,7 +766,7 @@ public class LevenbergMarquardt
 	/**
 	 * Get points along the specified dimension, storing them in the specified
 	 * array.
-	 * 
+	 *
 	 * @param dim the dimension along which to get data.
 	 * @param storein the array in which to store stuff!
 	 * @return double[] the array <code>storein</code>.
@@ -800,7 +801,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get all data points.
-	 * 
+	 *
 	 * @return double[][] the points.
 	 * @see #getPoints(int)
 	 * @see #getPoints(double[][])
@@ -813,7 +814,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get points, storing them in the specified array.
-	 * 
+	 *
 	 * @param storein the array in which to store stuff!
 	 * @return double[][] the array <code>storein</code>.
 	 * @throws NullPointerException If <code>storein</code> is <code>null</code>.
@@ -877,7 +878,7 @@ public class LevenbergMarquardt
 	 * ...<br>
 	 * [ n ] -&gt; { [ 0 ] -&gt; x<sub>n</sub>, [ 1 ] -&gt; y<sub>n</sub>, [ 2 ] -&gt; z<sub>n</sub> }<br>
 	 * </code>
-	 * 
+	 *
 	 * @param points the new value for points.
 	 * @throws NullPointerException If <code>points</code> is <code>null</code>.
 	 * @throws IndexOutOfBoundsException If copying would cause access of data
@@ -948,7 +949,7 @@ public class LevenbergMarquardt
 	 * <br>
 	 * ... // step or solve lm, extract parameters, and so forth and so on<br>
 	 * </code>
-	 * 
+	 *
 	 * @param points the points.
 	 * @param dim the dimension to set.
 	 * @throws NullPointerException If <code>points</code> is <code>null</code>.
@@ -987,7 +988,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get values.
-	 * 
+	 *
 	 * @return double[] the values.
 	 */
 	public final double[] getValues()
@@ -998,7 +999,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get values, storing them in the specified array.
-	 * 
+	 *
 	 * @param storein the location to store the values.
 	 * @return double[] the same object as <code>storein</code>.
 	 * @throws NullPointerException If <code>storein</code> is <code>null</code>. *
@@ -1015,7 +1016,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set values.
-	 * 
+	 *
 	 * @param values the new value for values.
 	 * @throws NullPointerException If <code>values</code> is <code>null</code>.
 	 * @throws IndexOutOfBoundsException If copying would cause access of data
@@ -1034,7 +1035,7 @@ public class LevenbergMarquardt
 	 * The returned array is a clone of the array used to store the weights
 	 * internally (i.e. changing the values in the returned array after calling
 	 * this method will <i>not</i> change the weights used by this class).
-	 * 
+	 *
 	 * @return double[] the data_weights.
 	 */
 	public final double[] getDataWeights()
@@ -1045,7 +1046,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the data weights, storing them in the specified array.
-	 * 
+	 *
 	 * @param storein the place to store the weights.
 	 * @return double[] the data_weights.
 	 * @throws NullPointerException If <code>storein</code> is <code>null</code>.
@@ -1066,7 +1067,7 @@ public class LevenbergMarquardt
 	 * The specified array is copied locally (i.e. changing
 	 * <code>data_weights</code> after calling this method will <i>not</i>
 	 * change the weights used by this class).
-	 * 
+	 *
 	 * @param data_weights the new value for data_weights.
 	 * @throws IllegalArgumentException If any of the weights are negative, or all
 	 *         are zero.
@@ -1104,7 +1105,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Array copy wrapper.
-	 * 
+	 *
 	 * @param src the source.
 	 * @param dest the destination.
 	 * @param len the length to copy.
@@ -1122,7 +1123,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Array copy wrapper.
-	 * 
+	 *
 	 * @param src the source.
 	 * @param src_off the source offset.
 	 * @param dest the destination
@@ -1144,7 +1145,7 @@ public class LevenbergMarquardt
 	/**
 	 * Array copy wrapper. This is here so as to make (one day possibly)
 	 * supporting strided arrays much easier.
-	 * 
+	 *
 	 * @param src the source.
 	 * @param src_off the source offset.
 	 * @param dest the destination
@@ -1179,7 +1180,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Check the specified array, given the specified offset, length, and stride.
-	 * 
+	 *
 	 * @param array the check.
 	 * @param len the length.
 	 * @throws NullPointerException If <code>array</code> is <code>null</code>.
@@ -1198,7 +1199,7 @@ public class LevenbergMarquardt
 	 * <p>
 	 * Offset and stride are currently ignored; I <i>might</i> support offset
 	 * and/or strided arrays in the future.
-	 * 
+	 *
 	 * @param array the check.
 	 * @param len the length.
 	 * @param offset the offset (currently ignored).
@@ -1225,7 +1226,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the dimension.
-	 * 
+	 *
 	 * @return int the dimension.
 	 */
 	public final int getDimension()
@@ -1236,7 +1237,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the length.
-	 * 
+	 *
 	 * @return int the length.
 	 */
 	public final int getLength()
@@ -1247,7 +1248,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get accuracy.
-	 * 
+	 *
 	 * @return double the accuracy.
 	 */
 	public final double getAccuracy()
@@ -1258,7 +1259,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set accuracy.
-	 * 
+	 *
 	 * @param accuracy the new value for accuracy.
 	 */
 	public final void setAccuracy( final double accuracy )
@@ -1269,7 +1270,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get lambda.
-	 * 
+	 *
 	 * @return double the lambda.
 	 */
 	public final double getLambda()
@@ -1280,7 +1281,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set lambda.
-	 * 
+	 *
 	 * @param lambda the new value for lambda.
 	 */
 	public final void setLambda( double lambda )
@@ -1291,7 +1292,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Get the maximum number of iterations.
-	 * 
+	 *
 	 * @return int the max iteration count.
 	 */
 	public final int getMaximumIterationCount()
@@ -1302,7 +1303,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Set max iteration count.
-	 * 
+	 *
 	 * @param max_iter the max iteration count.
 	 * @throws IllegalArgumentException If <code>max_iter</code> is less than 1.
 	 */
@@ -1321,7 +1322,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * To string.
-	 * 
+	 *
 	 * @return String a string!
 	 */
 	@Override
@@ -1334,7 +1335,7 @@ public class LevenbergMarquardt
 
 	/**
 	 * Hashcode.
-	 * 
+	 *
 	 * @return int a happier hashcode.
 	 */
 	@Override
@@ -1357,7 +1358,7 @@ public class LevenbergMarquardt
 	 * <li>Iteration state</li>
 	 * <li>etc....</li>
 	 * </ul>
-	 * 
+	 *
 	 * @param other the other object.
 	 * @return boolean true if equal.
 	 */
