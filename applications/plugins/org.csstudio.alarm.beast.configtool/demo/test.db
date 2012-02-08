@@ -35,3 +35,14 @@ record(calc, "RFQ_Vac:Pump2:Pressure")
     field(PREC, "1")
 }
 
+record(mbbi, "Messages")
+{
+    field(ZRVL, 0)
+    field(ZRST, "OK")
+    field(ONVL, 1)
+    field(ONST, "Message 1")
+    field(ONSV, "MINOR")
+    field(INP,  "0")
+    field(PINI, "YES")
+}
+
