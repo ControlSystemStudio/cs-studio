@@ -112,7 +112,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         setInput(input);
 
         // Use background Job to obtain device list
-        final Job job = new Job(Messages.SubmitScan)
+        final Job job = new Job(Messages.DeviceListFetch)
         {
             @Override
             protected IStatus run(IProgressMonitor monitor)
