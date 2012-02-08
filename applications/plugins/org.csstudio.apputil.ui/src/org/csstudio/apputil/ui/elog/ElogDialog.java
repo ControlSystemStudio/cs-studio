@@ -74,11 +74,12 @@ abstract public class ElogDialog extends TitleAreaDialog
      *  for a while but still need for example operator displays
      *  to remain responsive.
      */
-	protected void setShellStyle(final int style)
+	@Override
+    protected void setShellStyle(final int style)
 	{
 		super.setShellStyle(style & ~SWT.APPLICATION_MODAL);
 	}
-    
+
     /** Allow resize */
     @Override
     protected boolean isResizable()
