@@ -20,8 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 @SuppressWarnings("nls")
 public class DeviceInfoCellEditor extends OptionListCellEditor
 {
-    private DeviceInfo[] devices;
-
     /** Initialize
      *  @param parent Parent widget
      *  @param devices Available devices
@@ -29,7 +27,6 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
     public DeviceInfoCellEditor(final Composite parent, final DeviceInfo[] devices)
     {
         super(parent, getLabels(devices));
-        this.devices = devices;
     }
 
     /** @param devices Available devices
@@ -37,9 +34,10 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
      */
     private static String[] getLabels(final DeviceInfo[] devices)
     {
-        final String[] labels = new String[devices.length];
-        for (int i=0; i<labels.length; ++i)
-            labels[i] = devices[i].getAlias();
+        final String[] labels = new String[1+devices.length];
+        labels[0] = ""; // Allow selecting "no" device
+        for (int i=0; i<devices.length; ++i)
+            labels[i+1] = devices[i].getAlias();
         return labels;
     }
 
@@ -47,8 +45,7 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
     @Override
     protected Object optionForLabel(final String label)
     {
-        // Actually same as "return label"
-        return devices[getSelectionIndex(label)].getAlias();
+        return label;
     }
 
     /** Turn device name into label */

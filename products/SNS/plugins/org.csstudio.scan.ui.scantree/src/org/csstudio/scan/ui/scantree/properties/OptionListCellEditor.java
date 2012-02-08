@@ -141,7 +141,7 @@ abstract public class OptionListCellEditor extends CellEditor
     abstract protected String labelForOption(Object value);
 
     /** @param label Label that is currently entered/selected in the combo box
-     *  @return Index of corresponding combo box entry
+     *  @return Index of corresponding combo box entry, using 0 if there is no match
      */
     protected int getSelectionIndex(final String label)
     {

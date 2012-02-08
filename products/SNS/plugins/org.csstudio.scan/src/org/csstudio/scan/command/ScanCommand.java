@@ -38,8 +38,9 @@ import org.w3c.dom.Element;
  *  <ul>
  *  <li><code>Double</code> - Edited as number "5", "1e-20" etc.
  *  <li><code>String</code> - Edited as text
- *  <li><code>DeviceInfo</code> - Edited as String, but using device names
- *  <li><code>String[]</code> - Edited as comma-separated list of strings
+ *  <li><code>String[]</code> - Edited as strings
+ *  <li><code>DeviceInfo</code> - Edited as string, but editor suggests available device names
+ *  <li><code>DeviceInfo[]</code> - Edited as strings, but editor suggests available device names
  *  <li><code>Enum</code> - Allows selection among the <code>toString()</code> values of the Enum
  *  <li><code>Object</code> - Edited as String, and if possible converted to Double
  *  </ul>
@@ -80,6 +81,8 @@ abstract public class ScanCommand
         Class<?> type = property.getType();
         if (type == DeviceInfo.class)
             type = String.class;
+        else if (type == DeviceInfo[].class)
+            type = String[].class;
 
         final Method method = getClass().getMethod(meth_name, type);
         method.invoke(this, value);
