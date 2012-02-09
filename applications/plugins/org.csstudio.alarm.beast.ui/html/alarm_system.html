@@ -1253,9 +1253,11 @@ annunciation throttle, use this format:
 </pre>
 </p>
 <p>
-Note the required order of '*' first, then '!':
-The initial '*' tells the alarm server to suppress the alarm severity,
-the following '!' instructs the annunciator to exclude this message
+Either '*!' as shown with '*' first, then '!',
+or '!*' are allowed.
+The '*' tells the alarm server to suppress the alarm severity
+because a custom format is used,
+the '!' instructs the annunciator to exclude this message
 from the message throttle.
 </p>
 
