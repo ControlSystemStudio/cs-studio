@@ -86,6 +86,7 @@ public class Model
     final public static String TAG_ANNOTATION = "annotation";
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
+    final public static String TAG_WAVEFORM_INDEX = "waveform_index";
     
 
     /** Default colors for newly added item, used over when reaching the end.

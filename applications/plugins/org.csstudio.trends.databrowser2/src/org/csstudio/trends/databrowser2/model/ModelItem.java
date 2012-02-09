@@ -282,8 +282,7 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
         Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
-        
-        /* TODO: save waveform index into XML file */  
+        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
     /** Load common XML configuration elements into this item
@@ -311,7 +310,12 @@ abstract public class ModelItem
         {
             trace_type = TraceType.AREA;
         }
+
+        final int waveform_index = DOMHelper.getSubelementInt(node, Model.TAG_WAVEFORM_INDEX, 0);
         
-        /* TODO: restore waveform index from XML file */  
+        // If this method is overridden by the child class, the child's method will be called
+        // to set the waveform index. If it is not overridden, ModelItem's method will be called,
+        // which does nothing.
+        setWaveformIndex(waveform_index);
     }
 }
