@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xms256m -Xmx512m</vmArgs>
+      <vmArgs>-Xms256m -Xmx512m -Dorg.apache.activemq.UseDedicatedTaskRunner=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -47,7 +47,7 @@
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.ui"/>
+      <plugin id="org.csstudio.platform.libs.epics.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
