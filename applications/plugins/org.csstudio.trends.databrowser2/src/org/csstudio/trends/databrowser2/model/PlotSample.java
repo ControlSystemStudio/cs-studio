@@ -119,9 +119,11 @@ public class PlotSample implements ISample
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue())
+        if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
             return ValueUtil.getDouble(value, waveform_index);
-        // No numeric value. Plot shows NaN as marker.
+        }
+        
+        // No numeric value or out of range. Plot shows NaN as marker.
         return Double.NaN;
     }
 
