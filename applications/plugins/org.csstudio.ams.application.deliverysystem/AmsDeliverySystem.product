@@ -43,12 +43,12 @@
       <plugin id="org.csstudio.ams.delivery.email"/>
       <plugin id="org.csstudio.ams.delivery.sms"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
+      <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
