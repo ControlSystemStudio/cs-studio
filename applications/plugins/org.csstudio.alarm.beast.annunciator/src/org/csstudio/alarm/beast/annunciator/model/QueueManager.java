@@ -114,9 +114,12 @@ public class QueueManager implements Runnable
                             else
                                 ++flurry;
                         }
-                        final String more = NLS.bind(Messages.MoreMessagesFmt, flurry);
-                        speech.say(more);
-                        listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
+                        if (flurry > 0)
+                        {
+                            final String more = NLS.bind(Messages.MoreMessagesFmt, flurry);
+                            speech.say(more);
+                            listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
+                        }
                     }
                 }
             }
