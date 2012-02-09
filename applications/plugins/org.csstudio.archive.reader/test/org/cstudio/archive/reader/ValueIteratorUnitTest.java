@@ -5,10 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.reader;
+package org.cstudio.archive.reader;
 
 import static org.junit.Assert.assertEquals;
 
+import org.csstudio.archive.reader.MergingValueIterator;
+import org.csstudio.archive.reader.SpreadsheetIterator;
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
@@ -18,7 +21,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ValueIteratorTest
+public class ValueIteratorUnitTest
 {
     /** Value iterator that produces demo samples 1 ... 10 */
     static class DemoDataIterator implements ValueIterator

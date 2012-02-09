@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.Platform;
 
 /** Factory class that locates {@link ArchiveReader} implementations
  *  from the Eclipse registry based on URLs.
- * 
+ *
  *  @author Kay Kasemir
  *  @author Jan Hatje, Albert Kagarmanov: Previous org.csstudio.archive.ArchiveImplementationRegistry
  */
@@ -29,11 +29,11 @@ public class ArchiveRepository
 
     /** Singleton instance */
     private static ArchiveRepository instance = null;
-    
+
     /** ArchiveReader implementations found in extension registry mapped by prefix */
     final private static Map<String, ArchiveReaderFactory> reader_factories =
                             new HashMap<String, ArchiveReaderFactory>();
-    
+
     /** @return Singleton instance of the ArchiveRepository
      *  @throws Exception on error
      */
@@ -43,7 +43,7 @@ public class ArchiveRepository
             instance = new ArchiveRepository();
         return instance;
     }
-    
+
     /** Initialize from Eclipse plugin registry.
      *  @throws Exception on error
      */
@@ -66,11 +66,11 @@ public class ArchiveRepository
             reader_factories.put(prefix, factory);
         }
     }
-    
+
     /** Only meant for tests, not public API
      *  @return Supported URL prefixes
      */
-    String [] getSupportedPrefixes()
+    public String [] getSupportedPrefixes()
     {
         final Set<String> keys = reader_factories.keySet();
         return keys.toArray(new String[keys.size()]);

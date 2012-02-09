@@ -5,27 +5,27 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.archive.reader;
+package org.cstudio.archive.reader;
 
 import static org.junit.Assert.assertTrue;
 
+import org.csstudio.archive.reader.ArchiveRepository;
 import org.junit.Test;
 
-/** JUnit Plug-in Test of the ArchiveRepository
+/** [Headless] JUnit Plug-in Test of the ArchiveRepository
  *  @author Kay Kasemir
  */
-public class ArchiveRepositoryTest
+@SuppressWarnings("nls")
+public class ArchiveRepositoryHeadlessTest
 {
-    @SuppressWarnings("nls")
     @Test
     public void testArchiveRepository() throws Exception
     {
-        // FIXME (kasemir) : Test with sysos?! Use assertions for expected prefixes
         final ArchiveRepository archives = ArchiveRepository.getInstance();
-        //System.out.println("Located support for these archive URL prefixes:");
+        System.out.println("Located support for these archive URL prefixes:");
         final String prefixes[] = archives.getSupportedPrefixes();
-//        for (String prefix : prefixes)
-//            System.out.println(prefix);
+        for (String prefix : prefixes)
+            System.out.println(prefix);
         assertTrue(prefixes.length > 0);
     }
 }
