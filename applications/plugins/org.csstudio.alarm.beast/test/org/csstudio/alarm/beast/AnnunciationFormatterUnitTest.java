@@ -8,6 +8,8 @@
 package org.csstudio.alarm.beast;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -43,5 +45,17 @@ public class AnnunciationFormatterUnitTest
         message = AnnunciationFormatter.format("   !  *  Tank Temperature at {1} which is {0}", "MINOR", "110");
         System.out.println(message);
         assertEquals("!Tank Temperature at 110 which is MINOR", message);
+    }
+
+    @Test
+    public void testPriority()
+    {
+        assertFalse(AnnunciationFormatter.hasPriority("   Tank Temperature high! "));
+        assertFalse(AnnunciationFormatter.hasPriority("*   Tank Temperature at {1} which is {0} "));
+
+        assertTrue(AnnunciationFormatter.hasPriority("! Tank Temperature high! "));
+        assertTrue(AnnunciationFormatter.hasPriority("*! Tank Temperature at {1} "));
+        assertTrue(AnnunciationFormatter.hasPriority(" *  ! Tank Temperature at {1} "));
+        assertTrue(AnnunciationFormatter.hasPriority(" !  * Tank Temperature at {1} "));
     }
 }

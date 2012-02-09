@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.osgi.util.NLS;
 
 /** Formatter for alarm system annunciations
@@ -17,9 +19,19 @@ import org.eclipse.osgi.util.NLS;
  *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class AnnunciationFormatter
 {
+    final private static Pattern priority_pattern = Pattern.compile(Messages.PriorityAnnunciationPattern);
+
+    /** Determine if the format describes a 'priority' message
+     *  @param format Format
+     *  @return <code>true</code> for priority message
+     */
+    public static boolean hasPriority(final String format)
+    {
+        return priority_pattern.matcher(format).matches();
+    }
+
     /** Create message for annunciation
      *  @param format Format to use, either the plain description or a format
      *                that starts with '*' and may then include {0} for the severity
@@ -49,7 +61,7 @@ public class AnnunciationFormatter
                 format = format.substring(Messages.PriorityAnnunciationPrefix.length()).trim();
             }
             if (value == null)
-                value = "null";
+                value = "null"; //$NON-NLS-1$
             // Use custom format
             message = NLS.bind(format, severity, value);
         }
