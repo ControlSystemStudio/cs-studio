@@ -11,5 +11,5 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil;bundle-version="3.0.1",
  org.csstudio.utility.pv,
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
- org.csstudio.alarm.beast;bundle-version="3.0.0"
+ org.csstudio.alarm.beast;bundle-version="3.1.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

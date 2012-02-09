@@ -11,6 +11,8 @@ import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
+
+import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TreeItem;
@@ -21,7 +23,6 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
-import org.eclipse.osgi.util.NLS;
 
 /** A PV with alarm state
  *  @author Kay Kasemir
@@ -125,12 +126,7 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     {
         this.description = description;
         // Determine 'priority' based on description
-        final String basic_description;
-        if (description.startsWith(Messages.FormattedAnnunciationPrefix))
-            basic_description = description.substring(Messages.FormattedAnnunciationPrefix.length()).trim();
-        else
-            basic_description = description.trim();
-        logic.setPriority(basic_description.startsWith("!"));
+        logic.setPriority(AnnunciationFormatter.hasPriority(description));
     }
 
     /** Set enablement.
@@ -275,26 +271,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener,
     @Override
     public void annunciateAlarm(final SeverityLevel level)
     {
+        final String value = getAlarmLogic().getAlarmState().getValue();
+        final String message = AnnunciationFormatter.format(description, level.getDisplayName(), value);
 
-        final String message;
-        // For annunciation texts like "* Some Message" where
-        // "*" is the FormattedAnnunciationPrefix, remove the prefix
-        // and use the description as a format.
-        // Otherwise use the severity level and the text with the
-        // normal AnnunciationFmt
-        if (description.startsWith(Messages.FormattedAnnunciationPrefix))
-        {
-            String value = getAlarmLogic().getAlarmState().getValue();
-            if (value == null)
-            	value = "null";
-        	message = NLS.bind(description.substring(Messages.FormattedAnnunciationPrefix.length()),
-        			level.getDisplayName(), value);
-        }
-        else
-            message = NLS.bind(Messages.AnnunciationFmt,
-                               level.getDisplayName(),
-                               description);
-        
         if (server != null)
             server.sendAnnunciation(level, message);
     }
