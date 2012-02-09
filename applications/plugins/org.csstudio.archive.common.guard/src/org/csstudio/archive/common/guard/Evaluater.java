@@ -10,35 +10,91 @@ import org.csstudio.domain.desy.time.TimeInstant;
 
 public class Evaluater {
 
-	public void analyse(List<SampleGapsForChannel> lostSamples) {
-		for (SampleGapsForChannel sampleGapsForChannel : lostSamples) {
-			System.out.println("Channel: " + sampleGapsForChannel.getChannelName());
-			List<SampleGap> gapList = sampleGapsForChannel.getGapList();
-			for (SampleGap sampleGap : gapList) {
-				System.out.println("Gap : " + sampleGap.getStart() + " - " + sampleGap.getEnd());
+	public void printIntervals(List<PvIntervalList> listOfPvIntervals) {
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			System.out.println("Channel: " + pvIntervalList.getChannelName());
+			for (Interval interval : pvIntervalList.getIntervalList()) {
+				System.out.println("Interval : " + interval.getStart() + " - " + interval.getEnd() + " : " + interval.getSampleCount());
 			}
 		}
 	}
 
-	public void aggregateGapsForRange(List<SampleGapsForChannel> lostSamples) {
-		Map<TimeInstant, Integer> aggregatedGaps = new HashMap<TimeInstant, Integer>();
-		for (SampleGapsForChannel sampleGapsForChannel : lostSamples) {
-			List<SampleGap> gapList = sampleGapsForChannel.getGapList();
-			for (SampleGap sampleGap : gapList) {
-				Integer sum = aggregatedGaps.get(sampleGap.getStart());
-				if (sum == null) {
-					sum = 1;
-				} else {
-					sum++;
+	public List<PvIntervalList> removeEmptyPvLists(List<PvIntervalList> listOfPvIntervals) {
+		List<PvIntervalList> intervalListsToRemove = new ArrayList<>();
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			if(pvIntervalList.isAllIntervalsEmpty()) {
+				System.out.println("Remove Channel: " + pvIntervalList.getChannelName());
+				intervalListsToRemove.add(pvIntervalList);
+			}
+		}
+		listOfPvIntervals.removeAll(intervalListsToRemove);
+		return listOfPvIntervals;
+	}
+
+	public void printAverageAndVariance(List<PvIntervalList> listOfPvIntervals) {
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			System.out.println("Channel: " + pvIntervalList.getChannelName() + "  avg: " + pvIntervalList.getAverageIntervalCount() + 
+					" Variance: " + pvIntervalList.getVariance());
+		}
+	}
+
+	public List<PvIntervalList> removeSmallAvgPvLists(
+			List<PvIntervalList> listOfPvIntervals, int threshold) {
+		List<PvIntervalList> intervalListsToRemove = new ArrayList<>();
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			if(pvIntervalList.getAverageIntervalCount() < 10) {
+				System.out.println("Remove Channel: " + pvIntervalList.getChannelName());
+				intervalListsToRemove.add(pvIntervalList);
+			}
+		}
+		listOfPvIntervals.removeAll(intervalListsToRemove);
+		return listOfPvIntervals;
+	}
+
+	public Map<TimeInstant, List<String>> aggregateGapsForRange(List<PvIntervalList> listOfPvIntervals) {
+		Map<TimeInstant, List<String>> gapsMap = prepareGapsMap(listOfPvIntervals);
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			for (Interval interval : pvIntervalList.getIntervalList()) {
+				if(interval.getSampleCount() == 0) {
+					List<String> list = gapsMap.get(interval.getStart());
+					list.add(pvIntervalList.getChannelName());
 				}
-				aggregatedGaps.put(sampleGap.getStart(), sum);
 			}
 		}
-		Set<TimeInstant> keySet = aggregatedGaps.keySet();
+		return gapsMap;
+	}
+
+	private Map<TimeInstant, List<String>> prepareGapsMap(List<PvIntervalList> listOfPvIntervals) {
+		Map<TimeInstant, List<String>> gaps = new HashMap<>();
+		PvIntervalList intervalList = listOfPvIntervals.get(0);
+		if(intervalList != null) {
+			for (Interval interval : intervalList.getIntervalList()) {
+				List<String> list = new ArrayList<>();
+				gaps.put(interval.getStart(), list);
+			}
+		}
+		return gaps;
+	}
+
+	public void printAggregatedGaps(Map<TimeInstant, List<String>> gaps) {
+		Set<TimeInstant> keySet = gaps.keySet();
 		for (TimeInstant timeInstant : keySet) {
-			Integer integer = aggregatedGaps.get(timeInstant);
-			System.out.println("range : " + timeInstant.getSeconds() + " sum: " + integer);
+			List<String> channelNames = gaps.get(timeInstant);
+			for (String channelName : channelNames) {
+				System.out.println("Time: " + timeInstant.toString() + " - channel: " + channelName);
+			}
 		}
 	}
 
+	public void printLostHourSamples(List<PvIntervalList> listOfPvIntervals) {
+		for (PvIntervalList pvIntervalList : listOfPvIntervals) {
+			System.out.println("channel: " + pvIntervalList.getChannelName());
+			for (Interval interval : pvIntervalList.getIntervalList()) {
+				if(interval.isHourSampleLost()) {
+					System.out.println("Lost: " + interval.getStart());
+				}
+				
+			}
+		}
+	}
 }
