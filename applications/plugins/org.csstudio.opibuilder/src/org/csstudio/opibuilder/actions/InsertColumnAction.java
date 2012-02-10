@@ -32,7 +32,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Xihui Chen
  *
  */
-public class ShowPVInfoAction implements IObjectActionDelegate {
+public class InsertColumnAction implements IObjectActionDelegate {
 	
 	private final class PVsInfoDialog extends MessageDialog {
 		
@@ -67,14 +67,12 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 	private IStructuredSelection selection;
 	private IWorkbenchPart targetPart;
 	
-	public ShowPVInfoAction() {
+	public InsertColumnAction() {
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = targetPart;
 	}
-	
-	
 
 	public void run(IAction action) {
 		if(getSelectedWidget() == null || 

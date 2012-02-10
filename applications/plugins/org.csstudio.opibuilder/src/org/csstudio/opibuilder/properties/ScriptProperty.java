@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.CDATA;
 import org.jdom.Element;
 
 /**The property for script.
@@ -159,7 +160,7 @@ public class ScriptProperty extends AbstractWidgetProperty {
 					scriptNameElement.setText(scriptData.getScriptName());
 					pathElement.addContent(scriptNameElement);
 					Element scriptTextElement = new Element(XML_ELEMENT_SCRIPT_TEXT);
-					scriptTextElement.setText(scriptData.getScriptText());
+					scriptTextElement.setContent(new CDATA(scriptData.getScriptText()));
 					pathElement.addContent(scriptTextElement);
 				}else
 					pathString = scriptData.getPath().toPortableString();

@@ -31,16 +31,17 @@
     <li><a href = "#getPropertyValue(java.lang.String)">getPropertyValue(prop_id) </a></li>
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object)">setPropertyValue(prop_id, value)</a></li>
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object, boolean)">setPropertyValue(prop_id, value, forceFire)</a></li>
+    <li><a href = "#getPVByName(java.lang.String)">getPVByName(pvName) </a></li>
     <li><a href = "#setVar(java.lang.String, java.lang.Object)">setVar(varName, varValue)</a></li>
     <li><a href = "#getVar(java.lang.String)">getVar(name)</a></li>
     <li><a href = "#getMacroValue(java.lang.String)">getMacroValue(macroName)</a></li>
     <li><a href = "#executeAction(int)">executeAction(index)</a></li>
-    <li><a href = "#setEnabled(boolean)">setEnabled(enable)</li>
-    <li><a href = "#setVisible(boolean)">setVisible(visible)</li>
-    <li><a href = "#setX(java.lang.Number)">setX(x)</li>
-	<li><a href = "#setY(java.lang.Number)">setY(y)</li>
-	<li><a href = "#setWidth(java.lang.Number)">setWidth(width)</li>
-	<li><a href = "#setHeight(java.lang.Number)">setHeight(height)</li>
+    <li><a href = "#setEnabled(boolean)">setEnabled(enable)</a></li>
+    <li><a href = "#setVisible(boolean)">setVisible(visible)</a></li>
+    <li><a href = "#setX(java.lang.Number)">setX(x)</a></li>
+	<li><a href = "#setY(java.lang.Number)">setY(y)</a></li>
+	<li><a href = "#setWidth(java.lang.Number)">setWidth(width)</a></li>
+	<li><a href = "#setHeight(java.lang.Number)">setHeight(height)</a></li>
     
     </ul>
  <a name="ContainerWidgets"></a>
@@ -127,6 +128,25 @@ public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
 </DD>
 </DL>
 <HR>
+
+<A NAME="getPVByName(java.lang.String)"><!-- --></A><H3>
+getPVByName</H3>
+<PRE>
+public org.csstudio.utility.pv.PV <B>getPVByName</B>(java.lang.String&nbsp;pvName)</PRE>
+<DL>
+<DD>Get PV attached to this widget by pv name. It includes the PVs in Rules and Scripts.
+<P>
+<DD><DL>
+</DL>
+</DD>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pvName</CODE> - name of the PV.
+<DT><B>Returns:</B><DD>the PV. null if no such PV exists.</DL>
+</DD>
+</DL>
+<HR>
+
+
 
 <A NAME="setVar(java.lang.String, java.lang.Object)"><!-- --></A><H3>
 setVar</H3>

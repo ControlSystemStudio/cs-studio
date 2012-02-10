@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties.support;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
+import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
 import org.csstudio.opibuilder.visualparts.StringTableCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -26,7 +26,7 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 public final class StringTablePropertyDescriptor extends TextPropertyDescriptor {
 	
 	private String displayName;
-	private String[] columnTitles;
+	private TitlesProvider columnTitles;
 	/**
 	 * Standard constructor.
 	 * 
@@ -35,24 +35,22 @@ public final class StringTablePropertyDescriptor extends TextPropertyDescriptor 
 	 * @param displayName
 	 *            the name to display for the property
 	 */
-	public StringTablePropertyDescriptor(final Object id, final String displayName, final String[] columnTitles) {
+	public StringTablePropertyDescriptor(final Object id, final String displayName, final TitlesProvider tilesProvider) {
 		super(id, displayName);
 		this.displayName = displayName;
-		this.columnTitles = columnTitles;
+		this.columnTitles = tilesProvider;
 		setLabelProvider(new LabelProvider(){
-			@SuppressWarnings("unchecked")
 			@Override
 			public String getText(Object element) {
 				if(element == null)
 					return ""; //$NON-NLS-1$
-				else if(!(element instanceof List<?>))
+				else if(!(element instanceof String[][]))
 					return element.toString();
-				List<String[]> stringTable = (List<String[]>)element;
-				List<String> valueList = new ArrayList<String>(stringTable.size());
-				for(String[] item : stringTable){
-					valueList.add(item[0]);
-				}
-				return valueList.toString();
+				String[][] stringTable = (String[][])element;
+				if(stringTable.length >0)
+					return Arrays.toString(stringTable[0]) +
+							(stringTable.length > 1? "..." : ""); //$NON-NLS-1$ //$NON-NLS-2$
+				return ""; //$NON-NLS-1$
 			}
 		});
 	}

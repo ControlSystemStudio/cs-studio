@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.properties;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -27,16 +28,17 @@ public class StringListProperty extends AbstractWidgetProperty {
 	 */
 	public static final String XML_ELEMENT_ITEM = "s"; //$NON-NLS-1$
 
-	/**StringList Property Constructor. The property value type is {@link List}.
+	/**StringList Property Constructor. The property value type is {@link List} of Strings.
 	 * @param prop_id the property id which should be unique in a widget model.
 	 * @param description the description of the property,
 	 * which will be shown as the property name in property sheet.
 	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
+	 * @param defaultValue the default value when the widget is first created. It can be null.
 	 */
 	public StringListProperty(String prop_id, String description,
 			WidgetPropertyCategory category, List<String> default_value) {
-		super(prop_id, description, category, default_value);		
+		super(prop_id, description, category, 
+				default_value == null? Collections.EMPTY_LIST: default_value);		
 	}
 
 	@SuppressWarnings("unchecked")

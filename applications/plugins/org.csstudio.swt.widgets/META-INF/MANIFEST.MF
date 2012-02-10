@@ -21,6 +21,7 @@ Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.figureparts,
  org.csstudio.swt.widgets.figures,
  org.csstudio.swt.widgets.introspection,
+ org.csstudio.swt.widgets.natives,
  org.csstudio.swt.widgets.util
 Import-Package: org.eclipse.draw2d,
  org.eclipse.draw2d.geometry

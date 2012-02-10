@@ -51,10 +51,12 @@ public class StringTableEditDialog extends Dialog {
 		// at least on OS X, it has some minimum size below which it
 		// doesn't properly shrink.
 		int[] columnWidths = new int[columnTitles.length];
-		Arrays.fill(columnWidths, 150);
+		Arrays.fill(columnWidths, 80);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd.heightHint=200;
 		tableEditor = new StringTableEditor(container,columnTitles, 
 				null, contents, null, columnWidths);
-		tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
+		tableEditor.setLayoutData(gd);	
 	
 		return container;
 	}
