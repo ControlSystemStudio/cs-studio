@@ -98,7 +98,9 @@ public class XMLUtil {
 	 * @return the XML String
 	 */
 	public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
-		Format format = prettyFormat? Format.getPrettyFormat() : Format.getRawFormat();
+		Format format = Format.getRawFormat();		
+		if(prettyFormat)
+			format.setIndent("  "); //$NON-NLS-1$
 		XMLOutputter xmlOutputter = new XMLOutputter();
 		xmlOutputter.setFormat(format);
 
@@ -112,8 +114,10 @@ public class XMLUtil {
 	 * @throws IOException
 	 */
 	public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
-		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() :
-			Format.getRawFormat());
+		Format format = Format.getRawFormat();		
+		if(prettyFormat)
+			format.setIndent("  "); //$NON-NLS-1$
+		XMLOutputter xmlOutputter = new XMLOutputter(format);
 		out.write(XML_HEADER.getBytes("UTF-8")); //$NON-NLS-1$
 		xmlOutputter.output(widgetToXMLElement(widgetModel), out);
 	}
