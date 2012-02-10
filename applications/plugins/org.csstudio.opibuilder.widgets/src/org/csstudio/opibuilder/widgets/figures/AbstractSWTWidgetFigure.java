@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.AncestorListener;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -53,7 +54,19 @@ so change its order with change order action will only be reflected after reopen
  * 
  */
 public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure {
-
+	
+	private class ToolTipListener extends MouseTrackAdapter {
+		private Control control;
+		
+		public ToolTipListener(Control control) {
+			this.control = control;
+		}	
+		
+		public void mouseEnter(MouseEvent e) {
+			control.setToolTipText(editPart.getWidgetModel()
+					.getTooltip());
+		};
+	}
 	protected boolean runmode;
 	protected AbstractBaseEditPart editPart;
 	
@@ -138,7 +151,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				//newly created widget on top	
 				if(wrapComposite==null)
 					swtWidget.moveAbove(null);
-				swtWidget.setEnabled(runmode);
+//				if(!runmode)
+//					swtWidget.setEnabled(false);
 				// select the swt widget when menu about to show
 
 				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
@@ -150,17 +164,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 					}
 				};
 				
-				addMenuDetectListener(swtWidget, menuDetectListener);
-				
-				// update tooltip
-				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget, 
-						new MouseTrackAdapter() {
-					@Override
-					public void mouseEnter(MouseEvent e) {
-						swtWidget.setToolTipText(editPart.getWidgetModel()
-								.getTooltip());
-					}
-				});
+				hookGEFToSWTWidget(swtWidget, menuDetectListener);
 
 				// hook the context menu to combo
 				swtWidget.setMenu(editPart.getViewer().getContextMenu()
@@ -170,14 +174,16 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			/**Add menu detect listener recursively to all children widgets inside the SWT Widget.
 			 * @param swtWidget
 			 * @param menuDetectListener
+			 * @param toolTipListener 
 			 */
-			private void addMenuDetectListener(final Control swtWidget,
+			private void hookGEFToSWTWidget(final Control swtWidget,
 					MenuDetectListener menuDetectListener) {
 				swtWidget.addMenuDetectListener(menuDetectListener);
+				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget,new ToolTipListener(swtWidget));
 				//hack for composite widget with multiple children.
 				if(swtWidget instanceof Composite){
 					for(Control control : ((Composite)swtWidget).getChildren()){
-						addMenuDetectListener(control, menuDetectListener);						
+						hookGEFToSWTWidget(control, menuDetectListener);						
 					}
 				}
 			}
@@ -232,8 +238,11 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (getSWTWidget() != null && !getSWTWidget().isDisposed())
+		if (getSWTWidget() != null && !getSWTWidget().isDisposed()){
 			getSWTWidget().setEnabled(runmode && value);
+			if(wrapComposite != null)
+				wrapComposite.setEnabled(runmode && value);
+		}
 	}
 
 	@Override
@@ -272,7 +281,25 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		repaintWidget();
+		paintOutlineFigure(graphics);
 		super.paintClientArea(graphics);
+	}
+	
+	/**Paint an outline figure so it can be viewed in outline view in edit mode.
+	 * It is a white filled rectangle with gray border by default. Subclass may override it
+	 * accordingly. 
+	 * @param graphics The Graphics used to paint
+	 */
+	protected void paintOutlineFigure(Graphics graphics){
+		// draw this so that it can be seen in the outline view
+		if (!runmode) {
+			graphics.setBackgroundColor(ColorConstants.white);
+			graphics.fillRectangle(getClientArea());
+			if(getBorder() == null){
+				graphics.setForegroundColor(ColorConstants.gray);
+				graphics.drawRectangle(getBounds());
+			}
+		}
 	}
 
 	/**
