@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.kek.product.application"
-            name="Css">
+            name="Control System Studio for KEK">
          <property
                name="appName"
-               value="Css">
+               value="Control System Studio for KEK">
          </property>
          <property
                name="aboutImage"
