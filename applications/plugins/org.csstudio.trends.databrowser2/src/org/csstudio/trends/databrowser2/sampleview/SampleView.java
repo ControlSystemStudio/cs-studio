@@ -53,7 +53,7 @@ public class SampleView extends DataBrowserAwareView
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
-
+    
     /** GUI elements */
     private Combo items;
     private TableViewer sample_table;
@@ -88,7 +88,7 @@ public class SampleView extends DataBrowserAwareView
                     sample_table.setInput(null);
                     return;
                 }
-                final ModelItem item = model.getItem(items.getText());
+                final ModelItem item = model.getItem(items.getSelectionIndex() - 1);
                 if (item == null)
                     return;
                 sample_table.setInput(item);
@@ -248,21 +248,23 @@ public class SampleView extends DataBrowserAwareView
         final String names[] = new String[model.getItemCount()+1];
         names[0] = Messages.SampleView_SelectItem;
         for (int i=1; i<names.length; ++i)
-            names[i] = model.getItem(i-1).getName();
+            names[i] = model.getItem(i-1).getName() + model.getItem(i-1).hashCode();
         if (old_model == model  &&  items.getSelectionIndex() > 0)
         {
             // Is the previously selected item still valid?
-            final String old_name = items.getText();
-            final ModelItem item = model.getItem(old_name);
-            if (item == sample_table.getInput())
-            {   // Show same PV name again in combo box
-                items.setItems(names);
-                items.setText(item.getName());
-                // Update sample table size
-                sample_table.setItemCount(item.getSamples().getSize());
-                sample_table.refresh();
-                return;
-            }
+        	if (sample_table.getInput() instanceof ModelItem)
+        	{
+        		final ModelItem selected_item = (ModelItem) sample_table.getInput();
+        		if (model.indexOf(selected_item) != -1)
+        		{   // Show same PV name again in combo box
+        			items.setItems(names);
+        			items.setText(selected_item.getName());
+        			// Update sample table size
+        			sample_table.setItemCount(selected_item.getSamples().getSize());
+        			sample_table.refresh();
+        			return;
+        		}
+        	}
         }
         // Previously selected item no longer valid.
         // Show new items, clear rest
