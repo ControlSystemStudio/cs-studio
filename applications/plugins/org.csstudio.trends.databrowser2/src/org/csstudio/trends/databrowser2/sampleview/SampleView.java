@@ -258,7 +258,8 @@ public class SampleView extends DataBrowserAwareView
         		if (model.indexOf(selected_item) != -1)
         		{   // Show same PV name again in combo box
         			items.setItems(names);
-        			items.setText(selected_item.getName());
+        			items.select(model.indexOf(selected_item) + 1);
+        			items.setEnabled(true);
         			// Update sample table size
         			sample_table.setItemCount(selected_item.getSamples().getSize());
         			sample_table.refresh();
