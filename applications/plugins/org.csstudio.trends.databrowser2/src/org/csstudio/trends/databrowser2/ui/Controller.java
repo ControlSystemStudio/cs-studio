@@ -37,7 +37,6 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -242,32 +241,21 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                    final ModelItem item = model.getItem(name.getName());
-                    if (item == null)
-                    {
-                        final OperationsManager operations_manager = plot.getOperationsManager();
+                	
+                	// Add the given PV to the model anyway even if the same PV
+                	// exists in the model.
+                    final OperationsManager operations_manager = plot.getOperationsManager();
 
-                        // Add to first empty axis, or create new axis
-                        AxisConfig axis = model.getEmptyAxis();
-                        if (axis == null)
-                            axis = new AddAxisCommand(operations_manager, model).getAxis();
+                    // Add to first empty axis, or create new axis
+                    AxisConfig axis = model.getEmptyAxis();
+                    if (axis == null)
+                        axis = new AddAxisCommand(operations_manager, model).getAxis();
 
-                        // Add new PV
-                        AddModelItemCommand.forPV(shell, operations_manager,
-                                model, name.getName(), Preferences.getScanPeriod(),
-                                axis, archive);
-                        return;
-                    }
-                    if (archive == null  ||   ! (item instanceof PVItem))
-                    {   // Duplicate PV, or a formula to which we cannot add archives
-                        MessageDialog.openError(shell, Messages.Error,
-                                NLS.bind(Messages.DuplicateItemFmt, name));
-                        return;
-                    }
-                    // Add archive to existing PV
-                    if (item instanceof PVItem)
-                        new AddArchiveCommand(plot.getOperationsManager(),
-                                (PVItem) item, archive);
+                    // Add new PV
+                    AddModelItemCommand.forPV(shell, operations_manager,
+                            model, name.getName(), Preferences.getScanPeriod(),
+                            axis, archive);
+                    return;
                 }
             }
         });
