@@ -265,6 +265,9 @@ public class SampleView extends DataBrowserAwareView
     	update(old_model != model);
     }
     
+    /** Update combo box of this view.
+     * @param model_changed set true if the model was changed.
+     */
     private void update(final boolean model_changed)
     {
         if (model == null)
@@ -327,6 +330,13 @@ public class SampleView extends DataBrowserAwareView
 	    // Be aware of the addition of a new item to update combo box.
 		update(false);
 	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void changedItemLook(ModelItem item) {
+		// Be aware of the change of the item name.
+		update(false);
+	}
 
 	// Following methods are defined as they are mandatory to fulfill
 	// ModelListener interface, but they are not used at all to update
@@ -348,9 +358,6 @@ public class SampleView extends DataBrowserAwareView
 
 	@Override
 	public void changedItemVisibility(ModelItem item) {}
-
-	@Override
-	public void changedItemLook(ModelItem item) {}
 
 	@Override
 	public void changedItemDataConfig(PVItem item) {}
