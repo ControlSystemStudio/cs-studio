@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
  *  can link to related CSS tools.
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
 public class PVItem extends ModelItem implements PVListener
 {

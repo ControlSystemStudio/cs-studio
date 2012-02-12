@@ -28,6 +28,7 @@ import org.csstudio.data.values.IValue;
  *  hidden below the 'live' time range.
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed HistoricSamples to handle waveform index.
  */
 public class HistoricSamples extends PlotSamples
 {

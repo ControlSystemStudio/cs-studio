@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 /** Data Sample from control system (IValue)
  *  with interface for XYGraph (ISample)
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
  */
 public class PlotSample implements ISample
 {
@@ -158,6 +159,11 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
+        
+        /*
+         * TODO: think of what to be changed.
+         * What is the meaning of minimum in case the value represents array? 
+         */
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getValue() - minmax.getMinimum();
     }
@@ -168,6 +174,11 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
+ 
+        /*
+         * TODO: think of what to be changed.
+         * What is the meaning of minimum in case the value represents array? 
+         */
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getMaximum() - minmax.getValue();
     }

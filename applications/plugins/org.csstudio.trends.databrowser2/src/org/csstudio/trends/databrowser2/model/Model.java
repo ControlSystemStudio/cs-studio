@@ -40,6 +40,10 @@ import org.w3c.dom.Element;
  *  Maintains a list of {@link ModelItem}s
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed the model to accept multiple items with
+ *                           the same name so that Data Browser can show the
+ *                           trend of the same PV in different axes or with
+ *                           different waveform indexes.
  */
 @SuppressWarnings("nls")
 public class Model
@@ -369,11 +373,12 @@ public class Model
      */
     public void addItem(final ModelItem item) throws Exception
     {
-    	// A new item with the same PV name are allowed to be added in the model.
-    	// This way Data Browser can show the trend of the same PV in different axes or with
-    	// different waveform indexs (Takashi Nakamoto). For example, one may want to show
-    	// the first element of epics://aaa:bbb in axis 1 while showing the third element of
-    	// the same PV in axis 2 to compare their trends in one chart.
+    	// A new item with the same PV name are allowed to be added in the
+    	// model. This way Data Browser can show the trend of the same PV
+    	// in different axes or with different waveform indexes. For example,
+    	// one may want to show the first element of epics://aaa:bbb in axis 1
+    	// while showing the third element of the same PV in axis 2 to compare
+    	// their trends in one chart.
     	//
         // if (getItem(item.getName()) != null)
         //        throw new RuntimeException("Item " + item.getName() + " already in Model");

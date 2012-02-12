@@ -24,6 +24,7 @@ import org.csstudio.trends.databrowser2.Messages;
  *  that the last value is still valid.
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed PVSamples to handle waveform index.
  */
 public class PVSamples extends PlotSamples
 {

@@ -15,6 +15,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
  *  New samples are always added to the end of a ring buffer.
  * 
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed LiveSamples to handle waveform index.
  */
 public class LiveSamples extends PlotSamples
 {

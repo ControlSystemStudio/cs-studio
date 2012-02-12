@@ -50,6 +50,8 @@ import org.eclipse.swt.widgets.Table;
  *  @author Albert Kagarmanov changed the previous Data Browser's
  *              SampleTableLabelProvider to show numbers with 4 trailing digits.
  *              This implementation uses tooltips to show the Double.toString(number)
+ *  @author Takashi Nakamoto changed SampleView to handle multiple items with the
+ *                           same name correctly. 
  */
 public class SampleView extends DataBrowserAwareView
 	implements ModelListener
