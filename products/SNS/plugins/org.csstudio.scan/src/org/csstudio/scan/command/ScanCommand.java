@@ -38,6 +38,7 @@ import org.w3c.dom.Element;
  *  <ul>
  *  <li><code>Double</code> - Edited as number "5", "1e-20" etc.
  *  <li><code>String</code> - Edited as text
+ *  <li><code>Boolean</code> - Edited as yes/no
  *  <li><code>String[]</code> - Edited as strings
  *  <li><code>DeviceInfo</code> - Edited as string, but editor suggests available device names
  *  <li><code>DeviceInfo[]</code> - Edited as strings, but editor suggests available device names

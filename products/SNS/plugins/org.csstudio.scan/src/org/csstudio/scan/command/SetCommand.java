@@ -31,25 +31,52 @@ public class SetCommand extends ScanCommand
     {
         new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
         new ScanCommandProperty("value", "Value", Object.class),
+        new ScanCommandProperty("readback", "Readback Device", DeviceInfo.class),
+        new ScanCommandProperty("wait", "Wait for readback", Boolean.class),
+        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
+        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
     };
 
     private String device_name;
 	private Object value;
+	private String readback;
+	private boolean wait;
+    private double tolerance;
+    private double timeout;
 
     /** Initialize empty set command */
     public SetCommand()
     {
-        this("device", 0.0);
+        this("device", 0.0, "", true, 0.1, 0.0);
     }
 
-	/** Initialize
+    /** Initialize
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     */
+    public SetCommand(final String device_name, final Object value)
+    {
+        this(device_name, value, device_name, true, 0.1, 0.0);
+    }
+
+    /** Initialize
 	 *  @param device_name Name of device
 	 *  @param value Value to write to the device
+	 *  @param readback Readback device
+	 *  @param wait Wait for readback to match?
+     *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, 0 as "forever"
 	 */
-	public SetCommand(final String device_name, Object value)
+	public SetCommand(final String device_name, final Object value,
+	        final String readback, final boolean wait,
+            final double tolerance, final double timeout)
     {
 		this.device_name = device_name;
 		this.value = value;
+		this.readback = readback;
+		this.wait = wait;
+        this.tolerance = tolerance;
+        this.timeout = timeout;
     }
 
 	/** {@inheritDoc} */
@@ -83,12 +110,85 @@ public class SetCommand extends ScanCommand
         this.value = value;
     }
 
+    /** @return Name of readback device */
+    public String getReadback()
+    {
+        return readback;
+    }
+
+    /** @param readback Name of readback device */
+    public void setReadback(final String readback)
+    {
+        this.readback = readback;
+    }
+
+    /** @return Wait for readback to match? */
+    public boolean getWait()
+    {
+        return wait;
+    }
+
+    /** @param wait Wait for readback to match? */
+    public void setWait(final Boolean wait)
+    {
+        this.wait = wait;
+    }
+
+    /** @return Tolerance */
+    public double getTolerance()
+    {
+        return tolerance;
+    }
+
+    /** @param tolerance Tolerance */
+    public void setTolerance(final Double tolerance)
+    {
+        this.tolerance = tolerance;
+    }
+
+    /** @return Timeout in seconds */
+    public double getTimeout()
+    {
+        return timeout;
+    }
+
+    /** @param timeout Time out in seconds */
+    public void setTimeout(final Double timeout)
+    {
+        this.timeout = timeout;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
-        out.println("<set><device>" + device_name + "</device><value>" + value + "</value></set>");
+        out.println("<set>");
+        writeIndent(out, level+1);
+        out.println("<device>" + device_name + "</device>");
+        writeIndent(out, level+1);
+        out.println("<value>" + value + "</value>");
+        if (! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
+        }
+        if (! wait)
+        {
+            writeIndent(out, level+1);
+            out.println("<wait>" + wait + "</wait>");
+        }
+        if (tolerance > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<tolerance>" + tolerance + "</tolerance>");
+        }
+        if (timeout > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<timeout>" + timeout + "</timeout>");
+        }
+        out.println("</set>");
     }
 
     /** {@inheritDoc} */
@@ -97,12 +197,32 @@ public class SetCommand extends ScanCommand
     {
         setDeviceName(DOMHelper.getSubelementString(element, "device"));
         setValue(DOMHelper.getSubelementDouble(element, "value"));
+        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
     }
 
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
-	    return "Set '" + device_name + "' = " + value;
+	    final StringBuilder buf = new StringBuilder();
+	    buf.append("Set '").append(device_name).append("' = ").append(value);
+	    if (wait)
+	    {
+	        if (!readback.isEmpty()  &&  !device_name.equals(readback))
+	        {
+	            buf.append(" (readback '").append(readback);
+	            buf.append("' +-").append(tolerance);
+	            if (timeout > 0)
+	                buf.append(", ").append(timeout).append(" sec timeout");
+	            buf.append(")");
+	        }
+	    }
+	    else
+	        buf.append(" (no wait)");
+
+	    return buf.toString();
 	}
 }

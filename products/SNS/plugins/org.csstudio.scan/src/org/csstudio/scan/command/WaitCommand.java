@@ -53,6 +53,7 @@ public class WaitCommand extends ScanCommand
      *  @param comparison Comparison to use
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, 0 as "forever"
      */
 	public WaitCommand(final String device_name,
 	        final Comparison comparison, final double desired_value,
@@ -172,15 +173,8 @@ public class WaitCommand extends ScanCommand
         {
             setComparison(Comparison.EQUALS);
         }
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
-        try
-        {
-            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
-        }
-        catch (Throwable ex)
-        {
-            setTimeout(0.0);
-        }
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
     }
 
     /** {@inheritDoc} */

@@ -102,6 +102,8 @@ public class GenericCommandAdapter implements IPropertySource
 
         if (property.getType() == String.class)
             descriptors.add(new TextPropertyDescriptor(id, label));
+        else if (property.getType() == Boolean.class)
+            descriptors.add(new BooleanPropertyDescriptor(id, label));
         else if (property.getType() == DeviceInfo.class)
             descriptors.add(createDevicePropertyDescriptor(id, label));
         else if (property.getType() == Double.class)
