@@ -18,6 +18,7 @@ public class Messages extends NLS
     public static String DateColumn;
     public static String DetailDialogTitle;
     public static String Disconnected;
+    public static String EnterTopicMsg;
     public static String ErrorMessage;
     public static String ErrorNoTopic;
     public static String ErrorNoURL;
