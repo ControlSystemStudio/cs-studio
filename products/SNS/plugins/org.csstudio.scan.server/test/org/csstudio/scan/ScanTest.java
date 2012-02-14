@@ -65,8 +65,8 @@ public class ScanTest
         final ScanContextImpl context = new ScanContextImpl(devices);
 
         // Configure a scan
-        final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0, 0.0,
-                new LoopCommand("ypos", 1.0, 5.0, 1.0, 0.0,
+        final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                new LoopCommand("ypos", 1.0, 5.0, 1.0,
                         new SetCommand("setpoint", 0),
                         new WaitCommand("readback", Comparison.EQUALS, 0, 0.2, 0.0),
                         new SetCommand("setpoint", 0.5),

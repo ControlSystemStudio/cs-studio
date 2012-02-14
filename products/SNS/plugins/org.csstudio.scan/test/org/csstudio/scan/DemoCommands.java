@@ -38,9 +38,9 @@ public class DemoCommands
     	commands.add(new SetCommand("setpoint", 1.0));
     	commands.add(new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0));
     	commands.add(
-    	        new LoopCommand("outer", 1.0, 5.0, 1.0, 0.0,
+    	        new LoopCommand("outer", 1.0, 5.0, 1.0,
                     new LogCommand("outer"),
-                    new LoopCommand("inner", 1.0, 10.0, 2.0, 0.0,
+                    new LoopCommand("inner", 1.0, 10.0, 2.0,
                             new SetCommand("setpoint", 1.0),
                             new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0),
                             new DelayCommand(0.5),

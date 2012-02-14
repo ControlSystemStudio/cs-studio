@@ -15,15 +15,39 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import org.csstudio.scan.device.DeviceInfo;
+
 /** Description of a {@link ScanCommand} property
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class ScanCommandProperty
 {
+    // Properties used by multiple commands
+    final public static ScanCommandProperty DEVICE_NAME =
+            new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class);
+
+    final public static ScanCommandProperty READBACK =
+            new ScanCommandProperty("readback", "Readback Device", DeviceInfo.class);
+
+    final public static ScanCommandProperty WAIT =
+            new ScanCommandProperty("wait", "Wait for readback", Boolean.class);
+
+    final public static ScanCommandProperty TOLERANCE =
+            new ScanCommandProperty("tolerance", "Tolerance", Double.class);
+
+    final public static ScanCommandProperty TIMEOUT =
+            new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class);
+
+
     final private String name, id;
     final private Class<?> type;
 
+    /** Initialize
+     *  @param id Property ID
+     *  @param name Name or label used for GUI
+     *  @param type Data type, see {@link ScanCommand} for supported data types
+     */
     public ScanCommandProperty(final String id, final String name, final Class<?> type)
     {
         this.id = id;

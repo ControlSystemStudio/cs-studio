@@ -17,7 +17,6 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Command that delays the scan until a device reaches a certain value
@@ -29,11 +28,11 @@ public class WaitCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("comparison", "Comparison", Comparison.class),
         new ScanCommandProperty("desired_value", "Desired Value", Double.class),
-        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
-        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
+        ScanCommandProperty.TOLERANCE,
+        ScanCommandProperty.TIMEOUT,
     };
 
     private String device_name;

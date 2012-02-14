@@ -60,7 +60,7 @@ public class LoopCommandHeadlessTest
 
             final ScanContext context = new ScanContextImpl(devices);
             final ScanCommandImpl<?> loop = new LoopCommandImpl(
-                    new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0,
+                    new LoopCommand("counter", 1.0, 5.0, 1.0,
                         new LogCommand("counter")));
             System.out.println(loop);
 
@@ -80,11 +80,12 @@ public class LoopCommandHeadlessTest
         final DeviceContext devices = getDemoContext();
         final ScanContextImpl context = new ScanContextImpl(devices);
 
-        final LoopCommandImpl loop1 = new LoopCommandImpl(new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0));
+        final LoopCommandImpl loop1 = new LoopCommandImpl(
+                new LoopCommand("counter", 1.0, 5.0, 1.0));
         assertEquals(5, loop1.getWorkUnits());
 
         final LoopCommandImpl loop2 = new LoopCommandImpl(
-            new LoopCommand("counter", 1.0, 5.0, 1.0, 0.0,
+            new LoopCommand("counter", 1.0, 5.0, 1.0,
                 new SetCommand("other", 1.0),
                 new SetCommand("other", 2.0)));
         assertEquals(10, loop2.getWorkUnits());
@@ -112,7 +113,7 @@ public class LoopCommandHeadlessTest
             counter.write(4.0);
             assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
             LoopCommandImpl loop = new LoopCommandImpl(
-                new LoopCommand("counter", 5.0, 1.0, -1.0, 0.0,
+                new LoopCommand("counter", 5.0, 1.0, -1.0,
                     new LogCommand("counter")));
             System.out.println(loop);
             context.execute(loop);
@@ -120,7 +121,7 @@ public class LoopCommandHeadlessTest
 
             // Step 2: 1, 3, 5, 7, 9
             loop = new LoopCommandImpl(
-                new LoopCommand("counter", 1.0, 10.0, 2.0, 0.0,
+                new LoopCommand("counter", 1.0, 10.0, 2.0,
                     new LogCommand("counter")));
             System.out.println(loop);
             context.execute(loop);
@@ -128,7 +129,7 @@ public class LoopCommandHeadlessTest
 
             // Down 3: 8, 5, 2
             loop = new LoopCommandImpl(
-                new LoopCommand("counter", 8.0, 0.0, -3.0, 0.0,
+                new LoopCommand("counter", 8.0, 0.0, -3.0,
                     new LogCommand("counter")));
             System.out.println(loop);
             context.execute(loop);
@@ -151,7 +152,7 @@ public class LoopCommandHeadlessTest
         {
             // 1 .. 5, but stepping down -> Creates 'reversing' loop
             LoopCommandImpl loop = new LoopCommandImpl(
-                    new LoopCommand("counter", 1.0, 5.0, -1.0, 0.0,
+                    new LoopCommand("counter", 1.0, 5.0, -1.0,
                         new LogCommand("counter")));
             System.out.println(loop);
 

@@ -17,7 +17,6 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 
-import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Command that sets a device to a value
@@ -29,12 +28,12 @@ public class SetCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("value", "Value", Object.class),
-        new ScanCommandProperty("readback", "Readback Device", DeviceInfo.class),
-        new ScanCommandProperty("wait", "Wait for readback", Boolean.class),
-        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
-        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
+        ScanCommandProperty.READBACK,
+        ScanCommandProperty.WAIT,
+        ScanCommandProperty.TOLERANCE,
+        ScanCommandProperty.TIMEOUT,
     };
 
     private String device_name;
@@ -211,17 +210,17 @@ public class SetCommand extends ScanCommand
 	    buf.append("Set '").append(device_name).append("' = ").append(value);
 	    if (wait)
 	    {
-	        if (!readback.isEmpty()  &&  !device_name.equals(readback))
-	        {
-	            buf.append(" (readback '").append(readback);
+            buf.append(" (wait for '");
+	        if (readback.isEmpty())
+	            buf.append(device_name);
+	        else
+	            buf.append(readback);
+	        if (tolerance > 0)
 	            buf.append("' +-").append(tolerance);
-	            if (timeout > 0)
-	                buf.append(", ").append(timeout).append(" sec timeout");
-	            buf.append(")");
-	        }
+	        if (timeout > 0)
+	            buf.append(", ").append(timeout).append(" sec timeout");
+	        buf.append(")");
 	    }
-	    else
-	        buf.append(" (no wait)");
 
 	    return buf.toString();
 	}

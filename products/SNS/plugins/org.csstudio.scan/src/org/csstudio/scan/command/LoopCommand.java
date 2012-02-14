@@ -54,20 +54,27 @@ public class LoopCommand extends ScanCommand
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),
-        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
+        ScanCommandProperty.READBACK,
+        ScanCommandProperty.WAIT,
+        ScanCommandProperty.TOLERANCE,
+        ScanCommandProperty.TIMEOUT,
     };
 
     private String device_name;
     private double start;
     private double end;
     private double stepsize;
-    private double timeout;
+    private String readback = "";
+    private boolean wait = true;
+    private double tolerance = 0.1;
+    private double timeout = 0.0;
+
 	private List<ScanCommand> body;
 
     /** Initialize empty loop */
     public LoopCommand()
     {
-        this("device", 0, 10, 1, 0.0, new ScanCommand[0]);
+        this("device", 0, 10, 1, new ScanCommand[0]);
     }
 
 	/** Initialize
@@ -75,11 +82,10 @@ public class LoopCommand extends ScanCommand
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
-     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Optional loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize, final double timeout,
+            final double end, final double stepsize,
             final ScanCommand... body)
     {
         this.device_name = device_name;
@@ -94,11 +100,10 @@ public class LoopCommand extends ScanCommand
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
-     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize, final double timeout,
+            final double end, final double stepsize,
             final List<ScanCommand> body)
     {
         this.device_name = device_name;
@@ -166,6 +171,42 @@ public class LoopCommand extends ScanCommand
         this.stepsize = stepsize;
     }
 
+    /** @return Name of readback device */
+    public String getReadback()
+    {
+        return readback;
+    }
+
+    /** @param readback Name of readback device */
+    public void setReadback(final String readback)
+    {
+        this.readback = readback;
+    }
+
+    /** @return Wait for readback to match? */
+    public boolean getWait()
+    {
+        return wait;
+    }
+
+    /** @param wait Wait for readback to match? */
+    public void setWait(final Boolean wait)
+    {
+        this.wait = wait;
+    }
+
+    /** @return Tolerance */
+    public double getTolerance()
+    {
+        return tolerance;
+    }
+
+    /** @param tolerance Tolerance */
+    public void setTolerance(final Double tolerance)
+    {
+        this.tolerance = tolerance;
+    }
+
     /** @return Timeout in seconds */
     public double getTimeout()
     {
@@ -205,6 +246,21 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
         writeIndent(out, level+1);
+        if (! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
+        }
+        if (! wait)
+        {
+            writeIndent(out, level+1);
+            out.println("<wait>" + wait + "</wait>");
+        }
+        if (tolerance > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<tolerance>" + tolerance + "</tolerance>");
+        }
         if (timeout > 0.0)
         {
             writeIndent(out, level+1);
@@ -223,8 +279,7 @@ public class LoopCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        // Read body first, so we don't update other loop params
-        // if this fails
+        // Read body first, so we don't update other loop params if this fails
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
@@ -232,14 +287,10 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        try
-        {
-            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
-        }
-        catch (Throwable ex)
-        {
-            setTimeout(0.0);
-        }
+        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
         setBody(body);
     }
 
@@ -248,9 +299,21 @@ public class LoopCommand extends ScanCommand
 	public String toString()
 	{
         final StringBuilder buf = new StringBuilder();
-        buf.append("Loop '").append(device_name).append("' = ").append(start).append(" ... ").append(end).append(", step ").append(stepsize);
-        if (timeout > 0.0)
-            buf.append(" (").append(timeout).append(" sec timeout)");
+        buf.append("Loop '").append(device_name).append("' = ")
+            .append(start).append(" ... ").append(end).append(", step ").append(stepsize);
+        if (wait)
+        {
+            buf.append(" (wait for '");
+            if (readback.isEmpty())
+                buf.append(device_name);
+            else
+                buf.append(readback);
+            if (tolerance > 0)
+                buf.append("' +-").append(tolerance);
+            if (timeout > 0)
+                buf.append(", ").append(timeout).append(" sec timeout");
+            buf.append(")");
+        }
         return buf.toString();
 	}
 }
