@@ -11,6 +11,7 @@ import org.csstudio.channel.widgets.ConfigurableWidget;
 import org.csstudio.channel.widgets.ConfigurableWidgetAdaptable;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.ui.util.AdapterUtil;
 
 /**
@@ -25,7 +26,7 @@ import org.csstudio.ui.util.AdapterUtil;
  * @param <M> the model type
  */
 public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWidgetFigure<?>,
-    M extends AbstractChannelWidgetModel> extends AbstractWidgetEditPart
+    M extends AbstractWidgetModel> extends AbstractWidgetEditPart
     implements ConfigurableWidgetAdaptable, ChannelQueryAdaptable {
 	
 	@Override
