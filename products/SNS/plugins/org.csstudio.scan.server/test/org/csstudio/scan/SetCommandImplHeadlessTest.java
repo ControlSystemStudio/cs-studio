@@ -1,5 +1,8 @@
 package org.csstudio.scan;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -8,6 +11,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.internal.ScanContextImpl;
@@ -69,6 +73,13 @@ public class SetCommandImplHeadlessTest
 
         // .. readback will not follow as quickly,
         // but that's not checked
+
+        System.out.println("Data logged for 'setpoint':");
+        final List<ScanSample> samples =
+                context.getDataLogger().getScanData().getSamples("setpoint");
+        for (ScanSample sample : samples)
+            System.out.println(sample);
+        assertEquals(3, samples.size());
     }
 
     @Test(timeout=20000)
@@ -100,5 +111,12 @@ public class SetCommandImplHeadlessTest
         // Use 'forever' as timeout
         command.setTimeout(0.0);
         impl.execute(context);
+
+        System.out.println("Data logged for 'readback':");
+        final List<ScanSample> samples =
+                context.getDataLogger().getScanData().getSamples("readback");
+        for (ScanSample sample : samples)
+            System.out.println(sample);
+        assertEquals(3, samples.size());
     }
 }
