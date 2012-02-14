@@ -54,8 +54,8 @@ public class LoopCommand extends ScanCommand
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),
-        ScanCommandProperty.READBACK,
         ScanCommandProperty.WAIT,
+        ScanCommandProperty.READBACK,
         ScanCommandProperty.TOLERANCE,
         ScanCommandProperty.TIMEOUT,
     };
@@ -173,18 +173,6 @@ public class LoopCommand extends ScanCommand
         tolerance = Math.abs(this.stepsize / 10.0);
     }
 
-    /** @return Name of readback device */
-    public String getReadback()
-    {
-        return readback;
-    }
-
-    /** @param readback Name of readback device */
-    public void setReadback(final String readback)
-    {
-        this.readback = readback;
-    }
-
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -195,6 +183,18 @@ public class LoopCommand extends ScanCommand
     public void setWait(final Boolean wait)
     {
         this.wait = wait;
+    }
+
+    /** @return Name of readback device */
+    public String getReadback()
+    {
+        return readback;
+    }
+
+    /** @param readback Name of readback device */
+    public void setReadback(final String readback)
+    {
+        this.readback = readback;
     }
 
     /** @return Tolerance */

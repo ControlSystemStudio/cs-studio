@@ -30,8 +30,8 @@ public class SetCommand extends ScanCommand
     {
         ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("value", "Value", Object.class),
-        ScanCommandProperty.READBACK,
         ScanCommandProperty.WAIT,
+        ScanCommandProperty.READBACK,
         ScanCommandProperty.TOLERANCE,
         ScanCommandProperty.TIMEOUT,
     };
@@ -109,18 +109,6 @@ public class SetCommand extends ScanCommand
         this.value = value;
     }
 
-    /** @return Name of readback device */
-    public String getReadback()
-    {
-        return readback;
-    }
-
-    /** @param readback Name of readback device */
-    public void setReadback(final String readback)
-    {
-        this.readback = readback;
-    }
-
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -131,6 +119,18 @@ public class SetCommand extends ScanCommand
     public void setWait(final Boolean wait)
     {
         this.wait = wait;
+    }
+
+    /** @return Name of readback device */
+    public String getReadback()
+    {
+        return readback;
+    }
+
+    /** @param readback Name of readback device */
+    public void setReadback(final String readback)
+    {
+        this.readback = readback;
     }
 
     /** @return Tolerance */
