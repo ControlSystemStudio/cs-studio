@@ -194,4 +194,13 @@ public class DeviceValueCondition implements DeviceListener
             notifyAll();
         }
     }
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+        return "Wait for '" + device + "' "
+                + comparison + " " + desired_value
+                + ", tolerance=" + tolerance + ", timeout=" + timeout;
+    }
 }

@@ -142,7 +142,7 @@ public class SetCommand extends ScanCommand
     /** @param tolerance Tolerance */
     public void setTolerance(final Double tolerance)
     {
-        this.tolerance = tolerance;
+        this.tolerance = Math.max(0.0, tolerance);
     }
 
     /** @return Timeout in seconds */
@@ -154,7 +154,7 @@ public class SetCommand extends ScanCommand
     /** @param timeout Time out in seconds */
     public void setTimeout(final Double timeout)
     {
-        this.timeout = timeout;
+        this.timeout = Math.max(0.0, timeout);
     }
 
     /** {@inheritDoc} */

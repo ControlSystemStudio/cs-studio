@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -31,18 +31,18 @@ public class ScanCommandPropertyUnitTest
     public void testCommands() throws Exception
     {
         final SetCommand command = new SetCommand("setpoint", 3.14);
-        
+
         final ScanCommandProperty[] properties2 = command.getProperties();
         for (ScanCommandProperty p : properties2)
             System.out.println(p);
-        assertEquals(2, properties2.length);
+        assertEquals(6, properties2.length);
         assertEquals("device_name", properties2[0].getID());
-        
+
         command.setProperty("device_name", "my_device");
         assertEquals("my_device", command.getDeviceName());
         command.setProperty("value", 5.0);
         assertEquals(5.0, (Double) command.getValue(), 0.1);
-        
+
         final Object value = command.getProperty("value");
         assertEquals(Double.class, value.getClass());
         assertEquals(5.0, (Double) value, 0.1);

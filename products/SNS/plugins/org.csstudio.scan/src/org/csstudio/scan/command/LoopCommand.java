@@ -91,7 +91,7 @@ public class LoopCommand extends ScanCommand
         this.device_name = device_name;
         this.start = start;
         this.end = end;
-        this.stepsize = stepsize;
+        setStepSize(stepsize);
         this.body = Arrays.asList(body);
     }
 
@@ -107,10 +107,7 @@ public class LoopCommand extends ScanCommand
             final List<ScanCommand> body)
     {
         this.device_name = device_name;
-        if (stepsize == 0.0)
-            this.stepsize = 1.0;
-        else
-            this.stepsize = stepsize;
+        setStepSize(stepsize);
         this.start = start;
         this.end = end;
         this.body = body;
@@ -168,7 +165,12 @@ public class LoopCommand extends ScanCommand
     /** @param stepsize Increment of the loop variable */
     public void setStepSize(final Double stepsize)
     {
-        this.stepsize = stepsize;
+        if (stepsize != 0.0)
+            this.stepsize = stepsize;
+        else
+            this.stepsize = 1.0;
+        // Use fraction of stepsize for tolerance
+        tolerance = Math.abs(this.stepsize / 10.0);
     }
 
     /** @return Name of readback device */
@@ -204,7 +206,7 @@ public class LoopCommand extends ScanCommand
     /** @param tolerance Tolerance */
     public void setTolerance(final Double tolerance)
     {
-        this.tolerance = tolerance;
+        this.tolerance = Math.max(0.0, tolerance);
     }
 
     /** @return Timeout in seconds */
@@ -216,7 +218,7 @@ public class LoopCommand extends ScanCommand
     /** @param timeout Time out in seconds */
     public void setTimeout(final Double timeout)
     {
-        this.timeout = timeout;
+        this.timeout = Math.max(0.0, timeout);
     }
 
     /** @return Descriptions for loop body */

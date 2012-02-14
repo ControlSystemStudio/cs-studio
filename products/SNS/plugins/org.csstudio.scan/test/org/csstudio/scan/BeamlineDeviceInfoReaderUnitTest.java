@@ -34,7 +34,7 @@ public class BeamlineDeviceInfoReaderUnitTest
 	public void testReadDeviceContextFile() throws Exception
 	{
 		final DeviceInfo[] devices = BeamlineDeviceInfoReader.read("examples/beamline.xml");
-		assertEquals(4, devices.length);
+		assertTrue(devices.length >= 4);
 
 		for (DeviceInfo device : devices)
 			System.out.println(device);
