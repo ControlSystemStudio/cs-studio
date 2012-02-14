@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:display">
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+               label="Olog Viewer"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.logbook.ologviewer">
+            </parameter>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.csstudio.logbook.ologviewer.OlogViewer"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ologviewer"
+            name="Olog Viewer"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
