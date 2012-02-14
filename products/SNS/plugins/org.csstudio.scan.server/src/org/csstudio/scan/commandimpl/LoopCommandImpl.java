@@ -66,15 +66,12 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
+        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Device device = context.getDevice(command.getDeviceName());
         final DeviceValueCondition reach_value =
                 new DeviceValueCondition(device, Comparison.EQUALS,
                         command.getStart(), command.getStepSize()/10.0,
                         command.getTimeout());
-
-		Logger.getLogger(getClass().getName()).log(Level.FINE,
-				"Loop: {0} = {1} .. {2}, stepping {3}",
-				new Object[] { command.getDeviceName(), command.getStart(), command.getEnd(), command.getStepSize() });
 
 		final double start = Math.min(command.getStart(), command.getEnd());
         final double end   = Math.max(command.getStart(), command.getEnd());

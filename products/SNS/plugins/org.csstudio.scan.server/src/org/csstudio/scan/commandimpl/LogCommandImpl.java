@@ -43,6 +43,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
+        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Logger logger = Logger.getLogger(getClass().getName());
 
 		final long serial = ScanSampleFactory.getNextSerial();
@@ -53,7 +54,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 			final String device_name = device_names[i];
 			final Device device = context.getDevice(device_name);
 			final IValue value = device.read();
-			logger.log(Level.FINE, "Log: {0} = {1}",
+			logger.log(Level.FINER, "Log: {0} = {1}",
 					new Object[] { device.toString(), value });
 			context.logSample(ScanSampleFactory.createSample(device_name, serial, value));
 		}

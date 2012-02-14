@@ -43,8 +43,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void execute(final ScanContext context)  throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "Set {0} to {1}",
-				new Object[] { command.getDeviceName(), command.getValue() });
+		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Device device = context.getDevice(command.getDeviceName());
 
 		//  Wait for the device to reach the value?
@@ -70,9 +69,10 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 		else
 		    condition = null;
 
-		// Use put-callback?
+		// Perform write
 		device.write(command.getValue());
 
+		// Wait?
 		if (condition != null)
 		    condition.await();
 
