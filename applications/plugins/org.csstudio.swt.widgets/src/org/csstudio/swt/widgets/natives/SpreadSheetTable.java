@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
+
 package org.csstudio.swt.widgets.natives;
 
 import java.util.ArrayList;
@@ -34,17 +42,21 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
-/**A table allow displaying and editing 2d text array as in spreadsheet.
- * The internal data operated by this table is a nested list.
+/**A table allow displaying and editing 2D text array as in spreadsheet.
+ * The internal data operated by this table is a nested string list.
  * @author Xihui Chen
  *
  */
 /**
- * @author 5hz
+ * @author Xihui Chen
  * 
  */
 public class SpreadSheetTable extends Composite {
 	
+	/**
+	 * Listener on table cell editing events.
+	 *
+	 */
 	public interface ITableCellEditingListener {
 		/**Called whenever the value in a cell has been edited.
 		 * @param row index of the row
@@ -55,20 +67,28 @@ public class SpreadSheetTable extends Composite {
 		public void cellValueChanged(int row, int col, String oldValue, String newValue);
 	}
 	
-	public interface ITableSelectionChangedListener {
-		
-		/**Called when selection on the table changed. 
-		 * @param selection a 2D string array which represents the selected rows.
-		 */
-		public void selectionChanged(String[][] selection);
-	}
-	
+	/**
+	 * Listener on table contents modified events.
+	 *
+	 */
 	public interface ITableModifiedListener {
 		
 		/**Called whenever the table content is modified. 
 		 * @param content of the table.
 		 */
 		public void modified(String[][] content);
+	}
+	
+	/**
+	 *Listener on table selection changed events.
+	 *
+	 */
+	public interface ITableSelectionChangedListener {
+		
+		/**Called when selection on the table changed. 
+		 * @param selection a 2D string array which represents the selected rows.
+		 */
+		public void selectionChanged(String[][] selection);
 	}
 
 	private class TextEditingSupport extends EditingSupport {
@@ -95,23 +115,6 @@ public class SpreadSheetTable extends Composite {
 			Table table = tableViewer.getTable();
 			TableItem cellItem = (TableItem)viewerCell.getItem();
 			return table.indexOf(cellItem);
-//			int index = table.getTopIndex();
-//			Rectangle clientArea = table.getClientArea();
-//			
-//			while (index < table.getItemCount()) {
-//				boolean visible = false;
-//				TableItem item = table.getItem(index);		
-//				Rectangle rect = item.getBounds();
-//				if(cellItem == item)
-//					return index;
-//				if (!visible && rect.intersects(clientArea)) {
-//					visible = true;
-//				}
-//				if (!visible)
-//					return -1;
-//				index++;
-//			}
-//			return -1;
 		}
 		
 		@Override
@@ -345,7 +348,7 @@ public class SpreadSheetTable extends Composite {
 	/**
 	 * Get input of the table by which the table is backed. To keep the table's
 	 * content synchronized with the table, client should call
-	 * {@link #refresh()} if the returned list has been modified.
+	 * {@link #refresh()} if the returned list has been modified outside.
 	 * 
 	 * @return the input of the table.
 	 */
@@ -414,6 +417,9 @@ public class SpreadSheetTable extends Composite {
 		return result;
 	}
 
+	/**
+	 * @return the {@link TableViewer} wrapped by this widget.
+	 */
 	public TableViewer getTableViewer() {
 		return tableViewer;
 	}
