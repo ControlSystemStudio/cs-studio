@@ -20,6 +20,7 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.widgets.Display;
@@ -36,34 +37,38 @@ public class PasteCommandHandler extends AbstractHandler
         if (editor == null)
             return null;
 
+        // Get command from clipboard
+        final Clipboard clip = new Clipboard(Display.getCurrent());
+        final String text = (String) clip.getContents(TextTransfer.getInstance());
+        clip.dispose();
+
+        // Get command from XML
+        final List<ScanCommand> received_commands;
         try
         {
-            // Get command from clipboard
-            final Clipboard clip = new Clipboard(Display.getCurrent());
-            final String text = (String) clip.getContents(TextTransfer.getInstance());
-            clip.dispose();
-
-            // Get command from XML
             final ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes());
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-            final List<ScanCommand> received_commands = reader.readXMLStream(stream);
+            received_commands = reader.readXMLStream(stream);
             stream.close();
-
-            // Add command to scan, either at selected command or at end
-            final List<ScanCommand> commands = editor.getCommands();
-            final ScanCommand location = editor.getSelectedCommand();
-            if (location != null)
-                TreeManipulator.insertAfter(commands, location, received_commands);
-            else
-                commands.addAll(received_commands);
-
-            editor.refresh();
         }
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(editor.getSite().getShell(),
-                    Messages.Error, ex);
+                Messages.Error,
+                NLS.bind(Messages.XMLCommandErrorFmt, text),
+                ex);
+            return null;
         }
+
+        // Add command to scan, either at selected command or at end
+        final List<ScanCommand> commands = editor.getCommands();
+        final ScanCommand location = editor.getSelectedCommand();
+        if (location != null)
+            TreeManipulator.insertAfter(commands, location, received_commands);
+        else
+            commands.addAll(received_commands);
+
+        editor.refresh();
 
         return null;
     }

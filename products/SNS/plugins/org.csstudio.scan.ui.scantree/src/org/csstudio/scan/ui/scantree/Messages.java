@@ -34,6 +34,7 @@ public class Messages extends NLS
     public static String OpenScanTreePerspective;
     public static String ScanSubmitErrorFmt;
     public static String SubmitScan;
+    public static String XMLCommandErrorFmt;
 
     static
     {

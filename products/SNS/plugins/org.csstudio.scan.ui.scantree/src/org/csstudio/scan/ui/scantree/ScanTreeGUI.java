@@ -7,16 +7,23 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.ScanCommandFactory;
+import org.csstudio.scan.command.XMLCommandReader;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.actions.SubmitCurrentScanAction;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -27,12 +34,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -180,7 +189,8 @@ public class ScanTreeGUI
     {
         final Transfer[] transfers = new Transfer[]
         {
-            ScanCommandTransfer.getInstance()
+            ScanCommandTransfer.getInstance(),
+            TextTransfer.getInstance()
         };
         tree_view.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
         {
@@ -197,7 +207,23 @@ public class ScanTreeGUI
             @Override
             public void dragSetData(final DragSourceEvent event)
             {
-                event.data = command;
+                if (transfers[0].isSupportedType(event.dataType))
+                    event.data = command;
+                else
+                {
+                    try
+                    {
+                        // Format as XML
+                        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+                        XMLCommandWriter.write(buf, Arrays.asList(command));
+                        buf.close();
+                        event.data = buf.toString();
+                    }
+                    catch (Exception ex)
+                    {
+                        event.data = null;
+                    }
+                }
             }
 
             @Override
@@ -234,13 +260,37 @@ public class ScanTreeGUI
                 }
             }
 
+
             @Override
             public void drop(final DropTargetEvent event)
             {
-                // Add dropped command
-                if (! (event.data instanceof ScanCommand))
-                    return;
-                final ScanCommand dropped_command = (ScanCommand) event.data;
+                final ScanCommand dropped_command;
+
+                // Determine dropped command
+                if (event.data instanceof ScanCommand)
+                    dropped_command = (ScanCommand) event.data;
+                else
+                {
+                    // Get command from XML
+                    final String text = event.data.toString();
+                    try
+                    {
+                        final ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes());
+                        final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+                        final List<ScanCommand> received_commands;
+                        received_commands = reader.readXMLStream(stream);
+                        stream.close();
+                        dropped_command = received_commands.get(0);
+                    }
+                    catch (Exception ex)
+                    {
+                        ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(),
+                            Messages.Error,
+                            NLS.bind(Messages.XMLCommandErrorFmt, text),
+                            ex);
+                        return;
+                    }
+                }
 
                 // Determine _where_ it was dropped
                 final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
