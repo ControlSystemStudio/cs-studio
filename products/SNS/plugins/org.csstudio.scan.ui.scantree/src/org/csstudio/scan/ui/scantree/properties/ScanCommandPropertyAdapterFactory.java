@@ -13,32 +13,30 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.IPropertySource;
 
 /** Factory for adapters from {@link ScanCommand}
  *  to the {@link IPropertySource} required by the Properties View.
- *  
+ *
  *  <p>Registered in plugin.xml.
- * 
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanCommandAdapterFactory implements IAdapterFactory
+public class ScanCommandPropertyAdapterFactory implements IAdapterFactory
 {
     final private static Class<?>[] targets = new Class<?>[]
     {
         IPropertySource.class
     };
-    
+
     /** {@inheritDoc} */
     @Override
     public Class<?>[] getAdapterList()
     {
         return targets;
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("rawtypes")
     @Override
@@ -48,14 +46,12 @@ public class ScanCommandAdapterFactory implements IAdapterFactory
                adapterType != IPropertySource.class)
             return null;
         final ScanCommand command = (ScanCommand) adaptableObject;
-        
+
         // Locate the currently active editor, the one that
         // needs to be updated when the command changes
-        final IEditorPart editor = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (! (editor instanceof ScanEditor))
+        final ScanEditor scan_editor = ScanEditor.getActiveEditor();
+        if (scan_editor == null)
             return null;
-        final ScanEditor scan_editor = (ScanEditor) editor;
 
         // Create the adapter
         try
