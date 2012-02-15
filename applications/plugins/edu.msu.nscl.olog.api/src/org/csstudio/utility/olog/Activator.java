@@ -8,9 +8,9 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import edu.msu.nscl.olog.api.Olog;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
-import edu.msu.nscl.olog.api.OlogClientManager;
 
 public class Activator implements BundleActivator {
 
@@ -18,7 +18,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		OlogClientManager.registerDefaultClient(retrieveClient());
+//		OlogClientManager.registerDefaultClient(retrieveClient());
+		Olog.setClient(retrieveClient());
 	}
 
 	private OlogClient retrieveClient() {

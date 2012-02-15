@@ -3,16 +3,13 @@ package org.csstudio.logbook.ologviewer;
 import java.util.Collection;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import edu.msu.nscl.olog.api.Log;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.custom.ScrolledComposite;
 
 public class OlogWidget extends Composite {
 
@@ -42,7 +39,7 @@ public class OlogWidget extends Composite {
 		composite.setLayout(new GridLayout(1, false));
 		scrolledComposite.setContent(composite);
 		scrolledComposite.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-
+		
 		createLogWidgets();
 	}
 	
@@ -54,9 +51,7 @@ public class OlogWidget extends Composite {
 				logWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 			}
 		}
-//		composite.setSize(composite.computeSize(composite.getShell().getSize().x, SWT.DEFAULT));
-		System.out.println(composite.getSize().toString() +"   "+composite.getShell().getSize().toString());
-		scrolledComposite.setMinSize(composite.computeSize(composite.getShell().getSize().x, SWT.DEFAULT));
+		scrolledComposite.setMinSize(composite.computeSize(10, SWT.DEFAULT));
 	}
 	
 
@@ -68,5 +63,5 @@ public class OlogWidget extends Composite {
 		this.logs = logs;
 		createLogWidgets();
 	}
-
+	
 }

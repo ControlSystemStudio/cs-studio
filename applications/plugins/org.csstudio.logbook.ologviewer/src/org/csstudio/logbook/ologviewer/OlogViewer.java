@@ -1,5 +1,10 @@
 package org.csstudio.logbook.ologviewer;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -13,6 +18,12 @@ import edu.msu.nscl.olog.api.TestLogs;
 
 public class OlogViewer extends ViewPart {
 
+	private OlogWidget ologWidget;
+	private ComboViewer comboViewer;
+	private Label lblSearch;
+	
+	private ExecutorService executorService = Executors.newSingleThreadExecutor();
+
 	public OlogViewer() {
 		// TODO Auto-generated constructor stub
 	}
@@ -21,14 +32,33 @@ public class OlogViewer extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new FormLayout());
 		
-		Label lblSearch = new Label(parent, SWT.NONE);
+		lblSearch = new Label(parent, SWT.NONE);
 		lblSearch.setText("Search:");
 		FormData fd_lblSearch = new FormData();
 		lblSearch.setLayoutData(fd_lblSearch);
 		
-		Combo combo = new Combo(parent, SWT.NONE);
+		comboViewer = new ComboViewer(parent, SWT.NONE);
+		Combo combo = comboViewer.getCombo();
 		fd_lblSearch.top = new FormAttachment(combo, 3, SWT.TOP);
 		fd_lblSearch.right = new FormAttachment(combo, -6);
+		combo.setToolTipText(
+				"Space seperated search criterias, patterns may include * and ? wildcards");
+
+		ComboHistoryHelper name_helper = new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+				"org.csstudio.logbook.ologviewer", combo, 20, true) {
+
+			@Override
+			public void newSelection(final String queryText) {
+				ologWidget.setLogs(TestLogs.testLogs());
+				executorService.submit(new Runnable() {
+					
+					@Override
+					public void run() {
+						OlogWidget.
+					}
+				});
+			}
+		};
 		
 		FormData fd_combo = new FormData();
 		fd_combo.right = new FormAttachment(100, -10);
@@ -37,20 +67,18 @@ public class OlogViewer extends ViewPart {
 		combo.setLayoutData(fd_combo);
 		// TODO Auto-generated method stub
 		
-		OlogWidget ologWidget = new OlogWidget(parent, SWT.None);
+		ologWidget = new OlogWidget(parent, SWT.None);
 		FormData fd_ologWidget = new FormData();
 		fd_ologWidget.top = new FormAttachment(lblSearch, 10);
 		fd_ologWidget.right = new FormAttachment(100, -10);
 		fd_ologWidget.left = new FormAttachment(0, 10);
 		fd_ologWidget.bottom = new FormAttachment(100, -10);
 		ologWidget.setLayoutData(fd_ologWidget);
-		ologWidget.setLogs(TestLogs.testLogs());
 
 	}
 
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-
 	}
 }

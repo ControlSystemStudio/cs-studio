@@ -7,6 +7,7 @@ package edu.msu.nscl.olog.api;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,7 +25,11 @@ public class Property {
 	 */
 	Property(XmlProperty xmlProperty) {
 		this.name = xmlProperty.getName();
-		this.attributes = Collections.unmodifiableMap(xmlProperty.getAttributes());
+		if (xmlProperty.getAttributes() != null)
+			this.attributes = Collections.unmodifiableMap(xmlProperty
+					.getAttributes());
+		else
+			this.attributes = new HashMap<String, String>();
 	}
 
 	/**
@@ -39,45 +44,47 @@ public class Property {
 	 * 
 	 * @return
 	 */
-	public Set<String> getAttributes(){
+	public Set<String> getAttributes() {
 		return this.attributes.keySet();
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public Collection<String> getAttributeValues(){
+	public Collection<String> getAttributeValues() {
 		return this.attributes.values();
 	}
-	
+
 	/**
 	 * 
 	 * @param attribute
 	 * @return
 	 */
-	public boolean containsAttribute(String attribute){
+	public boolean containsAttribute(String attribute) {
 		return this.attributes.containsKey(attribute);
 	}
-	
+
 	/**
 	 * 
 	 * @param attribute
 	 * @return
 	 */
-	public String getAttributeValue(String attribute){
+	public String getAttributeValue(String attribute) {
 		return this.attributes.get(attribute);
 	}
-	
+
 	/**
 	 * 
 	 * @return
 	 */
-	public Set<Entry<String,String>> getEntrySet(){
+	public Set<Entry<String, String>> getEntrySet() {
 		return this.attributes.entrySet();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -90,7 +97,9 @@ public class Property {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -115,5 +124,4 @@ public class Property {
 		return true;
 	}
 
-	
 }
