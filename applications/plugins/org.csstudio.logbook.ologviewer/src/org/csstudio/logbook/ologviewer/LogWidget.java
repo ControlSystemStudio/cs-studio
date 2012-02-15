@@ -14,7 +14,7 @@ public class LogWidget extends Composite {
 	// Model
 	private Log log;
 	
-	private Text textLog;
+	private Label lblLog;
 	private Label lblTime;
 	private Label lblOwner;
 
@@ -34,11 +34,11 @@ public class LogWidget extends Composite {
 		lblOwner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblOwner.setText("New Label");
 		
-		textLog = new Text(this, SWT.WRAP | SWT.DOUBLE_BUFFERED);
-		textLog.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
+		lblLog = new Label(this, SWT.WRAP | SWT.DOUBLE_BUFFERED);
+		lblLog.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		GridData gd_textLog = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 3);
 		gd_textLog.verticalIndent = 1;
-		textLog.setLayoutData(gd_textLog);
+		lblLog.setLayoutData(gd_textLog);
 	}
 
 	public void setLog(Log log) {
@@ -49,7 +49,7 @@ public class LogWidget extends Composite {
 	private void refresh() {
 		lblTime.setText(log.getCreatedDate().toString());
 		lblOwner.setText(log.getOwner());
-		textLog.setText(log.getDescription());
+		lblLog.setText(log.getDescription());
 	}	
 
 }
