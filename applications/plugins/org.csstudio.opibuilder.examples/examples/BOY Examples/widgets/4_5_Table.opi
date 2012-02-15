@@ -11,7 +11,7 @@
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
-  <name>Tabbed Container</name>
+  <name>Table</name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
   <background_color>
@@ -487,7 +487,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>-3cd731dc:13568229061:-7ada</wuid>
       <scripts />
       <height>310</height>
@@ -625,7 +625,7 @@ tooltip.</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>-3cd731dc:13568229061:-7ad9</wuid>
       <scripts />
       <height>310</height>
@@ -663,16 +663,25 @@ tooltip.</tooltip>
             <col>row 1</col>
             <col>row 1</col>
             <col>row 1</col>
+            <col>row 1</col>
           </row>
           <row>
             <col>row 2</col>
             <col>row 2</col>
             <col>row 2</col>
+            <col>row 2</col>
           </row>
           <row>
             <col>row 3</col>
             <col>row 3</col>
             <col>row 3</col>
+            <col>row 3</col>
+          </row>
+          <row>
+            <col>row 4</col>
+            <col>row 4</col>
+            <col>row 4</col>
+            <col>row 4</col>
           </row>
         </default_content>
         <scripts>
@@ -694,7 +703,7 @@ tooltip.</tooltip>
         <font>
           <opifont.name>Default</opifont.name>
         </font>
-        <width>386</width>
+        <width>350</width>
         <border_style>0</border_style>
         <column_headers>
           <row>
@@ -709,6 +718,10 @@ tooltip.</tooltip>
             <col>Col 3</col>
             <col></col>
           </row>
+          <row>
+            <col>Col 4</col>
+            <col></col>
+          </row>
         </column_headers>
         <editable>true</editable>
         <rules />
@@ -717,7 +730,7 @@ tooltip.</tooltip>
         <border_color>
           <color red="0" green="128" blue="255" />
         </border_color>
-        <columns_count>3</columns_count>
+        <columns_count>4</columns_count>
         <actions hook="false" hook_all="false" />
         <y>50</y>
         <tooltip></tooltip>

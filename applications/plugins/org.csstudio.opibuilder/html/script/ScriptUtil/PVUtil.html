@@ -110,6 +110,23 @@ The utility class to facilitate Javascript programming
 <TD><CODE><B><A HREF="PVUtil.html#getSeverity(org.csstudio.utility.pv.PV)">getSeverity</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
 
 <BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get severity of the pv as an integer value.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="#getSeverityString(org.csstudio.utility.pv.PV)">getSeverityString</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get the size of the pv's value</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="#getStatus(org.csstudio.utility.pv.PV)">getStatus</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
+
+
+<BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The severity of the pv.</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
@@ -283,6 +300,34 @@ public static final int <B>getSeverity</B>(org.csstudio.utility.pv.PV&nbsp;pv)</
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>pv</CODE> - 
 <DT><B>Returns:</B><DD>0:OK; -1: Invalid; 1: Major; 2:Minor.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getSeverityString(org.csstudio.utility.pv.PV)"><!-- --></A><H3>
+getSeverityString</H3>
+<PRE>
+public static final java.lang.String <B>getSeverityString</B>(org.csstudio.utility.pv.PV&nbsp;pv)</PRE>
+<DL>
+<DD>Get severity of the PV as a string.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pv</CODE> - the PV.
+<DT><B>Returns:</B><DD>The string representation of the severity.</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getStatus(org.csstudio.utility.pv.PV)"><!-- --></A><H3>
+getStatus</H3>
+<PRE>
+public static final java.lang.String <B>getStatus</B>(org.csstudio.utility.pv.PV&nbsp;pv)</PRE>
+<DL>
+<DD>Get the status text that might describe the severity.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pv</CODE> - the PV.
+<DT><B>Returns:</B><DD>the status string.</DL>
 </DD>
 </DL>
 <HR>

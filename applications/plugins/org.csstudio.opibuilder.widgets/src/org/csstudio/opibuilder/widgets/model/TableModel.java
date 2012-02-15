@@ -48,11 +48,6 @@ public class TableModel extends AbstractWidgetModel {
 	public static final String PROP_DEFAULT_CONTENT = "default_content"; //$NON-NLS-1$
 
 	
-	/**
-	 *Auto size columns whenever header or content changed.
-	 */
-	public static final String PROP_AUTO_SIZE_COLUMNS = "auto_size_columns"; //$NON-NLS-1$
-	
 	
 	/**
 	 *Column header visible.
@@ -71,10 +66,7 @@ public class TableModel extends AbstractWidgetModel {
 		addProperty(new BooleanProperty(
 				PROP_EDITABLE, "Editable", WidgetPropertyCategory.Behavior, true));
 		
-		addProperty(new BooleanProperty(
-				PROP_AUTO_SIZE_COLUMNS, "Auto Size Columns", WidgetPropertyCategory.Behavior, true));
-		
-		
+			
 		StringTableProperty contentProperty = new StringTableProperty(
 				PROP_DEFAULT_CONTENT, "Default Content", WidgetPropertyCategory.Display, 
 				new String[][]{{""}}, new String[]{""});
@@ -171,10 +163,7 @@ public class TableModel extends AbstractWidgetModel {
 		return (Boolean)getPropertyValue(PROP_COLUMN_HEADER_VISIBLE);
 	}
 	
-	public boolean isAutoSizeColumns(){
-		return (Boolean)getPropertyValue(PROP_AUTO_SIZE_COLUMNS);
-	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.model.AbstractWidgetModel#getTypeID()

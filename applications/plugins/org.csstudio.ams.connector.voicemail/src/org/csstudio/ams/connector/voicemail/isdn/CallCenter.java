@@ -90,7 +90,7 @@ public class CallCenter {
                     Log.log(this, Log.WARN, "Wait time is invalid: " + waitUntil);
                     
                     // Throw only an exception if the alarm needs to be confirmed
-                    if(CallCenter.TextType.TEXTTYPE_ALARM_WCONFIRM.ordinal() == type)
+                    if(TextType.TEXTTYPE_ALARM_WCONFIRM.ordinal() == type)
                     {
                         throw new CallCenterException("Waiting time for alarm with confirmation is invalid: " + waitUntil);
                     }
