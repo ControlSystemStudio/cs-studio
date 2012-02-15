@@ -16,7 +16,6 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
 import org.csstudio.scan.ui.scantree.actions.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
-import org.csstudio.scan.ui.scantree.actions.RemoveCommandAction;
 import org.csstudio.scan.ui.scantree.actions.SubmitCurrentScanAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the scan tree
  *  @author Kay Kasemir
@@ -60,11 +60,12 @@ public class ScanTreeGUI
     /** Initialize
      *  @param parent
      */
-    public ScanTreeGUI(final Composite parent, final ScanTreeGUIListener listener)
+    public ScanTreeGUI(final Composite parent, final ScanTreeGUIListener listener,
+            final IWorkbenchPartSite site)
     {
         this.listener = listener;
         createComponents(parent);
-        createContextMenu();
+        createContextMenu(site);
         addDragDrop();
     }
 
@@ -97,11 +98,16 @@ public class ScanTreeGUI
     }
 
     /** Create context menu */
-    private void createContextMenu()
+    private void createContextMenu(final IWorkbenchPartSite site)
     {
         final MenuManager manager = new MenuManager();
+
+        // plugin.xml will contribute the default (global)
+        // edit commands cut/copy/paste/delete here,
+        // using localization and default key bindings
+        manager.add(new Separator("edit")); //$NON-NLS-1$
+
         manager.add(new AddCommandAction());
-        manager.add(new RemoveCommandAction(this));
         manager.add(new Separator());
         manager.add(new SubmitCurrentScanAction());
         manager.add(new Separator());
@@ -114,6 +120,10 @@ public class ScanTreeGUI
 
         final Menu menu = manager.createContextMenu(tree_view.getControl());
         tree_view.getControl().setMenu(menu);
+
+        // Menu ID will be the ID of the part, i.e. editor
+        if (site != null)
+            site.registerContextMenu(manager, tree_view);
     }
 
     /** @return Currently selected scan command or <code>null</code> */

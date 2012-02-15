@@ -20,7 +20,7 @@ import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
+import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -50,7 +50,7 @@ import org.eclipse.ui.part.FileEditorInput;
  *
  *  <p>Displays the scan tree and uses
  *  it as selection provider.
- *  {@link ScanCommandAdapterFactory} then adapts
+ *  {@link ScanCommandPropertyAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
  *
  *  @author Kay Kasemir
@@ -103,6 +103,18 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         return createInstance(new EmptyEditorInput());
     }
 
+    /** Locate the currently active scan editor
+     *  @return Active editor or <code>null</code> if there is none
+     */
+    public static ScanEditor getActiveEditor()
+    {
+        final IEditorPart editor = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+        if (editor instanceof ScanEditor)
+            return (ScanEditor) editor;
+        return null;
+    }
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -144,7 +156,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     @Override
     public void createPartControl(final Composite parent)
     {
-        gui = new ScanTreeGUI(parent, this);
+        gui = new ScanTreeGUI(parent, this, getSite());
 
         final IEditorInput input = getEditorInput();
         final IFile file = (IFile) input.getAdapter(IFile.class);
@@ -196,7 +208,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         setDirty(true);
     }
 
-    /** @return Devices available on scan server */
+    /** @return Devices available on scan server. May be <code>null</code> */
     public DeviceInfo[] getDevices()
     {
         return devices;
@@ -350,5 +362,24 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
+
+    /** @return Commands displayed/edited in GUI */
+    public List<ScanCommand> getCommands()
+    {
+        return gui.getCommands();
+    }
+
+    /** @return Currently selected scan command or <code>null</code> */
+    public ScanCommand getSelectedCommand()
+    {
+        return gui.getSelectedCommand();
+    }
+
+    /** Refresh the GUI after tree manipulations */
+    public void refresh()
+    {
+        gui.refresh();
+        setDirty(true);
     }
 }

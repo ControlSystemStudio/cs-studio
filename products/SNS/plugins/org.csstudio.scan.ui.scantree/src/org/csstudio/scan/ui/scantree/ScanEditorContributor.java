@@ -28,4 +28,12 @@ public class ScanEditorContributor extends EditorActionBarContributor
     {
         manager.add(new SubmitCurrentScanAction());
     }
+
+    // With global Actions, this required code like
+    //    @Override
+    //    public void setActiveEditor(final IEditorPart editor)
+    //    {
+    //        getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), my_copy_actionl);
+    //    }
+    // Now using menu command (from o.c.ui.menu.app) and handlers (from this plugin)
 }
