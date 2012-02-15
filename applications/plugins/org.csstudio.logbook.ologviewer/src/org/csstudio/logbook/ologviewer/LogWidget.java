@@ -23,7 +23,7 @@ public class LogWidget extends Composite {
 		setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		setLayout(new GridLayout(2, false));
 		
-		lblTime = new Label(this, SWT.NONE);
+		lblTime = new Label(this, SWT.WRAP);
 		lblTime.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		lblTime.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblTime.setText("New Label");
@@ -34,7 +34,7 @@ public class LogWidget extends Composite {
 		lblOwner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		lblOwner.setText("New Label");
 		
-		textLog = new Text(this, SWT.WRAP);
+		textLog = new Text(this, SWT.WRAP | SWT.DOUBLE_BUFFERED);
 		textLog.setBackground(SWTResourceManager.getColor(SWT.COLOR_WHITE));
 		GridData gd_textLog = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 3);
 		gd_textLog.verticalIndent = 1;

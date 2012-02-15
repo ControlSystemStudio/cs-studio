@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  edu.msu.nscl.olog.api;bundle-version="2.0.1",
  org.csstudio.logbook.ui;bundle-version="3.0.0",
- org.csstudio.ui.util;bundle-version="3.1.0"
+ org.csstudio.ui.util;bundle-version="3.1.0",
+ org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
