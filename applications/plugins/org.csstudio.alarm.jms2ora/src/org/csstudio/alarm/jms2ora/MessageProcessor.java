@@ -190,13 +190,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
                 success = writerService.writeMessage(storeMe);
                 if(!success) {
-
                     // Store the message in a file, if it was not possible to write it to the DB.
                     persistenceService.writeMessages(storeMe);
                     LOG.warn("Could not store the message in the database. Message is written on disk.");
                 }
                 
                 collector.addStoredMessages(storeMe.size());
+                storeMe.clear();
+                storeMe = null;
                 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(createStatisticString());
@@ -206,7 +207,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             }
 
             if(running) {
-
                 synchronized (this) {
                     try {
                         wait(msgProcessorSleepingTime);
@@ -215,7 +215,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                         running = false;
                     }
                 }
-
                 LOG.debug("Waked up...");
                 LOG.debug("Next processing time: {}", nextStorageTime.toString());
             }
@@ -264,8 +263,10 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
     public final Vector<ArchiveMessage> getMessagesToArchive() {
         Vector<ArchiveMessage> result = null;
         if (!archiveMessages.isEmpty()) {
-            result = new Vector<ArchiveMessage>(archiveMessages);
-            archiveMessages.removeAll(result);
+            synchronized (archiveMessages) {
+                result = new Vector<ArchiveMessage>(archiveMessages);
+                archiveMessages.removeAll(result);
+            }
         } else {
             result = new Vector<ArchiveMessage>();
         }
