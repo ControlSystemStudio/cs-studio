@@ -62,6 +62,22 @@
                   style="push"
                   tooltip="%NewScanTreeTT">
             </command>
+            <command
+                  commandId="org.eclipse.ui.edit.undo"
+                  label="Undo"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+                  <with variable="activePartId"><equals value="org.csstudio.scan.ui.scantree.editor"/> </with>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.redo"
+                  label="Redo"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+                  <with variable="activePartId"><equals value="org.csstudio.scan.ui.scantree.editor"/> </with>
+               </visibleWhen>
+            </command>
          </toolbar>
       </menuContribution>
       <menuContribution
@@ -76,6 +92,12 @@
       </menuContribution>
       <menuContribution
             locationURI="popup:org.csstudio.scan.ui.scantree.editor?before=edit">
+         <command commandId="org.eclipse.ui.edit.undo"/>
+         <command commandId="org.eclipse.ui.edit.redo"/>
+         <separator
+               name="undo"
+               visible="true">
+         </separator>
          <command commandId="org.eclipse.ui.edit.cut"/>
          <command commandId="org.eclipse.ui.edit.copy"/>
          <command commandId="org.eclipse.ui.edit.paste"/>
