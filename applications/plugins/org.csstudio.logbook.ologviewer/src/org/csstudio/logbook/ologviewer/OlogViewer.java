@@ -46,20 +46,10 @@ public class OlogViewer extends ViewPart {
 			public void newSelection(final String queryText) {
 //				ologWidget.setLogs(TestLogs.testLogs());
 				try {
-					new OlogQuery(queryText).execute(new OlogQueryListener() {
-
-						@Override
-						public void queryExecuted(final Result result) {
-							SWTUtil.swtThread().execute(new Runnable() {
-								@Override
-								public void run() {
-									if (result.exception == null)
-										ologWidget.setLogs(result.logs);
-								}
-							});
-						}
-					});
+					ologWidget.setOlogQuery(new OlogQuery(queryText));
 				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		};
@@ -69,7 +59,6 @@ public class OlogViewer extends ViewPart {
 		fd_combo.left = new FormAttachment(0, 63);
 		fd_combo.top = new FormAttachment(0, 10);
 		combo.setLayoutData(fd_combo);
-		// TODO Auto-generated method stub
 
 		ologWidget = new OlogWidget(parent, SWT.None);
 		FormData fd_ologWidget = new FormData();
