@@ -170,18 +170,7 @@ public class TableEditPart extends AbstractBaseEditPart {
 			}
 		};
 		setPropertyChangeHandler(TableModel.PROP_DEFAULT_CONTENT, handler);
-		
-		handler = new IWidgetPropertyChangeHandler() {
-			
-			@Override
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if((Boolean)newValue)
-					spreadSheetTable.autoSizeColumns();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TableModel.PROP_AUTO_SIZE_COLUMNS, handler);		
-		
+				
 	}
 	
 	/**Get the native spread sheet table held by this widget.

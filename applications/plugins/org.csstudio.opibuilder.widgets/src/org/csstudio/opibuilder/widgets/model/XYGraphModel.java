@@ -93,7 +93,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		POINT_SIZE("point_size", "Point Size"),
 		ANTI_ALIAS("anti_alias", "Anti Alias"),
 		UPDATE_MODE("update_mode", "Update Mode"),
-		CONCATENATE_DATA("concatenate_data", "Concatenate Data");
+		CONCATENATE_DATA("concatenate_data", "Concatenate Data"),
+		VISIBLE("visible", "Visible");
 		public String propIDPre;
 		public String description;
 		
@@ -379,6 +380,9 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			break;
 		case YAXIS_INDEX:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, AXES_ARRAY, 1));
+			break;
+		case VISIBLE:
+			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
 			break;
 		default:
 			break;
