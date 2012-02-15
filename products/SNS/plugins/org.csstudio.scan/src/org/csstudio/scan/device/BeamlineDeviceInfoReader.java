@@ -90,7 +90,7 @@ public class BeamlineDeviceInfoReader
                 final boolean log = findFirstElementNode(pv.getFirstChild(), XML_LOG) != null;
 
             	if (scan || log)
-            	    devices.add(new DeviceInfo(name, alias));
+            	    devices.add(new DeviceInfo(name, alias, scan, log));
             }
         }
 

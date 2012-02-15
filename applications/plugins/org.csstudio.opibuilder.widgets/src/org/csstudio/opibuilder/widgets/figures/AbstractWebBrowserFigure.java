@@ -9,8 +9,6 @@ package org.csstudio.opibuilder.widgets.figures;
 
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
-import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.widgets.Control;
 
@@ -26,17 +24,6 @@ public abstract class AbstractWebBrowserFigure <T extends Control> extends Abstr
 	}
 
 	public abstract void setUrl(String url);
-
-	@Override
-	protected void paintClientArea(Graphics graphics) {			
-		//draw this so that it can be seen in the outline view
-		if(!runmode){
-			graphics.setBackgroundColor(
-					CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE));
-			graphics.fillRectangle(getClientArea());
-		}
-		super.paintClientArea(graphics);	
-	}
 	
 	public abstract Browser getBrowser() ;
 	

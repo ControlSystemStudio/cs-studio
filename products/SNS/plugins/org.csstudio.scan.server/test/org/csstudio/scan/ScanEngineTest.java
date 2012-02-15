@@ -34,6 +34,7 @@ import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.commandimpl.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.internal.Scan;
 import org.csstudio.scan.server.internal.ScanEngine;
@@ -54,17 +55,24 @@ public class ScanEngineTest
         while (scan.getScanInfo().getState() != state);
     }
 
+
+    private DeviceContext getDemoDevices() throws Exception
+    {
+        final DeviceContext devices = new DeviceContext();
+        devices.addPVDevice(new DeviceInfo("motor_x", "xpos", true, true));
+        devices.addPVDevice(new DeviceInfo("motor_y", "ypos", true, true));
+        return devices;
+    }
+
     /** Test scans with pause/resume (15 secs) */
     @Test(timeout=30000)
     public void testScanEngine() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("xpos", "motor_x");
-        devices.addPVDevice("ypos", "motor_y");
+        final DeviceContext devices = getDemoDevices();
 
         final Scan scan_x = new Scan("Scan Motor X",
             new LoopCommandImpl(
-                new LoopCommand("xpos", 1.0, 5.0, 1.0, 0.0,
+                new LoopCommand("xpos", 1.0, 5.0, 1.0,
                     new DelayCommand(1.0),
                     new LogCommand("xpos")
                 )
@@ -73,7 +81,7 @@ public class ScanEngineTest
 
         final Scan scan_y = new Scan("Scan Motor Y",
             new LoopCommandImpl(
-                new LoopCommand("ypos", 1.0, 5.0, 1.0, 0.0,
+                new LoopCommand("ypos", 1.0, 5.0, 1.0,
                     new DelayCommand(1.0),
                     new LogCommand("ypos"))));
 
@@ -147,12 +155,11 @@ public class ScanEngineTest
     @Test(timeout=10000)
     public void testErrors() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("xpos", "motor_x");
+        final DeviceContext devices = getDemoDevices();
 
         final Scan scan = new Scan("Scan Motor X",
             new LoopCommandImpl(
-                new LoopCommand("xpos", 1.0, 5.0, 1.0, 0.0,
+                new LoopCommand("xpos", 1.0, 5.0, 1.0,
                     new LogCommand("xpos")
                 )
             )
@@ -182,8 +189,7 @@ public class ScanEngineTest
     @Test(timeout=10000)
     public void testEngineStop() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("xpos", "motor_x");
+        final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
@@ -217,8 +223,7 @@ public class ScanEngineTest
     @Test(timeout=10000)
     public void testAbort() throws Exception
     {
-        final DeviceContext devices = new DeviceContext();
-        devices.addPVDevice("xpos", "motor_x");
+        final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",

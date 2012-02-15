@@ -41,7 +41,7 @@ public class PlotDataModelUnitTest
         final ScanServer server = ScanServerConnector.connect();
 
         final List<ScanCommand> commands = new ArrayList<ScanCommand>();
-        commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0, 0.0,
+        commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
                                      new LogCommand("xpos", "readback"),
                                      new DelayCommand(2.0)));
         final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));

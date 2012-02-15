@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -18,6 +18,8 @@ package org.csstudio.scan.server.internal;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.device.DeviceContext;
 
@@ -47,7 +49,7 @@ class ScanQueueItem implements Callable<Object>
     @Override
     public Object call() throws Exception
     {
-        System.out.println("== " + scan.getName());
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing Scan: {0}", scan.getName());
         final ScanContextImpl context = new ScanContextImpl(devices);
         scan.execute(context);
         return null;

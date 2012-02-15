@@ -17,47 +17,47 @@ public class DateTimePickerDialog extends Dialog {
 
 	private CalendarWidget calendarWidget;
 	private Date dateTime;
-	
-	
+
+
 	/**Create a datetime picker dialog.
 	 * @param parentShell the parent shell, or null to create a top-level shell
 	 */
 	public DateTimePickerDialog(Shell parentShell) {
-		super(parentShell);			
+		super(parentShell);
 	}
-	
+
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
-		newShell.setText("Select Datetime");
+		newShell.setText("Select Datetime"); //$NON-NLS-1$
 	}
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
-		
+
 		calendarWidget = new CalendarWidget(area, SWT.None);
 		if(dateTime != null){
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dateTime);
 		calendarWidget.setCalendar(calendar);
 		}
-		return area;	
+		return area;
 	}
-	
+
 	/**Set the date time of the calendar when dialog is open.
 	 * @param dateTime
 	 */
 	public void setDateTime(Date dateTime){
 		this.dateTime = dateTime;
 	}
-	
+
 	/**
 	 * @return the datetime picked.
 	 */
 	public Date getDateTime(){
 		return calendarWidget.getCalendar().getTime();
 	}
-	
-	
+
+
 }

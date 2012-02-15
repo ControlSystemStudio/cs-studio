@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -18,13 +18,14 @@ package org.csstudio.scan.command;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 
+import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Description of a scan server command
- * 
+ *
  *  <p>Used by the client to describe commands to the server,
  *  and returned by the server to describe elements of a Scan.
- *  
+ *
  *  <p>This class offers generic property access
  *  based on introspection, assuming that the actual command has
  *  suitable 'getter' and 'setter' methods.
@@ -32,12 +33,15 @@ import org.w3c.dom.Element;
  *  and "setSomeProperty" methods, i.e. using a CamelCase version
  *  of the property ID.
  *  The setter must accept an Object like Double, not a plain type like double.
- *  
+ *
  *  <p>Supported property types:
  *  <ul>
  *  <li><code>Double</code> - Edited as number "5", "1e-20" etc.
  *  <li><code>String</code> - Edited as text
- *  <li><code>String[]</code> - Edited as comma-separated list of strings
+ *  <li><code>Boolean</code> - Edited as yes/no
+ *  <li><code>String[]</code> - Edited as strings
+ *  <li><code>DeviceInfo</code> - Edited as string, but editor suggests available device names
+ *  <li><code>DeviceInfo[]</code> - Edited as strings, but editor suggests available device names
  *  <li><code>Enum</code> - Allows selection among the <code>toString()</code> values of the Enum
  *  <li><code>Object</code> - Edited as String, and if possible converted to Double
  *  </ul>
@@ -48,7 +52,7 @@ abstract public class ScanCommand
 {
     /** @return Descriptions of Properties for this command */
     abstract public ScanCommandProperty[] getProperties();
-    
+
     /** Set a command's property
      *  @param property_id ID of the property to set
      *  @param value New value
@@ -73,10 +77,18 @@ abstract public class ScanCommand
     public void setProperty(final ScanCommandProperty property, final Object value) throws Exception
     {
         final String meth_name = getMethodName("set", property.getID());
-        final Method method = getClass().getMethod(meth_name, property.getType());
+
+        // Type patching: DeviceInfo is read/set as String
+        Class<?> type = property.getType();
+        if (type == DeviceInfo.class)
+            type = String.class;
+        else if (type == DeviceInfo[].class)
+            type = String[].class;
+
+        final Method method = getClass().getMethod(meth_name, type);
         method.invoke(this, value);
     }
-    
+
     /** Get a command's property
      *  @param property_id ID of the property to set
      *  @return Value
@@ -101,7 +113,7 @@ abstract public class ScanCommand
         final Method method = getClass().getMethod(meth_name);
         return method.invoke(this);
     }
-    
+
     /** Construct method name
      *  @param get_set Method prefix "get" or "set"
      *  @param property_id Property ID like "device_name"
@@ -120,11 +132,11 @@ abstract public class ScanCommand
     }
 
     /** Write the command (and its sub-commands) in an XML format.
-     * 
+     *
      *  <p>A command called AbcCommand should write itself as a tag "abc"
      *  so that the {@link XMLCommandReader} can later determine
      *  which class to use for reading the command back from XML.
-     *  
+     *
      *  @param out {@link PrintStream}
      *  @param level Indentation level
      */
@@ -137,7 +149,7 @@ abstract public class ScanCommand
      *  @throws Exception on error, for example missing essential data
      */
     abstract public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception;
-    
+
     /** Write indentation
      *  @param out Where to print
      *  @param level Indentation level
@@ -147,7 +159,7 @@ abstract public class ScanCommand
         for (int i=0; i<level; ++i)
             out.print("  ");
     }
-    
+
     /** @return Debug representation.
      *          Derived classes should provide their command name with properties
      */

@@ -57,7 +57,7 @@ public class DeviceContext
         // Create context with those devices
         final DeviceContext context = new DeviceContext();
         for (DeviceInfo info : infos)
-            context.addPVDevice(info.getAlias(), info.getName());
+            context.addPVDevice(info);
 		return context;
     }
 
@@ -74,24 +74,23 @@ public class DeviceContext
      *  that is already in the context,
      *  the original device will be replaced.
      *
-     *  @param name Name of the device, used to access it in scan commands
-     *  @param path Path to the device, i.e. the control system PV
+     *  @param info {@link DeviceInfo}
      */
-    public synchronized void addPVDevice(final String name, final String path) throws Exception
+    public synchronized void addPVDevice(final DeviceInfo info) throws Exception
     {
-        devices.put(name, new PVDevice(name, path));
+        devices.put(info.getAlias(), new PVDevice(info));
     }
 
-    /** Get a device by name
-     *  @param name
+    /** Get a device by alias
+     *  @param alias
      *  @return {@link Device} with that name
      *  @throws Exception when device name not known
      */
-    public synchronized Device getDevice(final String name) throws Exception
+    public synchronized Device getDeviceByAlias(final String alias) throws Exception
     {
-        final Device device = devices.get(name);
+        final Device device = devices.get(alias);
         if (device == null)
-            throw new Exception("Unknown device '" + name + "'");
+            throw new Exception("Unknown device '" + alias + "'");
         return device;
     }
 

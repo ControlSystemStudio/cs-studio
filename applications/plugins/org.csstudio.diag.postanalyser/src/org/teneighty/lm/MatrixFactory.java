@@ -1,18 +1,18 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2006 Fran Lattanzio
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,10 +36,11 @@ import java.security.PrivilegedAction;
  * this class is classloaded.
  * <p>
  * This class uses the abstract factory and singleton design patterns.
- * 
+ *
  * @author Fran Lattanzio
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("nls")
 public abstract class MatrixFactory
 	extends Object
 {
@@ -78,11 +79,13 @@ public abstract class MatrixFactory
 
 				/**
 				 * Create the new instance, and so forth.
-				 * 
+				 *
 				 * @return Matrix a new factory instance.
 				 * @throws SecurityException If stuff fails.
 				 */
-				public MatrixFactory run()
+				@SuppressWarnings("rawtypes")
+                @Override
+                public MatrixFactory run()
 					throws SecurityException
 				{
 					String prop = System.getProperty( IMPLEMENTATION_PROPERTY );
@@ -134,10 +137,10 @@ public abstract class MatrixFactory
 
 	}
 
-	
+
 	/**
 	 * Get the instance of this class.
-	 * 
+	 *
 	 * @return MatrixFactory the instance.
 	 */
 	public static MatrixFactory getInstance()
@@ -145,7 +148,7 @@ public abstract class MatrixFactory
 		return ( instance );
 	}
 
-	
+
 	/**
 	 * Constructor.
 	 * <p>
@@ -155,12 +158,12 @@ public abstract class MatrixFactory
 	{
 		super();
 	}
-	
+
 
 	/**
 	 * Create and return a new <code>Matrix</code> instance, of the specified
 	 * size.
-	 * 
+	 *
 	 * @param rows the number of rows.
 	 * @param cols the number of columns.
 	 * @return Matrix a new Matrix instance of the specified size.

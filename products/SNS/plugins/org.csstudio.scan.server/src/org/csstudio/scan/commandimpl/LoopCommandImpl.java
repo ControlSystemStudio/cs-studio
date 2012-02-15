@@ -66,15 +66,24 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
+        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Device device = context.getDevice(command.getDeviceName());
-        final DeviceValueCondition reach_value =
-                new DeviceValueCondition(device, Comparison.EQUALS,
-                        command.getStart(), command.getStepSize()/10.0,
-                        command.getTimeout());
 
-		Logger.getLogger(getClass().getName()).log(Level.FINE,
-				"Loop: {0} = {1} .. {2}, stepping {3}",
-				new Object[] { command.getDeviceName(), command.getStart(), command.getEnd(), command.getStepSize() });
+	      // Separate read-back device, or use 'set' device?
+        final Device readback;
+        if (command.getReadback().isEmpty())
+            readback = device;
+        else
+            readback = context.getDevice(command.getReadback());
+
+        //  Wait for the device to reach the value?
+        final DeviceValueCondition condition;
+        if (command.getWait())
+            condition = new DeviceValueCondition(readback, Comparison.EQUALS,
+                        command.getStart(),
+                        command.getTolerance(), command.getTimeout());
+        else
+            condition = null;
 
 		final double start = Math.min(command.getStart(), command.getEnd());
         final double end   = Math.max(command.getStart(), command.getEnd());
@@ -82,10 +91,10 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
 		if (step > 0)
     		for (double value = start; value <= end; value += step)
-    		    executeStep(context, device, reach_value, value);
+    		    executeStep(context, device, condition, readback, value);
 		else // step is < 0, so stepping down
             for (double value = end; value >= start; value += step)
-                executeStep(context, device, reach_value, value);
+                executeStep(context, device, condition, readback, value);
 
 		// Revert direction for next iteration of the complete loop?
 		if (reverse)
@@ -95,22 +104,27 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	/** Execute one step of the loop
 	 *  @param context
 	 *  @param device
-	 *  @param reach_value
+	 *  @param condition
+	 *  @param readback
 	 *  @param value
 	 *  @throws Exception
 	 */
     private void executeStep(final ScanContext context, final Device device,
-            final DeviceValueCondition reach_value, double value)
+            final DeviceValueCondition condition, final Device readback, double value)
             throws Exception
     {
         // Set device to value for current step of loop
         device.write(value);
+
         // .. wait for device to reach value
-        reach_value.setDesiredValue(value);
-        reach_value.await();
+        if (condition != null)
+        {
+            condition.setDesiredValue(value);
+            condition.await();
+        }
 
         // Log the device's value
-        context.logSample(ScanSampleFactory.createSample(device.getName(), device.read()));
+        context.logSample(ScanSampleFactory.createSample(readback.getInfo().getAlias(), readback.read()));
 
         // Execute loop body
     	context.execute(implementation);

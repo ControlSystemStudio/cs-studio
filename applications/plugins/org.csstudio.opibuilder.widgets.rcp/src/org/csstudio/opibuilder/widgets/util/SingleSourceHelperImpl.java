@@ -17,6 +17,7 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Transform;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
@@ -87,6 +88,11 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
 	protected void internalSwtWidgetAddMouseTrackListener(Control control,
 			MouseTrackListener listener) {
 		control.addMouseTrackListener(listener);
+		if(control instanceof Composite){
+			for(Control c : ((Composite)control).getChildren()){
+				internalSwtWidgetAddMouseTrackListener(c, listener);						
+			}
+		}
 	}
 
 

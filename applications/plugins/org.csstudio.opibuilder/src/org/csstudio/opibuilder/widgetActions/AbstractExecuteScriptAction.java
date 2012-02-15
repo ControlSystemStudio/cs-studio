@@ -42,7 +42,7 @@ public abstract class AbstractExecuteScriptAction extends AbstractWidgetAction {
 				new String[]{getFileExtension()}));
 		addProperty(new StringProperty(
 				PROP_SCRIPT_TEXT, "Script Text", WidgetPropertyCategory.Basic, 
-				getScriptHeader(), true));
+				getScriptHeader(), true, true));
 		BooleanProperty embeddedProperty = new BooleanProperty(
 				PROP_EMBEDDED, "Embedded", WidgetPropertyCategory.Basic, false);
 		embeddedProperty.addPropertyChangeListener(new PropertyChangeListener() {

@@ -164,8 +164,8 @@ public class PVUtil{
 	}
 
 
-	/**The severity of the pv.
-	 * @param pv
+	/**Get severity of the pv as an integer value.
+	 * @param pv the PV.
 	 * @return 0:OK; -1: Invalid; 1: Major; 2:Minor.
 	 */
 	public final static int getSeverity(PV pv){
@@ -181,6 +181,24 @@ public class PVUtil{
 			return 0;
 		}
 		return -1;
+	}
+	
+	/**Get severity of the PV as a string.
+	 * @param pv the PV.
+	 * @return The string representation of the severity.
+	 */
+	public final static String getSeverityString(PV pv){
+		checkPVValue(pv);
+		return pv.getValue().getSeverity().toString();
+	}
+	
+	/**Get the status text that might describe the severity.
+	 * @param pv the PV.
+	 * @return the status string.
+	 */
+	public final static String getStatus(PV pv){
+		checkPVValue(pv);
+		return pv.getValue().getStatus();
 	}
 
 

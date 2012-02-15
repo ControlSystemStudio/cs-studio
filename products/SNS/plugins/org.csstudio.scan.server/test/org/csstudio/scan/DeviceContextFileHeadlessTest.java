@@ -17,7 +17,6 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -41,13 +40,10 @@ public class DeviceContextFileHeadlessTest
 		for (Device device : context.getDevices())
 			System.out.println(device);
 
-		final Device device = context.getDevice("xpos");
+		final Device device = context.getDeviceByAlias("xpos");
 		assertNotNull(device);
-		assertEquals("xpos", device.getName());
+		assertEquals("xpos", device.getInfo().getAlias());
+        assertEquals("motor_x", device.getInfo().getName());
 		assertEquals(PVDevice.class, device.getClass());
-
-		final String text = device.toString();
-		assertTrue(text.contains("Device 'xpos'"));
-		assertTrue(text.contains("motor_x"));
 	}
 }

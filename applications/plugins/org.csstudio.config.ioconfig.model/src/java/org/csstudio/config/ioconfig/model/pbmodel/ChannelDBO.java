@@ -74,8 +74,7 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
 
     /**
      * This Constructor is only used by Hibernate. To create an new {@link ChannelDBO}
-     * {@link #Channel(ChannelStructureDBO, boolean, boolean)} or
-     * {@link #Channel(ChannelStructureDBO, String, boolean, boolean, short)} or
+     * {@link #Channel(ChannelStructureDBO, String, boolean, boolean, short)}
      */
     public ChannelDBO() {
         // Constructor for Hibernate
@@ -111,9 +110,6 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
         visitor.visit(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Nonnull
     public VirtualLeaf addChild(@Nullable final VirtualLeaf child) throws PersistenceException {
@@ -213,9 +209,6 @@ public class ChannelDBO extends AbstractNodeSharedImpl<ChannelStructureDBO, Virt
         return _channelNumber;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     @Nonnull
     @Transient

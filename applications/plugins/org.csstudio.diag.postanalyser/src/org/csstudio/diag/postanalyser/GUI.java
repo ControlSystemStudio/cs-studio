@@ -429,7 +429,10 @@ public class GUI implements ModelListener, AlgorithmJobListener
             algorithm.reset();
             try
             {
-                algorithm.setInput(model.getChannel(channel_name.getText().trim()));
+                final String name = channel_name.getText().trim();
+                if (name.isEmpty())
+                    return;
+                algorithm.setInput(model.getChannel(name));
             }
             catch (Exception ex)
             {
@@ -439,8 +442,10 @@ public class GUI implements ModelListener, AlgorithmJobListener
             {
                 try
                 {
-                    ((CorrelationAlgorithm)algorithm).setCorrelationChannel(
-                        model.getChannel(alt_channel.getText().trim()));
+                    final String name = alt_channel.getText().trim();
+                    if (name.isEmpty())
+                        return;
+                    ((CorrelationAlgorithm)algorithm).setCorrelationChannel(model.getChannel(name));
                 }
                 catch (Exception ex)
                 {

@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.properties;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -23,10 +21,13 @@ import org.jdom.Element;
  */
 public class StringTableProperty extends AbstractWidgetProperty {
 	
-	/**
-	 * XML ELEMENT name for single item. This is for backward compatibility purpose.
-	 */
-	public static final String XML_ELEMENT_SINGLE_ITEM = "s"; //$NON-NLS-1$
+	
+	public class TitlesProvider {
+		
+		public String[] getTitles(){
+			return titles;
+		}
+	}
 	
 	/**
 	 * XML ELEMENT name for a row.
@@ -41,91 +42,98 @@ public class StringTableProperty extends AbstractWidgetProperty {
 	
 	private String[] titles;
 	
-	private int colNumber;
+	private TitlesProvider titlesProvider;
 	
 
-	/**StringList Property Constructor. The property value type is {@link List}.
+	/**StringList Property Constructor. The property value type is 2D string array.
 	 * @param prop_id the property id which should be unique in a widget model.
 	 * @param description the description of the property,
 	 * which will be shown as the property name in property sheet.
 	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 * @param titles the title for each column. The length of this array is the number of columns.
+	 * @param defaultValue the default value when the widget is first created. It cannot be null.
+	 * @param titles the title for each column. 
+	 * The length of titles array is the number of columns. it can be null if the property is not
+	 * visible.
 	 */
 	public StringTableProperty(String prop_id, String description,
-			WidgetPropertyCategory category, List<String[]> default_value, String[] titles) {
+			WidgetPropertyCategory category, String[][] default_value, String[] titles) {
 		super(prop_id, description, category, default_value);
 		this.titles = titles;
-		colNumber = titles.length;
+		titlesProvider = new TitlesProvider();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Object checkValue(Object value) {
 		if(value == null)
 			return null;
-		List<String[]> acceptableValue = null;
-		if(value instanceof List){	
-			if(((List) value).size() == 0 || 
-					(((List) value).size() > 0 && ((List) value).get(0) instanceof String[]))
-			acceptableValue = (List<String[]>)value;			
+		String[][] acceptableValue = null;
+		if(value instanceof String[][]){				
+			acceptableValue = (String[][])value;			
 		}		
 		return acceptableValue;
 	}
 
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Object getPropertyValue() {
 		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE){
-			List<String[]> result= new ArrayList<String[]>();
-			for(String[] item : (List<String[]>) super.getPropertyValue()){
-				String[] temp = new String[item.length];
-				int i=0;
-				for(String e : item){
-				temp[i++] = OPIBuilderMacroUtil.replaceMacros(
-					widgetModel, e);
-				}
-				result.add(temp);
+			String[][] originValue = (String[][])super.getPropertyValue();
+			if(originValue.length <=0)
+				return originValue;
+			String[][] result= new String[originValue.length][originValue[0].length];
+			for(int i=0; i<originValue.length; i++){
+				for(int j=0; j<originValue[0].length; j++){
+					result[i][j] = OPIBuilderMacroUtil.replaceMacros(
+					widgetModel, originValue[i][j]);
+				}				
 			}
 			return result;
 		}else
 			return super.getPropertyValue();
 	}
 	
+	/**
+	 * @param titles the titles for each column.
+	 */
+	public void setTitles(String[] titles) {
+		this.titles = titles;
+	}
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
 		if(PropertySSHelper.getIMPL() == null)
 			return null;
-		return PropertySSHelper.getIMPL().getStringTablePropertyDescriptor(prop_id, description, titles);
+		PropertyDescriptor propertyDescriptor = 
+				PropertySSHelper.getIMPL().getStringTablePropertyDescriptor(
+						prop_id, description, titlesProvider);
+		return propertyDescriptor;
 	}
 
 	@Override
-	public List<String[]> readValueFromXML(Element propElement) {
-		List<String[]> result = new ArrayList<String[]>();		
-		for(Object oe : propElement.getChildren()){
+	public String[][] readValueFromXML(Element propElement) {
+		List<?> rowChildren = propElement.getChildren();
+		if(rowChildren.size() == 0)
+			return new String[0][0];
+		String[][] result = 
+				new String[rowChildren.size()][((Element)rowChildren.get(0)).getChildren().size()];		
+		int i=0, j=0;
+		for(Object oe : rowChildren){
 			Element re = (Element)oe;
-			String[] row = new String[colNumber];
-			if(re.getName().equals(XML_ELEMENT_SINGLE_ITEM)){
-				Arrays.fill(row, ""); //$NON-NLS-1$
-				row[0] = re.getText();						
-			}else if(re.getName().equals(XML_ELEMENT_ROW)){
-				int i=0;
+			if(re.getName().equals(XML_ELEMENT_ROW)){
+				j=0;
 				for(Object oc : re.getChildren()){
-					row[i++] = ((Element)oc).getText();
+					result[i][j++] = ((Element)oc).getText();
 				}
+				i++;
 			}
-			result.add(row);
 		}		
 		return result;
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void writeToXML(Element propElement) {
-		List<String[]> data = (List<String[]>)propertyValue;		
+		String[][] data = (String[][]) propertyValue;		
 		for(String row[] : data){
 			Element rowElement = new Element(XML_ELEMENT_ROW);			
 			for(String e : row){

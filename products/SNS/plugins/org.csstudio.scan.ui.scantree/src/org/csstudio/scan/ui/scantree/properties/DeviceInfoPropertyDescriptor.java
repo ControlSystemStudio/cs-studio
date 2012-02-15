@@ -7,43 +7,34 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import org.csstudio.scan.device.DeviceInfo;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.properties.TextPropertyDescriptor;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
 
-/** Descriptor for a property that holds a <code>String[]</code>
+/** Descriptor for a property that holds a String for a <code>DeviceInfo</code>
  *  @author Kay Kasemir
  */
-public class StringArrayPropertyDescriptor extends TextPropertyDescriptor
+public class DeviceInfoPropertyDescriptor extends PropertyDescriptor
 {
+    final private DeviceInfo[] devices;
+
     /** Initialize
      *  @param id ID to edit
      *  @param label Label to show
+     *  @param devices Available devices
      */
-    public StringArrayPropertyDescriptor(final String id, final String label)
+    public DeviceInfoPropertyDescriptor(final String id, final String label, final DeviceInfo[] devices)
     {
         super(id, label);
-        
-        // Set label provider for String[], because default
-        // would use String[].toString() and show "LString@..."
-        setLabelProvider(new LabelProvider()
-        {
-            @Override
-            public String getText(final Object element)
-            {
-                if (element instanceof String[])
-                    return StringArrayCellEditor.encode((String[]) element);
-                return super.getText(element);
-            }
-        });
+        this.devices = devices;
     }
 
     /** {@inheritDoc} */
     @Override
     public CellEditor createPropertyEditor(final Composite parent)
     {
-        final CellEditor editor = new StringArrayCellEditor(parent);
+        final CellEditor editor = new DeviceInfoCellEditor(parent, devices);
         if (getValidator() != null)
             editor.setValidator(getValidator());
         return editor;

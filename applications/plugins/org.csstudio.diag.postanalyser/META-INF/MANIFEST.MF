@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Postanalyser
 Bundle-SymbolicName: org.csstudio.diag.postanalyser;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.diag.postanalyser.Activator
 Bundle-Description: Fitting and correlation for Data Browser
 Bundle-Localization: plugin

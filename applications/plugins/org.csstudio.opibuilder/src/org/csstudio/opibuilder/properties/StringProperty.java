@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.properties.support.PropertySSHelper;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.jdom.CDATA;
 import org.jdom.Element;
 
 /**The widget property for string. It also accept macro string $(macro).
@@ -21,7 +22,7 @@ import org.jdom.Element;
  */
 public class StringProperty extends AbstractWidgetProperty {
 	
-	private boolean multiLine;
+	private boolean multiLine, saveAsCDATA;
 	/**String Property Constructor. The property value type is {@link String}.
 	 * @param prop_id the property id which should be unique in a widget model.
 	 * @param description the description of the property,
@@ -31,13 +32,19 @@ public class StringProperty extends AbstractWidgetProperty {
 	 */
 	public StringProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
-		this(prop_id, description, category, defaultValue, false);
+		this(prop_id, description, category, defaultValue, false, false);
 	}
 	
 	public StringProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue, boolean multiLine) {
+		this(prop_id, description, category, defaultValue, multiLine, false);
+	}
+	
+	public StringProperty(String prop_id, String description,
+			WidgetPropertyCategory category, String defaultValue, boolean multiLine, boolean saveAsCDATA) {
 		super(prop_id, description, category, defaultValue);
 		this.multiLine = multiLine;
+		this.saveAsCDATA = saveAsCDATA;
 	}
 	
 
@@ -68,10 +75,14 @@ public class StringProperty extends AbstractWidgetProperty {
 	}
 
 	@Override
-	public void writeToXML(Element propElement) {		
-		String reShapedString = 
-			getPropertyValue().toString().replaceAll("\\x0D\\x0A?", new String(new byte[]{13,10}));
-		propElement.setText(reShapedString);
+	public void writeToXML(Element propElement){
+		if (saveAsCDATA) {
+			propElement.setContent(new CDATA(getPropertyValue().toString()));
+		} else {
+			String reShapedString = getPropertyValue().toString().replaceAll(
+					"\\x0D\\x0A?", new String(new byte[] { 13, 10 })); //$NON-NLS-1$
+			propElement.setText(reShapedString);
+		}
 	}
 	
 

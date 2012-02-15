@@ -92,6 +92,24 @@ import org.eclipse.ui.progress.UIJob;
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart implements NodeEditPart{
 
+	public class BaseEditPartActionFilter implements IActionFilter {
+		public boolean testAttribute(Object target, String name,
+				String value) {
+			if (name.equals("executionMode") && //$NON-NLS-1$
+					value.equals("EDIT_MODE") && //$NON-NLS-1$
+					getExecutionMode() == ExecutionMode.EDIT_MODE)
+				return true;
+			if (name.equals("executionMode") && //$NON-NLS-1$
+					value.equals("RUN_MODE") && //$NON-NLS-1$
+					getExecutionMode() == ExecutionMode.RUN_MODE)
+				return true;
+			if (name.equals("hasPVs") && //$NON-NLS-1$
+					value.equals("true")) //$NON-NLS-1$
+				return (getAllPVs() != null && getAllPVs().size() > 0);
+			return false;
+		}
+	}
+
 	private boolean isSelectable = true;
 
 	protected Map<String, WidgetPropertyChangeListener> propertyListenerMap;
@@ -325,35 +343,28 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 		if (key == IActionFilter.class)
-			return new IActionFilter() {
-
-				public boolean testAttribute(Object target, String name,
-						String value) {
-					if (name.equals("executionMode") && //$NON-NLS-1$
-							value.equals("EDIT_MODE") && //$NON-NLS-1$
-							getExecutionMode() == ExecutionMode.EDIT_MODE)
-						return true;
-					if (name.equals("executionMode") && //$NON-NLS-1$
-							value.equals("RUN_MODE") && //$NON-NLS-1$
-							getExecutionMode() == ExecutionMode.RUN_MODE)
-						return true;
-					if (name.equals("hasPVs") && //$NON-NLS-1$
-							value.equals("true")) //$NON-NLS-1$
-						return (getAllPVs() != null && getAllPVs().size() > 0);
-					return false;
-				}
-
-			};
+			return new BaseEditPartActionFilter();
 		return super.getAdapter(key);
 	}
 
 	/**
-	 * @return the map with all PVs. It is not allowed to change the Map. null
-	 *         if no PV on this widget.
+	 * @return the map with all PVs. PV name is the key. 
+	 * It is not allowed to change the Map by client. null
+	 *   if no PV on this widget.
 	 */
 	public Map<String, PV> getAllPVs() {
 		if (getConnectionHandler() != null)
 			return getConnectionHandler().getAllPVs();
+		return null;
+	}
+	
+	/**Get PV attached to this widget by pv name. It includes the PVs in Rules and Scripts. 
+	 * @param pvName name of the PV.
+	 * @return the PV. null if no such PV exists.
+	 */
+	public PV getPVByName(String pvName){
+		if (getConnectionHandler() != null)
+			return getConnectionHandler().getAllPVs().get(pvName);
 		return null;
 	}
 

@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import javax.jms.Connection;
-import javax.swing.JFrame;
 
 import org.csstudio.alarm.beast.annunciator.model.AnnunciationMessage;
 import org.csstudio.alarm.beast.annunciator.model.JMSAnnunciator;
@@ -45,14 +44,17 @@ public class Application implements IApplication, JMSAnnunciatorListener
 	    // an Eclipse application. Looks like it uses some AWT features
 	    // which are available from a plain old main() program as well
 	    // as Swing apps, but not headless Eclipse apps.
-	    if (System.getProperty("os.name").startsWith("Mac"))
-	    {
-    	    //Create Swing window, which triggers some
-	        // Java CocoaComponent compatibility crap ...
-            JFrame frame = new JFrame("JMS2SPEECH");
-            frame.pack();
-            frame.setVisible(true);
-	    }
+	    // With OS X 10.6.8 and the 1.6.0_26 JDK this is no longer
+	    // necessary, in fact it will cause the annunciator to hang
+	    // in new JFrame()
+//	    if (System.getProperty("os.name").startsWith("Mac"))
+//	    {
+//    	    //Create Swing window, which triggers some
+//	        // Java CocoaComponent compatibility crap ...
+//            JFrame frame = new JFrame("JMS2SPEECH");
+//            frame.pack();
+//            frame.setVisible(true);
+//	    }
 
 	    final String url = Preferences.getURL();
 	    final String topics[] = Preferences.getTopics();

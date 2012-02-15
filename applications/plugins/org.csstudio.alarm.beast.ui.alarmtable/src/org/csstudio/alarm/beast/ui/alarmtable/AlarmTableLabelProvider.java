@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
@@ -107,7 +108,11 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             cell.setText(alarm.getName());
             break;
         case DESCRIPTION:
-            cell.setText(alarm.getDescription());
+            {
+            final String annunciation = AnnunciationFormatter.format(alarm.getDescription(),
+                    alarm.getSeverity().getDisplayName(), alarm.getValue());
+            cell.setText(annunciation);
+            }
             break;
         case TIME:
             cell.setText(alarm.getTimestampText());

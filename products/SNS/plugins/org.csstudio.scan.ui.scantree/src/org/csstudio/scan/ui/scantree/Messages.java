@@ -18,7 +18,11 @@ public class Messages extends NLS
     public static String AddCommand;
     public static String AddCommandMessage;
     public static String AddCommandTitle;
+    public static String BoolEdit_False;
+    public static String BoolEdit_True;
     public static String CommandListTT;
+    public static String DeviceListFetch;
+    public static String DeviceListFetchError;
     public static String Error;
     public static String FileOpenErrorFmt;
     public static String FileSaveErrorFmt;

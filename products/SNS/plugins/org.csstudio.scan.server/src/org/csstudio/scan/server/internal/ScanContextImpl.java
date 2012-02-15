@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -67,13 +67,13 @@ public class ScanContextImpl implements ScanContext
 
 	/** Get a device by name
 	 *  @param name
-	 *  @return {@link Device} with that name
+	 *  @return {@link Device} with that (alias) name
 	 *  @throws Exception when device name not known
 	 */
 	@Override
 	public Device getDevice(final String name) throws Exception
 	{
-	    return devices.getDevice(name);
+	    return devices.getDeviceByAlias(name);
 	}
 
     /** @return All Devices */

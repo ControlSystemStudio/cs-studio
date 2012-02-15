@@ -225,7 +225,7 @@ public class GUI implements ModelListener
             if (model != null)
                 model.close();
             clear();
-            if (topic_name.length() <= 0)
+            if (topic_name.length() <= 0  ||  Messages.EnterTopicMsg.equals(topic_name))
                 return;
             model = new Model(url, user, password, topic_name);
             modelChanged(model);

@@ -9,6 +9,7 @@
 package org.csstudio.opibuilder.properties.support;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
@@ -107,8 +108,8 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 
 	@Override
 	public PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
-			String description, String[] titles) {
-		return new StringTablePropertyDescriptor(prop_id, description, titles);
+			String description, TitlesProvider tilesProvider) {
+		return new StringTablePropertyDescriptor(prop_id, description, tilesProvider);
 	}
 
 }

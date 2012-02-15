@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -41,7 +41,7 @@ public interface TODO
      *  Done Run Scan Server as [headless] RCP Application
      *
      *  Done Feature to include PyDev with the scan client and monitor
-     *  
+     *
      *  Done Readme on how to configure pydev
      *       to be aware of scan classes for completion in editor
      *
@@ -50,52 +50,54 @@ public interface TODO
      *
      *  Done Device context can initialize from a config file that
      *       lists the devices for a beamline
-     *  
+     *
      *  Done Allow configuration of config file location
-     *  
+     *
      *  Done Query scan server for device info
-     *  
+     *
      *  Done fetch data data from ongoing or finished scans?
-     *       
+     *
      *  Done plot data of (ongoing) scan
      *
      *  Done Start plot from scan monitor
-     *  
+     *
      *  Done Improve scan data updates, use 'last update' time to suppress no-change updates
-     *       
+     *
      *  Done Start plot from script
-     *  
+     *
      *  Done Allow multiple scan plots, use memento
-     *       
+     *
      *  Done Plot: Show/Hide (default) toolbar
-     *  
+     *
      *  Done Load/Save scan as XML
-     *  
+     *
      *  Done Extension point for (basic sequential) commands.
      *       All commands are based on extension points
      *       for description and implementation.
      *       Loop has special handling in Scan Tree Editor.
      *       Addition of an If-Then-Else command would also
      *       require special handling.
-     *  
+     *
      *  Done Scan Monitor appears "re-connected" when server is re-started.
-     *       
+     *
      *  Done Extend WaitCommand to also allow waiting for value to be above or below some threshold,
      *       not just "at" the desired value
-     *       
+     *
      *  Done WaitCommand has a timeout
-     *  
-     *  TODO 'Automatically' log values for LoopCommand, SetCommand, ...
-     *       Unclear which value to use:
-     *       The one written? An associated readback (when?)?
-     *  
+     *
+     *  Done 'Automatically' log values for LoopCommand, SetCommand, ...
+     *
+     *  TODO More copy/paste support in Scan Tree
+     *
+     *  TODO Undo for Scan Tree
+     *
      *  TODO put callback? Maybe support Channel Access put-callback,
      *       or add a wait-for-value to the set command?
      *
      *  TODO Other scan configuration GUIs.
      *       'Spreadsheet' of loop variable, start/end?
      *       Process block GUI?
-     *  
+     *
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
      *       If they're something else, then an API for
@@ -105,9 +107,9 @@ public interface TODO
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
-     *  
+     *
      *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
-     *  
+     *
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
      *  TODO RMI timeout?

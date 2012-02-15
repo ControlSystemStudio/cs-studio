@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
   <title>Scan System</title>
-  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
 </head>
 <body>
 
@@ -51,7 +51,7 @@ independent from the computer that submitted the scans.
 
 <h2><a name="commands">Commands</a></h2> 
 
-<img src="scan_example.png"/>
+<img alt="Example Scan" src="scan_example.png"/>
 
 <p>The picture above shows a scan with two nested loops
 as it would appear in the <a href="#editor">Scan Editor</a>.
@@ -59,31 +59,60 @@ What follows is a description of all available commands.
 </p>
 
 
-<h3><img src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</h3>
+<h3><img alt="set" src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</h3>
 <p>This command sets a device to a desired value.
+</p>
+<p>In addition to sending the desired value to the device,
+it can also wait for the device or an associated read-back device
+to actually reach the desired value.
 </p>
 <p>Parameters:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
 <li>Value: Desired value of the device.</li>
+<li>Wait for readback: By default, the command will wait until the device reaches the commanded value.</li>
+<li>Readback Device: By default, the Device where the value was written is also checked for reaching the commanded value.
+    Optionally, a different "read back" device can be used.</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will wait for the device (or separate read back) to reach
+    the commanded value.</li>
 </ul>
-<p>Example:
+<p>Example:</p>
+<p>
 <code>Set 'setpoint' = 1.0</code>
 will write the value 1.0 to the "setpoint" device.
 </p>
+<p>
+<code>Set 'setpoint' = 1.0 (wait for 'readback' +-0.1, 10.0 sec timeout)</code>
+will also write the value 1.0 to the "setpoint" device.
+In addition to the previous example the command will wait up to 10 seconds
+for the "readback" device to reach the value of 1.0 with a tolerance of 0.1,
+that is a value within 0.9 and 1.0.
+</p>
 
 
-<h3><img src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
+<h3><img alt="wait" src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
 <p>This command waits for a device to reach a desired value.
+</p>
+<p>The Set command described above already contains similar functionality,
+but it can only wait for a device to reach the absolute value to which it
+has been commanded.
+The separate wait command can be used to wait for a <i>different</i>
+value, or to wait for a device to increase or decrease by a certain value.
 </p>
 <p>Parameters:</p>
 <ul>
 <li>Device: Name of the device to set.</li>
-<li>Comparison: How the current value of the device is compared to the desired value.</li>
+<li>Comparison: How the current value of the device is compared to the desired value.
+    Options include equal, less than etc. as well as "increase by" or "decrease by"
+    for comparisons relative to the original value of the device at the time when
+    the command is becoming active.</li>
 <li>Desired Value: Desired value of the device.</li>
 <li>Tolerance: Difference between the actual value of the device and the desired value
-    that is considered "good enough".
-</li>
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will wait for the device to reach
+    the desired value.</li>
 </ul>
 <p>Examples:
 </p>
@@ -111,8 +140,7 @@ wait command, the value would have to grow to at least
 </p>
 
 
-
-<h3><img src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
+<h3><img alt="loop" src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
 <p>This command changes a device from a start to an end value.
 It is at the core of most scans.
 </p>
@@ -122,6 +150,13 @@ It is at the core of most scans.
 <li>Initial Value: Initial value of the device.</li>
 <li>Final Value: Final value of the device.</li>
 <li>Step Size: Step in which value of device should be changed.</li>
+<li>Wait for readback: By default, the loop will wait until the device reaches the commanded value.</li>
+<li>Readback Device: By default, the loop device to which the loop writes is also checked for reaching the commanded value.
+    Optionally, a different "read back" device can be used.</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will wait for the device (or separate read back) to reach
+    the commanded value.</li>
 <li>Body: Commands to be executed at each step of the loop.</li>
 </ul>
 <p>Example:
@@ -140,7 +175,7 @@ This can be useful for nested loops that are intended to scan a surface,
 as shown in the diagram below:
 </p>
 
-<img src="scan_alternate.png" width="90%"/>
+<img alt="Example for alternate scan" src="scan_alternate.png" width="90%"/>
 
 <p>The normal scan displayed in the left diagram was executed with nested loops</p>
 <p>
@@ -158,7 +193,8 @@ If these "xpos" and "ypos" devices are for example connected to stepper motors,
 the alternating scan will be faster and reduce wear on the motors.
 </p>
 
-<h3><img src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</h3>
+
+<h3><img alt="log" src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</h3>
 <p>Send values of devices to the log.
 </p>
 <p>Parameters:</p>
@@ -170,8 +206,14 @@ the alternating scan will be faster and reduce wear on the motors.
 will send the current value of the "ypos" and "readback"
 devices to the log.
 </p>
+<p>Note that Loop, Set and Wait commands will automatically
+log the value of the device which they <u>read</u>.
+By default, this is the device to which the Loop and Set command
+write, unless a separate read-back device is specified. 
+</p>
 
-<h3><img src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
+
+<h3><img alt="delay" src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
 <p>This command simply delays the scan for a configurable
 number of seconds.
 </p>
@@ -183,18 +225,21 @@ number of seconds.
 <code>Delay 1.0 sec</code>
 will delay the scan for 1 second.
 </p>
-<p>Note that you should avoid using this command.
+<p>Note that you should <u>avoid</u> using this command.
 It is usually a bad idea to simply wait some time,
-hoping that the experiment reached a desired state,
+hoping that the experiment reached a desired state
 for example a certain temperature or a certain amount
 of beam exposure.
+</p>
+<p>
 If the temperature is already at the desired value before
 the delay expires, you have wasted time.
-If the beam should turn off, your delay will not notice this.
+If the beam should turn off, a simply delay will not notice this.
 </p>
 <p>Instead of a delay, try to use the "Wait" command to wait
-for the desired state, for example the desired temperature
-or a certain amount of beam exposure.
+for the desired state, for example for a readback to indicate the
+desired temperature, or for a beam current measurement device to
+indicate a certain amount of beam exposure.
 </p>
 
 
@@ -228,7 +273,7 @@ to track the progress of a scan and potentially pause or abort it.
 It shows the hierarchical structure of loops in a scan.
 </p>
 
-<img src="scan_edit.png" width="100%"/>
+<img alt="Scan Editor" src="scan_edit.png" width="100%"/>
 
 <p>Basic Operation:</p>
 
@@ -252,7 +297,7 @@ It shows the hierarchical structure of loops in a scan.
     via the menu <code>File/Save</code>.
 </li>
 <li>Submit to scan server for execution via either the context menu
-or the toolbar button <img src="../icons/run.png"/>.
+or the toolbar button <img alt="Run" src="../icons/run.png"/>.
 </li>
 </ul>
 
@@ -261,12 +306,13 @@ or the toolbar button <img src="../icons/run.png"/>.
 <p>The Scan Monitor displays the current state of the Scan Server.
 </p>
 
-<img src="scan_monitor.png" width="80%"/>
+<img alt="Scan Monitor" src="scan_monitor.png" width="80%"/>
 
 <p>Access the scan monitor via the menu <code>CSS/Scan/Scan Monitor</code>
 </p>
 <p>It lists which scans have been submitted to the server
 and their state:
+</p>
 <ul>
 <li>Finished - OK: Scan has been executed until it finished without errors.</li>
 <li>Aborted: The scan was aborted by the user.</li>
@@ -277,7 +323,6 @@ and their state:
     when previously queued scans have been handled.
 </li>
 </ul>
-</p>
 
 <p>The context menu and the toolbar buttons can be used to pause or abort the Running scan,
 and to remove completed scans from the server, i.e. scans that have either finished or have been aborted.
@@ -289,17 +334,17 @@ and to remove completed scans from the server, i.e. scans that have either finis
 Data for devices that are "logged" is accessible to the plot.
 </p>
 
-<img src="scan_plot.png" width="80%"/>
+<img alt="Scan Plot" src="scan_plot.png" width="80%"/>
 
 <p>Access the scan plotmonitor via the menu <code>CSS/Scan/Scan Plot</code>
 </p>
 <p>Selectors in the toolbar of the plot allow selection of the following:
+</p>
 <ul>
 <li>Scan: Select from which scan on the server to retrieve data.</li>
 <li>X Axis: Select the device to display on the X axis.</li>
 <li>Y Axis: Select the device to display on the X axis.</li>
 </ul>
-</p>
 
 
 <h2><a name="programmatic">Programmatic Access</a></h2>

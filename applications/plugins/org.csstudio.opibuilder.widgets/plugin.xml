@@ -311,6 +311,15 @@
       </widget>
       <widget
             category="Others"
+            description="A table widget which works like a spread sheet."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TableEditPart"
+            icon="icons/table.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TableModel"
+            name="Table"
+            typeId="org.csstudio.opibuilder.widgets.table">
+      </widget>
+      <widget
+            category="Others"
             description="A container widget which can make a bunch of widgets as a group."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart"
             icon="icons/groupContainer.png"
@@ -518,6 +527,81 @@
             <objectState
                   name="executionMode"
                   value="EDIT_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.table"
+            objectClass="org.csstudio.opibuilder.widgets.editparts.TableEditPart">
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.InsertRowAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.insertRow"
+               label="Insert Row..."
+               menubarPath="table"
+               tooltip="Insert a row.">
+            <enablement>
+               <objectState
+                     name="allowInsert"
+                     value="TRUE">
+               </objectState>
+            </enablement>
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.InsertColumnAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.insertColumn"
+               label="Insert Column..."
+               menubarPath="table"
+               tooltip="Insert a column.">
+            <enablement>
+               <objectState
+                     name="allowInsert"
+                     value="TRUE">
+               </objectState>
+            </enablement>
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.DeleteRowAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.deleteRow"
+               label="Delete Row"
+               menubarPath="table"
+               tooltip="Delete this row.">
+            <enablement>
+               <objectState
+                     name="allowDelete"
+                     value="TRUE">
+               </objectState>
+            </enablement>
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.DeleteColumnAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.deleteColumn"
+               label="Delete Column"
+               menubarPath="table"
+               tooltip="Delete this column">
+            <enablement>
+               <objectState
+                     name="allowDelete"
+                     value="TRUE">
+               </objectState>
+            </enablement>
+         </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.AutoSizeTableColumnsAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.AutoSizeColumns"
+               label="Auto Size Columns"
+               menubarPath="table"
+               tooltip="Auto size columns of the table.">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="RUN_MODE">
             </objectState>
          </visibility>
       </objectContribution>

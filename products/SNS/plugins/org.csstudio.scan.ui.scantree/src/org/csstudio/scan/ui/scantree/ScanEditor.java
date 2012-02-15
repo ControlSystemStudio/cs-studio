@@ -18,6 +18,7 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
 import org.eclipse.core.resources.IFile;
@@ -25,7 +26,10 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -43,12 +47,12 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /** Eclipse Editor for the Scan Tree
- *  
+ *
  *  <p>Displays the scan tree and uses
  *  it as selection provider.
  *  {@link ScanCommandAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanEditor extends EditorPart implements ScanTreeGUIListener
@@ -64,6 +68,9 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
+
+    /** @return Devices available on scan server */
+    private volatile DeviceInfo[] devices = null;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -95,7 +102,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return createInstance(new EmptyEditorInput());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -103,6 +110,34 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         setSite(site);
         setInput(input);
+
+        // Use background Job to obtain device list
+        final Job job = new Job(Messages.DeviceListFetch)
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        devices = server.getDeviceInfos();
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            Messages.DeviceListFetchError, ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -160,29 +195,54 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         setDirty(true);
     }
-    
+
+    /** @return Devices available on scan server */
+    public DeviceInfo[] getDevices()
+    {
+        return devices;
+    }
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = gui.getCommands();
-        
+
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
         if (sep > 0)
             name = name.substring(0, sep);
-        
-        // Use Job to submit?
-        try
+
+        final String scan_name = name;
+
+        // Use background Job to submit scan to server
+        final Job job = new Job(Messages.SubmitScan)
         {
-            final ScanServer server = ScanServerConnector.connect();
-            server.submitScan(name, XMLCommandWriter.toXMLString(commands));
-            ScanServerConnector.disconnect(server);
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(getSite().getShell(), Messages.Error,
-                NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()));
-        }
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR,
+                            Activator.PLUGIN_ID,
+                            NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
+                            ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -223,7 +283,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             return false;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSave(final IProgressMonitor monitor)
@@ -235,7 +295,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         else // Input is EmptyEditorInput, no file, yet
             saveToFile(monitor, file);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSaveAs()
@@ -249,7 +309,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             setPartName(file.getName());
         }
     }
-    
+
     /** Prompt for file name
      *  @param old_file Old file name or <code>null</code>
      *  @return IFile for new file name
@@ -282,7 +342,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return is_dirty;
     }
-    
+
     /** Update the 'dirty' flag
      *  @param dirty <code>true</code> if model changed and needs to be saved
      */
