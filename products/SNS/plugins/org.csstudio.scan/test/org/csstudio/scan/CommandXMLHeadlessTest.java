@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -35,25 +35,25 @@ import org.junit.Test;
 public class CommandXMLHeadlessTest
 {
     private static String xml;
-    
+
     // Static method to write static member to please FindBugs
     private static void storeXML(final String xml)
     {
         CommandXMLHeadlessTest.xml = xml;
     }
-    
+
     @Test
     public void testWriteXML() throws Exception
     {
         final List<ScanCommand> commands = DemoCommands.createDemoCommands();
-        
+
         storeXML(XMLCommandWriter.toXMLString(commands));
         System.out.println(xml);
         assertTrue(xml.startsWith("<?xml"));
         assertTrue(xml.contains("<commands>"));
         assertTrue(xml.contains("</commands>"));
     }
-    
+
     public void runReader(final XMLCommandReader reader) throws Exception
     {
         assertNotNull(xml);
@@ -61,7 +61,7 @@ public class CommandXMLHeadlessTest
 
         final List<ScanCommand> commands = reader.readXMLString(xml);
         assertNotNull(commands);
-        
+
         // When turned back into XML, result should match
         final String copy = XMLCommandWriter.toXMLString(commands);
         System.out.println("Read from XML:");

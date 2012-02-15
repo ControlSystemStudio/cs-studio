@@ -87,7 +87,7 @@ public interface TODO
      *
      *  Done 'Automatically' log values for LoopCommand, SetCommand, ...
      *
-     *  TODO More copy/paste support in Scan Tree
+     *  Done Copy/paste support in Scan Tree
      *
      *  TODO Undo for Scan Tree
      *

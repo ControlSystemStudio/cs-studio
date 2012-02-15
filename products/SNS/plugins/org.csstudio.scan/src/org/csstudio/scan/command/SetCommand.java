@@ -187,6 +187,7 @@ public class SetCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        writeIndent(out, level);
         out.println("</set>");
     }
 

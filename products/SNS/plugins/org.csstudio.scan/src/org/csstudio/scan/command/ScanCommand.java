@@ -15,7 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 
@@ -142,16 +141,6 @@ abstract public class ScanCommand
      *  @param level Indentation level
      */
     abstract public void writeXML(PrintStream out, final int level);
-
-    /** @return Command formatted as XML */
-    public String toXML()
-    {
-        final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        final PrintStream out = new PrintStream(buf);
-        writeXML(out, 0);
-        out.flush();
-        return buf.toString();
-    }
 
     /** Read command parameters from XML element
      *  @param factory ScanCommandFactory to use in case inner scan commands,

@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.DelayCommand;
@@ -35,7 +36,7 @@ public class TreeManipulatiorUnitTest
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
         assertEquals(5, commands.size());
-        
+
         assertEquals(SetCommand.class, commands.get(0).getClass());
         assertEquals(WaitCommand.class, commands.get(1).getClass());
         assertEquals(DelayCommand.class, commands.get(2).getClass());
@@ -57,7 +58,7 @@ public class TreeManipulatiorUnitTest
         assertTrue(ok);
         assertEquals(7, commands.size());
         assertSame(add, commands.get(1));
-        
+
         // Add to start of loop
         assertEquals(LoopCommand.class, commands.get(5).getClass());
         List<ScanCommand> body = ((LoopCommand) commands.get(5)).getBody();
@@ -71,8 +72,19 @@ public class TreeManipulatiorUnitTest
         assertEquals(7, commands.size());
         body = ((LoopCommand) commands.get(5)).getBody();
         assertSame(add, body.get(0));
+
+
+        // Add 3 commands 'at once'
+        final List<ScanCommand> many = Arrays.asList(
+                (ScanCommand)new LogCommand("one"), new LogCommand("two"), new LogCommand("three"));
+        ok = TreeManipulator.insertAfter(commands, commands.get(6), many);
+        XMLCommandWriter.write(System.out, commands);
+        assertTrue(ok);
+        assertEquals(10, commands.size());
+        assertSame(LogCommand.class, commands.get(9).getClass());
+        assertEquals("three", ((LogCommand)commands.get(9)).getDeviceNames()[0]);
     }
-    
+
     @Test
     public void testTreeDeletion() throws Exception
     {
@@ -82,7 +94,7 @@ public class TreeManipulatiorUnitTest
         assertEquals(5, commands.size());
 
         ScanCommand command = commands.get(2);
-        
+
         // Remove second element, so next one should move 'up'
         boolean ok = TreeManipulator.remove(commands, commands.get(1));
         XMLCommandWriter.write(System.out, commands);

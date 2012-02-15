@@ -35,8 +35,6 @@ public class CommandFormatUnitTest
         System.out.println(command);
         assertTrue(command.toString().contains("wait"));
 
-        System.out.println(command.toXML());
-
         command.setReadback("readback");
         System.out.println(command);
         assertTrue(command.toString().contains("readback"));

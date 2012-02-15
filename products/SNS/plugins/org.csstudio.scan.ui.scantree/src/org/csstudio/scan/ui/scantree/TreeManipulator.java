@@ -14,18 +14,18 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 
 /** Helper for manipulating the 'tree' of scan commands.
- * 
+ *
  *  <p>If the scan tree was an actual tree, this
  *  might be simpler, but for now we keep the original
  *  {@link List} API and thus the tree-based operations
  *  are handled in here.
- *  
+ *
  *  <p>Note that all comparisons in here are via '==',
  *  not <code>equals()</code>.
  *  When specifying insertion targets one must provide
  *  the exact tree item for the insertion, not an element
  *  that might be "equal" in value but outside of the tree.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class TreeManipulator
@@ -74,6 +74,23 @@ public class TreeManipulator
     }
 
     /** @param commands List of scan commands
+     *  @param target Item after which new command should be inserted
+     *  @param new_commands New commands to insert
+     *  @return <code>true</code> if insertion succeeded
+     */
+    public static boolean insertAfter(final List<ScanCommand> commands,
+            ScanCommand target, final List<ScanCommand> new_commands)
+    {
+        for (ScanCommand command : new_commands)
+        {
+            if (! insertAfter(commands, target, command))
+                return false;
+            target = command;
+        }
+        return true;
+    }
+
+    /** @param commands List of scan commands
      *  @param target Item before which new command should be inserted
      *  @param command New command to insert
      *  @return <code>true</code> if insertion succeeded
@@ -116,7 +133,7 @@ public class TreeManipulator
         }
         return false;
     }
-    
+
     /** @param loop Loop to which to add a command
      *  @param command New command to insert
      *  @return <code>true</code> if insertion succeeded

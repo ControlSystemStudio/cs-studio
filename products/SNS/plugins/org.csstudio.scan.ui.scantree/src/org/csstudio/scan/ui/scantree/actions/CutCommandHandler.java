@@ -7,11 +7,16 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.actions;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.TreeManipulator;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -39,11 +44,24 @@ public class CutCommandHandler extends AbstractHandler
         TreeManipulator.remove(commands, command);
         editor.refresh();
 
-        // Put command onto clipboard
-        final String text = command.toXML();
-        final Clipboard clip = new Clipboard(Display.getCurrent());
-        clip.setContents(new Object[] { text }, new Transfer[] { TextTransfer.getInstance() });
-        clip.dispose();
+        try
+        {
+            // Format as XML
+            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            XMLCommandWriter.write(buf, Arrays.asList(command));
+            buf.close();
+
+            // Put onto clipboard
+            final Clipboard clip = new Clipboard(Display.getCurrent());
+            clip.setContents(new Object[] { buf.toString() },
+                    new Transfer[] { TextTransfer.getInstance() });
+            clip.dispose();
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(editor.getSite().getShell(),
+                    Messages.Error, ex);
+        }
 
         return null;
     }

@@ -247,7 +247,6 @@ public class LoopCommand extends ScanCommand
         out.println("<end>" + end + "</end>");
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
-        writeIndent(out, level+1);
         if (! readback.isEmpty())
         {
             writeIndent(out, level+1);
@@ -268,6 +267,7 @@ public class LoopCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        writeIndent(out, level+1);
         out.println("<body>");
         for (ScanCommand cmd : body)
             cmd.writeXML(out, level + 2);
