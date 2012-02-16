@@ -15,11 +15,12 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.TreeManipulator;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -54,7 +55,11 @@ public class PasteCommandHandler extends AbstractHandler
             // Add command to scan, either at selected command or at end
             final List<ScanCommand> commands = editor.getCommands();
             final ScanCommand location = editor.getSelectedCommand();
-            TreeManipulator.insertAfter(commands, location, received_commands);
+
+            final IUndoableOperation operation =
+                    new PasteOperation(commands, location, received_commands);
+            operation.execute(new NullProgressMonitor(), editor);
+            editor.addToOperationHistory(operation);
         }
         catch (Exception ex)
         {
@@ -64,9 +69,6 @@ public class PasteCommandHandler extends AbstractHandler
                 ex);
             return null;
         }
-
-
-        editor.refresh();
 
         return null;
     }

@@ -7,12 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.operations;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.TreeManipulator;
 import org.eclipse.core.commands.ExecutionException;
@@ -21,33 +18,33 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.ActionFactory;
 
-/** Handler to remove selected command from tree,
+/** Handler to paste commands into tree,
  *  putting it onto clipboard
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CutOperation extends AbstractOperation
+public class PasteOperation extends AbstractOperation
 {
     final private List<ScanCommand> commands;
-    final private ScanCommand command;
-    private TreeManipulator.RemovalInfo removal = null;
+    final private ScanCommand location;
+    final private List<ScanCommand> new_commands;
 
     /** Initialize
      *  @param commands Scan commands
-     *  @param command Command to remove
+     *  @param location Where to add
+     *  @param new_commands Command to add
+     *
      */
-    public CutOperation(final List<ScanCommand> commands,
-            final ScanCommand command)
+    public PasteOperation(final List<ScanCommand> commands,
+            final ScanCommand location,
+            final List<ScanCommand> new_commands)
     {
-        super(ActionFactory.CUT.getId());
+        super(ActionFactory.PASTE.getId());
         this.commands = commands;
-        this.command = command;
+        this.location = location;
+        this.new_commands = new_commands;
     }
 
     /** {@inheritDoc} */
@@ -69,24 +66,12 @@ public class CutOperation extends AbstractOperation
 
         try
         {
-            // Remove command from scan
-            removal = TreeManipulator.remove(commands, command);
+            TreeManipulator.insertAfter(commands, location, new_commands);
             editor.refresh();
-
-            // Format as XML
-            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, Arrays.asList(command));
-            buf.close();
-
-            // Put onto clipboard
-            final Clipboard clip = new Clipboard(Display.getCurrent());
-            clip.setContents(new Object[] { buf.toString() },
-                    new Transfer[] { TextTransfer.getInstance() });
-            clip.dispose();
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("'Cut' failed", ex);
+            throw new ExecutionException("'Paste' failed", ex);
         }
 
         return Status.OK_STATUS;
@@ -101,11 +86,10 @@ public class CutOperation extends AbstractOperation
         if (editor == null)
             return Status.OK_STATUS;
 
-        if (removal == null)
-            throw new ExecutionException("Noting to undo for 'cut'");
         try
         {
-            removal.undo(commands);
+            for (ScanCommand command : new_commands)
+                TreeManipulator.remove(commands, command);
             editor.refresh();
         }
         catch (Exception ex)

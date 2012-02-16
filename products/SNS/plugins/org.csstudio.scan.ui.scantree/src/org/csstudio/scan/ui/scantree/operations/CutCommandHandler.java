@@ -33,8 +33,7 @@ public class CutCommandHandler extends AbstractHandler
         // Remove command from scan
         final List<ScanCommand> commands = editor.getCommands();
         final ScanCommand command = editor.getSelectedCommand();
-        IUndoableOperation operation = new CutOperation(commands, command);
-
+        final IUndoableOperation operation = new CutOperation(commands, command);
         operation.execute(new NullProgressMonitor(), editor);
         editor.addToOperationHistory(operation);
 
