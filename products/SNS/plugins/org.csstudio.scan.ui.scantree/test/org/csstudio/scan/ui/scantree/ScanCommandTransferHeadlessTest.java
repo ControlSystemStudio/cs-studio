@@ -15,25 +15,25 @@ import org.csstudio.scan.command.LogCommand;
 import org.eclipse.swt.dnd.TransferData;
 import org.junit.Test;
 
-/** JUnit test of the {@link ScanCommandTransfer}
+/** [Headless] JUnit test of the {@link ScanCommandTransfer}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanCommandTransferUnitTest
+public class ScanCommandTransferHeadlessTest
 {
     @Test
     public void test()
     {
         final LogCommand command = new LogCommand("device1", "device2");
         System.out.println("Original: " + command);
-        
+
         final TransferData data = ScanCommandTransfer.getInstance().getSupportedTypes()[0];
         ScanCommandTransfer.getInstance().javaToNative(command, data);
         final Object copy = ScanCommandTransfer.getInstance().nativeToJava(data);
 
         System.out.println("Transfer: " + copy);
 
-        
+
         assertNotNull(copy);
         assertSame(LogCommand.class, copy.getClass());
         final LogCommand command2 = (LogCommand) copy;

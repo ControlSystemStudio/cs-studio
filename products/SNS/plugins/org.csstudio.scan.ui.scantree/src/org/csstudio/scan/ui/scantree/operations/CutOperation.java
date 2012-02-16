@@ -43,7 +43,7 @@ public class CutOperation extends AbstractOperation
     public CutOperation(final List<ScanCommand> commands,
             final ScanCommand command)
     {
-        super("Undo");
+        super("Cut");
         this.commands = commands;
         this.command = command;
     }

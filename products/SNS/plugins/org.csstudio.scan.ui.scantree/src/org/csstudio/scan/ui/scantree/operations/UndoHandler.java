@@ -11,8 +11,6 @@ import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
 
 /** Handler for the Undo command
  *  @author Kay Kasemir
@@ -22,11 +20,9 @@ public class UndoHandler  extends AbstractHandler
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        ScanEditor editor = ScanEditor.getActiveEditor();
-        Shell shell = (editor == null) ? null : editor.getSite().getShell();
-        MessageDialog.openInformation(shell, "Undo", "TODO");
-
-        setBaseEnabled(false);
+        final ScanEditor editor = ScanEditor.getActiveEditor();
+        if (editor != null)
+            editor.performUndo();
         return null;
     }
 }

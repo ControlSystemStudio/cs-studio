@@ -36,6 +36,7 @@ public class CutCommandHandler extends AbstractHandler
         IUndoableOperation operation = new CutOperation(commands, command);
 
         operation.execute(new NullProgressMonitor(), editor);
+        editor.addToOperationHistory(operation);
 
         return null;
     }
