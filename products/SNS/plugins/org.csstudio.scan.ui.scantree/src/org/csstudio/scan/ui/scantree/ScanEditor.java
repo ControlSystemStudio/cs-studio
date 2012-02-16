@@ -20,8 +20,10 @@ import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.ui.scantree.operations.RedoHandler;
+import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
@@ -69,8 +71,16 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     /** File extension used to save files */
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
 
-    /** Operations history for undo/redo */
-    final private IOperationHistory operations = OperationHistoryFactory.getOperationHistory();
+    /** Operations history for undo/redo.
+     *
+     *  <p>All scan editors share the same operations history,
+     *  but each editor has its own undo context.
+     *
+     *  <p>This was done because the {@link UndoHandler} and {@link RedoHandler}
+     *  in the editor's toolbar are shared between all scan editors,
+     *  so it's natural for them to interface to just one operations history.
+     */
+    final private static IOperationHistory operations = OperationHistoryFactory.getOperationHistory();
 
     /** Undo context for undo/redo */
     final private IUndoContext undo_context = new UndoContext();
@@ -193,6 +203,16 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 
     /** {@inheritDoc} */
     @Override
+    public void dispose()
+    {
+        // Remove undo/redo operations associated with this editor
+        // from the shared operations history of all scan editors
+        operations.dispose(undo_context, true, true, true);
+        super.dispose();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void setFocus()
     {
         gui.setFocus();
@@ -226,39 +246,22 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         return devices;
     }
 
-    /** @param operation Operation to add to the undo/redo history */
-    public void addToOperationHistory(final IUndoableOperation operation)
+    /** @return Operation history (for undo/redo) */
+    public static IOperationHistory getOperationHistory()
     {
+        return operations;
+    }
+
+    /** Execute an undo-able operation and add to history
+     *  @param operation Operation to add to the undo/redo history
+     *  @throws ExecutionException on error
+     */
+    public void executeForUndo(final IUndoableOperation operation) throws ExecutionException
+    {
+        operation.execute(new NullProgressMonitor(), null);
         operation.addContext(undo_context);
         operations.add(operation);
     }
-
-    /** Undo the last operation */
-    public void performUndo()
-    {
-        try
-        {
-            operations.undo(undo_context, null, this);
-        }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
-        }
-    }
-
-    /** Re-do the last operation */
-    public void performRedo()
-    {
-        try
-        {
-            operations.redo(undo_context, null, this);
-        }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
-        }
-    }
-
 
     /** Submit scan in GUI to server */
     public void submitCurrentScan()

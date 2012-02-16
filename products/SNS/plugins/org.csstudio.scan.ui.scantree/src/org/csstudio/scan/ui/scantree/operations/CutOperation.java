@@ -34,18 +34,21 @@ import org.eclipse.ui.actions.ActionFactory;
 @SuppressWarnings("nls")
 public class CutOperation extends AbstractOperation
 {
+    final private ScanEditor editor;
     final private List<ScanCommand> commands;
     final private ScanCommand command;
     private TreeManipulator.RemovalInfo removal = null;
 
     /** Initialize
+     *  @param editor Editor that submitted this operation
      *  @param commands Scan commands
      *  @param command Command to remove
      */
-    public CutOperation(final List<ScanCommand> commands,
+    public CutOperation(final ScanEditor editor, final List<ScanCommand> commands,
             final ScanCommand command)
     {
         super(ActionFactory.CUT.getId());
+        this.editor = editor;
         this.commands = commands;
         this.command = command;
     }
@@ -63,10 +66,6 @@ public class CutOperation extends AbstractOperation
     public IStatus redo(final IProgressMonitor monitor, final IAdaptable info)
                     throws ExecutionException
     {
-        final ScanEditor editor = (ScanEditor)info.getAdapter(ScanEditor.class);
-        if (editor == null)
-            return Status.OK_STATUS;
-
         try
         {
             // Remove command from scan
@@ -97,10 +96,6 @@ public class CutOperation extends AbstractOperation
     public IStatus undo(final IProgressMonitor monitor, final IAdaptable info)
             throws ExecutionException
     {
-        final ScanEditor editor = (ScanEditor)info.getAdapter(ScanEditor.class);
-        if (editor == null)
-            return Status.OK_STATUS;
-
         if (removal == null)
             throw new ExecutionException("Noting to undo for 'cut'");
         try

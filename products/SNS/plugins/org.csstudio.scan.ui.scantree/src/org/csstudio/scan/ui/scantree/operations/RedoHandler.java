@@ -11,18 +11,57 @@ import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
 
 /** Handler for the Redo command
+ *
+ *  <p>Invoked via context menu or editor toolbar
+ *  contributions from plugin.xml.
+ *
+ *  <p>All scan editors share an operations history,
+ *  but each editor adds operations for its own context.
  *  @author Kay Kasemir
  */
-public class RedoHandler  extends AbstractHandler
+public class RedoHandler extends AbstractHandler implements IOperationHistoryListener
 {
-    @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public RedoHandler()
     {
-        final ScanEditor editor = ScanEditor.getActiveEditor();
-        if (editor != null)
-            editor.performRedo();
+        ScanEditor.getOperationHistory().addOperationHistoryListener(this);
+        setBaseEnabled(false);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dispose()
+    {
+        ScanEditor.getOperationHistory().removeOperationHistoryListener(this);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Object execute(final ExecutionEvent event) throws ExecutionException
+    {
+        try
+        {
+            ScanEditor.getOperationHistory().redo(IOperationHistory.GLOBAL_UNDO_CONTEXT, null, null);
+        }
+        catch (Exception ex)
+        {
+            throw new ExecutionException(ex.getMessage(), ex);
+        }
         return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void historyNotification(final OperationHistoryEvent event)
+    {
+        if (event.getEventType() == OperationHistoryEvent.UNDONE)
+            setBaseEnabled(true);
+        else
+            setBaseEnabled(event.getHistory().getRedoOperation(IOperationHistory.GLOBAL_UNDO_CONTEXT) != null);
     }
 }

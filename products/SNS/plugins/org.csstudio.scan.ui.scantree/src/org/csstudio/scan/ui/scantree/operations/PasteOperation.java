@@ -27,21 +27,24 @@ import org.eclipse.ui.actions.ActionFactory;
 @SuppressWarnings("nls")
 public class PasteOperation extends AbstractOperation
 {
+    final private ScanEditor editor;
     final private List<ScanCommand> commands;
     final private ScanCommand location;
     final private List<ScanCommand> new_commands;
 
     /** Initialize
+     *  @param editor Editor that submitted this operation
      *  @param commands Scan commands
      *  @param location Where to add
      *  @param new_commands Command to add
      *
      */
-    public PasteOperation(final List<ScanCommand> commands,
+    public PasteOperation(final ScanEditor editor, final List<ScanCommand> commands,
             final ScanCommand location,
             final List<ScanCommand> new_commands)
     {
         super(ActionFactory.PASTE.getId());
+        this.editor = editor;
         this.commands = commands;
         this.location = location;
         this.new_commands = new_commands;
@@ -60,10 +63,6 @@ public class PasteOperation extends AbstractOperation
     public IStatus redo(final IProgressMonitor monitor, final IAdaptable info)
                     throws ExecutionException
     {
-        final ScanEditor editor = (ScanEditor)info.getAdapter(ScanEditor.class);
-        if (editor == null)
-            return Status.OK_STATUS;
-
         try
         {
             TreeManipulator.insertAfter(commands, location, new_commands);
@@ -82,10 +81,6 @@ public class PasteOperation extends AbstractOperation
     public IStatus undo(final IProgressMonitor monitor, final IAdaptable info)
             throws ExecutionException
     {
-        final ScanEditor editor = (ScanEditor)info.getAdapter(ScanEditor.class);
-        if (editor == null)
-            return Status.OK_STATUS;
-
         try
         {
             for (ScanCommand command : new_commands)

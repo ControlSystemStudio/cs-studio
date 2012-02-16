@@ -19,8 +19,6 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
@@ -44,22 +42,14 @@ public class PasteCommandHandler extends AbstractHandler
         clip.dispose();
 
         // Get command from XML
+        final List<ScanCommand> received_commands;
         try
         {
-            final List<ScanCommand> received_commands;
             final ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes());
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             received_commands = reader.readXMLStream(stream);
             stream.close();
 
-            // Add command to scan, either at selected command or at end
-            final List<ScanCommand> commands = editor.getCommands();
-            final ScanCommand location = editor.getSelectedCommand();
-
-            final IUndoableOperation operation =
-                    new PasteOperation(commands, location, received_commands);
-            operation.execute(new NullProgressMonitor(), editor);
-            editor.addToOperationHistory(operation);
         }
         catch (Exception ex)
         {
@@ -69,6 +59,11 @@ public class PasteCommandHandler extends AbstractHandler
                 ex);
             return null;
         }
+
+        // Execute the 'paste'
+        final List<ScanCommand> commands = editor.getCommands();
+        final ScanCommand location = editor.getSelectedCommand();
+        editor.executeForUndo(new PasteOperation(editor, commands, location, received_commands));
 
         return null;
     }

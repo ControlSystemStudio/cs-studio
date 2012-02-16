@@ -14,8 +14,6 @@ import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.operations.IUndoableOperation;
-import org.eclipse.core.runtime.NullProgressMonitor;
 
 /** Handler to remove selected command from tree,
  *  putting it onto clipboard
@@ -27,16 +25,13 @@ public class CutCommandHandler extends AbstractHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         final ScanEditor editor = ScanEditor.getActiveEditor();
-        if (editor == null)
-            return null;
-
-        // Remove command from scan
-        final List<ScanCommand> commands = editor.getCommands();
-        final ScanCommand command = editor.getSelectedCommand();
-        final IUndoableOperation operation = new CutOperation(commands, command);
-        operation.execute(new NullProgressMonitor(), editor);
-        editor.addToOperationHistory(operation);
-
+        if (editor != null)
+        {
+            // Execute the 'cut'
+            final List<ScanCommand> commands = editor.getCommands();
+            final ScanCommand command = editor.getSelectedCommand();
+            editor.executeForUndo(new CutOperation(editor, commands, command));
+        }
         return null;
     }
 }
