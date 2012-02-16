@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.scantree;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -43,19 +44,17 @@ public class TreeManipulatiorUnitTest
 
         // Add after the second command
         ScanCommand add = new LogCommand("add_after_Wait");
-        boolean ok = TreeManipulator.insertAfter(commands, commands.get(1), add);
+        TreeManipulator.insert(commands, commands.get(1), add, true);
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
-        assertTrue(ok);
         assertEquals(6, commands.size());
         assertSame(add, commands.get(2));
 
         // Add before the second command
         add = new LogCommand("add_before_Wait");
-        ok = TreeManipulator.insertBefore(commands, commands.get(1), add);
+        TreeManipulator.insert(commands, commands.get(1), add, false);
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
-        assertTrue(ok);
         assertEquals(7, commands.size());
         assertSame(add, commands.get(1));
 
@@ -64,10 +63,9 @@ public class TreeManipulatiorUnitTest
         List<ScanCommand> body = ((LoopCommand) commands.get(5)).getBody();
         assertTrue(body.size() > 0);
         add = new LogCommand("add_to_start_of_loop");
-        ok = TreeManipulator.insertBefore(commands, body.get(0), add);
+        TreeManipulator.insert(commands, body.get(0), add, false);
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
-        assertTrue(ok);
         // Overall size didn't change
         assertEquals(7, commands.size());
         body = ((LoopCommand) commands.get(5)).getBody();
@@ -77,9 +75,8 @@ public class TreeManipulatiorUnitTest
         // Add 3 commands 'at once'
         final List<ScanCommand> many = Arrays.asList(
                 (ScanCommand)new LogCommand("one"), new LogCommand("two"), new LogCommand("three"));
-        ok = TreeManipulator.insertAfter(commands, commands.get(6), many);
+        TreeManipulator.insertAfter(commands, commands.get(6), many);
         XMLCommandWriter.write(System.out, commands);
-        assertTrue(ok);
         assertEquals(10, commands.size());
         assertSame(LogCommand.class, commands.get(9).getClass());
         assertEquals("three", ((LogCommand)commands.get(9)).getDeviceNames()[0]);
@@ -96,7 +93,7 @@ public class TreeManipulatiorUnitTest
         ScanCommand command = commands.get(2);
 
         // Remove second element, so next one should move 'up'
-        boolean ok = TreeManipulator.remove(commands, commands.get(1));
+        boolean ok = TreeManipulator.remove(commands, commands.get(1)) != null;
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
         assertTrue(ok);
@@ -108,7 +105,7 @@ public class TreeManipulatiorUnitTest
         List<ScanCommand> body = ((LoopCommand) commands.get(2)).getBody();
         int body_size = body.size();
         assertTrue(body_size > 0);
-        ok = TreeManipulator.remove(commands, body.get(0));
+        ok = TreeManipulator.remove(commands, body.get(0)) != null;
         XMLCommandWriter.write(System.out, commands);
         System.out.println("-----------------------------------------");
         assertTrue(ok);
@@ -131,12 +128,63 @@ public class TreeManipulatiorUnitTest
         List<ScanCommand> body = ((LoopCommand) commands.get(3)).getBody();
         final int body_size = body.size();
         ScanCommand add = new LogCommand("start_of_loop");
-        boolean ok = TreeManipulator.addToLoop((LoopCommand)commands.get(3), add);
+        TreeManipulator.addToLoop((LoopCommand)commands.get(3), add);
         XMLCommandWriter.write(System.out, commands);
         body = ((LoopCommand) commands.get(3)).getBody();
-        assertTrue(ok);
         assertEquals(body_size+1, body.size());
         assertSame(add, body.get(0));
     }
 
+    @Test
+    public void testRemoveUndo() throws Exception
+    {
+        final List<ScanCommand> commands = DemoScan.createCommands();
+        XMLCommandWriter.write(System.out, commands);
+        System.out.println("-----------------------------------------");
+        assertEquals(5, commands.size());
+
+        // Remove from start of list
+        ScanCommand command = commands.get(0);
+        assertSame(SetCommand.class, command.getClass());
+        TreeManipulator.RemovalInfo removed = TreeManipulator.remove(commands, command);
+        assertNotNull(removed);
+        assertEquals(4, commands.size());
+
+        removed.undo(commands);
+        assertEquals(5, commands.size());
+        assertSame(command, commands.get(0));
+
+        // Remove from within the list
+        command = commands.get(2);
+        assertSame(DelayCommand.class, command.getClass());
+        removed = TreeManipulator.remove(commands, command);
+        assertNotNull(removed);
+        assertEquals(4, commands.size());
+
+        removed.undo(commands);
+        assertEquals(5, commands.size());
+        assertSame(command, commands.get(2));
+
+
+        // Remove from within a nested loop
+        final LoopCommand loop1 = (LoopCommand) commands.get(4);
+        final LoopCommand loop2 = (LoopCommand) loop1.getBody().get(0);
+        assertEquals(2, loop2.getBody().size());
+        command = loop2.getBody().get(1);
+        assertSame(LogCommand.class, command.getClass());
+        removed = TreeManipulator.remove(commands, command);
+        XMLCommandWriter.write(System.out, commands);
+        assertNotNull(removed);
+        // Top-level list and loop don't change, loop2 does
+        assertEquals(5, commands.size());
+        assertEquals(1, loop1.getBody().size());
+        assertEquals(1, loop2.getBody().size());
+
+        removed.undo(commands);
+        XMLCommandWriter.write(System.out, commands);
+        assertEquals(5, commands.size());
+        assertEquals(1, loop1.getBody().size());
+        assertEquals(2, loop2.getBody().size());
+        assertSame(command, loop2.getBody().get(1));
+    }
 }

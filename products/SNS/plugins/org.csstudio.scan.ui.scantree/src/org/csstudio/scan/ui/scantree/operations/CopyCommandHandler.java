@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree.actions;
+package org.csstudio.scan.ui.scantree.operations;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;

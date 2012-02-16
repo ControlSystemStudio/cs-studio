@@ -5,25 +5,17 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree.actions;
+package org.csstudio.scan.ui.scantree.operations;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.TreeManipulator;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.runtime.NullProgressMonitor;
 
 /** Handler to remove selected command from tree,
  *  putting it onto clipboard
@@ -41,27 +33,9 @@ public class CutCommandHandler extends AbstractHandler
         // Remove command from scan
         final List<ScanCommand> commands = editor.getCommands();
         final ScanCommand command = editor.getSelectedCommand();
-        TreeManipulator.remove(commands, command);
-        editor.refresh();
+        IUndoableOperation operation = new CutOperation(commands, command);
 
-        try
-        {
-            // Format as XML
-            final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, Arrays.asList(command));
-            buf.close();
-
-            // Put onto clipboard
-            final Clipboard clip = new Clipboard(Display.getCurrent());
-            clip.setContents(new Object[] { buf.toString() },
-                    new Transfer[] { TextTransfer.getInstance() });
-            clip.dispose();
-        }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(editor.getSite().getShell(),
-                    Messages.Error, ex);
-        }
+        operation.execute(new NullProgressMonitor(), editor);
 
         return null;
     }

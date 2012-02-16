@@ -1,36 +1,32 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree.actions;
+package org.csstudio.scan.ui.scantree.operations;
 
-import org.csstudio.scan.ui.scantree.Perspective;
 import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
-/** Handler connected to workbench menu or toolbar for opening a new editor.
+/** Handler for the Redo command
  *  @author Kay Kasemir
  */
-public class NewScanTree extends AbstractHandler
+public class RedoHandler  extends AbstractHandler
 {
     @Override
-    public Object execute(final ExecutionEvent event) throws ExecutionException
+    public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        ScanEditor.createInstance();
-        
-        try
-        {
-            Perspective.showPerspective();
-        }
-        catch (Exception ex)
-        {
-            // never mind
-        }
+        ScanEditor editor = ScanEditor.getActiveEditor();
+        Shell shell = (editor == null) ? null : editor.getSite().getShell();
+        MessageDialog.openInformation(shell, "Redo", "TODO");
+
+        setBaseEnabled(false);
         return null;
     }
 }

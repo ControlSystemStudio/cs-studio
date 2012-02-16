@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree.actions;
+package org.csstudio.scan.ui.scantree.operations;
 
 import java.io.ByteArrayInputStream;
 import java.util.List;
@@ -43,13 +43,18 @@ public class PasteCommandHandler extends AbstractHandler
         clip.dispose();
 
         // Get command from XML
-        final List<ScanCommand> received_commands;
         try
         {
+            final List<ScanCommand> received_commands;
             final ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes());
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             received_commands = reader.readXMLStream(stream);
             stream.close();
+
+            // Add command to scan, either at selected command or at end
+            final List<ScanCommand> commands = editor.getCommands();
+            final ScanCommand location = editor.getSelectedCommand();
+            TreeManipulator.insertAfter(commands, location, received_commands);
         }
         catch (Exception ex)
         {
@@ -60,13 +65,6 @@ public class PasteCommandHandler extends AbstractHandler
             return null;
         }
 
-        // Add command to scan, either at selected command or at end
-        final List<ScanCommand> commands = editor.getCommands();
-        final ScanCommand location = editor.getSelectedCommand();
-        if (location != null)
-            TreeManipulator.insertAfter(commands, location, received_commands);
-        else
-            commands.addAll(received_commands);
 
         editor.refresh();
 

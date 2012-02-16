@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import org.csstudio.scan.ui.scantree.actions.SubmitCurrentScanAction;
+import org.csstudio.scan.ui.scantree.operations.SubmitCurrentScanAction;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.part.EditorActionBarContributor;

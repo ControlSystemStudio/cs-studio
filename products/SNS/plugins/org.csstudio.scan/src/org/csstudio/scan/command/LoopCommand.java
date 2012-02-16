@@ -16,7 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.scan.device.DeviceInfo;
@@ -88,11 +88,18 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final ScanCommand... body)
     {
-        this.device_name = device_name;
-        this.start = start;
-        this.end = end;
-        setStepSize(stepsize);
-        this.body = Arrays.asList(body);
+        this(device_name, start, end, stepsize, toList(body));
+    }
+
+    /** @param commands Array of commands
+     *  @return Mutable list of commands
+     */
+    private static List<ScanCommand> toList(final ScanCommand[] commands)
+    {
+        final List<ScanCommand> list = new ArrayList<ScanCommand>(commands.length);
+        for (ScanCommand command : commands)
+            list.add(command);
+        return list;
     }
 
     /** Initialize

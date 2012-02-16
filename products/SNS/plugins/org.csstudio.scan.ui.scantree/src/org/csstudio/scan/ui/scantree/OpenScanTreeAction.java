@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree.actions;
+package org.csstudio.scan.ui.scantree;
 
 import java.util.List;
 
@@ -23,9 +23,6 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.ui.scantree.Activator;
-import org.csstudio.scan.ui.scantree.Messages;
-import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;

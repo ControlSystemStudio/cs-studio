@@ -44,7 +44,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.scan.ui.scantree.actions.NewScanTree"
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.NewScanTree"
             id="org.csstudio.scan.ui.scantree.new"
             name="%ScanTree">
       </command>
@@ -107,7 +107,7 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="org.csstudio.scan.ui.scantree.actions.CutCommandHandler"
+            class="org.csstudio.scan.ui.scantree.operations.CutCommandHandler"
             commandId="org.eclipse.ui.edit.cut">
          <activeWhen>
             <with variable="activePartId">
@@ -116,7 +116,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.csstudio.scan.ui.scantree.actions.CopyCommandHandler"
+            class="org.csstudio.scan.ui.scantree.operations.CopyCommandHandler"
             commandId="org.eclipse.ui.edit.copy">
          <activeWhen>
             <with variable="activePartId">
@@ -125,7 +125,7 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.csstudio.scan.ui.scantree.actions.PasteCommandHandler"
+            class="org.csstudio.scan.ui.scantree.operations.PasteCommandHandler"
             commandId="org.eclipse.ui.edit.paste">
          <activeWhen>
             <with variable="activePartId">
@@ -134,9 +134,17 @@
          </activeWhen>
       </handler>
       <handler
-            class="org.csstudio.scan.ui.scantree.actions.CutCommandHandler"
+            class="org.csstudio.scan.ui.scantree.operations.CutCommandHandler"
             commandId="org.eclipse.ui.edit.delete">
             <!-- Delete is always active? -->
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.UndoHandler"
+            commandId="org.eclipse.ui.edit.undo">
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.RedoHandler"
+            commandId="org.eclipse.ui.edit.redo">
       </handler>
    </extension>
    <extension

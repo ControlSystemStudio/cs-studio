@@ -19,10 +19,10 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.ui.scantree.actions.AddCommandAction;
-import org.csstudio.scan.ui.scantree.actions.OpenCommandListAction;
-import org.csstudio.scan.ui.scantree.actions.OpenPropertiesAction;
-import org.csstudio.scan.ui.scantree.actions.SubmitCurrentScanAction;
+import org.csstudio.scan.ui.scantree.operations.AddCommandAction;
+import org.csstudio.scan.ui.scantree.operations.OpenCommandListAction;
+import org.csstudio.scan.ui.scantree.operations.OpenPropertiesAction;
+import org.csstudio.scan.ui.scantree.operations.SubmitCurrentScanAction;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -233,7 +233,14 @@ public class ScanTreeGUI
                 if (command == null  ||  event.detail != DND.DROP_MOVE)
                     return;
                 // Remove 'original' command that was moved to new location
-                TreeManipulator.remove(commands, command);
+                try
+                {
+                    TreeManipulator.remove(commands, command);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(), Messages.Error, ex);
+                }
                 refresh();
             }
         });
@@ -310,7 +317,14 @@ public class ScanTreeGUI
                     else
                     {
                         final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                        TreeManipulator.insert(commands, target.command, dropped_command, after);
+                        try
+                        {
+                            TreeManipulator.insert(commands, target.command, dropped_command, after);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(), Messages.Error, ex);
+                        }
                     }
                 }
                 refresh();
