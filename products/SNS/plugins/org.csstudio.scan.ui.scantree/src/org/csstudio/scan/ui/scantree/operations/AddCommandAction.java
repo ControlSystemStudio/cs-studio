@@ -11,9 +11,9 @@ import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.scan.ui.scantree.Activator;
 import org.csstudio.scan.ui.scantree.CommandListView;
 import org.csstudio.scan.ui.scantree.Messages;
-import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /** (Menu) action to add command to tree
  *
@@ -30,7 +30,7 @@ public class AddCommandAction extends OpenViewAction
     @Override
     public void run()
     {
-        final Shell shell = ScanEditor.getActiveEditor().getSite().getShell();
+        final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         MessageDialog.openInformation(shell, Messages.AddCommandTitle,
             Messages.AddCommandMessage);
         super.run();

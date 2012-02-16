@@ -18,6 +18,7 @@ import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.ui.scantree.CommandsInfo;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.operations.PropertyChangeOperation;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -49,13 +50,6 @@ public class GenericCommandAdapter implements IPropertySource
     {
         this.editor = editor;
         this.command = command;
-    }
-
-    /** GUI (editor) refresh */
-    protected void refreshCommand()
-    {
-        if (editor != null)
-            editor.refreshCommand(command);
     }
 
     /** {@inheritDoc} */
@@ -225,23 +219,26 @@ public class GenericCommandAdapter implements IPropertySource
                 {   // Delete array element
                     final String[] smaller = Arrays.copyOf(strings, strings.length-1);
                     System.arraycopy(strings, index+1, smaller, index, smaller.length - index);
-                    command.setProperty(actual_prop, smaller);
+                    editor.executeForUndo(new PropertyChangeOperation(editor, command,
+                            actual_prop, smaller));
                 }
                 else if (index >= strings.length)
                 {   // Add array element
                     final String[] bigger = Arrays.copyOf(strings, strings.length+1);
                     bigger[strings.length] = new_value;
-                    command.setProperty(actual_prop, bigger);
+                    editor.executeForUndo(new PropertyChangeOperation(editor, command,
+                            actual_prop, bigger));
                 }
                 else
                 {
                     strings[index] = new_value;
-                    command.setProperty(actual_prop, strings);
+                    editor.executeForUndo(new PropertyChangeOperation(editor, command,
+                            actual_prop, strings));
                 }
             }
-            else
-                command.setProperty(prop_id, value);
-            refreshCommand();
+            else // Scalar property
+                editor.executeForUndo(new PropertyChangeOperation(editor, command,
+                        prop_id, value));
         }
         catch (Exception ex)
         {

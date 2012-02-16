@@ -118,10 +118,9 @@ public class ScanTreeGUI
         // using localization and default key bindings
         manager.add(new Separator("edit")); //$NON-NLS-1$
 
-        manager.add(new AddCommandAction());
-        manager.add(new Separator());
         manager.add(new SubmitCurrentScanAction());
         manager.add(new Separator());
+        manager.add(new AddCommandAction());
         manager.add(new OpenPropertiesAction());
         manager.add(new OpenCommandListAction());
         manager.add(new Separator());

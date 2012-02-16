@@ -12,7 +12,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.DelayCommand;
@@ -70,16 +69,6 @@ public class TreeManipulatiorUnitTest
         assertEquals(7, commands.size());
         body = ((LoopCommand) commands.get(5)).getBody();
         assertSame(add, body.get(0));
-
-
-        // Add 3 commands 'at once'
-        final List<ScanCommand> many = Arrays.asList(
-                (ScanCommand)new LogCommand("one"), new LogCommand("two"), new LogCommand("three"));
-        TreeManipulator.insertAfter(commands, commands.get(6), many);
-        XMLCommandWriter.write(System.out, commands);
-        assertEquals(10, commands.size());
-        assertSame(LogCommand.class, commands.get(9).getClass());
-        assertEquals("three", ((LogCommand)commands.get(9)).getDeviceNames()[0]);
     }
 
     @Test

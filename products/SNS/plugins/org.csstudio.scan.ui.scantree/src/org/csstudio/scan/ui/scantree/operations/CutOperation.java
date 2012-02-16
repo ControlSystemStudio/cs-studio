@@ -27,8 +27,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.ActionFactory;
 
-/** Handler to remove selected command from tree,
- *  putting it onto clipboard
+/** Operation that removes command from tree, putting it onto clipboard
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -85,7 +84,7 @@ public class CutOperation extends AbstractOperation
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("'Cut' failed", ex);
+            throw new ExecutionException(ex.getMessage(), ex);
         }
 
         return Status.OK_STATUS;

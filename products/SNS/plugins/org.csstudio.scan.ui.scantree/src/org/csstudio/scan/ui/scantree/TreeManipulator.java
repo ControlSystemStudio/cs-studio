@@ -138,25 +138,6 @@ public class TreeManipulator
     }
 
     /** @param commands List of scan commands
-     *  @param target Item after which new command should be inserted.
-     *                <code>null</code> for 'start' of list
-     *  @param new_commands New commands to insert
-     *  @throws Exception if element cannot be inserted
-     */
-    public static void insertAfter(final List<ScanCommand> commands,
-            ScanCommand target, final List<ScanCommand> new_commands) throws Exception
-    {
-        if (target == null)
-            commands.addAll(new_commands);
-        else
-            for (ScanCommand command : new_commands)
-            {
-                insert(commands, target, command, true);
-                target = command;
-            }
-    }
-
-    /** @param commands List of scan commands
      *  @param target Item before or after which new command should be inserted.
      *                If <code>null</code>, inserts at start of list.
      *  @param command New command to insert

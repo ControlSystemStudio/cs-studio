@@ -63,7 +63,7 @@ public class PasteCommandHandler extends AbstractHandler
         // Execute the 'paste'
         final List<ScanCommand> commands = editor.getCommands();
         final ScanCommand location = editor.getSelectedCommand();
-        editor.executeForUndo(new PasteOperation(editor, commands, location, received_commands));
+        editor.executeForUndo(new InsertOperation(editor, commands, location, received_commands));
 
         return null;
     }

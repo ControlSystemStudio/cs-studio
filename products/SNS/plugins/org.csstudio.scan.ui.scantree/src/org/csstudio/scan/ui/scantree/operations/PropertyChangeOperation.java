@@ -7,46 +7,45 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.operations;
 
-import java.util.List;
-
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.TreeManipulator;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.actions.ActionFactory;
 
-/** Handler to paste commands into tree
+/** Operation for changing a property of a ScanCommand
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PasteOperation extends AbstractOperation
+public class PropertyChangeOperation extends AbstractOperation
 {
     final private ScanEditor editor;
-    final private List<ScanCommand> commands;
-    final private ScanCommand location;
-    final private List<ScanCommand> new_commands;
+    final private ScanCommand command;
+    final private String property;
+    final private Object old_value;
+    final private Object new_value;
 
     /** Initialize
-     *  @param editor Editor that submitted this operation
-     *  @param commands Scan commands
-     *  @param location Where to add
-     *  @param new_commands Command to add
-     *
+     *  @param editor Scan editor that owns the command
+     *  @param command Command
+     *  @param property Property that should be changed
+     *  @param new_value New value of the property
+     *  @throws Exception on error getting the old (current) value
      */
-    public PasteOperation(final ScanEditor editor, final List<ScanCommand> commands,
-            final ScanCommand location,
-            final List<ScanCommand> new_commands)
+    public PropertyChangeOperation(final ScanEditor editor,
+            final ScanCommand command,
+            final String property,
+            final Object new_value) throws Exception
     {
-        super(ActionFactory.PASTE.getId());
+        super("property");
         this.editor = editor;
-        this.commands = commands;
-        this.location = location;
-        this.new_commands = new_commands;
+        this.command = command;
+        this.property = property;
+        this.old_value = command.getProperty(property);
+        this.new_value = new_value;
     }
 
     /** {@inheritDoc} */
@@ -64,12 +63,12 @@ public class PasteOperation extends AbstractOperation
     {
         try
         {
-            TreeManipulator.insertAfter(commands, location, new_commands);
-            editor.refresh();
+            command.setProperty(property, new_value);
+            editor.refreshCommand(command);
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("'Paste' failed", ex);
+            throw new ExecutionException(ex.getMessage(), ex);
         }
 
         return Status.OK_STATUS;
@@ -82,9 +81,8 @@ public class PasteOperation extends AbstractOperation
     {
         try
         {
-            for (ScanCommand command : new_commands)
-                TreeManipulator.remove(commands, command);
-            editor.refresh();
+            command.setProperty(property, old_value);
+            editor.refreshCommand(command);
         }
         catch (Exception ex)
         {

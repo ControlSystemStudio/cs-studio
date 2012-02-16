@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.operations;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
@@ -19,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-/** Handler to insert command into tree
+/** Operation that inserts command into tree
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -28,7 +29,7 @@ public class InsertOperation extends AbstractOperation
     final private ScanEditor editor;
     final private List<ScanCommand> commands;
     final private ScanCommand location;
-    final private ScanCommand command;
+    final private List<ScanCommand> new_commands;
     final private boolean after;
 
     /** Initialize
@@ -47,9 +48,29 @@ public class InsertOperation extends AbstractOperation
         this.editor = editor;
         this.commands = commands;
         this.location = location;
-        this.command = command;
+        this.new_commands = Arrays.asList(command);
         this.after = after;
     }
+
+    /** Initialize
+     *  @param editor Editor that submitted this operation
+     *  @param commands Scan commands
+     *  @param location Where to add
+     *  @param new_commands Commands to add
+     */
+    public InsertOperation(final ScanEditor editor, final List<ScanCommand> commands,
+            final ScanCommand location,
+            final List<ScanCommand> new_commands)
+
+    {
+        super("insert");
+        this.editor = editor;
+        this.commands = commands;
+        this.location = location;
+        this.new_commands = new_commands;
+        this.after = true;
+    }
+
 
     /** {@inheritDoc} */
     @Override
@@ -66,12 +87,19 @@ public class InsertOperation extends AbstractOperation
     {
         try
         {
-            TreeManipulator.insert(commands, location, command, after);
+            ScanCommand target = location;
+            if (location == null  && commands.size() > 0)
+                target = commands.get(commands.size()-1);
+            for (ScanCommand command : new_commands)
+            {
+                TreeManipulator.insert(commands, target, command, after);
+                target = command;
+            }
             editor.refresh();
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("'Insert' failed", ex);
+            throw new ExecutionException(ex.getMessage(), ex);
         }
 
         return Status.OK_STATUS;
@@ -84,7 +112,8 @@ public class InsertOperation extends AbstractOperation
     {
         try
         {
-            TreeManipulator.remove(commands, command);
+            for (ScanCommand command : new_commands)
+                TreeManipulator.remove(commands, command);
             editor.refresh();
         }
         catch (Exception ex)

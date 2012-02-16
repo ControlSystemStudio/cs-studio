@@ -20,8 +20,6 @@ public class OpenCommandListAction extends OpenViewAction
 {
     public OpenCommandListAction()
     {
-        // View ID is same as the PropertySheet class name,
-        // but there's no string constant for it?
         super(CommandListView.ID,
               Messages.OpenCommandList,
               Activator.getImageDescriptor("icons/scantree.gif"));
