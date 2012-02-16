@@ -20,6 +20,8 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.ui.scantree.operations.AddCommandAction;
+import org.csstudio.scan.ui.scantree.operations.CutOperation;
+import org.csstudio.scan.ui.scantree.operations.InsertOperation;
 import org.csstudio.scan.ui.scantree.operations.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.operations.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.operations.SubmitCurrentScanAction;
@@ -57,8 +59,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public class ScanTreeGUI
 {
-    /** Listener */
-    final private ScanTreeGUIListener listener;
+    /** Associated editor */
+    final private ScanEditor editor;
 
     /** Commands displayed and edited in this GUI */
     private List<ScanCommand> commands = new ArrayList<ScanCommand>();
@@ -68,13 +70,13 @@ public class ScanTreeGUI
 
     /** Initialize
      *  @param parent
+     *  @param editor Scan editor. Limited demo functionality when <code>null</code>
      */
-    public ScanTreeGUI(final Composite parent, final ScanTreeGUIListener listener,
-            final IWorkbenchPartSite site)
+    public ScanTreeGUI(final Composite parent, final ScanEditor editor)
     {
-        this.listener = listener;
+        this.editor = editor;
         createComponents(parent);
-        createContextMenu(site);
+        createContextMenu(editor == null ? null : editor.getSite());
         addDragDrop();
     }
 
@@ -192,6 +194,9 @@ public class ScanTreeGUI
             ScanCommandTransfer.getInstance(),
             TextTransfer.getInstance()
         };
+
+        // Allow dragging 'out',
+        // possible resulting in a 'cut' operation of the dragged command
         tree_view.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
         {
             private ScanCommand command = null;
@@ -235,7 +240,7 @@ public class ScanTreeGUI
                 // Remove 'original' command that was moved to new location
                 try
                 {
-                    TreeManipulator.remove(commands, command);
+                    editor.executeForUndo(new CutOperation(editor, commands, command));
                 }
                 catch (Exception ex)
                 {
@@ -245,6 +250,7 @@ public class ScanTreeGUI
             }
         });
 
+        // Allow 'dropping' a command, resulting in a 'paste' operation
         tree_view.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DropTargetAdapter()
         {
             @Override
@@ -266,7 +272,6 @@ public class ScanTreeGUI
                     event.feedback |= DND.FEEDBACK_SELECT;
                 }
             }
-
 
             @Override
             public void drop(final DropTargetEvent event)
@@ -299,35 +304,45 @@ public class ScanTreeGUI
                     }
                 }
 
-                // Determine _where_ it was dropped
-                final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
-                if (target == null)
-                {   // Add to end of commands
-                    commands.add(dropped_command);
-                }
-                else
-                {   // System.out.println("Dropped: " + command + " onto " + target.command);
-                    // Special handling for loop
-                    if (target.command instanceof LoopCommand  &&
-                        target.section == TreeItemInfo.Section.CENTER)
-                    {   // Dropping exactly onto a loop means add to that loop
-                        final LoopCommand loop = (LoopCommand) target.command;
-                        TreeManipulator.addToLoop(loop, dropped_command);
+                try
+                {
+                    // Determine _where_ it was dropped
+                    final TreeItemInfo target = getTreeItemInfo(event.x, event.y);
+                    if (target == null)
+                    {
+                        // Add to end of commands
+                        final ScanCommand location = commands.size() > 0
+                                ? commands.get(commands.size()-1)
+                                : null;
+                        editor.executeForUndo(new InsertOperation(editor, commands, location,
+                                dropped_command, true));
                     }
                     else
-                    {
-                        final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                        try
-                        {
-                            TreeManipulator.insert(commands, target.command, dropped_command, after);
+                    {   // Special handling for loop
+                        if (target.command instanceof LoopCommand  &&
+                            target.section == TreeItemInfo.Section.CENTER)
+                        {   // Dropping exactly onto a loop means add to that loop
+                            final LoopCommand loop = (LoopCommand) target.command;
+                            final List<ScanCommand> body = loop.getBody();
+                            final ScanCommand location = body.size() > 0
+                                    ? body.get(body.size()-1)
+                                    : null;
+                            editor.executeForUndo(new InsertOperation(editor, body, location,
+                                    dropped_command, true));
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(), Messages.Error, ex);
+                            final boolean after = target.section != TreeItemInfo.Section.UPPER;
+                            editor.executeForUndo(new InsertOperation(editor, commands, target.command,
+                                    dropped_command, after));
                         }
                     }
                 }
-                refresh();
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(), Messages.Error, ex);
+                }
+
                 // Set selection to new command, which also asserts that it is visible
                 tree_view.setSelection(new StructuredSelection(dropped_command));
             }
@@ -352,8 +367,8 @@ public class ScanTreeGUI
     public void refresh()
     {
         setCommands(commands);
-        if (listener != null)
-            listener.scanTreeChanged();
+        if (editor != null)
+            editor.setDirty(true);
     }
 
     /** @return Commands displayed/edited in GUI */
@@ -366,8 +381,8 @@ public class ScanTreeGUI
     public void refreshCommand(final ScanCommand command)
     {
         tree_view.refresh(command);
-        if (listener != null)
-            listener.scanTreeChanged();
+        if (editor != null)
+            editor.setDirty(true);
     }
 
     /** @return Selection provider for commands in scan tree */

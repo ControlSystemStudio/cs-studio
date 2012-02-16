@@ -18,18 +18,18 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.actions.ActionFactory;
 
-/** Handler to paste commands into tree
+/** Handler to insert command into tree
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PasteOperation extends AbstractOperation
+public class InsertOperation extends AbstractOperation
 {
     final private ScanEditor editor;
     final private List<ScanCommand> commands;
     final private ScanCommand location;
-    final private List<ScanCommand> new_commands;
+    final private ScanCommand command;
+    final private boolean after;
 
     /** Initialize
      *  @param editor Editor that submitted this operation
@@ -38,15 +38,17 @@ public class PasteOperation extends AbstractOperation
      *  @param new_commands Command to add
      *
      */
-    public PasteOperation(final ScanEditor editor, final List<ScanCommand> commands,
+    public InsertOperation(final ScanEditor editor, final List<ScanCommand> commands,
             final ScanCommand location,
-            final List<ScanCommand> new_commands)
+            final ScanCommand command,
+            final boolean after)
     {
-        super(ActionFactory.PASTE.getId());
+        super("insert");
         this.editor = editor;
         this.commands = commands;
         this.location = location;
-        this.new_commands = new_commands;
+        this.command = command;
+        this.after = after;
     }
 
     /** {@inheritDoc} */
@@ -64,12 +66,12 @@ public class PasteOperation extends AbstractOperation
     {
         try
         {
-            TreeManipulator.insertAfter(commands, location, new_commands);
+            TreeManipulator.insert(commands, location, command, after);
             editor.refresh();
         }
         catch (Exception ex)
         {
-            throw new ExecutionException("'Paste' failed", ex);
+            throw new ExecutionException("'Insert' failed", ex);
         }
 
         return Status.OK_STATUS;
@@ -82,8 +84,7 @@ public class PasteOperation extends AbstractOperation
     {
         try
         {
-            for (ScanCommand command : new_commands)
-                TreeManipulator.remove(commands, command);
+            TreeManipulator.remove(commands, command);
             editor.refresh();
         }
         catch (Exception ex)

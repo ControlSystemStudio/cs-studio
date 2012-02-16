@@ -33,7 +33,7 @@ public class ScanTreeGUIDemo
 
         // Scan GUI
         final List<ScanCommand> commands = DemoScan.createCommands();
-        final ScanTreeGUI gui = new ScanTreeGUI(shell, null, null);
+        final ScanTreeGUI gui = new ScanTreeGUI(shell, null);
         gui.setCommands(commands);
 
         // SWT main loop

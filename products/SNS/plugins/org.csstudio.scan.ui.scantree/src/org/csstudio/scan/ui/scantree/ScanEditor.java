@@ -63,7 +63,7 @@ import org.eclipse.ui.part.FileEditorInput;
  *
  *  @author Kay Kasemir
  */
-public class ScanEditor extends EditorPart implements ScanTreeGUIListener
+public class ScanEditor extends EditorPart
 {
     /** Editor ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.editor"; //$NON-NLS-1$
@@ -178,7 +178,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     @Override
     public void createPartControl(final Composite parent)
     {
-        gui = new ScanTreeGUI(parent, this, getSite());
+        gui = new ScanTreeGUI(parent, this);
 
         final IEditorInput input = getEditorInput();
         final IFile file = (IFile) input.getAdapter(IFile.class);
@@ -230,13 +230,6 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     public void setCommands(final List<ScanCommand> commands)
     {
         gui.setCommands(commands);
-        setDirty(true);
-    }
-
-    /** @see ScanTreeGUIListener */
-    @Override
-    public void scanTreeChanged()
-    {
         setDirty(true);
     }
 
