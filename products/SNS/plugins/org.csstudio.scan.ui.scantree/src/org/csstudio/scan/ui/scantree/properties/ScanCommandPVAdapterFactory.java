@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.scantree.properties;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
@@ -60,6 +61,13 @@ public class ScanCommandPVAdapterFactory implements IAdapterFactory
         {
             final WaitCommand command = (WaitCommand) adaptableObject;
             return getPV(command.getDeviceName());
+        }
+        if (adaptableObject instanceof LogCommand)
+        {
+            final LogCommand command = (LogCommand) adaptableObject;
+            final String[] names = command.getDeviceNames();
+            if (names.length > 0)
+                return getPV(names[0]);
         }
 
         return null;
