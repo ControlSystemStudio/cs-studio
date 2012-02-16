@@ -9,7 +9,6 @@ package org.csstudio.scan.ui.scantree;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
@@ -21,9 +20,9 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
 
 /** Drag-and-drop transfer for {@link ScanCommand}s
- * 
+ *
  *  <p>Internally transfers the XML representation of a command.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanCommandTransfer extends ByteArrayTransfer
@@ -31,12 +30,12 @@ public class ScanCommandTransfer extends ByteArrayTransfer
     final private static String NAME = "ScanCommand"; //$NON-NLS-1$
     final private static int ID = registerType(NAME);
     final private static ScanCommandTransfer instance = new ScanCommandTransfer();
-    
+
     /** Prevent instantiation */
     private ScanCommandTransfer()
     {
     }
-    
+
     /** @return Singleton instance */
     public static ScanCommandTransfer getInstance()
     {
@@ -58,17 +57,18 @@ public class ScanCommandTransfer extends ByteArrayTransfer
     }
 
     /** Convert ScanCommand to XML and send via ByteArrayTransfer */
+    @SuppressWarnings("unchecked")
     @Override
     protected void javaToNative(final Object object, final TransferData transfer)
     {
-        if (! (object instanceof ScanCommand))
+        if (! (object instanceof List<?>))
             DND.error(DND.ERROR_INVALID_DATA);
-        final ScanCommand command = (ScanCommand) object;
+        final List<ScanCommand> commands = (List<ScanCommand>) object;
 
         try
         {
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, Arrays.asList(command));
+            XMLCommandWriter.write(buf, commands);
             buf.close();
             super.javaToNative(buf.toByteArray(), transfer);
         }
@@ -90,9 +90,8 @@ public class ScanCommandTransfer extends ByteArrayTransfer
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLStream(stream);
             stream.close();
-            
-            if (commands.size() >= 1)
-                return commands.get(0);
+
+            return commands;
         }
         catch (Exception ex)
         {

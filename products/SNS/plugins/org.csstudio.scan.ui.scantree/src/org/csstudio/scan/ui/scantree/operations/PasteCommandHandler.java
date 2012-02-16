@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 public class PasteCommandHandler extends AbstractHandler
 {
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
@@ -63,8 +63,12 @@ public class PasteCommandHandler extends AbstractHandler
 
         // Execute the 'paste'
         final List<ScanCommand> commands = editor.getCommands();
-        final ScanCommand location = editor.getSelectedCommand();
-        editor.executeForUndo(new InsertOperation(editor, commands, location, received_commands));
+        final List<ScanCommand> selection = editor.getSelectedCommands();
+        final ScanCommand location =
+                selection != null  &&  selection.size() > 0
+                ? selection.get(0)
+                : null;
+        editor.executeForUndo(new InsertOperation(editor, commands, location, received_commands, true));
 
         return null;
     }

@@ -8,7 +8,7 @@
 package org.csstudio.scan.ui.scantree.operations;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
@@ -22,25 +22,25 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 
-/** Handler to copy selected command onto clipboard
+/** Handler to copy selected commands onto clipboard
  *  @author Kay Kasemir
  */
 public class CopyCommandHandler extends AbstractHandler
 {
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
             return null;
 
-        final ScanCommand command = editor.getSelectedCommand();
+        final List<ScanCommand> selection = editor.getSelectedCommands();
 
         try
         {
             // Format as XML
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, Arrays.asList(command));
+            XMLCommandWriter.write(buf, selection);
             buf.close();
 
             // Put command onto clipboard

@@ -8,7 +8,7 @@
 package org.csstudio.scan.ui.scantree.operations;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
@@ -27,7 +27,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.actions.ActionFactory;
 
-/** Operation that removes command from tree, putting it onto clipboard
+/** Operation that removes commands from tree, putting them onto clipboard
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -35,8 +35,8 @@ public class CutOperation extends AbstractOperation
 {
     final private ScanEditor editor;
     final private List<ScanCommand> commands;
-    final private ScanCommand command;
-    private TreeManipulator.RemovalInfo removal = null;
+    final private List<ScanCommand> to_remove;
+    private List<TreeManipulator.RemovalInfo> removals = null;
 
     /** Initialize
      *  @param editor Editor that submitted this operation
@@ -44,12 +44,12 @@ public class CutOperation extends AbstractOperation
      *  @param command Command to remove
      */
     public CutOperation(final ScanEditor editor, final List<ScanCommand> commands,
-            final ScanCommand command)
+            final List<ScanCommand> to_remove)
     {
         super(ActionFactory.CUT.getId());
         this.editor = editor;
         this.commands = commands;
-        this.command = command;
+        this.to_remove = to_remove;
     }
 
     /** {@inheritDoc} */
@@ -67,13 +67,22 @@ public class CutOperation extends AbstractOperation
     {
         try
         {
-            // Remove command from scan
-            removal = TreeManipulator.remove(commands, command);
+            // Remove commands from scan, going in reverse:
+            // The list may contain a loop and items in that loop.
+            // When first removing the loop, the items in the loop
+            // can no longer be removed...
+            // Going in reverse avoids that problem.
+            //
+            // Similarly, removed items are remembered in reverse
+            // so that the undo can simply undo each removed item.
+            removals = new ArrayList<TreeManipulator.RemovalInfo>();
+            for (int i=to_remove.size()-1;  i>=0;  --i)
+                removals.add(0, TreeManipulator.remove(commands, to_remove.get(i)));
             editor.refresh();
 
             // Format as XML
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, Arrays.asList(command));
+            XMLCommandWriter.write(buf, to_remove);
             buf.close();
 
             // Put onto clipboard
@@ -95,11 +104,12 @@ public class CutOperation extends AbstractOperation
     public IStatus undo(final IProgressMonitor monitor, final IAdaptable info)
             throws ExecutionException
     {
-        if (removal == null)
+        if (removals == null)
             throw new ExecutionException("Noting to undo for 'cut'");
         try
         {
-            removal.undo(commands);
+            for (TreeManipulator.RemovalInfo removal : removals)
+                removal.undo(commands);
             editor.refresh();
         }
         catch (Exception ex)

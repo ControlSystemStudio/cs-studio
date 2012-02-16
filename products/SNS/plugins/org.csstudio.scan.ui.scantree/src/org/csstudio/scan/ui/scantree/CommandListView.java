@@ -1,5 +1,6 @@
 package org.csstudio.scan.ui.scantree;
 
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,14 +20,14 @@ import org.eclipse.ui.part.ViewPart;
 /** Eclipse View that lists all commands.
  *
  *  <p>A "Palette" for dragging commands into a scan editor
- *  
+ *
  *  @author Kay Kasemir
  */
 public class CommandListView extends ViewPart
 {
     /** View ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.commandlist"; //$NON-NLS-1$
-    
+
     private TableViewer table_viewer;
 
     /** {@inheritDoc} */
@@ -50,7 +51,7 @@ public class CommandListView extends ViewPart
         table.setToolTipText(Messages.CommandListTT);
         table_viewer.setLabelProvider(new CommandTreeLabelProvider());
         table_viewer.setContentProvider(new ArrayContentProvider());
-        
+
         try
         {
             table_viewer.setInput(CommandsInfo.getInstance().getCommands());
@@ -61,7 +62,7 @@ public class CommandListView extends ViewPart
                 .log(Level.WARNING, "Cannot obtain list of commands", ex); //$NON-NLS-1$
         }
     }
-    
+
     /** @return Currently selected scan command or <code>null</code> */
     protected ScanCommand getSelectedCommand()
     {
@@ -70,7 +71,7 @@ public class CommandListView extends ViewPart
             return null;
         return (ScanCommand) sel.getFirstElement();
     }
-    
+
     /** Add drag support */
     private void addDrag()
     {
@@ -81,7 +82,7 @@ public class CommandListView extends ViewPart
         table_viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
         {
             private ScanCommand command = null;
-            
+
             @Override
             public void dragStart(final DragSourceEvent event)
             {
@@ -89,11 +90,11 @@ public class CommandListView extends ViewPart
                 if (command == null)
                     event.doit = false;
             }
-            
+
             @Override
             public void dragSetData(final DragSourceEvent event)
             {
-                event.data = command;
+                event.data = Arrays.asList(command);
             }
         });
     }

@@ -16,22 +16,22 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-/** Handler to remove selected command from tree,
+/** Handler to remove selected commands from tree,
  *  putting it onto clipboard
  *  @author Kay Kasemir
  */
 public class CutCommandHandler extends AbstractHandler
 {
     @Override
-    public Object execute(ExecutionEvent event) throws ExecutionException
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor != null)
         {
             // Execute the 'cut'
             final List<ScanCommand> commands = editor.getCommands();
-            final ScanCommand command = editor.getSelectedCommand();
-            editor.executeForUndo(new CutOperation(editor, commands, command));
+            final List<ScanCommand> to_remove = editor.getSelectedCommands();
+            editor.executeForUndo(new CutOperation(editor, commands, to_remove));
         }
         return null;
     }

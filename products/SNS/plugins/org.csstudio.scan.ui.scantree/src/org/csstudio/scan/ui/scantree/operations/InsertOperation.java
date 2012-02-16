@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.operations;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
@@ -41,36 +40,16 @@ public class InsertOperation extends AbstractOperation
      */
     public InsertOperation(final ScanEditor editor, final List<ScanCommand> commands,
             final ScanCommand location,
-            final ScanCommand command,
+            final List<ScanCommand> new_commands,
             final boolean after)
     {
         super("insert");
         this.editor = editor;
         this.commands = commands;
         this.location = location;
-        this.new_commands = Arrays.asList(command);
+        this.new_commands = new_commands;
         this.after = after;
     }
-
-    /** Initialize
-     *  @param editor Editor that submitted this operation
-     *  @param commands Scan commands
-     *  @param location Where to add
-     *  @param new_commands Commands to add
-     */
-    public InsertOperation(final ScanEditor editor, final List<ScanCommand> commands,
-            final ScanCommand location,
-            final List<ScanCommand> new_commands)
-
-    {
-        super("insert");
-        this.editor = editor;
-        this.commands = commands;
-        this.location = location;
-        this.new_commands = new_commands;
-        this.after = true;
-    }
-
 
     /** {@inheritDoc} */
     @Override

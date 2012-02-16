@@ -400,10 +400,10 @@ public class ScanEditor extends EditorPart
         return gui.getCommands();
     }
 
-    /** @return Currently selected scan command or <code>null</code> */
-    public ScanCommand getSelectedCommand()
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
     {
-        return gui.getSelectedCommand();
+        return gui.getSelectedCommands();
     }
 
     /** Refresh the GUI after tree manipulations */

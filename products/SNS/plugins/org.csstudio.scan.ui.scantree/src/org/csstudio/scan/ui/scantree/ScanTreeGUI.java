@@ -10,7 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
@@ -87,7 +87,7 @@ public class ScanTreeGUI
     {
         parent.setLayout(new FillLayout());
 
-        tree_view = new TreeViewer(parent,
+        tree_view = new TreeViewer(parent, SWT.MULTI |
                 SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Tree tree = tree_view.getTree();
         tree.setLinesVisible(true);
@@ -136,13 +136,19 @@ public class ScanTreeGUI
             site.registerContextMenu(manager, tree_view);
     }
 
-    /** @return Currently selected scan command or <code>null</code> */
-    public ScanCommand getSelectedCommand()
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
     {
         final IStructuredSelection sel = (IStructuredSelection)  tree_view.getSelection();
         if (sel.isEmpty())
             return null;
-        return (ScanCommand) sel.getFirstElement();
+        final List<ScanCommand> items = new ArrayList<ScanCommand>();
+        final Iterator<?> iterator = sel.iterator();
+        while (iterator.hasNext())
+           items.add((ScanCommand) iterator.next());
+        if (items.size() <= 0)
+            return null;
+        return items;
     }
 
     /** Information about Pointer location relative to a tree item */
@@ -198,13 +204,13 @@ public class ScanTreeGUI
         // possible resulting in a 'cut' operation of the dragged command
         tree_view.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, transfers, new DragSourceAdapter()
         {
-            private ScanCommand command = null;
+            private List<ScanCommand> selection = null;
 
             @Override
             public void dragStart(final DragSourceEvent event)
             {
-                command = getSelectedCommand();
-                if (command == null)
+                selection = getSelectedCommands();
+                if (selection == null)
                     event.doit = false;
             }
 
@@ -212,14 +218,14 @@ public class ScanTreeGUI
             public void dragSetData(final DragSourceEvent event)
             {
                 if (transfers[0].isSupportedType(event.dataType))
-                    event.data = command;
+                    event.data = selection;
                 else
                 {
                     try
                     {
                         // Format as XML
                         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                        XMLCommandWriter.write(buf, Arrays.asList(command));
+                        XMLCommandWriter.write(buf, selection);
                         buf.close();
                         event.data = buf.toString();
                     }
@@ -234,12 +240,12 @@ public class ScanTreeGUI
             public void dragFinished(final DragSourceEvent event)
             {
                 // Anything at all? Or was this a 'copy', not a 'move'?
-                if (command == null  ||  event.detail != DND.DROP_MOVE)
+                if (selection == null  ||  event.detail != DND.DROP_MOVE)
                     return;
                 // Remove 'original' command that was moved to new location
                 try
                 {
-                    editor.executeForUndo(new CutOperation(editor, commands, command));
+                    editor.executeForUndo(new CutOperation(editor, commands, selection));
                 }
                 catch (Exception ex)
                 {
@@ -272,18 +278,19 @@ public class ScanTreeGUI
                 }
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             public void drop(final DropTargetEvent event)
             {
-                final ScanCommand dropped_command;
+                final List<ScanCommand> dropped_commands;
 
                 // Determine dropped command
-                if (event.data instanceof ScanCommand)
-                    dropped_command = (ScanCommand) event.data;
+                if (event.data instanceof List)
+                    dropped_commands = (List<ScanCommand>) event.data;
                 else
                 {
                     // Get command from XML
-                    final String text = event.data.toString();
+                    final String text = event.data.toString().trim();
                     try
                     {
                         final ByteArrayInputStream stream = new ByteArrayInputStream(text.getBytes());
@@ -291,7 +298,7 @@ public class ScanTreeGUI
                         final List<ScanCommand> received_commands;
                         received_commands = reader.readXMLStream(stream);
                         stream.close();
-                        dropped_command = received_commands.get(0);
+                        dropped_commands = received_commands;
                     }
                     catch (Exception ex)
                     {
@@ -314,7 +321,7 @@ public class ScanTreeGUI
                                 ? commands.get(commands.size()-1)
                                 : null;
                         editor.executeForUndo(new InsertOperation(editor, commands, location,
-                                dropped_command, true));
+                                dropped_commands, true));
                     }
                     else
                     {   // Special handling for loop
@@ -327,13 +334,13 @@ public class ScanTreeGUI
                                     ? body.get(body.size()-1)
                                     : null;
                             editor.executeForUndo(new InsertOperation(editor, body, location,
-                                    dropped_command, true));
+                                    dropped_commands, true));
                         }
                         else
                         {
                             final boolean after = target.section != TreeItemInfo.Section.UPPER;
                             editor.executeForUndo(new InsertOperation(editor, commands, target.command,
-                                    dropped_command, after));
+                                    dropped_commands, after));
                         }
                     }
                 }
@@ -343,7 +350,7 @@ public class ScanTreeGUI
                 }
 
                 // Set selection to new command, which also asserts that it is visible
-                tree_view.setSelection(new StructuredSelection(dropped_command));
+                tree_view.setSelection(new StructuredSelection(dropped_commands.get(0)));
             }
         });
     }
