@@ -12,9 +12,8 @@ import java.util.Arrays;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.scan.ui.scantree.ScanEditorContributor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -31,7 +30,7 @@ public class CopyCommandHandler extends AbstractHandler
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        final ScanEditor editor = ScanEditor.getActiveEditor();
+        final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
             return null;
 
@@ -51,8 +50,7 @@ public class CopyCommandHandler extends AbstractHandler
         }
         catch (Exception ex)
         {
-            ExceptionDetailsErrorDialog.openError(editor.getSite().getShell(),
-                    Messages.Error, ex);
+            throw new ExecutionException(ex.getMessage(), ex);
         }
 
         return null;

@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.ScanEditorContributor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -24,7 +25,7 @@ public class CutCommandHandler extends AbstractHandler
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        final ScanEditor editor = ScanEditor.getActiveEditor();
+        final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor != null)
         {
             // Execute the 'cut'

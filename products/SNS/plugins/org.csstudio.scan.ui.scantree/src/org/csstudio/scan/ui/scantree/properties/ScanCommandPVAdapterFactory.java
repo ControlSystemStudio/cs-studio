@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.properties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
@@ -15,8 +18,8 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.ScanEditorContributor;
 import org.eclipse.core.runtime.IAdapterFactory;
-
 
 /** Factory for adapters from {@link ScanCommand}
  *  to {@link ProcessVariable} for CSS context menu
@@ -29,7 +32,8 @@ public class ScanCommandPVAdapterFactory implements IAdapterFactory
 {
     final private static Class<?>[] targets = new Class<?>[]
     {
-        ProcessVariable.class
+        ProcessVariable[].class,
+        ProcessVariable.class,
     };
 
     /** {@inheritDoc} */
@@ -43,52 +47,63 @@ public class ScanCommandPVAdapterFactory implements IAdapterFactory
     @Override
     public Object getAdapter(final Object adaptableObject, final Class adapterType)
     {
-        if (! (adaptableObject instanceof ScanCommand)  ||
-                adapterType != ProcessVariable.class)
+        if (! (adaptableObject instanceof ScanCommand))
              return null;
 
+        ProcessVariable[] pvs = null;
         if (adaptableObject instanceof LoopCommand)
         {
             final LoopCommand command = (LoopCommand) adaptableObject;
-            return getPV(command.getDeviceName());
+            pvs = getPV(command.getDeviceName());
         }
-        if (adaptableObject instanceof SetCommand)
+        else if (adaptableObject instanceof SetCommand)
         {
             final SetCommand command = (SetCommand) adaptableObject;
-            return getPV(command.getDeviceName());
+            pvs = getPV(command.getDeviceName());
         }
-        if (adaptableObject instanceof WaitCommand)
+        else if (adaptableObject instanceof WaitCommand)
         {
             final WaitCommand command = (WaitCommand) adaptableObject;
-            return getPV(command.getDeviceName());
+            pvs = getPV(command.getDeviceName());
         }
-        if (adaptableObject instanceof LogCommand)
+        else if (adaptableObject instanceof LogCommand)
         {
             final LogCommand command = (LogCommand) adaptableObject;
             final String[] names = command.getDeviceNames();
-            if (names.length > 0)
-                return getPV(names[0]);
+            pvs = getPV(names);
         }
+        if (pvs == null)
+            return null;
 
+        if (adapterType == ProcessVariable[].class)
+            return pvs;
+        if (adapterType == ProcessVariable.class)
+            return pvs[0];
         return null;
     }
 
-    /** @param alias Device alias
-     *  @return Underlying PV or <code>null</code>
+    /** @param aliases Device aliases
+     *  @return Underlying PVs or <code>null</code>
      */
-    private ProcessVariable getPV(final String alias)
+    private ProcessVariable[] getPV(final String... aliases)
     {
         // Try to get device info from editor
-        final ScanEditor editor = ScanEditor.getActiveEditor();
+        final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
             return null;
         final DeviceInfo[] devices = editor.getDevices();
         if (devices == null)
             return null;
-        // Try to get PV for alias
-        for (DeviceInfo device : devices)
-            if (device.getAlias().equals(alias))
-                return new ProcessVariable(device.getName());
-        return null;
+
+        final List<ProcessVariable> pvs = new ArrayList<ProcessVariable>();
+        // Try to get PVs for aliass
+        for (String alias : aliases)
+            for (DeviceInfo device : devices)
+                if (device.getAlias().equals(alias))
+                    pvs.add(new ProcessVariable(device.getName()));
+
+        if (pvs.size() <= 0)
+            return null;
+        return pvs.toArray(new ProcessVariable[pvs.size()]);
     }
 }

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.ScanEditorContributor;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.views.properties.IPropertySource;
 
@@ -49,7 +50,7 @@ public class ScanCommandPropertyAdapterFactory implements IAdapterFactory
 
         // Locate the currently active editor, the one that
         // needs to be updated when the command changes
-        final ScanEditor scan_editor = ScanEditor.getActiveEditor();
+        final ScanEditor scan_editor = ScanEditorContributor.getCurrentScanEditor();
         if (scan_editor == null)
             return null;
 

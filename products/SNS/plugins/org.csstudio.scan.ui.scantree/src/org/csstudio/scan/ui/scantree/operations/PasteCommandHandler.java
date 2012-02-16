@@ -15,6 +15,7 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.ScanEditorContributor;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -32,7 +33,7 @@ public class PasteCommandHandler extends AbstractHandler
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
-        final ScanEditor editor = ScanEditor.getActiveEditor();
+        final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
         if (editor == null)
             return null;
 

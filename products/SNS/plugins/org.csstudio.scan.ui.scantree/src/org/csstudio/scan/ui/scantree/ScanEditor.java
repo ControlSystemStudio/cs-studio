@@ -125,18 +125,6 @@ public class ScanEditor extends EditorPart
         return createInstance(new EmptyEditorInput());
     }
 
-    /** Locate the currently active scan editor
-     *  @return Active editor or <code>null</code> if there is none
-     */
-    public static ScanEditor getActiveEditor()
-    {
-        final IEditorPart editor = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-        if (editor instanceof ScanEditor)
-            return (ScanEditor) editor;
-        return null;
-    }
-
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)

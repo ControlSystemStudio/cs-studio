@@ -14,6 +14,9 @@
             adaptableType="org.csstudio.scan.command.ScanCommand"
             class="org.csstudio.scan.ui.scantree.properties.ScanCommandPVAdapterFactory">
          <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
+         <adapter
                type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
