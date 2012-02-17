@@ -23,70 +23,51 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.voicemail.isdn;
+package org.csstudio.ams.delivery.device;
 
 import java.util.Collection;
-
-import org.csstudio.ams.delivery.device.DeviceException;
-import org.csstudio.ams.delivery.device.IDeliveryDevice;
+import org.csstudio.ams.delivery.message.BaseAlarmMessage;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
-import org.csstudio.ams.delivery.voicemail.VoicemailAlarmMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
- * @since 09.02.2012
+ * @since 17.02.2012
  */
-public class VoicemailDevice implements IDeliveryDevice<VoicemailAlarmMessage> {
+public class DummyDevice implements IDeliveryDevice<BaseAlarmMessage> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(VoicemailDevice.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DummyDevice.class);
     
-    /** The class that makes the telephone calls */
-    private CallCenter callCenter;
-
-    public VoicemailDevice() throws DeviceException {
-        try {
-            callCenter = new CallCenter();
-        } catch (CallCenterException e) {
-            throw new DeviceException(e.getMessage(), e);
+    boolean initialized;
+    
+    public DummyDevice() throws DeviceException {
+        initialized = true;
+        if (!initialized) {
+            throw new DeviceException("A dummy exception.");
         }
     }
     
     @Override
-    public boolean sendMessage(VoicemailAlarmMessage message) {
-        boolean success = false;
-        try {
-            callCenter.makeCall(message.getReceiverAddress(),
-                                message.getMessageText(),
-                                message.getTextTypeNumberAsString(),
-                                message.getMessageChainIdAndPosAsString(),
-                                message.getWaitTimeAsString());
-            message.setMessageState(State.SENT);
-            success = true;
-        } catch (CallCenterException e) {
-            LOG.error("[*** CallCenterException ***]: {}", e.getMessage());
-            message.setMessageState(State.FAILED);
-        }
-        return success;
+    public boolean sendMessage(BaseAlarmMessage message) {
+        LOG.info("Sending message: {}", message);
+        message.setMessageState(State.SENT);
+        LOG.info("Message sent: {}", message);
+        return true;
     }
 
     @Override
-    public int sendMessages(Collection<VoicemailAlarmMessage> msgList) {
-        int sent = 0;
-        for (VoicemailAlarmMessage m : msgList) {
-            if (sendMessage(m)) {
-                sent++;
-            }
+    public int sendMessages(Collection<BaseAlarmMessage> msgList) {
+        LOG.info("Sending {} message(s).", msgList.size());
+        for (BaseAlarmMessage o : msgList) {
+            sendMessage(o);
         }
-        return sent;
+        return msgList.size();
     }
 
     @Override
     public void stopDevice() {
-        LOG.info("Stopping device.");
+        LOG.info("{} is stopping now.", DummyDevice.class.getSimpleName());
     }
 }
