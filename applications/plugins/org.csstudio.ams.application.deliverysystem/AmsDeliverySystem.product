@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliverySystemProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="false" includeLaunchers="true">
+<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliveryProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>

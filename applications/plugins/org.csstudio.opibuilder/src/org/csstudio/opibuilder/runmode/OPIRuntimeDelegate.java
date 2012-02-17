@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
@@ -38,12 +37,8 @@ import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -103,14 +98,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
 	};
 	
-	private ControlListener zoomListener = new ControlAdapter() {
-		@Override
-		public void controlResized(ControlEvent e) {
-			Point size = ((FigureCanvas) e.getSource()).getSize();
-			if (size.x * size.y > 0)
-				zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
-		}
-	};
+	
 
 	private ZoomManager zoomManager;
 	
@@ -123,7 +111,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		setEditorInput(input);
 		if (viewer != null) {
 			SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
-			viewer.getControl().removeControlListener(zoomListener);
 		}
 		displayModel = new DisplayModel();
 		displayModel.setOpiFilePath(getOPIFilePath());
@@ -169,7 +156,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			viewer.setContents(displayModel);
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
-			hookZoomListener();
 		}		
 		
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
@@ -230,7 +216,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			viewer.setContents(displayModel);
 			displayModel.setViewer(viewer);
 			updateEditorTitle();
-			hookZoomListener();
 		}
 
 		
@@ -258,14 +243,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		
 	}
 
-	private void hookZoomListener() {
-		// auto zoom
-		if (displayModel.isAutoZoomToFitAll()) {
-			viewer.getControl().addControlListener(zoomListener);
-		}
-	}
-
-	
 	
 	private void updateEditorTitle() {
 		if (displayModel.getName() != null
@@ -406,7 +383,6 @@ public class OPIRuntimeDelegate implements IAdaptable{
 										if(viewer != null){
 											viewer.setContents(displayModel);
 											displayModel.setViewer(viewer);
-											hookZoomListener();
 										}
 										updateEditorTitle();
 										hideCloseButton(site);
