@@ -13,11 +13,12 @@
       <factory
             adaptableType="org.csstudio.scan.command.ScanCommand"
             class="org.csstudio.scan.ui.scantree.properties.ScanCommandPVAdapterFactory">
-         <adapter
-               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         <!-- IDE warns that "[L...ProcessVariable;" is not a known class,
+              but this is the way an adaption to an array has to be specified.
+           -->
+         <adapter type="[Lorg.csstudio.csdata.ProcessVariable;">
          </adapter>
-         <adapter
-               type="org.csstudio.csdata.ProcessVariable">
+         <adapter type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
    </extension>
