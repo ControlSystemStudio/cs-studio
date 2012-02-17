@@ -72,9 +72,26 @@ class ScanQueueItem implements Callable<Object>
     {
         // Ask scan to stop
         scan.abort();
-        // TODO Wait for isDone() to allow graceful end?
 
-        // .. and force it to do so if wait()ing
+        // TODO Preference setting for the abort wait time
+        // Wait for isDone() to allow graceful end?
+        for (int i=0; i<10; ++i)
+            if (isDone())
+            {   // Scan is done
+                return;
+            }
+            else
+            {
+                try
+                {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException ex)
+                {
+                    break;
+                }
+            }
+        // Forced stop
         future.cancel(true);
     }
 };
