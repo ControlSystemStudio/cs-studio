@@ -89,14 +89,7 @@ public interface TODO
      *
      *  Done Copy/paste support in Scan Tree
      *
-     *  TODO Undo for Scan Tree
-     *
-     *  TODO put callback? Maybe support Channel Access put-callback,
-     *       or add a wait-for-value to the set command?
-     *
-     *  TODO Other scan configuration GUIs.
-     *       'Spreadsheet' of loop variable, start/end?
-     *       Process block GUI?
+     *  Done Undo for Scan Tree
      *
      *  TODO Unclear if devices will ever be anything but PVs.
      *       If they're just PVs, one could use PVs.
@@ -104,6 +97,13 @@ public interface TODO
      *       getting the device names _and_ underlying PVs from
      *       server would be useful for GUI that can show them,
      *       access other PV tools from device PVs etc.
+     *
+     *  TODO put callback? Maybe support Channel Access put-callback,
+     *       or add a wait-for-value to the set command?
+     *
+     *  TODO Other scan configuration GUIs.
+     *       'Spreadsheet' of loop variable, start/end?
+     *       Process block GUI?
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
