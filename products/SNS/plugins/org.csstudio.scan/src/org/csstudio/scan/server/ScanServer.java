@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -49,17 +49,17 @@ public interface ScanServer extends Remote
     /** Port on which this interface's implementation is exported with RMI */
     final public static int RMI_SCAN_SERVER_PORT = 4811;
 
-    /** @return Human-readable info about the scan server
+    /** @return Human-readable info about the scan server, multi-line.
      *  @throws RemoteException on error in remote access
      */
     public String getInfo() throws RemoteException;
 
-    /** Query server for devices used by a scan 
+    /** Query server for devices used by a scan
      *  @return Info about devices
      *  @throws RemoteException on error in remote access
      */
     public DeviceInfo[] getDeviceInfos() throws RemoteException;
-    
+
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
@@ -87,18 +87,18 @@ public interface ScanServer extends Remote
      *  @throws RemoteException on error in remote access
      */
     public String getScanCommands(long id) throws RemoteException;
-    
+
     /** Get serial of last logged sample.
-     *  
+     *
      *  <p>Can be used to determine if there are new samples
      *  that should be fetched via <code>getScanData()</code>
-     *  
+     *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Serial of last sample in scan data
      *  @see #getScanData(long)
      */
     public long getLastScanDataSerial(final long id) throws RemoteException;
-    
+
     /** Query server for scan data
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Data for that scan on the server or <code>null</code>

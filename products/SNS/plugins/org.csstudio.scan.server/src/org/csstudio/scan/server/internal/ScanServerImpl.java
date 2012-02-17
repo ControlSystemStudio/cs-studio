@@ -41,6 +41,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.app.Preferences;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -118,7 +119,11 @@ public class ScanServerImpl implements ScanServer
     @Override
     public String getInfo() throws RemoteException
     {
-        return "Scan Server V" + ScanServer.SERIAL_VERSION + " (started " + DataFormatter.format(start_time) + ")";
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Scan Server V").append(ScanServer.SERIAL_VERSION).append("\n");
+        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
+        buf.append("Beamline Configuration: " + Preferences.getBeamlineConfigPath()).append("\n");
+        return buf.toString();
     }
 
     /** {@inheritDoc} */
