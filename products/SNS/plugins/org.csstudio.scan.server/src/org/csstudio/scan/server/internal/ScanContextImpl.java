@@ -77,7 +77,6 @@ public class ScanContextImpl implements ScanContext
 	}
 
     /** @return All Devices */
-    @Override
     public Device[] getDevices()
     {
         return devices.getDevices();
