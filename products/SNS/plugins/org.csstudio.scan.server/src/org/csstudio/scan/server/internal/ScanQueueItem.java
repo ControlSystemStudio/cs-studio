@@ -21,7 +21,8 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/** Scan engine queue info for a scan
+/** Info for a scan that has been submitted for execution
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -67,25 +68,8 @@ class ScanQueueItem implements Callable<Object>
         // Ask scan to stop
         scan.abort();
 
-        // TODO Preference setting for the abort wait time
-        // Wait for isDone() to allow graceful end?
-        for (int i=0; i<10; ++i)
-            if (isDone())
-            {   // Scan is done
-                return;
-            }
-            else
-            {
-                try
-                {
-                    Thread.sleep(100);
-                }
-                catch (InterruptedException ex)
-                {
-                    break;
-                }
-            }
-        // Forced stop
+        // Scan commands are very likely in a wait()
+        // and can only be interrupted: Forced stop
         future.cancel(true);
     }
 };

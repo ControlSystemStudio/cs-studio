@@ -185,13 +185,17 @@ public class Scan implements ScanContext
         if (state != ScanState.Idle)
             throw new IllegalStateException("Cannot run Scan that is " + state);
 
-        // Start Devices
-        devices.startDevices();
-
         // Determine work units
         total_work_units = 1; // WaitForDevicesCommand
         for (ScanCommandImpl<?> command : implementations)
             total_work_units += command.getWorkUnits();
+
+        // TODO Determine which devices the commands need
+        // that are not currently found in the device context
+        // and add them as PV devices
+
+        // Start Devices
+        devices.startDevices();
 
         // Execute commands
         state = ScanState.Running;
