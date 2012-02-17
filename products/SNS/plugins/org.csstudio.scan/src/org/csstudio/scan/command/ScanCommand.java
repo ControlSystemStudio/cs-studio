@@ -53,6 +53,17 @@ abstract public class ScanCommand
     /** @return Descriptions of Properties for this command */
     abstract public ScanCommandProperty[] getProperties();
 
+    /** @param property_id ID of a property
+     *  @return Property description or <code>null</code> if property ID is not supported
+     */
+    public ScanCommandProperty getPropertyDescription(final String property_id)
+    {
+        for (ScanCommandProperty property : getProperties())
+            if (property.getID().equals(property_id))
+                return property;
+        return null;
+    }
+
     /** Set a command's property
      *  @param property_id ID of the property to set
      *  @param value New value
@@ -93,7 +104,7 @@ abstract public class ScanCommand
         catch (Exception ex)
         {
             throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() +
-                    "(type " + type.getName() + ") for " + getClass().getName());
+                    " with value type " + value.getClass().getName() + " for " + getClass().getName());
         }
     }
 
