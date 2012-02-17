@@ -170,8 +170,8 @@ public class ScanServerImpl implements ScanServer
     		final DeviceContext devices = DeviceContext.getDefault();
 
             // Submit scan to engine for execution
-            final Scan scan = new Scan(scan_name, implementations);
-            scan_engine.submit(devices, scan);
+            final Scan scan = new Scan(scan_name, devices, implementations);
+            scan_engine.submit(scan);
             return scan.getId();
         }
         catch (Exception ex)

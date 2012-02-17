@@ -71,6 +71,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         final Scan scan_x = new Scan("Scan Motor X",
+            devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
                     new DelayCommand(1.0),
@@ -80,6 +81,7 @@ public class ScanEngineHeadlessTest
         );
 
         final Scan scan_y = new Scan("Scan Motor Y",
+                devices,
             new LoopCommandImpl(
                 new LoopCommand("ypos", 1.0, 5.0, 1.0,
                     new DelayCommand(1.0),
@@ -88,8 +90,8 @@ public class ScanEngineHeadlessTest
         final ScanEngine engine = new ScanEngine();
         engine.start();
 
-        engine.submit(devices, scan_x);
-        engine.submit(devices, scan_y);
+        engine.submit(scan_x);
+        engine.submit(scan_y);
 
         // List scans and their state
         List<Scan> scans = engine.getScans();
@@ -158,6 +160,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         final Scan scan = new Scan("Scan Motor X",
+            devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
                     new LogCommand("xpos")
@@ -167,12 +170,12 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start();
-        engine.submit(devices, scan);
+        engine.submit(scan);
 
         waitForState(scan, ScanState.Finished);
 
         // Submit same scan again, which causes error
-        engine.submit(devices, scan);
+        engine.submit(scan);
 
         // Wait for failure...
         waitForState(scan, ScanState.Failed);
@@ -193,6 +196,7 @@ public class ScanEngineHeadlessTest
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
+                devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),
                 new LogCommandImpl(new LogCommand("xpos")),
@@ -201,7 +205,7 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start();
-        engine.submit(devices, scan);
+        engine.submit(scan);
 
         // Wait for scan to start
         waitForState(scan, ScanState.Running);
@@ -227,6 +231,7 @@ public class ScanEngineHeadlessTest
 
         // Scan that will hang
         final Scan scan = new Scan("Scan Motor X",
+                devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),
                 new LogCommandImpl(new LogCommand("xpos")),
@@ -235,7 +240,7 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start();
-        engine.submit(devices, scan);
+        engine.submit(scan);
 
         // Wait for scan to start
         waitForState(scan, ScanState.Running);

@@ -34,19 +34,21 @@ import org.csstudio.scan.server.internal.Scan;
  */
 public interface ScanContext
 {
-	/** Get a device by name
+	/** Get a device by (alias) name
 	 *  @param name
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */
 	public Device getDevice(final String name) throws Exception;
 
-    /** @param commands {@link ScanCommandImpl}s to execute
+    /** Execute a list of commands
+     *  @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
     public void execute(final List<ScanCommandImpl<?>> commands) throws Exception;
 
-    /** @param command {@link ScanCommandImpl} to execute
+    /** Execute a single command
+     *  @param command {@link ScanCommandImpl} to execute
      *  @throws Exception on error in executing the command
      */
     public void execute(final ScanCommandImpl<?> command) throws Exception;
