@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Command that performs a loop
@@ -50,7 +49,7 @@ public class LoopCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),

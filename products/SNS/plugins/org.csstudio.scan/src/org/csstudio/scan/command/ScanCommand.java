@@ -56,9 +56,9 @@ abstract public class ScanCommand
     /** Set a command's property
      *  @param property_id ID of the property to set
      *  @param value New value
-     *  @throws Exception on error, for example unknown property ID
+     *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
-    public void setProperty(final String property_id, final Object value) throws Exception
+    public void setProperty(final String property_id, final Object value) throws UnknownScanCommandPropertyException
     {
         for (ScanCommandProperty property : getProperties())
             if (property.getID().equals(property_id))
@@ -66,15 +66,15 @@ abstract public class ScanCommand
                 setProperty(property, value);
                 return;
             }
-        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+        throw new UnknownScanCommandPropertyException("Unkown property ID " + property_id + " for " + getClass().getName());
     }
 
     /** Set a command's property
      *  @param property_id ID of the property to set
      *  @param value New value
-     *  @throws Exception on error, for example no suitable "setter"
+     *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
-    public void setProperty(final ScanCommandProperty property, final Object value) throws Exception
+    public void setProperty(final ScanCommandProperty property, final Object value) throws UnknownScanCommandPropertyException
     {
         final String meth_name = getMethodName("set", property.getID());
 
@@ -85,33 +85,48 @@ abstract public class ScanCommand
         else if (type == DeviceInfo[].class)
             type = String[].class;
 
-        final Method method = getClass().getMethod(meth_name, type);
-        method.invoke(this, value);
+        try
+        {
+            final Method method = getClass().getMethod(meth_name, type);
+            method.invoke(this, value);
+        }
+        catch (Exception ex)
+        {
+            throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() +
+                    "(type " + type.getName() + ") for " + getClass().getName());
+        }
     }
 
     /** Get a command's property
      *  @param property_id ID of the property to set
      *  @return Value
-     *  @throws Exception on error, for example unknown property ID
+     *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
-    public Object getProperty(final String property_id) throws Exception
+    public Object getProperty(final String property_id) throws UnknownScanCommandPropertyException
     {
         for (ScanCommandProperty property : getProperties())
             if (property.getID().equals(property_id))
                 return getProperty(property);
-        throw new Exception("Unkown property ID " + property_id + " for " + getClass().getName());
+        throw new UnknownScanCommandPropertyException("Unkown property ID " + property_id + " for " + getClass().getName());
     }
 
     /** Set a command's property
      *  @param property_id ID of the property to set
      *  @param value New value
-     *  @throws Exception on error, for example no suitable "getter"
+     *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
-    public Object getProperty(final ScanCommandProperty property) throws Exception
+    public Object getProperty(final ScanCommandProperty property) throws UnknownScanCommandPropertyException
     {
         final String meth_name = getMethodName("get", property.getID());
-        final Method method = getClass().getMethod(meth_name);
-        return method.invoke(this);
+        try
+        {
+            final Method method = getClass().getMethod(meth_name);
+            return method.invoke(this);
+        }
+        catch (Exception ex)
+        {
+            throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() + " for " + getClass().getName());
+        }
     }
 
     /** Construct method name
