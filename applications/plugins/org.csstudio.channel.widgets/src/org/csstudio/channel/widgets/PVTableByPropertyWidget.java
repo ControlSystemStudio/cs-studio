@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
@@ -126,6 +127,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	
 	private String rowProperty;
 	private String columnProperty;
+	private List<String> columnTags;
 	
 	private List<List<String>> cellPvs;
 	private List<List<Collection<Channel>>> cellChannels;
@@ -191,6 +193,16 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		changeSupport.firePropertyChange("columnProperty", oldValue, columnProperty);
 	}
 	
+	public List<String> getColumnTags() {
+		return columnTags;
+	}
+	
+	public void setColumnTags(List<String> tags) {
+		List<String> oldValue = this.columnTags;
+		columnTags = Collections.unmodifiableList(new ArrayList<String>(tags));
+		changeSupport.firePropertyChange("columnTags", oldValue, columnTags);
+	}
+	
 	public Collection<Channel> getChannels() {
 		return channels;
 	}
@@ -203,22 +215,42 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 	
+	/**
+	 * True if enough properties are set to compute the table channels.
+	 * @return true if we can compute the table
+	 */
+	private boolean propertiesReady() {
+		return rowProperty != null && (columnProperty != null ||
+				(columnTags != null && !columnTags.isEmpty() ));
+	}
+	
+	private void clearTableChannels() {
+		columnNames = null;
+		rowNames = null;
+		cellPvs = null;
+		cellChannels = null;
+		reconnect();
+	}
+	
 	private void computeTableChannels() {
 		// Not have all the bits to prepare the channel list
-		if (channels == null || rowProperty == null || columnProperty == null) {
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (!propertiesReady()) {
+			clearTableChannels();
 			return;
 		}
 
 		// Filter only the channels that actually have the properties
 		// If none, then nothing should be shown
-		Collection<Channel> channelsInTable = ChannelUtil.filterbyProperties(channels, Arrays.asList(rowProperty, columnProperty));
+		Collection<Channel> channelsWithRow = ChannelUtil.filterbyProperties(channels, Arrays.asList(rowProperty));
+		Collection<String> propertyNames = new ArrayList<String>();
+		if (columnProperty != null)
+			propertyNames.add(columnProperty);
+		List<String> tagNames = this.columnTags;
+		if (tagNames == null)
+			tagNames = new ArrayList<String>();
+		Collection<Channel> channelsInTable = CSSChannelUtils.filterByOneOrMoreElements(channelsWithRow, propertyNames, tagNames);
 		if (channelsInTable.isEmpty()) {
-			columnNames = null;
+			propertyNames = null;
 			rowNames = null;
 			cellPvs = null;
 			cellChannels = null;
@@ -229,24 +261,18 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
 		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
+		int nRows = possibleRows.size();
+		int nColumns = possibleColumns.size() + tagNames.size();
 		
 		// Limit column and cell count
-		if (possibleColumns.size() > MAX_COLUMNS) {
-			errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + possibleColumns.size() + ")"));
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (nColumns > MAX_COLUMNS) {
+			errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + nColumns + ")"));
+			clearTableChannels();
 			return;
 		}
-		if (possibleRows.size() * possibleColumns.size() > MAX_CELLS) {
-			errorBar.setException(new RuntimeException("Max cell count is " + MAX_CELLS + " (would generate " + possibleRows.size() * possibleColumns.size() + ")"));
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (nRows * nColumns > MAX_CELLS) {
+			errorBar.setException(new RuntimeException("Max cell count is " + MAX_CELLS + " (would generate " + nRows * nColumns + ")"));
+			clearTableChannels();
 			return;
 		}
 		
@@ -255,10 +281,10 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		
 		List<List<String>> cells = new ArrayList<List<String>>();
 		List<List<Collection<Channel>>> channels = new ArrayList<List<Collection<Channel>>>();
-		for (int nColumn = 0; nColumn < possibleColumns.size(); nColumn++) {
+		for (int nColumn = 0; nColumn < nColumns; nColumn++) {
 			List<String> column = new ArrayList<String>();
 			List<Collection<Channel>> channelColumn = new ArrayList<Collection<Channel>>();
-			for (int nRow = 0; nRow < possibleRows.size(); nRow++) {
+			for (int nRow = 0; nRow < nRows; nRow++) {
 				column.add(null);
 				channelColumn.add(new HashSet<Channel>());
 			}
@@ -267,15 +293,28 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		
 		for (Channel channel : channelsInTable) {
+			int nColumn = -1;
+			// Row is guaranteed to have the property, column may not
 			String row = channel.getProperty(rowProperty).getValue();
-			String column = channel.getProperty(columnProperty).getValue();
+			if (channel.getProperty(columnProperty) != null) {
+				nColumn = possibleColumns.indexOf(channel.getProperty(columnProperty).getValue());
+			}
 			
 			int nRow = possibleRows.indexOf(row);
-			int nColumn = possibleColumns.indexOf(column);
 			
 			if (nRow != -1 && nColumn != -1) {
 				cells.get(nColumn).set(nRow, channel.getName());
 				channels.get(nColumn).get(nRow).add(channel);
+			}
+
+			int tagCount = 0;
+			for (String tagName : tagNames) {
+				if (channel.getTag(tagName) != null) {
+					nColumn = possibleColumns.size() + tagCount;
+					cells.get(nColumn).set(nRow, channel.getName());
+					channels.get(nColumn).get(nRow).add(channel);
+				}
+				tagCount++;
 			}
 		}
 		
