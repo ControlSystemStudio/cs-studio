@@ -25,7 +25,7 @@
       </command>
    </extension>
    <extension
-         id="AmsDeliverySystemProduct"
+         id="AmsDeliveryProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
