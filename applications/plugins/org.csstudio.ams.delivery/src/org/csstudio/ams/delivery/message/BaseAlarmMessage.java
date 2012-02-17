@@ -102,7 +102,7 @@ public class BaseAlarmMessage implements Serializable {
         result.append(this.messageType + ",");
         result.append(this.priority + ",");
         result.append(this.deviceId + ",");
-        result.append("Test message:" + this.deviceTest + "}");
+        result.append("isTestMessage:" + this.deviceTest + "}");
         return result.toString();
     }
     

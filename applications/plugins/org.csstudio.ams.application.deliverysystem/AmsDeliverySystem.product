@@ -42,6 +42,7 @@
       <plugin id="org.csstudio.ams.delivery"/>
       <plugin id="org.csstudio.ams.delivery.email"/>
       <plugin id="org.csstudio.ams.delivery.sms"/>
+      <plugin id="org.csstudio.ams.delivery.voicemail"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
       <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
