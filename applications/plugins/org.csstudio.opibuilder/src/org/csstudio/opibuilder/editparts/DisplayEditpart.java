@@ -14,8 +14,10 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
+import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
@@ -28,8 +30,12 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.SnapToGeometry;
 import org.eclipse.gef.SnapToGrid;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
+import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.ui.IActionFilter;
 
 /**The editpart for the root display.
@@ -38,6 +44,8 @@ import org.eclipse.ui.IActionFilter;
  */
 public class DisplayEditpart extends AbstractContainerEditpart {
 
+	private ControlListener zoomListener;
+	
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
@@ -52,6 +60,43 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	public void activate() {
 		super.activate();
 		initProperties();
+		if(getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isAutoZoomToFitAll()){
+			zoomListener = new ControlAdapter() {
+					@Override
+					public void controlResized(ControlEvent e) {
+						org.eclipse.swt.graphics.Point size = 
+								((FigureCanvas)getViewer().getControl()).getSize();
+						if (size.x * size.y > 0)
+							((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoomAsText(
+									ZoomManager.FIT_ALL);
+					}
+				};
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {
+				
+				@Override
+				public void run() {
+					zoomListener.controlResized(null);					
+				}
+			});
+			getViewer().getControl().addControlListener(zoomListener);
+		}
+	}
+	
+	@Override
+	public void deactivate() {
+		if(zoomListener != null){
+			//recover zoom
+			((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoom(1.0);
+			getViewer().getControl().removeControlListener(zoomListener);
+			
+		}
+		super.deactivate();
+		
+	}
+	
+	@Override
+	public DisplayModel getWidgetModel() {
+		return (DisplayModel) super.getWidgetModel();
 	}
 	
 	private void initProperties() {
