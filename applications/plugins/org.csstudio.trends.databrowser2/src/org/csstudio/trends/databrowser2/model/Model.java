@@ -323,7 +323,6 @@ public class Model
      *  If different items with the same exist in this model, the first
      *  occurrence will be returned. If no item is found with the given
      *  name, <code>null</code> will be returned.
-     *  @deprecated
      *  Now that this model may have different items with the same name,
      *  this method is not recommended to locate an item. This method
      *  just returns an item which just happens to have the given name.  
@@ -332,7 +331,6 @@ public class Model
      *  @param name
      *  @return ModelItem by that name or <code>null</code>
      */
-    @Deprecated
     public ModelItem getItem(final String name)
     {
         for (ModelItem item : items)
