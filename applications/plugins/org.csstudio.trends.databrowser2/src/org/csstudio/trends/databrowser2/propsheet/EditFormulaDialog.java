@@ -106,7 +106,7 @@ public class EditFormulaDialog
         // Create list of inputs.
         final ArrayList<InputItem> inputs = new ArrayList<InputItem>();
         // Every model item is a possible input.
-        for (int i=0; i<model.getItemCount(); ++i)
+        model_loop: for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem model_item = model.getItem(i);
             // Formula cannot be an input to itself
@@ -128,6 +128,13 @@ public class EditFormulaDialog
             // If input is unused, assign variable name x1, x2, ...
             if (input == null)
             {
+            	for (final InputItem existing_item : inputs)
+            	{
+            		if (existing_item.getInputName().equals(model_item.getName()))
+            		{	// The item with the same name was already added to the input list. 
+            			continue model_loop;
+            		}
+            	}
                 // Try "x1", then "xx1", "xxx1" until an unused name is found
                 String var_name = Integer.toString(inputs.size()+1);
                 boolean name_in_use;
