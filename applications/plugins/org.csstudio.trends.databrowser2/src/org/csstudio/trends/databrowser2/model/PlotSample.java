@@ -160,10 +160,15 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
         
-        /*
-         * TODO: think of what to be changed.
-         * What is the meaning of minimum in case the value represents array? 
-         */
+        // Although the behavior of getMinimum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the minimum value of the first element. This minimum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0)
+        	return 0;
+
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getValue() - minmax.getMinimum();
     }
@@ -175,10 +180,15 @@ public class PlotSample implements ISample
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
  
-        /*
-         * TODO: think of what to be changed.
-         * What is the meaning of minimum in case the value represents array? 
-         */
+        // Although the behavior of getMaximum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the maximum value of the first element. This maximum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0)
+        	return 0;
+        
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getMaximum() - minmax.getValue();
     }
