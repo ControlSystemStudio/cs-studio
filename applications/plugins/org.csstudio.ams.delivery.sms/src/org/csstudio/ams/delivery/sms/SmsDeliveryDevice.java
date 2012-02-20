@@ -225,7 +225,7 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
             mapMessage.setString("HOST", Environment.getInstance().getHostName());
             mapMessage.setString("USER", Environment.getInstance().getUserName());
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
-            mapMessage.setString("APPLICATION-ID", "SmsConnector");
+            mapMessage.setString("APPLICATION-ID", "SmsDeliveryWorker");
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
             
             producer.sendMessage(mapMessage);

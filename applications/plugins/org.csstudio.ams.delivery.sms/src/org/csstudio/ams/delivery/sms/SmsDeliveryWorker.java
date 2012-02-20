@@ -26,6 +26,8 @@
 package org.csstudio.ams.delivery.sms;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -39,6 +41,7 @@ import org.csstudio.ams.delivery.jms.JmsProperties;
 import org.csstudio.ams.delivery.jms.JmsSender;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.message.BaseIncomingMessage;
+import org.csstudio.ams.delivery.queue.IncomingQueue;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
@@ -53,8 +56,6 @@ import org.smslib.InboundMessage;
 import org.smslib.Message.MessageTypes;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 17.12.2011
@@ -72,7 +73,11 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     
     private JmsSimpleProducer amsPublisherReply;
     
+    private Object lock;
+    
     private OutgoingSmsQueue outgoingQueue;
+    
+    private IncomingQueue<BaseIncomingMessage> incomingQueue;
     
     private SmsDeliveryDevice smsDevice;
     
@@ -93,7 +98,9 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
+        lock = new Object();
         outgoingQueue = new OutgoingSmsQueue();
+        incomingQueue = new IncomingQueue<BaseIncomingMessage>();
         
         // First create the JMS connections
         initJms();
@@ -134,27 +141,24 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     @Override
     public void run() {
         
-        ArrayList<SmsAlarmMessage> outgoing = null;
-        
         LOG.info(workerName + " is running.");
                 
         while(running) {
-            synchronized (outgoingQueue) {
+            synchronized (lock) {
                 try {
                     if (outgoingQueue.isEmpty() && (!testStatus.isActive())) {
-                        outgoingQueue.wait();
+                        lock.wait();
                     } else {
-                        outgoingQueue.wait(readWaitingPeriod);
+                        lock.wait(readWaitingPeriod);
                     }
                     workerCheckFlag = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
-                
-                outgoing = outgoingQueue.getCurrentContent();
             }
             
-            if (outgoing.size() > 0) {
+            if (outgoingQueue.hasContent()) {
+                ArrayList<SmsAlarmMessage> outgoing = outgoingQueue.getCurrentContent();
                 LOG.info("Zu senden: " + outgoing.size());
                 for (SmsAlarmMessage o : outgoing) {
                     if (smsDevice.sendMessage(o) == false) {
@@ -171,6 +175,15 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 
                 outgoing.clear();
                 outgoing = null;
+            }
+            
+            if (incomingQueue.hasContent()) {
+                List<BaseIncomingMessage> incoming = incomingQueue.getCurrentContent();
+                for (BaseIncomingMessage o : incoming) {
+                    if (processIncomingMessages(o) == false) {
+                        checkDeviceTest(o);
+                    }
+                }
             }
         }
 
@@ -347,8 +360,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                         testStatus.reset();
                         testStatus.setCheckId(checkId);
                         smsDevice.sendDeviceTestMessage(testStatus);
-                        synchronized (outgoingQueue) {
-                            outgoingQueue.notify();
+                        synchronized (lock) {
+                            lock.notify();
                         }
                     } else {
                         LOG.info("A modem check is still active. Ignoring the new modem check.");
@@ -367,14 +380,14 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
         LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
         BaseIncomingMessage inMsg = new BaseIncomingMessage(msg);
-        if (processIncomingMessages(inMsg) == false) {
-            checkDeviceTest(inMsg);
-        }
-
+        incomingQueue.addMessage(inMsg);
         if (smsDevice.deleteMessage(msg)) {
             LOG.info("Message is deleted.");
         } else {
             LOG.warn("Message cannot be deleted.");
+        }
+        synchronized (lock) {
+            lock.notify();
         }
     }
 
@@ -525,16 +538,16 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     @Override
     public void stopWorking() {
         running = false;
-        synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+        synchronized (lock) {
+            lock.notify();
         }
     }
 
     @Override
     public boolean isWorking() {
         workerCheckFlag = true;
-        synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+        synchronized (lock) {
+            lock.notify();
         }
         Object localLock = new Object();
         synchronized (localLock) {
