@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Simulator
 Bundle-SymbolicName: org.csstudio.dal.simulator
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.dal.simulator.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

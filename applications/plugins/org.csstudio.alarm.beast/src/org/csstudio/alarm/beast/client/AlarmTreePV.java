@@ -67,6 +67,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
                 getPathName(),
                 getSeverity().getDisplayName(),
                 getMessage(),
+                getValue(),
                 getDuration(),
                 getDelay(),
                 getCurrentSeverity().getDisplayName(),

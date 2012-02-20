@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.AncestorListener;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -52,31 +53,55 @@ so change its order with change order action will only be reflected after reopen
  * @author Xihui Chen
  * 
  */
-public abstract class AbstractSWTWidgetFigure extends Figure {
-
+public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure {
+	
+	private class ToolTipListener extends MouseTrackAdapter {
+		private Control control;
+		
+		public ToolTipListener(Control control) {
+			this.control = control;
+		}	
+		
+		public void mouseEnter(MouseEvent e) {
+			control.setToolTipText(editPart.getWidgetModel()
+					.getTooltip());
+		};
+	}
 	protected boolean runmode;
+	protected AbstractBaseEditPart editPart;
+	
 	private boolean updateFlag;
 	private UpdateListener updateManagerListener;
 	private AncestorListener ancestorListener;
-	protected EditPart parentEditPart;
-	protected Composite composite;
-	protected AbstractBaseEditPart editPart;
-
+	private EditPart parentEditPart;
+	private Composite composite;
+	
 	/**
 	 * A composite that will be resized to show part of the widget if needed.
 	 */
-	protected Composite wrapComposite;
+	private Composite wrapComposite;
 
-	protected boolean isIntersectViewPort = true;
+	private boolean isIntersectViewPort = true;
 
-	protected boolean isShowing = true;
+	private boolean isShowing = true;
 	
 	private Rectangle oldClientArea;
+	
+	private T swtWidget;
 
+	/**Construct the figure with SWT.NONE as style bit.
+	 * @param editpart the editpart that holds this figure
+	 */
+	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart){
+		this(editpart, SWT.NONE);
+	}
+	
 	/**Construct the figure.
 	 * @param editpart the editpart that holds this figure.
+	 * @param style style of the SWT widget, 
+	 * which will be passed to {@link #createSWTWidget(Composite, int)}.
 	 */
-	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart) {
+	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart, final int style) {
 		super();
 		this.editPart = editpart;
 		this.composite = (Composite) editpart.getViewer().getControl();
@@ -89,6 +114,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 			wrapComposite.setEnabled(runmode);
 			wrapComposite.moveAbove(null);
 		}
+		
+		swtWidget=createSWTWidget(getParentComposite(), style);
 		
 		editpart.addEditPartListener(new EditPartListener.Stub(){
 			@Override
@@ -117,14 +144,15 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		composite.getDisplay().asyncExec(new Runnable() {
 			
 			public void run() {
-				final Control swtWidget = getSWTWidget();
+//				final Control swtWidget = getSWTWidget();
 				if (swtWidget == null) {
 					throw new RuntimeException("getSWTWidget() returns null!");
 				}
 				//newly created widget on top	
 				if(wrapComposite==null)
 					swtWidget.moveAbove(null);
-				swtWidget.setEnabled(runmode);
+//				if(!runmode)
+//					swtWidget.setEnabled(false);
 				// select the swt widget when menu about to show
 
 				MenuDetectListener menuDetectListener  = new MenuDetectListener() {
@@ -136,17 +164,7 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 					}
 				};
 				
-				addMenuDetectListener(swtWidget, menuDetectListener);
-				
-				// update tooltip
-				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget, 
-						new MouseTrackAdapter() {
-					@Override
-					public void mouseEnter(MouseEvent e) {
-						swtWidget.setToolTipText(editPart.getWidgetModel()
-								.getTooltip());
-					}
-				});
+				hookGEFToSWTWidget(swtWidget, menuDetectListener);
 
 				// hook the context menu to combo
 				swtWidget.setMenu(editPart.getViewer().getContextMenu()
@@ -156,14 +174,16 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 			/**Add menu detect listener recursively to all children widgets inside the SWT Widget.
 			 * @param swtWidget
 			 * @param menuDetectListener
+			 * @param toolTipListener 
 			 */
-			private void addMenuDetectListener(final Control swtWidget,
+			private void hookGEFToSWTWidget(final Control swtWidget,
 					MenuDetectListener menuDetectListener) {
 				swtWidget.addMenuDetectListener(menuDetectListener);
+				SingleSourceHelper.swtWidgetAddMouseTrackListener(swtWidget,new ToolTipListener(swtWidget));
 				//hack for composite widget with multiple children.
 				if(swtWidget instanceof Composite){
 					for(Control control : ((Composite)swtWidget).getChildren()){
-						addMenuDetectListener(control, menuDetectListener);						
+						hookGEFToSWTWidget(control, menuDetectListener);						
 					}
 				}
 			}
@@ -187,21 +207,28 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 		}
 	}
 
-	/**Get the SWT widget. 
-	 *<b>Note: </b> 
-	 * The SWT widget should be created in the composite returned from {@link #getParentComposite()}. 
-	 * @return the swt widget.
+	/**Get the SWT widget on this figure. 
+	 * @return the SWT widget.
 	 */
-	abstract public Control getSWTWidget();
-
-	public Composite getComposite() {
-		return composite;
+	public T getSWTWidget(){
+		return swtWidget;
 	}
+
+	/**Create the SWT widget.This method will be call in constructor
+	 *  {@link #AbstractSWTWidgetFigure(AbstractBaseEditPart, int)}
+	 * @param parent the parent composite.
+	 * @param style style of the SWT widget, 
+	 * which is passed from the constructor 
+	 * {@link #AbstractSWTWidgetFigure(AbstractBaseEditPart, int)}
+	 * @return the SWT widget.
+	 */
+	abstract protected T createSWTWidget(Composite parent, int style);
+	
 
 	/**
 	 * @return the composite
 	 */
-	public Composite getParentComposite() {
+	private Composite getParentComposite() {
 		if (wrapComposite != null)
 			return wrapComposite;
 		else
@@ -211,8 +238,11 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		if (getSWTWidget() != null && !getSWTWidget().isDisposed())
+		if (getSWTWidget() != null && !getSWTWidget().isDisposed()){
 			getSWTWidget().setEnabled(runmode && value);
+			if(wrapComposite != null)
+				wrapComposite.setEnabled(runmode && value);
+		}
 	}
 
 	@Override
@@ -251,7 +281,25 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		repaintWidget();
+		paintOutlineFigure(graphics);
 		super.paintClientArea(graphics);
+	}
+	
+	/**Paint an outline figure so it can be viewed in outline view in edit mode.
+	 * It is a white filled rectangle with gray border by default. Subclass may override it
+	 * accordingly. 
+	 * @param graphics The Graphics used to paint
+	 */
+	protected void paintOutlineFigure(Graphics graphics){
+		// draw this so that it can be seen in the outline view
+		if (!runmode) {
+			graphics.setBackgroundColor(ColorConstants.white);
+			graphics.fillRectangle(getClientArea());
+			if(getBorder() == null){
+				graphics.setForegroundColor(ColorConstants.gray);
+				graphics.drawRectangle(getBounds());
+			}
+		}
 	}
 
 	/**
@@ -322,6 +370,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 			if (isIntersectViewPort) {
 				// if the SWT widget is cut by viewPort
 				if (!viewPortArea.contains(clientArea)) {
+					translateToAbsolute(viewPortArea);
+					translateToAbsolute(clientArea);
 					Rectangle intersection = viewPortArea.getIntersection(clientArea);					
 					org.eclipse.swt.graphics.Rectangle oldBounds = wrapComposite.getBounds();
 					if (oldBounds.x != (rect.x + intersection.x	- clientArea.x) ||
@@ -373,10 +423,10 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	}
 
 	/**
-	 * Dispose SWT widget. Subclass should dispose its widget before calling super.dispose()
-	 * because the parent composite might be disposed from here.  
+	 * Dispose SWT widget. The SWT widget will be automatically disposed when widget
+	 * editpart is deactivated. Subclass should not dispose the SWT widget again.
 	 */
-	public void dispose() {
+	protected void dispose() {
 		if (updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
 		removeAncestorListener(ancestorListener);

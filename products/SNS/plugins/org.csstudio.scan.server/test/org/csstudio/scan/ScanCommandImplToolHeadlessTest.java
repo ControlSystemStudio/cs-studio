@@ -42,7 +42,7 @@ public class ScanCommandImplToolHeadlessTest
         assertSame(delay, impl.getCommand());
         assertSame(DelayCommandImpl.class, impl.getClass());
 
-        final LoopCommand loop = new LoopCommand("device", 1, 10, 1, 0.0, delay);
+        final LoopCommand loop = new LoopCommand("device", 1, 10, 1, delay);
         impl = tool.implement(loop);
         assertSame(loop, impl.getCommand());
         assertSame(LoopCommandImpl.class, impl.getClass());

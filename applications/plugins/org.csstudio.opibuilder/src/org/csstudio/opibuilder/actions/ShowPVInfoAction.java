@@ -73,6 +73,8 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.targetPart = targetPart;
 	}
+	
+	
 
 	public void run(IAction action) {
 		if(getSelectedWidget() == null || 

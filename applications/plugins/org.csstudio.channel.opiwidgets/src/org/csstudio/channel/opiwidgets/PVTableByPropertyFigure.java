@@ -12,7 +12,7 @@ public class PVTableByPropertyFigure extends AbstractChannelWidgetFigure<PVTable
 	}
 	
 	@Override
-	protected PVTableByPropertyWidget createWidget(Composite parent) {
+	protected PVTableByPropertyWidget createSWTWidget(Composite parent, int style) {
 		return new PVTableByPropertyWidget(parent, SWT.NONE);
 	}
 	

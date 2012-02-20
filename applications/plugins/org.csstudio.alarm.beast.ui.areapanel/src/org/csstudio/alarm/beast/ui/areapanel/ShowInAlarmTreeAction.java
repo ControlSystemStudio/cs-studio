@@ -9,43 +9,33 @@ package org.csstudio.alarm.beast.ui.areapanel;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.alarmtree.AlarmTreeView;
-import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
-import org.eclipse.jface.action.Action;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+import org.csstudio.apputil.ui.workbench.OpenViewAction;
+import org.eclipse.ui.IViewPart;
 
 /** Action that displays the alarm tree for an item
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ShowInAlarmTreeAction extends Action
+public class ShowInAlarmTreeAction extends OpenViewAction
 {
 	final private AlarmTreeItem item;
-	
+
 	public ShowInAlarmTreeAction(final AlarmTreeItem item)
     {
-		super(Messages.ShowInAlarmTree,
-				org.csstudio.alarm.beast.ui.alarmtree.Activator.getImageDescriptor("icons/alarmtree.gif"));
+		super(AlarmTreeView.ID,
+		      Messages.ShowInAlarmTree,
+			  org.csstudio.alarm.beast.ui.alarmtree.Activator.getImageDescriptor("icons/alarmtree.gif"));
 		this.item = item;
     }
 
     @Override
 	public void run()
 	{
-        try
+        final IViewPart view = doShowView();
+        if (view instanceof AlarmTreeView)
         {
-            final IWorkbench workbench = PlatformUI.getWorkbench();
-            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            final IWorkbenchPage page = window.getActivePage();
-            final AlarmTreeView view = (AlarmTreeView) page.showView(AlarmTreeView.ID);
-            view.setFocus(item);
-        }
-        catch (Exception ex)
-        {
-            new ErrorDetailDialog(null, "Error", "Error opening alarm tree",
-            		ex.getMessage()).open();
+            final AlarmTreeView alarm_view = (AlarmTreeView) view;
+            alarm_view.setFocus(item);
         }
  	}
 }

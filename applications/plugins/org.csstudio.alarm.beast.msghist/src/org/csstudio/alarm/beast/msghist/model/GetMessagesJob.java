@@ -10,11 +10,11 @@ package org.csstudio.alarm.beast.msghist.model;
 import java.util.Calendar;
 
 import org.csstudio.alarm.beast.msghist.rdb.MessageRDB;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
 /** Background job for getting messages from RDB.
@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Display;
  *  a long running RDB connection.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class GetMessagesJob extends Job
 {
 	final private String url;
@@ -52,7 +53,7 @@ abstract public class GetMessagesJob extends Job
             final MessagePropertyFilter filters[],
             final int max_properties)
     {
-        super("Get Messages from RDB"); //$NON-NLS-1$
+        super("Get Messages from RDB");
         this.url = url;
         this.user = user;
         this.password = password;
@@ -62,7 +63,6 @@ abstract public class GetMessagesJob extends Job
         this.filters = filters;
         this.max_properties = max_properties;
     }
-
 
     @Override
     protected IStatus run(final IProgressMonitor monitor)
@@ -76,7 +76,7 @@ abstract public class GetMessagesJob extends Job
             if (! monitor.isCanceled())
                 gotMessages(messages);
         }
-        catch (final Throwable ex)
+        catch (final Exception ex)
         {
             // Switch to GUI thread for error message box
             Display.getDefault().asyncExec(new Runnable()
@@ -84,8 +84,7 @@ abstract public class GetMessagesJob extends Job
                 @Override
                 public void run()
                 {
-                    MessageDialog.openError(null, "Message Database Error", //$NON-NLS-1$
-                            ex.getMessage());
+                    ExceptionDetailsErrorDialog.openError(null, "Message Database Error", ex);
                 }
             });
         }

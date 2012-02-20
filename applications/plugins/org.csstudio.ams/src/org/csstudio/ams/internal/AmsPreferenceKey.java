@@ -53,7 +53,13 @@ public class AmsPreferenceKey
 	public static final String P_APP_DATABASE_USER = "appDatabaseUser";
 	public static final String P_APP_DATABASE_PASSWORD = "appDatabasePassword";
 
-	// filter key field of message
+    // Memory cache database settings
+    public static final String P_CACHE_DATABASE_TYPE = "cacheDatabaseType";
+    public static final String P_CACHE_DATABASE_CONNECTION = "cacheDatabaseConnection";
+    public static final String P_CACHE_DATABASE_USER = "cacheDatabaseUser";
+    public static final String P_CACHE_DATABASE_PASSWORD = "cacheDatabasePassword";
+
+    // filter key field of message
 	public static final String P_FILTER_KEYFIELDS = "filterKeyFields";
 
 	// AMS management password

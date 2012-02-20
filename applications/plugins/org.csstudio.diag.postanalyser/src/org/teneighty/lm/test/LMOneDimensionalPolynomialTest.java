@@ -2,19 +2,19 @@ package org.teneighty.lm.test;
 
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2006 Fran Lattanzio
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,16 +26,17 @@ package org.teneighty.lm.test;
 
 import java.util.Random;
 
-import org.teneighty.lm.LevenbergMarquardt;
 import org.teneighty.lm.CostFunction;
+import org.teneighty.lm.LevenbergMarquardt;
 
 
 /**
  * Test the LM fitter.
- * 
+ *
  * @author Fran Lattanzio
  * @version $Revision$ $Date$
  */
+@SuppressWarnings("nls")
 public class LMOneDimensionalPolynomialTest
 	extends AbstractLevenbergMarquardtTest
 {
@@ -69,7 +70,7 @@ public class LMOneDimensionalPolynomialTest
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name the name.
 	 */
 	public LMOneDimensionalPolynomialTest( final String name )
@@ -84,27 +85,27 @@ public class LMOneDimensionalPolynomialTest
 	public void testPolynomial()
 	{
 		System.out.print( "Starting 1-dimensional polynomial test" );
-		
+
 		int degree = 0;
 		int passed = 0;
 		int frac = TIMES / 10;
-		
+
 		long then = System.currentTimeMillis();
 
 		for( int index = 0; index < TIMES; index++ )
 		{
 			degree = MIN_DEGREE + this.random.nextInt( MAX_DEGREE - MIN_DEGREE );
 			passed += this.runOneDimensionPolynomial( degree, POINTS ) ? 1 : 0;
-			
+
 			if( ( index % frac ) == 0 )
 			{
 				System.out.print( '.' );
 			}
 		}
 		System.out.println();
-		
+
 		long now = System.currentTimeMillis();
-		
+
 		// print a report
 		System.out.println( "One Dimensional Polynomial Test" );
 		System.out.println( "-------------------------------" );
@@ -122,7 +123,7 @@ public class LMOneDimensionalPolynomialTest
 
 	/**
 	 * Test a single dimension polynomial, of the specified degree.
-	 * 
+	 *
 	 * @param deg the degree.
 	 * @param data_size the number of data points to simulate.
 	 * @return boolean true if passed.
@@ -172,7 +173,7 @@ public class LMOneDimensionalPolynomialTest
 
 		// get params.
 		double[] lm_params = lm.getParameters();
-		
+
 		// check vectors.
 		return( this.checkVectors( params, lm_params ) );
 	}
@@ -180,7 +181,7 @@ public class LMOneDimensionalPolynomialTest
 
 	/**
 	 * A cost polynomial, of the specified degree.
-	 * 
+	 *
 	 * @author Fran Lattanzio
 	 * @version $Revision$ $Date$
 	 */
@@ -198,7 +199,7 @@ public class LMOneDimensionalPolynomialTest
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param d the degree.
 		 */
 		public CostPolynomial( final int d )
@@ -212,12 +213,13 @@ public class LMOneDimensionalPolynomialTest
 
 		/**
 		 * Evaluate the cost function at the specified tuple.
-		 * 
+		 *
 		 * @param values the vector of data to evaluate.
 		 * @param params vector containing the current parameters of variation.
 		 * @return double the value of this function.
 		 */
-		public double evaluate( double[] values, double[] params )
+		@Override
+        public double evaluate( double[] values, double[] params )
 		{
 			double pow = values[ 0 ];
 			double result = 0;
@@ -242,14 +244,15 @@ public class LMOneDimensionalPolynomialTest
 		/**
 		 * Returns the derivative of this function, with respect to the
 		 * <code>ith</code> <b>parameter</b>, evaluated at the specified tuple.
-		 * 
+		 *
 		 * @param values the vector of data to evaluate.
 		 * @param params vector containing the current parameters of variation.
 		 * @param ith the parameter (number) with respect to which the derivative is
 		 *        taken.
 		 * @return double the value of this function.
 		 */
-		public double derive( double[] values, double[] params, int ith )
+		@Override
+        public double derive( double[] values, double[] params, int ith )
 		{
 			if( ith == this.degree )
 			{
@@ -262,10 +265,11 @@ public class LMOneDimensionalPolynomialTest
 
 		/**
 		 * Get the parameter count.
-		 * 
+		 *
 		 * @return int the param count.
 		 */
-		public int getParameterCount()
+		@Override
+        public int getParameterCount()
 		{
 			return ( this.degree + 1 );
 		}
@@ -275,7 +279,7 @@ public class LMOneDimensionalPolynomialTest
 
 	/**
 	 * A random, noisy polynomial that we will attempt to match...
-	 * 
+	 *
 	 * @author Fran Lattanzio
 	 * @version $Revision$ $Date$
 	 */
@@ -296,7 +300,7 @@ public class LMOneDimensionalPolynomialTest
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param rand a random.
 		 * @param factors the factors.
 		 */
@@ -312,7 +316,7 @@ public class LMOneDimensionalPolynomialTest
 
 		/**
 		 * Eval, at the specified point.
-		 * 
+		 *
 		 * @param input the input.
 		 * @return double the value.
 		 */

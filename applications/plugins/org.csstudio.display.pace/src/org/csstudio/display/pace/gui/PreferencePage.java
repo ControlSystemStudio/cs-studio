@@ -19,7 +19,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-
 /** Preference page (GUI) for PACE settings
  *  @author Kay Kasemir
  */
@@ -33,7 +32,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
         // i.e. they are specific to the workspace instance.
         final IPreferenceStore store =
-            new ScopedPreferenceStore(new InstanceScope(), Activator.ID);
+            new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID);
         setPreferenceStore(store);
         setMessage(Messages.Preferences_Message);
     }

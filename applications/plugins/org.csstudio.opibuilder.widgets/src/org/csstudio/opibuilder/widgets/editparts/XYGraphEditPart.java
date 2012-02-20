@@ -551,7 +551,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				}else
 					dataProvider.setCurrentYData(ValueUtil.getDouble(y_value));
 			}
-
+			break;
+		case VISIBLE:
+			trace.setVisible((Boolean)newValue);
+			break;
 		default:
 			break;
 		}

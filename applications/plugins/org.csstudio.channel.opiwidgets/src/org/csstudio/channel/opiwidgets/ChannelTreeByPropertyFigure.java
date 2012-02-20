@@ -12,7 +12,7 @@ public class ChannelTreeByPropertyFigure extends AbstractChannelWidgetFigure<Cha
 	}
 	
 	@Override
-	protected ChannelTreeByPropertyWidget createWidget(Composite parent) {
+	protected ChannelTreeByPropertyWidget createSWTWidget(Composite parent, int style) {
 		return new ChannelTreeByPropertyWidget(parent, SWT.NONE);
 	}
 }

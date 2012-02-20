@@ -28,13 +28,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.dal.ui.dnd.rfc.IProcessVariableAdressReceiver;
+import org.csstudio.dal.ui.dnd.rfc.IShowControlSystemDialogStrategy;
+import org.csstudio.dal.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.model.pvs.DalPropertyTypes;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
-import org.csstudio.platform.ui.dnd.rfc.IShowControlSystemDialogStrategy;
-import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.ui.util.SelectionUtil;
@@ -182,9 +182,9 @@ public final class SimpleChannelPage extends WizardPage {
 		 */
 		@Override
 		public void run() {
-			IStructuredSelection sel = (IStructuredSelection) _channelTableViewer
+			final IStructuredSelection sel = (IStructuredSelection) _channelTableViewer
 					.getSelection();
-			if ((sel != null) && (sel.getFirstElement() != null)) {
+			if (sel != null && sel.getFirstElement() != null) {
 				_inputChannelTableModel.removeRow((InputChannelTableRow) sel
 						.getFirstElement());
 				_channelTableViewer.refresh();
@@ -222,16 +222,16 @@ public final class SimpleChannelPage extends WizardPage {
 		 */
 		@Override
 		public void run() {
-			IStructuredSelection sel = (IStructuredSelection) _channelTableViewer
+			final IStructuredSelection sel = (IStructuredSelection) _channelTableViewer
 					.getSelection();
 
-			if ((sel != null) && (sel.getFirstElement() != null) && !sel.isEmpty()) {
-				for (Object o : sel.toArray()) {
-					InputChannelTableRow row = (InputChannelTableRow) o;
+			if (sel != null && sel.getFirstElement() != null && !sel.isEmpty()) {
+				for (final Object o : sel.toArray()) {
+					final InputChannelTableRow row = (InputChannelTableRow) o;
 
-					String rowValue = row.getChannel();
+					final String rowValue = row.getChannel();
 
-					if ((rowValue != null) && (rowValue.length() > 0)) {
+					if (rowValue != null && rowValue.length() > 0) {
 						row.setChannel(applyTypeHint(rowValue));
 					}
 				}
@@ -251,11 +251,11 @@ public final class SimpleChannelPage extends WizardPage {
 			String result = null;
 
 			// try to replace existing type hint
-			String newPattern = ", " + _typeHint.toPortableString();
-			for (DalPropertyTypes dalType : DalPropertyTypes.values()) {
-				String oldPattern = ", " + dalType.toPortableString();
+			final String newPattern = ", " + _typeHint.toPortableString();
+			for (final DalPropertyTypes dalType : DalPropertyTypes.values()) {
+				final String oldPattern = ", " + dalType.toPortableString();
 
-				if ((dalType != _typeHint) && (channel.indexOf(oldPattern) > 0)) {
+				if (dalType != _typeHint && channel.indexOf(oldPattern) > 0) {
 					result = channel.replace(oldPattern, newPattern);
 				}
 			}
@@ -333,10 +333,10 @@ public final class SimpleChannelPage extends WizardPage {
 		 */
 		@Override
 		public void update(final ViewerCell cell) {
-			Object element = cell.getElement();
-			int index = cell.getColumnIndex();
+			final Object element = cell.getElement();
+			final int index = cell.getColumnIndex();
 			cell.setText(getText(element, index));
-			Image image = getImage(element, index);
+			final Image image = getImage(element, index);
 			cell.setImage(image);
 			cell.setBackground(getBackground(element));
 			cell.setForeground(getForeground(element, index));
@@ -353,7 +353,7 @@ public final class SimpleChannelPage extends WizardPage {
 		 * @return The text to display in the viewer
 		 */
 		private String getText(final Object element, final int columnIndex) {
-			InputChannelTableRow row = (InputChannelTableRow) element;
+			final InputChannelTableRow row = (InputChannelTableRow) element;
 			String result = "";
 			switch (columnIndex) {
 			case 0:
@@ -374,19 +374,20 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public String getToolTipText(final Object element) {
+		@Override
+        public String getToolTipText(final Object element) {
 			String tooltip = "";
-			InputChannelTableRow row = (InputChannelTableRow) element;
+			final InputChannelTableRow row = (InputChannelTableRow) element;
 
-			String rawChannel = row.getChannel();
+			final String rawChannel = row.getChannel();
 
 			try {
 				// try to resolve the name (this should replace all aliases)
-				String channel = ChannelReferenceValidationUtil
+				final String channel = ChannelReferenceValidationUtil
 						.createCanonicalName(rawChannel, _aliases);
 
 				tooltip = channel + " [STRING]";
-			} catch (ChannelReferenceValidationException e) {
+			} catch (final ChannelReferenceValidationException e) {
 				tooltip = e.getMessage();
 			}
 
@@ -396,21 +397,24 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Point getToolTipShift(final Object object) {
+		@Override
+        public Point getToolTipShift(final Object object) {
 			return new Point(5, 5);
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public int getToolTipDisplayDelayTime(final Object object) {
+		@Override
+        public int getToolTipDisplayDelayTime(final Object object) {
 			return 100;
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public int getToolTipTimeDisplayed(final Object object) {
+		@Override
+        public int getToolTipTimeDisplayed(final Object object) {
 			return 10000;
 		}
 
@@ -426,10 +430,10 @@ public final class SimpleChannelPage extends WizardPage {
 		private Font getFont(final Object element, final int column) {
 			int style = SWT.BOLD;
 
-			InputChannelTableRow row = (InputChannelTableRow) element;
+			final InputChannelTableRow row = (InputChannelTableRow) element;
 
 			if (column == 1) {
-				if ((row.getDescription() == null)
+				if (row.getDescription() == null
 						|| row.getDescription().equals("")) {
 					style = SWT.ITALIC;
 				} else {
@@ -452,9 +456,9 @@ public final class SimpleChannelPage extends WizardPage {
 			RGB rgb = new RGB(0, 0, 0);
 
 			if (column == 1) {
-				InputChannelTableRow row = (InputChannelTableRow) element;
+				final InputChannelTableRow row = (InputChannelTableRow) element;
 
-				if ((row.getDescription() == null)
+				if (row.getDescription() == null
 						|| row.getDescription().equals("")) {
 					rgb = new RGB(200, 200, 200);
 				} else {
@@ -480,7 +484,7 @@ public final class SimpleChannelPage extends WizardPage {
 			Image result = null;
 
 			if (index == 0) {
-				InputChannelTableRow row = (InputChannelTableRow) element;
+				final InputChannelTableRow row = (InputChannelTableRow) element;
 
 				if (row.getParameterType() == ParameterType.IN) {
 					result = CustomMediaFactory.getInstance()
@@ -508,7 +512,8 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public void inputChanged(final Viewer viewer, final Object oldInput,
+		@Override
+        public void inputChanged(final Viewer viewer, final Object oldInput,
 				final Object newInput) {
 
 		}
@@ -516,14 +521,16 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public Object[] getElements(final Object parent) {
+		@Override
+        public Object[] getElements(final Object parent) {
 			return _inputChannelTableModel.getAllRows().toArray();
 		}
 
 		/**
 		 * {@inheritDoc}
 		 */
-		public void dispose() {
+		@Override
+        public void dispose() {
 
 		}
 	}
@@ -544,7 +551,8 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public final boolean canModify(final Object element,
+		@Override
+        public final boolean canModify(final Object element,
 				final String property) {
 			return true;
 		}
@@ -552,10 +560,11 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public final Object getValue(final Object element, final String property) {
+		@Override
+        public final Object getValue(final Object element, final String property) {
 			Object result = null;
 
-			InputChannelTableRow row = (InputChannelTableRow) element;
+			final InputChannelTableRow row = (InputChannelTableRow) element;
 
 			switch (findColumnIndex(property)) {
 			case 0:
@@ -575,7 +584,8 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * {@inheritDoc}
 		 */
-		public final void modify(final Object element, final String property,
+		@Override
+        public final void modify(final Object element, final String property,
 				final Object value) {
 			InputChannelTableRow row;
 
@@ -588,22 +598,22 @@ public final class SimpleChannelPage extends WizardPage {
 
 			switch (findColumnIndex(property)) {
 			case 1:
-				String rawInput = (String) value;
+				final String rawInput = (String) value;
 
 				String channel = "";
 				// We take the plain raw input by default. If the entered name
 				// does not reference any aliases, we try to
 				// validate it using the process variable name parsers, which
 				// might automatically add a control system prefix.
-				boolean valid = ChannelReferenceValidationUtil
+				final boolean valid = ChannelReferenceValidationUtil
 						.testValidity(rawInput);
 
 				if (valid) {
-					List<String> requiredAliasNames = ChannelReferenceValidationUtil
+					final List<String> requiredAliasNames = ChannelReferenceValidationUtil
 							.getRequiredAliasNames(rawInput);
 
 					if (requiredAliasNames.isEmpty()) {
-						IProcessVariableAddress pv = ProcessVariableExchangeUtil
+						final IProcessVariableAddress pv = ProcessVariableExchangeUtil
 								.parseProcessVariableAdress(rawInput, true);
 
 						if (pv != null) {
@@ -651,7 +661,7 @@ public final class SimpleChannelPage extends WizardPage {
 		private int findColumnIndex(final String property) {
 			int result = 0;
 			// Find the index of the column
-			Object[] columnHeaders = _channelTableViewer.getColumnProperties();
+			final Object[] columnHeaders = _channelTableViewer.getColumnProperties();
 			for (int i = 0; i < columnHeaders.length; i++) {
 				if (columnHeaders[i].equals(property)) {
 					result = i;
@@ -721,7 +731,7 @@ public final class SimpleChannelPage extends WizardPage {
 		@Override
 		protected Object getValue(final Object element) {
 			if (element instanceof InputChannelTableRow) {
-				InputChannelTableRow row = (InputChannelTableRow) element;
+				final InputChannelTableRow row = (InputChannelTableRow) element;
 				if (_channelColumn) {
 					return row.getChannel();
 				}
@@ -783,8 +793,9 @@ public final class SimpleChannelPage extends WizardPage {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void createControl(final Composite parent) {
-		Composite c = new Composite(parent, SWT.None);
+	@Override
+    public void createControl(final Composite parent) {
+		final Composite c = new Composite(parent, SWT.None);
 		c.setLayout(new GridLayout(1, false));
 
 		_useOnlyConnectionsCheckBox = new Button(c, SWT.CHECK);
@@ -832,7 +843,7 @@ public final class SimpleChannelPage extends WizardPage {
      * @return
      */
     private Text createDescriptionControl(final Composite c) {
-        Text text = new Text(c, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER|SWT.READ_ONLY);
+        final Text text = new Text(c, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER|SWT.READ_ONLY);
 //        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         text.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
         text.setText("");
@@ -866,7 +877,7 @@ public final class SimpleChannelPage extends WizardPage {
 	 * @return the control
 	 */
 	private TreeViewer createRuleControl(final Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
+		final Group group = new Group(parent, SWT.NONE);
 		group.setLayout(new GridLayout(2, false));
 		group.setText("Rules / Scripts");
 		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, 120).create());
@@ -888,11 +899,12 @@ public final class SimpleChannelPage extends WizardPage {
 		});
 		ColumnViewerToolTipSupport.enableFor(viewer);
 
-		List<RuleDescriptor> rules = RuleService.getInstance()
+		final List<RuleDescriptor> rules = RuleService.getInstance()
 				.getRegisteredRuleDescriptors();
 
 		Collections.sort(rules, new Comparator<RuleDescriptor>() {
-			public int compare(final RuleDescriptor r1, final RuleDescriptor r2) {
+			@Override
+            public int compare(final RuleDescriptor r1, final RuleDescriptor r2) {
 				return r1.getDescription().compareTo(r2.getDescription());
 			}
 		});
@@ -904,11 +916,11 @@ public final class SimpleChannelPage extends WizardPage {
 			@Override
 			public boolean select(final Viewer viewer,
 					final Object parentElement, final Object element) {
-				RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
+				final RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
 
-				PropertyTypesEnum[] ruleReturnType = ruleDescriptor.getCompatiblePropertyTypes();
+				final PropertyTypesEnum[] ruleReturnType = ruleDescriptor.getCompatiblePropertyTypes();
 
-				for (PropertyTypesEnum type : ruleReturnType) {
+				for (final PropertyTypesEnum type : ruleReturnType) {
 					if (type.equals(_propertyType)) {
 						return true;
 					}
@@ -924,9 +936,9 @@ public final class SimpleChannelPage extends WizardPage {
 
             @Override
             public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
-                RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
-                String pattern = _rulePattern.getText();
-                if ((pattern == null) || (pattern.length() < 1)) {
+                final RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
+                final String pattern = _rulePattern.getText();
+                if (pattern == null || pattern.length() < 1) {
                     return true;
                 }
                 return ruleDescriptor.getDescription().toLowerCase().matches(
@@ -940,9 +952,11 @@ public final class SimpleChannelPage extends WizardPage {
         // listener to update rule list for new rule patterns set by user.
         _rulePattern.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyPressed(final KeyEvent e) {
             }
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 viewer.refresh();
             }
@@ -953,17 +967,18 @@ public final class SimpleChannelPage extends WizardPage {
 		// add a selection listener that updates the channel table when the rule
 		// changes
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(final SelectionChangedEvent event) {
-				IStructuredSelection sel = (IStructuredSelection) event
+			@Override
+            public void selectionChanged(final SelectionChangedEvent event) {
+				final IStructuredSelection sel = (IStructuredSelection) event
 						.getSelection();
 
 				if (sel.getFirstElement() != null) {
-					RuleDescriptor descriptor = (RuleDescriptor) sel
+					final RuleDescriptor descriptor = (RuleDescriptor) sel
 							.getFirstElement();
 					_selectedRule = descriptor;
 
 					String description = descriptor.getRule().getDescription();
-					if((description == null) || description.isEmpty()) {
+					if(description == null || description.isEmpty()) {
 					    description = "no description available";
 					}
 					_ruleDescriptionText.setText(description);
@@ -986,7 +1001,7 @@ public final class SimpleChannelPage extends WizardPage {
 	 * @return the created viewer
 	 */
 	private TableViewer createInputChannelsTable(final Composite parent) {
-		Group group = new Group(parent, SWT.NONE);
+		final Group group = new Group(parent, SWT.NONE);
 		group.setLayout(LayoutUtil.createGridLayout(1, 0, 0, 0));
 		group.setText("Input Channels");
 		group.setLayoutData(LayoutUtil
@@ -998,12 +1013,12 @@ public final class SimpleChannelPage extends WizardPage {
 		ColumnViewerToolTipSupport.enableFor(viewer, ToolTip.NO_RECREATE);
 
 		// cell modifiers
-		ICellModifier cellModifier = new ChannelTableCellModifier() {
+		final ICellModifier cellModifier = new ChannelTableCellModifier() {
 			@Override
 			protected void setChannelHook(final ParameterDescriptor descriptor,
 					final String channel) {
 				if (_isLinkOutput) {
-					if ((_dynamicsDescriptor.getOutputChannel() != null)
+					if (_dynamicsDescriptor.getOutputChannel() != null
 							&& _dynamicsDescriptor.getOutputChannel().equals(
 									descriptor)) {
 						_dynamicsDescriptor.getOutputChannel().setChannel(
@@ -1036,26 +1051,26 @@ public final class SimpleChannelPage extends WizardPage {
 	 *            The parent for the widgets
 	 */
 	private void createAliasInformation(final Composite parent) {
-		Composite c = new Composite(parent, SWT.NONE);
+		final Composite c = new Composite(parent, SWT.NONE);
 		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		c.setLayout(new GridLayout(2, false));
 
-		Label header = new Label(c, SWT.NONE);
-		GridData gd = GridDataFactory.fillDefaults().grab(true, true).create();
+		final Label header = new Label(c, SWT.NONE);
+		final GridData gd = GridDataFactory.fillDefaults().grab(true, true).create();
 		gd.horizontalSpan = 2;
 		header.setLayoutData(gd);
 		header.setFont(CustomMediaFactory.getInstance()
 				.getDefaultFont(SWT.BOLD));
 		header.setText("Available Aliases / Macros");
 
-		for (String alias : _aliases.keySet()) {
-			Label left = new Label(c, SWT.NONE);
+		for (final String alias : _aliases.keySet()) {
+			final Label left = new Label(c, SWT.NONE);
 			left.setLayoutData(GridDataFactory.fillDefaults().create());
 			left.setForeground(CustomMediaFactory.getInstance().getColor(
 					new RGB(0, 0, 255)));
 			left.setText("$" + alias + "$");
 
-			Label right = new Label(c, SWT.NONE);
+			final Label right = new Label(c, SWT.NONE);
 			right.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 			right.setText("--> " + _aliases.get(alias));
 		}
@@ -1069,7 +1084,7 @@ public final class SimpleChannelPage extends WizardPage {
 	 * @return The {@link Menu}
 	 */
 	private Menu createPopupMenu(final Control control) {
-		MenuManager popupMenu = new MenuManager();
+		final MenuManager popupMenu = new MenuManager();
 
 		// channel actions
 		IAction a = new AddInputChannelAction();
@@ -1080,15 +1095,15 @@ public final class SimpleChannelPage extends WizardPage {
 		popupMenu.add(a);
 
 		// "get as [TYPE]" actions
-		MenuManager subMenu = new MenuManager("Get As");
+		final MenuManager subMenu = new MenuManager("Get As");
 		popupMenu.add(subMenu);
 
-		for (DalPropertyTypes type : DalPropertyTypes.values()) {
+		for (final DalPropertyTypes type : DalPropertyTypes.values()) {
 			a = new AppendTypeHintAction(type);
 			subMenu.add(a);
 		}
 
-		Menu menu = popupMenu.createContextMenu(control);
+		final Menu menu = popupMenu.createContextMenu(control);
 		control.setMenu(menu);
 		return menu;
 	}
@@ -1102,22 +1117,22 @@ public final class SimpleChannelPage extends WizardPage {
 	 */
 	private static InputChannelTableModel createChannelTableModel(
 			final DynamicsDescriptor dynamicsDescriptor) {
-		InputChannelTableModel model = new InputChannelTableModel();
+		final InputChannelTableModel model = new InputChannelTableModel();
 
 		// input channels
-		for (ParameterDescriptor descriptor : dynamicsDescriptor
+		for (final ParameterDescriptor descriptor : dynamicsDescriptor
 				.getInputChannels()) {
-			String inputChannel = new String(descriptor.getChannel());
+			final String inputChannel = new String(descriptor.getChannel());
 			model.addRowForInputChannel(new InputChannelTableRow(
 					ParameterType.IN, "", inputChannel));
 		}
 
 		// output channel
 		if (dynamicsDescriptor.getOutputChannel() != null) {
-			String outputChannel = new String(dynamicsDescriptor
+			final String outputChannel = new String(dynamicsDescriptor
 					.getOutputChannel().getChannel());
 
-			if ((outputChannel != null) && (outputChannel.length() > 0)) {
+			if (outputChannel != null && outputChannel.length() > 0) {
 				model.addRowForOutputChannel(new InputChannelTableRow(
 						ParameterType.OUT, "Output Channel", outputChannel));
 			}
@@ -1137,7 +1152,7 @@ public final class SimpleChannelPage extends WizardPage {
 						_selectedRule.getParameterDescriptions()[i]);
 				if (_selectedRule.getRuleId().equals(
 						_dynamicsDescriptor.getRuleId())
-						&& (_dynamicsDescriptor.getInputChannels().length > i)) {
+						&& _dynamicsDescriptor.getInputChannels().length > i) {
 					_inputChannelTableModel.setInputChannelValue(i,
 							_dynamicsDescriptor.getInputChannels()[i]
 									.getValue());
@@ -1159,7 +1174,7 @@ public final class SimpleChannelPage extends WizardPage {
 	 */
 	private TableViewer createChannelTable(final Composite parent) {
 		// define column names
-		String[] columnNames = new String[] {
+		final String[] columnNames = new String[] {
 				"PROP_DESCRIPTION", "PROP_NAME", "PROP_VALUE" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// create table
@@ -1197,17 +1212,18 @@ public final class SimpleChannelPage extends WizardPage {
 		viewer.setColumnProperties(columnNames);
 
 		// configure keyboard support
-		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
+		final TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
 				viewer, new FocusCellOwnerDrawHighlighter(viewer));
 
-		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
+		final ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
 				viewer) {
-			protected boolean isEditorActivationEvent(
+			@Override
+            protected boolean isEditorActivationEvent(
 					final ColumnViewerEditorActivationEvent event) {
-				return (event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL)
-						|| (event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION)
-						|| ((event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) && (event.keyCode == SWT.F2))
-						|| (event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC);
+				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
+						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
+						|| event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.F2
+						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
 			}
 		};
 
@@ -1223,7 +1239,7 @@ public final class SimpleChannelPage extends WizardPage {
 				new IProcessVariableAdressReceiver() {
 					public void receive(final IProcessVariableAddress[] pvs,
 							final DropTargetEvent event) {
-						for (IProcessVariableAddress pv : pvs) {
+						for (final IProcessVariableAddress pv : pvs) {
 							addInputChannel(pv.getFullName());
 						}
 					}
@@ -1232,7 +1248,7 @@ public final class SimpleChannelPage extends WizardPage {
 					public boolean showControlSystem(final String rawName) {
 						// only popup the dialog if there are no aliases used
 						// within the raw string
-						boolean show = ChannelReferenceValidationUtil
+						final boolean show = ChannelReferenceValidationUtil
 								.getRequiredAliasNames(rawName).isEmpty();
 						return show;
 					}
@@ -1242,15 +1258,16 @@ public final class SimpleChannelPage extends WizardPage {
 		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(viewer
 				.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
 				new IProcessVariableAdressProvider() {
-					public List<IProcessVariableAddress> getProcessVariableAdresses() {
-						List<ParameterDescriptor> parameterDescriptors = SelectionUtil
+					@Override
+                    public List<IProcessVariableAddress> getProcessVariableAdresses() {
+						final List<ParameterDescriptor> parameterDescriptors = SelectionUtil
 								.getInstance().getObjectsFromSelection(
 										viewer.getSelection());
 
-						List<IProcessVariableAddress> result = new ArrayList<IProcessVariableAddress>();
+						final List<IProcessVariableAddress> result = new ArrayList<IProcessVariableAddress>();
 
-						for (ParameterDescriptor d : parameterDescriptors) {
-							IProcessVariableAddress pv = ProcessVariableAdressFactory
+						for (final ParameterDescriptor d : parameterDescriptors) {
+							final IProcessVariableAddress pv = ProcessVariableAdressFactory
 									.getInstance().createProcessVariableAdress(
 											d.getChannel());
 							result.add(pv);
@@ -1258,8 +1275,9 @@ public final class SimpleChannelPage extends WizardPage {
 						return result;
 					}
 
-					public IProcessVariableAddress getPVAdress() {
-						List<IProcessVariableAddress> all = getProcessVariableAdresses();
+					@Override
+                    public IProcessVariableAddress getPVAdress() {
+						final List<IProcessVariableAddress> all = getProcessVariableAdresses();
 						if (all.size() > 0) {
 							return all.get(0);
 						}
@@ -1278,11 +1296,11 @@ public final class SimpleChannelPage extends WizardPage {
 	 *            The output channel name.
 	 */
 	private void addOutputChannel(final String channelName) {
-		ParameterDescriptor descriptor = new ParameterDescriptor();
+		final ParameterDescriptor descriptor = new ParameterDescriptor();
 		descriptor.setChannel(channelName);
 		_dynamicsDescriptor.setOutputChannel(descriptor);
 
-		InputChannelTableRow row = new InputChannelTableRow(ParameterType.OUT,
+		final InputChannelTableRow row = new InputChannelTableRow(ParameterType.OUT,
 				"OUT", channelName);
 		_inputChannelTableModel.addRowForOutputChannel(row);
 		_channelTableViewer.refresh();
@@ -1297,10 +1315,10 @@ public final class SimpleChannelPage extends WizardPage {
 	 *            The input channel name.
 	 */
 	private void addInputChannel(final String channelName) {
-		IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
+		final IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance()
 				.createProcessVariableAdress(channelName);
 
-		InputChannelTableRow row = new InputChannelTableRow(ParameterType.IN,
+		final InputChannelTableRow row = new InputChannelTableRow(ParameterType.IN,
 				"", pv.getFullName());
 		_inputChannelTableModel.addRowForInputChannel(row);
 		_channelTableViewer.refresh();
@@ -1317,20 +1335,20 @@ public final class SimpleChannelPage extends WizardPage {
 		if (_selectedRule != null) {
 			dynamicsDescriptor.setRuleId(_selectedRule.getRuleId());
 		}
-		boolean selection = _useOnlyConnectionsCheckBox.getSelection();
+		final boolean selection = _useOnlyConnectionsCheckBox.getSelection();
 		dynamicsDescriptor.setUsingOnlyConnectionStates(selection);
 		// setup IN channels
-		for (InputChannelTableRow row : _inputChannelTableModel
+		for (final InputChannelTableRow row : _inputChannelTableModel
 				.getRowsWithContent(ParameterType.IN)) {
 			dynamicsDescriptor.addInputChannel(new ParameterDescriptor(row
 					.getChannel(), row.getDefaultValue()));
 		}
 
 		// setup OUT channels
-		List<InputChannelTableRow> outParameter = _inputChannelTableModel
+		final List<InputChannelTableRow> outParameter = _inputChannelTableModel
 				.getRowsWithContent(ParameterType.OUT);
 		if (outParameter.size() > 0) {
-			InputChannelTableRow row = outParameter.get(0);
+			final InputChannelTableRow row = outParameter.get(0);
 			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(row
 					.getChannel(), row.getDefaultValue()));
 		}

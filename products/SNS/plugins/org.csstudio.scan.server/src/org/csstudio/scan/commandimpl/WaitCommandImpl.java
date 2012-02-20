@@ -42,8 +42,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "Wait for {0} to reach {1}",
-				new Object[] { command.getDeviceName(), command.getDesiredValue() });
+		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
         final Device device = context.getDevice(command.getDeviceName());
 
         final DeviceValueCondition condition =

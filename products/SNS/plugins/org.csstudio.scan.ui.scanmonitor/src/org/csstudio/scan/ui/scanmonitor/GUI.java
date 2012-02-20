@@ -28,7 +28,7 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
-import org.csstudio.scan.ui.scantree.actions.OpenScanTreeAction;
+import org.csstudio.scan.ui.scantree.OpenScanTreeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;

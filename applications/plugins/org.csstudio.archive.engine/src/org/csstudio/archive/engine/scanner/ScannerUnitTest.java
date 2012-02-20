@@ -156,10 +156,8 @@ public class ScannerUnitTest
         final ScanItem item = new ScanItem("Item");
         scanner.add(item, fast_period);
 
-        int check = 0;
         while (item.scans < 3)
         {
-            ++check;
             System.out.println("scan...");
             scanner.scanOnce();
         }
@@ -180,11 +178,9 @@ public class ScannerUnitTest
 
         final ScanThread thread = new ScanThread(scanner);
         thread.start();
-        int check = 0;
         BenchmarkTimer timer = new BenchmarkTimer();
         while (item.scans < 3)
         {
-            ++check;
             Thread.sleep(100);
         }
         timer.stop();

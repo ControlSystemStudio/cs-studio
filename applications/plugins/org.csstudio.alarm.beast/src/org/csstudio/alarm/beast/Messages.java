@@ -18,7 +18,12 @@ public class Messages extends NLS
 
     public static String Alarm_TT;
     public static String AlarmPV_TT;
+    public static String AnnunciationFmt;
+    public static String FormattedAnnunciationPrefix;
     public static String NoJMSConnection;
+    public static String PriorityAnnunciationPattern;
+
+    public static String PriorityAnnunciationPrefix;
     public static String ReadConfigProgressFmt;
     public static String SeverityLevel_INVALID;
     public static String SeverityLevel_INVALID_ACK;
@@ -30,7 +35,6 @@ public class Messages extends NLS
     public static String Unknown;
     public static String VerboseAlarmDescriptionFmt;
     public static String VerboseAlarmPVDescriptionFmt;
-
 
     static
     {

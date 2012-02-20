@@ -450,9 +450,6 @@ INodeWithPrototype {
         _moduleNumber = moduleNumber;
     }
 
-    /**
-     * @param newModuleNumber
-     */
     public final void setNewModel(final int newModuleNumber, @Nonnull final String createdBy) throws PersistenceException {
         removeAllChild();
         setModuleNumber(newModuleNumber);
@@ -475,9 +472,6 @@ INodeWithPrototype {
         this.setParent(slave);
     }
 
-    /**
-     * @return The Name of this Node.
-     */
     @Override
     @Nonnull
     public String toString() {

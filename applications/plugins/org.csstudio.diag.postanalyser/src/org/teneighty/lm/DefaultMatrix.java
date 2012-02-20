@@ -1,18 +1,18 @@
 /*
  * $Id$
- * 
+ *
  * Copyright (c) 2006 Fran Lattanzio
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,7 @@ import java.io.Serializable;
  * A very simple default matrix implementation.
  * <p>
  * This implementation is not threadsafe.
- * 
+ *
  * @author Fran Lattanzio
  * @version $Revision$ $Date$
  */
@@ -63,7 +63,7 @@ final class DefaultMatrix
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param rows the number of rows.
 	 * @param cols the number of cols.
 	 * @throws IllegalArgumentException If <code>rows</code> or
@@ -89,10 +89,11 @@ final class DefaultMatrix
 
 	/**
 	 * Get row count.
-	 * 
+	 *
 	 * @return int get row count.
 	 */
-	public int getRowCount()
+	@Override
+    public int getRowCount()
 	{
 		return ( this.matrix.length );
 	}
@@ -100,10 +101,11 @@ final class DefaultMatrix
 
 	/**
 	 * Get column count.
-	 * 
+	 *
 	 * @return int col count.
 	 */
-	public int getColumnCount()
+	@Override
+    public int getColumnCount()
 	{
 		return ( this.matrix[ 0 ].length );
 	}
@@ -111,14 +113,15 @@ final class DefaultMatrix
 
 	/**
 	 * Multiply this matrix by the specified vector.
-	 * 
+	 *
 	 * @param vector the vector by which to multiply.
 	 * @return double[] <code>result</code>.
 	 * @throws IllegalArgumentException If <code>vector</code> has the wrong
 	 *         length.
 	 * @throws NullPointerException If <code>vector</code> is <code>null</code>.
 	 */
-	public double[] multiply( final double[] vector )
+	@Override
+    public double[] multiply( final double[] vector )
 		throws IllegalArgumentException, NullPointerException
 	{
 		return ( this.multiply( vector, new double[ this.getColumnCount() ] ) );
@@ -128,7 +131,7 @@ final class DefaultMatrix
 	/**
 	 * Multiply this matrix by the specified vector, storing it in the specified
 	 * result vector.
-	 * 
+	 *
 	 * @param vector the vector by which to multiply.
 	 * @param result the place to put the results.
 	 * @return double[] <code>result</code>.
@@ -137,7 +140,8 @@ final class DefaultMatrix
 	 * @throws NullPointerException If <code>vector</code> or
 	 *         <code>result</code> are <code>null</code>.
 	 */
-	public double[] multiply( final double[] vector, final double[] result )
+	@Override
+    public double[] multiply( final double[] vector, final double[] result )
 		throws IllegalArgumentException, NullPointerException
 	{
 		final int row = this.getRowCount();
@@ -165,10 +169,11 @@ final class DefaultMatrix
 
 	/**
 	 * Invert this matrix.
-	 * 
+	 *
 	 * @throws IllegalStateException If this matrix is singular, or not square.
 	 */
-	public void invert()
+	@Override
+    public void invert()
 		throws IllegalStateException
 	{
 		if( this.getColumnCount() != this.getRowCount() )
@@ -267,7 +272,7 @@ final class DefaultMatrix
 
 	/**
 	 * Swap the specified positions.
-	 * 
+	 *
 	 * @param r1 the first row position.
 	 * @param c1 the first column position.
 	 * @param r2 the second row position.
@@ -283,14 +288,15 @@ final class DefaultMatrix
 
 	/**
 	 * Get the value at the specified coordinates.
-	 * 
+	 *
 	 * @param row the row.
 	 * @param col the column.
 	 * @return double the value.
 	 * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
 	 *         <code>col</code> are out of bounds.
 	 */
-	public double get( final int row, final int col )
+	@Override
+    public double get( final int row, final int col )
 		throws ArrayIndexOutOfBoundsException
 	{
 		return ( this.matrix[ row ][ col ] );
@@ -299,14 +305,15 @@ final class DefaultMatrix
 
 	/**
 	 * Set the value at the specified coorindates.
-	 * 
+	 *
 	 * @param row the row.
 	 * @param col the column.
 	 * @param value the value.
 	 * @throws ArrayIndexOutOfBoundsException If <code>row</code> or
 	 *         <code>col</code> are out of bounds.
 	 */
-	public void set( final int row, final int col, final double value )
+	@Override
+    public void set( final int row, final int col, final double value )
 		throws ArrayIndexOutOfBoundsException
 	{
 		this.matrix[ row ][ col ] = value;
@@ -315,7 +322,7 @@ final class DefaultMatrix
 
 	/**
 	 * A better hashcode, based on size of this matrix.
-	 * 
+	 *
 	 * @return int a better hashcode.
 	 */
 	@Override
@@ -327,7 +334,7 @@ final class DefaultMatrix
 
 	/**
 	 * A better equals.
-	 * 
+	 *
 	 * @param other the other object.
 	 * @return boolean true if equal.
 	 */
@@ -380,7 +387,7 @@ final class DefaultMatrix
 
 	/**
 	 * To string (for debugging).
-	 * 
+	 *
 	 * @return String a string.
 	 */
 	@Override
@@ -412,7 +419,7 @@ final class DefaultMatrix
 
 	/**
 	 * Serialize this object to the specified output stream.
-	 * 
+	 *
 	 * @param out the stream to which to serialize this object.
 	 * @throws IOException If this object cannot be serialized.
 	 */
@@ -426,7 +433,7 @@ final class DefaultMatrix
 
 	/**
 	 * Deserialize this object from the specified stream.
-	 * 
+	 *
 	 * @param in the stream from which to read data.
 	 * @throws IOException If this object cannot properly read from the specified
 	 *         stream.

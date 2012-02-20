@@ -15,11 +15,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in Demo of scan tree GUI
- * 
+ *
  *  Can run in plain JUnit test,
  *  but then without icons.
  *  On OS X, add JVM param -XstartOnFirstThread
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanTreeGUIDemo

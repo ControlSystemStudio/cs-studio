@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 18.12.2011

@@ -1,0 +1,70 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Table
+    </title>
+  </head>
+  <body>
+
+    <h2>
+     Table
+    </h2>
+    
+    <p>A table widget that works like a spread sheet. It can be editable at run time, for example insert or delete a row or column,
+    modify cell text. It is designed to be used in scripts.</p>
+    <img src="img/Table_Editable.gif" alt="Editable Table">
+    <p>
+     The table widget cannot connect to PVs directly, but this can be realized by using script. See example below:
+    </p>
+    <img src="img/Table_PVs.gif" alt="Using table widget to display multiple PV values">
+    
+    <p>Above examples can be found at <a href="../Install Examples.html">BOY Examples</a>->widgets->4_5_Table.opi</p>
+    
+    <h3>Operations</h3>
+    If <code>Editable</code> property is true, every cell text of the table can be directly modified at run time by
+    clicking on it.
+    With its context menu, you are able to
+    <ul>
+    <li>Auto Size Columns</li>
+    <li>Insert Column</li>
+    <li>Insert Row</li>
+    <li>Delete Column</li>
+    <li>Delete Row</li>    
+    </ul>
+    
+    <h3>Special Properties</h3>
+    <ul>
+    <li>Editable (editable). True if the table cell is editable. If false, it is still selectable,
+    which is different with false <code>Enabled</code> property.</li>
+	<li>Columns Count (columns_count). Count of columns.</li>
+	<li>Column Headers (column_headers). Column Headers' text and size.</li>
+	<li>Column Header Visible (column_header_visible). Visibility of column header.</li>
+	<li>Default Content (default_content). Default content of the table.</li>
+    </ul>
+    <h3>See Also</h3>
+   <ul>   
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+    <h3>Special Methods</h3>
+		 <A NAME="getTable"><!-- --></A><H4>
+		getTable</H4>
+		<PRE>
+public <a href = "SpreadSheetTable/SpreadSheetTable.html">SpreadSheetTable</a> <B>getTable</B>()</PRE>
+		<DL>
+		<DD>Get the native spread sheet table wrapped by this widget. 
+		Script has full access to the returned <a href = "SpreadSheetTable/SpreadSheetTable.html">SpreadSheetTable</a> at run time.
+		<P>
+		<DD><DL>
+		
+		<DT><B>Returns:</B><DD>the native spread sheet table.</DL>
+		</DD>
+		</DL>
+	
+   
+    
+<br>
+
+</body>
+</html>

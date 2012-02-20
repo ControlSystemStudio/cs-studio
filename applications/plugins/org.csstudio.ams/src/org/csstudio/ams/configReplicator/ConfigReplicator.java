@@ -23,13 +23,10 @@
 
 package org.csstudio.ams.configReplicator;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.ExitException;
 import org.csstudio.ams.Log;
@@ -54,6 +51,8 @@ import org.csstudio.ams.dbAccess.configdb.TopicDAO;
 import org.csstudio.ams.dbAccess.configdb.UserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
+import org.hsqldb.util.SqlFile;
+import org.hsqldb.util.SqlToolError;
 
 public class ConfigReplicator implements AmsConstants {
 	
@@ -152,25 +151,75 @@ public class ConfigReplicator implements AmsConstants {
 		// All O.K.
 	}
 	
+	public static void createMemoryCacheDb(Connection cacheDb, File sqlScript) throws ReplicationException {
+	    
+	    Log.log(Log.INFO, "Creating memory cache database.");
+	    try {
+	        SqlFile sqlFile = new SqlFile(sqlScript, false, null);
+	        sqlFile.execute(cacheDb, false);
+	        Log.log(Log.INFO, "SQL-Script for the cache loaded and executed.");
+	    } catch (IOException e) {
+	        throw new ReplicationException(e);
+	    } catch (SqlToolError e) {
+	        throw new ReplicationException(e);
+	    } catch (SQLException e) {
+	        throw new ReplicationException(e);
+	    }
+	       
+//	    InputStream resourceAsStream =
+//	            ConfigReplicator.class.getResourceAsStream("createMemoryCache.sql");
+//	    BufferedReader reader = new BufferedReader(new InputStreamReader(resourceAsStream));
+//	    StringBuffer stringBuffer = new StringBuffer();
+//	    
+//	    try {
+//	        while (reader.ready()) {
+//    	        stringBuffer.append(reader.readLine() + "\n");
+//    	    }
+//    	    reader.close();
+//    	    String sqlString = stringBuffer.toString();
+//    	    cacheDb.prepareStatement(sqlString).execute();
+//	    } catch (IOException e) {
+//	        throw new ReplicationException(e);
+//	    } catch (SQLException e) {
+//	        throw new ReplicationException(e);
+//      }
+	}
+	
 	/**
 	 * Copying configuration from one database to another.
-	 * @throws SQLException 
+	 * @throws ReplicationException 
 	 */
 	public static void replicateConfigurationToHsql(Connection masterDB,
-			Connection localDB) throws ReplicationException {
-		InputStream resourceAsStream = ConfigReplicator.class
-				.getResourceAsStream("hsqldb_create.sql");
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				resourceAsStream));
-		StringBuffer stringBuffer = new StringBuffer();
+			                                        Connection localDB)
+			                                                throws ReplicationException {
+			    		
 		try {
-			while (reader.ready()) {
-				stringBuffer.append(reader.readLine() + "\n");
-			}
-			reader.close();
-			String sqlString = stringBuffer.toString();
-			localDB.prepareStatement(sqlString).execute();
-			Log.log(Log.INFO, "Start copying master configuration.");
+            Log.log(Log.INFO, "Start deleting memory cache configuration.");           
+            FilterCondJunctionDAO.removeAll(localDB);           
+            FilterCondNegationDAO.removeAll(localDB);
+            FilterCondFilterCondDAO.removeAll(localDB);
+            
+            FilterConditionTypeDAO.removeAll(localDB);
+            FilterConditionDAO.removeAll(localDB);
+            FilterConditionStringDAO.removeAll(localDB);
+            FilterConditionArrayStringDAO.removeAll(localDB);
+            FilterConditionArrayStringValuesDAO.removeAll(localDB);
+            FilterConditionProcessVariableDAO.removeAll(localDB);
+            CommonConjunctionFilterConditionDAO.removeAll(localDB);
+            
+            FilterConditionTimeBasedDAO.removeAll(localDB);
+            FilterDAO.removeAll(localDB);
+            FilterFilterConditionDAO.removeAll(localDB);
+            TopicDAO.removeAll(localDB);
+            FilterActionTypeDAO.removeAll(localDB);
+            
+            FilterActionDAO.removeAll(localDB);
+            FilterFilterActionDAO.removeAll(localDB);
+            UserDAO.removeAll(localDB);
+            UserGroupDAO.removeAll(localDB);
+            UserGroupUserDAO.removeAll(localDB);
+
+			Log.log(Log.INFO, "Start copying master configuration to memory cache database.");
 			FilterConditionTypeDAO.copyFilterConditionType(masterDB, localDB, "");
 			FilterConditionDAO.copyFilterCondition(masterDB, localDB, "");
 			FilterConditionStringDAO.copyFilterConditionString(masterDB,
@@ -202,8 +251,6 @@ public class ConfigReplicator implements AmsConstants {
 
 			Log.log(Log.INFO, "Replicating configuration finished.");
 
-		} catch (IOException e) {
-			throw new ReplicationException(e);
 		} catch (SQLException e) {
 			throw new ReplicationException(e);
 		}

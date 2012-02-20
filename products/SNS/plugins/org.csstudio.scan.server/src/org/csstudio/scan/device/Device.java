@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -22,26 +22,29 @@ import org.csstudio.data.values.IValue;
 
 /** Base interface for all devices
  *
- *  @author ky9
+ *  <p>This is the base for an implementation
+ *  of a device described by a {@link DeviceInfo}.
+ *
+ *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class Device
 {
-	final private String name;
+	final private DeviceInfo info;
 	final private List<DeviceListener> listeners = new CopyOnWriteArrayList<DeviceListener>();
 
 	/** Initialize
-	 *  @param name Device name
+	 *  @param info {@link DeviceInfo}
 	 */
-	public Device(final String name)
+	public Device(final DeviceInfo info)
 	{
-		this.name = name;
+		this.info = info;
 	}
 
-	/** @return Name of the device */
-	public String getName()
+	/** @return {@link DeviceInfo} for this device */
+	public DeviceInfo getInfo()
     {
-	    return name;
+	    return info;
     }
 
 	/** @param listener Listener to add */
@@ -98,22 +101,22 @@ public class Device
 	 */
 	public IValue read() throws Exception
     {
-		throw new Exception("Device '" + getName() + "' does not support reading");
+		throw new Exception("Device '" + info.getName() + "' does not support reading");
     }
 
 	/** Write a value to the device
 	 *  @param value Value to write (Double, String)
 	 *  @throws Exception on error: Cannot write, ...
 	 */
-	public void write(Object value) throws Exception
+	public void write(final Object value) throws Exception
     {
-		throw new Exception("Device '" + getName() + "' does not support writing");
+		throw new Exception("Device '" + info.getName() + "' does not support writing");
     }
 
 	/** @return Human-readable representation of this device */
 	@Override
 	public String toString()
 	{
-	    return "Device '" + getName() + "'";
+	    return info.toString();
 	}
 }

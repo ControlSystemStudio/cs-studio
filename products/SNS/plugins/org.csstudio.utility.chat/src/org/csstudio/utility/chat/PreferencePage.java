@@ -25,7 +25,7 @@ implements IWorkbenchPreferencePage
 	public PreferencePage()
 	{
         super(FieldEditorPreferencePage.GRID);
-        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(), Activator.ID));
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID));
         setMessage(Messages.PreferencesTitle);
 	}
 

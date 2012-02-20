@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -35,12 +35,13 @@ import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.server.DeviceInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.app.Preferences;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -118,7 +119,11 @@ public class ScanServerImpl implements ScanServer
     @Override
     public String getInfo() throws RemoteException
     {
-        return "Scan Server V" + ScanServer.SERIAL_VERSION + " (started " + DataFormatter.format(start_time) + ")";
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Scan Server V").append(ScanServer.SERIAL_VERSION).append("\n");
+        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
+        buf.append("Beamline Configuration: " + Preferences.getBeamlineConfigPath()).append("\n");
+        return buf.toString();
     }
 
     /** {@inheritDoc} */
@@ -143,11 +148,11 @@ public class ScanServerImpl implements ScanServer
     	for (int i = 0; i < infos.length; i++)
     	{
     		final Device device = devices[i];
-			infos[i] = new DeviceInfo(device.getName(), device.toString());
+			infos[i] = device.getInfo();
     	}
     	return infos;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name, final String commands_as_xml)
@@ -157,13 +162,13 @@ public class ScanServerImpl implements ScanServer
         {   // Parse received scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
-            
+
             // Obtain implementations for the requested commands
             final List<ScanCommandImpl<?>> implementations = ScanCommandImplTool.getInstance().implement(commands);
 
             // Get devices
     		final DeviceContext devices = DeviceContext.getDefault();
-            
+
             // Submit scan to engine for execution
             final Scan scan = new Scan(scan_name, implementations);
             scan_engine.submit(devices, scan);
@@ -227,7 +232,7 @@ public class ScanServerImpl implements ScanServer
         }
         return null;
     }
-    
+
     /** @param id Scan ID
      *  @return {@link DataLogger} of scan or <code>null</code>
      */
@@ -238,7 +243,7 @@ public class ScanServerImpl implements ScanServer
             return null;
         return scan.getDataLogger();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws RemoteException
@@ -248,7 +253,7 @@ public class ScanServerImpl implements ScanServer
             return logger.getLastScanDataSerial();
         return -1;
     }
-    
+
     /** {@inheritDoc} */
 	@Override
     public ScanData getScanData(final long id) throws RemoteException

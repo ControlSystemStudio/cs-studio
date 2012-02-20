@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliverySystemProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="false" includeLaunchers="true">
+<product name="AmsDeliverySystem" id="org.csstudio.ams.application.deliverysystem.AmsDeliveryProduct" application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -42,13 +42,14 @@
       <plugin id="org.csstudio.ams.delivery"/>
       <plugin id="org.csstudio.ams.delivery.email"/>
       <plugin id="org.csstudio.ams.delivery.sms"/>
+      <plugin id="org.csstudio.ams.delivery.voicemail"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
+      <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>

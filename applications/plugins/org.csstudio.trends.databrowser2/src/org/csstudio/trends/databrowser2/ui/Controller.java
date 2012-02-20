@@ -14,7 +14,6 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
@@ -37,6 +36,8 @@ import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -241,21 +242,32 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                	
-                	// Add the given PV to the model anyway even if the same PV
-                	// exists in the model.
-                    final OperationsManager operations_manager = plot.getOperationsManager();
+                    final ModelItem item = model.getItem(name.getName());
+                    if (item == null)
+                    {
+                        final OperationsManager operations_manager = plot.getOperationsManager();
 
-                    // Add to first empty axis, or create new axis
-                    AxisConfig axis = model.getEmptyAxis();
-                    if (axis == null)
-                        axis = new AddAxisCommand(operations_manager, model).getAxis();
+                        // Add to first empty axis, or create new axis
+                        AxisConfig axis = model.getEmptyAxis();
+                        if (axis == null)
+                            axis = new AddAxisCommand(operations_manager, model).getAxis();
 
-                    // Add new PV
-                    AddModelItemCommand.forPV(shell, operations_manager,
-                            model, name.getName(), Preferences.getScanPeriod(),
-                            axis, archive);
-                    return;
+                        // Add new PV
+                        AddModelItemCommand.forPV(shell, operations_manager,
+                                model, name.getName(), Preferences.getScanPeriod(),
+                                axis, archive);
+                        return;
+                    }
+                    if (archive == null  ||   ! (item instanceof PVItem))
+                    {   // Duplicate PV, or a formula to which we cannot add archives
+                        MessageDialog.openError(shell, Messages.Error,
+                                NLS.bind(Messages.DuplicateItemFmt, name));
+                        return;
+                    }
+                    // Add archive to existing PV
+                    if (item instanceof PVItem)
+                        new AddArchiveCommand(plot.getOperationsManager(),
+                                (PVItem) item, archive);
                 }
             }
         });
@@ -650,8 +662,6 @@ public class Controller implements ArchiveFetchJobListener
     {
         final String message = NLS.bind(Messages.ArchiveAccessMessageFmt,
                 job.getPVItem().getDisplayName());
-        final String detail = NLS.bind(Messages.ArchiveAccessDetailFmt,
-                error.getMessage(), archive.getUrl());
 
         if (Preferences.doPromptForErrors())
         {
@@ -664,7 +674,7 @@ public class Controller implements ArchiveFetchJobListener
                 {
                     if (display.isDisposed())
                         return;
-                    new ErrorDetailDialog(shell, Messages.Information, message, detail).open();
+                    ExceptionDetailsErrorDialog.openError(shell, Messages.Information, message, error);
                     job.getPVItem().removeArchiveDataSource(archive);
                 }
             });

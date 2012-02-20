@@ -16,7 +16,7 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -49,24 +49,31 @@ public class LoopCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", String.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),
-        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
+        ScanCommandProperty.WAIT,
+        ScanCommandProperty.READBACK,
+        ScanCommandProperty.TOLERANCE,
+        ScanCommandProperty.TIMEOUT,
     };
 
     private String device_name;
     private double start;
     private double end;
     private double stepsize;
-    private double timeout;
+    private String readback = "";
+    private boolean wait = true;
+    private double tolerance = 0.1;
+    private double timeout = 0.0;
+
 	private List<ScanCommand> body;
 
     /** Initialize empty loop */
     public LoopCommand()
     {
-        this("device", 0, 10, 1, 0.0, new ScanCommand[0]);
+        this("device", 0, 10, 1, new ScanCommand[0]);
     }
 
 	/** Initialize
@@ -74,18 +81,24 @@ public class LoopCommand extends ScanCommand
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
-     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Optional loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize, final double timeout,
+            final double end, final double stepsize,
             final ScanCommand... body)
     {
-        this.device_name = device_name;
-        this.start = start;
-        this.end = end;
-        this.stepsize = stepsize;
-        this.body = Arrays.asList(body);
+        this(device_name, start, end, stepsize, toList(body));
+    }
+
+    /** @param commands Array of commands
+     *  @return Mutable list of commands
+     */
+    private static List<ScanCommand> toList(final ScanCommand[] commands)
+    {
+        final List<ScanCommand> list = new ArrayList<ScanCommand>(commands.length);
+        for (ScanCommand command : commands)
+            list.add(command);
+        return list;
     }
 
     /** Initialize
@@ -93,18 +106,14 @@ public class LoopCommand extends ScanCommand
      *  @param start Initial loop value
      *  @param end Final loop value
      *  @param stepsize Increment of the loop variable
-     *  @param timeout Timeout (seconds) for reaching loop value
      *  @param body Loop body commands
      */
     public LoopCommand(final String device_name, final double start,
-            final double end, final double stepsize, final double timeout,
+            final double end, final double stepsize,
             final List<ScanCommand> body)
     {
         this.device_name = device_name;
-        if (stepsize == 0.0)
-            this.stepsize = 1.0;
-        else
-            this.stepsize = stepsize;
+        setStepSize(stepsize);
         this.start = start;
         this.end = end;
         this.body = body;
@@ -162,7 +171,48 @@ public class LoopCommand extends ScanCommand
     /** @param stepsize Increment of the loop variable */
     public void setStepSize(final Double stepsize)
     {
-        this.stepsize = stepsize;
+        if (stepsize != 0.0)
+            this.stepsize = stepsize;
+        else
+            this.stepsize = 1.0;
+        // Use fraction of stepsize for tolerance
+        tolerance = Math.abs(this.stepsize / 10.0);
+    }
+
+    /** @return Wait for readback to match? */
+    public boolean getWait()
+    {
+        return wait;
+    }
+
+    /** @param wait Wait for readback to match? */
+    public void setWait(final Boolean wait)
+    {
+        this.wait = wait;
+    }
+
+    /** @return Name of readback device */
+    public String getReadback()
+    {
+        return readback;
+    }
+
+    /** @param readback Name of readback device */
+    public void setReadback(final String readback)
+    {
+        this.readback = readback;
+    }
+
+    /** @return Tolerance */
+    public double getTolerance()
+    {
+        return tolerance;
+    }
+
+    /** @param tolerance Tolerance */
+    public void setTolerance(final Double tolerance)
+    {
+        this.tolerance = Math.max(0.0, tolerance);
     }
 
     /** @return Timeout in seconds */
@@ -174,7 +224,7 @@ public class LoopCommand extends ScanCommand
     /** @param timeout Time out in seconds */
     public void setTimeout(final Double timeout)
     {
-        this.timeout = timeout;
+        this.timeout = Math.max(0.0, timeout);
     }
 
     /** @return Descriptions for loop body */
@@ -203,12 +253,27 @@ public class LoopCommand extends ScanCommand
         out.println("<end>" + end + "</end>");
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
-        writeIndent(out, level+1);
+        if (! readback.isEmpty())
+        {
+            writeIndent(out, level+1);
+            out.println("<readback>" + readback + "</readback>");
+        }
+        if (! wait)
+        {
+            writeIndent(out, level+1);
+            out.println("<wait>" + wait + "</wait>");
+        }
+        if (tolerance > 0.0)
+        {
+            writeIndent(out, level+1);
+            out.println("<tolerance>" + tolerance + "</tolerance>");
+        }
         if (timeout > 0.0)
         {
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        writeIndent(out, level+1);
         out.println("<body>");
         for (ScanCommand cmd : body)
             cmd.writeXML(out, level + 2);
@@ -222,8 +287,7 @@ public class LoopCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        // Read body first, so we don't update other loop params
-        // if this fails
+        // Read body first, so we don't update other loop params if this fails
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
@@ -231,14 +295,10 @@ public class LoopCommand extends ScanCommand
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        try
-        {
-            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
-        }
-        catch (Throwable ex)
-        {
-            setTimeout(0.0);
-        }
+        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
         setBody(body);
     }
 
@@ -247,9 +307,21 @@ public class LoopCommand extends ScanCommand
 	public String toString()
 	{
         final StringBuilder buf = new StringBuilder();
-        buf.append("Loop '").append(device_name).append("' = ").append(start).append(" ... ").append(end).append(", step ").append(stepsize);
-        if (timeout > 0.0)
-            buf.append(" (").append(timeout).append(" sec timeout)");
+        buf.append("Loop '").append(device_name).append("' = ")
+            .append(start).append(" ... ").append(end).append(", step ").append(stepsize);
+        if (wait)
+        {
+            buf.append(" (wait for '");
+            if (readback.isEmpty())
+                buf.append(device_name);
+            else
+                buf.append(readback);
+            if (tolerance > 0)
+                buf.append("' +-").append(tolerance);
+            if (timeout > 0)
+                buf.append(", ").append(timeout).append(" sec timeout");
+            buf.append(")");
+        }
         return buf.toString();
 	}
 }

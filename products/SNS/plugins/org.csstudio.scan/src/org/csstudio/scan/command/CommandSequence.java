@@ -98,7 +98,7 @@ public class CommandSequence
             final double stepsize,
             final ScanCommand... body)
     {
-        commands.add(new LoopCommand(device_name, start, end, stepsize, 0.0, body));
+        commands.add(new LoopCommand(device_name, start, end, stepsize, body));
     }
 
     /** Add a 'loop' command
@@ -128,7 +128,7 @@ public class CommandSequence
             final double stepsize,
             final List<ScanCommand> body)
     {
-        commands.add(new LoopCommand(device_name, start, end, stepsize, 0.0,
+        commands.add(new LoopCommand(device_name, start, end, stepsize,
                                      body.toArray(new ScanCommand[body.size()])));
     }
 

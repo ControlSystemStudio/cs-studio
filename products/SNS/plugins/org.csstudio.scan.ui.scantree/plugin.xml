@@ -5,9 +5,20 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.csstudio.scan.command.ScanCommand"
-            class="org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory">
+            class="org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory">
          <adapter
                type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.csstudio.scan.command.ScanCommand"
+            class="org.csstudio.scan.ui.scantree.properties.ScanCommandPVAdapterFactory">
+         <!-- IDE warns that "[L...ProcessVariable;" is not a known class,
+              but this is the way an adaption to an array has to be specified.
+           -->
+         <adapter type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
+         <adapter type="org.csstudio.csdata.ProcessVariable">
          </adapter>
       </factory>
    </extension>
@@ -37,7 +48,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="org.csstudio.scan.ui.scantree.actions.NewScanTree"
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.NewScanTree"
             id="org.csstudio.scan.ui.scantree.new"
             name="%ScanTree">
       </command>
@@ -45,7 +56,6 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
                id="org.csstudio.scan.ui.scantree.toolbar">
@@ -56,10 +66,25 @@
                   style="push"
                   tooltip="%NewScanTreeTT">
             </command>
+            <command
+                  commandId="org.eclipse.ui.edit.undo"
+                  label="Undo"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+                  <with variable="activePartId"><equals value="org.csstudio.scan.ui.scantree.editor"/> </with>
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.eclipse.ui.edit.redo"
+                  label="Redo"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+                  <with variable="activePartId"><equals value="org.csstudio.scan.ui.scantree.editor"/> </with>
+               </visibleWhen>
+            </command>
          </toolbar>
       </menuContribution>
       <menuContribution
-            allPopups="false"
             locationURI="menu:scan">
          <command
                commandId="org.csstudio.scan.ui.scantree.new"
@@ -69,6 +94,62 @@
                tooltip="%NewScanTreeTT">
          </command>
       </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.scan.ui.scantree.editor?before=edit">
+         <command commandId="org.eclipse.ui.edit.undo"/>
+         <command commandId="org.eclipse.ui.edit.redo"/>
+         <separator
+               name="undo"
+               visible="true">
+         </separator>
+         <command commandId="org.eclipse.ui.edit.cut"/>
+         <command commandId="org.eclipse.ui.edit.copy"/>
+         <command commandId="org.eclipse.ui.edit.paste"/>
+         <command commandId="org.eclipse.ui.edit.delete"/>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.CutCommandHandler"
+            commandId="org.eclipse.ui.edit.cut">
+         <activeWhen>
+            <with variable="activePartId">
+               <equals value="org.csstudio.scan.ui.scantree.editor"/>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.CopyCommandHandler"
+            commandId="org.eclipse.ui.edit.copy">
+         <activeWhen>
+            <with variable="activePartId">
+               <equals value="org.csstudio.scan.ui.scantree.editor"/>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.PasteCommandHandler"
+            commandId="org.eclipse.ui.edit.paste">
+         <activeWhen>
+            <with variable="activePartId">
+               <equals value="org.csstudio.scan.ui.scantree.editor"/>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.CutCommandHandler"
+            commandId="org.eclipse.ui.edit.delete">
+            <!-- Delete is always active? -->
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.UndoHandler"
+            commandId="org.eclipse.ui.edit.undo">
+      </handler>
+      <handler
+            class="org.csstudio.scan.ui.scantree.operations.RedoHandler"
+            commandId="org.eclipse.ui.edit.redo">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

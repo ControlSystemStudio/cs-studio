@@ -12,7 +12,7 @@ public class WaterfallFigure extends AbstractChannelWidgetFigure<WaterfallWidget
 	}
 	
 	@Override
-	protected WaterfallWidget createWidget(Composite parent) {
+	protected WaterfallWidget createSWTWidget(Composite parent, int style) {
 		return new WaterfallWidget(parent, SWT.NONE);
 	}
 }

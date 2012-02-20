@@ -28,7 +28,8 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** ArchiveReader for RDB data
  *  @author Kay Kasemir
- *  @author Lana Abadie (PostgreSQL)
+ *  @author Lana Abadie - PostgreSQL support
+ *  @author Laurent Philippe - MySQL support
  */
 @SuppressWarnings("nls")
 public class RDBArchiveReader implements ArchiveReader
@@ -40,7 +41,7 @@ public class RDBArchiveReader implements ArchiveReader
     final private static String ORACLE_RECURSIVE_ERROR = "ORA-00604"; //$NON-NLS-1$
 
     final private boolean use_array_blob;
-    
+
     final private String url;
     final private String user;
     final private int password;
@@ -53,7 +54,7 @@ public class RDBArchiveReader implements ArchiveReader
     final private RDBUtil rdb;
     final private SQL sql;
     final private boolean is_oracle;
-    
+
     /** Map of status IDs to Status strings */
     final private HashMap<Integer, String> stati;
 
@@ -63,7 +64,6 @@ public class RDBArchiveReader implements ArchiveReader
     /** List of statements to cancel in cancel() */
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
-
 
     /** Initialize
      *  @param url Database URL
@@ -78,7 +78,7 @@ public class RDBArchiveReader implements ArchiveReader
             final String stored_procedure)
         throws Exception
     {
-    	this(url, user, password, schema, stored_procedure, RDBArchivePreferences.useArrayBlob());
+        this(url, user, password, schema, stored_procedure, RDBArchivePreferences.useArrayBlob());
     }
         
     /** Initialize
@@ -99,35 +99,50 @@ public class RDBArchiveReader implements ArchiveReader
         this.url = url;
         this.user = user;
         this.password = (password == null) ? 0 : password.length();
+        this.use_array_blob = use_array_blob;
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = RDBUtil.connect(url, user, password, false);
+        // Read-only allows MySQL to use load balancing
+        rdb.getConnection().setReadOnly(true);
         
-        is_oracle = rdb.getDialect() == Dialect.Oracle;
-        if (is_oracle)
+        final Dialect dialect = rdb.getDialect();
+        switch (dialect)
+        {
+        case MySQL:
+            is_oracle = false;
         	this.stored_procedure = stored_procedure;
-        else
+        	break;
+        case PostgreSQL:
+            is_oracle = false;
             this.stored_procedure = "";
-        this.use_array_blob = use_array_blob;
-        sql = new SQL(rdb.getDialect(), schema);
+            break;
+        case Oracle:
+            is_oracle = true;
+            this.stored_procedure = stored_procedure;
+            break;
+        default:
+            throw new Exception("Unknown database dialect " + dialect);
+        }
+        sql = new SQL(dialect, schema);
         stati = getStatusValues();
         severities = getSeverityValues();
     }
-
+    
     /** @return <code>true</code> when using Oracle, i.e. no 'nanosec'
      *          because that is included in the 'smpl_time'
      */
     public boolean isOracle()
     {
-    	return is_oracle;
+        return is_oracle;
     }
     
     /** @return <code>true</code> if array samples are stored in BLOB */
     public boolean useArrayBlob()
     {
-		return use_array_blob;
-	}
+        return use_array_blob;
+    }
 
-	/** @return Map of all status ID/Text mappings
+    /** @return Map of all status ID/Text mappings
      *  @throws Exception on error
      */
     private HashMap<Integer, String> getStatusValues() throws Exception
@@ -332,8 +347,9 @@ public class RDBArchiveReader implements ArchiveReader
     public ValueIterator getOptimizedValues(final int key, final String name,
             final ITimestamp start, final ITimestamp end, int count) throws UnknownChannelException, Exception
     {
-        if (count <= 0)
-            throw new Exception("Count must be positive");
+        // MySQL version of the stored proc. requires count > 1
+    	if (count <= 1)
+            throw new Exception("Count must be > 1");
         final int channel_id = getChannelID(name);
         
         // Use stored procedure in RDB server?

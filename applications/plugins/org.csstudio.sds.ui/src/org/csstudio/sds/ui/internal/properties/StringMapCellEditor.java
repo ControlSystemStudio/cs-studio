@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.properties;
@@ -24,9 +24,9 @@ package org.csstudio.sds.ui.internal.properties;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.dal.ui.dnd.rfc.IProcessVariableAdressReceiver;
+import org.csstudio.dal.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
-import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.util.TextDnDUtil;
@@ -63,16 +63,16 @@ import org.eclipse.swt.widgets.ToolBar;
 
 /**
  * A table cell editor for values of type Map(String, String).
- *  
+ *
  * @author Kai Meyer
  */
 public final class StringMapCellEditor extends AbstractDialogCellEditor {
-	
+
 	/**
 	 * The minimum count of entries in the list.
 	 */
 	public static final int MINIMUM_ENTRY_COUNT = 0;
-	
+
 	/**
 	 * A default key for the Map.
 	 */
@@ -90,7 +90,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	/**
 	 * Creates a new string cell editor parented under the given control. The
 	 * cell editor value is a Map of Strings.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent table.
 	 * @param title
@@ -99,16 +99,16 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	public StringMapCellEditor(final Composite parent, final String title) {
 		super(parent, title);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected void openDialog(final Shell parentShell, final String dialogTitle) {
-		MapInputDialog dialog = new MapInputDialog(parentShell,dialogTitle,"Add, edit or remove the values");
+		final MapInputDialog dialog = new MapInputDialog(parentShell,dialogTitle,"Add, edit or remove the values");
 		if (dialog.open()==Window.CANCEL) {
 			_map = _originalMap;
-		}		
+		}
 	}
 
 	/**
@@ -136,25 +136,25 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 		Assert.isTrue(value instanceof Map);
 		_map = new HashMap<String, String>();
 		_originalMap = (Map<String, String>) value;
-		for (String key : _originalMap.keySet()) {
+		for (final String key : _originalMap.keySet()) {
 			_map.put(key, _originalMap.get(key));
 		}
 	}
-	
+
 	/**
 	 * This class represents a Dialog to add, edit and remove the entries of a Map.
-	 * 
+	 *
 	 * @author Kai Meyer
 	 */
 	private final class MapInputDialog extends Dialog {
 		/**
 	     * The title of the dialog.
 	     */
-	    private String _title;
+	    private final String _title;
 	    /**
 	     * The message to display, or <code>null</code> if none.
 	     */
-	    private String _message;
+	    private final String _message;
 	    /**
 	     * The List-Widget.
 	     */
@@ -182,7 +182,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	     * <p>
 	     * Note that the <code>open</code> method blocks for input dialogs.
 	     * </p>
-	     * 
+	     *
 	     * @param parentShell
 	     *            the parent shell, or <code>null</code> to create a top-level
 	     *            shell
@@ -199,7 +199,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			_title = dialogTitle;
 	        _message = dialogMessage;
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -210,19 +210,19 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 				shell.setText(_title);
 			}
 	    }
-		
+
 		/**
 	     * {@inheritDoc}
 	     */
 		@Override
 	    protected Control createDialogArea(final Composite parent) {
-	        Composite composite = (Composite) super.createDialogArea(parent);
+	        final Composite composite = (Composite) super.createDialogArea(parent);
 	        composite.setLayout(new GridLayout(2, false));
-	        
+
 	        if (_message != null) {
-	            Label label = new Label(composite, SWT.WRAP);
+	            final Label label = new Label(composite, SWT.WRAP);
 	            label.setText(_message);
-	            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+	            final GridData data = new GridData(GridData.GRAB_HORIZONTAL
 	                    | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 	                    | GridData.VERTICAL_ALIGN_CENTER);
 	            data.horizontalSpan = 2;
@@ -230,9 +230,9 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	            label.setLayoutData(data);
 	            //label.setFont(parent.getFont());
 	        }
-	        
-	        Composite toolBarComposite = new Composite(composite,SWT.BORDER);
-	        GridLayout gridLayout = new GridLayout(1,false);
+
+	        final Composite toolBarComposite = new Composite(composite,SWT.BORDER);
+	        final GridLayout gridLayout = new GridLayout(1,false);
 	        gridLayout.marginLeft = 0;
 	        gridLayout.marginRight = 0;
 	        gridLayout.marginBottom = 0;
@@ -240,21 +240,21 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	        gridLayout.marginHeight = 0;
 	        gridLayout.marginWidth = 0;
 			toolBarComposite.setLayout(gridLayout);
-	        GridData grid = new GridData(SWT.FILL,SWT.FILL,true,true);
+	        final GridData grid = new GridData(SWT.FILL,SWT.FILL,true,true);
 	        toolBarComposite.setLayoutData(grid);
-	        
-	        ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
-	        ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
-	        GridData gid = new GridData();
+
+	        final ToolBarManager toolbarManager = new ToolBarManager(SWT.FLAT);
+	        final ToolBar toolBar = toolbarManager.createControl(toolBarComposite);
+	        final GridData gid = new GridData();
 	        gid.horizontalAlignment = GridData.FILL;
 	        gid.verticalAlignment = GridData.BEGINNING;
 	        toolBar.setLayoutData(gid);
-	        
-	        this.createActions(toolbarManager); 
-	        _viewer = this.createListViewer(toolBarComposite);        
+
+	        this.createActions(toolbarManager);
+	        _viewer = this.createListViewer(toolBarComposite);
 	        this.hookPopupMenu(_viewer);
 	        this.hookDoubleClick(_viewer);
-	        
+
 	        //DialogFontUtil.setDialogFont(composite);
 	        //applyDialogFont(composite);
 	        return composite;
@@ -282,7 +282,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			_editAction = new Action() {
 				@Override
 				public void run() {
-					String key = (String) ((IStructuredSelection)_viewer.getSelection()).getFirstElement();
+					final String key = (String) ((IStructuredSelection)_viewer.getSelection()).getFirstElement();
 	        		openMapDialog(key, _map.get(key), false);
 	        		refreshAction();
 	        		setFocus();
@@ -314,7 +314,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 
 		/**
 		 * Creates the viewer for the List.
-		 * @param parent 
+		 * @param parent
 		 * 				The parent composite for the viewer
 		 * @return ListViewer
 		 * 				The ListViewer
@@ -329,7 +329,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	        	}
 	        });
 	        viewer.setInput(_map.keySet().toArray(new String[_map.keySet().size()]));
-	        GridData gridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
+	        final GridData gridData = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL);
 	        gridData.verticalSpan = 6;
 	        gridData.heightHint = 150;
 	        viewer.getList().setLayoutData(gridData);
@@ -344,35 +344,36 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 				}
 			});
 	        viewer.getList().setFocus();
-	        
+
 	        // DnD
 	        ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(viewer.getControl(), DND.DROP_COPY | DND.DROP_MOVE, new IProcessVariableAdressReceiver(){
-				public void receive(final IProcessVariableAddress[] pvs,
+				@Override
+                public void receive(final IProcessVariableAddress[] pvs,
 						final DropTargetEvent event) {
 					if(pvs.length>0) {
 						openMapDialog(DEFAULT_KEY, pvs[0].getFullName(), true);
-					}					
-				}	        	
+					}
+				}
 	        });
 
 	        return viewer;
 		}
-		
+
 		/**
 		 * Adds a Popup menu to the given ListViewer.
 		 * @param viewer
 		 * 			The ListViewer
 		 */
 		private void hookPopupMenu(final ListViewer viewer) {
-			MenuManager popupMenu = new MenuManager();
+			final MenuManager popupMenu = new MenuManager();
 			popupMenu.add(_addAction);
 			popupMenu.add(_editAction);
 			popupMenu.add(new Separator());
 			popupMenu.add(_removeAction);
-			Menu menu = popupMenu.createContextMenu(viewer.getList());
+			final Menu menu = popupMenu.createContextMenu(viewer.getList());
 			viewer.getList().setMenu(menu);
 		}
-		
+
 		/**
 		 * Adds doubleclick support to the given ListViewer.
 		 * @param viewer
@@ -397,14 +398,14 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 		 * 				The initial key for the Dialog
 		 * @param initValue
 		 * 				The initial value for the Dialog
-		 * @param isNew 
+		 * @param isNew
 		 * 				True, if the entry is new, false otherwise
 		 */
 		private void openMapDialog(final String initKey, final String initValue, final boolean isNew) {
 			int index = _viewer.getList().getItemCount();
-			int[] selectedIndices = _viewer.getList().getSelectionIndices();
+			final int[] selectedIndices = _viewer.getList().getSelectionIndices();
 			if (selectedIndices.length>0) {
-				index = selectedIndices[0]; 
+				index = selectedIndices[0];
 			}
 			try {
 				if (_dialog!=null) {
@@ -427,25 +428,25 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 					_viewer.getList().setSelection(index);
 				}
                 getShell().setFocus();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		/**
 		 * Removes the current selected map entry from the List.
 		 */
 		private void removeMapEntry() {
 			if (_viewer.getList().getSelectionIndices().length>0) {
-				for (Object o : ((IStructuredSelection)_viewer.getSelection()).toArray()) {
-					String key = (String) o;
+				for (final Object o : ((IStructuredSelection)_viewer.getSelection()).toArray()) {
+					final String key = (String) o;
 					_map.remove(key);
 				}
 			}
 			_viewer.setInput(_map.keySet());
 			_viewer.refresh();
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -456,7 +457,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			}
 			return super.close();
 		}
-		
+
 		/**
 		 * Enables or disables the RemoveButton.
 		 */
@@ -468,9 +469,9 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			}
 			_editAction.setEnabled(_viewer.getList().getSelectionCount()==1);
 		}
-		
+
 	}
-	
+
 	/**
 	 * This class represents a Dialog for editing a map entry.
 	 * @author Kai Meyer
@@ -479,19 +480,19 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 		/**
 	     * The title of the dialog.
 	     */
-	    private String _title;
+	    private final String _title;
 	    /**
 	     * The message to display, or <code>null</code> if none.
 	     */
-	    private String _message;
+	    private final String _message;
 	    /**
 	     * The key for the map; name of the entry.
 	     */
-	    private String _key;
+	    private final String _key;
 	    /**
 	     * The value for the map; value of the entry.
 	     */
-	    private String _value;
+	    private final String _value;
 	    /**
 	     * The Text for the name of the entry.
 	     */
@@ -500,19 +501,19 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	     * The Text for the value of the entry.
 	     */
 	    private Text _valueText;
-	    
+
 	    /**
 	     * A boolean, which indicates if the entry is new.
 	     */
-	    private boolean _isNew;
-	    
+	    private final boolean _isNew;
+
 		/**
 	     * Creates an input dialog with OK and Cancel buttons. Note that the dialog
 	     * will have no visual representation (no widgets) until it is told to open.
 	     * <p>
 	     * Note that the <code>open</code> method blocks for input dialogs.
 	     * </p>
-	     * 
+	     *
 	     * @param parentShell
 	     *            the parent shell, or <code>null</code> to create a top-level
 	     *            shell
@@ -525,7 +526,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	     * @param initialValue
 	     *            the initial input value, or <code>null</code> if none
 	     * @param isNew
-	     * 			  true, if the entry is new, false otherwise	
+	     * 			  true, if the entry is new, false otherwise
 	     */
 		public MapEntryDialog(final Shell parentShell, final String dialogTitle,
 	            final String dialogMessage, final String initialKey, final String initialValue,
@@ -539,7 +540,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			_value = initialValue;
 			_isNew = isNew;
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -550,18 +551,18 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 				shell.setText(_title);
 			}
 	    }
-		
+
 		/**
 	     * {@inheritDoc}
 	     */
 		@Override
 	    protected Control createDialogArea(final Composite parent) {
-	        Composite composite = (Composite) super.createDialogArea(parent);
+	        final Composite composite = (Composite) super.createDialogArea(parent);
 	        composite.setLayout(new GridLayout(2, false));
 	        if (_message != null) {
-	            Label label = new Label(composite, SWT.WRAP);
+	            final Label label = new Label(composite, SWT.WRAP);
 	            label.setText(_message);
-	            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+	            final GridData data = new GridData(GridData.GRAB_HORIZONTAL
 	                    | GridData.GRAB_VERTICAL | GridData.HORIZONTAL_ALIGN_FILL
 	                    | GridData.VERTICAL_ALIGN_CENTER);
 	            data.horizontalSpan = 2;
@@ -571,15 +572,15 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	        }
 	        _nameText = this.createTextEntry(composite, "Name:", _key);
 	        _valueText = this.createTextEntry(composite, "Value:", _value);
-	        
+
 	        //DialogFontUtil.setDialogFont(composite);
 	        //applyDialogFont(composite);
 	        return composite;
 	    }
-		
+
 		/**
 		 * Creates a Label and a Text.
-		 * @param parent 
+		 * @param parent
 		 * 				The parent composite for the Widgets
 		 * @param labelTitle
 		 * 				The title for the Label
@@ -589,10 +590,10 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 		 * 				The Text-Widget
 		 */
 		private Text createTextEntry(final Composite parent, final String labelTitle, final String textValue) {
-			Label label = new Label(parent, SWT.NONE);
+			final Label label = new Label(parent, SWT.NONE);
 	        label.setText(labelTitle);
 	        final Text text = new Text(parent, SWT.MULTI | SWT.BORDER);
-	        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+	        final GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
 	        gd.widthHint = 280;
 	        text.setLayoutData(gd);
 	        if (textValue==null) {
@@ -600,29 +601,32 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 	        } else {
 	        	text.setText(textValue);
 	        }
-	        
+
 	        ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(text, DND.DROP_COPY | DND.DROP_MOVE, new IProcessVariableAdressReceiver(){
-				public void receive(final IProcessVariableAddress[] pvs, final DropTargetEvent event) {
+				@Override
+                public void receive(final IProcessVariableAddress[] pvs, final DropTargetEvent event) {
 					text.setText(pvs[0].getRawName());
 				}
 	        });
-	        
+
 	        TextDnDUtil.addDragSupport(text);
-	        
+
 	        text.addKeyListener(new KeyListener() {
-				public void keyPressed(final KeyEvent e) {
+				@Override
+                public void keyPressed(final KeyEvent e) {
 					if (e.keyCode==13) {
 						getButton(IDialogConstants.OK_ID).setFocus();
 						okPressed();
 					}
 				}
 
-				public void keyReleased(final KeyEvent e) {
+				@Override
+                public void keyReleased(final KeyEvent e) {
 				}
 	        });
 	        return text;
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -638,5 +642,5 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			super.okPressed();
 		}
 	}
-	
+
 }

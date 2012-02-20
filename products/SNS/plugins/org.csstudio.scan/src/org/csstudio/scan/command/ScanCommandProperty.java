@@ -4,16 +4,18 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan.command;
+
+import org.csstudio.scan.device.DeviceInfo;
 
 /** Description of a {@link ScanCommand} property
  *  @author Kay Kasemir
@@ -21,9 +23,31 @@ package org.csstudio.scan.command;
 @SuppressWarnings("nls")
 public class ScanCommandProperty
 {
+    // Properties used by multiple commands
+    final public static ScanCommandProperty DEVICE_NAME =
+            new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class);
+
+    final public static ScanCommandProperty READBACK =
+            new ScanCommandProperty("readback", "Readback Device", DeviceInfo.class);
+
+    final public static ScanCommandProperty WAIT =
+            new ScanCommandProperty("wait", "Wait for readback", Boolean.class);
+
+    final public static ScanCommandProperty TOLERANCE =
+            new ScanCommandProperty("tolerance", "Tolerance", Double.class);
+
+    final public static ScanCommandProperty TIMEOUT =
+            new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class);
+
+
     final private String name, id;
     final private Class<?> type;
-    
+
+    /** Initialize
+     *  @param id Property ID
+     *  @param name Name or label used for GUI
+     *  @param type Data type, see {@link ScanCommand} for supported data types
+     */
     public ScanCommandProperty(final String id, final String name, final Class<?> type)
     {
         this.id = id;
@@ -36,19 +60,21 @@ public class ScanCommandProperty
     {
         return id;
     }
-    
+
     /** @return Name of the property, displayed in a GUI */
     public String getName()
     {
         return name;
     }
 
-    /** @return Type of the property. */
+    /** @return Type of the property.
+     *  @see ScanCommand ScanCommand lists supported data types
+     */
     public Class<?> getType()
     {
         return type;
     }
-    
+
     /** @return Debug representation */
     @Override
     public String toString()

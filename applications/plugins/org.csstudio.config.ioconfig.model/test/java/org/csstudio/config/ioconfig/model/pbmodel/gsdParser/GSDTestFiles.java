@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
@@ -33,18 +33,19 @@ public enum GSDTestFiles {
     YP0004C2("YP0004C2.GSD"),
     YP003051("YP003051.gsd"),
     YP0206CA("YP0206CA.gsd"),
-    SiPart("SiPart.gsd");
-    
+    SiPart("SiPart.gsd"),
+    SAMS071D("SAMS071D.gsd");
+
     private final String _fileName;
     private GSDFileDBO _gsdFileDBO;
-    
+
     /**
-     * 
+     *
      */
     private GSDTestFiles(@Nonnull final String fileName) {
         _fileName = fileName;
     }
-    
+
     @Nonnull
     public GSDFileDBO getFileAsGSDFileDBO() throws IOException {
         if(_gsdFileDBO == null) {
@@ -52,7 +53,7 @@ public enum GSDTestFiles {
         }
         return _gsdFileDBO;
     }
-    
+
     @Nonnull
     public String getFileAsString() throws IOException {
         final String resFilePath =

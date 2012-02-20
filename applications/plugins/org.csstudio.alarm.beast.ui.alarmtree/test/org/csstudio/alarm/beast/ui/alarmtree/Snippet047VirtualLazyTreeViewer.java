@@ -33,7 +33,7 @@ public class Snippet047VirtualLazyTreeViewer {
 	// but because getParent() returns elements[] as parent of elements[],
 	// those elements[] in the input serve as both the (not visible) root
 	// of the tree and the first (visible) level.
-	
+
 	private class MyContentProvider implements ILazyTreeContentProvider {
 		private TreeViewer viewer;
 		private IntermediateNode[] elements;
@@ -42,38 +42,43 @@ public class Snippet047VirtualLazyTreeViewer {
 			this.viewer = viewer;
 		}
 
-		public void dispose() {
+		@Override
+        public void dispose() {
 
 		}
 
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		@Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			this.elements = (IntermediateNode[]) newInput;
 		}
 
-		public Object getParent(Object element) {
+		@Override
+        public Object getParent(Object element) {
 			if (element instanceof LeafNode)
 				return ((LeafNode) element).parent;
 			return elements;
 		}
 
-		public void updateElement(Object parent, int index) {
+		@Override
+        public void updateElement(Object parent, int index) {
 			Object element;
-			if (parent instanceof IntermediateNode) 
+			if (parent instanceof IntermediateNode)
 				element = ((IntermediateNode) parent).children[index];
-			
+
 			else
 				element =  elements[index];
 			viewer.replace(parent, index, element);
 			updateChildCount(element, -1);
 		}
 
-		public void updateChildCount(Object element, int currentChildCount) {
-			
+		@Override
+        public void updateChildCount(Object element, int currentChildCount) {
+
 			int length = 0;
 			if (element instanceof IntermediateNode) {
 				IntermediateNode node = (IntermediateNode) element;
 				length =  node.children.length;
-			} 
+			}
 			if(element == elements)
 				length = elements.length;
 			viewer.setChildCount(element, length);
@@ -89,6 +94,7 @@ public class Snippet047VirtualLazyTreeViewer {
 			this.parent = parent;
 		}
 
+        @Override
         public String toString() {
 			return "Leaf " + this.counter;
 		}
@@ -102,7 +108,8 @@ public class Snippet047VirtualLazyTreeViewer {
 			this.counter = counter;
 		}
 
-		public String toString() {
+		@Override
+        public String toString() {
 			return "Node " + this.counter;
 		}
 
@@ -117,7 +124,7 @@ public class Snippet047VirtualLazyTreeViewer {
 
 	public Snippet047VirtualLazyTreeViewer(Shell shell) {
 		// THIS IS THE KEY POINT:
-		// With SWT.MULTI expanding tree items is slow as not
+		// With SWT.MULTI expanding tree items is slow as snot
 		// (at least on Windows, Eclipse 3.6.2)
 		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
 		// The original snippet without SWT.MULTI is fine.

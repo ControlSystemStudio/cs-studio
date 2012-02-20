@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Xihui Chen
  *
  */
-public class ComboFigure extends AbstractSWTWidgetFigure {
+public class ComboFigure extends AbstractSWTWidgetFigure<Combo> {
 
 	
 	Triangle selector;
@@ -45,9 +45,14 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 			selector.setDirection(PositionConstants.SOUTH);
 			selector.setFill(true);
 			add(selector);
-		}		
-		combo = new Combo(getParentComposite(), SWT.DROP_DOWN | SWT.READ_ONLY);
+		}				
 		
+	}
+	
+	@Override
+	protected Combo createSWTWidget(Composite parent, int style) {
+		combo= new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		return combo;
 	}
 	
 	@Override
@@ -59,41 +64,27 @@ public class ComboFigure extends AbstractSWTWidgetFigure {
 					clientArea.y, SELECTOR_WIDTH, clientArea.height));
 		}
 	}
-
+	
 	@Override
-	protected void paintClientArea(Graphics graphics) {			
-		//draw this so that it can be seen in the outline view
-		if(!runmode){			
+	protected void paintOutlineFigure(Graphics graphics) {
+		// draw this so that it can be seen in the outline view
+		if (!runmode) {
 			Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
 			graphics.setBackgroundColor(GRAY_COLOR);
 			graphics.fillRectangle(clientArea);
 			graphics.setForegroundColor(DARK_GRAY_COLOR);
-			graphics.drawRectangle(
-					new Rectangle(clientArea.getLocation(), clientArea.getSize().shrink(1, 1)));
+			graphics.drawRectangle(new Rectangle(clientArea.getLocation(),
+					clientArea.getSize().shrink(1, 1)));
 		}
-		super.paintClientArea(graphics);	
 	}
 	
 	public void setText(String text) {
 		combo.setText(text);
 	}
 	
-	/**
-	 * @return the SWT combo in the combo figure.
-	 */
-	public Combo getCombo() {
-		return combo;
-	}
-	
 	public Dimension getAutoSizeDimension(){
 		return new Dimension(getBounds().width, 
 				combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + getInsets().getHeight());
-	}
-
-
-	@Override
-	public Composite getSWTWidget() {		
-		return combo;
-	}		
+	}	
 	
 }

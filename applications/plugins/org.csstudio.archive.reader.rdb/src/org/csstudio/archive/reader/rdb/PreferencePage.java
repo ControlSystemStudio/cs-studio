@@ -7,8 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.io.IOException;
+
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.auth.ui.security.PasswordFieldEditor;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -20,7 +23,12 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-/** Preference Page for the RDB Archive's user and password.
+/** Preference Page for RDB Archive settings
+ *
+ *  <p>This combines all settings that an RDB client uses:
+ *  Basic Archive RDB settings from org.csstudio.archive.rdb
+ *  plus specifics of org.csstudio.archive.reader.rdb
+ *
  *  @author Kay Kasemir
  */
 public class PreferencePage extends FieldEditorPreferencePage
@@ -29,10 +37,13 @@ public class PreferencePage extends FieldEditorPreferencePage
     // Most of the preferences are in the o.c.archive.rdb plugin,
 	// so that is used as the overall preference store for this
 	// preference GUI page.
-    // The stored procedure, however, is a preference setting
-	// of the rdb.reader plugin, so the preference store of that
-	// one field editor is adjusted to use the 'reader' store.
-	private ScopedPreferenceStore rdb_prefs;
+    //
+    // The FieldEditorPreferencePage will automatically assign
+    // FieldEditors to that preference store and also 'save'
+    // the settings.
+    //
+    // Those fields that use a preference store for the archive.reader
+    // plugin need special handling.
     private ScopedPreferenceStore reader_prefs;
 
 	/** Initialize to use 'instance' scope (install location)
@@ -41,40 +52,75 @@ public class PreferencePage extends FieldEditorPreferencePage
     public PreferencePage()
     {
         super(GRID);
-        // TODO For Eclipse 3.7, use InstanceScope.INSTANCE
-        // ITER with Eclipse 3.6 needs new InstanceScope()
-        @SuppressWarnings("deprecation")
-        final IScopeContext scope = new InstanceScope();
-		rdb_prefs = new ScopedPreferenceStore(scope,
-        		org.csstudio.archive.rdb.Activator.ID);
-        reader_prefs = new ScopedPreferenceStore(scope,
-        		org.csstudio.archive.reader.rdb.Activator.ID);
-		setPreferenceStore(rdb_prefs);
+
+        final IScopeContext scope = InstanceScope.INSTANCE;
+        // 'main' pref. store for most of the settings
+		setPreferenceStore(new ScopedPreferenceStore(scope,
+                org.csstudio.archive.rdb.Activator.ID));
+
+		// Separate store for archive.reader.rdb
+		reader_prefs = new ScopedPreferenceStore(scope,
+		        org.csstudio.archive.reader.rdb.Activator.ID);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void init(IWorkbench workbench)
     {
         // NOP
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void createFieldEditors()
     {
         setMessage(Messages.PreferenceTitle);
         final Composite parent = getFieldEditorParent();
-        
+
         addField(new StringFieldEditor(RDBArchivePreferences.USER, Messages.User, parent));
         addField(new PasswordFieldEditor(RDBArchivePreferences.PASSWORD, Messages.Password, parent, org.csstudio.archive.rdb.Activator.ID));
         addField(new StringFieldEditor(RDBArchivePreferences.SCHEMA, Messages.Schema, parent));
-        addField(new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
+
+        // FieldEditorPreferencePage will set all its
+        // editors to the 'main' pref. store.
+        // Hack around that by replacing setPreferenceStore
+        final StringFieldEditor editor =
+                new StringFieldEditor(Preferences.STORED_PROCEDURE, Messages.StoredProcedure, parent)
         {
-			@Override
-            public IPreferenceStore getPreferenceStore()
+            @Override
+            public void setPreferenceStore(final IPreferenceStore ignored)
             {
-	            return reader_prefs;
+                super.setPreferenceStore(reader_prefs);
             }
-        });
+        };
+        addField(editor);
+
         addField(new BooleanFieldEditor(RDBArchivePreferences.USE_ARRAY_BLOB, Messages.UseBLOB, parent));
+    }
+
+    /** FieldEditorPreferencePage will save settings
+     *  of its 'main' store.
+     *  Override to also save <code>reader_prefs</code>
+     */
+    @SuppressWarnings("nls")
+    @Override
+    public boolean performOk()
+    {
+        if (! super.performOk())
+            return false;
+
+        if (reader_prefs.needsSaving())
+        {
+            try
+            {
+                reader_prefs.save();
+            }
+            catch (IOException ex)
+            {
+                ExceptionDetailsErrorDialog.openError(getShell(), "Error",
+                        "Cannot save settings for RDB Reader", ex);
+            }
+        }
+        return true;
     }
 }

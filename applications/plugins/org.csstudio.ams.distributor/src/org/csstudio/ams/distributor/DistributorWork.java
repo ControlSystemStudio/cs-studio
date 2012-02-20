@@ -23,7 +23,6 @@
 
 package org.csstudio.ams.distributor;
 
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Date;
@@ -49,8 +48,6 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.Utils;
-import org.csstudio.ams.configReplicator.ConfigReplicator;
-import org.csstudio.ams.configReplicator.ReplicationException;
 import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.configdb.AggrFilterActionDAO;
 import org.csstudio.ams.dbAccess.configdb.AggrUserGroupDAO;
@@ -75,7 +72,6 @@ import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsMultipleProducer;
 import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.hsqldb.jdbcDriver;
 
 /*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
  *  auch dieser Connector nicht angesteuert wird??? */
@@ -83,11 +79,11 @@ public class DistributorWork extends Thread implements AmsConstants,
 		MessageListener {
 
 	// TODO: Replace it with an enum!
+    /** Derby database connection */
+	private java.sql.Connection localAppDb;
 
-	private java.sql.Connection localAppDb = null; // Derby database connection
-
-	private java.sql.Connection memoryCacheDb = null; // HSQL in-memory cache
-														// connection
+    /** HSQL in-memory cache connection */
+    private java.sql.Connection memoryCacheDb;
 
 	// (application db)
 
@@ -116,21 +112,13 @@ public class DistributorWork extends Thread implements AmsConstants,
 	private final ConfigurationSynchronizer synchronizer;
 
 	public DistributorWork(final java.sql.Connection localDatabaseConnection,
-			final ConfigurationSynchronizer synch) throws ReplicationException {
+	                       final java.sql.Connection cacheDatabaseConnection,
+			               final ConfigurationSynchronizer synch) {
+	    
 		localAppDb = localDatabaseConnection;
+		memoryCacheDb = cacheDatabaseConnection;
 		this.synchronizer = synch;
-
-		// Copy application db into cache db
-		try {
-			DriverManager.registerDriver(new jdbcDriver());
-			memoryCacheDb = DriverManager.getConnection(
-					"jdbc:hsqldb:mem:memConfigDB", "sa", "");
-			ConfigReplicator.replicateConfigurationToHsql(localAppDb,
-					memoryCacheDb);
-		} catch (SQLException sqlException) {
-			throw new ReplicationException(sqlException);
-		}
-
+		
 		// Create the container that holds the information about the connector
 		// topics.
 		topicContainer = new ConnectorTopicContainer();
@@ -145,7 +133,7 @@ public class DistributorWork extends Thread implements AmsConstants,
 		if (!success) {
 			throw new RuntimeException(
 					"Failed to initialize external JMS connections");
-		}
+		}		
 	}
 
 	@Override

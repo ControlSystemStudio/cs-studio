@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.properties.support;
 
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.StringTableProperty.TitlesProvider;
 import org.csstudio.opibuilder.util.ImplementationLoader;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
@@ -66,6 +67,6 @@ public abstract class PropertySSHelper {
 			String description);
 
 	public abstract PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
-			String description, String[] titles);
+			String description, TitlesProvider titlesProvider);
 	
 }

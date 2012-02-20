@@ -18,14 +18,26 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
+import org.csstudio.scan.ui.scantree.operations.RedoHandler;
+import org.csstudio.scan.ui.scantree.operations.UndoHandler;
+import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
+import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -43,15 +55,15 @@ import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
 /** Eclipse Editor for the Scan Tree
- *  
+ *
  *  <p>Displays the scan tree and uses
  *  it as selection provider.
- *  {@link ScanCommandAdapterFactory} then adapts
+ *  {@link ScanCommandPropertyAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
- *  
+ *
  *  @author Kay Kasemir
  */
-public class ScanEditor extends EditorPart implements ScanTreeGUIListener
+public class ScanEditor extends EditorPart
 {
     /** Editor ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.editor"; //$NON-NLS-1$
@@ -59,11 +71,28 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     /** File extension used to save files */
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
 
+    /** Operations history for undo/redo.
+     *
+     *  <p>All scan editors share the same operations history,
+     *  but each editor has its own undo context.
+     *
+     *  <p>This was done because the {@link UndoHandler} and {@link RedoHandler}
+     *  in the editor's toolbar are shared between all scan editors,
+     *  so it's natural for them to interface to just one operations history.
+     */
+    final private static IOperationHistory operations = OperationHistoryFactory.getOperationHistory();
 
+    /** Undo context for undo/redo */
+    final private IUndoContext undo_context = new UndoContext();
+
+    /** GUI elements */
     private ScanTreeGUI gui;
 
     /** @see #isDirty() */
     private boolean is_dirty = false;
+
+    /** @return Devices available on scan server */
+    private volatile DeviceInfo[] devices = null;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -95,7 +124,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return createInstance(new EmptyEditorInput());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -103,6 +132,34 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         setSite(site);
         setInput(input);
+
+        // Use background Job to obtain device list
+        final Job job = new Job(Messages.DeviceListFetch)
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        devices = server.getDeviceInfos();
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            Messages.DeviceListFetchError, ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -134,6 +191,16 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 
     /** {@inheritDoc} */
     @Override
+    public void dispose()
+    {
+        // Remove undo/redo operations associated with this editor
+        // from the shared operations history of all scan editors
+        operations.dispose(undo_context, true, true, true);
+        super.dispose();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void setFocus()
     {
         gui.setFocus();
@@ -154,35 +221,70 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         setDirty(true);
     }
 
-    /** @see ScanTreeGUIListener */
-    @Override
-    public void scanTreeChanged()
+    /** @return Devices available on scan server. May be <code>null</code> */
+    public DeviceInfo[] getDevices()
     {
-        setDirty(true);
+        return devices;
     }
-    
+
+    /** @return Operation history (for undo/redo) */
+    public static IOperationHistory getOperationHistory()
+    {
+        return operations;
+    }
+
+    /** Execute an undo-able operation and add to history
+     *  @param operation Operation to add to the undo/redo history
+     *  @throws ExecutionException on error
+     */
+    public void executeForUndo(final IUndoableOperation operation) throws ExecutionException
+    {
+        operation.execute(new NullProgressMonitor(), null);
+        operation.addContext(undo_context);
+        operations.add(operation);
+    }
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = gui.getCommands();
-        
+
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
         if (sep > 0)
             name = name.substring(0, sep);
-        
-        // Use Job to submit?
-        try
+
+        final String scan_name = name;
+
+        // Use background Job to submit scan to server
+        final Job job = new Job(Messages.SubmitScan)
         {
-            final ScanServer server = ScanServerConnector.connect();
-            server.submitScan(name, XMLCommandWriter.toXMLString(commands));
-            ScanServerConnector.disconnect(server);
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(getSite().getShell(), Messages.Error,
-                NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()));
-        }
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = ScanServerConnector.connect();
+                    try
+                    {
+                        server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    }
+                    finally
+                    {
+                        ScanServerConnector.disconnect(server);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR,
+                            Activator.PLUGIN_ID,
+                            NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
+                            ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -223,7 +325,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             return false;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSave(final IProgressMonitor monitor)
@@ -235,7 +337,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         else // Input is EmptyEditorInput, no file, yet
             saveToFile(monitor, file);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void doSaveAs()
@@ -249,7 +351,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             setPartName(file.getName());
         }
     }
-    
+
     /** Prompt for file name
      *  @param old_file Old file name or <code>null</code>
      *  @return IFile for new file name
@@ -282,7 +384,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         return is_dirty;
     }
-    
+
     /** Update the 'dirty' flag
      *  @param dirty <code>true</code> if model changed and needs to be saved
      */
@@ -290,5 +392,24 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
+
+    /** @return Commands displayed/edited in GUI */
+    public List<ScanCommand> getCommands()
+    {
+        return gui.getCommands();
+    }
+
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
+    {
+        return gui.getSelectedCommands();
+    }
+
+    /** Refresh the GUI after tree manipulations */
+    public void refresh()
+    {
+        gui.refresh();
+        setDirty(true);
     }
 }

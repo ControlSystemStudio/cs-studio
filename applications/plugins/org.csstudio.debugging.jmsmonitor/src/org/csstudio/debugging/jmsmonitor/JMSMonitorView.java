@@ -28,7 +28,7 @@ public class JMSMonitorView extends ViewPart
     private GUI gui;
 
     private IMemento memento;
-    
+
     /** @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite, org.eclipse.ui.IMemento) */
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException
@@ -55,7 +55,11 @@ public class JMSMonitorView extends ViewPart
                       parent);
         if (memento == null)
             return;
-        gui.setTopic(memento.getString(TAG_TOPIC));
+        final String topic = memento.getString(TAG_TOPIC);
+        if (topic.isEmpty())
+            gui.setTopic(Messages.EnterTopicMsg);
+        else
+            gui.setTopic(topic);
         getSite().setSelectionProvider(gui.getSelectionProvider());
     }
 

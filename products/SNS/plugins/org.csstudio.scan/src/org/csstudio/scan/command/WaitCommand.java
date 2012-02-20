@@ -28,11 +28,11 @@ public class WaitCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", String.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("comparison", "Comparison", Comparison.class),
         new ScanCommandProperty("desired_value", "Desired Value", Double.class),
-        new ScanCommandProperty("tolerance", "Tolerance (for '=')", Double.class),
-        new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class),
+        ScanCommandProperty.TOLERANCE,
+        ScanCommandProperty.TIMEOUT,
     };
 
     private String device_name;
@@ -52,6 +52,7 @@ public class WaitCommand extends ScanCommand
      *  @param comparison Comparison to use
      *  @param desired_value Desired value of the device
      *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, 0 as "forever"
      */
 	public WaitCommand(final String device_name,
 	        final Comparison comparison, final double desired_value,
@@ -116,7 +117,7 @@ public class WaitCommand extends ScanCommand
     /** @param tolerance Tolerance */
     public void setTolerance(final Double tolerance)
     {
-        this.tolerance = tolerance;
+        this.tolerance = Math.max(0.0, tolerance);
     }
 
     /** @return Timeout in seconds */
@@ -128,7 +129,7 @@ public class WaitCommand extends ScanCommand
     /** @param timeout Time out in seconds */
     public void setTimeout(final Double timeout)
     {
-        this.timeout = timeout;
+        this.timeout = Math.max(0.0, timeout);
     }
 
     /** {@inheritDoc} */
@@ -171,15 +172,8 @@ public class WaitCommand extends ScanCommand
         {
             setComparison(Comparison.EQUALS);
         }
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance"));
-        try
-        {
-            setTimeout(DOMHelper.getSubelementDouble(element, "timeout"));
-        }
-        catch (Throwable ex)
-        {
-            setTimeout(0.0);
-        }
+        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
     }
 
     /** {@inheritDoc} */

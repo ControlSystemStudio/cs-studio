@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -17,8 +17,10 @@ package org.csstudio.scan.command;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -31,7 +33,7 @@ public class LogCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_names", "Device Names", String[].class)
+        new ScanCommandProperty("device_names", "Device Names", DeviceInfo[].class)
     };
 
     private String[] device_names;
@@ -41,7 +43,7 @@ public class LogCommand extends ScanCommand
     {
         this("device");
     }
-    
+
 	/** Initialize
 	 *  @param device_names List of device names
 	 */
@@ -57,7 +59,7 @@ public class LogCommand extends ScanCommand
     {
         this(new String[] { device_name });
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ScanCommandProperty[] getProperties()
@@ -68,9 +70,9 @@ public class LogCommand extends ScanCommand
 	/** @return Names of devices to read and log */
     public String[] getDeviceNames()
     {
-        return device_names;
+        return Arrays.copyOf(device_names, device_names.length);
     }
-    
+
     /** @param device_names Names of devices to read and log */
     public void setDeviceNames(final String... device_names)
     {
@@ -95,7 +97,7 @@ public class LogCommand extends ScanCommand
         writeIndent(out, level);
         out.println("</log>");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
@@ -115,7 +117,7 @@ public class LogCommand extends ScanCommand
         }
         setDeviceNames(devices.toArray(new String[devices.size()]));
     }
-    
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()

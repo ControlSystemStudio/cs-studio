@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Composite;
  *
  * @param <T> the widget type
  */
-public abstract class AbstractChannelWidgetFigure<T extends Composite> extends AbstractSWTWidgetFigure {
+public abstract class AbstractChannelWidgetFigure<T extends Composite> extends AbstractSWTWidgetFigure<T> {
 	
 	/**
 	 * Creates a new figure based on the give swt widget and the selection provider.
@@ -24,17 +24,8 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 	 */
 	public AbstractChannelWidgetFigure(AbstractBaseEditPart editPart) {
 		super(editPart);
-		widget = createWidget(getParentComposite());
-		selectionProvider = retrieveSelectionProvider(widget);
+		selectionProvider = retrieveSelectionProvider(getSWTWidget());
 	}
-
-	/**
-	 * Implement to create the widget to be wrapped.
-	 * 
-	 * @param parent the widget parent
-	 * @return the new widget
-	 */
-	protected abstract T createWidget(Composite parent);
 	
 	/**
 	 * Returns the selection provider to be used for pop-ups. By default, if the
@@ -50,13 +41,8 @@ public abstract class AbstractChannelWidgetFigure<T extends Composite> extends A
 		return null;
 	}
 	
-	private final T widget;
 	private final ISelectionProvider selectionProvider;
 
-	@Override
-	public T getSWTWidget() {
-		return widget;
-	}
 	
 	/**
 	 * The selection provider to be used for the pop-up.

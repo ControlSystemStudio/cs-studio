@@ -161,10 +161,34 @@ public class EPICS_V3_PV extends PlatformObject
                     return;
                 if (state == State.GettingMetadata)
                     state = State.GotMetaData;
+
                 final DBR dbr = event.getDBR();
                 meta = DBR_Helper.decodeMetaData(dbr);
-                value = DBR_Helper.decodeValue(plain, meta, dbr);
+
                 Activator.getLogger().log(Level.FINEST, "{0} meta data update: {1}", new Object[] { name, meta });
+
+                // The DBR_CTRL_.. types include meta data, status and value.
+                // There's no time stamp, however, so we cannot get the
+                // 'current' value from it.
+                // (For CAJ, the DBR_CTRL_Double actually _does_ contain
+                //  a time stamp, but that contradicts the dbr_ctrl_double
+                //  definition from EPICS base, and DBR_CRTL_Enum does _not_
+                //  provide a time stamp, so it's inconsistent).
+                //
+                // Still, if we already have a value, we update it with new meta data.
+                final IValue old_value = value;
+                if (old_value == null)
+                    return;
+
+                final IMetaData old_meta = old_value.getMetaData();
+                if (meta.equals(old_meta))
+                    return;
+
+                final IValue new_value = DBR_Helper.updateMetadata(old_value, meta);
+                if (new_value == null)
+                    return;
+
+                value = new_value;
                 fireValueUpdate();
             }
             catch (Exception ex)
@@ -441,7 +465,7 @@ public class EPICS_V3_PV extends PlatformObject
             try
             {
                 final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-                
+
                 //TODO: Remove this line if CAJ has been updated to support DBE_PROPERTY
                 if(!EpicsPlugin.getDefault().usePureJava())
                 	meta_subscription = channel.addMonitor(

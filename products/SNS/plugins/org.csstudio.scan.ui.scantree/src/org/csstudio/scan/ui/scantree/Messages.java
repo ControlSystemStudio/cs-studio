@@ -18,7 +18,13 @@ public class Messages extends NLS
     public static String AddCommand;
     public static String AddCommandMessage;
     public static String AddCommandTitle;
+    public static String BoolEdit_False;
+    public static String BoolEdit_True;
     public static String CommandListTT;
+    public static String DeviceListFetch;
+    public static String DeviceListFetchError;
+    public static String DroppedPVNameBesideCommand;
+    public static String DroppedPVNameNotSupportedByCommand;
     public static String Error;
     public static String FileOpenErrorFmt;
     public static String FileSaveErrorFmt;
@@ -28,9 +34,9 @@ public class Messages extends NLS
     public static String OpenScanTree;
     public static String OpenScanTreeErrorFmt;
     public static String OpenScanTreePerspective;
-    public static String RemoveCommand;
     public static String ScanSubmitErrorFmt;
     public static String SubmitScan;
+    public static String XMLCommandErrorFmt;
 
     static
     {

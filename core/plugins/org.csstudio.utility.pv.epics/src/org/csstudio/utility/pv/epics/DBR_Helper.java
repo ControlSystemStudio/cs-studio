@@ -23,7 +23,10 @@ import gov.aps.jca.dbr.Status;
 import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.dbr.TimeStamp;
 
+import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IEnumeratedValue;
+import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.ISeverity;
@@ -182,7 +185,7 @@ public class DBR_Helper
         final ITimestamp time;
         final ISeverity severity;
         final String status;
-        
+
         if (dbr instanceof TIME)
         {
             final TIME tss = (TIME) dbr;
@@ -196,7 +199,7 @@ public class DBR_Helper
             severity = SeverityUtil.forCode(0);
             status = "";
         }
-        
+
         if (dbr.isDOUBLE())
         {
             final double v[] = ((DBR_Double)dbr).getDoubleValue();
@@ -255,5 +258,33 @@ public class DBR_Helper
         if (status.getValue() == 0)
             return "OK"; //$NON-NLS-1$
         return status.getName();
+    }
+
+    /** Create value with updated meta data
+     *  @param value Original value
+     *  @param meta New meta data
+     *  @return Updated value or <code>null</code> if update is not possible
+     */
+    public static IValue updateMetadata(final IValue value, final IMetaData meta)
+    {
+        if (value instanceof IDoubleValue  &&  meta instanceof INumericMetaData)
+        {
+            final IDoubleValue v = (IDoubleValue) value;
+            return ValueFactory.createDoubleValue(v.getTime(), v.getSeverity(), v.getStatus(),
+                    (INumericMetaData) meta, v.getQuality(), v.getValues());
+        }
+        else if (value instanceof IEnumeratedValue  &&  meta instanceof IEnumeratedMetaData)
+        {
+            final IEnumeratedValue v = (IEnumeratedValue) value;
+            return ValueFactory.createEnumeratedValue(v.getTime(), v.getSeverity(), v.getStatus(),
+                    (IEnumeratedMetaData) meta, v.getQuality(), v.getValues());
+        }
+        else if (value instanceof ILongValue  &&  meta instanceof INumericMetaData)
+        {
+            final ILongValue v = (ILongValue) value;
+            return ValueFactory.createLongValue(v.getTime(), v.getSeverity(), v.getStatus(),
+                    (INumericMetaData) meta, v.getQuality(), v.getValues());
+        }
+        return null;
     }
 }

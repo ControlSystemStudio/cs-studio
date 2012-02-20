@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 
 /** Tool that creates executable command implementations of a {@link ScanCommand}.
- *  
+ *
  *  <p>Locates the {@link ScanCommandImpl} for a {@link ScanCommand}
  *  based on the class name of the command via introspection.
  *
@@ -38,7 +38,7 @@ public class ScanCommandImplTool
     private static ScanCommandImplTool instance = null;
     final private Map<String, ScanCommandImplFactory<ScanCommand>> factories =
             new HashMap<String, ScanCommandImplFactory<ScanCommand>>();
-    
+
     /** @return Singleton instance
      *  @throws Exception on error creating the initial instance
      */
@@ -48,7 +48,7 @@ public class ScanCommandImplTool
             instance = new ScanCommandImplTool();
         return instance;
     }
-    
+
     /** Initialize from extension point registry
      *  @throws Exception on error
      */
@@ -59,7 +59,7 @@ public class ScanCommandImplTool
         final IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.csstudio.scan.server.scancommandimpl");
         final IConfigurationElement[] configs = point.getConfigurationElements();
 
-        System.out.println("Available Scan Commands:");
+        // System.out.println("Available Scan Commands:");
         for (IConfigurationElement config : configs)
         {
             // final String plugin_id = config.getContributor().getName();
@@ -68,7 +68,7 @@ public class ScanCommandImplTool
             final String command_class = config.getAttribute("command");
             final ScanCommandImplFactory<ScanCommand> factory = (ScanCommandImplFactory<ScanCommand>) config.createExecutableExtension("factory");
             factories.put(command_class, factory);
-            
+
             // System.out.println(command_class
             //         + " (factory " + factory.getClass().getName() + ") provided by"
             //         + plugin_id);

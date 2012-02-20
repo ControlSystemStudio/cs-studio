@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
+import java.util.concurrent.TimeoutException;
+
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
@@ -96,9 +98,10 @@ public class DeviceValueCondition implements DeviceListener
     }
 
     /** Wait for value of device to reach the desired value (within tolerance)
+     *  @throws TimeoutException on timeout
      *  @throws Exception on interruption or device read error
      */
-    public void await() throws Exception
+    public void await() throws TimeoutException, Exception
     {
         final long end_ms = System.currentTimeMillis() + Math.round(timeout * 1000.0);
 
@@ -123,7 +126,7 @@ public class DeviceValueCondition implements DeviceListener
                         if (ms_left > 0)
                             wait(ms_left);
                         else
-                            throw new Exception("Timeout while waiting for " + device.getName()
+                            throw new TimeoutException("Timeout while waiting for " + device
                                     + " " + comparison + " " + desired_value);
                     }
                     else // No timeout, wait forever
@@ -190,5 +193,14 @@ public class DeviceValueCondition implements DeviceListener
             // Notify await() so it can check again.
             notifyAll();
         }
+    }
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+        return "Wait for '" + device + "' "
+                + comparison + " " + desired_value
+                + ", tolerance=" + tolerance + ", timeout=" + timeout;
     }
 }

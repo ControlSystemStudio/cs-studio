@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: DAL Plugin
 Bundle-SymbolicName: org.csstudio.dal;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Activator: org.csstudio.dal.DalPlugin
 Bundle-Vendor: Desy <css-developer@desy.de>, Joerg Penning
 Require-Bundle: org.eclipse.core.runtime,
@@ -10,8 +10,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
+Eclipse-BuddyPolicy: registered
 Bundle-ClassPath: .,
- lib/java-common-4.0.1-SNAPSHOT.jar
+ lib/java-common-4.0.1-SNAPSHOT.jar,
+ lib/commons-net-2.0.jar
 Export-Package: com.cosylab.application.state,
  com.cosylab.application.state.impl,
  com.cosylab.events,

@@ -24,14 +24,12 @@
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.List;
-
 import javax.jms.MapMessage;
-
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.Operator;
 import org.csstudio.ams.filter.FilterConditionProcessVariable.SuggestedProcessVariableType;
+import org.csstudio.dal.simple.RemoteInfo;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -42,7 +40,6 @@ import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
-import org.csstudio.dal.simple.RemoteInfo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
