@@ -670,11 +670,14 @@ public class TraceTableHandler implements IStructuredContentProvider
                 try
                 {
                     index = Integer.parseInt(value.toString().trim());
+                    if (index < 0)
+                    	return;
                 }
                 catch (NumberFormatException ex)
                 {
-                    index = 0;
+                    return;
                 }
+                
                 final ModelItem item = (ModelItem)element;
                 if (index != item.getWaveformIndex())
                     new ChangeWaveformIndexCommand(operations_manager, item, index);
