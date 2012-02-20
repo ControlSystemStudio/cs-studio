@@ -576,6 +576,13 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace == null)
 			return;
 		if(trace.getHotSampleList().contains(currentSnappedSample)){
+			if (yValue != currentSnappedSample.getYValue())
+			{	// When waveform index is changed, Y value of the 
+				// snapped sample is also changed. In that case,
+				// the position of this annotation must be updated
+				// accordingly.
+				yValue = currentSnappedSample.getYValue(); 
+			}
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));			
 		}
