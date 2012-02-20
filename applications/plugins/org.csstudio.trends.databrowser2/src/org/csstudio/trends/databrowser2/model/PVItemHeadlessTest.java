@@ -116,4 +116,44 @@ public class PVItemHeadlessTest
         }
         assertEquals(new Range(min, max), samples.getYDataMinMax());
     }
+
+    /** Check if PVItem correctly handles waveform index */
+    @Test
+    public void testWaveformIndex() throws Exception
+    {
+        System.out.println("Scanned samples: (" + RUNTIME_SECS + " secs)");
+        final Timer scan_timer = new Timer();
+        final PVItem pv = new PVItem("const://(1.1,2.2,3.3)", 1.0);
+        pv.setWaveformIndex(1);
+        pv.start(scan_timer);
+        Thread.sleep((long) (RUNTIME_SECS * 1000));
+        pv.stop();
+        // Should have about 1 sample per second
+        final IDataProvider samples = pv.getSamples();
+        System.out.println(samples);
+        assertEquals(RUNTIME_SECS, samples.getSize(), 2.0);
+        
+        // Check if the samples indicate the second element
+        assertEquals(2.2, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(2.2, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(2.2,2.2), samples.getYDataMinMax());
+
+        // Check if the samples indicate the third element
+        pv.setWaveformIndex(2);
+        assertEquals(3.3, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(3.3, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(3.3,3.3), samples.getYDataMinMax());
+
+        // Check if the samples indicate the third element
+        pv.setWaveformIndex(4);
+        assertEquals(Double.NaN, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(1).getYValue(), 0.000001);
+        assertNull(samples.getYDataMinMax());
+
+        // Check if the samples indicate the first element
+        pv.setWaveformIndex(-1);
+        assertEquals(1.1, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.1, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(1.1,1.1), samples.getYDataMinMax());
+    }
 }

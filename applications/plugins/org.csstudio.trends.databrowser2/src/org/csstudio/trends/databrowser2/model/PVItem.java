@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
  *  can link to related CSS tools.
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed PVItem to handle waveform index.
  */
 public class PVItem extends ModelItem implements PVListener
 {
@@ -60,6 +61,9 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
+    
+    /** Waveform Index */
+    private int waveform_index = 0;
 
     /** Initialize
      *  @param name PV name
@@ -70,6 +74,27 @@ public class PVItem extends ModelItem implements PVListener
     {
         super(name);
         this.period = period;
+    }
+    
+    /** @return Waveform index */
+    public int getWaveformIndex()
+    {
+        return waveform_index;
+    }
+
+    /** @param index New waveform index */
+    public void setWaveformIndex(int index)
+    {
+        if (index < 0)
+            index = 0;
+        if (index == waveform_index)
+            return;
+        waveform_index = index;
+
+        // change all the index of samples in this instance
+        samples.setWaveformIndex(waveform_index);
+        
+        fireItemLookChanged();
     }
 
     /** Set new item name, which changes the underlying PV name

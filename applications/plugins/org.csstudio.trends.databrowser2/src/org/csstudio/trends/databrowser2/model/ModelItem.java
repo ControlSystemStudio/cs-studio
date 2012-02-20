@@ -52,7 +52,7 @@ abstract public class ModelItem
 
     /** Y-Axis */
     private AxisConfig axis = null;
-
+    
     /** Initialize
      *  @param name Name of the PV or the formula
      */
@@ -236,6 +236,25 @@ abstract public class ModelItem
         this.axis = axis;
         fireItemLookChanged();
     }
+    
+    /** 
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.
+     * If it is not overridden, this method always return 0.   
+     * @return Waveform index */
+    public int getWaveformIndex()
+    {
+        return 0;
+    }
+
+    /** 
+     * This method should be overridden if the instance needs
+     * to change its behavior according to waveform index.   
+     * @param index New waveform index */
+    public void setWaveformIndex(int index)
+    {
+    	// Do nothing.
+    }
 
     /** @return Samples held by this item */
     abstract public PlotSamples getSamples();
@@ -263,6 +282,7 @@ abstract public class ModelItem
         XMLWriter.XML(writer, 3, Model.TAG_LINEWIDTH, getLineWidth());
         Model.writeColor(writer, 3, Model.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, Model.TAG_TRACE_TYPE, getTraceType().name());
+        XMLWriter.XML(writer, 3, Model.TAG_WAVEFORM_INDEX, getWaveformIndex());
     }
 
     /** Load common XML configuration elements into this item
@@ -290,5 +310,12 @@ abstract public class ModelItem
         {
             trace_type = TraceType.AREA;
         }
+
+        final int waveform_index = DOMHelper.getSubelementInt(node, Model.TAG_WAVEFORM_INDEX, 0);
+        
+        // If this method is overridden by the child class, the child's method will be called
+        // to set the waveform index. If it is not overridden, ModelItem's method will be called,
+        // which does nothing.
+        setWaveformIndex(waveform_index);
     }
 }
