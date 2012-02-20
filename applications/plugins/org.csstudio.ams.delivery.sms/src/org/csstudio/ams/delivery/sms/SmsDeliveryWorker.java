@@ -177,11 +177,14 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 outgoing = null;
             }
             
-            if (incomingQueue.hasContent()) {
-                List<BaseIncomingMessage> incoming = incomingQueue.getCurrentContent();
-                for (BaseIncomingMessage o : incoming) {
-                    if (processIncomingMessages(o) == false) {
-                        checkDeviceTest(o);
+            synchronized (incomingQueue) {
+                if (incomingQueue.hasContent()) {
+                    List<BaseIncomingMessage> incoming = incomingQueue.getCurrentContent();
+                    for (BaseIncomingMessage o : incoming) {
+                        if (processIncomingMessages(o) == false) {
+                            checkDeviceTest(o);
+                        }
+                        incoming.remove(o);
                     }
                 }
             }
@@ -267,6 +270,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     private boolean checkDeviceTest(BaseIncomingMessage o) {
         
         boolean checked = false;
+        LOG.debug("Check for device test.");
         
         // Check modem test status first
         if(testStatus.isActive()) {
