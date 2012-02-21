@@ -152,6 +152,13 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 }
             }
             
+            while (incomingQueue.hasContent()) {
+                final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
+                if (processIncomingMessages(inMsg) == false) {
+                    checkDeviceTest(inMsg);
+                }
+            }
+
             if (outgoingQueue.hasContent()) {
                 ArrayList<SmsAlarmMessage> outgoing = outgoingQueue.getCurrentContent();
                 LOG.info("Zu senden: " + outgoing.size());
@@ -170,13 +177,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 
                 outgoing.clear();
                 outgoing = null;
-            }
-            
-            while (incomingQueue.hasContent()) {
-                final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
-                if (processIncomingMessages(inMsg) == false) {
-                    checkDeviceTest(inMsg);
-                }
             }
         }
 
