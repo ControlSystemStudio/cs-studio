@@ -202,7 +202,8 @@ public class ScanInfoModel
     }
 
     /** Poll the server for info
-     * @throws InterruptedException */
+     *  @throws InterruptedException
+     */
     private void poll() throws InterruptedException
     {
         try
@@ -275,6 +276,7 @@ public class ScanInfoModel
      *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Serial of last sample in scan data
+     *  @throws RemoteException on error in remote access
      *  @see #getScanData(ScanInfo)
      */
     public long getLastScanDataSerial(final ScanInfo info) throws RemoteException
@@ -286,12 +288,25 @@ public class ScanInfoModel
 
     /** @param info Scan for which to get data
      *  @return ScanData or null
+     *  @throws RemoteException on error in remote access
      */
     public ScanData getScanData(final ScanInfo info) throws RemoteException
     {
         if (info == null)
             return null;
         return getServer().getScanData(info.getId());
+    }
+
+    /** Query server for devices used by a scan
+     *  @param info Scan for which to get data, <code>null</code> for default devices
+     *  @return Info about devices
+     *  @throws RemoteException on error in remote access
+     */
+    public DeviceInfo[] getDeviceInfos(final ScanInfo info) throws RemoteException
+    {
+        if (info == null)
+            return getServer().getDeviceInfos(-1);
+        return getServer().getDeviceInfos(info.getId());
     }
 
     /** @param info Scan to pause (NOP if not running)
