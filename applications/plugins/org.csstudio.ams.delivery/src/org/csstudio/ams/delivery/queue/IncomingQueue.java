@@ -31,41 +31,40 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 03.01.2012
  */
 public class IncomingQueue<E> {
-    
+
     protected ConcurrentLinkedQueue<E> content;
 
     public IncomingQueue() {
         content = new ConcurrentLinkedQueue<E>();
     }
-    
+
     public synchronized List<E> getCurrentContent() {
-        List<E> result = Collections.synchronizedList(new ArrayList<E>(content));
+        final List<E> result = Collections.synchronizedList(new ArrayList<E>(content));
         content.removeAll(result);
         return result;
     }
-    
+
     public synchronized int size() {
         return content.size();
     }
-    
-    public synchronized boolean addMessage(E e) {
+
+    public synchronized boolean addMessage(final E e) {
         return content.add(e);
     }
 
     public synchronized E nextMessage() {
         return content.poll();
     }
+
     public synchronized boolean isEmpty() {
         return content.isEmpty();
     }
-    
+
     public synchronized boolean hasContent() {
         return !content.isEmpty();
     }
