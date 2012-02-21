@@ -82,10 +82,14 @@ public class ArchiveConnectionHandler {
         if (!Strings.isNullOrEmpty(failoverHost)) {
             hosts += "," + failoverHost;
         }
+        final Integer port = prefs.getPort();
+        final String databaseName = prefs.getDatabaseName();
+        final String user = prefs.getUser();
+        LOG.info("DB preferences - hosts: " + hosts + "; DB Name: " + databaseName + " ; User: " + user + "; port: " + port);
         ds.setServerName(hosts);
-        ds.setPort(prefs.getPort());
-        ds.setDatabaseName(prefs.getDatabaseName());
-        ds.setUser(prefs.getUser());
+        ds.setPort(port);
+        ds.setDatabaseName(databaseName);
+        ds.setUser(user);
         ds.setPassword(prefs.getPassword());
         ds.setMaxAllowedPacket(prefs.getMaxAllowedPacketSizeInKB()*1024);
         ds.setUseTimezone(true);
