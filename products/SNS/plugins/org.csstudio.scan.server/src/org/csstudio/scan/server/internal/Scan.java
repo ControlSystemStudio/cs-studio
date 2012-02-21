@@ -115,6 +115,11 @@ public class Scan implements ScanContext
     {
         final ScanCommandImpl<?> command = current_command;
         final String command_name;
+        final ScanState state;
+        synchronized (this)
+        {
+            state = this.state;
+        }
         if (state == ScanState.Finished)
             command_name = "- end -";
         else if (command != null)
@@ -290,28 +295,27 @@ public class Scan implements ScanContext
     }
 
     /** Pause execution of a currently executing scan */
-    public void pause()
+    public synchronized void pause()
     {
-        state = ScanState.Paused;
+        if (state == ScanState.Running)
+            state = ScanState.Paused;
     }
 
     /** Resume execution of a paused scan */
-    public void resume()
+    public synchronized void resume()
     {
         if (state == ScanState.Paused)
         {
             state = ScanState.Running;
-            synchronized (this)
-            {
-                notifyAll();
-            }
+            notifyAll();
         }
     }
 
     /** Ask for execution to stop */
-    void abort()
+    synchronized void abort()
     {
-        state = ScanState.Aborted;
+        if (state == ScanState.Running  ||  state == ScanState.Paused)
+            state = ScanState.Aborted;
     }
 
     /** {@inheritDoc} */
