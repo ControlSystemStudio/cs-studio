@@ -166,7 +166,7 @@ public class ScanServerImpl implements ScanServer
             // Obtain implementations for the requested commands
             final List<ScanCommandImpl<?>> implementations = ScanCommandImplTool.getInstance().implement(commands);
 
-            // Get devices
+            // Get default devices
     		final DeviceContext devices = DeviceContext.getDefault();
 
             // Submit scan to engine for execution

@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,6 +62,23 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         if (body_units == 0)
             return iterations;
         return iterations * body_units;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String[] getDeviceNames()
+    {
+        final Set<String> device_names = new HashSet<String>();
+        device_names.add(command.getDeviceName());
+        if (! command.getReadback().isEmpty())
+            device_names.add(command.getReadback());
+        for (ScanCommandImpl<?> command : implementation)
+        {
+            final String[] names = command.getDeviceNames();
+            for (String name : names)
+                device_names.add(name);
+        }
+        return device_names.toArray(new String[device_names.size()]);
     }
 
     /** {@inheritDoc} */

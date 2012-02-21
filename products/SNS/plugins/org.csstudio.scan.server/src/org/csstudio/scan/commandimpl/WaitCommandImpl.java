@@ -39,6 +39,13 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     }
 
     /** {@inheritDoc} */
+    @Override
+    public String[] getDeviceNames()
+    {
+        return new String[] { command.getDeviceName() };
+    }
+
+    /** {@inheritDoc} */
 	@Override
     public void execute(final ScanContext context) throws Exception
     {

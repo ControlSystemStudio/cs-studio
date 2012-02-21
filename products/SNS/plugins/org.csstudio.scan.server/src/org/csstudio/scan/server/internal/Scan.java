@@ -18,7 +18,9 @@ package org.csstudio.scan.server.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +30,7 @@ import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.logger.MemoryDataLogger;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -165,7 +168,7 @@ public class Scan implements ScanContext
             state = ScanState.Aborted;
             error = "Interrupted";
         }
-        catch (Throwable ex)
+        catch (Exception ex)
         {
             state = ScanState.Failed;
             error = ex.getMessage();
@@ -176,7 +179,7 @@ public class Scan implements ScanContext
      *  passing exceptions back up.
      *  @throws Exception on error
      */
-    private void execute_or_die_trying() throws Throwable
+    private void execute_or_die_trying() throws Exception
     {
         // Was scan aborted before it ever got to run?
         if (state == ScanState.Aborted)
@@ -185,14 +188,31 @@ public class Scan implements ScanContext
         if (state != ScanState.Idle)
             throw new IllegalStateException("Cannot run Scan that is " + state);
 
-        // Determine work units
+        // Inspect all commands before executing them:
+        // * Determine work units
+        // * Add devices that are not available (via alias)
+        //   in the device context
         total_work_units = 1; // WaitForDevicesCommand
+        final Set<String> required_devices = new HashSet<String>();
         for (ScanCommandImpl<?> command : implementations)
+        {
             total_work_units += command.getWorkUnits();
-
-        // TODO Determine which devices the commands need
-        // that are not currently found in the device context
-        // and add them as PV devices
+            for (String device_name : command.getDeviceNames())
+                required_devices.add(device_name);
+        }
+        // Add required devices
+        for (String device_name : required_devices)
+        {
+            try
+            {
+                if (devices.getDeviceByAlias(device_name) != null)
+                    continue;
+            }
+            catch (Exception ex)
+            {   // Add PV device, no alias, for unknown device
+                devices.addPVDevice(new DeviceInfo(device_name, device_name, true, true));
+            }
+        }
 
         // Start Devices
         devices.startDevices();

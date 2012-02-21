@@ -41,6 +41,16 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         super(command);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public String[] getDeviceNames()
+    {
+        final String readback = command.getReadback();
+        if (readback.isEmpty())
+            return new String[] { command.getDeviceName() };
+        return new String[] { command.getDeviceName(), readback };
+    }
+
 	/** {@inheritDoc} */
 	@Override
     public void execute(final ScanContext context)  throws Exception

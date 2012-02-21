@@ -112,6 +112,8 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final List<ScanCommand> body)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
         setStepSize(stepsize);
         this.start = start;
@@ -126,7 +128,7 @@ public class LoopCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Device name */
+	/** @return Device name (may be "" but not <code>null</code>) */
     public String getDeviceName()
     {
         return device_name;
@@ -135,6 +137,8 @@ public class LoopCommand extends ScanCommand
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -191,7 +195,7 @@ public class LoopCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device */
+    /** @return Name of readback device (may be "" but not <code>null</code>) */
     public String getReadback()
     {
         return readback;
@@ -200,6 +204,8 @@ public class LoopCommand extends ScanCommand
     /** @param readback Name of readback device */
     public void setReadback(final String readback)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.readback = readback;
     }
 

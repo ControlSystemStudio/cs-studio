@@ -70,8 +70,12 @@ public class SetCommand extends ScanCommand
 	        final String readback, final boolean wait,
             final double tolerance, final double timeout)
     {
+	    if (device_name == null)
+	        throw new NullPointerException();
 		this.device_name = device_name;
 		this.value = value;
+		if (readback == null)
+            throw new NullPointerException();
 		this.readback = readback;
 		this.wait = wait;
         this.tolerance = tolerance;
@@ -85,7 +89,7 @@ public class SetCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Name of device to set */
+	/** @return Name of device to set (may be "" but not <code>null</code>) */
 	public String getDeviceName()
     {
         return device_name;
@@ -94,6 +98,8 @@ public class SetCommand extends ScanCommand
 	/** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -121,7 +127,7 @@ public class SetCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device */
+    /** @return Name of readback device (may be "" but not <code>null</code>) */
     public String getReadback()
     {
         return readback;
@@ -130,6 +136,8 @@ public class SetCommand extends ScanCommand
     /** @param readback Name of readback device */
     public void setReadback(final String readback)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.readback = readback;
     }
 

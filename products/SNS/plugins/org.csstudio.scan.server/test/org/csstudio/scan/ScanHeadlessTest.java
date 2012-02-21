@@ -33,6 +33,7 @@ import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
@@ -44,8 +45,42 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanTest
+public class ScanHeadlessTest
 {
+    @Test(timeout=3000)
+    public void testAutoDeviceAddition() throws Exception
+    {
+        // Empty device context
+        final DeviceContext devices = new DeviceContext();
+
+        // Scan that requires 2 devices
+        final LoopCommand command = new LoopCommand("motor_x", 1.0, 5.0, 1.0,
+                    new LogCommand("setpoint"));
+        final Scan scan = new Scan("Scan Device Test", devices, new LoopCommandImpl(command));
+
+        // Execute the scan
+        assertEquals(0, devices.getDevices().length);
+        scan.execute();
+
+        // Devices should have been added by scan as needed
+        final Device[] device_infos = devices.getDevices();
+        boolean got_motor_x = false;
+        boolean got_setpoint = false;
+        for (Device device : device_infos)
+        {
+            final String alias = device.getInfo().getAlias();
+            System.out.println(alias);
+            if ("motor_x".equals(alias))
+                got_motor_x = true;
+            if ("setpoint".equals(alias))
+                got_setpoint = true;
+        }
+        assertEquals(2, device_infos.length);
+        assertTrue(got_motor_x);
+        assertTrue(got_setpoint);
+    }
+
+
     /** Scan takes about 20 seconds */
     @Test(timeout=40000)
     public void testScanner() throws Exception

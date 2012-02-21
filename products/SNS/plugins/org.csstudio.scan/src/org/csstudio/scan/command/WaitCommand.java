@@ -58,6 +58,8 @@ public class WaitCommand extends ScanCommand
 	        final Comparison comparison, final double desired_value,
 	        final double tolerance, final double timeout)
     {
+	    if (device_name == null)
+	        throw new NullPointerException();
         this.device_name = device_name;
         this.desired_value = desired_value;
 	    this.comparison = comparison;
@@ -72,7 +74,7 @@ public class WaitCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Device name */
+	/** @return Device name (may be "" but not <code>null</code>) */
 	public String getDeviceName()
     {
         return device_name;
@@ -81,6 +83,8 @@ public class WaitCommand extends ScanCommand
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
