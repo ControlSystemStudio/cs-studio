@@ -65,7 +65,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.alarm.beast.ui.areapanel"
+         id="org.csstudio.alarm.beast.ui.globaltable"
          download-size="0"
          install-size="0"
          version="0.0.0"
