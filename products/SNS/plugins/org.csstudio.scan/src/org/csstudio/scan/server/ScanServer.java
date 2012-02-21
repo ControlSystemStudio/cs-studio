@@ -55,10 +55,12 @@ public interface ScanServer extends Remote
     public String getInfo() throws RemoteException;
 
     /** Query server for devices used by a scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *            or -1 for default devices
      *  @return Info about devices
      *  @throws RemoteException on error in remote access
      */
-    public DeviceInfo[] getDeviceInfos() throws RemoteException;
+    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException;
 
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan

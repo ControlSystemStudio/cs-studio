@@ -128,21 +128,41 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public DeviceInfo[] getDeviceInfos() throws RemoteException
+    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException
     {
 		// Get devices in context
     	Device[] devices;
-    	try
+    	if (id >= 0)
     	{
-    		final DeviceContext context = DeviceContext.getDefault();
-    		devices = context.getDevices();
+        	try
+        	{
+        	    final Scan scan = findScan(id);
+        	    if (scan == null)
+        	        return null;
+        		devices = scan.getDevices();
+        	}
+        	catch (Exception ex)
+        	{
+        		Logger.getLogger(getClass().getName()).log(Level.WARNING,
+        				"Error reading device context", ex);
+        		devices = new Device[0];
+        	}
     	}
-    	catch (Exception ex)
-    	{
-    		Logger.getLogger(getClass().getName()).log(Level.WARNING,
-    				"Error reading device context", ex);
-    		devices = new Device[0];
-    	}
+    	else
+        {
+            try
+            {
+                final DeviceContext context = DeviceContext.getDefault();
+                devices = context.getDevices();
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName()).log(Level.WARNING,
+                        "Error reading device context", ex);
+                devices = new Device[0];
+            }
+        }
+
     	// Turn into infos
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
     	for (int i = 0; i < infos.length; i++)
@@ -152,6 +172,7 @@ public class ScanServerImpl implements ScanServer
     	}
     	return infos;
     }
+
 
     /** {@inheritDoc} */
     @Override

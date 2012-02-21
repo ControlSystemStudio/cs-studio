@@ -144,7 +144,7 @@ public class ScanEditor extends EditorPart
                     final ScanServer server = ScanServerConnector.connect();
                     try
                     {
-                        devices = server.getDeviceInfos();
+                        devices = server.getDeviceInfos(-1);
                     }
                     finally
                     {

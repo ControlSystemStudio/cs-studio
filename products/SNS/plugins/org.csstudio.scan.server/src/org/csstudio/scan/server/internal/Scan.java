@@ -147,6 +147,19 @@ public class Scan implements ScanContext
         return devices.getDeviceByAlias(name);
     }
 
+    /** Obtain devices used by this scan.
+     *
+     *  <p>Note that the result can differ before and
+     *  after the scan gets executed because devices
+     *  are added to the device context as needed.
+     *
+     *  @return Devices used by this scan
+     */
+    public Device[] getDevices()
+    {
+        return devices.getDevices();
+    }
+
     /** {@inheritDoc} */
     @Override
     public void logSample(final ScanSample sample)
