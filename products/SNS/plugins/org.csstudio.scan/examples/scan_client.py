@@ -21,15 +21,18 @@ lines outside of CSS.
 # For now this is hard coded in here to allow use
 # from BOY scripts
 import sys
+import glob
+
 # Path to workspace, when running within IDE
-workspace="/Kram/MerurialRepos/cs-studio/products/SNS/plugins/"
-sys.path.append(workspace + "org.csstudio.scan/bin")
-sys.path.append(workspace + "org.csstudio.scan.client/bin")
+workspace="/Kram/MerurialRepos/cs-studio/products/SNS/plugins"
+sys.path.append(workspace + "/org.csstudio.scan/bin")
+sys.path.append(workspace + "/org.csstudio.scan.client/bin")
 
 # Path to binaries, when running within exported product
-install="/Users/Fred/Desktop/CSS/plugins/"
-sys.path.append(install + "org.csstudio.scan")
-sys.path.append(install + "org.csstudio.scan.client")
+# Using glob to expand '*' into the installed version of the plugin
+install="/Users/Fred/Desktop/CSS/plugins"
+sys.path.append(glob.glob(install + "/org.csstudio.scan_*")[0])
+sys.path.append(glob.glob(install + "/org.csstudio.scan.client_*")[0])
 
 # -------------------------------------------------------
 
