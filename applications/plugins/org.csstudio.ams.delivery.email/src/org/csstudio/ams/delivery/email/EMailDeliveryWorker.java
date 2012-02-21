@@ -25,7 +25,6 @@
 
 package org.csstudio.ams.delivery.email;
 
-import java.util.ArrayList;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
@@ -98,29 +97,19 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
                 }
             }
 
-            int sent = 0;
+            LOG.info("Number of messages to send: " + messageQueue.size());
             while (messageQueue.hasContent()) {
-                
-                // Get all messages and remove them
-                ArrayList<EMailAlarmMessage> outgoing = messageQueue.getCurrentContent();
-                LOG.info("Number of messages to send: " + outgoing.size());
-                
-                sent = mailDevice.sendMessages(outgoing);
-                LOG.info("{} of {} messages sent.", sent, outgoing.size());
-                if (sent < outgoing.size()) {
-                    LOG.warn("Re-inserting {} messages into the message queue.", (outgoing.size() - sent));
-                    for (EMailAlarmMessage o : outgoing) {
-                        if (o.getMessageState() == State.FAILED) {
-                            messageQueue.addMessage(o);
-                        } else {
-                            // TODO: Handle the messages with the state BAD!
-                            LOG.warn("Dicarding message: {}", o);
-                        }
+                final EMailAlarmMessage outMsg = messageQueue.nextMessage();
+                if (mailDevice.sendMessage(outMsg) == false) {
+                    if (outMsg.getMessageState() == State.FAILED) {
+                        LOG.warn("Cannot send message: {}", outMsg);
+                        messageQueue.addMessage(outMsg);
+                        LOG.warn("Re-Insert it into the message queue.");
+                    } else {
+                        // TODO: Handle the messages with the state BAD!
+                        LOG.warn("Dicarding message: {}", outMsg);
                     }
                 }
-                
-                outgoing.clear();
-                outgoing = null;
             }
         }
 
