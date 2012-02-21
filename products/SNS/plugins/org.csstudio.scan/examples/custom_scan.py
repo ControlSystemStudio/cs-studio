@@ -6,7 +6,15 @@ Example for custom scan from shell
 
 from scan_client import *
 
-# Connect to server
+# Simple scans
+# Move motor X 1 ... 10
+scan('Simple 1D', ('xpos', 1, 10));
+
+# Move motors X and Y, log the readback
+scan('Simple 2D', ('xpos', 1, 10), ('ypos', 1, 10, 0.5), 'readback')
+
+
+# Connect to server for more detailed custom scans
 client = ScanClient()
 
 # Create some scan by adding commands to sequence
@@ -28,7 +36,7 @@ client.waitUntilDone()
 # as a python list
 cmds = [
   DelayCommand(2.0),
-  LoopCommand('xpos', 1, 5, 0.1, 0.0,
+  LoopCommand('xpos', 1, 5, 0.1,
     [
       SetCommand('setpoint', 1),
       WaitCommand('readback', Comparison.EQUALS, 1.0, 0.5, 0.0),
@@ -37,7 +45,6 @@ cmds = [
       LogCommand([ 'xpos', 'readback' ])
     ]),
 ]
-
 
 # Schedule for execution on server
 seq = CommandSequence(cmds)
