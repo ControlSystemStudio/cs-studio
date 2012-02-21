@@ -23,7 +23,7 @@ public class ArchiveGuard {
 	}
 
 
-	public List<PvIntervalList> checkForLostSamples(List<PvIntervalList> listOfPvIntervals) {
+	public List<PvIntervalList> checkForGaps(List<PvIntervalList> listOfPvIntervals) {
 		Map<String, String> channelSet = null;
 		try {
 			channelSet = getAllConnectedSamples();
@@ -113,6 +113,16 @@ public class ArchiveGuard {
 						+ "and sample.time between ? and ?");
 		return stmt;
 	}
+	
+	private PreparedStatement createCountSamplesInRangeStatementWithChannelName(
+			Connection con) throws SQLException {
+		PreparedStatement stmt = con
+				.prepareStatement("select count(*) from " + Settings.DATABASE + ".sample, " + Settings.DATABASE + ".channel "
+						+ "where channel.name = ? "
+						+ "and channel.id = sample.channel_id "
+						+ "and sample.time between ? and ?");
+		return stmt;
+	}
 
 	private PreparedStatement createCountHourSamplesInRangeStatement(Connection con)
 			throws SQLException {
@@ -127,4 +137,30 @@ public class ArchiveGuard {
 	public int getRangeCount() {
 		return rangeCount;
 	}
+
+
+	public Map<String, PvIntervalList> checkForLostSamples(Map<String, PvIntervalList> pvIntervalMap) {
+		Set<String> channelNames = pvIntervalMap.keySet();
+		int counter = 0;
+		for (String channelName : channelNames) {
+			counter++;
+			if (counter > 10) {
+				break;
+			}
+			PvIntervalList pvIntervalList = pvIntervalMap.get(channelName);
+			for (Interval interval : pvIntervalList.getIntervalList()) {
+				int samplesInDb = 0;
+				try {
+//					samplesInDb = retrieveSampleCountFromDb(channelName, interval.getStart(), interval.getEnd());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				interval.setSampleInDbCount(samplesInDb);
+			}
+		}
+		return pvIntervalMap;
+		
+	}
+
+
 }

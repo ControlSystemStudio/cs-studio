@@ -21,19 +21,9 @@ public class ArchiveGuardApplication  implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		LOG.info("Guard START");
-		ConnectionHandler connectionHandler = new ConnectionHandler();
-		ArchiveGuard guard = new ArchiveGuard(connectionHandler);
-		List<PvIntervalList> listOfPvIntervals = new ArrayList<>();
-		listOfPvIntervals = guard.checkForLostSamples(listOfPvIntervals);
-		connectionHandler.close();
-		Evaluater eval = new Evaluater();
-		listOfPvIntervals = eval.removeEmptyPvLists(listOfPvIntervals);
-		listOfPvIntervals = eval.removeSmallAvgPvLists(listOfPvIntervals, 5);
-		eval.printAverageAndVariance(listOfPvIntervals);
-		eval.printLostHourSamples(listOfPvIntervals);
-//		eval.printIntervals(listOfPvIntervals);
-//		Map<TimeInstant, List<String>> aggregateGapsForRange = eval.aggregateGapsForRange(listOfPvIntervals);
-//		eval.printAggregatedGaps(aggregateGapsForRange);
+		ArchiveMonitor monitor = new ArchiveMonitor();
+		monitor.checkArchiveDbForGaps();
+		monitor.compareArchiveDbWithLog();
         return null;
 	}
 

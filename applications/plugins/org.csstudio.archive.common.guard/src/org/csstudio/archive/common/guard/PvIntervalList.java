@@ -2,6 +2,8 @@ package org.csstudio.archive.common.guard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class PvIntervalList {
 
@@ -14,7 +16,7 @@ public class PvIntervalList {
 	private double variance = 1;
 	
 	private List<Interval> _intervalList = new ArrayList<>();
-	
+
 	public PvIntervalList(String chanName) {
 		channelName = chanName;
 	}
@@ -57,6 +59,35 @@ public class PvIntervalList {
 
 	public double getAverageIntervalCount() {
 		return averageIntervalCount;
+	}
+	
+	/**
+	 * Average samples over all intervals without the intervals with most samples.
+	 * (Otherwise Pvs with one small interval with a lot of samples and otherwise no samples will
+	 * be detected as Pvs with gaps.
+	 */
+	public double getAverageIntervalWithoutMaxCount(Integer maxIntervalsToRemove) {
+		TreeSet<Integer> sampleCount = new TreeSet<>();
+		for (Interval interval : _intervalList) {
+			sampleCount.add(interval.getSampleCount());
+		}
+		if(maxIntervalsToRemove > sampleCount.size()) {
+			maxIntervalsToRemove = sampleCount.size();
+		}
+		for (int i = 0; i < maxIntervalsToRemove; i++) {
+			sampleCount.remove(sampleCount.last());
+		}
+		double averageIntervalWithoutMaxCount = 0;
+		int sum = 0;
+		for (Integer sampleSize : sampleCount) {
+			sum = sum+sampleSize;
+		}
+		if (sampleCount.size() != 0) {
+			averageIntervalWithoutMaxCount = sum/sampleCount.size();
+		} else {
+			return 0;
+		}
+		return averageIntervalWithoutMaxCount;
 	}
 
 	public double getVariance() {
