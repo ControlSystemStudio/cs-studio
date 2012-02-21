@@ -21,26 +21,22 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.device.DeviceContext;
-
-/** Scan engine queue info for a scan
+/** Info for a scan that has been submitted for execution
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 class ScanQueueItem implements Callable<Object>
 {
-    final private DeviceContext devices;
     final private Scan scan;
     final private Future<Object> future;
 
     /** Initialize
      *  @param executor Executor that will call this queue item
-     *  @param devices {@link DeviceContext} to use for scan
      *  @param scan The {@link Scan}
      */
-    public ScanQueueItem(final ExecutorService executor, final DeviceContext devices, final Scan scan)
+    public ScanQueueItem(final ExecutorService executor, final Scan scan)
     {
-        this.devices = devices;
         this.scan = scan;
         this.future = executor.submit(this);
     }
@@ -50,8 +46,7 @@ class ScanQueueItem implements Callable<Object>
     public Object call() throws Exception
     {
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing Scan: {0}", scan.getName());
-        final ScanContextImpl context = new ScanContextImpl(devices);
-        scan.execute(context);
+        scan.execute();
         return null;
     }
 
@@ -72,9 +67,9 @@ class ScanQueueItem implements Callable<Object>
     {
         // Ask scan to stop
         scan.abort();
-        // TODO Wait for isDone() to allow graceful end?
 
-        // .. and force it to do so if wait()ing
+        // Scan commands are very likely in a wait()
+        // and can only be interrupted: Forced stop
         future.cancel(true);
     }
 };

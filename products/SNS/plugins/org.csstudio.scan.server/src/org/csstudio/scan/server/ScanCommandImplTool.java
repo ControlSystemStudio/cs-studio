@@ -27,8 +27,8 @@ import org.eclipse.core.runtime.Platform;
 
 /** Tool that creates executable command implementations of a {@link ScanCommand}.
  *
- *  <p>Locates the {@link ScanCommandImpl} for a {@link ScanCommand}
- *  based on the class name of the command via introspection.
+ *  <p>Queries the plugin registry for the {@link ScanCommandImplFactory}
+ *  of each {@link ScanCommandImpl} to create the associated  {@link ScanCommand}.
  *
  *  @author Kay Kasemir
  */
