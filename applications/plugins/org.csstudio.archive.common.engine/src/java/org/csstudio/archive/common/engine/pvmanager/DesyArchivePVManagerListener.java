@@ -24,7 +24,10 @@ package org.csstudio.archive.common.engine.pvmanager;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -64,9 +67,17 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
                                                    T extends ISystemVariable<V>> implements PVReaderListener {
 // CHECKSTYLE ON: AbstractClassName
 
+    private static final long _interval = 5*60*1000000000L;
     private static final Logger LOG = LoggerFactory.getLogger(DesyArchivePVManagerListener.class);
     private static final Logger EMAIL_LOG = LoggerFactory.getLogger("ErrorPerEmailLogger");
+    private static final Logger CONN_LOG = LoggerFactory.getLogger("PvConnectionLogger");
+    private static final Logger COUNT_LOG = LoggerFactory.getLogger("SampleCountLogger");
 
+    public static Map<String, Integer> _samples = new HashMap<String, Integer>();
+
+    private static long nanos = 0;
+    private static Integer _countForAllPvs = 0;
+    private Integer _countForPv = 0;
     private final ArchiveChannelBuffer<V, T> _buffer;
     private IServiceProvider _provider;
     private final String _channelName;
@@ -95,6 +106,7 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
         _channelId = id;
         _datatype = datatype;
         _firstConnection = true;
+        _samples.put(name, 0);
     }
 
 
@@ -107,19 +119,54 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
         try {
             // TODO (bknerr) : ask Gabriele whether it is a good choice to separate the value
             // update callback from the calling/value providing instance
-
             final List<EpicsSystemVariable> sysVars = (List<EpicsSystemVariable>) _reader.getValue();
             if (_firstConnection && !sysVars.isEmpty()) {
                 handleOnConnectionInformation(_provider, sysVars.get(0), _channelId, _buffer.isConnected(), _startInfo);
                 _firstConnection = false;
             }
+            if (nanos == 0) {
+                nanos = sysVars.get(0).getTimestamp().getNanos() + _interval;
+            }
             for (final EpicsSystemVariable sysVar : sysVars) {
+                if (sysVar.getTimestamp().getNanos() > nanos) {
+                    logPvCount();
+                    COUNT_LOG.info("#Samples: " + _countForAllPvs + ", " + sysVar.getTimestamp().getNanos() + " > " + nanos);
+                    _countForAllPvs = 0;
+                    COUNT_LOG.info("##" + nanos + "##" + (nanos+_interval));
+                    nanos = nanos + _interval;
+                    resetPvCount();
+                }
+                _countForAllPvs++;
+                _countForPv++;
+                _samples.put(sysVar.getName(), _countForPv);
                 handleValueUpdateInformation(sysVar);
             }
         } catch (final Throwable t) {
             LOG.error("Unexpected exception in PVListener for: {}:\n{}", _channelName, t.getMessage());
         }
     }
+
+    private void logPvCount() {
+
+        COUNT_LOG.info("-------Size: " + _samples.size());
+        synchronized (_samples) {
+            final Map<String, Integer> sampleCopy = new HashMap<String, Integer>();
+            sampleCopy.putAll(_samples);
+        }
+        final Set<String> keySet = _samples.keySet();
+        for (final String pvName : keySet) {
+            COUNT_LOG.info(">>" + pvName + ">>" + _samples.get(pvName));
+        }
+    }
+
+
+    private synchronized void resetPvCount() {
+        final Set<String> keySet = _samples.keySet();
+        for (final String pvName : keySet) {
+            _samples.put(pvName, 0);
+        }
+    }
+
 
     @SuppressWarnings("rawtypes")
     private void handleOnConnectionInformation(@Nonnull final IServiceProvider provider,
@@ -128,8 +175,13 @@ public abstract class DesyArchivePVManagerListener<V extends Serializable,
                                                final boolean connected,
                                                @Nonnull final String info)
                                                throws EngineModelException, OsgiServiceUnavailableException, ArchiveServiceException {
+        if (nanos == 0) {
+            nanos = pv.getTimestamp().getNanos() + _interval;
+            COUNT_LOG.info("##" + pv.getTimestamp().getNanos() + "##" + nanos);
+        }
         _buffer.persistChannelStatusInfo(id, connected, info);
 
+//        CONN_LOG.info(_channelName + ", " + connected);
         if(!validateAndPersistDatatype(provider, id, pv.getData())) {
             _buffer.stop("Datatype mismatch");
             return;
