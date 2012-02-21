@@ -42,15 +42,15 @@ public class HistoricSamples extends PlotSamples
      *  @see #computeVisibleSize()
      */
     private int visible_size = 0;
-    
+
     /** Waveform index */
     private int waveform_index = 0;
-    
+
     /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
+    public void setWaveformIndex(final int index)
     {
     	waveform_index = index;
-    	
+
     	// change the index of all samples in this instance
     	for (PlotSample sample: samples) {
     		sample.setWaveformIndex(waveform_index);
