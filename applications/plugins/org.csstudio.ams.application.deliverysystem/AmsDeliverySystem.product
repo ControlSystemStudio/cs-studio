@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xms256m -Xmx512m -Dsmslib.at.simpinwait=10000</vmArgs>
+      <vmArgs>-Xms512m -Xmx768m -Dsmslib.at.simpinwait=10000</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
