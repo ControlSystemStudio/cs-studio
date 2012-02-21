@@ -27,6 +27,7 @@ package org.csstudio.ams.delivery.queue;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.jms.JMSException;
@@ -52,8 +53,8 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
         content = new ConcurrentLinkedQueue<E>();
     }
 
-    public synchronized ArrayList<E> getCurrentContent() {
-        final ArrayList<E> result = (ArrayList<E>) Collections.synchronizedList(new ArrayList<E>(content));
+    public synchronized List<E> getCurrentContent() {
+        final List<E> result = Collections.synchronizedList(new ArrayList<E>(content));
         content.removeAll(result);
         return result;
     }
