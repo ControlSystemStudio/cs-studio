@@ -26,57 +26,67 @@
 package org.csstudio.ams.delivery.queue;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 18.12.2011
  */
 public abstract class AbstractMessageQueue<E> implements MessageListener {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageQueue.class);
-    
+
     protected ConcurrentLinkedQueue<E> content;
 
     protected AbstractMessageQueue() {
         content = new ConcurrentLinkedQueue<E>();
     }
-    
-    public synchronized ArrayList<E> getCurrentContent() {
-        ArrayList<E> result = new ArrayList<E>(content);
+
+    public synchronized List<E> getCurrentContent() {
+        final List<E> result = Collections.synchronizedList(new ArrayList<E>(content));
         content.removeAll(result);
         return result;
     }
-    
-    public boolean addMessage(E e) {
+
+    public synchronized E nextMessage() {
+        return content.poll();
+    }
+
+    public synchronized boolean addMessage(final E e) {
         return content.add(e);
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return content.isEmpty();
     }
-    
-    public boolean hasContent() {
+
+    public synchronized boolean hasContent() {
         return !content.isEmpty();
     }
-    
+
+    public synchronized int size() {
+        return content.size();
+    }
+
     @Override
-    public void onMessage(Message msg) {
+    public void onMessage(final Message msg) {
         if (msg instanceof MapMessage) {
             LOG.info("Message received: {}", msg);
-            E o = convertMessage((MapMessage) msg);
+            final E o = convertMessage((MapMessage) msg);
             if (o != null) {
-                content.add(o);
                 synchronized (this) {
+                    content.add(o);
                     notify();
                 }
             }
@@ -85,13 +95,13 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
             LOG.warn("Message is not a MapMessage object. Ignoring it...");
         }
     }
-    
+
     protected abstract E convertMessage(MapMessage message);
-    
-    protected void acknowledge(Message message) {
+
+    protected void acknowledge(final Message message) {
         try {
             message.acknowledge();
-        } catch (JMSException jmse) {
+        } catch (final JMSException jmse) {
             LOG.warn("Cannot acknowledge message: {}", message);
         }
     }

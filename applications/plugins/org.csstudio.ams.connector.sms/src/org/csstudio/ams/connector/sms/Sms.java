@@ -155,13 +155,13 @@ public class Sms implements Serializable {
     }
 
     public void setState(Sms.State s) {
-        if(s == Sms.State.FAILED) {
+        Sms.State temp = s;
+        if(temp == Sms.State.FAILED) {
             if(++this.failCount >= 3) {
-                s = Sms.State.BAD;
+                temp = Sms.State.BAD;
             }
         }
-        
-        this.state = s;
+        this.state = temp;
     }
 
     public Sms.Type getType() {

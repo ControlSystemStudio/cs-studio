@@ -25,7 +25,7 @@
 
 package org.csstudio.ams.delivery.voicemail;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.device.DeviceException;
@@ -99,7 +99,7 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
             int sent = 0;
             while (messageQueue.hasContent()) {
                 // Get all messages and remove them
-                ArrayList<VoicemailAlarmMessage> outgoing = messageQueue.getCurrentContent();
+                List<VoicemailAlarmMessage> outgoing = messageQueue.getCurrentContent();
                 LOG.info("Number of messages to send: " + outgoing.size());
                 
                 sent = device.sendMessages(outgoing);

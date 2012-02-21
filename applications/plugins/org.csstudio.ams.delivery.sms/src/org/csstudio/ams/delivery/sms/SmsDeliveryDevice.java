@@ -92,28 +92,23 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
     
     @Override
     public boolean deleteMessage(InboundMessage message) {
-        
         boolean success = false;
         try {
             success = modemService.deleteMessage(message);
         } catch (Exception e) {
             LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
         }
-
         return success;
     }
     
     @Override
-    public int sendMessages(Collection<SmsAlarmMessage> msgList) {
-        
+    public int sendMessages(final Collection<SmsAlarmMessage> msgList) {
         int sent = 0;
-        
         for (SmsAlarmMessage o : msgList) {
             if (sendMessage(o)) {
                 sent++;
             }
         }
-        
         return sent;
     }
     
