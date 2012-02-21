@@ -46,11 +46,21 @@ abstract public class OptionListCellEditor extends CellEditor
         setValueValid(true);
     }
 
+    /** The default editor is a read-only combo,
+     *  but derived classes can override
+     *  @return true if the editor is read-only
+     */
+    protected boolean isReadOnly()
+    {
+        return true;
+    }
+
     /** {@inheritDoc} */
     @Override
-    protected Control createControl(final Composite parent)
+    final protected Control createControl(final Composite parent)
     {
-        combo = new CCombo(parent, SWT.READ_ONLY);
+        final int style = isReadOnly() ? SWT.READ_ONLY : 0;
+        combo = new CCombo(parent, style);
         combo.setFont(parent.getFont());
 
         addGuiTweaks(combo);
@@ -73,9 +83,11 @@ abstract public class OptionListCellEditor extends CellEditor
         combo.addTraverseListener(new TraverseListener()
         {
             @Override
-            public void keyTraversed(TraverseEvent e) {
+            public void keyTraversed(final TraverseEvent e)
+            {
                 if (e.detail == SWT.TRAVERSE_ESCAPE
-                        || e.detail == SWT.TRAVERSE_RETURN) {
+                        || e.detail == SWT.TRAVERSE_RETURN)
+                {
                     e.doit = false;
                 }
             }
@@ -85,22 +97,11 @@ abstract public class OptionListCellEditor extends CellEditor
         combo.addFocusListener(new FocusAdapter()
         {
             @Override
-            public void focusLost(FocusEvent e) {
+            public void focusLost(final FocusEvent e)
+            {
                 OptionListCellEditor.this.focusLost();
             }
         });
-    }
-
-    /** Applies the currently selected value and deactivates the cell editor */
-    void applyEditorValueAndDeactivate()
-    {
-        final Object newValue = doGetValue();
-        markDirty();
-        final boolean isValid = isCorrect(newValue);
-        setValueValid(isValid);
-
-        fireApplyEditorValue();
-        deactivate();
     }
 
     /** {@inheritDoc} */
@@ -143,7 +144,7 @@ abstract public class OptionListCellEditor extends CellEditor
     /** @param label Label that is currently entered/selected in the combo box
      *  @return Index of corresponding combo box entry, using 0 if there is no match
      */
-    protected int getSelectionIndex(final String label)
+    final protected int getSelectionIndex(final String label)
     {
         for (int i=0; i<labels.length; ++i)
             if (labels[i].equals(label))
