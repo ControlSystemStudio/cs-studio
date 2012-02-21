@@ -26,8 +26,6 @@
 package org.csstudio.ams.delivery.sms;
 
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -73,8 +71,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     
     private JmsSimpleProducer amsPublisherReply;
     
-    private Object lock;
-    
     private OutgoingSmsQueue outgoingQueue;
     
     private IncomingQueue<BaseIncomingMessage> incomingQueue;
@@ -98,7 +94,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
-        lock = new Object();
         outgoingQueue = new OutgoingSmsQueue();
         incomingQueue = new IncomingQueue<BaseIncomingMessage>();
         
@@ -144,12 +139,12 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         LOG.info(workerName + " is running.");
                 
         while(running) {
-            synchronized (lock) {
+            synchronized (outgoingQueue) {
                 try {
                     if (outgoingQueue.isEmpty() && (!testStatus.isActive())) {
-                        lock.wait();
+                        outgoingQueue.wait();
                     } else {
-                        lock.wait(readWaitingPeriod);
+                        outgoingQueue.wait(readWaitingPeriod);
                     }
                     workerCheckFlag = false;
                 } catch (InterruptedException ie) {
@@ -177,15 +172,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 outgoing = null;
             }
             
-            synchronized (incomingQueue) {
-                if (incomingQueue.hasContent()) {
-                    List<BaseIncomingMessage> incoming = incomingQueue.getCurrentContent();
-                    for (BaseIncomingMessage o : incoming) {
-                        if (processIncomingMessages(o) == false) {
-                            checkDeviceTest(o);
-                        }
-                        incoming.remove(o);
-                    }
+            while (incomingQueue.hasContent()) {
+                final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
+                if (processIncomingMessages(inMsg) == false) {
+                    checkDeviceTest(inMsg);
                 }
             }
         }
@@ -364,8 +354,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                         testStatus.reset();
                         testStatus.setCheckId(checkId);
                         smsDevice.sendDeviceTestMessage(testStatus);
-                        synchronized (lock) {
-                            lock.notify();
+                        synchronized (outgoingQueue) {
+                            outgoingQueue.notify();
                         }
                     } else {
                         LOG.info("A modem check is still active. Ignoring the new modem check.");
@@ -390,8 +380,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         } else {
             LOG.warn("Message cannot be deleted.");
         }
-        synchronized (lock) {
-            lock.notify();
+        synchronized (outgoingQueue) {
+            outgoingQueue.notify();
         }
     }
 
@@ -542,16 +532,16 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     @Override
     public void stopWorking() {
         running = false;
-        synchronized (lock) {
-            lock.notify();
+        synchronized (outgoingQueue) {
+            outgoingQueue.notify();
         }
     }
 
     @Override
     public boolean isWorking() {
         workerCheckFlag = true;
-        synchronized (lock) {
-            lock.notify();
+        synchronized (outgoingQueue) {
+            outgoingQueue.notify();
         }
         Object localLock = new Object();
         synchronized (localLock) {
