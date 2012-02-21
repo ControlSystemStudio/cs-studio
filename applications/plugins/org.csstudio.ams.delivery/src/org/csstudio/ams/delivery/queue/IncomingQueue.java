@@ -45,16 +45,13 @@ public class IncomingQueue<E> {
         content = new ConcurrentLinkedQueue<E>();
     }
     
-    public List<E> getCurrentContent() {
-        List<E> result = null;
-        synchronized (content) {
-            result = Collections.synchronizedList(new ArrayList<E>(content));
-            content.removeAll(result);
-        }
+    public synchronized List<E> getCurrentContent() {
+        List<E> result = Collections.synchronizedList(new ArrayList<E>(content));
+        content.removeAll(result);
         return result;
     }
     
-    public int size() {
+    public synchronized int size() {
         return content.size();
     }
     
@@ -65,11 +62,11 @@ public class IncomingQueue<E> {
     public synchronized E nextMessage() {
         return content.poll();
     }
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return content.isEmpty();
     }
     
-    public boolean hasContent() {
+    public synchronized boolean hasContent() {
         return !content.isEmpty();
     }
 }

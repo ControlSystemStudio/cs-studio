@@ -57,15 +57,15 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
         return result;
     }
     
-    public boolean addMessage(E e) {
+    public synchronized boolean addMessage(E e) {
         return content.add(e);
     }
 
-    public boolean isEmpty() {
+    public synchronized boolean isEmpty() {
         return content.isEmpty();
     }
     
-    public boolean hasContent() {
+    public synchronized boolean hasContent() {
         return !content.isEmpty();
     }
     
@@ -75,8 +75,8 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
             LOG.info("Message received: {}", msg);
             E o = convertMessage((MapMessage) msg);
             if (o != null) {
-                content.add(o);
                 synchronized (this) {
+                    content.add(o);
                     notify();
                 }
             }
