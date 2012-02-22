@@ -30,21 +30,11 @@ import org.eclipse.swt.widgets.TableItem;
 import edu.msu.nscl.olog.api.Log;
 
 public class OlogTableWidget extends Composite {
-	private static class ContentProvider implements IStructuredContentProvider {
-		public Object[] getElements(Object inputElement) {
-			return (Object[]) inputElement;
-		}
-
-		public void dispose() {
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-	}
 
 	private Collection<Log> logs = new ArrayList<Log>();
 
 	private TableViewer tableViewer;
+	private Collection<OlogTableColumnDescriptor> tableViewerColumnDescriptors;
 
 	private ErrorBar errorBar;
 	private Table table;
@@ -73,7 +63,7 @@ public class OlogTableWidget extends Composite {
 		table.setLinesVisible(true);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-		tableViewer.setContentProvider(new ContentProvider());
+		tableViewer.setContentProvider(new OlogContentProvider());
 
 		table.addListener(SWT.MeasureItem, paintListener);
 		table.addListener(SWT.PaintItem, paintListener);
@@ -164,6 +154,14 @@ public class OlogTableWidget extends Composite {
 		layout.setColumnData(tblclmnOlogDescriptionName, new ColumnWeightData(
 				70));
 
+		// Add the additional columns
+		if (tableViewerColumnDescriptors != null) {
+			for (OlogTableColumnDescriptor ologTableColumnDescriptor : tableViewerColumnDescriptors) {
+				ologTableColumnDescriptor.getTableViewerColumn(tableViewer,
+						layout);
+			}
+		}
+		
 		composite.layout();
 		tableViewer.refresh();
 	}
@@ -222,6 +220,22 @@ public class OlogTableWidget extends Composite {
 
 	void setLogs(Collection<Log> logs) {
 		this.logs = logs;
+		updateTable();
+	}
+
+	public Collection<OlogTableColumnDescriptor> getTableViewerColumnDescriptors() {
+		return tableViewerColumnDescriptors;
+	}
+
+	public void setTableViewerColumnDescriptors(
+			Collection<OlogTableColumnDescriptor> tableViewerColumnDescriptors) {
+		this.tableViewerColumnDescriptors = tableViewerColumnDescriptors;
+		updateTable();
+	}
+
+	public void setTableViewerColumnDescriptors(
+			OlogTableColumnDescriptor tableViewerColumnDescriptor) {
+		this.tableViewerColumnDescriptors.add(tableViewerColumnDescriptor);
 		updateTable();
 	}
 

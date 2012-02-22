@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="org.csstudio.logbook.ologtablecolumn" name="Olog Table Column" schema="schema/org.csstudio.logbook.OlogTableColumn.exsd"/>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -40,6 +41,12 @@
             id="org.csstudio.logbook.ologviewer.openOlog"
             name="Open Olog">
       </command>
+   </extension>
+   <extension
+         point="org.csstudio.logbook.ologtablecolumn">
+      <ologtablecolumn
+            ologtablecolumn="org.csstudio.logbook.ologviewer.OwnerOlogTableColumn">
+      </ologtablecolumn>
    </extension>
 
 </plugin>

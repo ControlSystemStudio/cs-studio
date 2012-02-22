@@ -1,7 +1,13 @@
 package org.csstudio.logbook.ologviewer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.logging.Level;
+
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -33,7 +39,7 @@ public class OlogEditor extends EditorPart {
 
 	private Label lblSearch;
 
-	private static class OlogInput implements IEditorInput{
+	private static class OlogInput implements IEditorInput {
 
 		@Override
 		public Object getAdapter(Class adapter) {
@@ -65,11 +71,12 @@ public class OlogEditor extends EditorPart {
 		public boolean exists() {
 			return false;
 		}
-		
+
 	}
-	
+
 	private final static OlogInput ologInput = new OlogInput();
-	
+	private static Collection<OlogTableColumnDescriptor> ologTableColumnDescriptors = new ArrayList<OlogTableColumnDescriptor>();
+
 	public static OlogEditor openOlogEditorInstance() {
 		final IWorkbenchPage page = PlatformUI.getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage();
@@ -86,6 +93,33 @@ public class OlogEditor extends EditorPart {
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
+		try {
+			IConfigurationElement[] config = Platform.getExtensionRegistry()
+					.getConfigurationElementsFor(
+							"org.csstudio.logbook.ologtablecolumn");
+
+			if (config.length == 0) {
+				Activator
+						.getLogger()
+						.log(Level.INFO,
+								"No configured client for ChannelFinder found: using default configuration");
+			}
+
+			if (config.length >= 1) {
+				for (IConfigurationElement configurationElement : config) {
+					ologTableColumnDescriptors
+							.add((OlogTableColumnDescriptor) configurationElement
+									.createExecutableExtension("ologtablecolumn"));
+				}
+			}
+		} catch (Exception e) {
+			Activator
+					.getLogger()
+					.log(Level.SEVERE,
+							"Could not retrieve configured client for ChannelFinder",
+							e);
+		}
+
 	}
 
 	@Override
@@ -106,7 +140,7 @@ public class OlogEditor extends EditorPart {
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 		combo.setToolTipText("Space seperated search criterias, patterns may include * and ? wildcards");
-		
+
 		ComboHistoryHelper name_helper = new ComboHistoryHelper(Activator
 				.getDefault().getDialogSettings(),
 				"org.csstudio.logbook.ologviewer", combo, 20, true) {
@@ -122,6 +156,8 @@ public class OlogEditor extends EditorPart {
 		};
 
 		ologTableWidget = new OlogTableWidget(parent, SWT.None);
+		ologTableWidget.setTableViewerColumnDescriptors(ologTableColumnDescriptors);
+		
 		ologTableWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 2, 1));
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
