@@ -141,7 +141,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         while(running) {
             synchronized (outgoingQueue) {
                 try {
-                    if (outgoingQueue.isEmpty() 
+                    if (outgoingQueue.isEmpty()
+                        && incomingQueue.isEmpty()
                         && !testStatus.isActive()
                         && !testStatus.isDeviceTestInitiated()) {
                     
@@ -156,41 +157,47 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 }
             }
 
-            if (testStatus.isDeviceTestInitiated()) {
-                final DeviceTestMessageContent content = testStatus.getDeviceTestMessageContent();
-                final String dest = content.getDestination();
-                if (dest.contains(workerName) || dest.compareTo("*") == 0) {
-                    if(testStatus.isActive() == false || testStatus.isTimeOut()) {
-                        final String checkId = content.getCheckId();
-                        testStatus.reset();
-                        testStatus.setCheckId(checkId);
-                        smsDevice.sendDeviceTestMessage(testStatus);
+            while (outgoingQueue.hasContent() 
+                   || incomingQueue.hasContent()
+                   || testStatus.isActive()
+                   || testStatus.isDeviceTestInitiated()) {
+
+                if (testStatus.isDeviceTestInitiated()) {
+                    final DeviceTestMessageContent content = testStatus.getDeviceTestMessageContent();
+                    final String dest = content.getDestination();
+                    if (dest.contains(workerName) || dest.compareTo("*") == 0) {
+                        if(testStatus.isActive() == false || testStatus.isTimeOut()) {
+                            final String checkId = content.getCheckId();
+                            testStatus.reset();
+                            testStatus.setCheckId(checkId);
+                            smsDevice.sendDeviceTestMessage(testStatus);
+                        } else {
+                            LOG.info("A modem check is still active. Ignoring the new modem check.");
+                        }
                     } else {
-                        LOG.info("A modem check is still active. Ignoring the new modem check.");
+                        LOG.info("This message is not for me.");
                     }
-                } else {
-                    LOG.info("This message is not for me.");
                 }
-            }
-
-            while (incomingQueue.hasContent()) {
-                final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
-                if (processIncomingMessages(inMsg) == false) {
-                    checkDeviceTest(inMsg);
+            
+                if (incomingQueue.hasContent()) {
+                    final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
+                    if (processIncomingMessages(inMsg) == false) {
+                        checkDeviceTest(inMsg);
+                    }
                 }
-            }
-
-            LOG.info("Zu senden: " + outgoingQueue.size());
-            while (outgoingQueue.hasContent()) {
-                final SmsAlarmMessage outMsg = outgoingQueue.nextMessage();
-                if (smsDevice.sendMessage(outMsg) == false) {
-                    if (outMsg.getMessageState() == State.FAILED) {
-                        LOG.error("Cannot send message: {}", outMsg);
-                        outgoingQueue.addMessage(outMsg);
-                        LOG.error("Re-Insert it into the message queue.");
-                    } else {
-                        // TODO: Handle the messages with the state BAD!
-                        LOG.warn("Dicarding message: {}", outMsg);
+    
+                if (outgoingQueue.hasContent()) {
+                    LOG.info("Zu senden: " + outgoingQueue.size());
+                    final SmsAlarmMessage outMsg = outgoingQueue.nextMessage();
+                    if (smsDevice.sendMessage(outMsg) == false) {
+                        if (outMsg.getMessageState() == State.FAILED) {
+                            LOG.error("Cannot send message: {}", outMsg);
+                            outgoingQueue.addMessage(outMsg);
+                            LOG.error("Re-Insert it into the message queue.");
+                        } else {
+                            // TODO: Handle the messages with the state BAD!
+                            LOG.warn("Dicarding message: {}", outMsg);
+                        }
                     }
                 }
             }
