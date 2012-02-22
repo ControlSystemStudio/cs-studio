@@ -29,11 +29,12 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.action.AmsUserAction;
+import org.csstudio.ams.delivery.device.DeviceListener;
+import org.csstudio.ams.delivery.device.DeviceObject;
 import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.jms.JmsProperties;
 import org.csstudio.ams.delivery.jms.JmsSender;
@@ -47,11 +48,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smslib.AGateway;
-import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundBinaryMessage;
 import org.smslib.InboundMessage;
-import org.smslib.Message.MessageTypes;
 
 /**
  * @author mmoeller
@@ -59,7 +57,7 @@ import org.smslib.Message.MessageTypes;
  * @since 17.12.2011
  */
 public class SmsDeliveryWorker extends AbstractDeliveryWorker implements MessageListener,
-                                                                         IInboundMessageNotification {
+                                                                         DeviceListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryWorker.class);
 
@@ -117,8 +115,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                        null);
 
         smsDevice = new SmsDeliveryDevice(modemInfo, new JmsProperties(factoryClass, url, topic));
-        smsDevice.setInboundMessageNotification(this);
-
+        smsDevice.setDeviceListener(this);
+        
         readWaitingPeriod = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
                                           SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
                                           10000L,
@@ -379,16 +377,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     }
 
     @Override
-    public void process(final AGateway gateway, final MessageTypes msgType, final InboundMessage msg) {
-        final Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
-        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
-        final BaseIncomingMessage inMsg = new BaseIncomingMessage(msg);
-        incomingQueue.addMessage(inMsg);
-        if (smsDevice.deleteMessage(msg)) {
-            LOG.info("Message is deleted.");
-        } else {
-            LOG.warn("Message cannot be deleted.");
-        }
+    public void onIncomingMessage(DeviceObject event) {
+        incomingQueue.addMessage(event.getMessage());
         synchronized (outgoingQueue) {
             outgoingQueue.notify();
         }

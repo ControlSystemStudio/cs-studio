@@ -30,11 +30,14 @@ import java.util.Collection;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.csstudio.ams.AmsActivator;
+import org.csstudio.ams.delivery.device.DeviceListener;
+import org.csstudio.ams.delivery.device.DeviceObject;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.csstudio.ams.delivery.device.IReadableDevice;
 import org.csstudio.ams.delivery.jms.JmsProperties;
 import org.csstudio.ams.delivery.jms.JmsSender;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.message.BaseIncomingMessage;
 import org.csstudio.ams.delivery.service.Environment;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -43,23 +46,24 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.smslib.AGateway;
 import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.OutboundMessage;
 import org.smslib.Service;
 import org.smslib.Message.MessageEncodings;
+import org.smslib.Message.MessageTypes;
 import org.smslib.modem.SerialModemGateway;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 18.12.2011
  */
 public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
-                                          IReadableDevice<InboundMessage> {
+                                          IReadableDevice<InboundMessage>,
+                                          IInboundMessageNotification {
 
     /** The static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryDevice.class);
@@ -76,6 +80,8 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
     /** This class contains all modem ids (names) */
     private ModemInfoContainer modemInfo;
 
+    private DeviceListener listener;
+    
     /** Reading period (in ms) for the modem */
     private long readWaitingPeriod;
 
@@ -84,6 +90,30 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
         modemInfo = deviceInfo;
         jmsProps = jms;
         initModem();
+    }
+    
+    public void setDeviceListener(DeviceListener l) {
+        listener = l;
+    }
+    
+    public void removeDeviceListener() {
+        listener = null;
+    }
+    
+    @Override
+    public void process(final AGateway gateway, final MessageTypes msgType, final InboundMessage msg) {
+        final Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
+        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
+        final BaseIncomingMessage inMsg = new BaseIncomingMessage(msg);
+        if (listener != null) {
+            listener.onIncomingMessage(new DeviceObject(this, inMsg));
+        }
+        
+        if (deleteMessage(msg)) {
+            LOG.info("Message has been deleted.");
+        } else {
+            LOG.warn("Message CANNOT be deleted.");
+        }
     }
     
     public void setInboundMessageNotification(IInboundMessageNotification notification) {
@@ -392,6 +422,7 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
             LOG.info("Modem(s) are initialized");
             
             modemService.setGatewayStatusNotification(new GatewayStatusNotification(modemInfo.getModemNames()));
+            modemService.setInboundMessageNotification(this);
             
             if((result == true) && (modemCount > 0)) {
                 LOG.info("Try to start service");
@@ -400,17 +431,15 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
             }
         } catch(Exception e) {
             LOG.error("Could not init modem: {}", e);
-            
             JmsSender sender = new JmsSender("SmsConnectorAlarmSender",
                                              prefs.getString(AmsActivator.PLUGIN_ID,
                                                              AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL,
                                                              "failover:(tcp://localhost:62616,tcp://localhost:64616)",
                                                              null),
                                                              "ALARM");
-            
             if(sender.isConnected()) {
                 if(sender.sendMessage("alarm",
-                                      "SmsConnectorWork: Cannot init modem [" + e.getMessage() + "]",
+                                      "SmsDeliveryWorker: Cannot init modem [" + e.getMessage() + "]",
                                       "MAJOR") == false) {
                     LOG.error("Cannot send alarm message.");
                 } else {
@@ -419,10 +448,8 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
             } else {
                 LOG.warn("Alarm message sender is NOT connected.");
             }
-            
             sender.closeAll();
             sender = null;
-            
             result = false;
         }
         
