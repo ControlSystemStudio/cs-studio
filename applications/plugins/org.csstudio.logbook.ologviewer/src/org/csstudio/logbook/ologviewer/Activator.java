@@ -1,5 +1,7 @@
 package org.csstudio.logbook.ologviewer;
 
+import java.util.logging.Logger;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -10,6 +12,9 @@ public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.logbook.ologviewer"; //$NON-NLS-1$
+	
+	/** Logger for this plugin */
+    private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
 	// The shared instance
 	private static Activator plugin;
@@ -47,4 +52,10 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	
+    /** @return Logger for this plugin */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
 }

@@ -7,26 +7,39 @@
             allPopups="false"
             locationURI="menu:display">
          <command
-               commandId="org.eclipse.ui.views.showView"
+               commandId="org.csstudio.logbook.ologviewer.openOlog"
                icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
-               label="Olog Viewer"
+               label="Open Olog"
                style="push">
-            <parameter
-                  name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.logbook.ologviewer">
-            </parameter>
          </command>
       </menuContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            class="org.csstudio.logbook.ologviewer.OlogViewer"
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.logbook.ologviewer.OlogEditor"
+            default="false"
             icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
-            id="org.csstudio.logbook.ologviewer"
-            name="Olog Viewer"
-            restorable="true">
-      </view>
+            id="org.csstudio.logbook.ologviewer.ologeditor"
+            name="Olog">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.logbook.ologviewer.OlogPerspective"
+            icon="platform:/plugin/org.csstudio.logbook.ui/icons/logbook-16.png"
+            id="org.csstudio.logbook.ologviewer.ologperspective"
+            name="Olog Perpective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.logbook.ologviewer.OpenOlog"
+            id="org.csstudio.logbook.ologviewer.openOlog"
+            name="Open Olog">
+      </command>
    </extension>
 
 </plugin>
