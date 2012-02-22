@@ -242,7 +242,7 @@ public abstract class AbstractWidgetProperty {
 		if(visibleInPropSheet){
 			propertyDescriptor = createPropertyDescriptor();
 			if(propertyDescriptor != null)
-				propertyDescriptor.setCategory(category.toString());
+				propertyDescriptor.setCategory(category == null? null : category.toString());
 		}
 		else
 			propertyDescriptor = null;
