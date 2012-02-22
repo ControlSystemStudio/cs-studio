@@ -1,13 +1,9 @@
 package org.csstudio.archive.common.guard;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.concurrent.GuardedBy;
 
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -21,9 +17,9 @@ public class ArchiveGuardApplication  implements IApplication {
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		LOG.info("Guard START");
-		ArchiveMonitor monitor = new ArchiveMonitor();
-		monitor.checkArchiveDbForGaps();
-		monitor.compareArchiveDbWithLog();
+		ArchiveGuard guard = new ArchiveGuard();
+		guard.checkArchiveDbForGaps();
+		guard.compareArchiveDbWithLog();
         return null;
 	}
 

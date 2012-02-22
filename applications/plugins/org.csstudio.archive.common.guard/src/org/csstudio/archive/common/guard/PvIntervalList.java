@@ -2,12 +2,11 @@ package org.csstudio.archive.common.guard;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 public class PvIntervalList {
 
-	private final String channelName;
+	private final String _channelName;
 
 	private boolean allIntervalsEmpty = true;
 	
@@ -17,10 +16,17 @@ public class PvIntervalList {
 	
 	private List<Interval> _intervalList = new ArrayList<>();
 
+	private String _channelId = null;
+
 	public PvIntervalList(String chanName) {
-		channelName = chanName;
+		_channelName = chanName;
 	}
 	
+	public PvIntervalList(String channelName, String channelId) {
+		_channelName = channelName;
+		_channelId = channelId;
+	}
+
 	public void addInterval(Interval interval) {
 		
 		averageIntervalCount = (_intervalList.size()*averageIntervalCount+interval.getSampleCount())/(_intervalList.size()+1);
@@ -46,7 +52,7 @@ public class PvIntervalList {
 	}
 
 	public String getChannelName() {
-		return channelName;
+		return _channelName;
 	}
 
 	public List<Interval> getIntervalList() {
@@ -97,5 +103,9 @@ public class PvIntervalList {
 		}
 		variance = sum/_intervalList.size();
 		return variance;
+	}
+
+	public String getChannelId() {
+		return _channelId;
 	}
 }
