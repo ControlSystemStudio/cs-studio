@@ -51,15 +51,18 @@ public class EdmModel {
 	 */
 	private EdmModel() throws EdmException {
 
+		displaysMap = new HashMap<String, EdmDisplay>();
+		reloadEdmColorFile();
+	}
+
+	public static void reloadEdmColorFile() throws EdmException{
 		// init EdmColorsList
 		String colorsFile = System.getProperty("edm2xml.colorsFile");
 		EdmColorsListParser colorsParser = new EdmColorsListParser(colorsFile);
 		genColorsList = colorsParser.getRoot();
-		colorsList = new EdmColorsList(genColorsList);
-
-		displaysMap = new HashMap<String, EdmDisplay>();
+		colorsList = new EdmColorsList(genColorsList);	
 	}
-
+	
 	/**
 	 * Returns EdmColorsList of data model.
 	 * @return EdmColorsList in current data model.
