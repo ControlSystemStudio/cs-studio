@@ -112,4 +112,10 @@ public class PropertySSHelperImpl extends PropertySSHelper {
 		return new StringTablePropertyDescriptor(prop_id, description, tilesProvider);
 	}
 
+	@Override
+	public PropertyDescriptor getComplexDataPropertyDescriptor(String prop_id,
+			String description, String dialogTitle) {
+		return new ComplexDataPropertyDescriptor(prop_id, description, dialogTitle);
+	}
+
 }

@@ -50,6 +50,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(new RGB(255,255,255));
 		setBackgroundColor(new RGB(0,64,128));
+		setScaleOptions(true, true, true);
 	}	
 
 	@Override
@@ -93,5 +94,9 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
 	
+	@Override
+	public void scale(double widthRatio, double heightRatio) {
+		super.scale(widthRatio, heightRatio);
+	}
 	
 }

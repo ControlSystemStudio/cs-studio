@@ -39,6 +39,7 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	public CheckBoxModel() {
 		setSize(100, 20);
 		setForegroundColor(new RGB(0,0,0));
+		setScaleOptions(true, false, false);
 	}
 	
 	@Override

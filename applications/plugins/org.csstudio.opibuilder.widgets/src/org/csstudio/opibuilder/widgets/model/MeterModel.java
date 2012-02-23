@@ -55,6 +55,7 @@ public class MeterModel extends AbstractMarkedWidgetModel{
 		setForegroundColor(new RGB(0,0,0));
 		setBackgroundColor(new RGB(255, 255, 255));
 		setBorderStyle(BorderStyle.RIDGED);
+		setScaleOptions(true, true, true);
 	}	
 
 	@Override

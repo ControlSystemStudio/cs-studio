@@ -79,7 +79,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	 * @return the widget controller.
 	 * @throws Exception If widget with this name doesn't exist
 	 */
-	public AbstractBaseEditPart getWidget(String name) throws Exception{
+	public EditPart getWidget(String name) throws Exception{
 		AbstractBaseEditPart widget = searchWidget(name);
 		if(widget == null)
 			throw new Exception("Widget with name \"" + name + "\" does not exist!");
