@@ -45,8 +45,8 @@ public class OutgoingSmsQueue extends AbstractMessageQueue<SmsAlarmMessage> {
     /** Static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(OutgoingSmsQueue.class);
     
-    public OutgoingSmsQueue() {
-        super();
+    public OutgoingSmsQueue(Object lock) {
+        super(lock);
     }
     
     @Override

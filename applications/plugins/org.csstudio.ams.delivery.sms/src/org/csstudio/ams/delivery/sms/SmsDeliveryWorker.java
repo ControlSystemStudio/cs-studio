@@ -92,7 +92,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
-        outgoingQueue = new OutgoingSmsQueue();
+        outgoingQueue = new OutgoingSmsQueue(this);
         incomingQueue = new IncomingQueue<BaseIncomingMessage>();
 
         // First create the JMS connections
@@ -137,17 +137,18 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         LOG.info(workerName + " is running.");
 
         while(running) {
-            synchronized (outgoingQueue) {
+            synchronized (this) {
                 try {
                     if (outgoingQueue.isEmpty()
                         && incomingQueue.isEmpty()
                         && !testStatus.isActive()
                         && !testStatus.isDeviceTestInitiated()) {
                     
-                        outgoingQueue.wait();
-                    
+                        this.wait();
+                        LOG.debug("after wait(): I have been notified.");
                     } else {
-                        outgoingQueue.wait(readWaitingPeriod);
+                        this.wait(readWaitingPeriod);
+                        LOG.debug("after wait(readWaitingPeriod): I have been notified.");
                     }
                     workerCheckFlag = false;
                 } catch (final InterruptedException ie) {
@@ -362,14 +363,15 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     @Override
     public void onMessage(final Message msg) {
-        LOG.debug("JMS message received: {}", msg);
+        LOG.debug("Device test JMS message received: {}", msg);
         if (msg instanceof MapMessage) {
             final DeviceTestMessageContent content =
                     new DeviceTestMessageContent((MapMessage) msg);
             if (content.isDeviceTestRequest()) {
                 testStatus.setDeviceTestMessageContent(content);
                 synchronized (outgoingQueue) {
-                    outgoingQueue.notify();
+                    LOG.debug("Notify outgoing queue.");
+                    this.notify();
                 }
             }
         }
@@ -378,9 +380,13 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
 
     @Override
     public void onIncomingMessage(DeviceObject event) {
-        incomingQueue.addMessage(event.getMessage());
+        if (incomingQueue.addMessage(event.getMessage())) {
+            LOG.debug("Added incoming device message.");
+        } else {
+            LOG.debug("Device message CANNOT be added.");
+        }
         synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+            this.notify();
         }
     }
 
@@ -532,7 +538,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     public void stopWorking() {
         running = false;
         synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+            this.notify();
         }
     }
 
@@ -540,7 +546,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     public boolean isWorking() {
         workerCheckFlag = true;
         synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+            this.notify();
         }
         final Object localLock = new Object();
         synchronized (localLock) {
