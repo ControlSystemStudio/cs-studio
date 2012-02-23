@@ -48,9 +48,12 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractMessageQueue.class);
 
     protected ConcurrentLinkedQueue<E> content;
-
-    protected AbstractMessageQueue() {
+    
+    protected Object lockObject;
+    
+    protected AbstractMessageQueue(Object lock) {
         content = new ConcurrentLinkedQueue<E>();
+        lockObject = lock;
     }
 
     public synchronized List<E> getCurrentContent() {
@@ -85,9 +88,9 @@ public abstract class AbstractMessageQueue<E> implements MessageListener {
             LOG.info("Message received: {}", msg);
             final E o = convertMessage((MapMessage) msg);
             if (o != null) {
-                synchronized (this) {
+                synchronized (lockObject) {
                     content.add(o);
-                    notify();
+                    lockObject.notify();
                 }
             }
             acknowledge(msg);

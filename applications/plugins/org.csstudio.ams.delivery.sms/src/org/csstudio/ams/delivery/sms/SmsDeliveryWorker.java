@@ -92,7 +92,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     public SmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
-        outgoingQueue = new OutgoingSmsQueue();
+        outgoingQueue = new OutgoingSmsQueue(this);
         incomingQueue = new IncomingQueue<BaseIncomingMessage>();
 
         // First create the JMS connections
@@ -116,7 +116,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
 
         smsDevice = new SmsDeliveryDevice(modemInfo, new JmsProperties(factoryClass, url, topic));
         smsDevice.setDeviceListener(this);
-        
+
         readWaitingPeriod = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
                                           SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
                                           10000L,
@@ -137,17 +137,28 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         LOG.info(workerName + " is running.");
 
         while(running) {
-            synchronized (outgoingQueue) {
+            synchronized (this) {
                 try {
                     if (outgoingQueue.isEmpty()
                         && incomingQueue.isEmpty()
                         && !testStatus.isActive()
                         && !testStatus.isDeviceTestInitiated()) {
-                    
-                        outgoingQueue.wait();
-                    
+
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Entering wait().");
+                        }
+                        this.wait();
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("after wait(): I have been notified.");
+                        }
                     } else {
-                        outgoingQueue.wait(readWaitingPeriod);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Entering wait(readWaitingPeriod).");
+                        }
+                        this.wait(readWaitingPeriod);
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("after wait(readWaitingPeriod): I have been notified.");
+                        }
                     }
                     workerCheckFlag = false;
                 } catch (final InterruptedException ie) {
@@ -155,7 +166,7 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 }
             }
 
-            while (outgoingQueue.hasContent() 
+            while (outgoingQueue.hasContent()
                    || incomingQueue.hasContent()
                    || testStatus.isActive()
                    || testStatus.isDeviceTestInitiated()) {
@@ -163,27 +174,27 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 if (testStatus.isDeviceTestInitiated()) {
                     final DeviceTestMessageContent content = testStatus.getDeviceTestMessageContent();
                     final String dest = content.getDestination();
+                    testStatus.finishedDeviceTestInitiated();
                     if (dest.contains(workerName) || dest.compareTo("*") == 0) {
                         if(testStatus.isActive() == false || testStatus.isTimeOut()) {
                             final String checkId = content.getCheckId();
                             testStatus.reset();
                             testStatus.setCheckId(checkId);
                             smsDevice.sendDeviceTestMessage(testStatus);
-                        } else {
-                            LOG.info("A modem check is still active. Ignoring the new modem check.");
                         }
                     } else {
                         LOG.info("This message is not for me.");
+                        testStatus.reset();
                     }
                 }
-            
+
                 if (incomingQueue.hasContent()) {
                     final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
                     if (processIncomingMessages(inMsg) == false) {
                         checkDeviceTest(inMsg);
                     }
                 }
-    
+
                 if (outgoingQueue.hasContent()) {
                     LOG.info("Zu senden: " + outgoingQueue.size());
                     final SmsAlarmMessage outMsg = outgoingQueue.nextMessage();
@@ -362,14 +373,21 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
      */
     @Override
     public void onMessage(final Message msg) {
-        LOG.debug("JMS message received: {}", msg);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Device test JMS message received: {}", msg);
+        }
         if (msg instanceof MapMessage) {
             final DeviceTestMessageContent content =
                     new DeviceTestMessageContent((MapMessage) msg);
             if (content.isDeviceTestRequest()) {
-                testStatus.setDeviceTestMessageContent(content);
-                synchronized (outgoingQueue) {
-                    outgoingQueue.notify();
+                if (!testStatus.isActive()) {
+                    testStatus.setDeviceTestMessageContent(content);
+                    synchronized (this) {
+                        LOG.debug("Notify {}.", this.getClass().getSimpleName());
+                        this.notify();
+                    }
+                } else {
+                    LOG.info("A modem check is still active. Ignoring the new modem check.");
                 }
             }
         }
@@ -377,10 +395,14 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     }
 
     @Override
-    public void onIncomingMessage(DeviceObject event) {
-        incomingQueue.addMessage(event.getMessage());
-        synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+    public void onIncomingMessage(final DeviceObject event) {
+        if (incomingQueue.addMessage(event.getMessage())) {
+            LOG.debug("Added incoming device message.");
+        } else {
+            LOG.debug("Device message CANNOT be added.");
+        }
+        synchronized (this) {
+            this.notify();
         }
     }
 
@@ -531,16 +553,16 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     @Override
     public void stopWorking() {
         running = false;
-        synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
     }
 
     @Override
     public boolean isWorking() {
         workerCheckFlag = true;
-        synchronized (outgoingQueue) {
-            outgoingQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
         final Object localLock = new Object();
         synchronized (localLock) {

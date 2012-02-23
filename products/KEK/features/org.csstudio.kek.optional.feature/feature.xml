@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.kek.optional.feature"
       label="Optional KEK Components"
-      version="3.0.1.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description>
@@ -65,7 +65,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.alarm.beast.ui.areapanel"
+         id="org.csstudio.alarm.beast.ui.globaltable"
          download-size="0"
          install-size="0"
          version="0.0.0"
