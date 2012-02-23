@@ -27,7 +27,8 @@ See http://ics-web.sns.ornl.gov/css
    <launcherArgs>
       <programArgs>--launcher.defaultAction
 openFile</programArgs>
-      <vmArgs>-Xmx256m
+      <vmArgs>-Xmx512m
+-XX:MaxPermSize=128M
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
    </launcherArgs>

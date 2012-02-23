@@ -59,7 +59,8 @@ public class ConsoleCommands implements CommandProvider
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
         buf.append("\tscans           - List all scans\n");
-        buf.append("\tdevices         - List all devices\n");
+        buf.append("\tdevices         - List default devices\n");
+        buf.append("\tdevices ID      - List devices used by scan with given ID\n");
         buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
@@ -103,16 +104,26 @@ public class ConsoleCommands implements CommandProvider
     /** 'devices' command */
     public Object _devices(final CommandInterpreter intp)
     {
+        final long id;
+
+        final String arg = intp.nextArgument();
         try
         {
-            final DeviceInfo[] infos = server.getDeviceInfos();
+            if (arg == null)
+                id = -1;
+            else
+                id = Long.parseLong(arg.trim());
+
+            final DeviceInfo[] infos = server.getDeviceInfos(id);
             for (DeviceInfo info : infos)
                 intp.println(info);
         }
-        catch (RemoteException ex)
+        catch (Throwable ex)
         {
             intp.printStackTrace(ex);
+            return null;
         }
+
         return null;
     }
 

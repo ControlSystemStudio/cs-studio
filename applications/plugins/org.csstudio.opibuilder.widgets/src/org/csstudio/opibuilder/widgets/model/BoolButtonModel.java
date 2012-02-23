@@ -45,6 +45,7 @@ public class BoolButtonModel extends AbstractBoolControlModel {
 	public BoolButtonModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(DEFAULT_FORE_COLOR);
+		setScaleOptions(true, true, true);
 	}
 	
 	@Override

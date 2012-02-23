@@ -55,9 +55,9 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	/**
 	 * The original Points without rotation.
 	 */
-	private PointList originalPoints;
+	private PointList zeroDegreePoints;
 
-	
+	private PointList initialPoints;
 
 	/**
 	 * {@inheritDoc}
@@ -77,7 +77,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 * 
 	 * @param points
 	 *            the polygon points
-	 * @param rememberPoints true if the zero relative points should be remembered, false otherwise.
+	 * @param rememberPoints true if the zero degree relative points should be remembered, false otherwise.
 	 */
 	public void setPoints(final PointList points,
 			final boolean rememberPoints) {
@@ -192,9 +192,9 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	 */
 	protected void rememberZeroDegreePoints(final PointList points) {
 		if (this.getRotationAngle()==0) {
-			originalPoints = points.getCopy();
+			zeroDegreePoints = points.getCopy();
 		} else {
-			originalPoints = this.rotatePoints(points, -this.getRotationAngle());
+			zeroDegreePoints = this.rotatePoints(points, -this.getRotationAngle());
 		}
 	}
 	
@@ -255,7 +255,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	}
 	
 	public PointList getOriginalPoints() {
-		return originalPoints;
+		return zeroDegreePoints;
 	}
 	
 	@Override
@@ -290,7 +290,20 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 		setPoints(RotationUtil.rotatePoints(getPoints(), clockwise? 90:270, center), true);
 	}
 
-	
+	@Override
+	protected void doScale(double widthRatio, double heightRatio) {
+		if(initialPoints == null){
+			initialPoints = getPoints();
+		}
+		PointList pl = initialPoints.getCopy();
+		for(int i=0; i<pl.size(); i++){					
+			pl.setPoint(new Point((int)Math.round((pl.getPoint(i).x*widthRatio)),
+					(int)Math.round(pl.getPoint(i).y*heightRatio)), i);
+		}
+		setPoints(pl, true);
+		
+	}
+		
 	
 	
 }

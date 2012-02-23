@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -18,22 +18,37 @@ package org.csstudio.scan.server.internal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.logger.MemoryDataLogger;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 
-/** Scanner executes the {@link ScanCommandImpl}s for one scan within a {@link ScanContext}
+/** Scan
+ *
+ *  <p>Combines a {@link DeviceContext} with {@link ScanContextImpl}ementations
+ *  and can execute them.
+ *  When a command is executed, it receives a {@link ScanContext} view
+ *  of the scan for limited access to the devices, data logger etc.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Scan
+public class Scan implements ScanContext
 {
     /** Provides the next available <code>id</code> */
     final private static AtomicLong ids = new AtomicLong();
@@ -44,33 +59,42 @@ public class Scan
 
     final private Date created = new Date();
 
+    final private DeviceContext devices;
+
     final private List<ScanCommandImpl<?>> implementations;
 
     private volatile ScanState state = ScanState.Idle;
 
     private volatile String error = null;
 
-    private volatile ScanContextImpl context = null;
-
     private volatile long total_work_units = 0;
+
+    final private MemoryDataLogger data_logger = new MemoryDataLogger();
+
+    final private AtomicLong work_performed = new AtomicLong();
+
+    private volatile ScanCommandImpl<?> current_command = null;
 
     /** Initialize
      *  @param name User-provided name for this scan
+     *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
      */
-    public Scan(final String name, ScanCommandImpl<?>... implementations)
+    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations)
     {
-        this(name, Arrays.asList(implementations));
+        this(name, devices, Arrays.asList(implementations));
     }
 
     /** Initialize
      *  @param name User-provided name for this scan
+     *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
      */
-    public Scan(final String name, final List<ScanCommandImpl<?>> implementations)
+    public Scan(final String name, final DeviceContext devices, final List<ScanCommandImpl<?>> implementations)
     {
         id = ids.incrementAndGet();
         this.name = name;
+        this.devices = devices;
         this.implementations = implementations;
     }
 
@@ -89,14 +113,20 @@ public class Scan
     /** @return Info about current state of this scan */
     public ScanInfo getScanInfo()
     {
-        if (context == null)
-            return new ScanInfo(id, name, created, state, error, 0, total_work_units, "");
-        final String command;
+        final ScanCommandImpl<?> command = current_command;
+        final String command_name;
+        final ScanState state;
+        synchronized (this)
+        {
+            state = this.state;
+        }
         if (state == ScanState.Finished)
-            command = "- end -";
+            command_name = "- end -";
+        else if (command != null)
+            command_name = command.toString();
         else
-            command = context.getCurrentCommand();
-        return new ScanInfo(id, name, created, state, error, context.getWorkPerformed(), total_work_units, command);
+            command_name = "";
+        return new ScanInfo(id, name, created, state, error, work_performed.get(), total_work_units, command_name);
     }
 
     /** @return Commands executed by this scan */
@@ -112,26 +142,51 @@ public class Scan
     /** @return Data logger of this scan */
     public DataLogger getDataLogger()
     {
-        if (context == null)
-            return null;
-        return context.getDataLogger();
+        return data_logger;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Device getDevice(final String name) throws Exception
+    {
+        return devices.getDeviceByAlias(name);
+    }
+
+    /** Obtain devices used by this scan.
+     *
+     *  <p>Note that the result can differ before and
+     *  after the scan gets executed because devices
+     *  are added to the device context as needed.
+     *
+     *  @return Devices used by this scan
+     */
+    public Device[] getDevices()
+    {
+        return devices.getDevices();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void logSample(final ScanSample sample)
+    {
+        data_logger.log(sample);
     }
 
     /** Execute all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
-    public void execute(final ScanContextImpl context)
+    public void execute()
     {
         try
         {
-            execute_or_die_trying(context);
+            execute_or_die_trying();
         }
         catch (InterruptedException ex)
         {
             state = ScanState.Aborted;
             error = "Interrupted";
         }
-        catch (Throwable ex)
+        catch (Exception ex)
         {
             state = ScanState.Failed;
             error = ex.getMessage();
@@ -142,7 +197,7 @@ public class Scan
      *  passing exceptions back up.
      *  @throws Exception on error
      */
-    private void execute_or_die_trying(final ScanContextImpl context) throws Throwable
+    private void execute_or_die_trying() throws Exception
     {
         // Was scan aborted before it ever got to run?
         if (state == ScanState.Aborted)
@@ -150,58 +205,124 @@ public class Scan
         // Otherwise expect 'Idle'
         if (state != ScanState.Idle)
             throw new IllegalStateException("Cannot run Scan that is " + state);
-        this.context = context;
+
+        // Inspect all commands before executing them:
+        // * Determine work units
+        // * Add devices that are not available (via alias)
+        //   in the device context
+        total_work_units = 1; // WaitForDevicesCommand
+        final Set<String> required_devices = new HashSet<String>();
+        for (ScanCommandImpl<?> command : implementations)
+        {
+            total_work_units += command.getWorkUnits();
+            for (String device_name : command.getDeviceNames())
+                required_devices.add(device_name);
+        }
+        // Add required devices
+        for (String device_name : required_devices)
+        {
+            try
+            {
+                if (devices.getDeviceByAlias(device_name) != null)
+                    continue;
+            }
+            catch (Exception ex)
+            {   // Add PV device, no alias, for unknown device
+                devices.addPVDevice(new DeviceInfo(device_name, device_name, true, true));
+            }
+        }
 
         // Start Devices
-        context.startDevices();
-
-        // Determine work units
-        total_work_units = 1; // WaitForDevicesCommand
-        for (ScanCommandImpl<?> command : implementations)
-            total_work_units += command.getWorkUnits();
+        devices.startDevices();
 
         // Execute commands
         state = ScanState.Running;
         try
         {
-            context.execute(new WaitForDevicesCommand());
-            context.execute(implementations);
+            execute(new WaitForDevicesCommand(devices.getDevices()));
+            execute(implementations);
             // Successful finish
             state = ScanState.Finished;
         }
         finally
         {
             // Stop devices
-            context.stopDevices();
+            devices.stopDevices();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final List<ScanCommandImpl<?>> commands) throws Exception
+    {
+        for (ScanCommandImpl<?> command : commands)
+        {
+            if (state != ScanState.Running  &&
+                state != ScanState.Paused)
+                return;
+            execute(command);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final ScanCommandImpl<?> command) throws Exception
+    {
+        synchronized (this)
+        {
+            while (state == ScanState.Paused)
+            {
+                wait();
+            }
+        }
+        try
+        {
+            current_command = command;
+            command.execute(this);
+        }
+        catch (InterruptedException ex)
+        {
+            final String message = "Command aborted: " + command.toString();
+            Logger.getLogger(getClass().getName()).log(Level.INFO, message, ex);
+            throw ex;
+        }
+        catch (Exception ex)
+        {
+            final String message = "Command failed: " + command.toString();
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, message, ex);
+            throw ex;
         }
     }
 
     /** Pause execution of a currently executing scan */
-    public void pause()
+    public synchronized void pause()
     {
-        if (context != null  &&  state == ScanState.Running)
-        {
-            context.pause();
+        if (state == ScanState.Running)
             state = ScanState.Paused;
-        }
     }
 
     /** Resume execution of a paused scan */
-    public void resume()
+    public synchronized void resume()
     {
         if (state == ScanState.Paused)
         {
             state = ScanState.Running;
-            context.resume();
+            notifyAll();
         }
     }
 
     /** Ask for execution to stop */
-    void abort()
+    synchronized void abort()
     {
-        state = ScanState.Aborted;
-        if (context != null)
-            context.abort();
+        if (state == ScanState.Running  ||  state == ScanState.Paused)
+            state = ScanState.Aborted;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void workPerformed(final int work_units)
+    {
+        work_performed.addAndGet(work_units);
     }
 
     // Hash by ID

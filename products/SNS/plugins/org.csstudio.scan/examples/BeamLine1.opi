@@ -4,10 +4,12 @@
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
+  <wuid>46361c96:135a10c1c6a:-7fdb</wuid>
+  <boy_version>3.1.0.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
-  <height>400</height>
-  <name />
+  <height>380</height>
+  <name></name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>true</show_grid>
   <background_color>
@@ -18,50 +20,52 @@
   </foreground_color>
   <widget_type>Display</widget_type>
   <show_close_button>true</show_close_button>
-  <width>800</width>
+  <width>600</width>
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>6</grid_space>
-  <actions hook="false" />
+  <actions hook="false" hook_all="false" />
   <y>-1</y>
   <x>-1</x>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>409</width>
-    <border_style>13</border_style>
-    <rules />
-    <lock_children>false</lock_children>
+    <wuid>46361c96:135a10c1c6a:-7fda</wuid>
     <scripts />
-    <height>115</height>
-    <border_width>1</border_width>
+    <height>169</height>
     <name>Motors</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <transparent>false</transparent>
     <show_scrollbar>true</show_scrollbar>
-    <y>282</y>
-    <actions hook="false" />
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>223</width>
+    <border_style>13</border_style>
+    <rules />
+    <lock_children>false</lock_children>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>174</y>
+    <tooltip></tooltip>
     <x>0</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <minimum>0.0</minimum>
+      <wuid>46361c96:135a10c1c6a:-7fd9</wuid>
       <show_value_tip>true</show_value_tip>
       <bar_length>0.2</bar_length>
       <scripts />
@@ -78,31 +82,33 @@
       </foreground_color>
       <widget_type>Scrollbar</widget_type>
       <enabled>true</enabled>
-      <step_increment>0.2</step_increment>
+      <step_increment>1.0</step_increment>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <opifont.name>Default</opifont.name>
       </font>
-      <width>241</width>
+      <width>145</width>
       <border_style>0</border_style>
       <rules />
-      <maximum>10.0</maximum>
+      <pv_value />
       <border_width>1</border_width>
+      <maximum>10.0</maximum>
       <horizontal>true</horizontal>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" />
-      <y>8</y>
+      <actions hook="false" hook_all="false" />
+      <y>42</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>132</x>
+      <x>30</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.scrollbar" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <minimum>0.0</minimum>
+      <wuid>46361c96:135a10c1c6a:-7fd8</wuid>
       <show_value_tip>true</show_value_tip>
       <bar_length>0.2</bar_length>
       <scripts />
@@ -124,25 +130,27 @@ $(pv_value)</tooltip>
       <font>
         <opifont.name>Default</opifont.name>
       </font>
-      <width>241</width>
+      <width>145</width>
       <border_style>0</border_style>
       <rules />
-      <maximum>10.0</maximum>
+      <pv_value />
       <border_width>1</border_width>
+      <maximum>10.0</maximum>
       <horizontal>true</horizontal>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" />
-      <y>48</y>
+      <actions hook="false" hook_all="false" />
+      <y>109</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>132</x>
+      <x>30</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>46361c96:135a10c1c6a:-7fd7</wuid>
       <auto_size>true</auto_size>
       <scripts />
       <height>17</height>
@@ -169,15 +177,16 @@ $(pv_value)</tooltip>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>12</y>
       <wrap_words>true</wrap_words>
-      <tooltip />
+      <tooltip></tooltip>
       <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
       <visible>true</visible>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>46361c96:135a10c1c6a:-7fd6</wuid>
       <auto_size>true</auto_size>
       <scripts />
       <height>17</height>
@@ -204,10 +213,10 @@ $(pv_value)</tooltip>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
-      <y>51</y>
+      <actions hook="false" hook_all="false" />
+      <y>82</y>
       <wrap_words>true</wrap_words>
-      <tooltip />
+      <tooltip></tooltip>
       <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
@@ -215,6 +224,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <minimum>0.0</minimum>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>46361c96:135a10c1c6a:-7fd5</wuid>
       <scripts />
       <height>25</height>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -242,6 +252,7 @@ $(pv_value)</tooltip>
       <border_style>3</border_style>
       <format>0</format>
       <rules />
+      <pv_value />
       <border_width>1</border_width>
       <maximum>10.0</maximum>
       <limits_from_pv>false</limits_from_pv>
@@ -249,7 +260,7 @@ $(pv_value)</tooltip>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>12</y>
       <wrap_words>true</wrap_words>
       <tooltip>$(pv_name)
@@ -261,6 +272,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <minimum>0.0</minimum>
       <vertical_alignment>1</vertical_alignment>
+      <wuid>46361c96:135a10c1c6a:-7fd4</wuid>
       <scripts />
       <height>25</height>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -288,6 +300,7 @@ $(pv_value)</tooltip>
       <border_style>3</border_style>
       <format>0</format>
       <rules />
+      <pv_value />
       <border_width>1</border_width>
       <maximum>10.0</maximum>
       <limits_from_pv>false</limits_from_pv>
@@ -295,8 +308,8 @@ $(pv_value)</tooltip>
         <color red="0" green="128" blue="255" />
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
-      <y>47</y>
+      <actions hook="false" hook_all="false" />
+      <y>78</y>
       <wrap_words>true</wrap_words>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -304,12 +317,24 @@ $(pv_value)</tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
+    <wuid>46361c96:135a10c1c6a:-7fd3</wuid>
+    <scripts />
+    <height>175</height>
+    <name>Device</name>
+    <transparent>false</transparent>
+    <show_scrollbar>true</show_scrollbar>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <widget_type>Grouping Container</widget_type>
+    <enabled>true</enabled>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
@@ -317,25 +342,14 @@ $(pv_value)</tooltip>
     <border_style>13</border_style>
     <rules />
     <lock_children>false</lock_children>
-    <scripts />
-    <height>175</height>
     <border_width>1</border_width>
-    <name>Device</name>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <transparent>false</transparent>
-    <show_scrollbar>true</show_scrollbar>
+    <actions hook="false" hook_all="false" />
     <y>0</y>
-    <actions hook="false" />
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
+    <tooltip></tooltip>
     <x>0</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
       <level_lo>20.0</level_lo>
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -368,6 +382,7 @@ $(pv_value)</tooltip>
       <show_lolo>false</show_lolo>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <pv_value />
       <show_markers>false</show_markers>
       <show_hi>false</show_hi>
       <maximum>10.0</maximum>
@@ -375,8 +390,9 @@ $(pv_value)</tooltip>
       <horizontal>true</horizontal>
       <log_scale>false</log_scale>
       <minimum>0.0</minimum>
+      <wuid>46361c96:135a10c1c6a:-7fd2</wuid>
       <show_hihi>false</show_hihi>
-      <scale_format />
+      <scale_format></scale_format>
       <show_scale>true</show_scale>
       <color_lo>
         <color red="255" green="128" blue="0" />
@@ -396,14 +412,14 @@ $(pv_value)</tooltip>
         <opifont.name>Default</opifont.name>
       </scale_font>
       <level_hihi>90.0</level_hihi>
-      <fill_color>
-        <color red="0" green="0" blue="255" />
-      </fill_color>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <fill_color>
+        <color red="0" green="0" blue="255" />
+      </fill_color>
       <rules />
-      <value_label_format />
+      <value_label_format></value_label_format>
       <transparent_background>true</transparent_background>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
@@ -411,7 +427,7 @@ $(pv_value)</tooltip>
       </border_color>
       <level_lolo>10.0</level_lolo>
       <y>6</y>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <x>0</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -444,6 +460,7 @@ $(pv_value)</tooltip>
       <show_lolo>false</show_lolo>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <pv_value />
       <show_markers>false</show_markers>
       <show_hi>false</show_hi>
       <maximum>10.0</maximum>
@@ -451,8 +468,9 @@ $(pv_value)</tooltip>
       <horizontal>true</horizontal>
       <log_scale>false</log_scale>
       <minimum>0.0</minimum>
+      <wuid>46361c96:135a10c1c6a:-7fd1</wuid>
       <show_hihi>false</show_hihi>
-      <scale_format />
+      <scale_format></scale_format>
       <show_scale>false</show_scale>
       <color_lo>
         <color red="255" green="128" blue="0" />
@@ -474,14 +492,14 @@ $(pv_value)</tooltip>
       </scale_font>
       <level_hihi>90.0</level_hihi>
       <origin>0.0</origin>
-      <fill_color>
-        <color red="255" green="184" blue="85" />
-      </fill_color>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <fill_color>
+        <color red="255" green="184" blue="85" />
+      </fill_color>
       <rules />
-      <value_label_format />
+      <value_label_format></value_label_format>
       <transparent_background>true</transparent_background>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
@@ -489,7 +507,7 @@ $(pv_value)</tooltip>
       </border_color>
       <level_lolo>10.0</level_lolo>
       <y>96</y>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <x>12</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -500,11 +518,12 @@ $(pv_value)</tooltip>
     <crop_right>0</crop_right>
     <crop_left>0</crop_left>
     <visible>true</visible>
+    <wuid>46361c96:135a10c1c6a:-7fd0</wuid>
     <auto_size>true</auto_size>
     <scripts />
     <height>383</height>
-    <stretch_to_fit>false</stretch_to_fit>
     <name>Image</name>
+    <stretch_to_fit>false</stretch_to_fit>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -527,9 +546,9 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>0</y>
-    <tooltip />
+    <tooltip></tooltip>
     <x>222</x>
   </widget>
 </display>

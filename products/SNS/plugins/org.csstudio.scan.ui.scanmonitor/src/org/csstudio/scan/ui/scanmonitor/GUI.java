@@ -28,6 +28,7 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
+import org.csstudio.scan.ui.scanmonitor.actions.ShowDevicesAction;
 import org.csstudio.scan.ui.scantree.OpenScanTreeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -50,6 +51,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -298,6 +300,7 @@ public class GUI implements ScanInfoModelListener
     /** Add context menu to table */
     private void createContextMenu()
     {
+        final Shell shell = table_viewer.getControl().getShell();
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
@@ -329,6 +332,7 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new RemoveCompletedAction(model));
                 manager.add(new Separator());
                 manager.add(new OpenPlotAction(info));
+                manager.add(new ShowDevicesAction(shell, model, info));
                 manager.add(new OpenScanTreeAction(info));
             }
         });

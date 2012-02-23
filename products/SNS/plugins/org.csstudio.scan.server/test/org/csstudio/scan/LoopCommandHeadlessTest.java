@@ -16,6 +16,9 @@
 package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.LogCommand;
@@ -26,9 +29,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.Scan;
-import org.csstudio.scan.server.internal.ScanContextImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the {@link LoopCommand}
@@ -44,6 +45,7 @@ public class LoopCommandHeadlessTest
         final DeviceContext context = new DeviceContext();
         context.addPVDevice(new DeviceInfo("loc://counter", "counter", true, true));
         context.addPVDevice(new DeviceInfo("loc://other", "other", true, true));
+        context.addPVDevice(new DeviceInfo("loc://other2", "other2", true, true));
         return context;
     }
 
@@ -58,13 +60,21 @@ public class LoopCommandHeadlessTest
             counter.write(2.0);
             assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
 
-            final ScanContext context = new ScanContextImpl(devices);
             final ScanCommandImpl<?> loop = new LoopCommandImpl(
                     new LoopCommand("counter", 1.0, 5.0, 1.0,
                         new LogCommand("counter")));
             System.out.println(loop);
 
-            context.execute(loop);
+            // Note that the scan doesn't actually hold any commands.
+            // If we executed the loop within the scan,
+            // it would start and stop the devices,
+            // and then we could no longer read the device
+            // once the scan is done.
+            // Instead, we start and stop the devices outside
+            // of the scan and only use the scan to execute
+            // an individual command.
+            final Scan scan = new Scan("test", devices);
+            scan.execute(loop);
             assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
         }
         finally
@@ -78,7 +88,6 @@ public class LoopCommandHeadlessTest
     public void testLoopCommandWorkunits() throws Exception
     {
         final DeviceContext devices = getDemoContext();
-        final ScanContextImpl context = new ScanContextImpl(devices);
 
         final LoopCommandImpl loop1 = new LoopCommandImpl(
                 new LoopCommand("counter", 1.0, 5.0, 1.0));
@@ -87,15 +96,22 @@ public class LoopCommandHeadlessTest
         final LoopCommandImpl loop2 = new LoopCommandImpl(
             new LoopCommand("counter", 1.0, 5.0, 1.0,
                 new SetCommand("other", 1.0),
-                new SetCommand("other", 2.0)));
+                new SetCommand("other2", 2.0)));
         assertEquals(10, loop2.getWorkUnits());
 
-        final Scan scan = new Scan("Loop Test", loop1, loop2);
-        assertEquals(0, context.getWorkPerformed());
-        scan.execute(context);
+        final String[] names = loop2.getDeviceNames();
+        assertEquals(3, names.length);
+        Arrays.sort(names);
+        assertTrue(Arrays.binarySearch(names, "counter") >= 0);
+        assertTrue(Arrays.binarySearch(names, "other") >= 0);
+        assertTrue(Arrays.binarySearch(names, "other2") >= 0);
+
+        final Scan scan = new Scan("Loop Test", devices, loop1, loop2);
+        assertEquals(0, scan.getScanInfo().getPerformedWorkUnits());
+        scan.execute();
 
         // 1 WaitForDevicesCommand + loop1 + loop2
-        assertEquals(16, context.getWorkPerformed());
+        assertEquals(16, scan.getScanInfo().getPerformedWorkUnits());
     }
 
 
@@ -107,8 +123,6 @@ public class LoopCommandHeadlessTest
         devices.startDevices();
         try
         {
-            final ScanContext context = new ScanContextImpl(devices);
-
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
             assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
@@ -116,7 +130,8 @@ public class LoopCommandHeadlessTest
                 new LoopCommand("counter", 5.0, 1.0, -1.0,
                     new LogCommand("counter")));
             System.out.println(loop);
-            context.execute(loop);
+            final Scan scan = new Scan("test", devices);
+            scan.execute(loop);
             assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
             // Step 2: 1, 3, 5, 7, 9
@@ -124,7 +139,7 @@ public class LoopCommandHeadlessTest
                 new LoopCommand("counter", 1.0, 10.0, 2.0,
                     new LogCommand("counter")));
             System.out.println(loop);
-            context.execute(loop);
+            scan.execute(loop);
             assertEquals(9.0, ValueUtil.getDouble(counter.read()), 0.1);
 
             // Down 3: 8, 5, 2
@@ -132,7 +147,7 @@ public class LoopCommandHeadlessTest
                 new LoopCommand("counter", 8.0, 0.0, -3.0,
                     new LogCommand("counter")));
             System.out.println(loop);
-            context.execute(loop);
+            scan.execute(loop);
             assertEquals(2.0, ValueUtil.getDouble(counter.read()), 0.1);
         }
         finally
@@ -156,20 +171,19 @@ public class LoopCommandHeadlessTest
                         new LogCommand("counter")));
             System.out.println(loop);
 
-            final ScanContext context = new ScanContextImpl(devices);
-
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
             assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
-            context.execute(loop);
+            final Scan scan = new Scan("test", devices, loop);
+            scan.execute(loop);
             assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
             // On the next iteration, the loop toggles to an upward 1...5
-            context.execute(loop);
+            scan.execute(loop);
             assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
 
             // And then again down 5...1
-            context.execute(loop);
+            scan.execute(loop);
             assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
         }
         finally

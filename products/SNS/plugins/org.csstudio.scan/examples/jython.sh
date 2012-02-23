@@ -9,9 +9,7 @@
 # When listing jython.jar on the classpath,
 # need to specify the main class to run
 PLUGINS=../..
-JYTHON=$PLUGINS/yabes.client/lib/jython.jar
-CLIENT=$PLUGINS/yabes.client/bin
-COMMON=$PLUGINS/yabes/bin
+JYTHON=$PLUGINS/org.csstudio.scan.client_*/lib/jython.jar
 
 # java -cp $JYTHON:$CLIENT:$COMMON org.python.util.jython "$@"
 java -cp $JYTHON org.python.util.jython "$@"

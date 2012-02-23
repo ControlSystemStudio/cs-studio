@@ -29,6 +29,12 @@ public class DeviceInfoCellEditor extends OptionListCellEditor
         super(parent, getLabels(devices));
     }
 
+    @Override
+    protected boolean isReadOnly()
+    {
+        return false;
+    }
+
     /** @param devices Available devices
      *  @return Labels to use in editor
      */

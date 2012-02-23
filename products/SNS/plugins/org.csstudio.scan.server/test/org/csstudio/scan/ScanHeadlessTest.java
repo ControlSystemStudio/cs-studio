@@ -17,6 +17,7 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.logging.Handler;
@@ -30,21 +31,56 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.internal.Scan;
-import org.csstudio.scan.server.internal.ScanContextImpl;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link Scan}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanTest
+public class ScanHeadlessTest
 {
+    @Test(timeout=3000)
+    public void testAutoDeviceAddition() throws Exception
+    {
+        // Empty device context
+        final DeviceContext devices = new DeviceContext();
+
+        // Scan that requires 2 devices
+        final LoopCommand command = new LoopCommand("motor_x", 1.0, 5.0, 1.0,
+                    new LogCommand("setpoint"));
+        final Scan scan = new Scan("Scan Device Test", devices, new LoopCommandImpl(command));
+
+        // Execute the scan
+        assertEquals(0, devices.getDevices().length);
+        scan.execute();
+
+        // Devices should have been added by scan as needed
+        final Device[] device_infos = devices.getDevices();
+        boolean got_motor_x = false;
+        boolean got_setpoint = false;
+        for (Device device : device_infos)
+        {
+            final String alias = device.getInfo().getAlias();
+            System.out.println(alias);
+            if ("motor_x".equals(alias))
+                got_motor_x = true;
+            if ("setpoint".equals(alias))
+                got_setpoint = true;
+        }
+        assertEquals(2, device_infos.length);
+        assertTrue(got_motor_x);
+        assertTrue(got_setpoint);
+    }
+
+
     /** Scan takes about 20 seconds */
     @Test(timeout=40000)
     public void testScanner() throws Exception
@@ -61,9 +97,6 @@ public class ScanTest
         devices.addPVDevice(new DeviceInfo("setpoint", "setpoint", true, true));
         devices.addPVDevice(new DeviceInfo("readback", "readback", true, true));
 
-        // Setup context
-        final ScanContextImpl context = new ScanContextImpl(devices);
-
         // Configure a scan
         final LoopCommand command = new LoopCommand("xpos", 1.0, 5.0, 1.0,
                 new LoopCommand("ypos", 1.0, 5.0, 1.0,
@@ -75,7 +108,7 @@ public class ScanTest
                 )
             );
 
-        final Scan scan = new Scan("Scan Test", new LoopCommandImpl(command));
+        final Scan scan = new Scan("Scan Test", devices, new LoopCommandImpl(command));
         final List<ScanCommand> commands = scan.getScanCommands();
         assertEquals(1, commands.size());
         assertSame(command, commands.get(0));
@@ -85,13 +118,16 @@ public class ScanTest
         assertEquals(ScanState.Idle, info.getState());
         assertEquals(0, info.getPercentage());
         // Execute the scan
-        scan.execute(context);
+        scan.execute();
         // Check Finish state
         info = scan.getScanInfo();
         assertEquals(ScanState.Finished, info.getState());
         assertEquals(100, info.getPercentage());
 
         // Dump data
-        new SpreadsheetScanDataIterator(context.getDataLogger().getScanData()).dump(System.out);
+        final ScanData data = scan.getDataLogger().getScanData();
+        new SpreadsheetScanDataIterator(data).dump(System.out);
+        assertTrue(data.getSamples("xpos").size() > 1);
+        assertTrue(data.getSamples("ypos").size() > 1);
     }
 }

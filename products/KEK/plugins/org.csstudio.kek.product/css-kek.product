@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Control System Studio for KEK" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.0.1" useFeatures="true" includeLaunchers="true">
+<product name="Control System Studio for KEK" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.1.0" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
@@ -52,9 +52,9 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
    </plugins>
 
    <features>
-      <feature id="org.csstudio.kek.eclipse.feature" version="3.0.1.qualifier"/>
-      <feature id="org.csstudio.kek.core.feature" version="3.0.1.qualifier"/>
-      <feature id="org.csstudio.kek.applications.feature" version="3.0.1.qualifier"/>
+      <feature id="org.csstudio.kek.eclipse.feature" version="3.1.0.qualifier"/>
+      <feature id="org.csstudio.kek.core.feature" version="3.1.0.qualifier"/>
+      <feature id="org.csstudio.kek.applications.feature" version="3.1.0.qualifier"/>
    </features>
 
 

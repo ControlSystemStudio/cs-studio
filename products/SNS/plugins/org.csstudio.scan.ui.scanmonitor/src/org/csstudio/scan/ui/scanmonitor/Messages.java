@@ -26,6 +26,7 @@ public class Messages extends NLS
     public static String Remove;
     public static String RemoveCompleted;
     public static String Resume;
+    public static String ShowDevices;
     public static String State;
     public static String StateFmt;
     static

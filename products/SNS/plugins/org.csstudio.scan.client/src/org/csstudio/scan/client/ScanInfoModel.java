@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -38,7 +38,7 @@ import org.csstudio.scan.server.ScanServer;
  *  <p>Singleton to allow multiple views to monitor
  *  the scan server by using a single underlying
  *  network connection and poll thread.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -46,10 +46,10 @@ public class ScanInfoModel
 {
     /** Singleton instance */
     private static ScanInfoModel instance;
-    
+
     /** Reference count */
     private int references = 0;
-    
+
     /** Connection to remote scan server.
      *  Maintained by the <code>poller</code> thread.
      */
@@ -62,7 +62,7 @@ public class ScanInfoModel
 
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
-    
+
     /** Have we sent connection error to listeners? */
     private volatile boolean had_connection_error = false;
 
@@ -88,13 +88,13 @@ public class ScanInfoModel
             return instance;
         }
     }
-    
+
     /** Set static (singleton) instance from static method to please FindBugs */
     private static void setInstance(final ScanInfoModel model)
     {
         instance = model;
     }
-    
+
     /** Release
      *  When last reference to the model has been released,
      *  singleton instance is stopped and removed.
@@ -118,7 +118,7 @@ public class ScanInfoModel
     {
         // NOP
     }
-    
+
     /** @param listener Listener to add */
     public void addListener(final ScanInfoModelListener listener)
     {
@@ -131,7 +131,7 @@ public class ScanInfoModel
     {
         listeners.remove(listener);
     }
-    
+
     /** Start model, i.e. connect to server, poll, ... */
     private void start() throws Exception
     {
@@ -202,7 +202,8 @@ public class ScanInfoModel
     }
 
     /** Poll the server for info
-     * @throws InterruptedException */
+     *  @throws InterruptedException
+     */
     private void poll() throws InterruptedException
     {
         try
@@ -256,7 +257,7 @@ public class ScanInfoModel
     	buf.append(getServer().getInfo()).append("\n");
     	buf.append("\n");
     	buf.append("Devices:\n");
-    	final DeviceInfo[] devices = getServer().getDeviceInfos();
+    	final DeviceInfo[] devices = getServer().getDeviceInfos(-1);
     	for (DeviceInfo device : devices)
     		buf.append(device).append("\n");
     	return buf.toString();
@@ -269,12 +270,13 @@ public class ScanInfoModel
     }
 
     /** Get serial of last logged sample.
-     *  
+     *
      *  <p>Can be used to determine if there are new samples
      *  that should be fetched via <code>getScanData()</code>
-     *  
+     *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Serial of last sample in scan data
+     *  @throws RemoteException on error in remote access
      *  @see #getScanData(ScanInfo)
      */
     public long getLastScanDataSerial(final ScanInfo info) throws RemoteException
@@ -283,15 +285,28 @@ public class ScanInfoModel
             return -1;
         return getServer().getLastScanDataSerial(info.getId());
     }
-    
+
     /** @param info Scan for which to get data
      *  @return ScanData or null
+     *  @throws RemoteException on error in remote access
      */
     public ScanData getScanData(final ScanInfo info) throws RemoteException
     {
         if (info == null)
             return null;
         return getServer().getScanData(info.getId());
+    }
+
+    /** Query server for devices used by a scan
+     *  @param info Scan for which to get data, <code>null</code> for default devices
+     *  @return Info about devices
+     *  @throws RemoteException on error in remote access
+     */
+    public DeviceInfo[] getDeviceInfos(final ScanInfo info) throws RemoteException
+    {
+        if (info == null)
+            return getServer().getDeviceInfos(-1);
+        return getServer().getDeviceInfos(info.getId());
     }
 
     /** @param info Scan to pause (NOP if not running)

@@ -38,6 +38,7 @@ public class LEDModel extends AbstractBoolWidgetModel {
 	
 	public LEDModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+		setScaleOptions(true, true, true);
 	}
 	
 	@Override

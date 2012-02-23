@@ -91,12 +91,12 @@ public interface TODO
      *
      *  Done Undo for Scan Tree
      *
+     *  Done Server can create PV devices for names
+     *       that are not found in predefined (aliasing) device context.
+     *
+     *  Done Scan tree editor shows predefined (alias) device names
+     *
      *  TODO Unclear if devices will ever be anything but PVs.
-     *       If they're just PVs, one could use PVs.
-     *       If they're something else, then an API for
-     *       getting the device names _and_ underlying PVs from
-     *       server would be useful for GUI that can show them,
-     *       access other PV tools from device PVs etc.
      *
      *  TODO put callback? Maybe support Channel Access put-callback,
      *       or add a wait-for-value to the set command?
