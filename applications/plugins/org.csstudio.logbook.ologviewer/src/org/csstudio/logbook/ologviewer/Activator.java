@@ -2,6 +2,7 @@ package org.csstudio.logbook.ologviewer;
 
 import java.util.logging.Logger;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -57,5 +58,15 @@ public class Activator extends AbstractUIPlugin {
     public static Logger getLogger()
     {
         return logger;
+    }
+
+
+    /** @return Returns an image descriptor for the image file at the given plug-in
+     *  relative path.
+     *  @param path The path
+     */
+    public static ImageDescriptor getImageDescriptor(final String path)
+    {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 }

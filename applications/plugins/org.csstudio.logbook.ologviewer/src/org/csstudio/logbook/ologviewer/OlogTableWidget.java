@@ -65,49 +65,9 @@ public class OlogTableWidget extends Composite {
 
 		tableViewer.setContentProvider(new OlogContentProvider());
 
-		table.addListener(SWT.MeasureItem, paintListener);
-		table.addListener(SWT.PaintItem, paintListener);
-		table.addListener(SWT.EraseItem, paintListener);
 		updateTable();
 	}
 
-	/*
-	 * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
-	 * Therefore, it is critical for performance that these methods be as
-	 * efficient as possible.
-	 */
-	Listener paintListener = new Listener() {
-		public void handleEvent(Event event) {
-			switch (event.type) {
-			case SWT.MeasureItem: {
-				TableItem item = (TableItem) event.item;
-				String text = getText(item, event.index);
-				Point size = event.gc.textExtent(text);
-				event.width = size.x;
-				event.height = Math.max(event.height, size.y);
-				break;
-			}
-			case SWT.PaintItem: {
-				TableItem item = (TableItem) event.item;
-				String text = getText(item, event.index);
-				Point size = event.gc.textExtent(text);
-				int offset2 = event.index == 0 ? Math.max(0,
-						(event.height - size.y) / 2) : 0;
-				event.gc.drawText(text, event.x, event.y + offset2, true);
-				break;
-			}
-			case SWT.EraseItem: {
-				event.detail &= ~SWT.FOREGROUND;
-				break;
-			}
-			}
-		}
-
-		String getText(TableItem item, int column) {
-			return item.getText(column);
-		}
-
-	};
 	private Composite composite;
 
 	private OlogQuery ologQuery;
@@ -161,7 +121,7 @@ public class OlogTableWidget extends Composite {
 						layout);
 			}
 		}
-		
+
 		composite.layout();
 		tableViewer.refresh();
 	}

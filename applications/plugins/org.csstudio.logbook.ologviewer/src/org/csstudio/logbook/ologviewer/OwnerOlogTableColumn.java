@@ -18,7 +18,7 @@ public class OwnerOlogTableColumn implements OlogTableColumnDescriptor {
 	public TableViewerColumn getTableViewerColumn(TableViewer tableViewer, TableColumnLayout layout) {
 		// create columns
 		TableViewerColumn ologDateColumn = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+				SWT.CENTER);
 		ologDateColumn.setLabelProvider(new CellLabelProvider() {
 			@Override
 			public void update(ViewerCell cell) {
@@ -28,7 +28,7 @@ public class OwnerOlogTableColumn implements OlogTableColumnDescriptor {
 		TableColumn tblclmnChannelName = ologDateColumn.getColumn();
 		tblclmnChannelName.setAlignment(SWT.CENTER);
 		tblclmnChannelName.setWidth(100);
-		tblclmnChannelName.setText("Extended Column");
+		tblclmnChannelName.setText("Owner");
 		layout.setColumnData(tblclmnChannelName, new ColumnWeightData(30));
 
 		return ologDateColumn;
