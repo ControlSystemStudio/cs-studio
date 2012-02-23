@@ -89,12 +89,5 @@
             content="intro/overview.xml">
       </configExtension>
    </extension>
-   <extension
-         point="org.csstudio.auth.loginModule">
-      <loginModule
-            class="org.csstudio.kek.login.DummyLoginModule"
-            id="org.csstudio.kek.product.loginModule1">
-      </loginModule>
-   </extension>
 
 </plugin>
