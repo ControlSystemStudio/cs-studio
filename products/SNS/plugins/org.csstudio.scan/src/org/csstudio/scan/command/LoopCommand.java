@@ -121,6 +121,15 @@ public class LoopCommand extends ScanCommand
         this.body = body;
     }
 
+    @Override
+    protected int setAddress(final int address)
+    {
+        int next = super.setAddress(address);
+        for (ScanCommand command : body)
+            next = command.setAddress(next);
+        return next;
+    }
+
     /** {@inheritDoc} */
     @Override
     public ScanCommandProperty[] getProperties()
@@ -252,6 +261,8 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<loop>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<start>" + start + "</start>");
@@ -297,14 +308,15 @@ public class LoopCommand extends ScanCommand
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
-        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
     }
 

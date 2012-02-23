@@ -96,6 +96,8 @@ public interface TODO
      *
      *  Done Scan tree editor shows predefined (alias) device names
      *
+     *  TODO Scan tree 'live' view of running scan
+     *
      *  TODO Unclear if devices will ever be anything but PVs.
      *
      *  TODO put callback? Maybe support Channel Access put-callback,

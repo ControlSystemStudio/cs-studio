@@ -86,6 +86,8 @@ public class LogCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<log>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<devices>");
         for (String device : device_names)
         {
@@ -102,18 +104,19 @@ public class LogCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
         final List<String> devices = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
         if (node == null)
             throw new Exception("Missing 'devices'");
-        node = DOMHelper.findFirstElementNode(node.getFirstChild(), "device");
+        node = DOMHelper.findFirstElementNode(node.getFirstChild(), ScanCommandProperty.TAG_DEVICE);
         while (node != null)
         {
             Node text_node = node.getFirstChild();
             if (text_node == null)
                 throw new Exception("Missing device name");
             devices.add(text_node.getNodeValue());
-            node = DOMHelper.findNextElementNode(node, "device");
+            node = DOMHelper.findNextElementNode(node, ScanCommandProperty.TAG_DEVICE);
         }
         setDeviceNames(devices.toArray(new String[devices.size()]));
     }

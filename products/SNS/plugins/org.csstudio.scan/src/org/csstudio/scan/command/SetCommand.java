@@ -172,6 +172,8 @@ public class SetCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<set>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<value>" + value + "</value>");
@@ -203,12 +205,13 @@ public class SetCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
-        setValue(DOMHelper.getSubelementDouble(element, "value"));
-        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
-        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
+        setValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
     }
 
     /** {@inheritDoc} */

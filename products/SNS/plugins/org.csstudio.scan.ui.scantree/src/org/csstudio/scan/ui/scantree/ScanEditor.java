@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -248,6 +249,7 @@ public class ScanEditor extends EditorPart
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = gui.getCommands();
+        CommandSequence.setAddresses(commands);
 
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');

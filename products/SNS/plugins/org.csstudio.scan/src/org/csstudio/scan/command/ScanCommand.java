@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  *  and returned by the server to describe elements of a Scan.
  *
  *  <p>This class offers generic property access
- *  based on introspection, assuming that the actual command has
+ *  based on introspection, assuming that the command has
  *  suitable 'getter' and 'setter' methods.
  *  A property with ID "some_property" must have associated "getSomeProperty"
  *  and "setSomeProperty" methods, i.e. using a CamelCase version
@@ -50,6 +50,30 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 abstract public class ScanCommand
 {
+    /** Address of this command within command sequence.
+     *  <p>The {@link CommandSequence} assigns addresses 0, 1, 2, ...
+     *  to all commands in the sequence to allow identification
+     *  of each command while the sequence is executed.
+     */
+    private int address;
+
+    /** @return Address of this command within command sequence */
+    public int getAddress()
+    {
+        return address;
+    }
+
+    /** Set the address of this command.
+     *  <p>To be called by {@link CommandSequence}.
+     *  @param address Address of this command within command sequence
+     *  @return Address of next command
+     */
+    protected int setAddress(final int address)
+    {
+        this.address = address;
+        return address+1;
+    }
+
     /** @return Descriptions of Properties for this command */
     abstract public ScanCommandProperty[] getProperties();
 
