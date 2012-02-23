@@ -583,9 +583,13 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 				// accordingly.
 				yValue = currentSnappedSample.getYValue(); 
 			}
+			if (xValue != currentSnappedSample.getXValue())
+			{
+				xValue = currentSnappedSample.getXValue();
+			}
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));			
-		}
+		} 
 		else if(trace.getHotSampleList().size() > 0){
 			updateToDefaultPosition();	
 			pointerDragged = false;
