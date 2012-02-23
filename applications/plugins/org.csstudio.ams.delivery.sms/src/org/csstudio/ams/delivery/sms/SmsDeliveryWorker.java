@@ -188,6 +188,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                     }
                 }
 
+                if (testStatus.isActive()) {
+                    checkDeviceTest(null);
+                }
+                
                 if (incomingQueue.hasContent()) {
                     final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
                     if (processIncomingMessages(inMsg) == false) {
@@ -322,6 +326,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
             }
         }
 
+        if (o == null) {
+            return true;
+        }
+        
         if (!(o.getOriginalMessage() instanceof InboundBinaryMessage)) {
 
             final InboundMessage msg = (InboundMessage) o.getOriginalMessage();
