@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -63,8 +62,8 @@ public class ScanInfoModel
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
 
-    /** Have we sent connection error to listeners? */
-    private volatile boolean had_connection_error = false;
+    /** Are we currently connected? */
+    private volatile boolean is_connected = false;
 
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
@@ -123,7 +122,11 @@ public class ScanInfoModel
     public void addListener(final ScanInfoModelListener listener)
     {
         listeners.add(listener);
-        listener.scanUpdate(getInfos());
+        // Initial update
+        if (is_connected)
+            listener.scanUpdate(getInfos());
+        else
+            listener.connectionError();
     }
 
     /** @param listener Listener to remove */
@@ -194,7 +197,7 @@ public class ScanInfoModel
     /** @return Server
      *  @throws RemoteException when not connected to server
      */
-    private synchronized ScanServer getServer() throws RemoteException
+    public synchronized ScanServer getServer() throws RemoteException
     {
         if (server == null)
             throw new RemoteException("Not connected to Scan Server");
@@ -209,23 +212,23 @@ public class ScanInfoModel
         try
         {
             final List<ScanInfo> update = getServer().getScanInfos();
-            if (update.equals(infos) && !had_connection_error)
+            if (update.equals(infos) && is_connected)
                 return;
             // Received new information, remember and notify listeners
+            is_connected = true;
             infos = update;
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
-            had_connection_error = false;
         }
         catch (RemoteException ex)
         {
             Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
             infos = Collections.emptyList();
-            if (! had_connection_error)
+            if (is_connected)
             {   // Notify listeners once we get into the error state
+                is_connected = false;
                 for (ScanInfoModelListener listener : listeners)
                     listener.connectionError();
-                had_connection_error = true;
             }
             // Wait a little
             Thread.sleep(1000);
@@ -267,91 +270,5 @@ public class ScanInfoModel
     public List<ScanInfo> getInfos()
     {
         return infos;
-    }
-
-    /** Get serial of last logged sample.
-     *
-     *  <p>Can be used to determine if there are new samples
-     *  that should be fetched via <code>getScanData()</code>
-     *
-     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
-     *  @return Serial of last sample in scan data
-     *  @throws RemoteException on error in remote access
-     *  @see #getScanData(ScanInfo)
-     */
-    public long getLastScanDataSerial(final ScanInfo info) throws RemoteException
-    {
-        if (info == null)
-            return -1;
-        return getServer().getLastScanDataSerial(info.getId());
-    }
-
-    /** @param info Scan for which to get data
-     *  @return ScanData or null
-     *  @throws RemoteException on error in remote access
-     */
-    public ScanData getScanData(final ScanInfo info) throws RemoteException
-    {
-        if (info == null)
-            return null;
-        return getServer().getScanData(info.getId());
-    }
-
-    /** Query server for devices used by a scan
-     *  @param info Scan for which to get data, <code>null</code> for default devices
-     *  @return Info about devices
-     *  @throws RemoteException on error in remote access
-     */
-    public DeviceInfo[] getDeviceInfos(final ScanInfo info) throws RemoteException
-    {
-        if (info == null)
-            return getServer().getDeviceInfos(-1);
-        return getServer().getDeviceInfos(info.getId());
-    }
-
-    /** @param info Scan to pause (NOP if not running)
-     *  @throws RemoteException on error in remote access
-     */
-    public void pause(final ScanInfo info) throws RemoteException
-    {
-        if (info == null)
-            getServer().pause(-1);
-        else
-            getServer().pause(info.getId());
-    }
-
-    /** @param info Scan to resume (NOP if not paused)
-     *  @throws RemoteException on error in remote access
-     */
-    public void resume(final ScanInfo info) throws RemoteException
-    {
-        if (info == null)
-            getServer().resume(-1);
-        else
-            getServer().resume(info.getId());
-    }
-
-    /** @param info Scan to abort (NOP if not running or paused)
-     *  @throws RemoteException on error in remote access
-     */
-    public void abort(final ScanInfo info) throws RemoteException
-    {
-        getServer().abort(info.getId());
-    }
-
-    /** @param info Scan to remove (NOP if has not ended)
-     *  @throws RemoteException on error in remote access
-     */
-    public void remove(final ScanInfo info) throws RemoteException
-    {
-        getServer().remove(info.getId());
-    }
-
-    /** Remove completed scans (NOP if there aren't any)
-     *  @throws RemoteException on error in remote access
-     */
-    public void removeCompletedScans() throws RemoteException
-    {
-        getServer().removeCompletedScans();
     }
 }

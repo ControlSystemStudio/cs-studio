@@ -53,7 +53,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -74,6 +73,9 @@ public class ScanTreeGUI
     /** Tree that shows commands */
     private TreeViewer tree_view;
 
+    /** Label provider */
+    private CommandTreeLabelProvider label_provider;
+
     /** Initialize
      *  @param parent
      *  @param editor Scan editor. Limited demo functionality when <code>null</code>
@@ -91,15 +93,14 @@ public class ScanTreeGUI
      */
     private void createComponents(final Composite parent)
     {
-        parent.setLayout(new FillLayout());
-
         tree_view = new TreeViewer(parent, SWT.MULTI |
                 SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Tree tree = tree_view.getTree();
         tree.setLinesVisible(true);
         tree_view.setUseHashlookup(true);
         tree_view.setContentProvider(new CommandTreeContentProvider());
-        tree_view.setLabelProvider(new CommandTreeLabelProvider());
+        label_provider = new CommandTreeLabelProvider();
+        tree_view.setLabelProvider(label_provider);
 
         // Double-click opens property panel
         tree_view.addDoubleClickListener(new IDoubleClickListener()
@@ -112,6 +113,12 @@ public class ScanTreeGUI
         });
 
         ColumnViewerToolTipSupport.enableFor(tree_view);
+    }
+
+    /** @return Top-level control of the GUI */
+    public Control getControl()
+    {
+        return tree_view.getControl();
     }
 
     /** Create context menu */
@@ -451,6 +458,24 @@ public class ScanTreeGUI
         this.commands = commands;
         tree_view.setInput(commands);
         tree_view.expandAll();
+    }
+
+    /** @param address Address of the 'active' command to highlight */
+    public void setActiveCommand(final long address)
+    {
+        if (!label_provider.setActiveCommand(address))
+            return;
+        final Control control = tree_view.getControl();
+        if (control.isDisposed())
+            return;
+        control.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                tree_view.refresh();
+            }
+        });
     }
 
     /** Perform full GUI refresh */
