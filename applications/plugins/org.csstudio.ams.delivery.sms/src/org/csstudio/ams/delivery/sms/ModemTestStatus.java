@@ -106,6 +106,10 @@ public class ModemTestStatus {
         return initiatorMessage != null;
     }
 
+    public void finishedDeviceTestInitiated() {
+        setDeviceTestMessageContent(null);
+    }
+    
     public String getCheckId() {
         return checkId;
     }
