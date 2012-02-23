@@ -121,10 +121,13 @@ public class LoopCommand extends ScanCommand
         this.body = body;
     }
 
+    /** Set address of loop as well as body commands
+     *  {@inheritDoc}
+     */
     @Override
-    protected int setAddress(final int address)
+    public long setAddress(final long address)
     {
-        int next = super.setAddress(address);
+        long next = super.setAddress(address);
         for (ScanCommand command : body)
             next = command.setAddress(next);
         return next;

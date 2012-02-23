@@ -59,7 +59,7 @@ public class CommandSequence
      */
     public static void setAddresses(final List<ScanCommand> commands)
     {
-        int next = 0;
+        long next = 0;
         for (ScanCommand command : commands)
             next = command.setAddress(next);
     }

@@ -98,6 +98,9 @@ public interface TODO
      *
      *  TODO Scan tree 'live' view of running scan
      *
+     *  TODO Support pre- and post-scan commands, configured when scan server starts,
+     *       to for example enable and disable the data acquisition.
+     *
      *  TODO Unclear if devices will ever be anything but PVs.
      *
      *  TODO put callback? Maybe support Channel Access put-callback,

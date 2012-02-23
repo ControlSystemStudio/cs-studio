@@ -55,20 +55,25 @@ abstract public class ScanCommand
      *  to all commands in the sequence to allow identification
      *  of each command while the sequence is executed.
      */
-    private int address;
+    private long address = -1;
 
     /** @return Address of this command within command sequence */
-    public int getAddress()
+    final public long getAddress()
     {
         return address;
     }
 
     /** Set the address of this command.
-     *  <p>To be called by {@link CommandSequence}.
+     *
+     *  <p>To be called by scan system, not end user code.
+     *  Derived commands, i.e. custom commands that wrap a
+     *  "body" of commands need to override and forward
+     *  the address update to their embedded commands.
+     *
      *  @param address Address of this command within command sequence
      *  @return Address of next command
      */
-    protected int setAddress(final int address)
+    public long setAddress(final long address)
     {
         this.address = address;
         return address+1;
@@ -80,7 +85,7 @@ abstract public class ScanCommand
     /** @param property_id ID of a property
      *  @return Property description or <code>null</code> if property ID is not supported
      */
-    public ScanCommandProperty getPropertyDescription(final String property_id)
+    final public ScanCommandProperty getPropertyDescription(final String property_id)
     {
         for (ScanCommandProperty property : getProperties())
             if (property.getID().equals(property_id))
@@ -204,7 +209,7 @@ abstract public class ScanCommand
      *  @param out Where to print
      *  @param level Indentation level
      */
-    protected void writeIndent(final PrintStream out, final int level)
+    final protected void writeIndent(final PrintStream out, final int level)
     {
         for (int i=0; i<level; ++i)
             out.print("  ");

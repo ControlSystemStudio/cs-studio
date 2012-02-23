@@ -53,6 +53,18 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         this.command = command;
     }
 
+    /** Set the address of this command.
+    *
+    *  <p>To be called by scan system, not end user code.
+    *
+    *  @param address Address of this command within command sequence
+    *  @return Address of next command
+    */
+    final public long setAddress(final long address)
+    {
+        return command.setAddress(address);
+    }
+
     /** @return {@link ScanCommand} */
     final public C getCommand()
     {
