@@ -98,10 +98,10 @@ public class Scan implements ScanContext
         this.devices = devices;
         this.implementations = implementations;
 
+        // Assign addresses to all commands
         long address = 0;
-        for (ScanCommandImpl impl : implementations)
+        for (ScanCommandImpl<?> impl : implementations)
             address = impl.setAddress(address);
-        // TODO Assign correct addresses to all commands
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */
