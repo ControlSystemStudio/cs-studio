@@ -336,7 +336,7 @@ public class Scan implements ScanContext
     /** Ask for execution to stop */
     synchronized void abort()
     {
-        if (state == ScanState.Running  ||  state == ScanState.Paused)
+        if (state == ScanState.Idle  ||  state == ScanState.Running  ||  state == ScanState.Paused)
             state = ScanState.Aborted;
     }
 
