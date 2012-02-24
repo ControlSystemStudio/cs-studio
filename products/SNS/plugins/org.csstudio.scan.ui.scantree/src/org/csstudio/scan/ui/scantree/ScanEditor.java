@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -563,7 +562,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = gui.getCommands();
-        CommandSequence.setAddresses(commands);
 
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');

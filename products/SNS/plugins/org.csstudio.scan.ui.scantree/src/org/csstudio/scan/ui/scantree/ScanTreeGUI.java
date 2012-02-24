@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
@@ -460,6 +461,8 @@ public class ScanTreeGUI
     /** @param commands Commands to display/edit */
     public void setCommands(final List<ScanCommand> commands)
     {
+        CommandSequence.setAddresses(commands);
+
         this.commands = commands;
         tree_view.setInput(commands);
         tree_view.expandAll();
