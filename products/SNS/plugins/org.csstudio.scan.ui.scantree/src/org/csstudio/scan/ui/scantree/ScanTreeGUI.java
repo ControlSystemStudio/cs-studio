@@ -10,8 +10,10 @@ package org.csstudio.scan.ui.scantree;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.csdata.ProcessVariable;
@@ -69,6 +71,9 @@ public class ScanTreeGUI
 
     /** Commands displayed and edited in this GUI */
     private List<ScanCommand> commands = new ArrayList<ScanCommand>();
+
+    /** Map from addresses to commands */
+    final Map<Long, ScanCommand> address_map = new HashMap<Long, ScanCommand>();
 
     /** Tree that shows commands */
     private TreeViewer tree_view;
@@ -458,6 +463,35 @@ public class ScanTreeGUI
         this.commands = commands;
         tree_view.setInput(commands);
         tree_view.expandAll();
+
+        address_map.clear();
+        setAddressMap(commands);
+    }
+
+    /** @param commands Commands to add to address map
+     *  @see #findCommand()
+     */
+    private void setAddressMap(List<ScanCommand> commands)
+    {
+        for (ScanCommand command : commands)
+        {
+            address_map.put(command.getAddress(), command);
+            if (command instanceof LoopCommand)
+                setAddressMap(((LoopCommand)command).getBody());
+        }
+    }
+
+    /** @param address Command's address
+     *  @return Command or <code>null</code> if not found
+     */
+    private ScanCommand findCommand(final long address)
+    {
+        // Using a hash map was easy to implement.
+        // Alternatively, a binary search in the commands List
+        // should be useful because the addresses are consecutive
+        // except for the need to 'drill down' for commands with
+        // a body.
+        return address_map.get(address);
     }
 
     /** @return Commands displayed/edited in GUI */
@@ -492,29 +526,6 @@ public class ScanTreeGUI
                     tree_view.update(command, null);
             }
         });
-    }
-
-    // TODO optimize linear lookup?
-    public ScanCommand findCommand(final long address)
-    {
-        return findCommand(commands, address);
-    }
-
-    private ScanCommand findCommand(final List<ScanCommand> commands, final long address)
-    {
-        for (ScanCommand command : commands)
-        {
-            if (command.getAddress() == address)
-                return command;
-            else if (command instanceof LoopCommand)
-            {
-                final ScanCommand found =
-                        findCommand(((LoopCommand) command).getBody(), address);
-                if (found != null)
-                    return found;
-            }
-        }
-        return null;
     }
 
     /** Perform full GUI refresh */
