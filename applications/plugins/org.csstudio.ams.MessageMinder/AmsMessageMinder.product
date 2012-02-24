@@ -37,15 +37,14 @@
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.ams"/>
       <plugin id="org.csstudio.ams.MessageMinder"/>
+      <plugin id="org.csstudio.ams.log4j" fragment="true"/>
       <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.data"/>
-      <plugin id="org.csstudio.desy.common.product.log4j" fragment="true"/>
       <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
-      <plugin id="org.csstudio.platform.libs.epics.ui"/>
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
