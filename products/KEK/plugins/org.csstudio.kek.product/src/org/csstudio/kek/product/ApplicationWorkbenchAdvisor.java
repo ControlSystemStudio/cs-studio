@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Cosylab d.d.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +9,9 @@
 package org.csstudio.kek.product;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -18,6 +22,7 @@ import org.eclipse.ui.ide.IDE;
 /** Tell the workbench how to behave.
  *  @author Kay Kasemir
  *  @author Xihui Chen - IDE-specific workbench images
+ *  @author Takashi Nakamoto added preShutDown() method
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
@@ -65,5 +70,21 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     	if(openDocProcessor != null)
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
+    }
+    
+	/** {@inheritDoc} */
+    @Override
+	public boolean preShutdown()
+    {
+    	try
+    	{
+    		// Save workspace before exiting CSS
+    		ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+    	}
+    	catch (CoreException e)
+    	{
+    		e.printStackTrace();
+    	}
+    	return true;
     }
 }
