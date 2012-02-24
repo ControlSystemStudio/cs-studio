@@ -311,7 +311,7 @@ public class LoopCommand extends ScanCommand
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));

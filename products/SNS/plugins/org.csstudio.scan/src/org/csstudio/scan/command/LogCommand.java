@@ -104,7 +104,7 @@ public class LogCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         final List<String> devices = new ArrayList<String>();
         Element node = DOMHelper.findFirstElementNode(element.getFirstChild(), "devices");
         if (node == null)

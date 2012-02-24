@@ -52,7 +52,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -238,12 +239,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
         // 1) Info section
         info_section = new Composite(parent, 0);
-        info_section.setLayout(new RowLayout());
+        info_section.setLayout(new GridLayout(2, false));
         message = new Label(info_section, 0);
         message.setText(Messages.ServerDisconnected);
+        message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
         // TODO Remove. Instead have buttons to pause, resume, ...
         Button button = new Button(info_section, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
         button.setText("Hide"); //$NON-NLS-1$
         button.addSelectionListener(new SelectionAdapter()
         {

@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CommandTreeLabelProvider extends CellLabelProvider
 {
-    private volatile long address = -2;
+    private volatile long address = -1;
 
     /** @param address Address of the 'active' command to highlight
      *  @return <code>true</code> if this was a change
@@ -64,19 +64,22 @@ public class CommandTreeLabelProvider extends CellLabelProvider
         cell.setImage(getImage(command));
 
         // highlight the currently active command
-        if (command.getAddress() == address)
-            cell.setBackground(cell.getControl().getDisplay().getSystemColor(SWT.COLOR_CYAN));
+        if (address >= 0  &&  command.getAddress() == address)
+            cell.setForeground(cell.getControl().getDisplay().getSystemColor(SWT.COLOR_GREEN));
         else
-            cell.setBackground(null);
+            cell.setForeground(null);
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     @Override
     public String getToolTipText(final Object element)
     {
+        // Show base of command class and address
         final ScanCommand command = (ScanCommand) element;
         final String name = command.getClass().getName();
         final int sep = name.lastIndexOf('.');
-        return name.substring(sep + 1);
+        final String base = name.substring(sep + 1);
+        return base + " @ " + command.getAddress();
     }
 }
