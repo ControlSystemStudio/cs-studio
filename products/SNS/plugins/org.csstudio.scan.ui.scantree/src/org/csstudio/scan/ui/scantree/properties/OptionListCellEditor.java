@@ -31,7 +31,6 @@ import org.eclipse.swt.widgets.Control;
 abstract public class OptionListCellEditor extends CellEditor
 {
     private String[] labels;
-    private CCombo combo = null;
 
     /** Initialize
      *  @param parent Parent widget
@@ -46,8 +45,14 @@ abstract public class OptionListCellEditor extends CellEditor
         setValueValid(true);
     }
 
+    private CCombo getCombo()
+    {
+        return (CCombo) getControl();
+    }
+
     private void initCombo()
     {
+        final CCombo combo = getCombo();
         combo.setItems(labels);
         combo.select(0);
     }
@@ -66,7 +71,7 @@ abstract public class OptionListCellEditor extends CellEditor
     final protected Control createControl(final Composite parent)
     {
         final int style = isReadOnly() ? SWT.READ_ONLY : 0;
-        combo = new CCombo(parent, style);
+        final CCombo combo = new CCombo(parent, style);
         combo.setFont(parent.getFont());
 
         addGuiTweaks(combo);
@@ -114,14 +119,14 @@ abstract public class OptionListCellEditor extends CellEditor
     @Override
     protected void doSetFocus()
     {
-        combo.setFocus();
+        getControl().setFocus();
     }
 
     /** @return Currently selected item in the combo as Enum */
     @Override
     final protected Object doGetValue()
     {
-        final String label = combo.getText();
+        final String label = getCombo().getText();
         return optionForLabel(label);
     }
 
@@ -138,7 +143,7 @@ abstract public class OptionListCellEditor extends CellEditor
     final protected void doSetValue(final Object value)
     {
         final String label = labelForOption(value);
-        combo.select(getSelectionIndex(label));
+        getCombo().select(getSelectionIndex(label));
     }
 
     /** To be implemented by derived class:
