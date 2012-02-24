@@ -165,14 +165,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
      *  @param commands Commands of the scan
      *  @return
      */
-    public static ScanEditor createInstance(final long scan_id, final List<ScanCommand> commands)
+    public static ScanEditor createInstance(final ScanInfo scan, final List<ScanCommand> commands)
     {
         final ScanEditor editor = createInstance(new EmptyEditorInput());
         editor.setCommands(commands);
-        editor.scan_id = scan_id;
+        if (! scan.getState().isDone())
+            editor.scan_id = scan.getId();
         return editor;
     }
-
 
     /** {@inheritDoc} */
     @Override
@@ -537,6 +537,15 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
      */
     public void executeForUndo(final IUndoableOperation operation) throws ExecutionException
     {
+        // Prompt when in 'live' mode
+        if (scan_id >= 0)
+        {
+            if (! MessageDialog.openConfirm(info_section.getShell(),
+                    Messages.EndLiveMode, Messages.EndLiveModePrompt))
+                return;
+            // End live mode
+            scan_id = -1;
+        }
         operation.execute(new NullProgressMonitor(), null);
         operation.addContext(undo_context);
         operations.add(operation);
@@ -683,13 +692,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
      */
     protected void setDirty(final boolean dirty)
     {
-        // TODO Remove
-        showInfoSection(true);
-
-        // TODO Maintain the 'live' state:
-        // When changing a 'live' scan, prompt "This will stop the live view",
-        // then either suppress change or stop live updates
-
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }

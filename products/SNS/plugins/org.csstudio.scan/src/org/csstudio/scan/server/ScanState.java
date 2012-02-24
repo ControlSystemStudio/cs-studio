@@ -25,10 +25,10 @@ public enum ScanState
     Idle("Idle", false, false),
 
     /** Scan is currently being executed */
-    Running("Running...", true, false),
+    Running("Running", true, false),
 
     /** Scan was Running, currently paused */
-    Paused("Paused...", true, false),
+    Paused("Paused", true, false),
 
     /** Scan was aborted by user */
     Aborted("Aborted", false, true),

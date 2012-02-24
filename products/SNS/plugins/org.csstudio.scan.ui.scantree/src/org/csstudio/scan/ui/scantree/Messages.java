@@ -26,6 +26,8 @@ public class Messages extends NLS
     public static String DeviceListFetchError;
     public static String DroppedPVNameBesideCommand;
     public static String DroppedPVNameNotSupportedByCommand;
+    public static String EndLiveMode;
+    public static String EndLiveModePrompt;
     public static String Error;
     public static String FileOpenErrorFmt;
     public static String FileSaveErrorFmt;

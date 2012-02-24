@@ -38,8 +38,7 @@ public class OpenScanTreeAction extends Action
     final private ScanInfo info;
 
     /** Initialize
-     *  @param model
-     *  @param info
+     *  @param info Scan for which to open the scan tree
      */
     public OpenScanTreeAction(final ScanInfo info)
     {
@@ -73,7 +72,7 @@ public class OpenScanTreeAction extends Action
                         @Override
                         public void run()
                         {
-                            ScanEditor.createInstance(info.getId(), commands);
+                            ScanEditor.createInstance(info, commands);
                         }
                     });
                 }
