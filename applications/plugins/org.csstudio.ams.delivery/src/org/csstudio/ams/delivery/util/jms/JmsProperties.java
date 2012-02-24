@@ -23,15 +23,7 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.jms;
-
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Map;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.csstudio.ams.delivery.util.jms;
 
 /**
  * TODO (mmoeller) : 
@@ -40,48 +32,29 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 27.12.2011
  */
-public abstract class AbstractMessageContent {
+public class JmsProperties {
     
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractMessageContent.class);
+    private String jmsFactoryClass;
     
-    protected Hashtable<String, String> content;
+    private String jmsUrl;
     
-    public AbstractMessageContent(MapMessage jmsMsg) {
-        content = new Hashtable<String, String>();
-        init(jmsMsg);
+    private String jmsTopic;
+
+    public JmsProperties(String factoryClass, String url, String topic) {
+        this.jmsFactoryClass = factoryClass;
+        this.jmsUrl = url;
+        this.jmsTopic = topic;
     }
-    
-    private Map<String, String> init(MapMessage jmsMsg) {
-        Enumeration<?> keys = null;
-        try {
-            keys = jmsMsg.getMapNames();
-        } catch (JMSException jmse) {
-            LOG.error("Cannot read map names from JMS message: {}", jmse.getMessage());
-        }
-        
-        if (keys != null) {
-            while (keys.hasMoreElements()) {
-                String key = (String) keys.nextElement();
-                try {
-                    content.put(key, jmsMsg.getString(key));
-                } catch (JMSException jmse) {
-                    LOG.error("Cannot read value for key '{}': {}", key, jmse.getMessage());
-                }
-            }
-        }
-        
-        return content;
+
+    public String getJmsFactoryClass() {
+        return jmsFactoryClass;
     }
-    
-    public boolean containsKey(String key) {
-        return content.containsKey(key);
+
+    public String getJmsUrl() {
+        return jmsUrl;
     }
-    
-    public String getValue(String key) {
-        String value = null;
-        if (key != null) {
-            value = content.get(key);
-        }
-        return value;
+
+    public String getJmsTopic() {
+        return jmsTopic;
     }
 }
