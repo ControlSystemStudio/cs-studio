@@ -37,6 +37,6 @@ public class ResumeAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().resume(info.getId());
+        model.getServer().resume(info == null ? -1 : info.getId());
     }
 }

@@ -37,6 +37,6 @@ public class PauseAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().pause(info.getId());
+        model.getServer().pause(info == null ? -1 : info.getId());
     }
 }
