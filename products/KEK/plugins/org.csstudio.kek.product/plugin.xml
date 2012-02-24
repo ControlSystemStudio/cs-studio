@@ -71,9 +71,6 @@
       <workbench
             class="org.csstudio.kek.product.Workbench">
       </workbench>
-      <project
-            class="org.csstudio.startup.module.defaults.DefaultProject">
-      </project>
    </extension>
    <extension
          point="org.eclipse.ui.intro">
