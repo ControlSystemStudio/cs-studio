@@ -54,6 +54,16 @@ public class CommandSequence
         this.commands = Arrays.asList(commands);
     }
 
+    /** Assign consecutive addresses
+     *  @param commands Commands where addresses need to be set
+     */
+    public static void setAddresses(final List<ScanCommand> commands)
+    {
+        long next = 0;
+        for (ScanCommand command : commands)
+            next = command.setAddress(next);
+    }
+
     /** Add a command
      *  @param command {@link ScanCommand}
      */
@@ -75,7 +85,7 @@ public class CommandSequence
      */
     public void delay(final double seconds)
     {
-        commands.add(new DelayCommand(seconds));
+        add(new DelayCommand(seconds));
     }
 
     /** Add a 'log' command
@@ -83,7 +93,7 @@ public class CommandSequence
      */
     public void log(final String... device_names)
     {
-        commands.add(new LogCommand(device_names));
+        add(new LogCommand(device_names));
     }
 
     /** Add a 'loop' command
@@ -98,7 +108,7 @@ public class CommandSequence
             final double stepsize,
             final ScanCommand... body)
     {
-        commands.add(new LoopCommand(device_name, start, end, stepsize, body));
+        add(new LoopCommand(device_name, start, end, stepsize, body));
     }
 
     /** Add a 'loop' command
@@ -128,8 +138,8 @@ public class CommandSequence
             final double stepsize,
             final List<ScanCommand> body)
     {
-        commands.add(new LoopCommand(device_name, start, end, stepsize,
-                                     body.toArray(new ScanCommand[body.size()])));
+        add(new LoopCommand(device_name, start, end, stepsize,
+                            body.toArray(new ScanCommand[body.size()])));
     }
 
 
@@ -139,7 +149,7 @@ public class CommandSequence
      */
     public void set(final String device_name, Object value)
     {
-        commands.add(new SetCommand(device_name, value));
+        add(new SetCommand(device_name, value));
     }
 
     /** Add a 'wait' command that delays the scan until a device reaches a certain value
@@ -150,7 +160,7 @@ public class CommandSequence
     public void wait(final String device_name, final double desired_value,
          final double tolerance)
     {
-        commands.add(new WaitCommand(device_name, Comparison.EQUALS, desired_value, tolerance, 0.0));
+        add(new WaitCommand(device_name, Comparison.EQUALS, desired_value, tolerance, 0.0));
     }
 
     // Note: This was called 'print' which causes warnings in a PyDev python
@@ -160,7 +170,7 @@ public class CommandSequence
     {
         try
         {
-            XMLCommandWriter.write(System.out, commands);
+            XMLCommandWriter.write(System.out, getCommands());
         }
         catch (Exception ex)
         {
@@ -171,6 +181,7 @@ public class CommandSequence
     /** @return List of commands in the sequence */
     public List<ScanCommand> getCommands()
     {
+        setAddresses(commands);
         return commands;
     }
 
@@ -179,6 +190,6 @@ public class CommandSequence
      */
     public String getXML() throws Exception
     {
-        return XMLCommandWriter.toXMLString(commands);
+        return XMLCommandWriter.toXMLString(getCommands());
     }
 }

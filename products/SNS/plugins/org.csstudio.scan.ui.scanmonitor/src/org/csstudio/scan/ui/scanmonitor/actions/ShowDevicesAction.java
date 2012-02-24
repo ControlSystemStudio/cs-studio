@@ -44,7 +44,7 @@ public class ShowDevicesAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        final DeviceInfo[] devices = model.getDeviceInfos(info);
+        final DeviceInfo[] devices = model.getServer().getDeviceInfos(info.getId());
         final StringBuilder buf = new StringBuilder();
         buf.append("Devices:\n");
         for (DeviceInfo info : devices)

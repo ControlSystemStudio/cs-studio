@@ -13,30 +13,34 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.ui.scanmonitor.actions;
+package org.csstudio.scan.commandimpl;
 
-import org.csstudio.scan.client.ScanInfoModel;
-import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.ui.scanmonitor.Messages;
+import java.util.logging.Logger;
 
-/** Action that removes a scan
+import org.csstudio.scan.condition.Condition;
+import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanContext;
+
+/** Implementation of the {@link WaitForDevicesCommand}
  *  @author Kay Kasemir
  */
-public class RemoveAction extends AbstractGUIAction
+@SuppressWarnings("nls")
+public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCommand>
 {
-    /** Initialize
-     *  @param model
-     *  @param info
-     */
-    public RemoveAction(final ScanInfoModel model, final ScanInfo info)
+    public WaitForDevicesCommandImpl(final WaitForDevicesCommand command)
     {
-        super(model, info, Messages.Remove, "icons/remove.gif"); //$NON-NLS-1$
+        super(command);
     }
 
     /** {@inheritDoc} */
-    @Override
-    protected void runModelAction() throws Exception
+	@Override
+    public void execute(final ScanContext context) throws Exception
     {
-        model.getServer().remove(info.getId());
+		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
+
+		final Condition ready = new WaitForDevicesCondition(command.getDevices());
+		ready.await();
+        context.workPerformed(1);
     }
 }

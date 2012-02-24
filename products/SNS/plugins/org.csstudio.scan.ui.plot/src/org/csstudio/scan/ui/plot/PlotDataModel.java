@@ -13,6 +13,7 @@ import java.util.List;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServer;
 import org.eclipse.swt.widgets.Display;
 
 /** Model of the Plot's data
@@ -111,10 +112,11 @@ public class PlotDataModel implements Runnable
                 try
                 {
                     // Check if there is new data
-                    final long last_serial = model.getLastScanDataSerial(scan);
+                    final ScanServer server = model.getServer();
+                    final long last_serial = server.getLastScanDataSerial(scan.getId());
                     if (last_serial != plot_data.getLastSerial())
                     {
-                        scan_data = model.getScanData(scan);
+                        scan_data = server.getScanData(scan.getId());
                         if (scan_data == null)
                             devices = null;
                         else

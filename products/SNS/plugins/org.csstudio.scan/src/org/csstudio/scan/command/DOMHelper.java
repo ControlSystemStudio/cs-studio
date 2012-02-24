@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -35,7 +35,7 @@ public class DOMHelper
     public static final Element findFirstElementNode(Node node, final String name)
     {
         while (node != null)
-        {   
+        {
             if (node.getNodeType() == Node.ELEMENT_NODE &&
                     node.getNodeName().equals(name))
                 return (Element) node;
@@ -43,7 +43,7 @@ public class DOMHelper
         }
         return null;
     }
-    
+
     /** @return Returns the next matching element.
      *  @see #findFirstElementNode(Node, String)
      */
@@ -53,13 +53,13 @@ public class DOMHelper
     }
 
     /** Locate a sub-element tagged 'name', return its value.
-     * 
+     *
      *  <p>Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking. May be null.
      *  @param name Name of sub-element to locate.
      *  @param default_value Default value if not found
-     *  
+     *
      *  @return Returns string that was found or default_value.
      */
     public static final String getSubelementString(
@@ -78,14 +78,14 @@ public class DOMHelper
         }
         return default_value;
     }
-    
+
     /** Locate a sub-element tagged 'name', return its value.
-     * 
+     *
      *  <p>Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking.
      *  @param name Name of sub-element to locate.
-     *  
+     *
      *  @return Returns string that was found
      *  @throws Exception when nothing found
      */
@@ -103,7 +103,7 @@ public class DOMHelper
         }
         throw new Exception("Missing '" + name + "'");
     }
-    
+
     /** Locate a sub-element tagged 'name', return its double value.
      *
      *  <p>Will only go one level down, not search the whole tree.
@@ -146,4 +146,24 @@ public class DOMHelper
             return default_value;
         return Double.parseDouble(s);
     }
+
+    /** Locate a sub-element tagged 'name', return its integer value.
+    *
+    *  <p>Will only go one level down, not search the whole tree.
+    *
+    *  @param element Element where to start looking. May be null.
+    *  @param element_name Name of sub-element to locate.
+    *  @param default_value Result in case sub-element isn't found.
+    *
+    *  @return Returns number found in the sub-element.
+    */
+   public static final int getSubelementInt(
+          final Element element, final String element_name, final int default_value)
+   {
+       final String s = getSubelementString(element, element_name, "");
+       if (s.length() < 1)
+           return default_value;
+       return Integer.parseInt(s);
+   }
+
 }

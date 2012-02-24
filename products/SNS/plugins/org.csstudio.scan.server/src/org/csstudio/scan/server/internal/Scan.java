@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
+import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -96,6 +97,11 @@ public class Scan implements ScanContext
         this.name = name;
         this.devices = devices;
         this.implementations = implementations;
+
+        // Assign addresses to all commands
+        long address = 0;
+        for (ScanCommandImpl<?> impl : implementations)
+            address = impl.setAddress(address);
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */
@@ -114,6 +120,8 @@ public class Scan implements ScanContext
     public ScanInfo getScanInfo()
     {
         final ScanCommandImpl<?> command = current_command;
+
+        final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
         final ScanState state;
         synchronized (this)
@@ -121,12 +129,14 @@ public class Scan implements ScanContext
             state = this.state;
         }
         if (state == ScanState.Finished)
+        {
             command_name = "- end -";
+        }
         else if (command != null)
             command_name = command.toString();
         else
             command_name = "";
-        return new ScanInfo(id, name, created, state, error, work_performed.get(), total_work_units, command_name);
+        return new ScanInfo(id, name, created, state, error, work_performed.get(), total_work_units, address, command_name);
     }
 
     /** @return Commands executed by this scan */
@@ -239,8 +249,20 @@ public class Scan implements ScanContext
         state = ScanState.Running;
         try
         {
-            execute(new WaitForDevicesCommand(devices.getDevices()));
-            execute(implementations);
+            // TODO Do something about commands that are not part of the submitted commands:
+            //      Special handling of address
+            execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices())));
+            try
+            {
+                // TODO Execute pre-scan commands
+
+                // Execute the submitted commands
+                execute(implementations);
+            }
+            finally
+            {
+                // TODO Try post-scan commands even if submitted commands ran into problem
+            }
             // Successful finish
             state = ScanState.Finished;
         }
@@ -314,7 +336,7 @@ public class Scan implements ScanContext
     /** Ask for execution to stop */
     synchronized void abort()
     {
-        if (state == ScanState.Running  ||  state == ScanState.Paused)
+        if (state == ScanState.Idle  ||  state == ScanState.Running  ||  state == ScanState.Paused)
             state = ScanState.Aborted;
     }
 

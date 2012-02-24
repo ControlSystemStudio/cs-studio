@@ -29,12 +29,14 @@ import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.commandimpl.LogCommandImpl;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.commandimpl.WaitCommandImpl;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.internal.Scan;
 import org.csstudio.scan.server.internal.ScanEngine;
@@ -74,6 +76,7 @@ public class ScanEngineHeadlessTest
             devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
+                    new DelayCommand(1.0),
                     new DelayCommand(1.0),
                     new LogCommand("xpos")
                 )
@@ -123,12 +126,21 @@ public class ScanEngineHeadlessTest
             Thread.sleep(200);
         }
 
+        System.out.println("Monitoring process of this:");
+        XMLCommandWriter.write(System.out, scan_x.getScanCommands());
+
         // Resume, wait for 1st scan to finish
         scan_x.resume();
         do
         {
             scans = engine.getScans();
-            System.out.println(scans.get(0).getScanInfo());
+            final ScanInfo info = scans.get(0).getScanInfo();
+            System.out.println(info + ", command " + info.getCurrentCommand() + " @ " + info.getCurrentAddress());
+
+            // Address of the 'delay' commands should be 1 or 2
+            if (info.getCurrentCommand().contains("Delay"))
+                assertTrue(info.getCurrentAddress() == 1  ||
+                           info.getCurrentAddress() == 2);
             assertSame(scan_x, scans.get(0));
             assertFalse(engine.isIdle());
             Thread.sleep(200);

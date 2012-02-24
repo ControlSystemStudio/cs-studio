@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
  *  and returned by the server to describe elements of a Scan.
  *
  *  <p>This class offers generic property access
- *  based on introspection, assuming that the actual command has
+ *  based on introspection, assuming that the command has
  *  suitable 'getter' and 'setter' methods.
  *  A property with ID "some_property" must have associated "getSomeProperty"
  *  and "setSomeProperty" methods, i.e. using a CamelCase version
@@ -50,13 +50,42 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 abstract public class ScanCommand
 {
+    /** Address of this command within command sequence.
+     *  <p>The {@link CommandSequence} assigns addresses 0, 1, 2, ...
+     *  to all commands in the sequence to allow identification
+     *  of each command while the sequence is executed.
+     */
+    private long address = -1;
+
+    /** @return Address of this command within command sequence */
+    final public long getAddress()
+    {
+        return address;
+    }
+
+    /** Set the address of this command.
+     *
+     *  <p>To be called by scan system, not end user code.
+     *  Derived commands, i.e. custom commands that wrap a
+     *  "body" of commands need to override and forward
+     *  the address update to their embedded commands.
+     *
+     *  @param address Address of this command within command sequence
+     *  @return Address of next command
+     */
+    public long setAddress(final long address)
+    {
+        this.address = address;
+        return address+1;
+    }
+
     /** @return Descriptions of Properties for this command */
     abstract public ScanCommandProperty[] getProperties();
 
     /** @param property_id ID of a property
      *  @return Property description or <code>null</code> if property ID is not supported
      */
-    public ScanCommandProperty getPropertyDescription(final String property_id)
+    final public ScanCommandProperty getPropertyDescription(final String property_id)
     {
         for (ScanCommandProperty property : getProperties())
             if (property.getID().equals(property_id))
@@ -180,7 +209,7 @@ abstract public class ScanCommand
      *  @param out Where to print
      *  @param level Indentation level
      */
-    protected void writeIndent(final PrintStream out, final int level)
+    final protected void writeIndent(final PrintStream out, final int level)
     {
         for (int i=0; i<level; ++i)
             out.print("  ");

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -34,6 +34,7 @@ public class ScanInfo implements Serializable
     final private String error;
     final private long performed_work_units;
     final private long total_work_units;
+    final private long current_address;
     final private String current_commmand;
 
     /** Initialize
@@ -48,7 +49,8 @@ public class ScanInfo implements Serializable
      */
     public ScanInfo(final long id, final String name, final Date created, final ScanState state,
             final String error,
-            final long performed_work_units, final long total_work_units, final String current_commmand)
+            final long performed_work_units, final long total_work_units,
+            final long current_address, final String current_commmand)
     {
         this.id = id;
         this.name = name;
@@ -57,6 +59,7 @@ public class ScanInfo implements Serializable
         this.error = error;
         this.performed_work_units = performed_work_units;
         this.total_work_units = total_work_units;
+        this.current_address = current_address;
         this.current_commmand = current_commmand;
     }
 
@@ -124,6 +127,12 @@ public class ScanInfo implements Serializable
         return (int) (performed_work_units * 100 / total_work_units);
     }
 
+    /** @return Address of currently executing command or -1 */
+    public long getCurrentAddress()
+    {
+        return current_address;
+    }
+
     /** @return Currently executing command or empty string */
     public String getCurrentCommand()
     {
@@ -184,6 +193,8 @@ public class ScanInfo implements Serializable
         if (error != null)
             buf.append(" (").append(error).append(")");
         buf.append(", ").append(getPercentage()).append("% done");
+        if (current_address >= 0)
+            buf.append(" @ ").append(current_address).append(", ").append(current_commmand);
         return buf.toString();
     }
 }

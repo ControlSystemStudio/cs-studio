@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -30,7 +30,7 @@ public class DelayCommand extends ScanCommand
     {
         new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
     };
-    
+
     private double seconds;
 
     /** Initialize delay with 1 second */
@@ -38,7 +38,7 @@ public class DelayCommand extends ScanCommand
     {
         this(1.0);
     }
-    
+
 	/** Initialize
 	 *  @param seconds Delay in seconds
 	 */
@@ -65,22 +65,24 @@ public class DelayCommand extends ScanCommand
 	{
 	    this.seconds = seconds;
 	}
-	
+
     /** {@inheritDoc} */
 	@Override
     public void writeXML(final PrintStream out, final int level)
 	{
 	    writeIndent(out, level);
-	    out.println("<delay><seconds>" + seconds + "</seconds></delay>");
+	    out.println("<delay><address>" + getAddress() + "</address>" +
+	    		    "<seconds>" + seconds + "</seconds></delay>");
 	}
-	
+
     /** {@inheritDoc} */
 	@Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
 	{
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
         setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
 	}
-	
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()

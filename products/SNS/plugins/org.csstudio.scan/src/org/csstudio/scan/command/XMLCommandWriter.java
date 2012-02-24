@@ -21,7 +21,7 @@ public class XMLCommandWriter
 {
     /** Write XML-formatted commands into stream
      *  @param stream Where to write the commands
-     *  @param commands Commands to write as XML to output stream 
+     *  @param commands Commands to write as XML to output stream
      *  @throws Exception on error
      */
     public static void write(final OutputStream stream, final List<ScanCommand> commands) throws Exception
@@ -30,13 +30,11 @@ public class XMLCommandWriter
         out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<commands>");
         for (ScanCommand command : commands)
-        {
             command.writeXML(out, 1);
-        }
         out.println("</commands>");
         out.flush();
     }
-    
+
     /** Convert commands to XML-formatted commands into stream
      *  @param commands Commands
      *  @return XML-formatted document text for the commands
