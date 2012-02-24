@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -18,17 +20,15 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CommandTreeLabelProvider extends CellLabelProvider
 {
-    private volatile long address = -1;
+    /** Active command that should be highlighted */
+    final private AtomicReference<ScanCommand> active_command = new AtomicReference<ScanCommand>();
 
-    /** @param address Address of the 'active' command to highlight
-     *  @return <code>true</code> if this was a change
+    /** @param command 'Active' command to highlight
+     *  @return Previous active command
      */
-    public boolean setActiveCommand(final long address)
+    public synchronized ScanCommand setActiveCommand(final ScanCommand command)
     {
-        if (this.address == address)
-            return false;
-        this.address = address;
-        return true;
+        return active_command.getAndSet(command);
     }
 
     /** @param command {@link ScanCommand} in current cell
@@ -64,7 +64,7 @@ public class CommandTreeLabelProvider extends CellLabelProvider
         cell.setImage(getImage(command));
 
         // highlight the currently active command
-        if (address >= 0  &&  command.getAddress() == address)
+        if (active_command.get() == command)
             cell.setForeground(cell.getControl().getDisplay().getSystemColor(SWT.COLOR_GREEN));
         else
             cell.setForeground(null);

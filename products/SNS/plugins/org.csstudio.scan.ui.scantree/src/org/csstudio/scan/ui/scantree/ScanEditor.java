@@ -451,7 +451,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
-        // TODO Optimize
         final long this_id = scan_id;
         if (this_id < 0)
         {   // Nothing to show, scan in editor is not 'live'
@@ -479,7 +478,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         }
 
         // Update status of this scan in editor
-        gui.setActiveCommand(this_scan.getCurrentAddress());
+        final long address = this_scan.getCurrentAddress();
+        gui.setActiveCommand(address);
         setMessage(this_scan.toString());
         updateButtons(this_scan.getState());
     }

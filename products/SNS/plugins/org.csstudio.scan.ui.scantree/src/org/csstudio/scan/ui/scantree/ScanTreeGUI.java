@@ -460,26 +460,61 @@ public class ScanTreeGUI
         tree_view.expandAll();
     }
 
-    /** @param address Address of the 'active' command to highlight
-     *  @return <code>true</code> if that was a change
-     */
-    public boolean setActiveCommand(final long address)
+    /** @return Commands displayed/edited in GUI */
+    public List<ScanCommand> getCommands()
     {
-        if (!label_provider.setActiveCommand(address))
-            return false;
+        return commands;
+    }
+
+    /** @param address Address of 'active' command to highlight */
+    public void setActiveCommand(final long address)
+    {
+        final ScanCommand command = address < 0
+                ? null
+                : findCommand(address);
+
         final Control control = tree_view.getControl();
         if (control.isDisposed())
-            return false;
+            return;
+        final ScanCommand previous = label_provider.setActiveCommand(command);
+        // Perform update in UI thread
         control.getDisplay().asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
-                if (! control.isDisposed())
-                    tree_view.refresh();
+                if (control.isDisposed())
+                    return;
+                // Update previous and current command as necessary
+                if (previous != null)
+                    tree_view.update(previous, null);
+                if (command != null)
+                    tree_view.update(command, null);
             }
         });
-        return true;
+    }
+
+    // TODO optimize linear lookup?
+    public ScanCommand findCommand(final long address)
+    {
+        return findCommand(commands, address);
+    }
+
+    private ScanCommand findCommand(final List<ScanCommand> commands, final long address)
+    {
+        for (ScanCommand command : commands)
+        {
+            if (command.getAddress() == address)
+                return command;
+            else if (command instanceof LoopCommand)
+            {
+                final ScanCommand found =
+                        findCommand(((LoopCommand) command).getBody(), address);
+                if (found != null)
+                    return found;
+            }
+        }
+        return null;
     }
 
     /** Perform full GUI refresh */
@@ -488,12 +523,6 @@ public class ScanTreeGUI
         setCommands(commands);
         if (editor != null)
             editor.setDirty(true);
-    }
-
-    /** @return Commands displayed/edited in GUI */
-    public List<ScanCommand> getCommands()
-    {
-        return commands;
     }
 
     /** @param command Command that has been updated, requiring a refresh of the GUI */
