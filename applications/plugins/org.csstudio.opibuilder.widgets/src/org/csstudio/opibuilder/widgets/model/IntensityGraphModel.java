@@ -156,6 +156,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		setSize(400, 240);
 		setTooltip("$(pv_name)"); //$NON-NLS-1$
 		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
+		setScaleOptions(true, true, true);
 	}
 	
 	@Override
