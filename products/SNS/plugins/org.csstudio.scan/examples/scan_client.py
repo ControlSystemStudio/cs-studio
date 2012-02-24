@@ -91,7 +91,7 @@ class ScanClient(object):
         while True:
             info = self.server.getScanInfo(id)
             print info
-            if info.isDone():
+            if info.getState().isDone():
                 break;
             time.sleep(1.0)
             

@@ -87,20 +87,6 @@ public class ScanInfo implements Serializable
         return state;
     }
 
-    /** @return <code>true</code> if state is Aborted, Failed or Finished */
-    public boolean isDone()
-    {
-        switch (state)
-        {
-        case Aborted:
-        case Failed:
-        case Finished:
-            return true;
-        default:
-            return false;
-        }
-    }
-
     /** @return Error (if state indicates failure) or <code>null</code> */
     public String getError()
     {

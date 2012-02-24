@@ -89,7 +89,7 @@ public class PlotDataModelUnitTest
                 for (int i=0; i<data.getSize(); ++i)
                     System.out.println(data.getSample(i));
             }
-            if (scan.isDone())
+            if (scan.getState().isDone())
                 display = false;
             else
                 Thread.sleep(500);
@@ -143,7 +143,7 @@ public class PlotDataModelUnitTest
         });
 
         scan = model.getScan(id);
-        while (! scan.isDone())
+        while (! scan.getState().isDone())
         {
             Thread.sleep(500);
             scan = model.getScan(id);

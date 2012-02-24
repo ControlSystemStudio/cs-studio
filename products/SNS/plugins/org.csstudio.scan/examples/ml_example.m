@@ -64,7 +64,7 @@ server.resume(id)
 fprintf 1, 'Resume...'
 
 %% Wait for scan to finish
-while ~ server.getScanInfo(id).isDone()
+while ~ server.getScanInfo(id).getState().isDone()
     server.getScanInfo(id)
     pause(1)
 end

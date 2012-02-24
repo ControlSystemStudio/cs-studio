@@ -24,6 +24,7 @@ import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
@@ -262,6 +263,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 try
                 {
                     scan_info.getServer().resume(scan_id);
+                    resume.setEnabled(false);
+                    pause.setEnabled(true);
                 }
                 catch (Exception ex)
                 {
@@ -277,6 +280,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 try
                 {
                     scan_info.getServer().pause(scan_id);
+                    resume.setEnabled(true);
+                    pause.setEnabled(false);
                 }
                 catch (Exception ex)
                 {
@@ -403,10 +408,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 if (message.isDisposed())
                     return;
                 if (text == null)
-                {
-                    message.setText(""); //$NON-NLS-1$
                     showInfoSection(false);
-                }
                 else
                 {
                     message.setText(text);
@@ -416,24 +418,61 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         });
     }
 
+    private void updateButtons(final ScanState state)
+    {
+        if (resume.isDisposed())
+            return;
+        resume.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (resume.isDisposed())
+                    return;
+                resume.setEnabled(state == ScanState.Paused);
+                pause.setEnabled(state == ScanState.Running);
+                abort.setEnabled(state.isActive());
+            }
+        });
+    }
+
     /** {@inheritDoc} */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
         // TODO Optimize
+
         final long live_scan = scan_id;
-        if (live_scan < 0)
-        {
+
+        // Determine active scan
+        ScanInfo active = null;
+        for (ScanInfo info : infos)
+            if (info.getState().isActive())
+            {
+                active = info;
+                break;
+            }
+
+        if (active == null  ||  live_scan < 0)
+        {   // Nothing active, or no ID for scan in editor:
+            // Nothing to show
             gui.setActiveCommand(-1);
+            setMessage(null);
             return;
         }
-        for (ScanInfo info : infos)
-            if (info.getId() == live_scan)
-            {
-                gui.setActiveCommand(info.getCurrentAddress());
-                setMessage(info.getCurrentCommand());
-                return;
-            }
+
+        // Active scan does not match the scan in the editor
+        if (active.getId() != live_scan)
+        {
+            setMessage("Scan ID: " + live_scan + ". Active scan: " + active.toString());
+            updateButtons(ScanState.Finished);
+            return;
+        }
+
+        // Track the active scan in the editor
+        gui.setActiveCommand(active.getCurrentAddress());
+        setMessage(active.toString());
+        updateButtons(active.getState());
     }
 
     /** {@inheritDoc} */
