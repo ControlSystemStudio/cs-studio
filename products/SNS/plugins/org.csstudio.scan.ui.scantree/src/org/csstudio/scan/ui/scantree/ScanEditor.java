@@ -24,6 +24,8 @@ import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
@@ -49,10 +51,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -120,6 +124,12 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** ID of scan that was submitted, the 'live' scan, or -1 */
     private volatile long scan_id = -1;
 
+    private Button pause;
+
+    private Button resume;
+
+    private Button abort;
+
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
      *  @return ScanEditor or <code>null</code> on error
@@ -150,6 +160,20 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     {
         return createInstance(new EmptyEditorInput());
     }
+
+    /** Create scan editor
+     *  @param scan_id ID of the scan on server
+     *  @param commands Commands of the scan
+     *  @return
+     */
+    public static ScanEditor createInstance(final long scan_id, final List<ScanCommand> commands)
+    {
+        final ScanEditor editor = createInstance(new EmptyEditorInput());
+        editor.setCommands(commands);
+        editor.scan_id = scan_id;
+        return editor;
+    }
+
 
     /** {@inheritDoc} */
     @Override
@@ -232,28 +256,71 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** Create GUI components
      *  @param parent Parent widget
      */
+    @SuppressWarnings("nls")
     private void createComponents(final Composite parent)
     {
         parent.setLayout(new FormLayout());
 
         // 1) Info section
         info_section = new Composite(parent, 0);
-        info_section.setLayout(new RowLayout());
+        info_section.setLayout(new GridLayout(4, false));
+
         message = new Label(info_section, 0);
         message.setText(Messages.ServerDisconnected);
+        message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        // TODO Remove. Instead have buttons to pause, resume, ...
-        Button button = new Button(info_section, SWT.PUSH);
-        button.setText("Hide"); //$NON-NLS-1$
-        button.addSelectionListener(new SelectionAdapter()
+        resume = createInfoButton(Messages.ResumeTT, "icons/resume.gif", new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                showInfoSection(false);
+                try
+                {
+                    scan_info.getServer().resume(scan_id);
+                    resume.setEnabled(false);
+                    pause.setEnabled(true);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        pause = createInfoButton(Messages.PauseTT, "icons/pause.gif", new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().pause(scan_id);
+                    resume.setEnabled(true);
+                    pause.setEnabled(false);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        abort = createInfoButton(Messages.AbortTT, "icons/abort.gif", new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().abort(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
             }
         });
 
+        // Initially, info section is invisible
+        info_section.setVisible(false);
         FormData fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
@@ -266,9 +333,26 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
-        fd.top = new FormAttachment(info_section);
+        fd.top = new FormAttachment(0);
         fd.bottom = new FormAttachment(100);
         gui.getControl().setLayoutData(fd);
+    }
+
+    /** Add button to the info_section
+     *  @param tooltip Tool tip
+     *  @param icon Icon path (in scan.ui plugin)
+     *  @param listener Selection listener
+     *  @return Button
+     */
+    private Button createInfoButton(final String tooltip, final String icon,
+            final SelectionListener listener)
+    {
+        final Button button = new Button(info_section, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
+        button.setToolTipText(tooltip);
+        button.setImage(ScanUIActivator.getImageDescriptor(icon).createImage());
+        button.addSelectionListener(listener);
+        return button;
     }
 
     /** {@inheritDoc} */
@@ -284,6 +368,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         // Remove undo/redo operations associated with this editor
         // from the shared operations history of all scan editors
         operations.dispose(undo_context, true, true, true);
+
+        if (resume != null)
+            resume.getImage().dispose();
+        if (pause != null)
+            pause.getImage().dispose();
+        if (abort != null)
+            abort.getImage().dispose();
+
         super.dispose();
     }
 
@@ -330,10 +422,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 if (message.isDisposed())
                     return;
                 if (text == null)
-                {
-                    message.setText(""); //$NON-NLS-1$
                     showInfoSection(false);
-                }
                 else
                 {
                     message.setText(text);
@@ -343,24 +432,61 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         });
     }
 
+    private void updateButtons(final ScanState state)
+    {
+        if (resume.isDisposed())
+            return;
+        resume.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (resume.isDisposed())
+                    return;
+                resume.setEnabled(state == ScanState.Paused);
+                pause.setEnabled(state == ScanState.Running);
+                abort.setEnabled(state.isActive());
+            }
+        });
+    }
+
     /** {@inheritDoc} */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
         // TODO Optimize
+
         final long live_scan = scan_id;
-        if (live_scan < 0)
-        {
+
+        // Determine active scan
+        ScanInfo active = null;
+        for (ScanInfo info : infos)
+            if (info.getState().isActive())
+            {
+                active = info;
+                break;
+            }
+
+        if (active == null  ||  live_scan < 0)
+        {   // Nothing active, or no ID for scan in editor:
+            // Nothing to show
             gui.setActiveCommand(-1);
+            setMessage(null);
             return;
         }
-        for (ScanInfo info : infos)
-            if (info.getId() == live_scan)
-            {
-                gui.setActiveCommand(info.getCurrentAddress());
-                setMessage(info.getCurrentCommand());
-                return;
-            }
+
+        // Active scan does not match the scan in the editor
+        if (active.getId() != live_scan)
+        {
+            setMessage("Scan ID: " + live_scan + ". Active scan: " + active.toString());
+            updateButtons(ScanState.Finished);
+            return;
+        }
+
+        // Track the active scan in the editor
+        gui.setActiveCommand(active.getCurrentAddress());
+        setMessage(active.toString());
+        updateButtons(active.getState());
     }
 
     /** {@inheritDoc} */
@@ -379,6 +505,12 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         gui.refreshCommand(command);
     }
 
+    /** @return Devices available on scan server. May be <code>null</code> */
+    public DeviceInfo[] getDevices()
+    {
+        return devices;
+    }
+
     /** @param commands Commands to edit */
     public void setCommands(final List<ScanCommand> commands)
     {
@@ -386,10 +518,16 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         setDirty(true);
     }
 
-    /** @return Devices available on scan server. May be <code>null</code> */
-    public DeviceInfo[] getDevices()
+    /** @return Commands displayed/edited in GUI */
+    public List<ScanCommand> getCommands()
     {
-        return devices;
+        return gui.getCommands();
+    }
+
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
+    {
+        return gui.getSelectedCommands();
     }
 
     /** @return Operation history (for undo/redo) */
@@ -559,18 +697,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-    }
-
-    /** @return Commands displayed/edited in GUI */
-    public List<ScanCommand> getCommands()
-    {
-        return gui.getCommands();
-    }
-
-    /** @return Currently selected scan commands or <code>null</code> */
-    public List<ScanCommand> getSelectedCommands()
-    {
-        return gui.getSelectedCommands();
     }
 
     /** Refresh the GUI after tree manipulations */

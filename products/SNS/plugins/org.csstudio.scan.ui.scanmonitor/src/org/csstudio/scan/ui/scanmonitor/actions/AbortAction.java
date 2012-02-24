@@ -17,6 +17,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 
 /** Action that aborts a scan
@@ -30,7 +31,7 @@ public class AbortAction extends AbstractGUIAction
      */
     public AbortAction(final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.Abort, "icons/abort.gif"); //$NON-NLS-1$
+        super(model, info, Messages.Abort, ScanUIActivator.getImageDescriptor("icons/abort.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

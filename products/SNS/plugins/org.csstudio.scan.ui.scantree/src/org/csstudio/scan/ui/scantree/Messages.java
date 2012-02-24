@@ -15,6 +15,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.scan.ui.scantree.messages"; //$NON-NLS-1$
+    public static String AbortTT;
     public static String AddCommand;
     public static String AddCommandMessage;
     public static String AddCommandTitle;
@@ -32,8 +33,10 @@ public class Messages extends NLS
     public static String OpenCommandList;
     public static String OpenProperties;
     public static String OpenScanTree;
-    public static String OpenScanTreeErrorFmt;
+    public static String OpenScanTreeError;
     public static String OpenScanTreePerspective;
+    public static String PauseTT;
+    public static String ResumeTT;
     public static String ScanSubmitErrorFmt;
     public static String ServerDisconnected;
     public static String SubmitScan;

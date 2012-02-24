@@ -79,7 +79,7 @@ public class DelayCommand extends ScanCommand
 	@Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
 	{
-        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, 0));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
         setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
 	}
 
