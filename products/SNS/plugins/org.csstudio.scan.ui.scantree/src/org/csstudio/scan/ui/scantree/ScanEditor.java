@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
@@ -182,35 +181,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     {
         setSite(site);
         setInput(input);
-
-        // TODO Remove this, use ScanInfoModel
-        // Use background Job to obtain device list
-        final Job job = new Job(Messages.DeviceListFetch)
-        {
-            @Override
-            protected IStatus run(IProgressMonitor monitor)
-            {
-                try
-                {
-                    final ScanServer server = ScanServerConnector.connect();
-                    try
-                    {
-                        devices = server.getDeviceInfos(-1);
-                    }
-                    finally
-                    {
-                        ScanServerConnector.disconnect(server);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                            Messages.DeviceListFetchError, ex);
-                }
-                return Status.OK_STATUS;
-            }
-        };
-        job.schedule();
     }
 
     /** {@inheritDoc} */
@@ -228,6 +198,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             return;
         }
 
+        fetchDevices();
         createComponents(parent);
 
         final IEditorInput input = getEditorInput();
@@ -251,6 +222,30 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         getSite().setSelectionProvider(gui.getSelectionProvider());
 
         scan_info.addListener(this);
+    }
+
+    /** Read device list from server */
+    private void fetchDevices()
+    {
+        final Job job = new Job(Messages.DeviceListFetch)
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                try
+                {
+                    final ScanServer server = scan_info.getServer();
+                    devices = server.getDeviceInfos(-1);
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            Messages.DeviceListFetchError, ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 
     /** Create GUI components
