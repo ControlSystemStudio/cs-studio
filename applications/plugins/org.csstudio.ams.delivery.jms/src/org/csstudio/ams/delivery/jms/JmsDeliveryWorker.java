@@ -67,6 +67,8 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public void run() {
         
+        LOG.info(workerName + " is running.");
+
         IPreferencesService prefs = Platform.getPreferencesService();
         //final IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
 
