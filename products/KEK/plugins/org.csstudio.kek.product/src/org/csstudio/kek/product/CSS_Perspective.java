@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Cosylab d.d.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,8 +12,11 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-/** Default perspective for KEK CSS
- *  @author Takashi Nakamoto <takashi.nakamoto@cosylab.com>
+/** Default perspective for KEK CSS.
+ *  This perspective originated from org.csstudio.utility.product.
+ *  @author Kay Kasemir
+ *  @author Takashi Nakamoto adjusted the perspective for KEK product
+ *   
  */
 @SuppressWarnings("nls")
 public class CSS_Perspective implements IPerspectiveFactory
