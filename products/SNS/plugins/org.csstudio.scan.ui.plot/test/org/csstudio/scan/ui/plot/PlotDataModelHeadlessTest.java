@@ -27,11 +27,11 @@ import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.junit.Test;
 
-/** JUnit test of the {@link PlotDataModel}
+/** [Headless] JUnit Plug-in test of the {@link PlotDataModel}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PlotDataModelUnitTest
+public class PlotDataModelHeadlessTest
 {
     /** Execute a scan that logs something
      *  @return ID of submitted scan
@@ -42,7 +42,7 @@ public class PlotDataModelUnitTest
 
         final List<ScanCommand> commands = new ArrayList<ScanCommand>();
         commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
-                                     new LogCommand("xpos", "readback"),
+                                     new LogCommand("readback"),
                                      new DelayCommand(2.0)));
         final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
         ScanServerConnector.disconnect(server);
@@ -94,7 +94,7 @@ public class PlotDataModelUnitTest
             else
                 Thread.sleep(500);
         }
-        assertEquals(3, data.getSize());
+        assertTrue(data.getSize() >= 3);
         assertTrue(data.getLastSerial() > 0);
         model.stop();
     }

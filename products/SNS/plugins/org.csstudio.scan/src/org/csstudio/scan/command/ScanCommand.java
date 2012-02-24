@@ -130,8 +130,9 @@ abstract public class ScanCommand
             final Method method = getClass().getMethod(meth_name, type);
             method.invoke(this, value);
         }
-        catch (Exception ex)
-        {
+        catch (Throwable ex)
+        {   // Expect Exception or RuntimeException, but FindBugs complained about using Exception,
+            // so using Throwable
             throw new UnknownScanCommandPropertyException("Unkown property ID " + property.getID() +
                     " with value type " + value.getClass().getName() + " for " + getClass().getName());
         }

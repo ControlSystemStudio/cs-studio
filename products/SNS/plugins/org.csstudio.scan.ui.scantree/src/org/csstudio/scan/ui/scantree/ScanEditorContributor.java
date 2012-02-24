@@ -65,14 +65,23 @@ public class ScanEditorContributor extends EditorActionBarContributor
         return null;
     }
 
+    /** Static setter to please FindBugs */
+    private static void setEditor(final ScanEditor editor)
+    {
+        if (editor == null)
+            ScanEditorContributor.editor = null;
+        else
+            ScanEditorContributor.editor = new WeakReference<ScanEditor>(editor);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void setActiveEditor(final IEditorPart editor)
     {
         if (editor instanceof ScanEditor)
-            ScanEditorContributor.editor = new WeakReference<ScanEditor>((ScanEditor)editor);
+            setEditor((ScanEditor)editor);
         else
-            ScanEditorContributor.editor = null;
+            setEditor(null);
 
         // With global Actions, this required code like
         // getActionBars().setGlobalActionHandler(ActionFactory.COPY.getId(), my_copy_actionl);

@@ -10,6 +10,7 @@ package org.csstudio.scan.ui.scantree;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -33,6 +34,7 @@ public class ScanTreeGUIDemo
 
         // Scan GUI
         final List<ScanCommand> commands = DemoScan.createCommands();
+        shell.setLayout(new FillLayout());
         final ScanTreeGUI gui = new ScanTreeGUI(shell, null);
         gui.setCommands(commands);
 

@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Control;
 abstract public class OptionListCellEditor extends CellEditor
 {
     private String[] labels;
-    private CCombo combo;
+    private CCombo combo = null;
 
     /** Initialize
      *  @param parent Parent widget
@@ -39,11 +39,17 @@ abstract public class OptionListCellEditor extends CellEditor
      */
     public OptionListCellEditor(final Composite parent, final String[] labels)
     {
+        // Parent constructor calls createControl() to create combo
         super(parent);
         this.labels = labels;
+        initCombo();
+        setValueValid(true);
+    }
+
+    private void initCombo()
+    {
         combo.setItems(labels);
         combo.select(0);
-        setValueValid(true);
     }
 
     /** The default editor is a read-only combo,
