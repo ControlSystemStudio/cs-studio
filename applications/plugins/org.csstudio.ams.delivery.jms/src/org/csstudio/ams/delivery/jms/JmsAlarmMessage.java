@@ -36,13 +36,25 @@ public class JmsAlarmMessage extends BaseAlarmMessage {
 
     private static final long serialVersionUID = 1L;
 
+    private Object originalMessage;
+    
     public JmsAlarmMessage(long timestamp,
                            Priority p,
                            String address,
                            String text,
                            State state,
                            Type type,
-                           String device) {
+                           String device,
+                           Object orig) {
         super(timestamp, p, address, text, state, type, device);
+        originalMessage = orig;
+    }
+    
+    public Object getOriginalMessage() {
+        return originalMessage;
+    }
+    
+    public void setOriginalMessage(Object message) {
+        originalMessage = message;
     }
 }

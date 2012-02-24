@@ -26,19 +26,63 @@
 package org.csstudio.ams.delivery.jms;
 
 import java.util.Collection;
+import java.util.Enumeration;
+import javax.jms.JMSException;
+import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.Topic;
+import org.csstudio.ams.AmsConstants;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author mmoeller
  * @version 1.0
  * @since 23.02.2012
  */
-public class JmsDevice implements IDeliveryDevice<JmsAlarmMessage> {
+public class JmsDevice implements IDeliveryDevice<JmsAlarmMessage>, MessageListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JmsDevice.class);
+    
+    private final Session _session;
+    private MessageProducer _producer;
+
+    public JmsDevice(final Session session) throws JMSException {
+        if (session == null) {
+            throw new IllegalArgumentException("session was null");
+        }
+        _session = session;
+        _producer = _session.createProducer(null);
+    }
+    
+    @Override
+    public void onMessage(final Message message) {
+        if (!(message instanceof MapMessage)) {
+            LOG.warn("The message is NOT a MapMessage object.");
+            return; // ignore the message
+        }
+
+        try {
+            final MapMessage receivedMessage = (MapMessage) message;
+            final Topic target = targetTopicFor(receivedMessage);
+            final MapMessage outgoingMessage = _session.createMapMessage();
+            copyMessageEntries(receivedMessage, outgoingMessage);
+            LOG.info("Recieved a message, now trying to send...");
+            _producer.send(target, outgoingMessage);
+            LOG.info("Message succesfully sent to topic \"{}\"", target.getTopicName());
+        } catch (final Exception e) {
+            LOG.error("Failed to forward a message: {}", e.getMessage());
+        }
+    }
 
     @Override
     public boolean sendMessage(JmsAlarmMessage message) {
         // TODO Auto-generated method stub
-        return false;
+        return true;
     }
 
     @Override
@@ -49,6 +93,43 @@ public class JmsDevice implements IDeliveryDevice<JmsAlarmMessage> {
 
     @Override
     public void stopDevice() {
-        // TODO Auto-generated method stub
+        if (_producer != null) {
+            try {
+                _producer.close();
+            } catch (JMSException e) {
+                _producer = null;
+            }
+        }
+    }
+    
+    /**
+     * Returns the target topic to which the given message should be forwarded.
+     *
+     * @param message the message.
+     */
+    private Topic targetTopicFor(final MapMessage message) throws JMSException {
+        final String topicName = message.getString(AmsConstants.MSGPROP_RECEIVERADDR);
+        if (topicName != null) {
+            return _session.createTopic(topicName);
+        }
+
+        throw new RuntimeException("Received a message which did not contain "
+                    + AmsConstants.MSGPROP_RECEIVERADDR);
+    }
+
+    /**
+     * Copies the map entries from the source to the destination message. AMS-specific entries are not copied.
+     */
+    private void copyMessageEntries(final MapMessage source, final MapMessage destination) throws JMSException {
+        @SuppressWarnings("unchecked")
+        final
+        Enumeration<String> mapNames = source.getMapNames();
+
+        while (mapNames.hasMoreElements()) {
+            final String key = mapNames.nextElement();
+            if (!key.startsWith(AmsConstants.AMS_PREFIX)) {
+                destination.setString(key, source.getString(key));
+            }
+        }
     }
 }
