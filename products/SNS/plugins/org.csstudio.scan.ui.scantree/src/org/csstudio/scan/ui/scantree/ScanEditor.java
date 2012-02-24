@@ -251,7 +251,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** Create GUI components
      *  @param parent Parent widget
      */
-    @SuppressWarnings("nls")
     private void createComponents(final Composite parent)
     {
         parent.setLayout(new FormLayout());
@@ -264,7 +263,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         message.setText(Messages.ServerDisconnected);
         message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        resume = createInfoButton(Messages.ResumeTT, "icons/resume.gif", new SelectionAdapter()
+        resume = createInfoButton(Messages.ResumeTT, "icons/resume.gif", //$NON-NLS-1$
+                new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -281,7 +281,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 }
             }
         });
-        pause = createInfoButton(Messages.PauseTT, "icons/pause.gif", new SelectionAdapter()
+        pause = createInfoButton(Messages.PauseTT, "icons/pause.gif", //$NON-NLS-1$
+                new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -298,7 +299,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 }
             }
         });
-        abort = createInfoButton(Messages.AbortTT, "icons/abort.gif", new SelectionAdapter()
+        abort = createInfoButton(Messages.AbortTT, "icons/abort.gif", //$NON-NLS-1$
+                new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -440,7 +442,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                     return;
                 resume.setEnabled(state == ScanState.Paused);
                 pause.setEnabled(state == ScanState.Running);
-                abort.setEnabled(state.isActive());
+                abort.setEnabled(state == ScanState.Idle  ||  state.isActive());
             }
         });
     }
@@ -450,38 +452,36 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     public void scanUpdate(final List<ScanInfo> infos)
     {
         // TODO Optimize
-
-        final long live_scan = scan_id;
-
-        // Determine active scan
-        ScanInfo active = null;
-        for (ScanInfo info : infos)
-            if (info.getState().isActive())
-            {
-                active = info;
-                break;
-            }
-
-        if (active == null  ||  live_scan < 0)
-        {   // Nothing active, or no ID for scan in editor:
-            // Nothing to show
+        final long this_id = scan_id;
+        if (this_id < 0)
+        {   // Nothing to show, scan in editor is not 'live'
             gui.setActiveCommand(-1);
             setMessage(null);
             return;
         }
 
-        // Active scan does not match the scan in the editor
-        if (active.getId() != live_scan)
+        // Get info for this scan
+        ScanInfo this_scan = null;
+        for (ScanInfo info : infos)
         {
-            setMessage("Scan ID: " + live_scan + ". Active scan: " + active.toString());
-            updateButtons(ScanState.Finished);
+            if (info.getId() == this_id)
+            {
+                this_scan = info;
+                break;
+            }
+        }
+
+        if (this_scan == null)
+        {   // No info about this scan on server: Done & deleted?
+            gui.setActiveCommand(-1);
+            setMessage(NLS.bind(Messages.ScanSubmittedButNotRunningFmt, this_id));
             return;
         }
 
-        // Track the active scan in the editor
-        gui.setActiveCommand(active.getCurrentAddress());
-        setMessage(active.toString());
-        updateButtons(active.getState());
+        // Update status of this scan in editor
+        gui.setActiveCommand(this_scan.getCurrentAddress());
+        setMessage(this_scan.toString());
+        updateButtons(this_scan.getState());
     }
 
     /** {@inheritDoc} */

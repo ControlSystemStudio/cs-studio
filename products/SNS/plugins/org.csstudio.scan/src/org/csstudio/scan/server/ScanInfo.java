@@ -170,7 +170,7 @@ public class ScanInfo implements Serializable
                 error.getClass() == other.error.getClass());
     }
 
-    /** @return String representation for debugging */
+    /** @return String representation for GUI */
     @Override
     public String toString()
     {
@@ -179,8 +179,6 @@ public class ScanInfo implements Serializable
         if (error != null)
             buf.append(" (").append(error).append(")");
         buf.append(", ").append(getPercentage()).append("% done");
-        if (current_address >= 0)
-            buf.append(" @ ").append(current_address).append(", ").append(current_commmand);
         return buf.toString();
     }
 }

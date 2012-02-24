@@ -265,10 +265,10 @@ public class Scan implements ScanContext
             }
             // Successful finish
             state = ScanState.Finished;
-            current_command = null;
         }
         finally
         {
+            current_command = null;
             // Stop devices
             devices.stopDevices();
         }

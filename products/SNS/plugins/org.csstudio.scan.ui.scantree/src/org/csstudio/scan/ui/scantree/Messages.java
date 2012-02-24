@@ -38,6 +38,7 @@ public class Messages extends NLS
     public static String PauseTT;
     public static String ResumeTT;
     public static String ScanSubmitErrorFmt;
+    public static String ScanSubmittedButNotRunningFmt;
     public static String ServerDisconnected;
     public static String SubmitScan;
     public static String XMLCommandErrorFmt;

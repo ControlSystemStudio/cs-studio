@@ -460,22 +460,26 @@ public class ScanTreeGUI
         tree_view.expandAll();
     }
 
-    /** @param address Address of the 'active' command to highlight */
-    public void setActiveCommand(final long address)
+    /** @param address Address of the 'active' command to highlight
+     *  @return <code>true</code> if that was a change
+     */
+    public boolean setActiveCommand(final long address)
     {
         if (!label_provider.setActiveCommand(address))
-            return;
+            return false;
         final Control control = tree_view.getControl();
         if (control.isDisposed())
-            return;
+            return false;
         control.getDisplay().asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
-                tree_view.refresh();
+                if (! control.isDisposed())
+                    tree_view.refresh();
             }
         });
+        return true;
     }
 
     /** Perform full GUI refresh */
