@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.csstudio.logbook.ologtablecolumn" name="Olog Table Column" schema="schema/org.csstudio.logbook.OlogTableColumn.exsd"/>
+   <extension-point id="org.csstudio.logbook.ologtable.columndescription" name="Olog Table Column Description" schema="schema/org.csstudio.logbook.ologtable.columndescription.exsd"/>
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -43,10 +43,19 @@
       </command>
    </extension>
    <extension
-         point="org.csstudio.logbook.ologtablecolumn">
-      <ologtablecolumn
-            ologtablecolumn="org.csstudio.logbook.ologviewer.OwnerOlogTableColumn">
-      </ologtablecolumn>
+         point="org.csstudio.logbook.ologtable.columndescription">
+      <ologcolumndescription
+            cellLabelProvider="org.csstudio.logbook.ologviewer.TagCellLabelProvider"
+            text="Taga"
+            tooltip="Taga"
+            weight="5">
+      </ologcolumndescription>
+      <ologcolumndescription
+            cellLabelProvider="org.csstudio.logbook.ologviewer.OwnerCellLabelProvider"
+            text="Owner"
+            tooltip="Owner"
+            weight="10">
+      </ologcolumndescription>
    </extension>
 
 </plugin>

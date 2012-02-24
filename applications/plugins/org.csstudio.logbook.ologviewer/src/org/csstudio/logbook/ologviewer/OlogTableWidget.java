@@ -9,23 +9,15 @@ import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 
 import edu.msu.nscl.olog.api.Log;
 
@@ -117,8 +109,15 @@ public class OlogTableWidget extends Composite {
 		// Add the additional columns
 		if (tableViewerColumnDescriptors != null) {
 			for (OlogTableColumnDescriptor ologTableColumnDescriptor : tableViewerColumnDescriptors) {
-				ologTableColumnDescriptor.getTableViewerColumn(tableViewer,
-						layout);
+				TableViewerColumn ologColumn = new TableViewerColumn(
+						tableViewer, SWT.CENTER);
+				ologColumn.setLabelProvider(ologTableColumnDescriptor.getCellLabelProvider());
+				TableColumn tblclmn = ologColumn.getColumn();
+				tblclmn.setAlignment(SWT.CENTER);
+				tblclmn.setWidth(100);
+				tblclmn.setText(ologTableColumnDescriptor.getText());
+				tblclmn.setToolTipText( ologTableColumnDescriptor.getTooltip());
+				layout.setColumnData(tblclmn, new ColumnWeightData(ologTableColumnDescriptor.getWeight()));
 			}
 		}
 

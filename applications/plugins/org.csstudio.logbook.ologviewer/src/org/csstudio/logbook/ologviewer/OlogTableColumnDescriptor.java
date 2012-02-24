@@ -1,12 +1,16 @@
 package org.csstudio.logbook.ologviewer;
 
-import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.CellLabelProvider;
 
 public interface OlogTableColumnDescriptor {
-
-	TableViewerColumn getTableViewerColumn(TableViewer tableViewer,
-			TableColumnLayout layout);
+		
+	public String getText();
+	
+	public String getTooltip();
+	
+	public int getWeight();
+	
+	public CellLabelProvider getCellLabelProvider();	
+	
 
 }

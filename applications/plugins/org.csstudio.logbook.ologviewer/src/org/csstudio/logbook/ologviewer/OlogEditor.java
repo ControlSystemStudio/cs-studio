@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -24,6 +25,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import static org.csstudio.logbook.ologviewer.SimpleOlogTableColumnDescriptor.Builder.*;
 import edu.msu.nscl.olog.api.TestLogs;
 
 public class OlogEditor extends EditorPart {
@@ -96,7 +98,7 @@ public class OlogEditor extends EditorPart {
 		try {
 			IConfigurationElement[] config = Platform.getExtensionRegistry()
 					.getConfigurationElementsFor(
-							"org.csstudio.logbook.ologtablecolumn");
+							"org.csstudio.logbook.ologtable.columndescription");
 
 			if (config.length == 0) {
 				Activator
@@ -106,13 +108,22 @@ public class OlogEditor extends EditorPart {
 			}
 
 			if (config.length >= 1) {
+				System.out.println(config.length);
 				for (IConfigurationElement configurationElement : config) {
-					ologTableColumnDescriptors
-							.add((OlogTableColumnDescriptor) configurationElement
-									.createExecutableExtension("ologtablecolumn"));
+					CellLabelProvider cellLabelProvider = (CellLabelProvider) configurationElement
+							.createExecutableExtension("cellLabelProvider");
+					String text = configurationElement.getAttribute("text");
+					String tooltip = configurationElement
+							.getAttribute("tooltip");
+					int weight = Integer.parseInt(configurationElement
+							.getAttribute("weight"));
+					ologTableColumnDescriptors.add(createColumn(text)
+							.withToooltip(tooltip).withWeight(weight)
+							.withCellLabelProvider(cellLabelProvider).build());
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Activator
 					.getLogger()
 					.log(Level.SEVERE,
@@ -156,8 +167,9 @@ public class OlogEditor extends EditorPart {
 		};
 
 		ologTableWidget = new OlogTableWidget(parent, SWT.None);
-		ologTableWidget.setTableViewerColumnDescriptors(ologTableColumnDescriptors);
-		
+		ologTableWidget
+				.setTableViewerColumnDescriptors(ologTableColumnDescriptors);
+
 		ologTableWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 				true, 2, 1));
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();

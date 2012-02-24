@@ -3,7 +3,7 @@
 <schema targetNamespace="org.csstudio.logbook.ologviewer" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.csstudio.logbook.ologviewer" id="org.csstudio.logbook.OlogTableColumn" name="Olog Table Column"/>
+         <meta.schema plugin="org.csstudio.logbook.ologviewer" id="org.csstudio.logbook.ologtable.columndescription" name="Olog Table Column Description"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ologtablecolumn" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="ologcolumndescription" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,36 @@
       </complexType>
    </element>
 
-   <element name="ologtablecolumn">
+   <element name="ologcolumndescription">
       <complexType>
-         <attribute name="ologtablecolumn" type="string" use="required">
+         <attribute name="text" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="weight" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="tooltip" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="cellLabelProvider" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.logbook.ologviewer.OlogTableColumnDescriptor"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jface.viewers.CellLabelProvider:"/>
                </appinfo>
             </annotation>
          </attribute>
