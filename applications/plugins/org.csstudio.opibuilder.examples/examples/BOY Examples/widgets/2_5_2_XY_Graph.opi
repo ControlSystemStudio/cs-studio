@@ -6,6 +6,8 @@
     <noisePV>sim://noise</noisePV>
     <my_name>Best OPI Yet</my_name>
   </macros>
+  <wuid>38d90a0d:1357c5ff43f:-7fda</wuid>
+  <boy_version>3.1.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -24,10 +26,11 @@
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
+  <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+    <trace_1_visible>true</trace_1_visible>
     <trace_1_trace_type>0</trace_1_trace_type>
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
@@ -50,6 +53,7 @@
     <y>101</y>
     <x>17</x>
     <visible>true</visible>
+    <trace_0_x_pv_value />
     <axis_1_visible>true</axis_1_visible>
     <height>226</height>
     <axis_1_maximum>100.0</axis_1_maximum>
@@ -62,7 +66,7 @@
     <axis_0_axis_color>
       <color red="0" green="128" blue="0" />
     </axis_0_axis_color>
-    <axis_1_scale_format />
+    <axis_1_scale_format></axis_1_scale_format>
     <name>Graph1</name>
     <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
     <trace_0_line_width>1</trace_0_line_width>
@@ -80,6 +84,7 @@
     <trace_0_update_mode>0</trace_0_update_mode>
     <trace_1_buffer_size>100</trace_1_buffer_size>
     <axis_0_axis_title>Primary X Axis (0)</axis_0_axis_title>
+    <wuid>38d90a0d:1357c5ff43f:-7fd9</wuid>
     <axis_1_axis_color>
       <color red="255" green="0" blue="0" />
     </axis_1_axis_color>
@@ -94,6 +99,7 @@
     <axis_0_scale_font>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </axis_0_scale_font>
+    <trace_1_y_pv_value />
     <axis_0_time_format>0</axis_0_time_format>
     <trace_1_plot_mode>0</trace_1_plot_mode>
     <axis_1_log_scale>true</axis_1_log_scale>
@@ -106,7 +112,8 @@
     <axis_2_dash_grid_line>true</axis_2_dash_grid_line>
     <axis_0_visible>true</axis_0_visible>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <axis_0_scale_format />
+    <trace_1_x_pv_value />
+    <axis_0_scale_format></axis_0_scale_format>
     <trace_0_x_pv>sim://ramp(100,0,1,0.1)</trace_0_x_pv>
     <trace_0_y_pv>sim://sine(0.1,90,100,0.1)</trace_0_y_pv>
     <axis_0_title_font>
@@ -114,7 +121,8 @@
     </axis_0_title_font>
     <axis_1_auto_scale>false</axis_1_auto_scale>
     <trace_0_concatenate_data>true</trace_0_concatenate_data>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
+    <trigger_pv_value />
     <trace_1_x_pv>sim://sine(0.1,90,100,0.1)</trace_1_x_pv>
     <show_plot_area_border>false</show_plot_area_border>
     <axis_2_axis_title>Secondary Axis (2)</axis_2_axis_title>
@@ -122,7 +130,7 @@
     <enabled>true</enabled>
     <width>396</width>
     <trace_0_buffer_size>120</trace_0_buffer_size>
-    <trigger_pv />
+    <trigger_pv></trigger_pv>
     <axis_count>3</axis_count>
     <transparent>false</transparent>
     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
@@ -147,15 +155,16 @@ $(pv_value)</tooltip>
     <title>Multi-Axes Graph</title>
     <trace_1_y_pv>sim://ramp(100,0,1,0.1)</trace_1_y_pv>
     <axis_2_auto_scale>false</axis_2_auto_scale>
-    <pv_name />
+    <pv_name></pv_name>
     <axis_1_minimum>0.1</axis_1_minimum>
     <axis_2_axis_color>
       <color red="0" green="0" blue="128" />
     </axis_2_axis_color>
+    <trace_0_visible>true</trace_0_visible>
     <axis_2_scale_font>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </axis_2_scale_font>
-    <axis_2_scale_format />
+    <axis_2_scale_format></axis_2_scale_format>
     <axis_0_minimum>0.0</axis_0_minimum>
     <border_color>
       <color red="128" green="128" blue="128" />
@@ -168,10 +177,12 @@ $(pv_value)</tooltip>
     <trace_1_trace_color>
       <color red="141" green="31" blue="170" />
     </trace_1_trace_color>
+    <pv_value />
     <axis_2_visible>true</axis_2_visible>
     <trace_1_y_axis_index>2</trace_1_y_axis_index>
     <trace_1_concatenate_data>true</trace_1_concatenate_data>
     <rules />
+    <trace_0_y_pv_value />
     <trace_0_trace_type>2</trace_0_trace_type>
     <axis_1_grid_color>
       <color red="200" green="200" blue="200" />
@@ -181,11 +192,13 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>38d90a0d:1357c5ff43f:-7fd8</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
     <name>Label_8</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -206,19 +219,22 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
+    <wrap_words>true</wrap_words>
+    <tooltip></tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>38d90a0d:1357c5ff43f:-7fd7</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
     <name>Label_6</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -239,19 +255,22 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
-    <tooltip />
+    <wrap_words>true</wrap_words>
+    <tooltip></tooltip>
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>38d90a0d:1357c5ff43f:-7fd6</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
     <name>Label_9</name>
     <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
@@ -272,9 +291,10 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
+    <wrap_words>true</wrap_words>
+    <tooltip></tooltip>
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
@@ -292,6 +312,7 @@ $(pv_value)</tooltip>
     <y>129</y>
     <x>428</x>
     <visible>true</visible>
+    <trace_0_x_pv_value />
     <axis_1_visible>true</axis_1_visible>
     <height>198</height>
     <axis_1_maximum>100.0</axis_1_maximum>
@@ -302,7 +323,7 @@ $(pv_value)</tooltip>
     <axis_0_axis_color>
       <color red="0" green="0" blue="0" />
     </axis_0_axis_color>
-    <axis_1_scale_format />
+    <axis_1_scale_format></axis_1_scale_format>
     <name>Graph2</name>
     <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
     <trace_0_line_width>1</trace_0_line_width>
@@ -312,9 +333,10 @@ $(pv_value)</tooltip>
       <color red="200" green="200" blue="200" />
     </axis_0_grid_color>
     <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
-    <trace_0_name />
+    <trace_0_name></trace_0_name>
     <trace_0_update_mode>0</trace_0_update_mode>
     <axis_0_axis_title>Time</axis_0_axis_title>
+    <wuid>38d90a0d:1357c5ff43f:-7fd5</wuid>
     <axis_1_axis_color>
       <color red="0" green="0" blue="0" />
     </axis_1_axis_color>
@@ -335,21 +357,22 @@ $(pv_value)</tooltip>
     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
     <axis_0_visible>true</axis_0_visible>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <axis_0_scale_format />
-    <trace_0_x_pv />
-    <trace_0_y_pv />
+    <axis_0_scale_format></axis_0_scale_format>
+    <trace_0_x_pv></trace_0_x_pv>
+    <trace_0_y_pv></trace_0_y_pv>
     <axis_0_title_font>
       <fontdata fontName="Arial" height="9" style="0" />
     </axis_0_title_font>
     <axis_1_auto_scale>true</axis_1_auto_scale>
     <trace_0_concatenate_data>true</trace_0_concatenate_data>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
+    <trigger_pv_value />
     <show_plot_area_border>false</show_plot_area_border>
     <widget_type>XY Graph</widget_type>
     <enabled>true</enabled>
     <width>354</width>
     <trace_0_buffer_size>100</trace_0_buffer_size>
-    <trigger_pv />
+    <trigger_pv></trigger_pv>
     <axis_count>2</axis_count>
     <transparent>false</transparent>
     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
@@ -366,9 +389,10 @@ $(pv_value)</tooltip>
     <plot_area_background_color>
       <color red="255" green="255" blue="255" />
     </plot_area_background_color>
-    <title />
-    <pv_name />
+    <title></title>
+    <pv_name></pv_name>
     <axis_1_minimum>0.0</axis_1_minimum>
+    <trace_0_visible>true</trace_0_visible>
     <axis_0_minimum>0.0</axis_0_minimum>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -378,6 +402,7 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <pv_value />
     <rules>
       <rule name="Change Trace PV " prop_id="trace_0_y_pv" out_exp="true">
         <exp bool_exp="true">
@@ -392,6 +417,7 @@ $(pv_value)</tooltip>
         <pv trig="true">loc://trace0PV</pv>
       </rule>
     </rules>
+    <trace_0_y_pv_value />
     <trace_0_trace_type>0</trace_0_trace_type>
     <axis_1_grid_color>
       <color red="200" green="200" blue="200" />
@@ -401,11 +427,12 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fd4</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
-    <pv_name />
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -420,37 +447,39 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
-    <image />
+    <push_action_index>0</push_action_index>
+    <image></image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>568</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>2_5_1_XY_Graph.opi</path>
+        <path>2_5_4_XY_Graph.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
+    <tooltip></tooltip>
     <x>710</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fd3</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button</name>
-    <pv_name />
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -465,32 +494,34 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
     <image>../pictures/home-16x16.png</image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>568</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
+    <tooltip></tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fd2</wuid>
     <scripts />
     <height>23</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -511,17 +542,18 @@ $(pv_value)</tooltip>
     <width>203</width>
     <border_style>0</border_style>
     <rules />
+    <pv_value />
     <items>
       <s>sim://sine(0,100,100,1)</s>
       <s>sim://ramp(0,100,1,1)</s>
       <s>sim://noise(20,80,1)</s>
     </items>
     <border_width>1</border_width>
-    <items_from_pv>false</items_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <actions hook="false" />
+    <items_from_pv>false</items_from_pv>
+    <actions hook="false" hook_all="false" />
     <y>101</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -530,11 +562,13 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
+    <wuid>38d90a0d:1357c5ff43f:-7fd1</wuid>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
     <name>Label</name>
     <transparent>true</transparent>
+    <show_scrollbar>false</show_scrollbar>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -555,19 +589,21 @@ $(pv_value)</tooltip>
       <color red="0" green="128" blue="255" />
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>103</y>
-    <tooltip />
+    <wrap_words>true</wrap_words>
+    <tooltip></tooltip>
     <x>438</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fd0</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
-    <pv_name />
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -582,20 +618,24 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>73</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
-    <image />
+    <push_action_index>0</push_action_index>
+    <image></image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>330</y>
-    <actions hook="false">
+    <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/ClearGraph.js</path>
-        <description />
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
+        <description></description>
       </action>
     </actions>
     <tooltip>Clear data on graph</tooltip>
@@ -604,11 +644,12 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fcf</wuid>
     <scripts />
     <height>28</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_3</name>
-    <pv_name />
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -623,26 +664,31 @@ $(pv_value)</tooltip>
       <opifont.name>Default</opifont.name>
     </font>
     <width>136</width>
-    <push_action_index>0</push_action_index>
     <border_style>0</border_style>
-    <image />
+    <push_action_index>0</push_action_index>
+    <image></image>
     <rules />
+    <pv_value />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>331</y>
-    <actions hook="false">
+    <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/ChangeTraceColor.js</path>
-        <description />
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
+        <description></description>
       </action>
     </actions>
     <tooltip>Change Trace 0 color</tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+    <trace_1_visible>true</trace_1_visible>
     <trace_1_trace_type>3</trace_1_trace_type>
     <trace_0_trace_color>
       <color red="21" green="21" blue="196" />
@@ -652,6 +698,7 @@ $(pv_value)</tooltip>
     <trace_1_point_size>4</trace_1_point_size>
     <trace_0_plot_mode>0</trace_0_plot_mode>
     <trace_count>3</trace_count>
+    <trace_2_y_pv_value />
     <axis_0_show_grid>true</axis_0_show_grid>
     <axis_0_log_scale>false</axis_0_log_scale>
     <trace_1_name>Bar</trace_1_name>
@@ -660,10 +707,11 @@ $(pv_value)</tooltip>
     <y>362</y>
     <x>17</x>
     <visible>true</visible>
+    <trace_0_x_pv_value />
     <axis_1_visible>true</axis_1_visible>
     <height>199</height>
     <axis_1_maximum>100.0</axis_1_maximum>
-    <trace_2_x_pv />
+    <trace_2_x_pv></trace_2_x_pv>
     <axis_1_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
     </axis_1_title_font>
@@ -672,10 +720,11 @@ $(pv_value)</tooltip>
     <axis_0_axis_color>
       <color red="0" green="0" blue="0" />
     </axis_0_axis_color>
-    <axis_1_scale_format />
-    <name>XY Graph</name>
+    <axis_1_scale_format></axis_1_scale_format>
+    <name>XYGraph3</name>
     <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
     <trace_0_line_width>1</trace_0_line_width>
+    <trace_2_x_pv_value />
     <show_toolbar>false</show_toolbar>
     <trace_1_update_delay>100</trace_1_update_delay>
     <axis_1_show_grid>true</axis_1_show_grid>
@@ -692,6 +741,7 @@ $(pv_value)</tooltip>
     <trace_0_update_mode>0</trace_0_update_mode>
     <trace_1_buffer_size>100</trace_1_buffer_size>
     <axis_0_axis_title>Time</axis_0_axis_title>
+    <wuid>38d90a0d:1357c5ff43f:-7fce</wuid>
     <trace_2_buffer_size>100</trace_2_buffer_size>
     <axis_1_axis_color>
       <color red="0" green="0" blue="0" />
@@ -708,6 +758,7 @@ $(pv_value)</tooltip>
       <fontdata fontName="Segoe UI" height="9" style="0" />
     </axis_0_scale_font>
     <trace_2_point_size>4</trace_2_point_size>
+    <trace_1_y_pv_value />
     <axis_0_time_format>4</axis_0_time_format>
     <trace_1_plot_mode>0</trace_1_plot_mode>
     <axis_1_log_scale>false</axis_1_log_scale>
@@ -719,8 +770,9 @@ $(pv_value)</tooltip>
     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
     <axis_0_visible>true</axis_0_visible>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <axis_0_scale_format />
-    <trace_0_x_pv />
+    <trace_1_x_pv_value />
+    <axis_0_scale_format></axis_0_scale_format>
+    <trace_0_x_pv></trace_0_x_pv>
     <trace_0_y_pv>sim://sine(-100,100,50,0.1)</trace_0_y_pv>
     <axis_0_title_font>
       <fontdata fontName="Arial" height="9" style="1" />
@@ -728,19 +780,21 @@ $(pv_value)</tooltip>
     <axis_1_auto_scale>true</axis_1_auto_scale>
     <trace_2_update_delay>100</trace_2_update_delay>
     <trace_0_concatenate_data>true</trace_0_concatenate_data>
-    <actions hook="false" />
-    <trace_1_x_pv />
+    <actions hook="false" hook_all="false" />
+    <trigger_pv_value />
+    <trace_1_x_pv></trace_1_x_pv>
     <show_plot_area_border>false</show_plot_area_border>
     <widget_type>XY Graph</widget_type>
     <enabled>true</enabled>
-    <width>772</width>
+    <width>607</width>
     <trace_0_buffer_size>100</trace_0_buffer_size>
-    <trigger_pv />
+    <trigger_pv></trigger_pv>
     <axis_count>2</axis_count>
     <trace_2_name>Area</trace_2_name>
     <transparent>false</transparent>
     <trace_2_anti_alias>true</trace_2_anti_alias>
     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
+    <trace_2_visible>true</trace_2_visible>
     <trace_0_x_axis_index>0</trace_0_x_axis_index>
     <trace_0_point_style>1</trace_0_point_style>
     <tooltip>$(trace_0_y_pv)
@@ -759,8 +813,9 @@ $(trace_0_y_pv_value)</tooltip>
     <trace_2_point_style>0</trace_2_point_style>
     <title>Trends</title>
     <trace_1_y_pv>sim://sine(-50,50,20,0.1)</trace_1_y_pv>
-    <pv_name />
+    <pv_name></pv_name>
     <axis_1_minimum>0.0</axis_1_minimum>
+    <trace_0_visible>true</trace_0_visible>
     <axis_0_minimum>0.0</axis_0_minimum>
     <border_color>
       <color red="128" green="128" blue="128" />
@@ -776,14 +831,149 @@ $(trace_0_y_pv_value)</tooltip>
     <trace_2_trace_color>
       <color red="33" green="179" blue="33" />
     </trace_2_trace_color>
+    <pv_value />
     <trace_1_y_axis_index>1</trace_1_y_axis_index>
     <trace_1_concatenate_data>true</trace_1_concatenate_data>
-    <rules />
+    <rules>
+      <rule name="Trace 0 Visible Rule" prop_id="trace_0_visible" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0==1</value>
+        </exp>
+        <pv trig="true">loc://$(DID)_trace_0_visible(1)</pv>
+      </rule>
+      <rule name="Trace 1 Visible Rule" prop_id="trace_1_visible" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0==1</value>
+        </exp>
+        <pv trig="true">loc://$(DID)_trace_1_visible(1)</pv>
+      </rule>
+      <rule name="Trace 2 Visible Rule" prop_id="trace_2_visible" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0==1</value>
+        </exp>
+        <pv trig="true">loc://$(DID)_trace_2_visible(1)</pv>
+      </rule>
+    </rules>
     <trace_2_y_pv>sim://sine(-100,100,30,0.1)</trace_2_y_pv>
+    <trace_0_y_pv_value />
     <trace_0_trace_type>0</trace_0_trace_type>
     <axis_1_grid_color>
       <color red="200" green="200" blue="200" />
     </axis_1_grid_color>
     <trace_0_update_delay>100</trace_0_update_delay>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7fc8</wuid>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Check Box</name>
+    <pv_name>loc://$(DID)_trace_0_visible(1)</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Check Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>114</width>
+    <border_style>0</border_style>
+    <label>Trace 0 Visible</label>
+    <rules />
+    <pv_value />
+    <bit>0</bit>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="true" hook_all="false" />
+    <y>368</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>633</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7f80</wuid>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Check Box_1</name>
+    <pv_name>loc://$(DID)_trace_1_visible(1)</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Check Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>114</width>
+    <border_style>0</border_style>
+    <label>Trace 1 Visible</label>
+    <rules />
+    <pv_value />
+    <bit>0</bit>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="true" hook_all="false" />
+    <y>391</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>633</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>38d90a0d:1357c5ff43f:-7f7c</wuid>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Check Box_2</name>
+    <pv_name>loc://$(DID)_trace_2_visible(1)</pv_name>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Check Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>114</width>
+    <border_style>0</border_style>
+    <label>Trace 2 Visible</label>
+    <rules />
+    <pv_value />
+    <bit>0</bit>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="true" hook_all="false" />
+    <y>415</y>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>633</x>
   </widget>
 </display>
