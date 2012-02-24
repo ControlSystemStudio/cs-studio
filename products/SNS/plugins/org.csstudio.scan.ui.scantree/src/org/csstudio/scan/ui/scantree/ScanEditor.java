@@ -103,7 +103,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     final private static IOperationHistory operations = OperationHistoryFactory.getOperationHistory();
 
     /** Undo context for undo/redo */
-    final private IUndoContext undo_context = new UndoContext();
+    final private IUndoContext undo_context;
 
     /** Info section, not always shown */
     private Composite info_section;
@@ -172,6 +172,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         if (! scan.getState().isDone())
             editor.scan_id = scan.getId();
         return editor;
+    }
+
+    /** Initialize */
+    public ScanEditor()
+    {
+        undo_context = new UndoContext();
+        operations.setLimit(undo_context, 50);
     }
 
     /** {@inheritDoc} */
@@ -545,6 +552,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 return;
             // End live mode
             scan_id = -1;
+            showInfoSection(false);
         }
         operation.execute(new NullProgressMonitor(), null);
         operation.addContext(undo_context);
