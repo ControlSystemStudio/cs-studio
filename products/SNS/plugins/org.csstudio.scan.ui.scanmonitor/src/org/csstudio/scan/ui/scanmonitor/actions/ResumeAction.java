@@ -17,6 +17,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 
 /** Action that resumes a paused scan
@@ -30,7 +31,7 @@ public class ResumeAction extends AbstractGUIAction
      */
     public ResumeAction(final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.Resume, "icons/resume.gif"); //$NON-NLS-1$
+        super(model, info, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

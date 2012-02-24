@@ -18,6 +18,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -36,7 +37,7 @@ public class ShowDevicesAction extends AbstractGUIAction
      */
     public ShowDevicesAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.ShowDevices, "icons/information.gif");
+        super(model, info, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
         this.shell = shell;
     }
 

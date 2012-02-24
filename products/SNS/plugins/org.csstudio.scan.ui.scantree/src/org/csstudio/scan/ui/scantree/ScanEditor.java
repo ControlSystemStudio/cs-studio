@@ -24,6 +24,7 @@ import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
@@ -49,6 +50,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -120,6 +122,12 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
     /** ID of scan that was submitted, the 'live' scan, or -1 */
     private volatile long scan_id = -1;
+
+    private Button pause;
+
+    private Button resume;
+
+    private Button abort;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -233,30 +241,67 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** Create GUI components
      *  @param parent Parent widget
      */
+    @SuppressWarnings("nls")
     private void createComponents(final Composite parent)
     {
         parent.setLayout(new FormLayout());
 
         // 1) Info section
         info_section = new Composite(parent, 0);
-        info_section.setLayout(new GridLayout(2, false));
+        info_section.setLayout(new GridLayout(4, false));
+
         message = new Label(info_section, 0);
         message.setText(Messages.ServerDisconnected);
         message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        // TODO Remove. Instead have buttons to pause, resume, ...
-        Button button = new Button(info_section, SWT.PUSH);
-        button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
-        button.setText("Hide"); //$NON-NLS-1$
-        button.addSelectionListener(new SelectionAdapter()
+        resume = createInfoButton(Messages.ResumeTT, "icons/resume.gif", new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                showInfoSection(false);
+                try
+                {
+                    scan_info.getServer().resume(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        pause = createInfoButton(Messages.PauseTT, "icons/pause.gif", new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().pause(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        abort = createInfoButton(Messages.AbortTT, "icons/abort.gif", new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().abort(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
             }
         });
 
+        // Initially, info section is invisible
+        info_section.setVisible(false);
         FormData fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
@@ -269,9 +314,26 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         fd = new FormData();
         fd.left = new FormAttachment(0);
         fd.right = new FormAttachment(100);
-        fd.top = new FormAttachment(info_section);
+        fd.top = new FormAttachment(0);
         fd.bottom = new FormAttachment(100);
         gui.getControl().setLayoutData(fd);
+    }
+
+    /** Add button to the info_section
+     *  @param tooltip Tool tip
+     *  @param icon Icon path (in scan.ui plugin)
+     *  @param listener Selection listener
+     *  @return Button
+     */
+    private Button createInfoButton(final String tooltip, final String icon,
+            final SelectionListener listener)
+    {
+        final Button button = new Button(info_section, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
+        button.setToolTipText(tooltip);
+        button.setImage(ScanUIActivator.getImageDescriptor(icon).createImage());
+        button.addSelectionListener(listener);
+        return button;
     }
 
     /** {@inheritDoc} */
@@ -287,6 +349,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         // Remove undo/redo operations associated with this editor
         // from the shared operations history of all scan editors
         operations.dispose(undo_context, true, true, true);
+
+        if (resume != null)
+            resume.getImage().dispose();
+        if (pause != null)
+            pause.getImage().dispose();
+        if (abort != null)
+            abort.getImage().dispose();
+
         super.dispose();
     }
 

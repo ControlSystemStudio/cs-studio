@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -34,7 +35,7 @@ public class InfoAction extends AbstractGUIAction
      */
     public InfoAction(final Shell shell, final ScanInfoModel model)
     {
-        super(model, null, Messages.Info, "icons/information.gif"); //$NON-NLS-1$
+        super(model, null, Messages.Info, Activator.getImageDescriptior("icons/information.gif")); //$NON-NLS-1$
         this.shell = shell;
     }
 
