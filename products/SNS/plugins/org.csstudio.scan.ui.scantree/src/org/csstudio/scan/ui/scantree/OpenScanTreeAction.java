@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -23,9 +23,8 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
 
 /** Action that opens a scan in the tree editor
  *  @author Kay Kasemir
@@ -33,7 +32,7 @@ import org.eclipse.osgi.util.NLS;
 public class OpenScanTreeAction extends Action
 {
     final private ScanInfo info;
-    
+
     /** Initialize
      *  @param model
      *  @param info
@@ -48,7 +47,7 @@ public class OpenScanTreeAction extends Action
     @Override
     public void run()
     {
-        // Use Job to submit?
+        // TODO Use Job to read commands from server
         try
         {
             // Fetch commands from server
@@ -58,13 +57,12 @@ public class OpenScanTreeAction extends Action
             final List<ScanCommand> commands = reader.readXMLString(xml_commands);
             ScanServerConnector.disconnect(server);
             // Open in editor
-            final ScanEditor editor = ScanEditor.createInstance();
-            editor.setCommands(commands);
+            ScanEditor.createInstance(info.getId(), commands);
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(null, Messages.Error,
-                NLS.bind(Messages.OpenScanTreeErrorFmt, ex.getMessage()));
+            ExceptionDetailsErrorDialog.openError(null, Messages.Error,
+                Messages.OpenScanTreeError, ex);
         }
     }
 }

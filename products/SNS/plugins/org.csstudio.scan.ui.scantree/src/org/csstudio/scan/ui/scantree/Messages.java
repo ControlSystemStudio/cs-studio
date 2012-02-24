@@ -33,7 +33,7 @@ public class Messages extends NLS
     public static String OpenCommandList;
     public static String OpenProperties;
     public static String OpenScanTree;
-    public static String OpenScanTreeErrorFmt;
+    public static String OpenScanTreeError;
     public static String OpenScanTreePerspective;
     public static String PauseTT;
     public static String ResumeTT;

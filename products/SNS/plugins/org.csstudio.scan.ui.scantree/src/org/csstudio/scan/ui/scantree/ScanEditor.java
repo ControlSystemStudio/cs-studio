@@ -161,6 +161,20 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         return createInstance(new EmptyEditorInput());
     }
 
+    /** Create scan editor
+     *  @param scan_id ID of the scan on server
+     *  @param commands Commands of the scan
+     *  @return
+     */
+    public static ScanEditor createInstance(final long scan_id, final List<ScanCommand> commands)
+    {
+        final ScanEditor editor = createInstance(new EmptyEditorInput());
+        editor.setCommands(commands);
+        editor.scan_id = scan_id;
+        return editor;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -491,6 +505,12 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         gui.refreshCommand(command);
     }
 
+    /** @return Devices available on scan server. May be <code>null</code> */
+    public DeviceInfo[] getDevices()
+    {
+        return devices;
+    }
+
     /** @param commands Commands to edit */
     public void setCommands(final List<ScanCommand> commands)
     {
@@ -498,10 +518,16 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         setDirty(true);
     }
 
-    /** @return Devices available on scan server. May be <code>null</code> */
-    public DeviceInfo[] getDevices()
+    /** @return Commands displayed/edited in GUI */
+    public List<ScanCommand> getCommands()
     {
-        return devices;
+        return gui.getCommands();
+    }
+
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
+    {
+        return gui.getSelectedCommands();
     }
 
     /** @return Operation history (for undo/redo) */
@@ -671,18 +697,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
-    }
-
-    /** @return Commands displayed/edited in GUI */
-    public List<ScanCommand> getCommands()
-    {
-        return gui.getCommands();
-    }
-
-    /** @return Currently selected scan commands or <code>null</code> */
-    public List<ScanCommand> getSelectedCommands()
-    {
-        return gui.getSelectedCommands();
     }
 
     /** Refresh the GUI after tree manipulations */
