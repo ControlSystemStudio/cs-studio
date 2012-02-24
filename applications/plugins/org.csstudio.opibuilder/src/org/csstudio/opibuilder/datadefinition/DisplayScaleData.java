@@ -32,7 +32,7 @@ public class DisplayScaleData extends AbstractComplexData {
 
 	@Override
 	protected void configureProperties() {
-		addProperty(new BooleanProperty(PROP_AUTO_SCALE_WIDGETS, "Width Scalable", null, true));
+		addProperty(new BooleanProperty(PROP_AUTO_SCALE_WIDGETS, "Width Scalable", null, false));
 		addProperty(new IntegerProperty(PROP_MIN_WIDTH, "Minimum Width", null, -1));	
 		addProperty(new IntegerProperty(PROP_MIN_HEIGHT, "Minimum Height", null, -1));		
 	}
