@@ -296,11 +296,11 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     private boolean checkDeviceTest(final BaseIncomingMessage o) {
 
         boolean checked = false;
-        LOG.debug("Check for device test.");
+        // LOG.debug("Check for device test.");
 
         // Check modem test status first
         if(testStatus.isActive()) {
-            LOG.info("Self test is active");
+            //LOG.info("Self test is active");
             if(testStatus.isTimeOut()) {
                 LOG.warn("Current test timed out.");
                 LOG.debug("Remaining gateways: " + testStatus.getGatewayCount());
