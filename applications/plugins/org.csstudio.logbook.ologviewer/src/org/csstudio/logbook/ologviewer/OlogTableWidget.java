@@ -1,7 +1,12 @@
 package org.csstudio.logbook.ologviewer;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.csstudio.logbook.ologviewer.OlogQuery.Result;
 import org.csstudio.ui.util.widgets.ErrorBar;
@@ -23,11 +28,21 @@ import edu.msu.nscl.olog.api.Log;
 
 public class OlogTableWidget extends Composite {
 
-	private Collection<Log> logs = new ArrayList<Log>();
+	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
+			this);
 
-	private TableViewer tableViewer;
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(listener);
+	}
+
+	private Collection<Log> logs = new ArrayList<Log>();
 	private Collection<OlogTableColumnDescriptor> tableViewerColumnDescriptors;
 
+	private TableViewer tableViewer;
 	private ErrorBar errorBar;
 	private Table table;
 
@@ -57,7 +72,19 @@ public class OlogTableWidget extends Composite {
 
 		tableViewer.setContentProvider(new OlogContentProvider());
 
-		updateTable();
+		addPropertyChangeListener(new PropertyChangeListener() {
+
+			List<String> properties = Arrays.asList("logs",
+					"tableViewerColumnDescriptors");
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if (properties.contains(evt.getPropertyName())) {
+					updateTable();
+				}
+			}
+
+		});
 	}
 
 	private Composite composite;
@@ -78,7 +105,7 @@ public class OlogTableWidget extends Composite {
 
 		// create columns
 		TableViewerColumn ologDateColumn = new TableViewerColumn(tableViewer,
-				SWT.NONE);
+				SWT.LEFT);
 		ologDateColumn.setLabelProvider(new CellLabelProvider() {
 			@Override
 			public void update(ViewerCell cell) {
@@ -111,13 +138,15 @@ public class OlogTableWidget extends Composite {
 			for (OlogTableColumnDescriptor ologTableColumnDescriptor : tableViewerColumnDescriptors) {
 				TableViewerColumn ologColumn = new TableViewerColumn(
 						tableViewer, SWT.CENTER);
-				ologColumn.setLabelProvider(ologTableColumnDescriptor.getCellLabelProvider());
+				ologColumn.setLabelProvider(ologTableColumnDescriptor
+						.getCellLabelProvider());
 				TableColumn tblclmn = ologColumn.getColumn();
 				tblclmn.setAlignment(SWT.CENTER);
 				tblclmn.setWidth(100);
 				tblclmn.setText(ologTableColumnDescriptor.getText());
-				tblclmn.setToolTipText( ologTableColumnDescriptor.getTooltip());
-				layout.setColumnData(tblclmn, new ColumnWeightData(ologTableColumnDescriptor.getWeight()));
+				tblclmn.setToolTipText(ologTableColumnDescriptor.getTooltip());
+				layout.setColumnData(tblclmn, new ColumnWeightData(
+						ologTableColumnDescriptor.getWeight()));
 			}
 		}
 
@@ -178,8 +207,9 @@ public class OlogTableWidget extends Composite {
 	}
 
 	void setLogs(Collection<Log> logs) {
+		Collection<Log> oldValue = this.logs;
 		this.logs = logs;
-		updateTable();
+		changeSupport.firePropertyChange("logs", oldValue, this.logs);
 	}
 
 	public Collection<OlogTableColumnDescriptor> getTableViewerColumnDescriptors() {
@@ -188,14 +218,18 @@ public class OlogTableWidget extends Composite {
 
 	public void setTableViewerColumnDescriptors(
 			Collection<OlogTableColumnDescriptor> tableViewerColumnDescriptors) {
+		Collection<OlogTableColumnDescriptor> oldValue = this.tableViewerColumnDescriptors;
 		this.tableViewerColumnDescriptors = tableViewerColumnDescriptors;
-		updateTable();
+		changeSupport.firePropertyChange("tableViewerColumnDescriptors",
+				oldValue, this.tableViewerColumnDescriptors);
 	}
 
 	public void setTableViewerColumnDescriptors(
 			OlogTableColumnDescriptor tableViewerColumnDescriptor) {
+		Collection<OlogTableColumnDescriptor> oldValue = this.tableViewerColumnDescriptors;
 		this.tableViewerColumnDescriptors.add(tableViewerColumnDescriptor);
-		updateTable();
+		changeSupport.firePropertyChange("tableViewerColumnDescriptors",
+				oldValue, this.tableViewerColumnDescriptors);
 	}
 
 }
