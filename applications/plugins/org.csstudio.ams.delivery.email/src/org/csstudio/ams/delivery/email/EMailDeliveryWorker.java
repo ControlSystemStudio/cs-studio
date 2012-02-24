@@ -27,8 +27,8 @@ package org.csstudio.ams.delivery.email;
 
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
-import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.util.jms.JmsAsyncConsumer;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
