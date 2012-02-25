@@ -38,7 +38,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.intro" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.intro.universal" version="3.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startup" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.product" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.6.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
       <import plugin="org.eclipse.help.appserver"/>
