@@ -85,7 +85,6 @@ org.csstudio.utility.clock/**
 org.csstudio.utility.eliza/**
 org.csstudio.utility.httpd/**
 org.csstudio.utility.speech/**
-org.csstudio.utility.product/**
 org.csstudio.utility.pv.epics/**
 org.csstudio.utility.pv.simu/**
 org.csstudio.utility.pv/**
