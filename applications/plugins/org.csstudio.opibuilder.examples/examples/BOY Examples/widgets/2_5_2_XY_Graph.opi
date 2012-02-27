@@ -26,6 +26,11 @@
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
   <actions hook="false" hook_all="false" />
   <y>0</y>
   <x>0</x>
@@ -180,6 +185,11 @@ $(pv_value)</tooltip>
     <pv_value />
     <axis_2_visible>true</axis_2_visible>
     <trace_1_y_axis_index>2</trace_1_y_axis_index>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <trace_1_concatenate_data>true</trace_1_concatenate_data>
     <rules />
     <trace_0_y_pv_value />
@@ -197,6 +207,11 @@ $(pv_value)</tooltip>
     <scripts />
     <height>86</height>
     <name>Label_8</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -233,6 +248,11 @@ $(pv_value)</tooltip>
     <scripts />
     <height>43</height>
     <name>Label_6</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -269,6 +289,11 @@ $(pv_value)</tooltip>
     <scripts />
     <height>44</height>
     <name>Label_9</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -403,6 +428,11 @@ $(pv_value)</tooltip>
       <color red="240" green="240" blue="240" />
     </background_color>
     <pv_value />
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <rules>
       <rule name="Change Trace PV " prop_id="trace_0_y_pv" out_exp="true">
         <exp bool_exp="true">
@@ -430,8 +460,13 @@ $(pv_value)</tooltip>
     <wuid>38d90a0d:1357c5ff43f:-7fd4</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -477,8 +512,13 @@ $(pv_value)</tooltip>
     <wuid>38d90a0d:1357c5ff43f:-7fd3</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -524,8 +564,13 @@ $(pv_value)</tooltip>
     <wuid>38d90a0d:1357c5ff43f:-7fd2</wuid>
     <scripts />
     <height>23</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Combo Box</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://trace0PV(sim://sine(0,100,100,1)</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
@@ -567,6 +612,11 @@ $(pv_value)</tooltip>
     <scripts />
     <height>20</height>
     <name>Label</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -601,8 +651,13 @@ $(pv_value)</tooltip>
     <wuid>38d90a0d:1357c5ff43f:-7fd0</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -647,8 +702,13 @@ $(pv_value)</tooltip>
     <wuid>38d90a0d:1357c5ff43f:-7fcf</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_3</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -833,6 +893,11 @@ $(trace_0_y_pv_value)</tooltip>
     </trace_2_trace_color>
     <pv_value />
     <trace_1_y_axis_index>1</trace_1_y_axis_index>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <trace_1_concatenate_data>true</trace_1_concatenate_data>
     <rules>
       <rule name="Trace 0 Visible Rule" prop_id="trace_0_visible" out_exp="true">
@@ -869,8 +934,13 @@ $(trace_0_y_pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Check Box</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://$(DID)_trace_0_visible(1)</pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -907,8 +977,13 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Check Box_1</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://$(DID)_trace_1_visible(1)</pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
@@ -945,8 +1020,13 @@ $(pv_value)</tooltip>
     <auto_size>false</auto_size>
     <scripts />
     <height>20</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Check Box_2</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://$(DID)_trace_2_visible(1)</pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />

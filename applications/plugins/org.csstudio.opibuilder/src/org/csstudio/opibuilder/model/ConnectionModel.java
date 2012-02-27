@@ -249,6 +249,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 		removeProperty(PROP_SCRIPTS);
 		removeProperty(PROP_COLOR_BACKGROUND);
 		removeProperty(PROP_COLOR_FOREGROUND);
+		removeProperty(PROP_SCALE_OPTIONS);
 
 	}
 
