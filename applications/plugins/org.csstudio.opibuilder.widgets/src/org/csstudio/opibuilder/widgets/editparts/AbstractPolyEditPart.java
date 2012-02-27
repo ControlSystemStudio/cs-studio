@@ -27,7 +27,7 @@ import java.util.HashMap;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
-import org.csstudio.swt.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.eclipse.draw2d.AbstractConnectionAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
@@ -103,7 +103,7 @@ public abstract class AbstractPolyEditPart extends AbstractShapeEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				getWidgetModel().setPoints(
-						RotationUtil.rotatePoints(getWidgetModel().getOriginalPoints().getCopy(), 
+						PointsUtil.rotatePoints(getWidgetModel().getOriginalPoints().getCopy(), 
 								(Double)newValue), false);
 				return false;
 			}

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
     <noisePV>sim://noise</noisePV>
@@ -10,403 +9,220 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <name>Boolean Button/Switch</name>
-  <snap_to_geometry>true</snap_to_geometry>
-  <show_grid>true</show_grid>
-  <background_color>
-    <color red="240" green="240" blue="240" />
-  </background_color>
-  <foreground_color>
-    <color red="192" green="192" blue="192" />
-  </foreground_color>
-  <widget_type>Display</widget_type>
-  <show_close_button>true</show_close_button>
   <width>800</width>
   <rules />
-  <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
-  <y>0</y>
-  <x>0</x>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false" />
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
     <name>Label_8</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="128" green="0" blue="64" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Boolean Button/Switch&#xD;
 Image Boolean Button</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>295</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
     <name>Label_6</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Examples</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
     <name>Label_9</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Best OPI Yet (BOY)</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>42</height>
-    <show_led>true</show_led>
-    <data_type>0</data_type>
     <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Boolean Button</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>80</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
-    <bit>-1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>165</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>208</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
     <on_color>
       <color red="219" green="219" blue="219" />
     </on_color>
-    <height>100</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Boolean Switch</name>
     <off_color>
       <color red="219" green="219" blue="219" />
     </off_color>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>50</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>5</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>289</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>27</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>81</height>
-    <show_led>true</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_1</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>true</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <show_confirm_dialog>1</show_confirm_dialog>
     <y>145</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>310</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>42</height>
-    <show_led>true</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_2</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <show_boolean_label>true</show_boolean_label>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>80</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>2</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <square_button>true</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>165</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>384</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
     <password>123456</password>
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>68</height>
     <show_led>false</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_3</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <show_boolean_label>true</show_boolean_label>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <off_label>Open</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>3</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>true</show_confirm_dialog>
-    <border_width>1</border_width>
+    <show_confirm_dialog>1</show_confirm_dialog>
     <on_label>Close</on_label>
     <square_button>true</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>152</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>486</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>71</height>
     <show_led>false</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_5</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <show_boolean_label>true</show_boolean_label>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest2</pv_name>
     <background_color>
       <color red="255" green="0" blue="0" />
@@ -415,702 +231,355 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <off_label>STOP</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>71</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>4</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
     <on_label>STOP</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>150</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>655</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>55</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_1</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>103</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>6</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>true</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <show_confirm_dialog>1</show_confirm_dialog>
     <y>280</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>320</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>73</height>
+    <name>Bits</name>
+    <show_scrollbar>false</show_scrollbar>
     <width>240</width>
     <border_style>13</border_style>
     <rules />
-    <lock_children>false</lock_children>
-    <scripts />
-    <height>73</height>
-    <border_width>1</border_width>
-    <name>Bits</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <transparent>false</transparent>
-    <show_scrollbar>false</show_scrollbar>
+    <actions hook="false" hook_all="false" />
     <y>280</y>
-    <actions hook="false" />
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>545</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.bytemonitor" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
-      <bitReverse>false</bitReverse>
       <scripts />
-      <square_led>false</square_led>
-      <startBit>0</startBit>
-      <on_color>
-        <color red="0" green="255" blue="0" />
-      </on_color>
       <height>25</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Byte Monitor</name>
-      <off_color>
-        <color red="0" green="100" blue="0" />
-      </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <widget_type>Byte Monitor</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <numBits>8</numBits>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
       <width>209</width>
-      <border_style>0</border_style>
-      <effect_3d>true</effect_3d>
       <rules />
-      <border_width>1</border_width>
-      <horizontal>true</horizontal>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>12</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>41</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Image Boolean Button</name>
-    <stretch_to_fit>false</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>47</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>1</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/reset_switch_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>438</y>
     <on_image>../pictures/reset_switch_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>359</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>50</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_1</name>
-    <stretch_to_fit>false</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>45</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/valve_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>433</y>
     <on_image>../pictures/valve_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>513</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>68</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_2</name>
-    <stretch_to_fit>false</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>68</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>2</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/pump_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>424</y>
     <on_image>../pictures/pump_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>588</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>39</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_3</name>
-    <stretch_to_fit>false</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>52</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/switch_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>439</y>
     <on_image>../pictures/switch_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>195</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>133</height>
+    <name>Bits Control</name>
+    <show_scrollbar>false</show_scrollbar>
     <width>105</width>
     <border_style>13</border_style>
     <rules />
-    <lock_children>false</lock_children>
-    <scripts />
-    <height>133</height>
-    <border_width>1</border_width>
-    <name>Bits Control</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <transparent>false</transparent>
-    <show_scrollbar>false</show_scrollbar>
+    <actions hook="false" hook_all="false" />
     <y>254</y>
-    <actions hook="false" />
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>434</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
       <auto_size>true</auto_size>
       <scripts />
       <height>15</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Check Box_1</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
       <pv_name>loc://boolTest</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Check Box</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <width>81</width>
-      <border_style>0</border_style>
       <label>Bit 1</label>
       <rules />
       <bit>1</bit>
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>24</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
       <auto_size>true</auto_size>
       <scripts />
       <height>15</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Check Box</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
       <pv_name>loc://boolTest</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Check Box</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <width>73</width>
-      <border_style>0</border_style>
       <label>Bit 0</label>
       <rules />
-      <bit>0</bit>
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
-      <y>0</y>
+      <actions hook="false" hook_all="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
-      <auto_size>false</auto_size>
       <scripts />
       <height>15</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Check Box_3</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
       <pv_name>loc://boolTest</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Check Box</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <width>81</width>
-      <border_style>0</border_style>
       <label>Bit 3</label>
       <rules />
       <bit>3</bit>
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>78</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
-      <border_alarm_sensitive>true</border_alarm_sensitive>
-      <visible>true</visible>
-      <auto_size>false</auto_size>
       <scripts />
       <height>19</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Check Box_2</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
       <pv_name>loc://boolTest</pv_name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Check Box</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <width>81</width>
-      <border_style>0</border_style>
       <label>Bit 2</label>
       <rules />
       <bit>2</bit>
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>48</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>0</x>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
     <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
     <rules />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>544</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
     <x>12</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>42</height>
-    <show_led>true</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_5</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <show_boolean_label>true</show_boolean_label>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>80</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <effect_3d>false</effect_3d>
     <rules />
-    <bit>-1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>165</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>32</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>81</height>
-    <show_led>true</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_6</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>53</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <effect_3d>false</effect_3d>
     <rules />
     <bit>1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>true</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <show_confirm_dialog>1</show_confirm_dialog>
     <y>145</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>134</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>71</height>
     <show_led>false</show_led>
-    <data_type>0</data_type>
-    <show_boolean_label>true</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Button_7</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
+    <show_boolean_label>true</show_boolean_label>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>true</keep_wh_ratio>
+    </scale_options>
     <pv_name>loc://boolTest</pv_name>
     <background_color>
       <color red="0" green="255" blue="0" />
@@ -1119,472 +588,224 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <off_label>Run</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>71</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>4</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
     <on_label>Run</on_label>
-    <square_button>false</square_button>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>150</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>565</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
     <on_color>
       <color red="219" green="219" blue="219" />
     </on_color>
-    <height>100</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_2</name>
     <off_color>
       <color red="219" green="219" blue="219" />
     </off_color>
     <pv_name>loc://boolTest2</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>50</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>5</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>289</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>83</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>55</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_3</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
     <pv_name>loc://boolTest2</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>103</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
-    <effect_3d>true</effect_3d>
     <rules />
     <bit>6</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>334</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>320</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>55</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_4</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>103</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <effect_3d>false</effect_3d>
     <rules />
     <bit>6</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>true</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <show_confirm_dialog>1</show_confirm_dialog>
     <y>280</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>167</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <scripts />
-    <on_color>
-      <color red="0" green="255" blue="0" />
-    </on_color>
     <height>55</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_5</name>
-    <off_color>
-      <color red="0" green="100" blue="0" />
-    </off_color>
     <pv_name>loc://boolTest2</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Boolean Switch</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>103</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <effect_3d>false</effect_3d>
     <rules />
     <bit>6</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>334</y>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>167</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <auto_size>false</auto_size>
     <scripts />
     <height>30</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_4</name>
     <stretch_to_fit>true</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
     <width>30</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>1</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/OffButton.png</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>443</y>
     <on_image>../pictures/OnButton.png</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>75</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
     <auto_size>false</auto_size>
     <scripts />
     <height>30</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_5</name>
     <stretch_to_fit>true</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
     <width>30</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>2</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/OffButton.png</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>443</y>
     <on_image>../pictures/OnButton.png</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>135</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>41</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_6</name>
     <stretch_to_fit>true</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>47</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>2</bit>
     <toggle_button>false</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/reset_switch_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>438</y>
     <on_image>../pictures/reset_switch_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>436</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ImageBoolButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <password />
-    <auto_size>true</auto_size>
     <scripts />
     <height>39</height>
-    <data_type>0</data_type>
-    <show_boolean_label>false</show_boolean_label>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Image Boolean Button_7</name>
-    <stretch_to_fit>false</stretch_to_fit>
     <pv_name>loc://boolTest</pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <off_label>OFF</off_label>
-    <released_action_index>0</released_action_index>
-    <widget_type>Image Boolean Button</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>52</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <confirm_message>Are your sure you want to do this?</confirm_message>
     <rules />
     <bit>2</bit>
-    <toggle_button>true</toggle_button>
-    <show_confirm_dialog>false</show_confirm_dialog>
-    <border_width>1</border_width>
-    <on_label>ON</on_label>
     <off_image>../pictures/switch_off.gif</off_image>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>439</y>
     <on_image>../pictures/switch_on.gif</on_image>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>277</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>185</width>
-    <border_style>0</border_style>
-    <rules />
-    <lock_children>true</lock_children>
     <scripts />
     <height>44</height>
-    <border_width>1</border_width>
     <name>widgets/BooleanWidgets.html</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <scale_options>
+      <width_scalable>false</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <y>536</y>
-    <actions hook="true">
+    <width>185</width>
+    <rules />
+    <lock_children>true</lock_children>
+    <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
         <description>Open Help</description>
       </action>
     </actions>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
+    <y>536</y>
     <x>608</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-      <visible>true</visible>
-      <vertical_alignment>1</vertical_alignment>
-      <auto_size>false</auto_size>
       <scripts />
       <height>22</height>
       <name>Label_28</name>
@@ -1595,106 +816,52 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color red="0" green="0" blue="253" />
       </foreground_color>
-      <widget_type>Label</widget_type>
-      <enabled>true</enabled>
       <text>See Online Help</text>
       <font>
         <fontdata fontName="Arial" height="12" style="1" />
       </font>
       <width>135</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>11</y>
-      <tooltip />
       <x>41</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
-      <fill_arrow>true</fill_arrow>
-      <arrow_length>20</arrow_length>
-      <visible>true</visible>
-      <fill_level>0.0</fill_level>
-      <rotation_angle>0.0</rotation_angle>
       <scripts />
-      <arrows>0</arrows>
       <height>1</height>
-      <anti_alias>true</anti_alias>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Polyline</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>true</keep_wh_ratio>
+      </scale_options>
       <points>
         <point x="49" y="32" />
         <point x="168" y="32" />
       </points>
-      <transparent>false</transparent>
-      <pv_name />
       <background_color>
         <color red="0" green="0" blue="255" />
       </background_color>
       <foreground_color>
         <color red="255" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Polyline</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <line_style>0</line_style>
       <width>120</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
       <line_width>1</line_width>
-      <horizontal_fill>true</horizontal_fill>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>32</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       <x>49</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-      <crop_right>0</crop_right>
-      <crop_left>0</crop_left>
-      <visible>true</visible>
-      <auto_size>true</auto_size>
       <scripts />
       <height>44</height>
       <stretch_to_fit>true</stretch_to_fit>
-      <name>Image</name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <widget_type>Image</widget_type>
-      <enabled>true</enabled>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
       <width>42</width>
-      <no_animation>false</no_animation>
-      <crop_top>0</crop_top>
-      <border_style>0</border_style>
       <rules />
-      <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
       <image_file>../pictures/onlineHelp.gif</image_file>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
-      <y>0</y>
-      <tooltip />
+      <actions hook="false" hook_all="false" />
       <x>8</x>
     </widget>
   </widget>

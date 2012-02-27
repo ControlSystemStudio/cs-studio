@@ -16,7 +16,7 @@ import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.figureparts.RoundScale;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
-import org.csstudio.swt.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Cursors;
@@ -117,7 +117,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 				Point thumbCenter = new Point(bulbBounds.x + bulbBounds.width*7.0/8.0, 
 						bulbBounds.y + bulbBounds.height/2);
 				double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);				
-				thumbCenter = RotationUtil.rotate(thumbCenter,	valuePosition, center);
+				thumbCenter = PointsUtil.rotate(thumbCenter,	valuePosition, center);
 				int thumbDiameter = bulbBounds.width/6;
 				
 				thumb.setBounds(new Rectangle(thumbCenter.x - thumbDiameter/2,

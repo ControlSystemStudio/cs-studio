@@ -40,6 +40,7 @@ public class ArcModel extends AbstractShapeModel {
 	
 	public ArcModel() {
 		setLineWidth(1);
+		setScaleOptions(true, true, true);
 	}
 	
 	@Override
