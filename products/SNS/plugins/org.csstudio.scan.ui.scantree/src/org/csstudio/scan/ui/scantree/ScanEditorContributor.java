@@ -9,10 +9,7 @@ package org.csstudio.scan.ui.scantree;
 
 import java.lang.ref.WeakReference;
 
-import org.csstudio.scan.ui.scantree.operations.SubmitCurrentScanAction;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPVAdapterFactory;
-import org.eclipse.jface.action.ICoolBarManager;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;
 
@@ -42,20 +39,6 @@ public class ScanEditorContributor extends EditorActionBarContributor
      *  reference.
      */
     private static WeakReference<ScanEditor> editor = null;
-
-    /** {@inheritDoc} */
-    @Override
-    public void contributeToToolBar(final IToolBarManager manager)
-    {
-        manager.add(new SubmitCurrentScanAction());
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void contributeToCoolBar(final ICoolBarManager manager)
-    {
-        manager.add(new SubmitCurrentScanAction());
-    }
 
     /** @return Currently active scan editor or <code>null</code> */
     public static ScanEditor getCurrentScanEditor()

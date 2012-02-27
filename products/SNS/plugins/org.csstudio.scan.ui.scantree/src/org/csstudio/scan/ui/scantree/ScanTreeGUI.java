@@ -31,7 +31,6 @@ import org.csstudio.scan.ui.scantree.operations.InsertOperation;
 import org.csstudio.scan.ui.scantree.operations.OpenCommandListAction;
 import org.csstudio.scan.ui.scantree.operations.OpenPropertiesAction;
 import org.csstudio.scan.ui.scantree.operations.PropertyChangeOperation;
-import org.csstudio.scan.ui.scantree.operations.SubmitCurrentScanAction;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.action.MenuManager;
@@ -134,10 +133,10 @@ public class ScanTreeGUI
 
         // plugin.xml will contribute the default (global)
         // edit commands cut/copy/paste/delete here,
-        // using localization and default key bindings
+        // using localization and default key bindings,
+        // as well as the submit command
         manager.add(new Separator("edit")); //$NON-NLS-1$
 
-        manager.add(new SubmitCurrentScanAction());
         manager.add(new Separator());
         manager.add(new AddCommandAction());
         manager.add(new OpenPropertiesAction());

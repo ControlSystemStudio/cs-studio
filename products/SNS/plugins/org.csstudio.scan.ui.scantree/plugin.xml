@@ -52,9 +52,24 @@
             id="org.csstudio.scan.ui.scantree.new"
             name="%ScanTree">
       </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.SubmitScanHandler"
+            id="org.csstudio.scan.ui.scantree.submit"
+            name="%SubmitScan">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:scan">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.new"
+               icon="icons/new_scantree.png"
+               label="%ScanTree"
+               style="push"
+               tooltip="%NewScanTreeTT">
+         </command>
+      </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
@@ -65,6 +80,15 @@
                   label="%ScanTree"
                   style="push"
                   tooltip="%NewScanTreeTT">
+            </command>
+            <command
+                  commandId="org.csstudio.scan.ui.scantree.submit"
+                  icon="icons/run.png"
+                  label="%SubmitScan"
+                  style="push">
+               <visibleWhen checkEnabled="false">
+                  <with variable="activePartId"><equals value="org.csstudio.scan.ui.scantree.editor"/> </with>
+               </visibleWhen>
             </command>
             <command
                   commandId="org.eclipse.ui.edit.undo"
@@ -85,16 +109,6 @@
          </toolbar>
       </menuContribution>
       <menuContribution
-            locationURI="menu:scan">
-         <command
-               commandId="org.csstudio.scan.ui.scantree.new"
-               icon="icons/new_scantree.png"
-               label="%ScanTree"
-               style="push"
-               tooltip="%NewScanTreeTT">
-         </command>
-      </menuContribution>
-      <menuContribution
             locationURI="popup:org.csstudio.scan.ui.scantree.editor?before=edit">
          <command commandId="org.eclipse.ui.edit.undo"/>
          <command commandId="org.eclipse.ui.edit.redo"/>
@@ -106,6 +120,12 @@
          <command commandId="org.eclipse.ui.edit.copy"/>
          <command commandId="org.eclipse.ui.edit.paste"/>
          <command commandId="org.eclipse.ui.edit.delete"/>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.csstudio.scan.ui.scantree.editor?after=edit">
+         <command commandId="org.csstudio.scan.ui.scantree.submit"
+               icon="icons/run.png">
+         </command>
       </menuContribution>
    </extension>
    <extension
