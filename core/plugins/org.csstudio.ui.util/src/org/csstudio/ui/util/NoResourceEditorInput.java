@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.ui.util;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -14,32 +14,46 @@ import org.eclipse.ui.IPersistableElement;
 
 /** Terrible Hack to avoid extra context menu entries
  *
- *  <p>Editors associated with "IResource" will receive
- *  certain context menu entries that don't make sense to
- *  the end user:
+ *  <p>Eclipse Editors are often associated with a file,
+ *  specifically <code>IFile</code> which is an {@link IResource}.
+ *  Depending on what else is included in the overall
+ *  product, the context menu of such editors will then receive
+ *  certain menu entries that don't make sense to the end user:
  *  <ul>
- *  <li>team support adds "Team", "Compare With", "Replace With"
+ *  <li>Team support adds "Team", "Compare With", "Replace With"
+ *      even though your editor may not really participare
+ *      in team and local history.
  *  <li>org.eclipse.debug.ui adds "Run As", "Debug As"
- *  <li>PyDev adds more
+ *      even though your editor may not represent anything
+ *      "runnable"
+ *  <li>PyDev adds more python-refactoring code even
+ *      though your editor has nothing to do with python
  *  </ul>
  *
- *  <p>These context menu items appear eve though our file
- *  doesn't really integrate with these (,yet).
+ *  <p>When inspecting for example org.eclipse.debug.ui/plugin.xml
+ *  of Eclipse 3.7.2, it turned out to contribute the "Run As"
+ *  context menu for any editor input that adapts to IResource.
  *
- *  <p>To avoid the context menu entry, we wrap the actual
- *  editor input into someting that does <u>not</u> adapt
- *  to a plain {@link IResource}
+ *  <p>To avoid such context menu entries, we wrap the actual
+ *  editor input into something that does <u>not</u> adapt
+ *  to a plain {@link IResource}, but otherwise forwards
+ *  to the original {@link IEditorInput}.
+ *  When the editor wraps its input (received in <code>init()</code>
+ *  and maybe set in <code>saveAs()</code>
+ *  the nonapplicable context menu entries can be avoided
+ *  - at least with Eclipse 3.7.2 for team, debug.ui and PyDev;
+ *  it is a hack after all.
  *
  *  @author Kay Kasemir
  */
-public class LessAdaptableEditorInput implements IEditorInput
+public class NoResourceEditorInput implements IEditorInput
 {
     final private IEditorInput orig;
 
     /** Initialize
      *  @param orig Original editor input
      */
-    public LessAdaptableEditorInput(final IEditorInput orig)
+    public NoResourceEditorInput(final IEditorInput orig)
     {
         this.orig = orig;
     }

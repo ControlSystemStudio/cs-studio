@@ -27,6 +27,7 @@ import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
@@ -186,7 +187,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             throws PartInitException
     {
         setSite(site);
-        setInput(new LessAdaptableEditorInput(input));
+        setInput(new NoResourceEditorInput(input));
     }
 
     /** {@inheritDoc} */
@@ -655,7 +656,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             return;
         if (saveToFile(new NullProgressMonitor(), file))
         {
-            setInput(new LessAdaptableEditorInput(new FileEditorInput(file)));
+            setInput(new NoResourceEditorInput(new FileEditorInput(file)));
             setPartName(file.getName());
         }
     }
