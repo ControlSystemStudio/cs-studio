@@ -23,24 +23,37 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.message;
+package org.csstudio.ams.delivery.sms;
+
+import org.csstudio.ams.delivery.message.BaseIncomingMessage;
+import org.smslib.InboundMessage;
 
 /**
  * @author mmoeller
  * @version 1.0
- * @since 03.01.2012
+ * @since 27.02.2012
  */
-public abstract class BaseIncomingMessage {
+public class IncomingSmsMessage extends BaseIncomingMessage {
     
-    protected Object incomingMessage;
-    
-    public BaseIncomingMessage(Object origMessage) {
-        incomingMessage = origMessage;
+    public IncomingSmsMessage(Object origMessage) {
+        super(origMessage);
     }
-    
-    public Object getOriginalMessage() {
-        return incomingMessage;
+
+    public InboundMessage getInboundMessage() {
+        InboundMessage result = null;
+        if (getOriginalMessage() instanceof InboundMessage) {
+            result = (InboundMessage) getOriginalMessage();
+        }
+        return result;
     }
-    
-    public abstract boolean isTestAnswer();
+
+    @Override
+    public boolean isTestAnswer() {
+        boolean testAnswer = false;
+        if (getInboundMessage() != null) {
+            String text = getInboundMessage().getText().trim();
+            testAnswer = text.startsWith("[MODEMTEST{");
+        }
+        return testAnswer;
+    }
 }
