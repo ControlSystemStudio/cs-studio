@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
     <noisePV>sim://noise</noisePV>
@@ -10,39 +9,26 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <name>Tabbed Container</name>
-  <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
-  <background_color>
-    <color red="240" green="240" blue="240" />
-  </background_color>
-  <foreground_color>
-    <color red="192" green="192" blue="192" />
-  </foreground_color>
-  <widget_type>Display</widget_type>
-  <show_close_button>true</show_close_button>
   <width>800</width>
   <rules />
-  <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
-  <y>0</y>
-  <x>0</x>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false" />
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>88</height>
     <name>Label_8</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>-Remove Tab. Remove the current tab. This can be fully undone.&#xD;
 -Duplicate Tab. Duplicate the current tab.&#xD;
 -Add Tab After. Add an empty tab after the current tab.&#xD;
@@ -53,32 +39,21 @@
     <width>737</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>426</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>97</height>
     <name>Label_6</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Tabbed Container can host widgets by tabbs.</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -86,32 +61,21 @@
     <width>303</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>122</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>158</height>
     <name>Label_4</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>-Tab Count(tab_count). The number of tabbs. Change this property can add/remove tabbs.&#xD;
 Attention: If you remove tabbs by changing this property, the widgets on the removed tabbs cannot be recovered by Undo. So it is recommended to remove a tab by right clicking tab and choose "Remove Tab".</text>
     <font>
@@ -120,193 +84,120 @@ Attention: If you remove tabbs by changing this property, the widgets on the rem
     <width>303</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>240</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
     <auto_size>true</auto_size>
     <scripts />
     <height>16</height>
     <name>Label_5</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Special Properties</text>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>117</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>231</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>110</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
     <name>Label_8</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="128" green="0" blue="64" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Tabbed  Container</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>295</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
     <name>Label_6</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Examples</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
     <name>Label_9</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Best OPI Yet (BOY)</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
     <name>Label_5</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Introduction</text>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>76</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>114</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>131</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
     <tab_3_background_color>
       <color red="255" green="170" blue="85" />
     </tab_3_background_color>
-    <tab_1_title>Tab 1</tab_1_title>
-    <border_style>0</border_style>
-    <tab_3_icon_path />
     <tab_1_icon_path>../pictures/OPIBuilder.png</tab_1_icon_path>
     <tab_2_font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -314,50 +205,23 @@ $(pv_value)</tooltip>
     <tab_0_background_color>
       <color red="186" green="220" blue="220" />
     </tab_0_background_color>
-    <tab_3_foreground_color>
-      <color red="0" green="0" blue="0" />
-    </tab_3_foreground_color>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <tab_2_icon_path />
-    <tab_0_foreground_color>
-      <color red="0" green="0" blue="0" />
-    </tab_0_foreground_color>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>102</y>
     <x>354</x>
-    <visible>true</visible>
     <scripts />
     <height>296</height>
     <tab_1_font>
       <fontdata fontName="Arial" height="10" style="0" />
     </tab_1_font>
-    <tab_1_foreground_color>
-      <color red="0" green="0" blue="0" />
-    </tab_1_foreground_color>
-    <tab_0_title>Tab 0</tab_0_title>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <widget_type>Tabbed Container</widget_type>
-    <enabled>true</enabled>
     <width>400</width>
     <tab_1_background_color>
       <color red="221" green="219" blue="190" />
     </tab_1_background_color>
-    <border_width>1</border_width>
-    <name>Tabbed Container</name>
-    <tab_3_title>Tab 3</tab_3_title>
     <tab_0_icon_path>../pictures/home-16x16.png</tab_0_icon_path>
     <tab_0_font>
       <fontdata fontName="Arial" height="10" style="0" />
     </tab_0_font>
     <rules />
-    <tab_2_title>Tab 2</tab_2_title>
     <tab_2_background_color>
       <color red="2" green="155" blue="148" />
     </tab_2_background_color>
@@ -368,158 +232,47 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="12" style="1" />
     </tab_3_font>
     <tab_count>4</tab_count>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-      <enabled>true</enabled>
-      <widget_type>Grouping Container</widget_type>
-      <macros>
-        <include_parent_macros>true</include_parent_macros>
-      </macros>
-      <visible>true</visible>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <width>398</width>
-      <border_style>0</border_style>
-      <rules />
-      <lock_children>false</lock_children>
       <scripts />
       <height>263</height>
-      <border_width>1</border_width>
       <name>Tab 0</name>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
       <transparent>true</transparent>
-      <show_scrollbar>true</show_scrollbar>
+      <width>398</width>
+      <rules />
+      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <actions hook="false" />
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <x>1</x>
-      <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.gauge" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
         <height>138</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
         <background_color>
           <color red="0" green="64" blue="128" />
         </background_color>
-        <enabled>true</enabled>
-        <widget_type>Gauge</widget_type>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
         <width>138</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
-        <color_lo>
-          <color red="255" green="255" blue="0" />
-        </color_lo>
-        <name>Gauge</name>
-        <color_hi>
-          <color red="255" green="255" blue="0" />
-        </color_hi>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>true</keep_wh_ratio>
+        </scale_options>
         <pv_name>loc://test</pv_name>
         <foreground_color>
           <color red="255" green="255" blue="255" />
         </foreground_color>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <ramp_gradient>true</ramp_gradient>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <transparent_background>true</transparent_background>
-        <needle_color>
-          <color red="255" green="0" blue="0" />
-        </needle_color>
         <limits_from_pv>false</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>63</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>70</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       </widget>
       <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_fillbackground>
-          <color red="200" green="200" blue="200" />
-        </color_fillbackground>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
-        <thumb_color>
-          <color red="172" green="172" blue="172" />
-        </thumb_color>
         <height>200</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <page_increment>10.0</page_increment>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <enabled>true</enabled>
-        <widget_type>Scaled Slider</widget_type>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
         <width>120</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
-        <horizontal>false</horizontal>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
         <color_lo>
           <color red="255" green="128" blue="0" />
         </color_lo>
-        <name>Scaled Slider</name>
         <color_hi>
           <color red="255" green="128" blue="0" />
         </color_hi>
@@ -527,325 +280,101 @@ $(pv_value)</tooltip>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
-        <step_increment>1.0</step_increment>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <fill_color>
-          <color red="0" green="0" blue="255" />
-        </fill_color>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <transparent_background>true</transparent_background>
         <limits_from_pv>false</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>32</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>243</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       </widget>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-      <enabled>true</enabled>
-      <widget_type>Grouping Container</widget_type>
-      <macros>
-        <include_parent_macros>true</include_parent_macros>
-      </macros>
       <visible>false</visible>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <width>398</width>
-      <border_style>0</border_style>
-      <rules />
-      <lock_children>false</lock_children>
       <scripts />
       <height>263</height>
-      <border_width>1</border_width>
       <name>Tab 1</name>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
       <transparent>true</transparent>
-      <show_scrollbar>true</show_scrollbar>
+      <width>398</width>
+      <rules />
+      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <actions hook="false" />
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <x>1</x>
-      <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
         <trace_0_trace_color>
           <color red="255" green="0" blue="0" />
         </trace_0_trace_color>
-        <axis_0_auto_scale>true</axis_0_auto_scale>
-        <axis_1_time_format>0</axis_1_time_format>
-        <trace_0_plot_mode>0</trace_0_plot_mode>
-        <trace_count>1</trace_count>
         <axis_0_show_grid>false</axis_0_show_grid>
-        <axis_0_log_scale>false</axis_0_log_scale>
-        <trace_0_point_size>4</trace_0_point_size>
-        <show_legend>true</show_legend>
         <y>24</y>
         <x>13</x>
-        <visible>true</visible>
-        <axis_1_visible>true</axis_1_visible>
         <height>223</height>
-        <axis_1_maximum>100.0</axis_1_maximum>
         <axis_1_title_font>
           <fontdata fontName="Arial" height="9" style="0" />
         </axis_1_title_font>
-        <border_width>1</border_width>
-        <axis_0_axis_color>
-          <color red="0" green="0" blue="0" />
-        </axis_0_axis_color>
-        <axis_1_scale_format />
-        <name>XY Graph</name>
-        <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
-        <trace_0_line_width>1</trace_0_line_width>
         <show_toolbar>false</show_toolbar>
         <axis_1_show_grid>false</axis_1_show_grid>
-        <axis_0_grid_color>
-          <color red="200" green="200" blue="200" />
-        </axis_0_grid_color>
-        <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
         <trace_0_name>Trace 0</trace_0_name>
-        <trace_0_update_mode>0</trace_0_update_mode>
-        <axis_0_axis_title>Primary X Axis (0)</axis_0_axis_title>
-        <axis_1_axis_color>
-          <color red="0" green="0" blue="0" />
-        </axis_1_axis_color>
         <foreground_color>
           <color red="0" green="0" blue="255" />
         </foreground_color>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
-        <axis_0_maximum>100.0</axis_0_maximum>
         <axis_0_scale_font>
           <fontdata fontName="Segoe UI" height="9" style="0" />
         </axis_0_scale_font>
-        <axis_0_time_format>0</axis_0_time_format>
-        <axis_1_log_scale>false</axis_1_log_scale>
         <title_font>
           <fontdata fontName="Arial" height="12" style="1" />
         </title_font>
-        <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
-        <axis_0_visible>true</axis_0_visible>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <axis_0_scale_format />
-        <trace_0_x_pv />
         <trace_0_y_pv>sim://noise</trace_0_y_pv>
         <axis_0_title_font>
           <fontdata fontName="Arial" height="9" style="0" />
         </axis_0_title_font>
-        <axis_1_auto_scale>true</axis_1_auto_scale>
-        <trace_0_concatenate_data>true</trace_0_concatenate_data>
-        <actions hook="false" />
-        <show_plot_area_border>false</show_plot_area_border>
-        <widget_type>XY Graph</widget_type>
-        <enabled>true</enabled>
+        <actions hook="false" hook_all="false" />
         <width>369</width>
-        <trace_0_buffer_size>100</trace_0_buffer_size>
-        <trigger_pv />
-        <axis_count>2</axis_count>
         <transparent>true</transparent>
-        <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
-        <trace_0_x_axis_index>0</trace_0_x_axis_index>
-        <trace_0_point_style>0</trace_0_point_style>
-        <tooltip />
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <trace_0_y_axis_index>1</trace_0_y_axis_index>
         <axis_1_scale_font>
           <fontdata fontName="Segoe UI" height="9" style="0" />
         </axis_1_scale_font>
-        <border_style>0</border_style>
-        <plot_area_background_color>
-          <color red="255" green="255" blue="255" />
-        </plot_area_background_color>
-        <title />
-        <pv_name />
-        <axis_1_minimum>0.0</axis_1_minimum>
-        <axis_0_minimum>0.0</axis_0_minimum>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
         <scripts />
-        <trace_0_anti_alias>true</trace_0_anti_alias>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
         <rules />
-        <trace_0_trace_type>0</trace_0_trace_type>
-        <axis_1_grid_color>
-          <color red="200" green="200" blue="200" />
-        </axis_1_grid_color>
         <trace_0_update_delay>0</trace_0_update_delay>
       </widget>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-      <enabled>true</enabled>
-      <widget_type>Grouping Container</widget_type>
-      <macros>
-        <include_parent_macros>true</include_parent_macros>
-      </macros>
       <visible>false</visible>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <width>398</width>
-      <border_style>0</border_style>
-      <rules />
-      <lock_children>false</lock_children>
       <scripts />
       <height>263</height>
-      <border_width>1</border_width>
       <name>Tab 2</name>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
       <transparent>true</transparent>
-      <show_scrollbar>true</show_scrollbar>
+      <width>398</width>
+      <rules />
+      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <actions hook="false" />
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <x>1</x>
-      <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_fillbackground>
-          <color red="200" green="200" blue="200" />
-        </color_fillbackground>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
         <height>80</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <enabled>true</enabled>
-        <widget_type>Progress Bar</widget_type>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
         <width>220</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
-        <horizontal>true</horizontal>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
         <color_lo>
           <color red="255" green="128" blue="0" />
         </color_lo>
-        <name>Progress Bar</name>
         <color_hi>
           <color red="255" green="128" blue="0" />
         </color_hi>
         <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
-        <origin_ignored>true</origin_ignored>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
-        <show_label>true</show_label>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <origin>0.0</origin>
-        <fill_color>
-          <color red="0" green="0" blue="255" />
-        </fill_color>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <transparent_background>true</transparent_background>
-        <limits_from_pv>true</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>60</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>29</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-        <indicator_mode>false</indicator_mode>
       </widget>
       <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_fillbackground>
-          <color red="200" green="200" blue="200" />
-        </color_fillbackground>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
         <height>220</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <enabled>true</enabled>
-        <widget_type>Progress Bar</widget_type>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
         <width>101</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
         <horizontal>false</horizontal>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
         <color_lo>
           <color red="255" green="128" blue="0" />
         </color_lo>
@@ -854,192 +383,55 @@ $(pv_value)</tooltip>
           <color red="255" green="128" blue="0" />
         </color_hi>
         <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
-        <origin_ignored>true</origin_ignored>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
-        <show_label>true</show_label>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <origin>0.0</origin>
-        <fill_color>
-          <color red="0" green="0" blue="255" />
-        </fill_color>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <transparent_background>true</transparent_background>
-        <limits_from_pv>true</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>25</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>261</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-        <indicator_mode>false</indicator_mode>
       </widget>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-      <enabled>true</enabled>
-      <widget_type>Grouping Container</widget_type>
-      <macros>
-        <include_parent_macros>true</include_parent_macros>
-      </macros>
       <visible>false</visible>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <width>398</width>
-      <border_style>0</border_style>
-      <rules />
-      <lock_children>false</lock_children>
       <scripts />
       <height>263</height>
-      <border_width>1</border_width>
       <name>Tab 3</name>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
       <transparent>true</transparent>
-      <show_scrollbar>true</show_scrollbar>
+      <width>398</width>
+      <rules />
+      <actions hook="false" hook_all="false" />
       <y>1</y>
-      <actions hook="false" />
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <x>1</x>
-      <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.knob" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
-        <knob_color>
-          <color red="150" green="150" blue="150" />
-        </knob_color>
-        <thumb_color>
-          <color red="127" green="127" blue="127" />
-        </thumb_color>
         <height>173</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <enabled>true</enabled>
-        <widget_type>Knob</widget_type>
-        <increment>1.0</increment>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
         <width>173</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
-        <color_lo>
-          <color red="255" green="255" blue="0" />
-        </color_lo>
-        <name>Knob</name>
-        <color_hi>
-          <color red="255" green="255" blue="0" />
-        </color_hi>
+        <scale_options>
+          <width_scalable>true</width_scalable>
+          <height_scalable>true</height_scalable>
+          <keep_wh_ratio>true</keep_wh_ratio>
+        </scale_options>
         <pv_name>loc://tab3</pv_name>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <ramp_gradient>true</ramp_gradient>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <transparent_background>true</transparent_background>
-        <show_value_label>true</show_value_label>
         <limits_from_pv>false</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>47</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>33</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       </widget>
       <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0">
-        <level_lo>20.0</level_lo>
-        <border_alarm_sensitive>true</border_alarm_sensitive>
-        <visible>true</visible>
-        <color_fillbackground>
-          <color red="210" green="210" blue="210" />
-        </color_fillbackground>
-        <color_hihi>
-          <color red="255" green="0" blue="0" />
-        </color_hihi>
-        <show_lo>true</show_lo>
         <scripts />
         <height>200</height>
-        <major_tick_step_hint>50</major_tick_step_hint>
-        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-        <background_color>
-          <color red="240" green="240" blue="240" />
-        </background_color>
-        <enabled>true</enabled>
-        <widget_type>Thermometer</widget_type>
-        <show_minor_ticks>true</show_minor_ticks>
-        <font>
-          <opifont.name>Default</opifont.name>
-        </font>
-        <width>100</width>
-        <show_lolo>true</show_lolo>
-        <border_style>0</border_style>
-        <effect_3d>true</effect_3d>
-        <show_bulb>true</show_bulb>
-        <show_markers>true</show_markers>
-        <show_hi>true</show_hi>
-        <maximum>100.0</maximum>
-        <border_width>1</border_width>
-        <log_scale>false</log_scale>
-        <minimum>0.0</minimum>
-        <show_hihi>true</show_hihi>
-        <scale_format />
-        <show_scale>true</show_scale>
         <color_lo>
           <color red="255" green="128" blue="0" />
         </color_lo>
-        <name>Thermometer</name>
         <color_hi>
           <color red="255" green="128" blue="0" />
         </color_hi>
@@ -1047,29 +439,10 @@ $(pv_value)</tooltip>
         <foreground_color>
           <color red="0" green="0" blue="0" />
         </foreground_color>
-        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-        <level_hi>80.0</level_hi>
-        <scale_font>
-          <opifont.name>Default</opifont.name>
-        </scale_font>
-        <level_hihi>90.0</level_hihi>
-        <fill_color>
-          <color red="255" green="0" blue="0" />
-        </fill_color>
-        <color_lolo>
-          <color red="255" green="0" blue="0" />
-        </color_lolo>
         <rules />
-        <value_label_format />
-        <unit>0</unit>
-        <transparent_background>true</transparent_background>
         <limits_from_pv>false</limits_from_pv>
-        <border_color>
-          <color red="0" green="128" blue="255" />
-        </border_color>
-        <level_lolo>10.0</level_lolo>
         <y>27</y>
-        <actions hook="false" />
+        <actions hook="false" hook_all="false" />
         <x>238</x>
         <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1077,34 +450,23 @@ $(pv_value)</tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
     <auto_size>true</auto_size>
     <scripts />
     <height>16</height>
     <name>Label_7</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Shortcut Menus</text>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>98</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>419</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
@@ -1112,91 +474,57 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
     <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
     <rules />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>549</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>185</width>
-    <border_style>0</border_style>
-    <rules />
-    <lock_children>true</lock_children>
     <scripts />
     <height>44</height>
-    <border_width>1</border_width>
     <name>widgets/Tab.html</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <scale_options>
+      <width_scalable>false</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <y>541</y>
-    <actions hook="true">
+    <width>185</width>
+    <rules />
+    <lock_children>true</lock_children>
+    <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
         <description>Open Help</description>
       </action>
     </actions>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
+    <y>541</y>
     <x>569</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-      <visible>true</visible>
-      <vertical_alignment>1</vertical_alignment>
-      <auto_size>false</auto_size>
       <scripts />
       <height>22</height>
       <name>Label_28</name>
@@ -1207,106 +535,52 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color red="0" green="0" blue="253" />
       </foreground_color>
-      <widget_type>Label</widget_type>
-      <enabled>true</enabled>
       <text>See Online Help</text>
       <font>
         <fontdata fontName="Arial" height="12" style="1" />
       </font>
       <width>135</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>11</y>
-      <tooltip />
       <x>41</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
-      <fill_arrow>true</fill_arrow>
-      <arrow_length>20</arrow_length>
-      <visible>true</visible>
-      <fill_level>0.0</fill_level>
-      <rotation_angle>0.0</rotation_angle>
       <scripts />
-      <arrows>0</arrows>
       <height>1</height>
-      <anti_alias>true</anti_alias>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Polyline</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>true</keep_wh_ratio>
+      </scale_options>
       <points>
         <point x="49" y="32" />
         <point x="168" y="32" />
       </points>
-      <transparent>false</transparent>
-      <pv_name />
       <background_color>
         <color red="0" green="0" blue="255" />
       </background_color>
       <foreground_color>
         <color red="255" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Polyline</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <line_style>0</line_style>
       <width>120</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
       <line_width>1</line_width>
-      <horizontal_fill>true</horizontal_fill>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>32</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       <x>49</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-      <crop_right>0</crop_right>
-      <crop_left>0</crop_left>
-      <visible>true</visible>
-      <auto_size>true</auto_size>
       <scripts />
       <height>44</height>
       <stretch_to_fit>true</stretch_to_fit>
-      <name>Image</name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <widget_type>Image</widget_type>
-      <enabled>true</enabled>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
       <width>42</width>
-      <no_animation>false</no_animation>
-      <crop_top>0</crop_top>
-      <border_style>0</border_style>
       <rules />
-      <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
       <image_file>../pictures/onlineHelp.gif</image_file>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
-      <y>0</y>
-      <tooltip />
+      <actions hook="false" hook_all="false" />
       <x>8</x>
     </widget>
   </widget>

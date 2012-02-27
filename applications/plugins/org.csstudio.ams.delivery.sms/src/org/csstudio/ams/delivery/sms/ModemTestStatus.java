@@ -90,10 +90,6 @@ public class ModemTestStatus {
         }
     }
 
-    public boolean isTestAnswer(final String text) {
-        return text.startsWith("[MODEMTEST{");
-    }
-
     public void setDeviceTestMessageContent(final DeviceTestMessageContent o) {
         initiatorMessage = o;
     }

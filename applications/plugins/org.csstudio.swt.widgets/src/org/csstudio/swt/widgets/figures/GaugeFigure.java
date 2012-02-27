@@ -11,7 +11,7 @@ import org.csstudio.swt.widgets.figureparts.RoundScale;
 import org.csstudio.swt.widgets.figureparts.RoundScaleTickMarks;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
-import org.csstudio.swt.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
@@ -340,11 +340,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 						valuePosition +=10;
 				}
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
+						PointsUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
+						PointsUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);				
+						PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);				
 				needle.setPoints(needlePoints);			
 				
 			}

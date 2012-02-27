@@ -23,11 +23,12 @@
 package org.csstudio.opibuilder.widgets.model;
 
 
+import org.csstudio.opibuilder.datadefinition.WidgetScaleData;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.PointListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.swt.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
@@ -59,6 +60,10 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 
 	private PointList initialPoints;
 
+	public AbstractPolyModel() {
+		setScaleOptions(true, true, true);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -172,7 +177,7 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 		PointList newPoints = new PointList();
 
 		for (int i = 0; i < points.size(); i++) {
-			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
+			newPoints.addPoint(PointsUtil.rotate(points.getPoint(i), angle,
 					rotationPoint));
 		}
 
@@ -260,34 +265,34 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	
 	@Override
 	public void flipHorizontally() {	
-		setPoints(RotationUtil.flipPointsHorizontally(getPoints()), true);		
+		setPoints(PointsUtil.flipPointsHorizontally(getPoints()), true);		
 	}
 	
 	@Override
 	public void flipHorizontally(int centerX) {
-		setPoints(RotationUtil.flipPointsHorizontally(getPoints(), centerX), true);		
+		setPoints(PointsUtil.flipPointsHorizontally(getPoints(), centerX), true);		
 	}
 	
 	
 	@Override
 	public void flipVertically() {	
-		setPoints(RotationUtil.flipPointsVertically(getPoints()), true);		
+		setPoints(PointsUtil.flipPointsVertically(getPoints()), true);		
 	}
 	
 	@Override
 	public void flipVertically(int centerY) {
-		setPoints(RotationUtil.flipPointsVertically(getPoints(), centerY), true);
+		setPoints(PointsUtil.flipPointsVertically(getPoints(), centerY), true);
 	}
 	
 	@Override
 	public void rotate90(boolean clockwise) {
-		setPoints(RotationUtil.rotatePoints(getPoints(), clockwise? 90:270), true);
+		setPoints(PointsUtil.rotatePoints(getPoints(), clockwise? 90:270), true);
 	}
 
 	
 	@Override
 	public void rotate90(boolean clockwise, Point center) {
-		setPoints(RotationUtil.rotatePoints(getPoints(), clockwise? 90:270, center), true);
+		setPoints(PointsUtil.rotatePoints(getPoints(), clockwise? 90:270, center), true);
 	}
 
 	@Override
@@ -296,10 +301,23 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 			initialPoints = getPoints();
 		}
 		PointList pl = initialPoints.getCopy();
-		for(int i=0; i<pl.size(); i++){					
-			pl.setPoint(new Point((int)Math.round((pl.getPoint(i).x*widthRatio)),
-					(int)Math.round(pl.getPoint(i).y*heightRatio)), i);
-		}
+		Point initLoc = pl.getBounds().getLocation();
+		pl.translate((int)Math.round(initLoc.x*widthRatio) -initLoc.x,
+				(int)Math.round(initLoc.y * heightRatio) - initLoc.y); 
+		
+		
+		WidgetScaleData scaleOptions = getScaleOptions();
+		if(scaleOptions.isKeepWHRatio()&& 
+				scaleOptions.isHeightScalable() && scaleOptions.isWidthScalable()){
+			widthRatio = Math.min(widthRatio, heightRatio);
+			heightRatio = widthRatio;
+		}else if(!scaleOptions.isHeightScalable())
+			heightRatio = 1;
+		else if(!scaleOptions.isWidthScalable())
+			widthRatio = 1;
+		
+		PointsUtil.scalePoints(pl, widthRatio, heightRatio);
+
 		setPoints(pl, true);
 		
 	}

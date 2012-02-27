@@ -13,7 +13,7 @@
          </property>
          <property
                name="aboutImage"
-               value="platform:/plugin/org.csstudio.utility.product/icons/aboutSide.png">
+               value="icons/aboutSide.png">
          </property>
          <property
                name="aboutText"
@@ -21,7 +21,7 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.csstudio.utility.product/icons/css16.png,platform:/plugin/org.csstudio.utility.product/icons/css32.png,platform:/plugin/org.csstudio.utility.product/icons/css48.png,platform:/plugin/org.csstudio.utility.product/icons/css64.png,platform:/plugin/org.csstudio.utility.product/icons/css128.png">
+               value="icons/css16.png,icons/css32.png,icons/css48.png,icons/css64.png,icons/css128.png">
          </property>
          <property
                name="startupForegroundColor"
@@ -66,14 +66,11 @@
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
-            class="org.csstudio.utility.product.StartupParameters">
+            class="org.csstudio.kek.product.StartupParameters">
       </startupParameters>
       <workbench
-            class="org.csstudio.utility.product.Workbench">
+            class="org.csstudio.kek.product.Workbench">
       </workbench>
-      <project
-            class="org.csstudio.startup.module.defaults.DefaultProject">
-      </project>
    </extension>
    <extension
          point="org.eclipse.ui.intro">
@@ -90,11 +87,13 @@
       </configExtension>
    </extension>
    <extension
-         point="org.csstudio.auth.loginModule">
-      <loginModule
-            class="org.csstudio.kek.login.DummyLoginModule"
-            id="org.csstudio.kek.product.loginModule1">
-      </loginModule>
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.kek.product.CSS_Perspective"
+            icon="icons/css16.png"
+            id="org.csstudio.kek.product.CSS_Perspective"
+            name="CSS">
+      </perspective>
    </extension>
 
 </plugin>

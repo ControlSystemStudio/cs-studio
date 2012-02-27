@@ -77,12 +77,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
 
     private final ModemInfoContainer modemInfo;
 
-    /** Status information of the current modem test */
-    private final ModemTestStatus testStatus;
-
-    /** Reading period (in ms) for the modem */
-    private final long readWaitingPeriod;
-
     private boolean running;
 
     private boolean workerCheckFlag;
@@ -114,16 +108,18 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                        "T_AMS_SYSTEM_MONITOR",
                                        null);
 
-        smsDevice = new SmsDeliveryDevice(modemInfo, new JmsProperties(factoryClass, url, topic));
-        smsDevice.setDeviceListener(this);
-
-        readWaitingPeriod = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
+        long readWaitingPeriod = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
                                           SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD,
                                           10000L,
                                           null);
         LOG.info("readWaitingPeriod: {}", readWaitingPeriod);
 
-        testStatus = new ModemTestStatus();
+        smsDevice = new SmsDeliveryDevice(modemInfo,
+                                          new JmsProperties(factoryClass, url, topic),
+                                          readWaitingPeriod);
+        smsDevice.addDeviceListener(this);
+
+
         running = true;
         workerCheckFlag = false;
     }
@@ -139,27 +135,9 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         while(running) {
             synchronized (this) {
                 try {
-                    if (outgoingQueue.isEmpty()
-                        && incomingQueue.isEmpty()
-                        && !testStatus.isActive()
-                        && !testStatus.isDeviceTestInitiated()) {
-
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Entering wait().");
-                        }
+                    if (outgoingQueue.isEmpty() && incomingQueue.isEmpty()) {
                         this.wait();
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("after wait(): I have been notified.");
-                        }
-                    } else {
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Entering wait(readWaitingPeriod).");
-                        }
-                        this.wait(readWaitingPeriod);
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("after wait(readWaitingPeriod): I have been notified.");
-                        }
-                    }
+                    } 
                     workerCheckFlag = false;
                 } catch (final InterruptedException ie) {
                     LOG.error("I have been interrupted.");
@@ -167,36 +145,11 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
             }
 
             while (outgoingQueue.hasContent()
-                   || incomingQueue.hasContent()
-                   || testStatus.isActive()
-                   || testStatus.isDeviceTestInitiated()) {
+                   || incomingQueue.hasContent()) {
 
-                if (testStatus.isDeviceTestInitiated()) {
-                    final DeviceTestMessageContent content = testStatus.getDeviceTestMessageContent();
-                    final String dest = content.getDestination();
-                    testStatus.finishedDeviceTestInitiated();
-                    if (dest.contains(workerName) || dest.compareTo("*") == 0) {
-                        if(testStatus.isActive() == false || testStatus.isTimeOut()) {
-                            final String checkId = content.getCheckId();
-                            testStatus.reset();
-                            testStatus.setCheckId(checkId);
-                            smsDevice.sendDeviceTestMessage(testStatus);
-                        }
-                    } else {
-                        LOG.info("This message is not for me.");
-                        testStatus.reset();
-                    }
-                }
-
-                if (testStatus.isActive()) {
-                    checkDeviceTest(null);
-                }
-                
                 if (incomingQueue.hasContent()) {
                     final BaseIncomingMessage inMsg = incomingQueue.nextMessage();
-                    if (processIncomingMessages(inMsg) == false) {
-                        checkDeviceTest(inMsg);
-                    }
+                    processIncomingMessages(inMsg);
                 }
 
                 if (outgoingQueue.hasContent()) {
@@ -293,88 +246,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         return processed;
     }
 
-    private boolean checkDeviceTest(final BaseIncomingMessage o) {
-
-        boolean checked = false;
-        // LOG.debug("Check for device test.");
-
-        // Check modem test status first
-        if(testStatus.isActive()) {
-            //LOG.info("Self test is active");
-            if(testStatus.isTimeOut()) {
-                LOG.warn("Current test timed out.");
-                LOG.debug("Remaining gateways: " + testStatus.getGatewayCount());
-                LOG.debug("Bad gateways before moving: " + testStatus.getBadModemCount());
-                testStatus.moveGatewayIdToBadModems();
-                LOG.debug("Remaining gateways after moving: " + testStatus.getGatewayCount());
-                LOG.debug("Bad gateways after moving: " + testStatus.getBadModemCount());
-                if(testStatus.getBadModemCount() == modemInfo.getModemCount()) {
-                    LOG.error("No modem is working properly.");
-                    smsDevice.sendTestAnswer(testStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
-                } else {
-                    String list = "";
-                    for(final String name : testStatus.getBadModems()) {
-                        list = list + name + " ";
-                    }
-
-                    LOG.warn("Modems not working properly: " + list);
-                    smsDevice.sendTestAnswer(testStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
-                }
-
-                LOG.info("Reset current test.");
-                testStatus.reset();
-            }
-        }
-
-        if (o == null) {
-            return true;
-        }
-        
-        if (!(o.getOriginalMessage() instanceof InboundBinaryMessage)) {
-
-            final InboundMessage msg = (InboundMessage) o.getOriginalMessage();
-            if (testStatus.isTestAnswer(msg.getText())) {
-                // Have a look at the current check status
-                if(testStatus.isActive()) {
-                    if(testStatus.isTimeOut() == false) {
-
-                        LOG.info("Self test SMS");
-                        LOG.info("Gateways waiting for answer: " + testStatus.getGatewayCount());
-                        testStatus.checkAndRemove(msg.getText());
-                        LOG.info("Gateways waiting for answer after remove: " + testStatus.getGatewayCount());
-                        if(testStatus.getGatewayCount() == 0) {
-                            if(testStatus.getBadModemCount() == 0) {
-                                LOG.info("All modems are working fine.");
-                                smsDevice.sendTestAnswer(testStatus.getCheckId(),
-                                                         "All modems are working fine.",
-                                                         "NO_ALARM",
-                                                         "OK");
-                            } else {
-                                String list = "";
-                                for(final String name : testStatus.getBadModems()) {
-                                    list = list + name + " ";
-                                }
-
-                                LOG.warn("Modems not working properly: " + list);
-                                smsDevice.sendTestAnswer(testStatus.getCheckId(),
-                                                         "Modems not working properly: " + list,
-                                                         "MINOR",
-                                                         "WARN");
-                            }
-
-                            LOG.info("Reset current test.");
-                            testStatus.reset();
-                        }
-                    }
-                }
-            }
-            checked = true;
-        } else {
-            checked = true;
-        }
-
-        return checked;
-    }
 
     /**
      * {@inheritDoc}
@@ -388,14 +259,11 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
             final DeviceTestMessageContent content =
                     new DeviceTestMessageContent((MapMessage) msg);
             if (content.isDeviceTestRequest()) {
-                if (!testStatus.isActive()) {
-                    testStatus.setDeviceTestMessageContent(content);
-                    synchronized (this) {
-                        LOG.debug("Notify {}.", this.getClass().getSimpleName());
-                        this.notify();
-                    }
+                String dest = content.getDestination();
+                if (dest.contains(workerName) || dest.compareTo("*") == 0) {
+                    smsDevice.announceDeviceTest(content);
                 } else {
-                    LOG.info("A modem check is still active. Ignoring the new modem check.");
+                    LOG.info("This message is not for me.");
                 }
             }
         }

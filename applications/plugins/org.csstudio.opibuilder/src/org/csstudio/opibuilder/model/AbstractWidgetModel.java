@@ -606,10 +606,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 * @param heightRatio Ratio of height change.
 	 */
 	public void scale(double widthRatio, double heightRatio){		
-		if(originSize == null){
+		if(originSize == null)
+			originSize = getSize();		
+		if(originLocation == null)
 			originLocation = getLocation();
-			originSize = getSize();
-		}
 		doScale(widthRatio, heightRatio); 
 		scaleConnections(widthRatio, heightRatio);
 	}

@@ -28,16 +28,16 @@ import org.eclipse.draw2d.geometry.PrecisionPoint;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
- * This class can be used to rotate a point.
- * @author Kai Meyer
+ * This class can be used to manimuplate points.
+ * @author Kai Meyer, Xihui Chen
  *
  */
-public final class RotationUtil {
+public final class PointsUtil {
 	
 	/**
 	 * Private constructor, to avoid instantiation.
 	 */
-	private RotationUtil() {}
+	private PointsUtil() {}
 	
 	/**
 	 * Rotates the given {@link Point} with the given angle relative to the rotation point.
@@ -113,7 +113,7 @@ public final class RotationUtil {
 		PointList newPoints = new PointList();
 
 		for (int i = 0; i < points.size(); i++) {
-			newPoints.addPoint(RotationUtil.rotate(points.getPoint(i), angle,
+			newPoints.addPoint(PointsUtil.rotate(points.getPoint(i), angle,
 					center));
 		}
 		
@@ -198,6 +198,22 @@ public final class RotationUtil {
 		
 		return newPointList;
 		
+	}
+	
+	/**Scale the geometry size of a pointlist.
+	 * @param points points to be scaled.
+	 * @param widthRatio width scale ratio.
+	 * @param heightRatio height scale ratio.
+	 */
+	public static final void scalePoints(PointList points,
+			double widthRatio, double heightRatio){
+		Point p0 = points.getBounds().getLocation();
+		for(int i=0; i<points.size(); i++){
+			Point p=points.getPoint(i);
+			p.x=(int) ((p.x-p0.x)*widthRatio) + p0.x;
+			p.y=(int) ((p.y-p0.y)*heightRatio) + p0.y;
+			points.setPoint(p,i);
+		}	
 	}
 
 }
