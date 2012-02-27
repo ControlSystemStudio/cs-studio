@@ -96,17 +96,24 @@ public interface TODO
      *
      *  Done Scan tree editor shows predefined (alias) device names
      *
-     *  TODO Scan tree 'live' view of running scan
+     *  Done Scan tree 'live' view of running scan
+     *
+     *  TODO Benchmarks
+     *
+     *  TODO Settings:
+     *       Server uses preferences for RMI port.
+     *       Clients use system properties to allow use outside of Eclipse,
+     *       but scan.client plugin sets sys props from Eclipse preferences
+     *       and offers GUI.
      *
      *  TODO ant build.xml to create standalone client lib?
      *
      *  TODO Support pre- and post-scan commands, configured when scan server starts,
      *       to for example enable and disable the data acquisition.
      *
-     *  TODO Unclear if devices will ever be anything but PVs.
+     *  TODO Allow update of command parameters while scan is running?
      *
-     *  TODO put callback? Maybe support Channel Access put-callback,
-     *       or add a wait-for-value to the set command?
+     *  TODO Unclear if devices will ever be anything but PVs.
      *
      *  TODO Other scan configuration GUIs.
      *       'Spreadsheet' of loop variable, start/end?
@@ -114,8 +121,6 @@ public interface TODO
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
-     *
-     *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
      *
      *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
