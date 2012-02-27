@@ -68,6 +68,10 @@ public class Scan implements ScanContext
 
     private volatile String error = null;
 
+    private volatile long start_ms = 0;
+
+    private volatile long end_ms = 0;
+
     private volatile long total_work_units = 0;
 
     final private MemoryDataLogger data_logger = new MemoryDataLogger();
@@ -136,10 +140,22 @@ public class Scan implements ScanContext
             command_name = command.toString();
         else
             command_name = "";
-        return new ScanInfo(id, name, created, state, error, work_performed.get(), total_work_units, address, command_name);
+        return new ScanInfo(id, name, created, state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
     }
 
-    /** @return Commands executed by this scan */
+    /** @return Runtime of this scan (so far) in millisecs. 0 if not started */
+    private long computeRuntime()
+    {
+        final long start = start_ms;
+        final long end = end_ms;
+        if (end > 0)
+            return end - start;
+        if (start > 0)
+            return System.currentTimeMillis() - start_ms;
+        return 0;
+    }
+
+  /** @return Commands executed by this scan */
     public List<ScanCommand> getScanCommands()
     {
         // Fetch underlying commands for implementations
@@ -247,6 +263,7 @@ public class Scan implements ScanContext
 
         // Execute commands
         state = ScanState.Running;
+        start_ms = System.currentTimeMillis();
         try
         {
             // TODO Do something about commands that are not part of the submitted commands:
@@ -269,6 +286,7 @@ public class Scan implements ScanContext
         finally
         {
             current_command = null;
+            end_ms = System.currentTimeMillis();
             // Stop devices
             devices.stopDevices();
         }

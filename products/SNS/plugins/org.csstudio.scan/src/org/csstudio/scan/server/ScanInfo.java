@@ -32,23 +32,25 @@ public class ScanInfo implements Serializable
     final private Date created;
     final private ScanState state;
     final private String error;
+    final private long runtime_ms;
     final private long performed_work_units;
     final private long total_work_units;
     final private long current_address;
     final private String current_commmand;
 
     /** Initialize
-     *  @param id
-     *  @param name
-     *  @param created
-     *  @param state
-     *  @param error
-     *  @param performed_work_units
-     *  @param total_work_units
-     *  @param current_commmand
+     *  @param id Scan ID
+     *  @param name Name
+     *  @param created Time when scan was created (submitted to server)
+     *  @param state Scan state
+     *  @param error Error or <code>null</code>
+     *  @param runtime_ms Runtime in millisecs
+     *  @param performed_work_units Work units performed so far
+     *  @param total_work_units Total number of work units
+     *  @param current_commmand Description of current command
      */
     public ScanInfo(final long id, final String name, final Date created, final ScanState state,
-            final String error,
+            final String error, final long runtime_ms,
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
     {
@@ -57,6 +59,7 @@ public class ScanInfo implements Serializable
         this.created = created;
         this.state = state;
         this.error = error;
+        this.runtime_ms = runtime_ms;
         this.performed_work_units = performed_work_units;
         this.total_work_units = total_work_units;
         this.current_address = current_address;
@@ -93,6 +96,28 @@ public class ScanInfo implements Serializable
         return error;
     }
 
+    /** @return Run time of scan in milliseconds */
+    public long getRuntimeMillisecs()
+    {
+        return runtime_ms;
+    }
+
+    /** @return Run time of scan as text */
+    public String getRuntimeText()
+    {
+        if (runtime_ms < 1000)
+            return runtime_ms + " ms";
+        long seconds = runtime_ms / 1000;
+
+        final long hours = seconds / 60 / 60;
+        seconds -= hours * 60 * 60;
+
+        final long minutes = seconds / 60;
+        seconds -= minutes * 60;
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+    }
+
     /** @return Number of work units that have been performed */
     public long getPerformedWorkUnits()
     {
@@ -125,7 +150,7 @@ public class ScanInfo implements Serializable
         return current_commmand;
     }
 
-    /** Hash on all elements
+    /** Hash on most elements
      *  {@inheritDoc}
      */
     @Override
@@ -136,14 +161,10 @@ public class ScanInfo implements Serializable
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + name.hashCode();
         result = prime * result + state.hashCode();
-        result = prime * result + (int) (performed_work_units ^ (performed_work_units >>> 32));
-        result = prime * result + (int) (total_work_units ^ (total_work_units >>> 32));
-        result = prime * result + current_commmand.hashCode();
-        result = prime * result + ((error == null) ? 0 : error.hashCode());
         return result;
     }
 
-    /** Compare nearly all elements
+    /** Compare all elements
      *  {@inheritDoc}
      */
     @Override
@@ -152,22 +173,17 @@ public class ScanInfo implements Serializable
         if (! (obj instanceof ScanInfo))
             return false;
         final ScanInfo other = (ScanInfo) obj;
-        final boolean most_match =
-               id == other.id  &&
+        return id == other.id  &&
                state == other.state  &&
+               runtime_ms == other.runtime_ms &&
                performed_work_units == other.performed_work_units  &&
                total_work_units == other.total_work_units  &&
                name.equals(other.name)  &&
-               current_commmand.equals(other.current_commmand);
-        if (! most_match)
-            return false;
-        // Comparing the error is difficult because the same error
-        // (class, message, stack trace) will arrive as different instances
-        // resulting from the RMI serialization.
-        // We don't recursively compare each Exception element, just their class.
-        return (error == null  &&  other.error == null) ||
-               (error != null  &&  other.error != null  &&
-                error.getClass() == other.error.getClass());
+               created.equals(other.created) &&
+               current_commmand.equals(other.current_commmand) &&
+               ((error == null  && other.error == null) ||
+                error.equals(other.error)
+               );
     }
 
     /** @return String representation for GUI */

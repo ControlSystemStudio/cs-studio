@@ -186,6 +186,21 @@ public class GUI implements ScanInfoModelListener
                 */
             }
         });
+        createColumn(table_viewer, table_layout, Messages.Runtime, 65, 5, new CellLabelProvider()
+        {
+            @Override
+            public String getToolTipText(final Object element)
+            {
+                return Messages.Runtime_TT;
+            }
+
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ScanInfo info = (ScanInfo) cell.getElement();
+                cell.setText(info.getRuntimeText());
+            }
+        });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
         {
             @Override
