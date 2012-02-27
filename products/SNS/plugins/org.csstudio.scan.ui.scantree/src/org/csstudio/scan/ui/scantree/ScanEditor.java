@@ -186,7 +186,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             throws PartInitException
     {
         setSite(site);
-        setInput(input);
+        setInput(new LessAdaptableEditorInput(input));
     }
 
     /** {@inheritDoc} */
@@ -655,7 +655,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             return;
         if (saveToFile(new NullProgressMonitor(), file))
         {
-            setInput(new FileEditorInput(file));
+            setInput(new LessAdaptableEditorInput(new FileEditorInput(file)));
             setPartName(file.getName());
         }
     }
