@@ -79,17 +79,25 @@ class ScanClient(object):
         self.id = self.server.submitScan(name, command_sequence.getXML())
         return self.id
 
+    def getScanInfo(self, id=-1):
+        """
+        Get scan info
+        
+        @param id Scan ID, defaulting to the last submitted scan
+        """
+        self.checkServer()
+        if id == -1:
+            id = self.id
+        return self.server.getScanInfo(id)
+
     def waitUntilDone(self, id=-1):
         """
         Wait until a submitted scan has finished
         
         @param id Scan ID, defaulting to the last submitted scan
         """
-        self.checkServer()
-        if id == -1:
-        	id = self.id
         while True:
-            info = self.server.getScanInfo(id)
+            info = self.getScanInfo(id)
             print info
             if info.getState().isDone():
                 break;
