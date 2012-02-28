@@ -49,7 +49,7 @@ public class OlogClientFromPreferences implements OlogClient {
 		OlogClientBuilder ologClientBuilder;
 		String url = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Olog_URL,
-				"http://localhost:8080/Olog/resources", null);
+				"https://localhost:8181/Olog/resources", null);
 		String jcr_url = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Olog_jcr_URL,
 				"http://localhost:8080/Olog/repository/olog", null);
