@@ -26,6 +26,16 @@ import org.csstudio.scan.device.DeviceInfo;
  *
  *  <p>Used by the (remote) client to communicate
  *  with the scan server.
+ *
+ *  <p>Default host and port are defined in here.
+ *  They can be overriddden via Java system preferences
+ *  to allow doing this from any Java tool (jython, Matlab, ...).
+ *
+ *  TODO Eclipse-based tools set the system properties from Eclipse preferences,
+ *  so what's used in the end are the system preference values,
+ *  but they can be configured from Eclipse preferences
+ *  TODO and the GUI tools include preference pages.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -35,13 +45,21 @@ public interface ScanServer extends Remote
     final public static long SERIAL_VERSION = 1;
 
     /** Default host for scan server */
-    final public static String RMI_HOST = "localhost";
+    final public static String DEFAULT_HOST = "localhost";
 
-    /** Port used by RMI
-     *  Default RMI port is 1099, but use a different port for
-     *  the scan server.
+    /** Default port used by scan server
+     *
+     *  <p>Default RMI port is 1099,
+     *  but use a different port for the scan server
+     *  to avoid conflicts with other RMI tools.
      */
-    final public static int RMI_PORT = 4810;
+    final public static int DEFAULT_PORT = 4810;
+
+    /** System property for overriding the scan server host */
+    final public static String HOST_PROPERTY = "ScanServerHost";
+
+    /** System property for overriding the scan server port */
+    final public static String PORT_PROPERTY = "ScanServerPort";
 
     /** Name under which this interface is registered with RMI */
     final public static String RMI_SCAN_SERVER_NAME = "ScanServer";

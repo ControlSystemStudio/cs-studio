@@ -77,7 +77,7 @@ public class ScanServerHeadlessTest implements Runnable
             pv.write(0.0);
 
             // Connect to scan server
-            final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.RMI_PORT);
+            final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.DEFAULT_PORT);
             final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
             System.out.println("Client connected to " + server.getInfo());
             assertTrue(server.getInfo().length() > 0);

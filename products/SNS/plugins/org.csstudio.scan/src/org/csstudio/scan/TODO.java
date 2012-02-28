@@ -100,11 +100,13 @@ public interface TODO
      *
      *  TODO Benchmarks
      *
-     *  TODO Settings:
+     *  Done Settings:
      *       Server uses preferences for RMI port.
      *       Clients use system properties to allow use outside of Eclipse,
-     *       but scan.client plugin sets sys props from Eclipse preferences
-     *       and offers GUI.
+     *       but scan plugins set sys props from Eclipse preferences
+     *       and offer GUI.
+     *
+     *  TODO Scan tree use 'virtual' viewer?
      *
      *  TODO ant build.xml to create standalone client lib?
      *

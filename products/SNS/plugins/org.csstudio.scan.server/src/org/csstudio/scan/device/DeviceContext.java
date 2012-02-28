@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.scan.server.app.Preferences;
+import org.csstudio.scan.Preferences;
 
 /** Context that maintains {@link Device}s: Create, start, get, stop.
  *

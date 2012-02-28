@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.Preferences;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -41,7 +42,6 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.server.app.Preferences;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -73,7 +73,7 @@ public class ScanServerImpl implements ScanServer
     /** Initialize with default port */
     public ScanServerImpl()
     {
-        this(ScanServer.RMI_PORT);
+        this(ScanServer.DEFAULT_PORT);
     }
 
     /** Start the scan server (allow clients to connect) */
