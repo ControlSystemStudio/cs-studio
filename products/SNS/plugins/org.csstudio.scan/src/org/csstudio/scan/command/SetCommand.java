@@ -49,13 +49,23 @@ public class SetCommand extends ScanCommand
         this("device", 0.0, "", true, 0.1, 0.0);
     }
 
-    /** Initialize
-     *  @param device_name Name of device
+    /** Initialize for readback with default tolerance and timeout
+     *  @param device_name Name of device and readback
      *  @param value Value to write to the device
      */
     public SetCommand(final String device_name, final Object value)
     {
         this(device_name, value, device_name, true, 0.1, 0.0);
+    }
+
+    /** Initialize with default tolerance and timeout
+     *  @param device_name Name of device and readback (if used)
+     *  @param value Value to write to the device
+     *  @param wait Wait for readback to match?
+     */
+    public SetCommand(final String device_name, final Object value, final boolean wait)
+    {
+        this(device_name, value, device_name, wait, 0.1, 0.0);
     }
 
     /** Initialize

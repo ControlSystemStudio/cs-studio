@@ -142,14 +142,39 @@ public class CommandSequence
                             body.toArray(new ScanCommand[body.size()])));
     }
 
+    /** Add a 'set' command that writes to a device
+     *  with default readback, tolerance and no timeout
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     */
+    public void set(final String device_name, final Object value)
+    {
+        add(new SetCommand(device_name, value));
+    }
+
+    /** Add a 'set' command that writes to a device
+     *  with default readback, tolerance and no timeout
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param wait Wait for readback to match?
+     */
+    public void set(final String device_name, final Object value, final boolean wait)
+    {
+        add(new SetCommand(device_name, value, wait));
+    }
 
     /** Add a 'set' command that writes to a device
      *  @param device_name Name of device
      *  @param value Value to write to the device
+     *  @param readback Readback device
+     *  @param tolerance Numeric tolerance when checking value
+     *  @param timeout Timeout in seconds, 0 as "forever"
      */
-    public void set(final String device_name, Object value)
+    public void set(final String device_name, final Object value,
+            final String readback,
+            final double tolerance, final double timeout)
     {
-        add(new SetCommand(device_name, value));
+        add(new SetCommand(device_name, value, readback, true, tolerance, timeout));
     }
 
     /** Add a 'wait' command that delays the scan until a device reaches a certain value
