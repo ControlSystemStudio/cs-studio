@@ -614,6 +614,12 @@ public class EPICS_V3_PV extends PlatformObject
                                     + new_value.getClass().getName());
             }
         }
+        // Flush for each write instead of waiting for
+        // the JCACommandThread. When performing many consecutive writes,
+        // waiting for the JCACommandThread would be more effective
+        // because it sends the writes in 'bulk', but in most cases
+        // it's probably better to perform each write ASAP
+        channel_ref.getChannel().getContext().flushIO();
     }
 
     /** ConnectionListener interface. */
