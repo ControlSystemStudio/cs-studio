@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -16,7 +17,6 @@ import org.csstudio.opibuilder.widgets.figures.SpreadSheetTableFigure;
 import org.csstudio.opibuilder.widgets.model.TableModel;
 import org.csstudio.swt.widgets.natives.SpreadSheetTable;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.MenuDetectEvent;
 import org.eclipse.swt.events.MenuDetectListener;
 import org.eclipse.swt.graphics.Point;
@@ -41,14 +41,20 @@ public class TableEditPart extends AbstractBaseEditPart {
 	@Override
 	protected IFigure doCreateFigure() {		
 		SpreadSheetTableFigure figure = new SpreadSheetTableFigure(this);
-		spreadSheetTable = figure.getSWTWidget();
+		spreadSheetTable = figure.getSWTWidget();		
+		spreadSheetTable.setContent(getWidgetModel().getDefaultContent());
 		spreadSheetTable.setEditable(getWidgetModel().isEditable());
 		spreadSheetTable.setColumnsCount(getWidgetModel().getColumnsCount());		
 		spreadSheetTable.setColumnHeaders(
 				getWidgetModel().getColumnHeaders());
 		spreadSheetTable.setColumnWidths(getWidgetModel().getColumnWidthes());
+		boolean editable[] = getWidgetModel().isColumnEditable();
+		for(int i=0; i<Math.min(editable.length, spreadSheetTable.getColumnCount()); i++){
+			spreadSheetTable.setColumnEditable(i, editable[i]);
+		}
+		
 		spreadSheetTable.setColumnHeaderVisible(getWidgetModel().isColumnHeaderVisible());
-		spreadSheetTable.setContent(getWidgetModel().getDefaultContent());		
+				
 		spreadSheetTable.getTableViewer().getTable().addMenuDetectListener(new MenuDetectListener() {
 			
 			@Override
@@ -150,10 +156,10 @@ public class TableEditPart extends AbstractBaseEditPart {
 			
 			@Override
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				if((Integer)newValue < getWidgetModel().getColumnHeaders().length){
-					MessageDialog.openWarning(null, "Warning", "The count of columns is less than the size of headers. \n" +
-							"So this new count will not take effect until the size of headers is reduced too.");
-					return false;
+				String[][] headers = (String[][])getPropertyValue(TableModel.PROP_COLUMN_HEADERS);
+				if(headers.length > (Integer)newValue){
+					String[][] newHeaders =	Arrays.copyOf(headers, (Integer)newValue);
+					setPropertyValue(TableModel.PROP_COLUMN_HEADERS, newHeaders);
 				}
 				spreadSheetTable.setColumnsCount((Integer)newValue);
 				return false;

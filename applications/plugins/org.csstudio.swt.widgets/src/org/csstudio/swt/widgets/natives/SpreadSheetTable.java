@@ -53,6 +53,8 @@ import org.eclipse.swt.widgets.TableItem;
  */
 public class SpreadSheetTable extends Composite {
 	
+	private static final String TEXT_EDITING_SUPPORT_KEY = "text_editing_support"; //$NON-NLS-1$
+
 	/**
 	 * Listener on table cell editing events.
 	 *
@@ -97,6 +99,7 @@ public class SpreadSheetTable extends Composite {
 		
 		private String oldValue;
 		private ViewerCell viewerCell;
+		private boolean columnEditable = true;
 
 		public TextEditingSupport(ColumnViewer viewer) {
 			super(viewer);
@@ -104,7 +107,9 @@ public class SpreadSheetTable extends Composite {
 
 		@Override
 		protected boolean canEdit(Object element) {
-			return editable;
+			if(!editable)
+				return false;			
+			return columnEditable;
 		}
 		
 		private int findColumnIndex() {
@@ -155,6 +160,14 @@ public class SpreadSheetTable extends Composite {
 				fireTableModified();
 			}
 			((TableItem)viewerCell.getItem()).setText(col, value.toString());
+		}
+
+		public boolean isColumnEditable() {
+			return columnEditable;
+		}
+
+		public void setColumnEditable(boolean columnEditable) {
+			this.columnEditable = columnEditable;
 		}
 
 	}
@@ -438,7 +451,9 @@ public class SpreadSheetTable extends Composite {
 				tableViewer, SWT.NONE, index);
 		viewerColumn.getColumn().setMoveable(false);
 		viewerColumn.getColumn().setWidth(DEFAULT_COLUMN_WIDTH);
-		viewerColumn.setEditingSupport(new TextEditingSupport(tableViewer));
+		TextEditingSupport textEditingSupport = new TextEditingSupport(tableViewer);
+		viewerColumn.setEditingSupport(textEditingSupport);
+		viewerColumn.getColumn().setData(TEXT_EDITING_SUPPORT_KEY, textEditingSupport);
 		tableViewer.setLabelProvider(new TextTableLableProvider());
 		fireTableModified();
 	}
@@ -470,6 +485,16 @@ public class SpreadSheetTable extends Composite {
 	 */
 	public boolean isEmpty(){
 		return input.isEmpty();
+	}
+	
+	/**
+	 * @param columnIndex index of the column.
+	 * @return true if the column is editable.
+	 */
+	public boolean isColumnEditable(int columnIndex){
+		checkColumnIndex(columnIndex);
+		return ((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).isColumnEditable();
 	}
 
 	@Override
@@ -536,6 +561,19 @@ public class SpreadSheetTable extends Composite {
 		tableViewer.getTable().getItem(row).setText(col, text);
 		fireTableModified();
 	}
+	
+	/**Set if a column is editable. 
+	 * @param columnIndex index of the column.
+	 * @param editable editable if true.
+	 */
+	public void setColumnEditable(int columnIndex, boolean editable){
+		checkColumnIndex(columnIndex);
+		((TextEditingSupport)(tableViewer.getTable().getColumn(columnIndex).
+				getData(TEXT_EDITING_SUPPORT_KEY))).setColumnEditable(editable);
+	}
+	
+	
+	
 	/**
 	 * Set the header of a column.
 	 * 
@@ -545,8 +583,7 @@ public class SpreadSheetTable extends Composite {
 	 *            header text.
 	 */
 	public void setColumnHeader(int columnIndex, String header) {
-		Assert.isLegal(columnIndex >= 0 && columnIndex < getColumnCount(),
-				NLS.bind("Column index {0} doesn't exist!", columnIndex));
+		checkColumnIndex(columnIndex);
 		tableViewer.getTable().getColumn(columnIndex).setText(header);
 	}
 	
@@ -559,7 +596,7 @@ public class SpreadSheetTable extends Composite {
 	 *            headers text.
 	 */
 	public void setColumnHeaders(String[] headers) {
-		if (headers.length > tableViewer.getTable().getColumnCount()) {
+		if (headers.length > getColumnCount()) {
 			setColumnsCount(headers.length);
 		}
 		for (int i = 0; i < headers.length; i++) {
@@ -589,7 +626,7 @@ public class SpreadSheetTable extends Composite {
 	 */
 	public void setColumnsCount(int count) {
 		TableColumn[] columns = tableViewer.getTable().getColumns();
-		int oldCount = columns.length;
+		int oldCount = getColumnCount();
 		if (count == oldCount)
 			return;
 		if (count < oldCount) {
@@ -616,7 +653,9 @@ public class SpreadSheetTable extends Composite {
 					tableViewer, SWT.NONE);
 			viewerColumn.getColumn().setMoveable(false);
 			viewerColumn.getColumn().setWidth(DEFAULT_COLUMN_WIDTH);
-			viewerColumn.setEditingSupport(new TextEditingSupport(tableViewer));
+			TextEditingSupport textEditingSupport = new TextEditingSupport(tableViewer);
+			viewerColumn.setEditingSupport(textEditingSupport);
+			viewerColumn.getColumn().setData(TEXT_EDITING_SUPPORT_KEY, textEditingSupport);
 		}
 		tableViewer.setLabelProvider(new TextTableLableProvider());
 		fireTableModified();
@@ -624,6 +663,7 @@ public class SpreadSheetTable extends Composite {
 	}
 	
 	public void setColumnWidth(int col, int width) {
+		checkColumnIndex(col);
 		tableViewer.getTable().getColumn(col).setWidth(width);
 	}
 
