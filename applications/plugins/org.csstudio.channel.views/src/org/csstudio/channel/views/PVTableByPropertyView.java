@@ -1,24 +1,23 @@
 package org.csstudio.channel.views;
 
 import gov.bnl.channelfinder.api.ChannelQuery;
-import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import org.csstudio.channel.widgets.ChannelQueryInputBar;
 import org.csstudio.channel.widgets.PVTableByPropertyWidget;
 import org.csstudio.channel.widgets.PopupMenuUtil;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IMemento;
@@ -49,6 +48,22 @@ public class PVTableByPropertyView extends ViewPart {
 	 */
 	public PVTableByPropertyView() {
 	}
+	
+	private final ChannelQueryListener channelQueryListener = new ChannelQueryListener() {
+		
+		@Override
+		public void queryExecuted(final Result result) {
+			SWTUtil.swtThread().execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					configureButton.setEnabled(result.channels != null && !result.channels.isEmpty());
+				}
+			});
+		}
+	};
+
+	private Button configureButton;
 
 	/**
 	 * Passing the focus request to the viewer's control.
@@ -77,22 +92,19 @@ public class PVTableByPropertyView extends ViewPart {
 	
 	public void setChannelQuery(ChannelQuery channelQuery) {
 		inputBar.setChannelQuery(channelQuery);
-		changeQuery(channelQuery);
+		ChannelQuery oldQuery = tableWidget.getChannelQuery();
+		if (oldQuery != null) {
+			oldQuery.removeChannelQueryListener(channelQueryListener);
+		}
+		channelQuery.execute(channelQueryListener);
+		tableWidget.setChannelQuery(channelQuery);
 	}
 	
 	private ChannelQueryInputBar inputBar;
 	private PVTableByPropertyWidget tableWidget;
-	private Combo columnProperty;
-	private Combo rowProperty;
-	private Composite parent;
-	
-	private void changeQuery(ChannelQuery channelQuery) {
-		tableWidget.setChannelQuery(channelQuery);
-	}
 
 	@Override
 	public void createPartControl(Composite parent) {
-		this.parent = parent;
 		parent.setLayout(new FormLayout());
 		
 		Label lblPvName = new Label(parent, SWT.NONE);
@@ -105,8 +117,8 @@ public class PVTableByPropertyView extends ViewPart {
 		inputBar = new ChannelQueryInputBar(parent, SWT.NONE, 
 				Activator.getDefault().getDialogSettings(), "pvtablebyproperty.query");
 		FormData fd_combo = new FormData();
-		fd_combo.top = new FormAttachment(0, 5);
 		fd_combo.left = new FormAttachment(lblPvName, 6);
+		fd_combo.top = new FormAttachment(0, 5);
 		inputBar.setLayoutData(fd_combo);
 		inputBar.addPropertyChangeListener(new PropertyChangeListener() {
 			
@@ -121,90 +133,9 @@ public class PVTableByPropertyView extends ViewPart {
 		tableWidget = new PVTableByPropertyWidget(parent, SWT.NONE);
 		FormData fd_waterfallComposite = new FormData();
 		fd_waterfallComposite.bottom = new FormAttachment(100, -5);
-		fd_waterfallComposite.top = new FormAttachment(inputBar, 6);
 		fd_waterfallComposite.left = new FormAttachment(0, 5);
 		fd_waterfallComposite.right = new FormAttachment(100, -5);
 		tableWidget.setLayoutData(fd_waterfallComposite);
-		tableWidget.addPropertyChangeListener(new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if ("channels".equals(evt.getPropertyName())) {
-					if (tableWidget.getChannels() != null) {
-						List<String> propertyNames = new ArrayList<String>(ChannelUtil.getPropertyNames(tableWidget.getChannels()));
-						Collections.sort(propertyNames);
-						
-						// Save old selection
-						String oldRow = tableWidget.getRowProperty();
-						String oldColumn = tableWidget.getColumnProperty();
-						
-						// Change properties to select
-						rowProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-						columnProperty.setItems(propertyNames.toArray(new String[propertyNames.size()]));
-						
-						// Try to keep old selection
-						rowProperty.select(propertyNames.indexOf(oldRow));
-						columnProperty.select(propertyNames.indexOf(oldColumn));
-					}
-					PVTableByPropertyView.this.parent.layout();
-				}
-			}
-		});
-		
-		Label lblRow = new Label(parent, SWT.NONE);
-		fd_combo.right = new FormAttachment(lblRow, -6);
-		FormData fd_lblRow = new FormData();
-		fd_lblRow.top = new FormAttachment(lblPvName, 0, SWT.TOP);
-		lblRow.setLayoutData(fd_lblRow);
-		lblRow.setText("Row:");
-		
-		rowProperty = new Combo(parent, SWT.NONE);
-		fd_lblRow.right = new FormAttachment(rowProperty, -6);
-		FormData fd_rowProperty = new FormData();
-		fd_rowProperty.top = new FormAttachment(lblPvName, -3, SWT.TOP);
-		rowProperty.setLayoutData(fd_rowProperty);
-		rowProperty.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				tableWidget.setRowProperty(rowProperty.getItem(rowProperty.getSelectionIndex()));
-				
-			}
-		});
-		
-		Label lblColumn = new Label(parent, SWT.NONE);
-		fd_rowProperty.right = new FormAttachment(lblColumn, -6);
-		FormData fd_lblColumn = new FormData();
-		fd_lblColumn.top = new FormAttachment(lblPvName, 0, SWT.TOP);
-		lblColumn.setLayoutData(fd_lblColumn);
-		lblColumn.setText("Column:");
-		
-		columnProperty = new Combo(parent, SWT.NONE);
-		fd_lblColumn.right = new FormAttachment(columnProperty, -6);
-		FormData fd_columnProperty = new FormData();
-		fd_columnProperty.bottom = new FormAttachment(tableWidget, -6);
-		fd_columnProperty.right = new FormAttachment(100, -5);
-		columnProperty.setLayoutData(fd_columnProperty);
-		columnProperty.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				tableWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
-				
-			}
-			
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				tableWidget.setColumnProperty(columnProperty.getItem(columnProperty.getSelectionIndex()));
-				
-			}
-		});
 		
 		if (memento != null) {
 			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
@@ -216,5 +147,22 @@ public class PVTableByPropertyView extends ViewPart {
 		
 		PopupMenuUtil.installPopupForView(tableWidget, getSite(), tableWidget);
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
+		
+		configureButton = new Button(parent, SWT.NONE);
+		fd_waterfallComposite.top = new FormAttachment(configureButton, 4);
+		fd_combo.right = new FormAttachment(configureButton, -6);
+		FormData fd_btnNewButton = new FormData();
+		fd_btnNewButton.top = new FormAttachment(0, 5);
+		fd_btnNewButton.right = new FormAttachment(tableWidget, 0, SWT.RIGHT);
+		configureButton.setLayoutData(fd_btnNewButton);
+		configureButton.setText("Configure");
+		configureButton.setEnabled(false);
+		configureButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				tableWidget.openConfigurationDialog();
+			}
+		});
+
 	}
 }
