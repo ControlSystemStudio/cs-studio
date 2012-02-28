@@ -22,7 +22,7 @@
 <ul>
 <li>Add <code>Auto Scale Widgets</code> property to display. If it is true, all widgets on this display may be scaled
  when display is resized. The old display property <code>Auto Zoom to Fit All</code> should be deprecated, because the advance graphics
- effects such as gradient cannot display correctly in zoom.
+ effects such as gradient cannot display correctly in zoom.<br>
 <img src = "img/ScaleWidgets.gif">
 </li>
 <li>Add Table widget. For more details, see <a href="widgets/Table.html">Table</a>.
@@ -44,21 +44,31 @@
 <p><img height="200" alt="connection" src="widgets/img/Connection.gif"></p>
 </li><li>OPI editor is separated to a plugin <tt>org.csstudio.opibuilder.editor</tt>, 
 which allows you to install BOY in your RCP without OPI editor.
+</li><li>Add a new option <tt>Detached</tt> to <tt>Open OPI in View</tt> action 
+so the OPI will be opened in a detached view directly.
+<p><img height="300" src="img/detachedView.gif"></p>
+
+</li><li>Support Unicode in OPI, such as Chinese, Japanese...
+<p><img src="img/UnicodeSupport.gif"></p>
 
 </li><li>Allow embedding script text as part of an opi file
-</li><li>Support Unicode in OPI, such as Chinese, Japanese...
-</li><li>Add a new option <tt>Detached</tt> to <tt>Open OPI in View</tt> action so the OPI will be opened in a detached view directly
+<p><img src="img/EmbedScript.gif"></p>
 </li><li>Add an option "Hook all actions to mouse click event" to actions dialog
 </li><li>Add a new widget <tt>Image Boolean Indicator</tt> for displaying on/off value by images
+<p><img src="widgets/img/ImageBooleanIndicator.gif"></p>
 </li><li>Change the text input behavior with TextInput and Spinner widget, please read <a href="widgets/TextInput.html">BOY manual</a> for details
 </li><li>Allow to write numeric array to PV from Text Input widget with format like <code>13 22 33 24</code> 
 </li><li>Add version check to OPI file. If it is opening an opi file created from newer version of BOY, a warning dialog will popup
 </li><li>Allow customized widget hooking its own online help with BOY help system
 </li><li>Keep border style in alarm status if the border style is one of the line styles, such as dash, dot, dash dot and so on. So now you are able to have a dash alarm border.
+<p><img src="img/DashAlarmBorder.gif"></p>
 </li><li>Use border color for text color on Group Box Style border. This may affect the looking of some old OPIs which are using Group Box Style border.
 </li><li>Solve the "floating" problem and improve the performance greatly with using native SWT widgets in BOY
 </li><li>Allow minimum value higher than maximum value on scaled widgets, such as XYGraph, bar graph, gauge
+<p><img src="img/InvertedAxis.gif"></p>
 </li><li>Add <tt>Rotation Angle</tt> property to text update and text input widget, so its text can be rotated to arbitrary angle
+<p><img src="img/RotatedText.gif"></p>
+
 </li><li>Add two system predefined macros
 <ul><li>$(DID): The unique ID of a display. It can help to create an unique local PV name dedicated to a display
 </li><li>$(DNAME): The name of a display
@@ -66,6 +76,7 @@ which allows you to install BOY in your RCP without OPI editor.
 </li><li>Add a methods to ScriptUtil: executeEclipseCommand(id)
 </li><li>Add a method to widget: widget.getMacroValue(macroName)
 </li><li>Add example and document about how to call custom Java code from BOY script
+<p><img src="img/CustomScriptUtil.gif"></p>
 </li><li>Support using macros in file path property
 </li><li>Add a new option <tt>Open in new Window</tt> to <tt>Open OPI</tt> action
 </li><li>An OPI view will automatically resize to the OPI size when it is detached
@@ -80,9 +91,12 @@ which allows you to install BOY in your RCP without OPI editor.
 
 <A NAME="1.2.0"></A>
 <h2>Version 1.2.0 - 6/9/2011</h2>
-<ul><li>Support Python Script
+<ul><li>Support using Jython script in BOY
+<p><img height="300" src="img/JythonInBOY.gif"></p>
+</li><li>Finish BOY online help which includes the help document for every widget. 
+In OPI editor, press F1 to open context help view. Context help will automatically update to match the selected widget. 
+<p><img src="img/onlineHelp.gif"></p>
 </li><li>Allow to open an OPI in view which can be detached as a standalone window
-</li><li>Finish BOY online help which includes the help document for every widget. Press F1 to invoke context help for a widget. Update BOY Examples
 </li><li>Allow user to change the default properties value of widgets by using schema OPI
 </li><li>Change <tt>widgetController</tt> to <tt>widget</tt>, <tt>pvArray</tt> to <tt>pvs</tt>. Add <tt>display</tt> object to script
 </li><li>Add script method <tt>display.getWidget(name)</tt> to search a widget by name
@@ -119,6 +133,7 @@ Note2: To make this command line work for Linux machine, you may need to add fol
 </pre>You may able to find the path to libjvm.so by using command <tt>locate libjvm.so</tt>
 See <a class="ext-link" href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=331122"><span class="icon">https://bugs.eclipse.org/bugs/show_bug.cgi?id=331122</span></a>
 </li></ul><ul><li>Add "Tree View" to Outline, which supports reordering and changing parent operations by Drag-and-Drop. It also supports other context menu actions such as copy, paste, delete, create group and so on
+<p><img src="img/TreeView.gif"></p>
 </li><li>Add "Grid Layout" widget. If a container or display contains such a widget, it will automatically layout widgets in grids 
 </li><li>Add "OPI Probe" to CSS context menu, so the PV names will be passed to the probe OPI
 </li><li>Support orientation operation on all widgets
@@ -130,10 +145,14 @@ See <a class="ext-link" href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=3311
 <ul><li>Allow icon on Tab
 </li><li>Add a new context menu entry <i>Change Tab Index</i>
 </li><li>Fix some bugs related to undo/redo
-</li></ul></li><li>Add two option for executing a script: 
+</li></ul>
+<p><img src="widgets/img/Tab.gif"></p>
+</li><li>Add two option for executing a script: 
 <ul><li>Skip execution triggered by PVs' first connection
 </li><li>Execute anyway even if some PVs are disconnected
-</li></ul></li><li>Show script input PVs' connectivity on border too
+</li></ul>
+<p><img src="img/ScriptOptions.gif"></p>
+</li><li>Show script input PVs' connectivity on border too
 </li><li>Show PVs' disconnected information in tooltip
 </li><li>Add a preference "Console Popup Level" to control when should the console popup
 </li><li>Add "Scale Format" property to XYGraph Axis and other widgets with scale such as meter, gauge, knob, progress bar and so on, so that the numeric format on scale can be customized
@@ -151,6 +170,7 @@ See <a class="ext-link" href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=3311
 <A NAME="1.0.6"></A>
 <h2>Versin 1.0.6 - 11/12/2010</h2>
 <ul><li>Add three context menu entries for openning related display as in web browser: Open, Open in New Tab and Open in New Window.
+<p><img src="img/OpenOPIContextMenu.gif"></p>
 </li><li>Remove the wrapping capability from <a class="missing wiki" href="/apps/trac/cs-studio/wiki/TextUpdate" rel="nofollow">TextUpdate?</a> to improve its performance greatly.
 </li><li>Improve the performance of cloning widgets.
 </li><li>Use Display.asyncExec() in GUI Thread with flood control to get a more smooth GUI update.
