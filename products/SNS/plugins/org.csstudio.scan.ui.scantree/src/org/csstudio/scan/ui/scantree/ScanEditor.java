@@ -51,6 +51,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -123,11 +124,11 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** ID of scan that was submitted, the 'live' scan, or -1 */
     private volatile long scan_id = -1;
 
-    private Button pause;
+    /** Button icons */
+    private Image pause_icon = null, resume_icon = null, abort_icon = null;
 
-    private Button resume;
-
-    private Button abort;
+    /** Buttons */
+    private Button pause, resume, abort;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -270,7 +271,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         message.setText(Messages.ServerDisconnected);
         message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 
-        resume = createInfoButton(Messages.ResumeTT, "icons/resume.gif", //$NON-NLS-1$
+        resume_icon = ScanUIActivator.getImageDescriptor("icons/resume.gif").createImage();//$NON-NLS-1$
+        resume = createInfoButton(Messages.ResumeTT, resume_icon,
                 new SelectionAdapter()
         {
             @Override
@@ -288,7 +290,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 }
             }
         });
-        pause = createInfoButton(Messages.PauseTT, "icons/pause.gif", //$NON-NLS-1$
+        pause_icon = ScanUIActivator.getImageDescriptor("icons/pause.gif").createImage();//$NON-NLS-1$
+        pause = createInfoButton(Messages.PauseTT, pause_icon,
                 new SelectionAdapter()
         {
             @Override
@@ -306,7 +309,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
                 }
             }
         });
-        abort = createInfoButton(Messages.AbortTT, "icons/abort.gif", //$NON-NLS-1$
+        abort_icon = ScanUIActivator.getImageDescriptor("icons/abort.gif").createImage();//$NON-NLS-1$
+        abort = createInfoButton(Messages.AbortTT, abort_icon,
                 new SelectionAdapter()
         {
             @Override
@@ -344,17 +348,17 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
     /** Add button to the info_section
      *  @param tooltip Tool tip
-     *  @param icon Icon path (in scan.ui plugin)
+     *  @param icon Icon image
      *  @param listener Selection listener
      *  @return Button
      */
-    private Button createInfoButton(final String tooltip, final String icon,
+    private Button createInfoButton(final String tooltip, final Image icon,
             final SelectionListener listener)
     {
         final Button button = new Button(info_section, SWT.PUSH);
         button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
         button.setToolTipText(tooltip);
-        button.setImage(ScanUIActivator.getImageDescriptor(icon).createImage());
+        button.setImage(icon);
         button.addSelectionListener(listener);
         return button;
     }
@@ -373,12 +377,12 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         // from the shared operations history of all scan editors
         operations.dispose(undo_context, true, true, true);
 
-        if (resume != null)
-            resume.getImage().dispose();
-        if (pause != null)
-            pause.getImage().dispose();
-        if (abort != null)
-            abort.getImage().dispose();
+        if (resume_icon != null)
+            resume_icon.dispose();
+        if (pause_icon != null)
+            pause_icon.dispose();
+        if (abort_icon != null)
+            abort_icon.dispose();
 
         super.dispose();
     }
