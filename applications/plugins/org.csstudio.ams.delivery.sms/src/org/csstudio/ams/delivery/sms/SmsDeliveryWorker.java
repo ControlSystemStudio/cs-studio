@@ -118,7 +118,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                           new JmsProperties(factoryClass, url, topic),
                                           readWaitingPeriod);
         smsDevice.addDeviceListener(this);
-
+        Thread smsDeviceThread = new Thread(smsDevice);
+        smsDeviceThread.start();
 
         running = true;
         workerCheckFlag = false;
