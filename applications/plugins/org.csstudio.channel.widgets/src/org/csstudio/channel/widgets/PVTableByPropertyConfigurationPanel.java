@@ -3,6 +3,7 @@ package org.csstudio.channel.widgets;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.swt.SWT;
@@ -69,7 +70,7 @@ AbstractConfigurationComposite {
 		fd_columnTags.top = new FormAttachment(lblColumnTags, 6);
 		fd_columnTags.left = new FormAttachment(0, 5);
 		columnTags.setLayoutData(fd_columnTags);
-		columnTags.addPropertyChangeListener(forwardPropertyChangeListener("selectedValue", "columnTags"));
+		columnTags.addPropertyChangeListener(forwardPropertyChangeListener("selectedValues", "columnTags"));
 	}
 	
 	private PropertyChangeListener forwardPropertyChangeListener(final String widgetProperty,
@@ -105,7 +106,7 @@ AbstractConfigurationComposite {
 		return Arrays.asList(rowProperty.getItems());
 	}
 	
-	public void setPossibleProperties(List<String> possibleProperties) {
+	public void setPossibleProperties(Collection<String> possibleProperties) {
 		String[] properties = possibleProperties.toArray(new String[possibleProperties.size()]);
 		rowProperty.setItems(properties);
 		columnProperty.setItems(properties);
@@ -115,7 +116,7 @@ AbstractConfigurationComposite {
 		return columnTags.getPossibleValues();
 	}
 	
-	public void setPossibleTags(List<String> possibleTags) {
+	public void setPossibleTags(Collection<String> possibleTags) {
 		columnTags.setPossibleValues(possibleTags);
 	}
 	
@@ -128,5 +129,24 @@ AbstractConfigurationComposite {
 	public void setRowProperty(String string) {
 		int index = Arrays.asList(rowProperty.getItems()).indexOf(string);
 		rowProperty.select(index);
+	}
+	
+	public String getColumnProperty() {
+		if (columnProperty.getSelectionIndex() == -1)
+			return null;
+		return columnProperty.getItem(columnProperty.getSelectionIndex());
+	}
+	
+	public void setColumnProperty(String string) {
+		int index = Arrays.asList(columnProperty.getItems()).indexOf(string);
+		columnProperty.select(index);
+	}
+	
+	public List<String> getColumnTags() {
+		return columnTags.getSelectedValues();
+	}
+	
+	public void setColumnTags(List<String> selectedValues) {
+		columnTags.setSelectedValues(selectedValues);
 	}
 }

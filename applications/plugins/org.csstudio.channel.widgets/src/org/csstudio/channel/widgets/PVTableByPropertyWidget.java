@@ -7,6 +7,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
@@ -45,7 +46,8 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 
-public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider {
+public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
+	ConfigurableWidget {
 	
 	private static final int MAX_COLUMNS = 200;
 	private static final int MAX_CELLS = 50000;
@@ -100,7 +102,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
-			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
+			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty", "columnTags");
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -127,7 +129,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	
 	private String rowProperty;
 	private String columnProperty;
-	private List<String> columnTags;
+	private List<String> columnTags = new ArrayList<String>();
 	
 	private List<List<String>> cellPvs;
 	private List<List<Collection<Channel>>> cellChannels;
@@ -234,7 +236,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	
 	private void computeTableChannels() {
 		// Not have all the bits to prepare the channel list
-		if (!propertiesReady()) {
+		if (!propertiesReady() || channels == null) {
 			clearTableChannels();
 			return;
 		}
@@ -261,6 +263,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
 		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
+		//possibleColumns.addAll(tagNames);
 		int nRows = possibleRows.size();
 		int nColumns = possibleColumns.size() + tagNames.size();
 		
@@ -318,6 +321,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 			}
 		}
 		
+		possibleColumns.addAll(tagNames);
 		columnNames = possibleColumns;
 		rowNames = possibleRows;
 		cellPvs = cells;
@@ -416,6 +420,40 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	protected void queryExecuted(Result result) {
 		errorBar.setException(result.exception);
 		setChannels(result.channels);
+	}
+
+	private boolean configurable = true;
+
+	private PVTableByPropertyConfigurationDialog dialog;
+
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new PVTableByPropertyConfigurationDialog(this);
+		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldConfigurable = configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldConfigurable,
+				configurable);
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
 	}
 	
 }
