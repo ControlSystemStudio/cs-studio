@@ -40,6 +40,10 @@ import org.w3c.dom.Element;
  *  Maintains a list of {@link ModelItem}s
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed the model to accept multiple items with
+ *                           the same name so that Data Browser can show the
+ *                           trend of the same PV in different axes or with
+ *                           different waveform indexes.
  */
 @SuppressWarnings("nls")
 public class Model
@@ -86,6 +90,7 @@ public class Model
     final public static String TAG_ANNOTATION = "annotation";
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
+    final public static String TAG_WAVEFORM_INDEX = "waveform_index";
     
 
     /** Default colors for newly added item, used over when reaching the end.
@@ -314,7 +319,15 @@ public class Model
         return items.get(i);
     }
 
-    /** Locate item by name
+    /** Locate item by name.
+     *  If different items with the same exist in this model, the first
+     *  occurrence will be returned. If no item is found with the given
+     *  name, <code>null</code> will be returned.
+     *  Now that this model may have different items with the same name,
+     *  this method is not recommended to locate an item. This method
+     *  just returns an item which just happens to have the given name.  
+     *  Use {@link #indexOf(ModelItem)} or {@link #getItem(int)} to locate
+     *  an item in this model.   
      *  @param name
      *  @return ModelItem by that name or <code>null</code>
      */
@@ -324,6 +337,16 @@ public class Model
             if (item.getName().equals(name))
                 return item;
         return null;
+    }
+    
+    /** Returns the index of the specified item, or -1 if this list does not contain
+     *  the item.
+     *  @param item
+     *  @return ModelItem
+     */
+    public int indexOf(final ModelItem item)
+    {
+    	return items.indexOf(item);
     }
 
     /** Called by items to set their initial color
@@ -348,9 +371,21 @@ public class Model
      */
     public void addItem(final ModelItem item) throws Exception
     {
-        // Prohibit duplicate items
-        if (getItem(item.getName()) != null)
-                throw new RuntimeException("Item " + item.getName() + " already in Model");
+    	// A new item with the same PV name are allowed to be added in the
+    	// model. This way Data Browser can show the trend of the same PV
+    	// in different axes or with different waveform indexes. For example,
+    	// one may want to show the first element of epics://aaa:bbb in axis 1
+    	// while showing the third element of the same PV in axis 2 to compare
+    	// their trends in one chart.
+    	//
+        // if (getItem(item.getName()) != null)
+        //        throw new RuntimeException("Item " + item.getName() + " already in Model");
+    	
+    	// But, if exactly the same instance of the given ModelItem already exists in this
+    	// model, it will not be added.
+    	if (items.indexOf(item) != -1)
+    		throw new RuntimeException("Item " + item.getName() + " already in Model");
+    	
         // Assign default color
         if (item.getColor() == null)
             item.setColor(getNextItemColor());

@@ -8,13 +8,22 @@
 
 package org.csstudio.kek.product;
 
-/** Empty.
- *  Placeholder for the 'src' directory
- *  which might be needed later
- *  but gets removed by source control
- *  when empty.
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+
+/** Plugin-related, not really an activator at this point
  *  @author Kay Kasemir
  */
-class Activator
+public class Activator
 {
+	/** Plugin ID defined in MANIFEST.MF */
+	final public static String PLUGIN_ID = "org.csstudio.kek.product";
+
+	/** @param path Image file path within plugin
+	 *  @return {@link ImageDescriptor}
+	 */
+	public static ImageDescriptor getImageDescriptor(final String path)
+	{
+		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
 }

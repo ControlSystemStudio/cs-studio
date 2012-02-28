@@ -45,14 +45,10 @@ that is appropriate for your operating system.
 <ol>
 <li>Extract the ZIP file:<br/>
     You need to extract or "un-zip" the ZIP file.
-    Under Windows, right-click the file and select
-    "Extract All..." from the context menu.
-    As a user of Linux or Mac OS X, you probably
-    already know what to do.
 </li>
 <li>Invoke one of "css_kek_*" launchers in the directory extracted from
     the ZIP file. These launchers set user preferences for the accelerator
-    you belong to. See <a href="http://www-linac.kek.jp/cont/epics/css/install_css_kek_public.pdf">this document</a> to know more details about how to install and launch CSS.
+    you belong to. See <a href="http://www-linac.kek.jp/cont/epics/css/install_css_kek_public.pdf"><u>this document</u></a> to know more details about how to install and launch CSS.
 </li>
 </ol>
 

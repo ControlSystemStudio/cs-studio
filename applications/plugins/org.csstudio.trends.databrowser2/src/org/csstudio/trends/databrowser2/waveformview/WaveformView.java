@@ -15,8 +15,11 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.ModelListener;
+import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
 import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.osgi.util.NLS;
@@ -39,8 +42,11 @@ import org.eclipse.swt.widgets.Text;
 
 /** View for inspecting Waveform (Array) Samples of the current Model
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed WaveformView to handle multiple itesm with
+ *                           the same name.
  */
 public class WaveformView extends DataBrowserAwareView
+	implements ModelListener
 {
     /** View ID registered in plugin.xml */
     final public static String ID =
@@ -85,6 +91,11 @@ public class WaveformView extends DataBrowserAwareView
             {
                 if (color != null)
                     color.dispose();
+                
+                // Be ignorant of any change of the current model after
+                // this view is disposed.
+                if (model != null)
+                	model.removeListener(WaveformView.this);
             }
         });
 
@@ -119,7 +130,7 @@ public class WaveformView extends DataBrowserAwareView
                  if (pv_name.getSelectionIndex() == 0)
                     selectPV(null);
                 else
-                    selectPV(pv_name.getText());
+                	selectPV(model.getItem(pv_name.getSelectionIndex() - 1));
             }
         });
 
@@ -189,7 +200,22 @@ public class WaveformView extends DataBrowserAwareView
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
-        this.model = model;
+    	this.model = model;
+    	if (old_model != model) {
+    		if (old_model != null)
+    			old_model.removeListener(this);
+    		
+    		if (model != null)
+    			model.addListener(this);
+    	}
+    	update(old_model != model);
+    }
+    
+    /** Update combo box of this view. 
+     * @param model_changed set true if the model was changed
+     */
+    private void update(final boolean model_changed)
+    {
         if (model == null)
         {   // Clear/disable GUI
             pv_name.setItems(new String[] { Messages.SampleView_NoPlot});
@@ -204,17 +230,16 @@ public class WaveformView extends DataBrowserAwareView
         names[0] = Messages.SampleView_SelectItem;
         for (int i=1; i<names.length; ++i)
             names[i] = model.getItem(i-1).getName();
-        if (old_model == model  &&  pv_name.getSelectionIndex() > 0)
+        if (!model_changed  &&  pv_name.getSelectionIndex() > 0)
         {
-            // Is the previously selected item still valid?
-            final String old_name = pv_name.getText();
-            final ModelItem item = model.getItem(old_name);
-            if (item == model_item)
-            {   // Show same PV name again in combo box
-                pv_name.setItems(names);
-                pv_name.setText(item.getName());
-                return;
-            }
+        	// Is the previously selected item still valid?
+        	if (model.indexOf(model_item) != -1)
+        	{	// Show same PV name again in combo box
+        		pv_name.setItems(names);
+        		pv_name.select(model.indexOf(model_item) + 1);
+        		pv_name.setEnabled(true);
+        		return;
+        	}
         }
         // Previously selected item no longer valid.
         // Show new items, clear rest
@@ -224,13 +249,13 @@ public class WaveformView extends DataBrowserAwareView
         selectPV(null);
     }
 
-    /** Select given PV name (or <code>null</code>). */
-    private void selectPV(final String new_pv_name)
+    /** Select given PV item (or <code>null</code>). */
+    private void selectPV(final ModelItem new_item)
     {
-        if (new_pv_name == null)
+        if (new_item == null)
             model_item = null;
         else
-            model_item = model.getItem(new_pv_name);
+            model_item = new_item;
 
         // Delete all existing traces
         int N = xygraph.getPlotArea().getTraceList().size();
@@ -296,4 +321,57 @@ public class WaveformView extends DataBrowserAwareView
         timestamp.setText(""); //$NON-NLS-1$
         status.setText(""); //$NON-NLS-1$
     }
+    
+    /** {@inheritDoc} */
+	@Override
+	public void itemAdded(ModelItem item) {
+	    // Be aware of the addition of a new item to update combo box.
+		update(false);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void itemRemoved(ModelItem item) {
+	    // Be aware of the addition of a new item to update combo box.
+		update(false);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void changedItemLook(ModelItem item) {
+		// Be aware of the change of the item name.
+		update(false);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void changedColors() {
+		// Be aware of the change of the item color.
+		// TODO: this update does not trigger color change. Fix it.
+		update(false);
+	}
+
+	// Following methods are defined as they are mandatory to fulfill
+	// ModelListener interface, but they are not used at all to update
+	// this sample view.
+	@Override
+	public void changedUpdatePeriod() {}
+
+	@Override
+	public void changedArchiveRescale() {}
+
+	@Override
+	public void changedTimerange() {}
+
+	@Override
+	public void changedAxis(AxisConfig axis) {}
+
+	@Override
+	public void changedItemVisibility(ModelItem item) {}
+
+	@Override
+	public void changedItemDataConfig(PVItem item) {}
+
+	@Override
+	public void scrollEnabled(boolean scroll_enabled) {}
 }

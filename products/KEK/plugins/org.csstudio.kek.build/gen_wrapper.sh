@@ -40,11 +40,11 @@ if [ "${TARGET}" = "WIN" ]; then
 cat <<EOF
 cd %~dp0
 
-@echo org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST} > %TEMP%\plugin_customization_${ACC}.ini
-@echo org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
-@echo org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
+echo org.csstudio.platform.libs.epics/addr_list=${ADDR_LIST} > %TEMP%\plugin_customization_${ACC}.ini
+echo org.csstudio.trends.databrowser2/archives=${SUB_ARCHIVES//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
+echo org.csstudio.trends.databrowser2/urls=${ARCHIVE_URLS//|/^|} >> %TEMP%\plugin_customization_${ACC}.ini
 
-css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini
+start css.exe -pluginCustomization %TEMP%\plugin_customization_${ACC}.ini
 EOF
 
 else

@@ -14,6 +14,7 @@ import org.csstudio.data.values.ValueFactory;
 
 /** Unit-test helper for creating samples
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto added makeWaveform() method
  */
 @SuppressWarnings("nls")
 public class TestSampleBuilder
@@ -29,6 +30,16 @@ public class TestSampleBuilder
         // return ValueFactory.createDoubleValue(TimestampFactory.fromMillisecs(start + i*500),
         return ValueFactory.createDoubleValue(TimestampFactory.fromDouble(i),
                ok, "Test", PlotSample.dummy_meta, IValue.Quality.Original, new double[] { i });
+    }
+    
+    /**@param ts timestamp
+     * @param vals array
+     * @return IValue sample that has waveform and time based on input parameter
+     */
+    public static IValue makeWaveform(final int ts, final double array[])
+    {
+        return ValueFactory.createDoubleValue(TimestampFactory.now(),
+                ok, "Test", PlotSample.dummy_meta, IValue.Quality.Original, array);
     }
 
     /** @param i Pseudo-timestamp

@@ -37,7 +37,8 @@ public enum SiteId {
     SNS("sns"),
     DESY("desy"),
     ITER("iter"),
-    BNL("bnl");
+    BNL("bnl"),
+    KEK("kek");
 
     /**
      * Supposed to be set as jvm arg for any site's product/launch config/whatever to enable site
