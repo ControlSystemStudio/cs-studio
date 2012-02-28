@@ -68,7 +68,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 	    node.put(SmsConnectorPreferenceKey.P_MODEM3_SIMPIM, "");
         node.put(SmsConnectorPreferenceKey.P_MODEM3_NUMBER, "");
 	    
-	    node.put(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD, "5000");
+	    node.put(SmsConnectorPreferenceKey.P_MODEM_READ_WAITING_PERIOD, "10000");
 
         node.put(SmsConnectorPreferenceKey.P_XMPP_SERVER, "server.where.ever");
         node.put(SmsConnectorPreferenceKey.P_XMPP_USER, "anonymous");
