@@ -545,7 +545,10 @@ public class ScanTreeGUI implements ScanTreeModelListener
                 if (previous != null)
                     tree_view.update(previous, null);
                 if (command != null)
+                {
                     tree_view.update(command, null);
+                    tree_view.reveal(command);
+                }
             }
         });
     }
