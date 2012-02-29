@@ -8,6 +8,8 @@ import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -17,9 +19,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -135,7 +139,6 @@ public class OlogEditor extends EditorPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		GridLayout gridLayout = new GridLayout(1, false);
 		parent.setLayout(new GridLayout(2, false));
 
 		lblSearch = new Label(parent, SWT.NONE);
@@ -175,8 +178,8 @@ public class OlogEditor extends EditorPart {
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
 		gridLayout_1.numColumns = 2;
 		ologTableWidget.setLogs(TestLogs.testLogs());
-		// TODO Auto-generated method stub
-
+		
+		PopupMenuUtil.installPopupForView(ologTableWidget.getControl(), getSite(), ologTableWidget);
 	}
 
 	@Override

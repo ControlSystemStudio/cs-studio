@@ -14,6 +14,11 @@ import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
@@ -21,12 +26,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import edu.msu.nscl.olog.api.Log;
 
-public class OlogTableWidget extends Composite {
+public class OlogTableWidget extends Composite implements ISelectionProvider {
 
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 			this);
@@ -46,6 +52,8 @@ public class OlogTableWidget extends Composite {
 	private ErrorBar errorBar;
 	private Table table;
 
+	private AbstractSelectionProviderWrapper selectionProvider;
+
 	public OlogTableWidget(Composite parent, int style) {
 		super(parent, style);
 
@@ -63,7 +71,7 @@ public class OlogTableWidget extends Composite {
 				1));
 
 		tableViewer = new TableViewer(composite, SWT.BORDER
-				| SWT.FULL_SELECTION | SWT.MULTI | SWT.WRAP
+				| SWT.FULL_SELECTION | SWT.SINGLE | SWT.WRAP
 				| SWT.DOUBLE_BUFFERED);
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
@@ -85,6 +93,18 @@ public class OlogTableWidget extends Composite {
 			}
 
 		});
+
+		selectionProvider = new AbstractSelectionProviderWrapper(tableViewer,
+				this) {
+			@Override
+			protected ISelection transform(IStructuredSelection selection) {
+				if (selection != null && selection.size() == 1)
+					return new StructuredSelection(
+							(Log) selection.getFirstElement());
+				else
+					return new StructuredSelection();
+			}
+		};
 	}
 
 	private Composite composite;
@@ -230,6 +250,31 @@ public class OlogTableWidget extends Composite {
 		this.tableViewerColumnDescriptors.add(tableViewerColumnDescriptor);
 		changeSupport.firePropertyChange("tableViewerColumnDescriptors",
 				oldValue, this.tableViewerColumnDescriptors);
+	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
+	}	
+	
+	Control getControl(){
+		return this.table;
 	}
 
 }
