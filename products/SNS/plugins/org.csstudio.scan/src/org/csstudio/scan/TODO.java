@@ -98,7 +98,7 @@ public interface TODO
      *
      *  Done Scan tree 'live' view of running scan
      *
-     *  TODO Benchmarks
+     *  Done Benchmarks
      *
      *  Done Settings:
      *       Server uses preferences for RMI port.
@@ -106,7 +106,7 @@ public interface TODO
      *       but scan plugins set sys props from Eclipse preferences
      *       and offer GUI.
      *
-     *  TODO Scan tree use 'virtual' viewer?
+     *  Done Scan tree use 'virtual' viewer
      *
      *  TODO ant build.xml to create standalone client lib?
      *
