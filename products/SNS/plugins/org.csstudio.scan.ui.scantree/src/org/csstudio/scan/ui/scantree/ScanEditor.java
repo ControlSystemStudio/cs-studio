@@ -503,14 +503,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         setMessage(Messages.ServerDisconnected);
     }
 
-    /** Called when a command has been changed to update the display
-     *  @param command Command that has been edited
-     */
-    public void refreshCommand(final ScanCommand command)
-    {
-        gui.refreshCommand(command);
-    }
-
     /** @return Devices available on scan server. May be <code>null</code> */
     public DeviceInfo[] getDevices()
     {
@@ -707,10 +699,38 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
+    /** Called when a command has been changed to update the display
+     *  @param command Command that has been edited
+     */
+    public void refreshCommand(final ScanCommand command)
+    {
+        gui.refreshCommand(command);
+        setDirty(true);
+    }
+
     /** Refresh the GUI after tree manipulations */
     public void refresh()
     {
         gui.refresh();
         setDirty(true);
     }
+
+    /** Called when a command has been added to update the display
+     *  @param command Command that has been added
+     */
+    public void commandAdded(final ScanCommand command)
+    {
+        gui.commandAdded(command);
+        setDirty(true);
+    }
+
+    /** Called when a command has been removed to update the display
+     *  @param command Command that has been removed
+     */
+    public void commandRemoved(final ScanCommand command)
+    {
+        gui.commandRemoved(command);
+        setDirty(true);
+    }
+
 }

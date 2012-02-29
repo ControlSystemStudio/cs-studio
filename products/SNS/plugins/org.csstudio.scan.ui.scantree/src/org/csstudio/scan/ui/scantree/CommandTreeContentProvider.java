@@ -9,7 +9,6 @@ package org.csstudio.scan.ui.scantree;
 
 import java.util.List;
 
-import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.jface.viewers.ILazyTreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -83,6 +82,18 @@ public class CommandTreeContentProvider implements ILazyTreeContentProvider
             tree_viewer.setChildCount(element, count);
     }
 
+    /** @param element List of root elements or a specific command
+     *  @return Child count
+     */
+    private int getChildCount(final Object element)
+    {
+        if (element == elements)
+            return elements.size();
+        if (! (element instanceof ScanCommand))
+            return 0;
+        return TreeManipulator.getChildCount((ScanCommand) element);
+    }
+
     /** Determine child elements in tree
      *  @param element List of root elements or a specific command
      *  @return child commands or <code>null</code>
@@ -91,24 +102,9 @@ public class CommandTreeContentProvider implements ILazyTreeContentProvider
     {
         if (element == elements)
             return elements;
-        if (element instanceof LoopCommand)
-        {
-            final LoopCommand loop = (LoopCommand) element;
-            return loop.getBody();
-        }
-        return null;
-    }
-
-    /** Determine child count
-     *  @param element List of root elements or a specific command
-     *  @return child count, may be 0
-     */
-    private int getChildCount(final Object element)
-    {
-        final List<ScanCommand> children = getChildren(element);
-        if (children != null)
-            return children.size();
-        return 0;
+        if (! (element instanceof ScanCommand))
+            return null;
+        return TreeManipulator.getChildren((ScanCommand) element);
     }
 
     /** {@inheritDoc} */
@@ -117,28 +113,6 @@ public class CommandTreeContentProvider implements ILazyTreeContentProvider
     {
         if (! (element instanceof ScanCommand))
             return null;
-        return checkChildren(null, elements, (ScanCommand) element);
-    }
-
-    /** Recursively determine parent item
-     *  @param parent Possible parent
-     *  @param children child entries of parent
-     *  @param desired_child Desired child element
-     *  @return Parent element of child or <code>null</code>
-     */
-    private ScanCommand checkChildren(final ScanCommand parent, final List<ScanCommand> children, final ScanCommand desired_child)
-    {
-        for (ScanCommand child : children)
-        {
-            if (child == desired_child)
-                return parent;
-            if (getChildCount(child) > 0)
-            {
-                final ScanCommand found = checkChildren(child, getChildren(child), desired_child);
-                if (found != null)
-                    return found;
-            }
-        }
-        return null;
+        return TreeManipulator.getParent(elements, (ScanCommand) element);
     }
 }

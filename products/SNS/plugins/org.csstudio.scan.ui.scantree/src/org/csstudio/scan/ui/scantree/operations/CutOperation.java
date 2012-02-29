@@ -77,8 +77,11 @@ public class CutOperation extends AbstractOperation
             // so that the undo can simply undo each removed item.
             removals = new ArrayList<TreeManipulator.RemovalInfo>();
             for (int i=to_remove.size()-1;  i>=0;  --i)
-                removals.add(0, TreeManipulator.remove(commands, to_remove.get(i)));
-            editor.refresh();
+            {
+                final ScanCommand command = to_remove.get(i);
+                removals.add(0, TreeManipulator.remove(commands, command));
+                editor.commandRemoved(command);
+            }
 
             // Format as XML
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -109,8 +112,10 @@ public class CutOperation extends AbstractOperation
         try
         {
             for (TreeManipulator.RemovalInfo removal : removals)
+            {
                 removal.undo(commands);
-            editor.refresh();
+                editor.commandAdded(removal.getCommand());
+            }
         }
         catch (Exception ex)
         {

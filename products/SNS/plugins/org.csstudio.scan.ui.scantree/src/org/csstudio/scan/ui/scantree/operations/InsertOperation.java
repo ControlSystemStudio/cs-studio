@@ -73,8 +73,8 @@ public class InsertOperation extends AbstractOperation
             {
                 TreeManipulator.insert(commands, target, command, after);
                 target = command;
+                editor.commandAdded(command);
             }
-            editor.refresh();
         }
         catch (Exception ex)
         {
@@ -92,8 +92,10 @@ public class InsertOperation extends AbstractOperation
         try
         {
             for (ScanCommand command : new_commands)
+            {
                 TreeManipulator.remove(commands, command);
-            editor.refresh();
+                editor.commandRemoved(command);
+            }
         }
         catch (Exception ex)
         {

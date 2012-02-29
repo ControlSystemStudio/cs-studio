@@ -121,6 +121,8 @@ public class ScanTreeGUI
         label_provider = new CommandTreeLabelProvider();
         tree_view.setLabelProvider(label_provider);
 
+        tree_view.setInput(commands);
+
         // Double-click opens property panel
         tree_view.addDoubleClickListener(new IDoubleClickListener()
         {
@@ -483,7 +485,6 @@ public class ScanTreeGUI
         if (commands.size() < 1000)
             tree_view.expandAll();
 
-        address_map.clear();
         setAddressMap(commands);
     }
 
@@ -492,6 +493,7 @@ public class ScanTreeGUI
      */
     private void setAddressMap(List<ScanCommand> commands)
     {
+        address_map.clear();
         for (ScanCommand command : commands)
         {
             address_map.put(command.getAddress(), command);
@@ -551,16 +553,28 @@ public class ScanTreeGUI
     public void refresh()
     {
         setCommands(commands);
-        if (editor != null)
-            editor.setDirty(true);
     }
 
     /** @param command Command that has been updated, requiring a refresh of the GUI */
     public void refreshCommand(final ScanCommand command)
     {
         tree_view.refresh(command);
-        if (editor != null)
-            editor.setDirty(true);
+    }
+
+    /** @param command Command that has been added, requiring a refresh of the GUI */
+    public void commandAdded(final ScanCommand command)
+    {
+        final ScanCommand parent = TreeManipulator.getParent(commands, command);
+        if (parent == null)
+            tree_view.add(commands, command);
+        else
+            tree_view.add(parent, command);
+    }
+
+    /** @param command Command that has been removed, requiring a refresh of the GUI */
+    public void commandRemoved(final ScanCommand command)
+    {
+        tree_view.remove(command);
     }
 
     /** @return Selection provider for commands in scan tree */

@@ -52,6 +52,12 @@ public class TreeManipulator
             this.previous = previous;
         }
 
+        /** @return Command that was removed */
+        public ScanCommand getCommand()
+        {
+            return command;
+        }
+
         /** Undo the removal
          *  @param commands List where removal took place
          *  @throws Exception on error
@@ -88,6 +94,64 @@ public class TreeManipulator
                 }
             return false;
         }
+    }
+
+    /** Determine child count
+     *  @param command command for which to determine the child count
+     *  @return child count, may be 0
+     */
+    public static int getChildCount(final ScanCommand command)
+    {
+        final List<ScanCommand> children = getChildren(command);
+        if (children != null)
+            return children.size();
+        return 0;
+    }
+
+    /** Determine child elements in tree
+     *  @param command command for which to determine the child commands
+     *  @return child commands or <code>null</code>
+     */
+    public static List<ScanCommand> getChildren(final ScanCommand command)
+    {
+        if (command instanceof LoopCommand)
+        {
+            final LoopCommand loop = (LoopCommand) command;
+            return loop.getBody();
+        }
+        return null;
+    }
+
+
+    /** @param commands List of scan commands
+     *  @param command Command for which to determine the parent command
+     *  @return Parent command or <code>null</code>
+     */
+    public static ScanCommand getParent(final List<ScanCommand> commands, final ScanCommand command)
+    {
+        return checkChildren(null, commands, command);
+    }
+
+    /** Recursively determine parent item
+     *  @param parent Possible parent
+     *  @param children child entries of parent
+     *  @param desired_child Desired child element
+     *  @return Parent element of child or <code>null</code>
+     */
+    private static ScanCommand checkChildren(final ScanCommand parent, final List<ScanCommand> children, final ScanCommand desired_child)
+    {
+        for (ScanCommand child : children)
+        {
+            if (child == desired_child)
+                return parent;
+            if (getChildCount(child) > 0)
+            {
+                final ScanCommand found = checkChildren(child, getChildren(child), desired_child);
+                if (found != null)
+                    return found;
+            }
+        }
+        return null;
     }
 
     /** @param commands List of scan commands

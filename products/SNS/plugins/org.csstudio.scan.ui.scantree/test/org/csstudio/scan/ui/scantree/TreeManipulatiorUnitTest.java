@@ -9,6 +9,7 @@ package org.csstudio.scan.ui.scantree;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -38,8 +39,17 @@ public class TreeManipulatiorUnitTest
         assertEquals(5, commands.size());
 
         assertEquals(SetCommand.class, commands.get(0).getClass());
+        assertEquals(0, TreeManipulator.getChildCount(commands.get(0)));
+        assertNull(TreeManipulator.getParent(commands, commands.get(0)));
+
         assertEquals(WaitCommand.class, commands.get(1).getClass());
         assertEquals(DelayCommand.class, commands.get(2).getClass());
+
+        assertEquals(LoopCommand.class, commands.get(3).getClass());
+        assertEquals(1, TreeManipulator.getChildCount(commands.get(3)));
+
+        List<ScanCommand> children = TreeManipulator.getChildren(commands.get(3));
+        assertSame(commands.get(3), TreeManipulator.getParent(commands, children.get(0)));
 
         // Add after the second command
         ScanCommand add = new LogCommand("add_after_Wait");
