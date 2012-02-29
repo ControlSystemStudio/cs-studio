@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.operations;
 
-import org.csstudio.scan.ui.scantree.ScanEditorContributor;
+import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

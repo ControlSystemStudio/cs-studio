@@ -9,8 +9,8 @@ package org.csstudio.scan.ui.scantree.operations;
 
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.scan.ui.scantree.Activator;
-import org.csstudio.scan.ui.scantree.CommandListView;
 import org.csstudio.scan.ui.scantree.Messages;
+import org.csstudio.scan.ui.scantree.gui.CommandListView;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;

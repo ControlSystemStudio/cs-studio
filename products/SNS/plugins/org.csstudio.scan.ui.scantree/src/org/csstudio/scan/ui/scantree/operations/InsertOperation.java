@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.TreeManipulator;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -33,12 +32,24 @@ public class InsertOperation extends AbstractOperation
 
     /** Initialize
      *  @param editor Editor that submitted this operation
-     *  @param commands Scan commands
      *  @param location Where to add
-     *  @param new_commands Command to add
-     *
+     *  @param new_commands Commands to add
      */
-    public InsertOperation(final ScanEditor editor, final List<ScanCommand> commands,
+    public InsertOperation(final ScanEditor editor,
+            final ScanCommand location,
+            final List<ScanCommand> new_commands,
+            final boolean after)
+    {
+        this(editor, editor.getModel().getCommands(), location, new_commands, after);
+    }
+
+    /** Initialize
+     *  @param editor Editor that submitted this operation
+     *  @param location Where to add
+     *  @param new_commands Commands to add
+     */
+    public InsertOperation(final ScanEditor editor,
+            final List<ScanCommand> commands,
             final ScanCommand location,
             final List<ScanCommand> new_commands,
             final boolean after)
@@ -71,9 +82,8 @@ public class InsertOperation extends AbstractOperation
                 target = commands.get(commands.size()-1);
             for (ScanCommand command : new_commands)
             {
-                TreeManipulator.insert(commands, target, command, after);
+                editor.getModel().insert(commands, target, command, after);
                 target = command;
-                editor.commandAdded(command);
             }
         }
         catch (Exception ex)
@@ -92,10 +102,7 @@ public class InsertOperation extends AbstractOperation
         try
         {
             for (ScanCommand command : new_commands)
-            {
-                TreeManipulator.remove(commands, command);
-                editor.commandRemoved(command);
-            }
+                editor.getModel().remove(command);
         }
         catch (Exception ex)
         {

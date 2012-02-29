@@ -26,7 +26,7 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.csstudio.scan.ui.scantree.ScanEditor"
-            contributorClass="org.csstudio.scan.ui.scantree.ScanEditorContributor"
+            contributorClass="org.csstudio.scan.ui.scantree.gui.ScanEditorContributor"
             default="false"
             extensions="scn"
             icon="icons/scantree.gif"
@@ -38,7 +38,7 @@
          point="org.eclipse.ui.views">
       <view
             category="org.csstudio"
-            class="org.csstudio.scan.ui.scantree.CommandListView"
+            class="org.csstudio.scan.ui.scantree.gui.CommandListView"
             icon="icons/scantree.gif"
             id="org.csstudio.scan.ui.scantree.commandlist"
             name="%ScanCommands"
@@ -174,7 +174,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.csstudio.scan.ui.scantree.Perspective"
+            class="org.csstudio.scan.ui.scantree.gui.Perspective"
             icon="icons/scantree.gif"
             id="org.csstudio.scan.ui.scantree.perspective"
             name="%ScanTree">

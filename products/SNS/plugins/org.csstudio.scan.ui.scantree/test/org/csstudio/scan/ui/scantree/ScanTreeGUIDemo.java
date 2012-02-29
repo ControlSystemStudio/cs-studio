@@ -7,9 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import java.util.List;
-
-import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.gui.ScanTreeGUI;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -33,10 +32,11 @@ public class ScanTreeGUIDemo
         final Shell shell = new Shell(display);
 
         // Scan GUI
-        final List<ScanCommand> commands = DemoScan.createCommands();
+        final ScanTreeModel model = new ScanTreeModel();
         shell.setLayout(new FillLayout());
-        final ScanTreeGUI gui = new ScanTreeGUI(shell, null);
-        gui.setCommands(commands);
+        new ScanTreeGUI(shell, model, null);
+
+        model.setCommands(DemoScan.createCommands());
 
         // SWT main loop
         shell.setSize(800, 600);

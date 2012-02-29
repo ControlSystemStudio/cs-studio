@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.scan.ui.scantree.gui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,7 +59,7 @@ public class ScanCommandTransfer extends ByteArrayTransfer
     /** Convert ScanCommand to XML and send via ByteArrayTransfer */
     @SuppressWarnings("unchecked")
     @Override
-    protected void javaToNative(final Object object, final TransferData transfer)
+    public void javaToNative(final Object object, final TransferData transfer)
     {
         if (! (object instanceof List<?>))
             DND.error(DND.ERROR_INVALID_DATA);
@@ -81,7 +81,7 @@ public class ScanCommandTransfer extends ByteArrayTransfer
 
     /** Receive XML via ByteArrayTransfer, decode ScanCommand */
     @Override
-    protected Object nativeToJava(TransferData transferData)
+    public Object nativeToJava(TransferData transferData)
     {
         try
         {

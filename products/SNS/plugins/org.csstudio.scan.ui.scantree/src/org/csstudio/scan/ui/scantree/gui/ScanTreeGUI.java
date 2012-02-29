@@ -5,7 +5,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.scan.ui.scantree.gui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -25,6 +25,11 @@ import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.ui.scantree.Activator;
+import org.csstudio.scan.ui.scantree.Messages;
+import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModelListener;
 import org.csstudio.scan.ui.scantree.operations.AddCommandAction;
 import org.csstudio.scan.ui.scantree.operations.CutOperation;
 import org.csstudio.scan.ui.scantree.operations.InsertOperation;
@@ -55,6 +60,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -67,13 +74,13 @@ import org.eclipse.ui.IWorkbenchPartSite;
 /** GUI for the scan tree
  *  @author Kay Kasemir
  */
-public class ScanTreeGUI
+public class ScanTreeGUI implements ScanTreeModelListener
 {
     /** Associated editor */
     final private ScanEditor editor;
 
     /** Commands displayed and edited in this GUI */
-    private List<ScanCommand> commands = new ArrayList<ScanCommand>();
+    final private ScanTreeModel model;
 
     /** Map from addresses to commands */
     final Map<Long, ScanCommand> address_map = new HashMap<Long, ScanCommand>();
@@ -88,12 +95,24 @@ public class ScanTreeGUI
      *  @param parent
      *  @param editor Scan editor. Limited demo functionality when <code>null</code>
      */
-    public ScanTreeGUI(final Composite parent, final ScanEditor editor)
+    public ScanTreeGUI(final Composite parent, final ScanTreeModel model,
+            final ScanEditor editor)
     {
+        this.model = model;
         this.editor = editor;
         createComponents(parent);
         createContextMenu(editor == null ? null : editor.getSite());
         addDragDrop();
+
+        model.addListener(this);
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                model.removeListener(ScanTreeGUI.this);
+            }
+        });
     }
 
     /** Create GUI elements
@@ -121,7 +140,7 @@ public class ScanTreeGUI
         label_provider = new CommandTreeLabelProvider();
         tree_view.setLabelProvider(label_provider);
 
-        tree_view.setInput(commands);
+        tree_view.setInput(model);
 
         // Double-click opens property panel
         tree_view.addDoubleClickListener(new IDoubleClickListener()
@@ -197,6 +216,13 @@ public class ScanTreeGUI
         {
             this.command = command;
             this.section = section;
+        }
+
+        @SuppressWarnings("nls")
+        @Override
+        public String toString()
+        {
+            return section + " of " + command;
         }
     };
 
@@ -280,13 +306,12 @@ public class ScanTreeGUI
                 // Remove 'original' command that was moved to new location
                 try
                 {
-                    editor.executeForUndo(new CutOperation(editor, commands, selection));
+                    editor.executeForUndo(new CutOperation(editor, selection));
                 }
                 catch (Exception ex)
                 {
                     ExceptionDetailsErrorDialog.openError(tree_view.getControl().getShell(), Messages.Error, ex);
                 }
-                refresh();
             }
         });
 
@@ -412,11 +437,7 @@ public class ScanTreeGUI
 
         if (target == null)
         {
-            // Add to end of commands
-            final ScanCommand location = commands.size() > 0
-                    ? commands.get(commands.size()-1)
-                    : null;
-            editor.executeForUndo(new InsertOperation(editor, commands, location,
+            editor.executeForUndo(new InsertOperation(editor, null,
                     dropped_commands, true));
         }
         else
@@ -435,7 +456,7 @@ public class ScanTreeGUI
             else
             {
                 final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                editor.executeForUndo(new InsertOperation(editor, commands, target.command,
+                editor.executeForUndo(new InsertOperation(editor, target.command,
                         dropped_commands, after));
             }
         }
@@ -474,20 +495,6 @@ public class ScanTreeGUI
         tree_view.getTree().setFocus();
     }
 
-    /** @param commands Commands to display/edit */
-    public void setCommands(final List<ScanCommand> commands)
-    {
-        CommandSequence.setAddresses(commands);
-
-        this.commands = commands;
-        tree_view.setInput(commands);
-        // When there are many commands, the tree expansion is expensive
-        if (commands.size() < 1000)
-            tree_view.expandAll();
-
-        setAddressMap(commands);
-    }
-
     /** @param commands Commands to add to address map
      *  @see #findCommand()
      */
@@ -513,12 +520,6 @@ public class ScanTreeGUI
         // except for the need to 'drill down' for commands with
         // a body.
         return address_map.get(address);
-    }
-
-    /** @return Commands displayed/edited in GUI */
-    public List<ScanCommand> getCommands()
-    {
-        return commands;
     }
 
     /** @param address Address of 'active' command to highlight */
@@ -549,37 +550,50 @@ public class ScanTreeGUI
         });
     }
 
-    /** Perform full GUI refresh */
-    public void refresh()
+    /** @return Selection provider for commands in scan tree */
+    public ISelectionProvider getSelectionProvider()
     {
-        setCommands(commands);
+        return tree_view;
     }
 
-    /** @param command Command that has been updated, requiring a refresh of the GUI */
-    public void refreshCommand(final ScanCommand command)
+    /** {@inheritDoc} */
+    @Override
+    public void commandsChanged()
     {
-        tree_view.refresh(command);
+        tree_view.refresh();
+
+        final List<ScanCommand> commands = model.getCommands();
+        CommandSequence.setAddresses(commands);
+
+        // When there are many commands, the tree expansion is expensive
+        if (commands.size() < 1000)
+            tree_view.expandAll();
+
+        setAddressMap(commands);
     }
 
-    /** @param command Command that has been added, requiring a refresh of the GUI */
+    /** {@inheritDoc} */
+    @Override
     public void commandAdded(final ScanCommand command)
     {
-        final ScanCommand parent = TreeManipulator.getParent(commands, command);
+        final ScanCommand parent = model.getParent(command);
         if (parent == null)
-            tree_view.add(commands, command);
+            tree_view.add(model, command);
         else
             tree_view.add(parent, command);
     }
 
-    /** @param command Command that has been removed, requiring a refresh of the GUI */
+    /** {@inheritDoc} */
+    @Override
     public void commandRemoved(final ScanCommand command)
     {
         tree_view.remove(command);
     }
 
-    /** @return Selection provider for commands in scan tree */
-    public ISelectionProvider getSelectionProvider()
+    /** {@inheritDoc} */
+    @Override
+    public void commandPropertyChanged(ScanCommand command)
     {
-        return tree_view;
+        tree_view.refresh(command);
     }
 }

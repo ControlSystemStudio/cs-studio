@@ -1,10 +1,11 @@
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.scan.ui.scantree.gui;
 
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.Messages;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;

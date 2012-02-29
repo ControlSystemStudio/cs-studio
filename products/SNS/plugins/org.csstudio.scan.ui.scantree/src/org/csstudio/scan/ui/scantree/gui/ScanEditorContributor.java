@@ -5,10 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.ui.scantree;
+package org.csstudio.scan.ui.scantree.gui;
 
 import java.lang.ref.WeakReference;
 
+import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPVAdapterFactory;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.EditorActionBarContributor;

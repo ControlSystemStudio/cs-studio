@@ -63,8 +63,7 @@ public class PropertyChangeOperation extends AbstractOperation
     {
         try
         {
-            command.setProperty(property, new_value);
-            editor.refreshCommand(command);
+            editor.getModel().changeProperty(command, property, new_value);
         }
         catch (Exception ex)
         {
@@ -81,8 +80,7 @@ public class PropertyChangeOperation extends AbstractOperation
     {
         try
         {
-            command.setProperty(property, old_value);
-            editor.refreshCommand(command);
+            editor.getModel().changeProperty(command, property, old_value);
         }
         catch (Exception ex)
         {

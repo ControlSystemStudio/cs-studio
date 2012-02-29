@@ -24,6 +24,10 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanUIActivator;
+import org.csstudio.scan.ui.scantree.gui.EmptyEditorInput;
+import org.csstudio.scan.ui.scantree.gui.ScanTreeGUI;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModelListener;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
@@ -81,7 +85,7 @@ import org.eclipse.ui.part.FileEditorInput;
  *
  *  @author Kay Kasemir
  */
-public class ScanEditor extends EditorPart implements ScanInfoModelListener
+public class ScanEditor extends EditorPart implements ScanInfoModelListener, ScanTreeModelListener
 {
     /** Editor ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.editor"; //$NON-NLS-1$
@@ -91,6 +95,9 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
 
     /** Info about scan server */
     private ScanInfoModel scan_info = null;
+
+    /** Commands displayed and edited in this editor*/
+    final private ScanTreeModel model = new ScanTreeModel();
 
     /** Operations history for undo/redo.
      *
@@ -169,7 +176,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     public static ScanEditor createInstance(final ScanInfo scan, final List<ScanCommand> commands)
     {
         final ScanEditor editor = createInstance(new EmptyEditorInput());
-        editor.setCommands(commands);
+        editor.model.setCommands(commands);
         if (! scan.getState().isDone())
             editor.scan_id = scan.getId();
         return editor;
@@ -217,7 +224,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             {
                 final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
                 final List<ScanCommand> commands = reader.readXMLStream(file.getContents());
-                gui.setCommands(commands);
+                model.setCommands(commands);
             }
             catch (Exception ex)
             {
@@ -230,6 +237,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         getSite().setSelectionProvider(gui.getSelectionProvider());
 
         scan_info.addListener(this);
+        model.addListener(this);
     }
 
     /** Read device list from server */
@@ -336,7 +344,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         info_section.setLayoutData(fd);
 
         // 2) Scan Tree
-        gui = new ScanTreeGUI(parent, this);
+        gui = new ScanTreeGUI(parent, model, this);
 
         fd = new FormData();
         fd.left = new FormAttachment(0);
@@ -367,15 +375,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     @Override
     public void dispose()
     {
+        model.removeListener(this);
         if (scan_info != null)
         {
             scan_info.removeListener(this);
             scan_info.release();
             scan_info = null;
         }
-        // Remove undo/redo operations associated with this editor
-        // from the shared operations history of all scan editors
-        operations.dispose(undo_context, true, true, true);
+        clearUndoHistory();
 
         if (resume_icon != null)
             resume_icon.dispose();
@@ -385,6 +392,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             abort_icon.dispose();
 
         super.dispose();
+    }
+
+    /** Remove undo/redo operations associated with this editor
+     *  from the shared operations history of all scan editors
+     */
+    private void clearUndoHistory()
+    {
+        operations.dispose(undo_context, true, true, true);
     }
 
     /** {@inheritDoc} */
@@ -509,17 +524,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         return devices;
     }
 
-    /** @param commands Commands to edit */
-    public void setCommands(final List<ScanCommand> commands)
+    /** @return Commands displayed/edited in this editor */
+    public ScanTreeModel getModel()
     {
-        gui.setCommands(commands);
-        setDirty(true);
-    }
-
-    /** @return Commands displayed/edited in GUI */
-    public List<ScanCommand> getCommands()
-    {
-        return gui.getCommands();
+        return model;
     }
 
     /** @return Currently selected scan commands or <code>null</code> */
@@ -558,7 +566,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
-        final List<ScanCommand> commands = gui.getCommands();
+        final List<ScanCommand> commands = model.getCommands();
 
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
@@ -610,7 +618,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         {
             // Write commands as XML to buffer
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, gui.getCommands());
+            XMLCommandWriter.write(buf, model.getCommands());
             buf.close();
 
             // Write the buffer to file
@@ -620,6 +628,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
             else
                 file.create(stream, true, monitor);
             setDirty(false);
+            clearUndoHistory();
             return true;
         }
         catch (Exception ex)
@@ -699,38 +708,31 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener
         firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
-    /** Called when a command has been changed to update the display
-     *  @param command Command that has been edited
-     */
-    public void refreshCommand(final ScanCommand command)
+    /** {@inheritDoc} */
+    @Override
+    public void commandsChanged()
     {
-        gui.refreshCommand(command);
         setDirty(true);
     }
 
-    /** Refresh the GUI after tree manipulations */
-    public void refresh()
-    {
-        gui.refresh();
-        setDirty(true);
-    }
-
-    /** Called when a command has been added to update the display
-     *  @param command Command that has been added
-     */
+    /** {@inheritDoc} */
+    @Override
     public void commandAdded(final ScanCommand command)
     {
-        gui.commandAdded(command);
         setDirty(true);
     }
 
-    /** Called when a command has been removed to update the display
-     *  @param command Command that has been removed
-     */
+    /** {@inheritDoc} */
+    @Override
     public void commandRemoved(final ScanCommand command)
     {
-        gui.commandRemoved(command);
         setDirty(true);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void commandPropertyChanged(final ScanCommand command)
+    {
+        setDirty(true);
+    }
 }
