@@ -1,5 +1,8 @@
 package org.csstudio.channel.opiwidgets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import gov.bnl.channelfinder.api.ChannelQuery;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -31,6 +34,25 @@ public abstract class AbstractChannelWidgetModel extends AbstractWidgetModel {
 	 */
 	public ChannelQuery getChannelQuery() {
 		return ChannelQuery.query((String) getCastedPropertyValue(CHANNEL_QUERY)).build();
+	}
+	
+	/**
+	 * Returns the property as a parsed list of trimmed strings.
+	 * 
+	 * @param propertyName name of the property
+	 * @return parsed list of strings
+	 */
+	public List<String> getListProperty(String propertyName) {
+		String list = getCastedPropertyValue(propertyName);
+		String[] tokens = list.split(",");
+		List<String> values = new ArrayList<String>();
+		for (String token : tokens) {
+			token = token.trim();
+			if (!token.isEmpty()) {
+				values.add(token);
+			}
+		}
+		return values;
 	}
 
 }
