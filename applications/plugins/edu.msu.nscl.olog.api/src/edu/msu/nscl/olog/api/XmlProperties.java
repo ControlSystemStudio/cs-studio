@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2010 Brookhaven National Laboratory
- * Copyright (c) 2010-2011 Helmholtz-Zentrum Berlin für Materialien und Energie GmbH
+ * Copyright (c) 2010-2011 Helmholtz-Zentrum Berlin fuer Materialien und Energie GmbH
  * All rights reserved. Use is subject to license terms and conditions.
  */
 

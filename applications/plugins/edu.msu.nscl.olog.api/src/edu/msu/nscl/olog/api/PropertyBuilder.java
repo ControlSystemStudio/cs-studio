@@ -38,6 +38,11 @@ public class PropertyBuilder {
 		return propertyBuilder;
 	}
 
+	public PropertyBuilder attribute(String attribute){
+		this.attributes.put(attribute, null);
+		return this;
+	}
+	
 	public PropertyBuilder attribute(String attribute, String attributeValue) {
 		this.attributes.put(attribute, attributeValue);
 		return this;

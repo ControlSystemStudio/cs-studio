@@ -11,8 +11,8 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import edu.msu.nscl.olog.api.Olog;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
-import edu.msu.nscl.olog.api.OlogClientManager;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -79,15 +79,15 @@ public class Activator extends AbstractUIPlugin {
 				}
 				log.info("Creating Olog client : " + url);
 				try {
-					OlogClientManager.registerDefaultClient(ologClientBuilder
-							.create());
+					// OlogClientManager.registerDefaultClient(ologClientBuilder
+					// .create());
+					Olog.setClient(ologClientBuilder.create());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		};
-		org.csstudio.utility.olog.Activator.getDefault()
-				.getPreferenceStore()
+		org.csstudio.utility.olog.Activator.getDefault().getPreferenceStore()
 				.addPropertyChangeListener(preferenceListner);
 	}
 
@@ -100,8 +100,7 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		org.csstudio.utility.olog.Activator.getDefault()
-				.getPreferenceStore()
+		org.csstudio.utility.olog.Activator.getDefault().getPreferenceStore()
 				.removePropertyChangeListener(preferenceListner);
 		super.stop(context);
 	}
