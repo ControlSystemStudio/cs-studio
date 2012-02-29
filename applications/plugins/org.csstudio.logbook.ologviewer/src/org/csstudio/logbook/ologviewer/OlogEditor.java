@@ -1,5 +1,7 @@
 package org.csstudio.logbook.ologviewer;
 
+import static org.csstudio.logbook.ologviewer.SimpleOlogTableColumnDescriptor.Builder.createColumn;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
@@ -8,8 +10,6 @@ import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -19,18 +19,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
-
-import static org.csstudio.logbook.ologviewer.SimpleOlogTableColumnDescriptor.Builder.*;
-import edu.msu.nscl.olog.api.TestLogs;
 
 public class OlogEditor extends EditorPart {
 	public OlogEditor() {
@@ -177,8 +172,7 @@ public class OlogEditor extends EditorPart {
 				true, 2, 1));
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
 		gridLayout_1.numColumns = 2;
-		ologTableWidget.setLogs(TestLogs.testLogs());
-		
+				
 		PopupMenuUtil.installPopupForView(ologTableWidget.getControl(), getSite(), ologTableWidget);
 	}
 
