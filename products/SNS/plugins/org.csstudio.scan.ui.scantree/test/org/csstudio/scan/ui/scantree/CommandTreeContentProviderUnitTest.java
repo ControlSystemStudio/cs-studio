@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.scantree;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -28,38 +29,37 @@ public class CommandTreeContentProviderUnitTest
     public void testCommandTreeContentProvider()
     {
         final List<ScanCommand> commands = DemoScan.createCommands();
-        
+
         final CommandTreeContentProvider provider = new CommandTreeContentProvider();
         provider.inputChanged(null, null, commands);
-        
+
         // Compare basic list of commands
-        final Object[] elements = provider.getElements(commands);
-        assertEquals(commands.size(), elements.length);
-        assertSame(commands.get(0), elements[0]);
-        
+        final List<ScanCommand> elements = provider.getChildren(commands);
+        assertSame(commands, elements);
+
         // Check for loops
-        assertTrue(elements[3] instanceof LoopCommand);
-        assertTrue(elements[4] instanceof LoopCommand);
-        LoopCommand loop = (LoopCommand) elements[3];
-        
+        assertTrue(elements.get(3) instanceof LoopCommand);
+        assertTrue(elements.get(4) instanceof LoopCommand);
+        LoopCommand loop = (LoopCommand) elements.get(3);
+
         // Loop body turns into child elements in tree display
-        assertTrue(provider.hasChildren(loop));
-        Object[] body = provider.getChildren(loop);
-        
-        assertEquals(loop.getBody().size(), body.length);
-        assertEquals(loop, provider.getParent(body[0]));
-        
+        List<ScanCommand> body = provider.getChildren(loop);
+        assertNotNull(body);
+
+        assertEquals(loop.getBody().size(), body.size());
+        assertEquals(loop, provider.getParent(body.get(0)));
+
         // Check body of 2D loop
-        loop = (LoopCommand) elements[4];
-        assertTrue(provider.hasChildren(loop));
+        loop = (LoopCommand) elements.get(4);
         body = provider.getChildren(loop);
+        assertNotNull(body);
         // Get inner loop
-        assertTrue(provider.hasChildren(body[0]));
-        loop = (LoopCommand) body[0];
+        assertNotNull(provider.getChildren(body.get(0)));
+        loop = (LoopCommand) body.get(0);
         assertEquals("ypos", loop.getDeviceName());
         body = provider.getChildren(loop);
-        
-        assertTrue(body[0] instanceof WaitCommand);
-        assertEquals(loop, provider.getParent(body[0]));
+
+        assertTrue(body.get(0) instanceof WaitCommand);
+        assertEquals(loop, provider.getParent(body.get(0)));
     }
 }

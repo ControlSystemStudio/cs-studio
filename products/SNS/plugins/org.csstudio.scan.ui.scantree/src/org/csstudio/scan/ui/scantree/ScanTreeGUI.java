@@ -35,7 +35,9 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -59,6 +61,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for the scan tree
@@ -98,10 +101,21 @@ public class ScanTreeGUI
      */
     private void createComponents(final Composite parent)
     {
-        tree_view = new TreeViewer(parent, SWT.MULTI |
-                SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        // TreeColumnLayout requires that tree is the only
+        // child, so wrap tree in container
+        final Composite box = new Composite(parent, 0);
+        final TreeColumnLayout layout = new TreeColumnLayout();
+        box.setLayout(layout);
+
+        // Tree with single, max-width column
+        tree_view = new TreeViewer(box, SWT.VIRTUAL |
+                SWT.MULTI | SWT.FULL_SELECTION |
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Tree tree = tree_view.getTree();
         tree.setLinesVisible(true);
+        final TreeColumn column = new TreeColumn(tree,  SWT.LEFT);
+        layout.setColumnData(column, new ColumnWeightData(100, true));
+
         tree_view.setUseHashlookup(true);
         tree_view.setContentProvider(new CommandTreeContentProvider());
         label_provider = new CommandTreeLabelProvider();
@@ -123,7 +137,8 @@ public class ScanTreeGUI
     /** @return Top-level control of the GUI */
     public Control getControl()
     {
-        return tree_view.getControl();
+        // Top is the 'box' that wraps the tree
+        return tree_view.getControl().getParent();
     }
 
     /** Create context menu */
@@ -464,7 +479,9 @@ public class ScanTreeGUI
 
         this.commands = commands;
         tree_view.setInput(commands);
-        tree_view.expandAll();
+        // When there are many commands, the tree expansion is expensive
+        if (commands.size() < 1000)
+            tree_view.expandAll();
 
         address_map.clear();
         setAddressMap(commands);
