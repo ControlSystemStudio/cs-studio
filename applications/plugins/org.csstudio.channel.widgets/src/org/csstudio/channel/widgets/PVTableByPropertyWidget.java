@@ -7,7 +7,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
@@ -40,6 +41,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -454,6 +456,44 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	@Override
 	public void configurationDialogClosed() {
 		dialog = null;
+	}
+	
+	/** Memento tag */
+	private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_ROW_PROPERTY = "rowProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_COLUMN_PROPERTY = "columnProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_COLUMN_TAGS = "columnTags"; //$NON-NLS-1$
+	
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
+		}
+		if (getRowProperty() != null) {
+			memento.putString(MEMENTO_ROW_PROPERTY, getRowProperty());
+		}
+		if (getColumnProperty() != null) {
+			memento.putString(MEMENTO_COLUMN_PROPERTY, getColumnProperty());
+		}
+		if (getColumnTags() != null && !getColumnTags().isEmpty()) {
+			memento.putString(MEMENTO_COLUMN_TAGS, MementoUtil.toCommaSeparated(getColumnTags()));
+		}
+	}
+	
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_ROW_PROPERTY) != null) {
+				setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_COLUMN_PROPERTY) != null) {
+				setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_COLUMN_TAGS) != null) {
+				setColumnTags(MementoUtil.fromCommaSeparated(memento.getString(MEMENTO_COLUMN_TAGS)));
+			}
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_CHANNEL_QUERY)).build());
+			}
+		}
 	}
 	
 }

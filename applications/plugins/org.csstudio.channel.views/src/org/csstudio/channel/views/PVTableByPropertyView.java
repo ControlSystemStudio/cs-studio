@@ -38,11 +38,6 @@ public class PVTableByPropertyView extends ViewPart {
 	/** Memento */
 	private IMemento memento = null;
 	
-	/** Memento tag */
-	private static final String MEMENTO_QUERY = "ChannelQuery"; //$NON-NLS-1$
-	private static final String MEMENTO_ROW_PROPERTY = "RowProperty"; //$NON-NLS-1$
-	private static final String MEMENTO_COLUMN_PROPERTY = "ColumnProperty"; //$NON-NLS-1$
-	
 	/**
 	 * The constructor.
 	 */
@@ -82,12 +77,7 @@ public class PVTableByPropertyView extends ViewPart {
 	@Override
 	public void saveState(final IMemento memento) {
 		super.saveState(memento);
-		// Save the currently selected variable
-		if (inputBar.getChannelQuery() != null) {
-			memento.putString(MEMENTO_QUERY, inputBar.getChannelQuery().getQuery());
-		}
-		memento.putString(MEMENTO_ROW_PROPERTY, tableWidget.getRowProperty());
-		memento.putString(MEMENTO_COLUMN_PROPERTY, tableWidget.getColumnProperty());		
+		tableWidget.saveState(memento);
 	}
 	
 	public void setChannelQuery(ChannelQuery channelQuery) {
@@ -137,13 +127,8 @@ public class PVTableByPropertyView extends ViewPart {
 		fd_waterfallComposite.right = new FormAttachment(100, -5);
 		tableWidget.setLayoutData(fd_waterfallComposite);
 		
-		if (memento != null) {
-			tableWidget.setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
-			tableWidget.setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
-			if (memento.getString(MEMENTO_QUERY) != null) {
-				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_QUERY)).build());
-			}
-		}
+		tableWidget.loadState(memento);
+		inputBar.setChannelQuery(tableWidget.getChannelQuery());
 		
 		PopupMenuUtil.installPopupForView(tableWidget, getSite(), tableWidget);
 		PopupMenuUtil.installPopupForView(inputBar, getSite(), inputBar);
