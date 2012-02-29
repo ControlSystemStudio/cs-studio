@@ -495,6 +495,14 @@ public class ScanTreeGUI implements ScanTreeModelListener
         tree_view.getTree().setFocus();
     }
 
+    /** Update the addresses of all commands */
+    private void updateAddresses()
+    {
+        final List<ScanCommand> commands = model.getCommands();
+        CommandSequence.setAddresses(commands);
+        setAddressMap(commands);
+    }
+
     /** @param commands Commands to add to address map
      *  @see #findCommand()
      */
@@ -564,15 +572,11 @@ public class ScanTreeGUI implements ScanTreeModelListener
     public void commandsChanged()
     {
         tree_view.refresh();
-
-        final List<ScanCommand> commands = model.getCommands();
-        CommandSequence.setAddresses(commands);
-
         // When there are many commands, the tree expansion is expensive
+        final List<ScanCommand> commands = model.getCommands();
         if (commands.size() < 1000)
             tree_view.expandAll();
-
-        setAddressMap(commands);
+        updateAddresses();
     }
 
     /** {@inheritDoc} */
@@ -584,6 +588,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
             tree_view.add(model, command);
         else
             tree_view.add(parent, command);
+        updateAddresses();
     }
 
     /** {@inheritDoc} */
@@ -591,6 +596,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
     public void commandRemoved(final ScanCommand command)
     {
         tree_view.remove(command);
+        updateAddresses();
     }
 
     /** {@inheritDoc} */
