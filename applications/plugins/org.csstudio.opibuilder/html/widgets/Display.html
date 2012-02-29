@@ -15,8 +15,13 @@
    
     <h3>Special Properties</h3>
     <ul>
+     <li>Auto Scale Widgets (auto_scale_widgets) <dl><dd>
+     Automatically scale widgets in this display as the display area resizes. The scale behavior of each widget
+     can be configured by widget's property <code>Scale Options</code>.
+     <code>Minimum Width/Height</code> is the width/height that the display will stop to scale widgets in that dimension when
+     display width/height is smaller than it. If its value is -1, it will use display's default width/height as minimum width/height.</dd></dl></li>
      <li>Auto Zoom to Fit All (auto_zoom_to_fit_all)<dl><dd>
-     Auto scale all the widgets as the window resizes. 
+     Auto zoom the display to fit all spaces as the display area resizes. 
      If this is set to yes, zoom in operation may not work.</dd></dl></li>
      <li>Grid Space (grid_space) <dl><dd>Spacing in pixels between grid lines.  Affects the Editor only 
      </dd></dl></li>

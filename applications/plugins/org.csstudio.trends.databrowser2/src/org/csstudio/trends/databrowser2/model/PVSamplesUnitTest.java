@@ -17,10 +17,12 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
+import org.csstudio.swt.xygraph.linearscale.Range;
 import org.junit.Test;
 
 /** JUnit test for PVSamples
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto added test case for waveform index
  */
 @SuppressWarnings("nls")
 public class PVSamplesUnitTest
@@ -96,5 +98,91 @@ public class PVSamplesUnitTest
         System.out.println("Sampled : " + value);
         final ITimestamp patched_time = value.getTime();
         assertTrue(patched_time.isValid());
+    }
+    
+    @Test
+    public void testWaveformIndex()
+    {
+        // Start w/ empty PVSamples
+        final PVSamples samples = new PVSamples();
+        assertEquals(0, samples.getSize());
+        assertNull(samples.getXDataMinMax());
+        assertNull(samples.getYDataMinMax());
+
+        // Add 'historic' samples
+        final ArrayList<IValue> history = new ArrayList<IValue>();
+        history.add(TestSampleBuilder.makeWaveform(0, new double[] {0.0, 0.1, 0.2}));
+        history.add(TestSampleBuilder.makeWaveform(1, new double[] {1.0, 1.1, 1.2, 1.3}));
+        samples.mergeArchivedData("Test", history);
+        System.out.println(samples.toString());
+        
+        // PVSamples include continuation until 'now'
+        System.out.println(samples.toString());
+        assertEquals(0.0, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.0, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(0.0, 1.0), samples.getYDataMinMax());
+        
+        // Change the waveform index to 1
+        samples.setWaveformIndex(1);
+        assertEquals(0.1, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.1, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(0.1, 1.1), samples.getYDataMinMax());
+        
+        // Change the waveform index to 2
+        samples.setWaveformIndex(2);
+        assertEquals(0.2, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.2, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(new Range(0.2, 1.2), samples.getYDataMinMax());
+
+        // Add more 'historic' samples with non-zero waveform index
+        final ArrayList<IValue> history2 = new ArrayList<IValue>();
+        history2.add(TestSampleBuilder.makeWaveform(2, new double[] {2.0, 2.1, 2.2}));
+        history2.add(TestSampleBuilder.makeWaveform(3, new double[] {3.0, 3.1, 3.2, 3.3}));
+        samples.mergeArchivedData("Test2", history2);
+        System.out.println(samples.toString());
+        
+        // Check if Y values indicate the third element
+        assertEquals(2.2, samples.getSample(2).getYValue(), 0.000001);
+        assertEquals(3.2, samples.getSample(3).getYValue(), 0.000001);
+        assertEquals(new Range(0.2, 3.2), samples.getYDataMinMax());
+        
+        // Add 2 'live' samples
+        samples.addLiveSample(TestSampleBuilder.makeWaveform(4, new double[] {4.0, 4.1, 4.2}));
+        samples.addLiveSample(TestSampleBuilder.makeWaveform(5, new double[] {5.0, 5.1, 5.2, 5.3}));
+        System.out.println(samples.toString());
+        
+        // Check if Y values indicate the third element
+        assertEquals(4.2, samples.getSample(4).getYValue(), 0.000001);
+        assertEquals(5.2, samples.getSample(5).getYValue(), 0.000001);
+        assertEquals(new Range(0.2, 5.2), samples.getYDataMinMax());
+        
+        // Change all waveform index at once
+        samples.setWaveformIndex(1);
+        assertEquals(0.1, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.1, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(2.1, samples.getSample(2).getYValue(), 0.000001);
+        assertEquals(3.1, samples.getSample(3).getYValue(), 0.000001);
+        assertEquals(4.1, samples.getSample(4).getYValue(), 0.000001);
+        assertEquals(5.1, samples.getSample(5).getYValue(), 0.000001);
+        assertEquals(new Range(0.1, 5.1), samples.getYDataMinMax());
+
+        // Check if Y values indicate NaN when waveform index is out of range
+        samples.setWaveformIndex(3);
+        assertEquals(Double.NaN, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(1.3, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(2).getYValue(), 0.000001);
+        assertEquals(3.3, samples.getSample(3).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(4).getYValue(), 0.000001);
+        assertEquals(5.3, samples.getSample(5).getYValue(), 0.000001);
+        assertEquals(new Range(1.3, 5.3), samples.getYDataMinMax());
+
+        samples.setWaveformIndex(4);
+        assertEquals(Double.NaN, samples.getSample(0).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(1).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(2).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(3).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(4).getYValue(), 0.000001);
+        assertEquals(Double.NaN, samples.getSample(5).getYValue(), 0.000001);
+        assertNull(samples.getYDataMinMax());
     }
 }

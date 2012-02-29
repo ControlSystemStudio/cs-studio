@@ -34,7 +34,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -48,6 +50,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -61,17 +64,21 @@ public class GUI implements AlarmClientModelListener
     final private AlarmClientModel model;
 
     final private Display display;
-    
+
     /** Error message.
      *  @see #setErrorMessage(String)
      */
     private Label error_message;
+
+    /** Parent container of the tree */
+    private Composite tree_parent;
 
     /** Tree */
     private TreeViewer tree_viewer;
 
     /** Show only alarms, or all items? */
     private boolean show_only_alarms;
+
 
     /** Initialize GUI
      *  @param parent SWT parent
@@ -127,14 +134,25 @@ public class GUI implements AlarmClientModelListener
         fd.right = new FormAttachment(100, 0);
         error_message.setLayoutData(fd);
 
-        // Tree below the error label, filling the rest
+        tree_parent = new Composite(parent, 0);
+        final TreeColumnLayout tree_layout = new TreeColumnLayout();
+        tree_parent.setLayout(tree_layout);
+
+        fd = new FormData();
+        fd.top = new FormAttachment(error_message);
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(100, 0);
+        fd.bottom = new FormAttachment(100, 0);
+        tree_parent.setLayoutData(fd);
+
         final IPreferencesService service = Platform.getPreferencesService();
         final boolean allow_multiselection =
         	service.getBoolean(Activator.ID, "allow_multi_selection", false, null); //$NON-NLS-1$
 
+        // Tree with single, max-width column
         final Tree tree =
         	allow_multiselection
-        	? new MultiSelectionTree(parent, 
+        	? new MultiSelectionTree(tree_parent,
         		// Must be virtual for ILazyTreeContentProvider
         		SWT.VIRTUAL |
         		// V_SCROLL seems automatic, but H_SCROLL can help when view is small
@@ -151,15 +169,12 @@ public class GUI implements AlarmClientModelListener
         		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
         		// With the patched MultiSelectionTree, it's OK
         		SWT.MULTI)
-            : new Tree(parent, SWT.VIRTUAL | SWT.H_SCROLL | SWT.V_SCROLL);
-        
-        tree_viewer = new TreeViewer(tree);
-        fd = new FormData();
-        fd.top = new FormAttachment(error_message);
-        fd.left = new FormAttachment(0, 0);
-        fd.right = new FormAttachment(100, 0);
-        fd.bottom = new FormAttachment(100, 0);
-        tree.setLayoutData(fd);
+            : new Tree(tree_parent, SWT.VIRTUAL | SWT.H_SCROLL | SWT.V_SCROLL);
+        tree.setLinesVisible(true);
+        final TreeColumn column = new TreeColumn(tree,  SWT.LEFT);
+        tree_layout.setColumnData(column, new ColumnWeightData(100, true));
+
+    	tree_viewer = new TreeViewer(tree);
 
         // Connect tree viewer to data model
         tree_viewer.setUseHashlookup(true);
@@ -180,16 +195,15 @@ public class GUI implements AlarmClientModelListener
     {
         if (error_message.isDisposed())
             return;
-        final Tree tree = tree_viewer.getTree();
         if (error == null)
         {
             if (!error_message.getVisible())
                 return; // msg already hidden
             // Hide error message and unlink from layout
             error_message.setVisible(false);
-            final FormData fd = (FormData) tree.getLayoutData();
+            final FormData fd = (FormData) tree_parent.getLayoutData();
             fd.top = new FormAttachment(0, 0);
-            tree.getParent().layout();
+            tree_parent.getParent().layout();
         }
         else
         {   // Update the message
@@ -197,7 +211,7 @@ public class GUI implements AlarmClientModelListener
             if (!error_message.getVisible())
             {   // Show error message and link to layout
                 error_message.setVisible(true);
-                final FormData fd = (FormData) tree.getLayoutData();
+                final FormData fd = (FormData) tree_parent.getLayoutData();
                 fd.top = new FormAttachment(error_message);
             }
             error_message.getParent().layout();
@@ -292,7 +306,7 @@ public class GUI implements AlarmClientModelListener
     {
     	final Tree tree = tree_viewer.getTree();
 		tree.setRedraw(false);
-		
+
        	// This was very slow (>5 seconds for 50k PVs in 250 areas)
     	// tree_viewer.collapseAll();
         // tree_viewer.refresh(false);
@@ -310,10 +324,10 @@ public class GUI implements AlarmClientModelListener
 		final TreeItem[] items = tree.getItems();
 		for (TreeItem item : items)
 			item.setExpanded(false);
-		
+
 		// This was for Eclipse 3.6.2 under Windows (7)
 		// Implementation might need adjustment in later versions of SWT/JFace
-		
+
     	tree.setRedraw(true);
     }
 
@@ -374,18 +388,7 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
-                // Puzzling.
-                // After switching to ws=cocoa for OS X,
-                // the tree would stay blank until either waiting a long time,
-                // or switching to another window, opening a dialog etc.
-                // triggers a refresh.
-                // What seems to work is the combination of manual setRedraw(false, true)
-                // and a tree_viewer.refresh().
-                // On Windows (7), Linux and OS X (carbon)) just setInput is sufficient.
-                tree.setRedraw(false);
                 tree_viewer.setInput(config);
-                tree_viewer.refresh();
-                tree.setRedraw(true);
             }
         });
     }

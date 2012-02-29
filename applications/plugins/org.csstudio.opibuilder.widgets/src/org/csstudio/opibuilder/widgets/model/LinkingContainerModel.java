@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -19,8 +20,10 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.geometry.Dimension;
 
 /**The model for linking container widget.
  * @author Xihui Chen
@@ -132,5 +135,28 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	@Override
 	public boolean isChildrenOperationAllowable() {
 		return false;
+	}
+	
+	@Override
+	public void scale(double widthRatio, double heightRatio) {
+		super.scale(widthRatio, heightRatio);
+		
+		scaleChildren();
+		
+	}
+
+	/**
+	 * Scale its children. 
+	 */
+	public void scaleChildren() {
+		//The linking container model doesn't hold its children actually, so it 
+		// has to ask editpart to get its children.
+		LinkingContainerEditpart editpart = 
+				(LinkingContainerEditpart) getRootDisplayModel().getViewer().getEditPartRegistry().get(this);
+		Dimension size = getSize();
+		double newWidthRatio = 1+(size.width - getOriginSize().width)/(double)getOriginSize().width;
+		double newHeightRatio = 1+(size.height - getOriginSize().height)/(double)getOriginSize().height;
+		for(Object child : editpart.getChildren())
+			((AbstractBaseEditPart)child).getWidgetModel().scale(newWidthRatio, newHeightRatio);
 	}
 }

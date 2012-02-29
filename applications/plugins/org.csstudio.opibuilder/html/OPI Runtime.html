@@ -9,20 +9,54 @@
 <body>
 
 <h2>OPI Runtime</h2>
+<p>
+OPI Runtime is responsible for executing and managing OPI files.
+<p>
+	<img alt="OPI Runtime" src = "img/OPI_Runtime.gif" />
 
-<p>OPI Runtime is responsible for executing and managing OPI files. By default, you can run an .opi file by double-clicking on it in the Navigator. 
+</p>
+</p> 
+<h3>Run OPI from Navigator</h3>
+<p>By default, you can run an .opi file by double-clicking it in the Navigator. 
 If it's not opened in runtime, you can still open an .opi file with OPI Runtime by right clicking the file and choose Open With->OPI Runtime. 
 </p>
 
-<p>OPI Runtime works like a modern web browser. It arrange OPIs in Tabs. Each tab can be rearranged by dragging it to a new place or new window.
+<h3>Run OPI from command line</h3>
+
+<p>
+When you startup css from command line, you can specify the OPI files you want to run and their macros input:
+
+<pre class="example_code">css --launcher.openFile "&lt;path_to_opi&gt;/file1.opi macro1=value1, macro2=value2" "&lt;path_to_opi2&gt;/file2.opi"
+</pre>
+
+<p>For more details: see <a href="Macro.html#commandLine">Input macros from command line</a>.</p>
+
+<h3>Top OPIs</h3>
+<p>There is a <code>Top OPIs</code> drop-down button on toolbar, on which you can define which OPIs to open from preference page. This is very useful for a site if you have 
+a "map" opi. In BOY, you can use URL path at everywhere if a path is needed. For example, if you set
+a URL path <code>http://www.xxx.com/main.opi</code> for the top OPIs in preference page, you will be able
+to run this OPI directly from Top OPIs button.</p>
+
+<div class="image">
+<img alt="Top OPIs" src="./img/top_opis.png"/>
+<br>
+"Top OPIs" button in toolbar, in this example offering "main.opi" and other display files
+</div>
+
+<h3>Open OPI in Tab, Window or View</h3>
+<p>OPI Runtime works like a modern web browser. It arrange OPIs in Tabs by default. 
+Each tab can be rearranged by dragging it to a new place or new window.
 By default, <code>Open OPI</code> action will replace the current OPI with the new OPI. 
-But <code>Ctrl-Cliking</code> a widget with <code>Open OPI</code> action attached will open the OPI in a new Tab. Or in a new window by <code>Shift-Cliking</code>
+But <code>Ctrl-Cliking</code> a widget with <code>Open OPI</code> action attached will open the OPI in a new Tab. 
+Or in a new window by <code>Shift-Cliking</code>
 
 If the current OPI is replace with new OPI, you can still go back or go forward from Navigation buttons on toolbar.
-
-You can also zoom in/out from toolbar or by <code>Ctrl-Scrolling</code>.
 </p>
 
+<p>OPI can also be opened in a View or a detached View (which looks like a standalone OPI window). 
+See <a href="Actions.html">Actions.</a></p>
+
+<h3>Context Menu</h3>
 <p>
 In contrast to standalone control system display managers, BOY is integrated in CSS, meaning:
 You can open a context menu on any widget in a BOY display and send the PV that is displayed
@@ -36,22 +70,16 @@ Elog or an Email address.</p>
 <p>Compact Mode will have menu bar and toolbar hidden. You can always exit compact mode by selecting
 "Exit Compact Mode". Similar to Full Screen Mode.</p>
 
+<h3>Zoom In/Out</h3>
 <p>
-	<img alt="OPI Runtime" src = "img/OPI_Runtime.png" />
+You can zoom in/out from toolbar or by <code>Ctrl-Scrolling</code>.
+</p>
+
+
+
+<p>
 
 </p>
-<h4>Top OPIs</h4>
-<p>There is a <code>Top OPIs</code> drop-down button on toolbar, on which you can define which OPIs to open from preference page. This is very useful for a site if you have 
-a "map" opi. In BOY, you can use URL path at everywhere if a path is needed. For example, if you set
-a URL path <code>http://www.xxx.com/main.opi</code> for the top OPIs in preference page, you will be able
-to run this OPI directly from Top OPIs button.</p>
-
-<div class="image">
-<img alt="Top OPIs" src="./img/top_opis.png"/>
-<br>
-"Top OPIs" button in toolbar, in this example offering "main.opi" and other display files
-</div>
-<p>
 
 </body>
 </html>

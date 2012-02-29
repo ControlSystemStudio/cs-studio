@@ -28,6 +28,7 @@ import org.csstudio.data.values.IValue;
  *  hidden below the 'live' time range.
  *
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed HistoricSamples to handle waveform index.
  */
 public class HistoricSamples extends PlotSamples
 {
@@ -41,6 +42,20 @@ public class HistoricSamples extends PlotSamples
      *  @see #computeVisibleSize()
      */
     private int visible_size = 0;
+    
+    /** Waveform index */
+    private int waveform_index = 0;
+    
+    /** @param index Waveform index to show */
+    public void setWaveformIndex(int index)
+    {
+    	waveform_index = index;
+    	
+    	// change the index of all samples in this instance
+    	for (PlotSample sample: samples) {
+    		sample.setWaveformIndex(waveform_index);
+    	}
+    }
 
     /** Define a new 'border' time beyond which no samples
      *  are returned from the history
@@ -102,8 +117,10 @@ public class HistoricSamples extends PlotSamples
             return;
         // Turn IValues into PlotSamples
         final PlotSample new_samples[] = new PlotSample[result.size()];
-        for (int i=0; i<new_samples.length; ++i)
+        for (int i=0; i<new_samples.length; ++i) {
             new_samples[i] = new PlotSample(source, result.get(i));
+            new_samples[i].setWaveformIndex(waveform_index);
+        }
         // Merge with existing samples
         final PlotSample merged[] = PlotSampleMerger.merge(samples, new_samples);
         if (merged == samples)

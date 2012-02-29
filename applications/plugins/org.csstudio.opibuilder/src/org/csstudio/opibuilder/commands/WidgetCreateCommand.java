@@ -13,7 +13,9 @@ import java.util.Map;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractLayoutModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.util.SchemaService;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -92,6 +94,10 @@ public class WidgetCreateCommand extends Command {
 	public void execute() {
 		oldBounds = newWidget.getBounds();
 		newWidget.generateNewWUID();
+		//If the new created widget has connections on it, remove their points.
+		for(ConnectionModel conn : newWidget.getSourceConnections()){
+			conn.setPoints(new PointList());
+		}
 		redo();
 	}
 

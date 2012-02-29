@@ -22,6 +22,7 @@ import org.eclipse.osgi.util.NLS;
 /** Data Sample from control system (IValue)
  *  with interface for XYGraph (ISample)
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto changed PlotSample to handle waveform index.
  */
 public class PlotSample implements ISample
 {
@@ -38,7 +39,9 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-
+    
+    /** Waveform index */
+    private int waveform_index = 0;
 
     /** Initialize with valid control system value
      *  @param source Info about the source of this sample
@@ -70,6 +73,18 @@ public class PlotSample implements ISample
              ValueFactory.createDoubleValue(TimestampFactory.fromDouble(x),
                ok_severity, ok_severity.toString(), dummy_meta,
                IValue.Quality.Original, new double[] { y }));
+    }
+    
+    /** @return Waveform index */
+    public int getWaveformIndex()
+    {
+    	return waveform_index;
+    }
+    
+    /** @param index Waveform index to plot */
+    public void setWaveformIndex(int index)
+    {
+    	this.waveform_index = index;
     }
 
     /** @return Source of the data */
@@ -105,9 +120,11 @@ public class PlotSample implements ISample
     @Override
     public double getYValue()
     {
-        if (value.getSeverity().hasValue())
-            return ValueUtil.getDouble(value);
-        // No numeric value. Plot shows NaN as marker.
+        if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
+            return ValueUtil.getDouble(value, waveform_index);
+        }
+        
+        // No numeric value or out of range. Plot shows NaN as marker.
         return Double.NaN;
     }
 
@@ -142,6 +159,16 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
+        
+        // Although the behavior of getMinimum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the minimum value of the first element. This minimum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0)
+        	return 0;
+
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getValue() - minmax.getMinimum();
     }
@@ -152,6 +179,16 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
+ 
+        // Although the behavior of getMaximum() method depends on archive
+        // readers' implementation, at least, RDB and kblog archive readers
+        // return the maximum value of the first element. This maximum value
+        // does not make sense to plot error bars when the chart shows other
+        // elements. Therefore, this method returns 0 if the waveform index
+        // is not 0.
+        if (waveform_index != 0)
+        	return 0;
+        
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getMaximum() - minmax.getValue();
     }

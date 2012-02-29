@@ -13,8 +13,11 @@ import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.ModelListener;
+import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.model.PlotSample;
 import org.csstudio.trends.databrowser2.ui.TableHelper;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -26,6 +29,8 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -45,15 +50,18 @@ import org.eclipse.swt.widgets.Table;
  *  @author Albert Kagarmanov changed the previous Data Browser's
  *              SampleTableLabelProvider to show numbers with 4 trailing digits.
  *              This implementation uses tooltips to show the Double.toString(number)
+ *  @author Takashi Nakamoto changed SampleView to handle multiple items with the
+ *                           same name correctly. 
  */
 public class SampleView extends DataBrowserAwareView
+	implements ModelListener
 {
     /** View ID registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.sample_view"; //$NON-NLS-1$
 
     /** Model of the currently active Data Browser plot or <code>null</code> */
     private Model model;
-
+    
     /** GUI elements */
     private Combo items;
     private TableViewer sample_table;
@@ -88,7 +96,7 @@ public class SampleView extends DataBrowserAwareView
                     sample_table.setInput(null);
                     return;
                 }
-                final ModelItem item = model.getItem(items.getText());
+                final ModelItem item = model.getItem(items.getSelectionIndex() - 1);
                 if (item == null)
                     return;
                 sample_table.setInput(item);
@@ -103,8 +111,8 @@ public class SampleView extends DataBrowserAwareView
         {
             @Override
             public void widgetSelected(final SelectionEvent e)
-            {   // Trigger GUI update by switching to current model
-                updateModel(model, model);
+            {   // Trigger GUI update
+            	update(false);
             }
         });
 
@@ -228,13 +236,40 @@ public class SampleView extends DataBrowserAwareView
             }
         });
         ColumnViewerToolTipSupport.enableFor(sample_table, ToolTip.NO_RECREATE);
+        
+        // Be ignorant of any change of the current model after this view
+        // is disposed.
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+            	if (model != null)
+            		model.removeListener(SampleView.this);
+            }
+        });
     }
 
     /** {@inheritDoc} */
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
-        this.model = model;
+    	this.model = model;
+    	if (old_model != model) {
+    		if (old_model != null)
+    			old_model.removeListener(this);
+    		
+    		if (model != null)
+    			model.addListener(this);
+    	}
+    	update(old_model != model);
+    }
+    
+    /** Update combo box of this view.
+     * @param model_changed set true if the model was changed.
+     */
+    private void update(final boolean model_changed)
+    {
         if (model == null)
         {   // Clear/disable GUI
             items.setItems(new String[] { Messages.SampleView_NoPlot});
@@ -249,20 +284,23 @@ public class SampleView extends DataBrowserAwareView
         names[0] = Messages.SampleView_SelectItem;
         for (int i=1; i<names.length; ++i)
             names[i] = model.getItem(i-1).getName();
-        if (old_model == model  &&  items.getSelectionIndex() > 0)
+        if (!model_changed  &&  items.getSelectionIndex() > 0)
         {
             // Is the previously selected item still valid?
-            final String old_name = items.getText();
-            final ModelItem item = model.getItem(old_name);
-            if (item == sample_table.getInput())
-            {   // Show same PV name again in combo box
-                items.setItems(names);
-                items.setText(item.getName());
-                // Update sample table size
-                sample_table.setItemCount(item.getSamples().getSize());
-                sample_table.refresh();
-                return;
-            }
+        	if (sample_table.getInput() instanceof ModelItem)
+        	{
+        		final ModelItem selected_item = (ModelItem) sample_table.getInput();
+        		if (model.indexOf(selected_item) != -1)
+        		{   // Show same PV name again in combo box
+        			items.setItems(names);
+        			items.select(model.indexOf(selected_item) + 1);
+        			items.setEnabled(true);
+        			// Update sample table size
+        			sample_table.setItemCount(selected_item.getSamples().getSize());
+        			sample_table.refresh();
+        			return;
+        		}
+        	}
         }
         // Previously selected item no longer valid.
         // Show new items, clear rest
@@ -278,4 +316,52 @@ public class SampleView extends DataBrowserAwareView
     {
         items.setFocus();
     }
+    
+    /** {@inheritDoc} */
+	@Override
+	public void itemAdded(ModelItem item) {
+	    // Be aware of the addition of a new item to update combo box.
+		update(false);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void itemRemoved(ModelItem item) {
+	    // Be aware of the addition of a new item to update combo box.
+		update(false);
+	}
+	
+	/** {@inheritDoc} */
+	@Override
+	public void changedItemLook(ModelItem item) {
+		// Be aware of the change of the item name.
+		update(false);
+	}
+
+	// Following methods are defined as they are mandatory to fulfill
+	// ModelListener interface, but they are not used at all to update
+	// this sample view.
+	@Override
+	public void changedUpdatePeriod() {}
+
+	@Override
+	public void changedArchiveRescale() {}
+
+	@Override
+	public void changedColors() {}
+
+	@Override
+	public void changedTimerange() {}
+
+	@Override
+	public void changedAxis(AxisConfig axis) {}
+
+	@Override
+	public void changedItemVisibility(ModelItem item) {}
+
+	@Override
+	public void changedItemDataConfig(PVItem item) {}
+
+	@Override
+	public void scrollEnabled(boolean scroll_enabled) {}
 }

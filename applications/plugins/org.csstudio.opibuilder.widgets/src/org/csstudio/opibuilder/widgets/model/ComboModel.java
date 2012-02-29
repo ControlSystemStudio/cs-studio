@@ -37,6 +37,7 @@ public class ComboModel extends AbstractPVWidgetModel {
 	public ComboModel() {
 		setBackgroundColor(new RGB(255,255,255));
 		setForegroundColor(new RGB(0,0,0));
+		setScaleOptions(true, false, false);
 	}
 
 	@Override

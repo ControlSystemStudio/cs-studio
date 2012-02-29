@@ -15,6 +15,7 @@ import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the ModelListener
  *  @author Kay Kasemir
+ *  @author Takashi Nakamoto added test case for waveform index
  */
 @SuppressWarnings("nls")
 public class ModelListenerHeadlessTest
@@ -168,6 +169,10 @@ public class ModelListenerHeadlessTest
         assertEquals(8, changes);
         item.setVisible(false);
         assertEquals(8, changes);
+        
+        // Change waveform index
+        item.setWaveformIndex(1);
+        assertEquals(9, changes);
 
         // Remove
         assertEquals(0, removals);
@@ -187,9 +192,9 @@ public class ModelListenerHeadlessTest
 
         // Change model some more
         model.setUpdatePeriod(10.0);
-        assertEquals(9, changes);
+        assertEquals(10, changes);
 
         model.setPlotBackground(new RGB(1,2,3));
-        assertEquals(10, changes);
+        assertEquals(11, changes);
     }
 }

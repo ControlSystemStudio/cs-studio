@@ -168,7 +168,7 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 	
 	
 	private void resizeChildren(int newValue, int oldValue, boolean isWidth){
-		if(!getWidgetModel().isLocked())
+		if(getExecutionMode() == ExecutionMode.RUN_MODE || !getWidgetModel().isLocked())
 			return;
 		double ratio = (newValue-oldValue)/(double)oldValue;
 		for(AbstractWidgetModel child : getWidgetModel().getChildren()){

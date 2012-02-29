@@ -637,6 +637,53 @@ public class TraceTableHandler implements IStructuredContentProvider
             }
         });
 
+        // Waveform Index Column ----------
+        view_col = TableHelper.createColumn(table_layout, table_viewer, Messages.WaveformIndexCol, 40, 10);
+        view_col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ModelItem item = (ModelItem) cell.getElement();
+                cell.setText(Integer.toString(item.getWaveformIndex()));
+            }
+
+            @Override
+            public String getToolTipText(Object element)
+            {
+                return Messages.WaveformIndexColTT;
+            }
+
+        });
+        view_col.setEditingSupport(new EditSupportBase(table_viewer)
+        {
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return Integer.toString(((ModelItem) element).getWaveformIndex());
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                int index;
+                try
+                {
+                    index = Integer.parseInt(value.toString().trim());
+                    if (index < 0)
+                    	return;
+                }
+                catch (NumberFormatException ex)
+                {
+                    return;
+                }
+                
+                final ModelItem item = (ModelItem)element;
+                if (index != item.getWaveformIndex())
+                    new ChangeWaveformIndexCommand(operations_manager, item, index);
+            }
+        });
+        
         ColumnViewerToolTipSupport.enableFor(table_viewer);
     }
 

@@ -152,6 +152,9 @@ public class ConnectionModel extends AbstractWidgetModel {
 
 	private DisplayModel displayModel;
 	
+	private PointList originPoints;
+
+	
 	/**Construct a connection model which belongs to the displayModel.
 	 * If this is a temporary connection model which doesn't belong to any display model,
 	 * displayModel can be null. 
@@ -246,6 +249,7 @@ public class ConnectionModel extends AbstractWidgetModel {
 		removeProperty(PROP_SCRIPTS);
 		removeProperty(PROP_COLOR_BACKGROUND);
 		removeProperty(PROP_COLOR_FOREGROUND);
+		removeProperty(PROP_SCALE_OPTIONS);
 
 	}
 
@@ -403,6 +407,15 @@ public class ConnectionModel extends AbstractWidgetModel {
 	public void setPoints(PointList points) {
 		setPropertyValue(PROP_POINTS, points);
 		
+	}
+	
+	/**
+	 * @return the original points before scaling.
+	 */
+	public PointList getOriginPoints() {
+		if(originPoints == null)
+			originPoints = getPoints();
+		return originPoints;
 	}
 
 }
