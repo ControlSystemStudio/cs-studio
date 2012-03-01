@@ -2,6 +2,7 @@ package org.csstudio.channel.widgets;
 
 import gov.bnl.channelfinder.api.Channel;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +29,8 @@ public class PVTableByPropertyCellLabelProvider extends VTableCellLabelProvider 
 			if (cellChannels.isEmpty()) {
 				cell.setBackground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
 				cell.setForeground(SWTResourceManager.getColor(SWT.COLOR_GRAY));
+			} else if (cellChannels.size() > 1) {
+				cell.setBackground(SWTResourceManager.getColor(187,225,246));				
 			}
 		}
 	}
