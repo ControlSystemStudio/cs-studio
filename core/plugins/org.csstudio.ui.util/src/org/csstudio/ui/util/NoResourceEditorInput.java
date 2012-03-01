@@ -98,4 +98,8 @@ public class NoResourceEditorInput implements IEditorInput
     {
         return orig.getToolTipText();
     }
+
+	public IEditorInput getOriginEditorInput() {
+		return orig;
+	}
 }

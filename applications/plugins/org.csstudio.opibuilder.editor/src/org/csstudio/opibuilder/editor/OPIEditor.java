@@ -65,6 +65,7 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -231,7 +232,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 		}
 		else
-			super.init(site, input);
+			super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input)); 
 	}
 
 	@Override
@@ -575,8 +576,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		if (getEditorInput() instanceof FileEditorInput
-				|| getEditorInput() instanceof FileStoreEditorInput) {
+		if (getOriginEditorInput() instanceof FileEditorInput
+				|| getOriginEditorInput() instanceof FileStoreEditorInput) {
 			performSave();
 		} else {
 			doSaveAs();
@@ -589,10 +590,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	@Override
 	public void doSaveAs() {
 		SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
-		if(getEditorInput() instanceof FileEditorInput)
-			saveAsDialog.setOriginalFile(((FileEditorInput)getEditorInput()).getFile());
-		else if(getEditorInput() instanceof FileStoreEditorInput)
-			saveAsDialog.setOriginalName(((FileStoreEditorInput)getEditorInput()).getName());
+		if(getOriginEditorInput() instanceof FileEditorInput)
+			saveAsDialog.setOriginalFile(((FileEditorInput)getOriginEditorInput()).getFile());
+		else if(getOriginEditorInput() instanceof FileStoreEditorInput)
+			saveAsDialog.setOriginalName(((FileStoreEditorInput)getOriginEditorInput()).getName());
 
 		int ret = saveAsDialog.open();
 
@@ -692,8 +693,18 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	@Override
 	protected Control getGraphicalControl() {
 		return rulerComposite;
+	}	
+	
+	/**
+	 * @return the origin editor input before wrapped by {@link NoResourceEditorInput}.
+	 */
+	public IEditorInput getOriginEditorInput() {
+		IEditorInput editorInput = super.getEditorInput();
+		if(editorInput instanceof NoResourceEditorInput){
+			return ((NoResourceEditorInput)editorInput).getOriginEditorInput();
+		}
+		return editorInput;
 	}
-
 
 	/**
 	 * Returns a stream which can be used to read this editors input data.
@@ -703,7 +714,8 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	private InputStream getInputStream() {
 		InputStream result = null;
 
-		IEditorInput editorInput = getEditorInput();
+		IEditorInput editorInput = getOriginEditorInput();
+
 		if (editorInput instanceof FileEditorInput) {
 			try {
 				result = ((FileEditorInput) editorInput).getFile()
@@ -814,7 +826,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	}
 
 	private IPath getOPIFilePath() {
-		IEditorInput editorInput = getEditorInput();
+		IEditorInput editorInput = getOriginEditorInput();
 		if (editorInput instanceof FileEditorInput) {
 
 			return ((FileEditorInput) editorInput).getFile().getFullPath();
@@ -840,7 +852,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		viewer.addDropTargetListener(createTransferDropTargetListener());
 		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
 		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
-		setPartName(getEditorInput().getName());
+		setPartName(getOriginEditorInput().getName());
 
 	}
 
@@ -852,10 +864,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
 		try {
 			String content = XMLUtil.XML_HEADER + XMLUtil.widgetToXMLString(displayModel, true);
-			if (getEditorInput() instanceof FileEditorInput) {
+			if (getOriginEditorInput() instanceof FileEditorInput) {
 				InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
 				try {
-					IFile file = ((FileEditorInput) getEditorInput()).getFile();					
+					IFile file = ((FileEditorInput) getOriginEditorInput()).getFile();					
 					file.setContents(
 						in, false, false, null);
 					in.close();
@@ -865,10 +877,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 					return;
 				}
 
-			} else if (getEditorInput() instanceof FileStoreEditorInput) {
+			} else if (getOriginEditorInput() instanceof FileStoreEditorInput) {
 					try {
 						File file = URIUtil.toPath(
-							((FileStoreEditorInput) getEditorInput()).getURI())
+							((FileStoreEditorInput) getOriginEditorInput()).getURI())
 							.toFile();
 
 						BufferedWriter writer = new BufferedWriter(
