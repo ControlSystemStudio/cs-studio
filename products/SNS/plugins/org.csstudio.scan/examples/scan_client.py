@@ -39,7 +39,9 @@ sys.path.append(install + "/org.csstudio.scan.client_1.0.0")
 import org.csstudio.scan.server.ScanServer as ScanServer
 import java.lang.System as System
 
-# Set scan server host and port if they're not the default
+# Set scan server host and port if they're not the default.
+# Can also pass this as command-line arg to jython:
+#  jython  -DScanServerHost=ky9linux.ornl.gov ....
 #System.setProperty(ScanServer.HOST_PROPERTY, "ky9linux.ornl.gov")
 #System.setProperty(ScanServer.PORT_PROPERTY, str(4810))
 
