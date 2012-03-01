@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -153,6 +154,8 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 	 */
 	@Override
 	public IPath getPathInEditor(IEditorInput input) {
+		if(input instanceof NoResourceEditorInput)
+			input = ((NoResourceEditorInput)input).getOriginEditorInput();
 		if(input instanceof FileEditorInput)
 			return ((FileEditorInput)input).getFile().getFullPath();
 		else if(input instanceof IPathEditorInput)
