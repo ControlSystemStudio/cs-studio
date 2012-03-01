@@ -7,21 +7,22 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
 /** Read machine mode from MPS PVs
- * 
+ *
  *  @author Delphy Armstrong - Original RTDL_Switch_Modes
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class MachineModeMonitor implements PVListener
 {
 	final private MachineModeListener listener;
-	
+
 	final private PV[] rtdl_pvs;
 	final private PV[] switch_pvs;
-	
+
 	private volatile MachineMode rtdl_mode = null;
 	private volatile MachineMode switch_mode = null;
-	
-	/** Initialize 
+
+	/** Initialize
 	 *  @throws Exception on error
 	 */
 	public MachineModeMonitor(final MachineModeListener listener) throws Exception
@@ -31,7 +32,7 @@ public class MachineModeMonitor implements PVListener
 		final MachineMode[] modes = MachineMode.values();
 		rtdl_pvs = new PV[modes.length - 1];
 		switch_pvs = new PV[modes.length - 1];
-		for (int i=1; i<modes.length; ++i) 
+		for (int i=1; i<modes.length; ++i)
 		{
 			rtdl_pvs[i-1] = PVFactory.createPV("ICS_MPS:RTDL_MachMd:" + modes[i].name());
 			switch_pvs[i-1] = PVFactory.createPV("ICS_MPS:Switch_MachMd:" + modes[i].name());
@@ -39,7 +40,7 @@ public class MachineModeMonitor implements PVListener
 			switch_pvs[i-1].addListener(this);
 		}
 	}
-	
+
 	/** Connect PVs
 	 *  @throws Exception on error
 	 */
@@ -73,7 +74,7 @@ public class MachineModeMonitor implements PVListener
     public void pvValueUpdate(final PV pv)
     {
 		// System.out.println(pv.getName() + " = " + pv.getValue() + " (" + ValueUtil.getDouble(pv.getValue()) + ")");
-		
+
 		// Decode RTDL PVs
 		MachineMode new_rtdl = null;
 		for (int i=0; i<rtdl_pvs.length; ++i)
@@ -118,7 +119,7 @@ public class MachineModeMonitor implements PVListener
 				new_switch = MachineMode.values()[i+1];
 			}
 		}
-		
+
 		updateModes(new_rtdl, new_switch);
     }
 

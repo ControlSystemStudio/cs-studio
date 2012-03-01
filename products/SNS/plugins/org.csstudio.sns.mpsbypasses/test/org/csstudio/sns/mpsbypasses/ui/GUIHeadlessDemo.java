@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of the {@link GUI}
- *  
+ *
  *  @author Kay Kasemir
  */
 public class GUIHeadlessDemo
@@ -22,9 +22,9 @@ public class GUIHeadlessDemo
 
         // Bypass model and GUI
 		final BypassModel model = new BypassModel();
-		final GUI gui = new GUI(shell, model);
+		final GUI gui = new GUI(shell, model, null);
         gui.selectMachineMode();
-		
+
 		// SWT main loop
         shell.setSize(800, 600);
         shell.open();

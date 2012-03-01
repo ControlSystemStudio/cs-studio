@@ -7,21 +7,22 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
 /** Read beam mode from MPS PVs
- * 
+ *
  *  @author Delphy Armstrong - Original RTDL_Switch_Modes
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BeamModeMonitor implements PVListener
 {
 	final private BeamModeListener listener;
-	
+
 	final private PV[] rtdl_pvs;
 	final private PV[] switch_pvs;
-	
+
 	private volatile BeamMode rtdl_mode = null;
 	private volatile BeamMode switch_mode = null;
-	
-	/** Initialize 
+
+	/** Initialize
 	 *  @throws Exception on error
 	 */
 	public BeamModeMonitor(final BeamModeListener listener) throws Exception
@@ -31,7 +32,7 @@ public class BeamModeMonitor implements PVListener
 		final BeamMode[] modes = BeamMode.values();
 		rtdl_pvs = new PV[modes.length];
 		switch_pvs = new PV[modes.length];
-		for (int i=0; i<modes.length; ++i) 
+		for (int i=0; i<modes.length; ++i)
 		{
 			rtdl_pvs[i] = PVFactory.createPV("ICS_MPS:RTDL_BmMd:" + modes[i].getSignal());
 			switch_pvs[i] = PVFactory.createPV("ICS_MPS:Switch_BmMd:" + modes[i].getSignal());
@@ -39,7 +40,7 @@ public class BeamModeMonitor implements PVListener
 			switch_pvs[i].addListener(this);
 		}
 	}
-	
+
 	/** Connect PVs
 	 *  @throws Exception on error
 	 */
@@ -73,7 +74,7 @@ public class BeamModeMonitor implements PVListener
     public void pvValueUpdate(final PV pv)
     {
 		// System.out.println(pv.getName() + " = " + pv.getValue() + " (" + ValueUtil.getDouble(pv.getValue()) + ")");
-		
+
 		// Decode RTDL PVs
 		BeamMode new_rtdl = null;
 		for (int i=0; i<rtdl_pvs.length; ++i)
@@ -118,7 +119,7 @@ public class BeamModeMonitor implements PVListener
 				new_switch = BeamMode.values()[i];
 			}
 		}
-		
+
 		updateModes(new_rtdl, new_switch);
     }
 

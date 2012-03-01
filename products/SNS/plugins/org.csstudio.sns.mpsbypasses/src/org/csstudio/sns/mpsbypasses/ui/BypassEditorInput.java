@@ -8,19 +8,20 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
 /** Editor 'input' that represents the MPS bypass table
- * 
+ *
  *  <p>Can 'persist' itself and acts as a factory to
  *  re-create the input from persisted information (which is empty).
  *  This way the editor will re-open when application is restarted,
  *  but it doesn't persist any settings (filter, ...)
- *  
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BypassEditorInput implements IElementFactory, IPersistableElement, IEditorInput
 {
 	/** IElementFactory ID registered in plugin.xml */
 	final public static String FACTORY_ID = "org.csstudio.sns.mpsbypasses.editorfactory";
-	
+
 	/** Singleton instance */
 	final public static BypassEditorInput instance = new BypassEditorInput();
 

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -50,11 +51,13 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPartSite;
 
 /** GUI for {@link BypassModel}
  *  @author Delphy Armstrong - Original MPSBypassGUI
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class GUI implements BypassModelListener, MachineModeListener, BeamModeListener
 {
 	final private BypassModel model;
@@ -76,7 +79,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 
 	private MachineModeMonitor machine_mode_monitor;
 	private BeamModeMonitor beam_mode_monitor;
-	
+
 	/** Throttle to reduce number of full table updates */
 	private GUIUpdateThrottle full_table_update = new GUIUpdateThrottle(200, 2000)
 	{
@@ -101,13 +104,14 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		}
 	};
 
-	
+
 	/** Initialize
 	 *  @param parent
 	 *  @param model
+	 *  @param site Site to register context menu or <code>null</code>
 	 *  @throws Exception on error
 	 */
-	public GUI(final Composite parent, final BypassModel model) throws Exception
+	public GUI(final Composite parent, final BypassModel model, final IWorkbenchPartSite site) throws Exception
     {
 		this.model = model;
 		colors = new BypassColors(parent);
@@ -115,15 +119,15 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 
 		bypass_table.setInput(model.getBypasses());
 		model.addListener(this);
-		
+
 		machine_mode_monitor = new MachineModeMonitor(this);
 		machine_mode_monitor.start();
-		
+
 		beam_mode_monitor = new BeamModeMonitor(this);
 		beam_mode_monitor.start();
 
 		full_table_update.start();
-		
+
 		parent.addDisposeListener(new DisposeListener()
 		{
 			@Override
@@ -134,10 +138,9 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				beam_mode_monitor.stop();
 			}
 		});
-		
+
 		hookActions();
-		createContextMenu();
-		
+		createContextMenu(site);
     }
 
 	/** Connect actions to user input */
@@ -150,14 +153,14 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 			{
 				selectMachineMode();
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e)
 			{
 				widgetSelected(e);
 			}
 		});
-		
+
 	    final SelectionListener filter_handler = new SelectionListener()
 		{
 			@Override
@@ -167,7 +170,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				final RequestState request = RequestState.fromString(cmb_requested.getText());
 				model.setFilter(state, request);
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e)
 			{
@@ -178,8 +181,10 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_requested.addSelectionListener(filter_handler);
     }
 
-	/** Add context menu to table */
-	private void createContextMenu()
+	/** Add context menu to table
+     *  @param site Site to register context menu or <code>null</code>
+	 */
+	private void createContextMenu(final IWorkbenchPartSite site)
     {
 		final Table table = bypass_table.getTable();
 
@@ -189,11 +194,14 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				Preferences.getEnterBypassURL()));
 		manager.add(new WebPageAction("Bypass Display",
 				Preferences.getViewBypassURL()));
+		manager.add(new Separator("additions"));
 
 		final Menu menu = manager.createContextMenu(table);
 		table.setMenu(menu);
+		if (site != null)
+		    site.registerContextMenu(manager, bypass_table);
     }
-	
+
 	/** Start a {@link Job} that loads bypass info from the RDB for the selected mode */
 	public void selectMachineMode()
 	{
@@ -225,19 +233,19 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 	private void createComponents(final Composite parent)
     {
 		parent.setLayout(new GridLayout());
-		
+
 		createSelectionPanel(parent);
 		Label sep = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
 		sep.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-		
+
 		createCounterPanel(parent);
-		
+
 		final Composite box = new Composite(parent, 0);
 		box.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		box.setLayout(new RowLayout());
 		createMachineBeamPanel(box);
 		createLegend(box);
-		
+
 		bypass_table = createBypassTable(parent);
     }
 
@@ -255,7 +263,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		final Composite box = new Composite(parent, 0);
 		box.setLayoutData(new GridData(SWT.FILL, 0, true, false));
 		box.setLayout(new GridLayout(7, false));
-		
+
 		Label l = new Label(box, 0);
 		l.setText("Machine Mode:");
 		l.setLayoutData(new GridData());
@@ -263,7 +271,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_modes.setLayoutData(new GridData());
 		cmb_modes.setItems(MachineMode.getNames());
 		cmb_modes.select(0);
-		
+
 		l = new Label(box, 0);
 		l.setText("State:");
 		l.setLayoutData(new GridData());
@@ -280,7 +288,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		cmb_requested.setLayoutData(new GridData());
 		cmb_requested.setItems(RequestState.getNames());
 		cmb_requested.select(0);
-		
+
 		final Button reload = new Button(box, SWT.PUSH);
 		reload.setText("Reload");
 		reload.setToolTipText("Re-load bypass information from Relational Database");
@@ -294,7 +302,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 			}
 		});
     }
-	
+
 	/** Create panel with counters
 	 *  @param parent
 	 */
@@ -340,43 +348,43 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
     	final Group box = new Group(parent, 0);
     	box.setText("Operating State");
     	box.setLayout(new GridLayout(3, false));
-    
+
     	//               RTDL   Switch
     	// Beam Mode     ...
     	// Machine Mode  ...
     	Label l = new Label(box, 0);
     	l.setLayoutData(new GridData());
-    
+
     	l = new Label(box, 0);
     	l.setText("RTDL");
     	l.setLayoutData(new GridData());
-    
+
     	l = new Label(box, 0);
     	l.setText("Switch");
     	l.setLayoutData(new GridData());
-    
-    	
+
+
     	l = new Label(box, 0);
     	l.setText("Beam Mode");
     	l.setLayoutData(new GridData());
-    	
+
     	txt_rtdl_beam = new Text(box, SWT.BORDER | SWT.READ_ONLY);
     	txt_rtdl_beam.setText("              ");
     	txt_rtdl_beam.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-    
+
     	txt_mps_beam = new Text(box, SWT.BORDER | SWT.READ_ONLY);
     	txt_mps_beam.setText("              ");
     	txt_mps_beam.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-    	
-    
+
+
     	l = new Label(box, 0);
     	l.setText("Machine Mode");
     	l.setLayoutData(new GridData());
-    
+
     	txt_rtdl_machine = new Text(box, SWT.BORDER | SWT.READ_ONLY);
     	txt_rtdl_machine.setText("              ");
     	txt_rtdl_machine.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-    
+
     	txt_mps_machine = new Text(box, SWT.BORDER | SWT.READ_ONLY);
     	txt_mps_machine.setText("              ");
     	txt_mps_machine.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -388,40 +396,40 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
     private void createLegend(final Composite parent)
     {
     	BypassState[] states = BypassState.values();
-    	
+
     	final Group box = new Group(parent, SWT.BORDER);
     	box.setText("Legend");
     	box.setLayout(new GridLayout(states.length - 1, false));
-    
+
     	// Bypassed      Not Bypassed ...
     	for (BypassState state : states)
     	{
     		if (state == BypassState.All)
     			continue;
-    
+
     		final Label l = new Label(box, 0);
     		l.setText(state.toString());
     		l.setLayoutData(new GridData(SWT.LEFT, 0, true, false));
     	}
-    
-    	// Requested  
+
+    	// Requested
     	for (BypassState state : states)
     	{
     		if (state == BypassState.All)
     			continue;
-    
+
     		final Label l = new Label(box, 0);
     		l.setText(RequestState.Requested.toString());
     		l.setLayoutData(new GridData(SWT.LEFT, 0, true, false));
     		l.setBackground(colors.getBypassColor(state, true));
     	}
-    
+
     	// Not Requested
     	for (BypassState state : states)
     	{
     		if (state == BypassState.All)
     			continue;
-    
+
     		final Label l = new Label(box, 0);
     		l.setText(RequestState.NotRequested.toString());
     		l.setLayoutData(new GridData(SWT.LEFT, 0, true, false));
@@ -440,12 +448,12 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		final TableColumnLayout table_layout = new TableColumnLayout();
 		box.setLayout(table_layout);
-		
+
 		final TableViewer table_viewer = new TableViewer(box, 0);
 		final Table table = table_viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
+
 		TableViewerColumn view_col;
 		// Row number
 		view_col = createColumn(table_viewer, table_layout, "#", 10);
@@ -459,7 +467,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				cell.setText(Integer.toString(row));
 			}
 		});
-		
+
 		// Bypass Name, sorted by name
 		view_col = createColumn(table_viewer, table_layout, "Bypass", 100);
 		view_col.setLabelProvider(new CellLabelProvider()
@@ -566,9 +574,9 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				return item2.getName().compareTo(item1.getName());
             }
         };
-		
+
 		table_viewer.setContentProvider(ArrayContentProvider.getInstance());
-		
+
 		return table_viewer;
     }
 
@@ -652,7 +660,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
             }
 		});
     }
-	
+
 	/** Refresh table
 	 *  {@inheritDoc}
 	 */
@@ -661,7 +669,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
     {
 		full_table_update.trigger();
     }
-	
+
 	/** Display the model's counts
 	 *  (except for 'total' which doesn't change)
 	 */
@@ -732,5 +740,5 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 			text.setText("  ?  ");
 		else
 			text.setText(obj.toString());
-    }	
+    }
 }

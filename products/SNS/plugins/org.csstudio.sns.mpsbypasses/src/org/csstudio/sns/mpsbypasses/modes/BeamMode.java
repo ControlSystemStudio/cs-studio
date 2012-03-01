@@ -1,9 +1,10 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
-/** Enumerations for the different RTDL Beam Modes 
- * 
+/** Enumerations for the different RTDL Beam Modes
+ *
  *  @author Delphy Armstrong - Original RTDL_BeamMode
  */
+@SuppressWarnings("nls")
 public enum BeamMode
 {
 	Off("Off", "Off"),
@@ -14,7 +15,7 @@ public enum BeamMode
 	mSec1("1mSec", "1 msec"),
 	FullPwr("FullPwr", "Full Power"),
 	MPSTest("MPSTest", "MPS Text");
-	
+
 	/** PV signal name */
 	final private String pv_signal;
 
@@ -36,7 +37,7 @@ public enum BeamMode
 	{
 		return pv_signal;
 	}
-	
+
 	/** @return Human-readable representation */
 	@Override
     public String toString()

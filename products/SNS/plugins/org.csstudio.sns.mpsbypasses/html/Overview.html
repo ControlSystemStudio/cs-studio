@@ -1,89 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Overview</title>
+    <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"/>
+</head>
 <body>
 <h1>Purpose</h1>
 <p>This tool implements a system for monitoring the status of the MPS 
 Bypass PVs and bypass requests.</p>
 
-<p>The RDB provides a list of MPS Bypasses for each machine mode.
-To determine the current state of each bypass, the tool connects
-to a <i><b>mask</b></i> and <i><b>switch</b></i> PV for each bypass and determines
-the current state.  These states are explained below.</p>
+<p>The relational database (RDB) provides a list of MPS Bypasses for each machine mode.
+To determine the <u>current</u> state of each bypass, the tool connects to two 
+Process Variables (PVs) for each bypass, a <i><b>mask</b></i> and <i><b>switch</b></i> PV
+for each bypass.</p>
 
-<h1>Bypass Status Table </h1>
+<h2>Bypass Status Table </h2>
 
-The pv read from the RDB is composed of the displayed name followed by the tag between parenthesis and _mm.  The _mm portion 
-of the pv name is replaced as follows.
-<p><i><b>mask</b></i> PV's name replaces it with <b>_swmask</b>, <br /> 
-<i><b>switch</b></i> PV's name replaces it with <b>_sw_jump_status</b></p>
-<p>
-Examples of the bypassed and bypassable pv names are <b>Ring_Vac:SGV_AB:FPL_Ring_swmask</b>, 
-<b>Ring_Vac:SGV_AB:FPL_Ring_sw_jump_status</b>, <b>Ring_Diag:BLM_A01:FPAR_Ring_swmask</b> and
-<b>Ring_Diag:BLM_A01:FPAR_Ring_sw_jump_status</b>.
+<p>The bypass name read from the RDB may for example be <b>Ring_Vac:SGV_AB:FPL_Ring</b>.
+It indicates a sector gate valve bypass <b>Ring_Vac:SGV_AB</b> in the
+Fast-Protect Latch (FPL) chain of the Ring.
+</p>
+
+<p>The current status of this bypass is provided by the two PVs
+<b>Ring_Vac:SGV_AB:FPL_Ring_swmask</b> and <b>Ring_Vac:SGV_AB:FPL_Ring_sw_jump_status</b>,
+i.e. by adding <b>_swmask</b> respectively <b>_sw_jump_status</b> to the bypass name.
+</p>
+
+<p>In short, the possible values from these two PVs are decoded as follows:
 </p>
 
 <table border="1">
 <tr>
-<td></td>
-<td>active=0</td>
-<td>active=1</td>
-<td>Disconnected</td>
+  <td></td>
+  <td>sw_jump_status active=0</td>
+  <td>sw_jump_status active=1</td>
+  <td>sw_jump_status disconnected</td>
 </tr>
 <tr>
-<td>mask=0</td>
-<td>Non-bypassable</td>
-<td>Bypassable</td>
-<td>Disconnected</td>
+  <td>mask=0</td>
+  <td>Non-bypassable</td>
+  <td>Bypassable</td>
+  <td>Disconnected</td>
 </tr>
 <tr>
-<td>mask=1</td>
-<td>Error</td>
-<td>Bypassed</td>
-<td>Disconnected</td>
+  <td>mask=1</td>
+  <td>Error</td>
+  <td>Bypassed</td>
+  <td>Disconnected</td>
 </tr>
 <tr>
-<td>Disconnected</td>
-<td>Disconnected</td>
-<td>Disconnected</td>
-<td>Disconnected</td>
+  <td>mask disconnected</td>  <td>Disconnected</td>  <td>Disconnected</td>  <td>Disconnected</td>
 </tr>
 </table> 
 
+<p>The PV names associated with a bypass are also available from the context menu
+of a bypass: When opening the context menu of a bypass, you can send the PV names
+for the "..._swmask" and "..._sw_jump_status" to for example the Data Browser
+to inspect how they change over time:
+</p>
 
-<h1>Bypass Status Explanation </h1>
-<ol><li>active=0, mask=0</li>
-<p><i>sw_jump_status</i> = 0, <i>_swmask</i> = 0: <b>Non-bypassable</b> <br />
+<img src="context.png" alt="Context menu"></img>
+
+
+<h2>Detailed Bypass Status Explanation </h2>
+
+<ol>
+<li><i>sw_jump_status</i> = 0, <i>swmask</i> = 0: <b>Non-bypassable</b> <br/>
 The bypass cannot be enabled (no jumper), and Operators have not masked it (mask=0).
-The MPS input is operational, it will trip the MPS.</p>
+The MPS input is operational, it will trip the MPS.
+</li>
 
-<li>active=1, mask=0</li>
-<p><i>sw_jump_status</i> = 1, <i>_swmask</i> = 0: <b>Bypassable</b> <br /> 
+<li><i>sw_jump_status</i> = 1, <i>swmask</i> = 0: <b>Bypassable</b> <br/> 
 The jumper would allow the bypass to be enabled, but for now the MPS input 
 has not been masked by Operators (mask=0).
 The MPS input is operational, it will trip the MPS.
 This state is also known as <b>Active Bypass Enable</b>
-because an active bypass could be enabled, but isn't at this time.</p>
+because an active bypass could be enabled, but isn't at this time.
+</li>
 
-<li>active=1, mask=1</li>
-<p><i>sw_jump_status</i> = 1, <i>_swmask</i> = 1: <b>Bypassed</b></span> <br /> 
+<li><i>sw_jump_status</i> = 1, <i>swmask</i> = 1: <b>Bypassed</b> <br/> 
 The jumper allows the bypass to be enabled, and Operators masked this MPS 
 input (mask=1).  The MPS input is bypassed, it will NOT trip the MPS.
 This state is also known as <b>Active Bypass</b> because the bypass is active, 
-meaning that the MPS input is actually no longer active.</p>
+meaning that the MPS input is actually no longer active.
+</li>
 
-<li>active=0, mask=1</li>
-<p>_<i>sw_jump_status</i> = 0, <i>_swmask</i> = 1: <b>Error</b></span> <br />
-This should not happen, it is the result of a configuration error.  Cannot happen, it is not allowable in hardware.  This causes the chassis to trip on a config error.</p>
+<li><i>sw_jump_status</i> = 0, <i>swmask</i> = 1: <b>Error</b> <br/>
+This should not happen, it is the result of a configuration error.
+Cannot happen, it is not allowed by hardware.  This causes the chassis to trip on a configuration error.
+</li>
 
-<li>Disconnected</li>
-<p>_<i>_sw_jump_status</i> || <i>_swmask</i> = Disconnected: <b>Disconnected</b> <br />
-If either the _sw_jump_status or the _swmask pvs are Disconnected the result will be Disconnected.</p>
+<li>Any PV disconnected: <b>Disconnected</b> <br/>
+If either the sw_jump_status or the swmask PVs are disconnected the overall result will be Disconnected.
+This indicates that either a portion of the MPS is currently offline,
+a network communication error, or the MPS configuration in the RDB lists
+bypasses that don't really exist.
+</li>
+
 </ol>
 
-<BR><BR>
-<h1>Display Colors</h1>
+<h2>Display Colors</h2>
+
 <p>The following color scheme is used for displaying MPS 
-Bypass information, based on MPS bypass pv status and MPS bypass request status.</p>
-<br>
-<h2>Bypass Color Display Table </h2>
+Bypass information, based on MPS bypass pv status and MPS bypass request status.
+</p>
 
 <table border="1">
 <tr>
@@ -153,4 +173,6 @@ Bypass information, based on MPS bypass pv status and MPS bypass request status.
 <td>Good</td>
 </tr>
 </table> 
-<BR>
+
+</body>
+</html>

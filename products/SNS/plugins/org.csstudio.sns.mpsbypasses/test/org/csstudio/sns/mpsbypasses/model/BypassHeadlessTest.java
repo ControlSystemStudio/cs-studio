@@ -1,6 +1,6 @@
 package org.csstudio.sns.mpsbypasses.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
@@ -11,6 +11,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link Bypass}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BypassHeadlessTest implements BypassListener
 {
 	@Override
@@ -35,41 +36,41 @@ public class BypassHeadlessTest implements BypassListener
 		// Simulate Bypassed
 		jumper.setValue(new Double(1.0));
 		mask.setValue(new Double(1.0));
-		
+
 		// Prepare to check those simulated PVs
 		final Request request = new Request("Fred", new Date());
 		final Bypass info = new Bypass("loc://Test_Sys:Bypass1:FPLX", request, this);
 		assertEquals("loc://Test_Sys:Bypass1", info.getName());
-		
+
 		// Initially disconnected
 		assertEquals(BypassState.Disconnected, info.getState());
-		
+
 		// Should connect to PVs and get Bypassed state
 		info.start();
 		waitForState(info, BypassState.Bypassed);
-		
+
 		// Bypass still possible, but not used
 		mask.setValue(new Double(0.0));
 		waitForState(info, BypassState.Bypassable);
-		
+
 		// Not allowed
 		jumper.setValue(new Double(0.0));
 		waitForState(info, BypassState.NotBypassable);
-		
+
 		// .. yet active?
 		mask.setValue(new Double(1.0));
 		waitForState(info, BypassState.InError);
 
 		// Stop should result in disconnect
 		info.stop();
-		assertEquals(BypassState.Disconnected, info.getState());		
+		assertEquals(BypassState.Disconnected, info.getState());
 
 		// No more updates?
 		mask.setValue(new Double(0.0));
 		Thread.sleep(1000);
-		assertEquals(BypassState.Disconnected, info.getState());		
+		assertEquals(BypassState.Disconnected, info.getState());
 	}
-	
+
 	private void waitForState(final Bypass info, final BypassState desired) throws InterruptedException
     {
 		BypassState state = null;

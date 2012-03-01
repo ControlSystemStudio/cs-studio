@@ -3,12 +3,13 @@ package org.csstudio.sns.mpsbypasses.model;
 import java.util.Date;
 
 /** Bypass Request information
- *  
+ *
  *  <p>Who requested a bypass and when?
- *  
+ *
  *  @author Delphy Armstrong - Original MPSBypassRequestInfo
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Request
 {
 	final private String requestor;
@@ -17,7 +18,7 @@ public class Request
 	/** Initialize
 	 *  @param requestor Who requested the bypass?
 	 *  @param date When?
-	 * 
+	 *
 	 */
 	public Request(final String requestor,
 			final Date date)
@@ -37,7 +38,7 @@ public class Request
 	{
 		return date;
 	}
-	
+
 	/** @return debug representation */
 	@Override
     public String toString()

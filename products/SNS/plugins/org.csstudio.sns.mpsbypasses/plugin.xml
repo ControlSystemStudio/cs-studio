@@ -38,12 +38,29 @@
             file="toc.xml">
             primary="true">
       </toc>
+      <toc
+            file="tocChangelog.xml"
+            primary="false">
+      </toc>
    </extension>
    <extension
          point="org.eclipse.ui.elementFactories">
       <factory
             class="org.csstudio.sns.mpsbypasses.ui.BypassEditorInput"
             id="org.csstudio.sns.mpsbypasses.editorfactory">
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.sns.mpsbypasses.model.Bypass"
+            class="org.csstudio.sns.mpsbypasses.model.BypassAdapterFactory">
+         <adapter
+               type="[Lorg.csstudio.csdata.ProcessVariable;">
+         </adapter>
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
       </factory>
    </extension>
 </plugin>
