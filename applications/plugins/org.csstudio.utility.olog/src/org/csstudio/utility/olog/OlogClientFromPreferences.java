@@ -22,7 +22,6 @@ import edu.msu.nscl.olog.api.Logbook;
 import edu.msu.nscl.olog.api.LogbookBuilder;
 import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
-import edu.msu.nscl.olog.api.OlogClientManager;
 import edu.msu.nscl.olog.api.OlogException;
 import edu.msu.nscl.olog.api.Property;
 import edu.msu.nscl.olog.api.PropertyBuilder;
@@ -50,7 +49,7 @@ public class OlogClientFromPreferences implements OlogClient {
 		OlogClientBuilder ologClientBuilder;
 		String url = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Olog_URL,
-				"http://localhost:8080/Olog/resources", null);
+				"https://localhost:8181/Olog/resources", null);
 		String jcr_url = prefs.getString(Activator.PLUGIN_ID,
 				PreferenceConstants.Olog_jcr_URL,
 				"http://localhost:8080/Olog/repository/olog", null);
@@ -72,7 +71,7 @@ public class OlogClientFromPreferences implements OlogClient {
 		}
 		log.info("Creating Olog client : " + url);
 		try {
-			//OlogClientManager.registerDefaultClient(ologClientBuilder.create());
+			// OlogClientManager.registerDefaultClient(ologClientBuilder.create());
 			this.client = ologClientBuilder.create();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,18 +166,6 @@ public class OlogClientFromPreferences implements OlogClient {
 	 * 
 	 * @see
 	 * edu.msu.nscl.olog.api.OlogClient#set(edu.msu.nscl.olog.api.TagBuilder,
-	 * java.lang.Long)
-	 */
-	@Override
-	public Tag set(TagBuilder tag, Long logId) throws OlogException {
-		return client.set(tag, logId);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.msu.nscl.olog.api.OlogClient#set(edu.msu.nscl.olog.api.TagBuilder,
 	 * java.util.Collection)
 	 */
 	@Override
@@ -197,18 +184,6 @@ public class OlogClientFromPreferences implements OlogClient {
 	@Override
 	public Logbook set(LogbookBuilder logbookBuilder) throws OlogException {
 		return client.set(logbookBuilder);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.msu.nscl.olog.api.OlogClient#set(edu.msu.nscl.olog.api.LogbookBuilder
-	 * , java.lang.Long)
-	 */
-	@Override
-	public Logbook set(LogbookBuilder logbook, Long logId) throws OlogException {
-		return client.set(logbook, logId);
 	}
 
 	/*
@@ -295,32 +270,6 @@ public class OlogClientFromPreferences implements OlogClient {
 	public Logbook update(LogbookBuilder logbook, Collection<Long> logIds)
 			throws OlogException {
 		return client.update(logbook, logIds);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.msu.nscl.olog.api.OlogClient#update(edu.msu.nscl.olog.api.PropertyBuilder
-	 * , java.lang.Long)
-	 */
-	@Override
-	public Property update(PropertyBuilder property, Long logId)
-			throws OlogException {
-		return client.update(property, logId);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * edu.msu.nscl.olog.api.OlogClient#update(edu.msu.nscl.olog.api.PropertyBuilder
-	 * , java.util.Collection)
-	 */
-	@Override
-	public Property update(PropertyBuilder property, Collection<Long> logIds)
-			throws OlogException {
-		return client.update(property, logIds);
 	}
 
 	/*
@@ -535,6 +484,56 @@ public class OlogClientFromPreferences implements OlogClient {
 	public Collection<Log> findLogs(MultivaluedMap<String, String> map)
 			throws OlogException {
 		return client.findLogs(map);
+	}
+
+	@Override
+	public Collection<Property> listProperties() throws OlogException {
+		return client.listProperties();
+	}
+
+	@Override
+	public Collection<String> listAttributes(String propertyName)
+			throws OlogException {
+		return client.listAttributes(propertyName);
+	}
+
+	@Override
+	public Property getProperty(String property) throws OlogException {
+		return client.getProperty(property);
+	}
+
+	@Override
+	public Property set(PropertyBuilder property) throws OlogException {
+		return client.set(property);
+	}
+
+	@Override
+	public Property update(PropertyBuilder property) {
+		return client.update(property);
+	}
+
+	@Override
+	public Collection<Log> findLogsByProperty(String propertyName,
+			String attributeName, String attributeValue) throws OlogException {
+		return client.findLogsByProperty(propertyName, attributeName,
+				attributeValue);
+	}
+
+	@Override
+	public Collection<Log> findLogsByProperty(String propertyName)
+			throws OlogException {
+		return client.findLogsByProperty(propertyName);
+	}
+
+	@Override
+	public void deleteProperty(String property) throws OlogException {
+		client.deleteProperty(property);
+	}
+
+	@Override
+	public Log update(PropertyBuilder property, Long logId)
+			throws OlogException {
+		return client.update(property, logId);
 	}
 
 }
