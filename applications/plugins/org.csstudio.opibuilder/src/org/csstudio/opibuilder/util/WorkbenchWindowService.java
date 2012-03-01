@@ -6,6 +6,9 @@ import java.util.Map;
 import org.csstudio.opibuilder.actions.CompactModeAction;
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.internal.WorkbenchWindow;
 
@@ -69,9 +72,29 @@ public final class WorkbenchWindowService {
 		return inCompactMode | PreferencesHelper.isStartWindowInCompactMode();
 	}
 
-	public static void setToolbarVisibility(WorkbenchWindow window, boolean visible){
+	public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
 		window.setCoolBarVisible(visible);
 		window.setPerspectiveBarVisible(visible);
+
+		//All these don't work
+		// window.setStatusLineVisible(false);
+		// window.getActionBars().getStatusLineManager().getItems()[0].setVisible(visible);
+		// window.getStatusLineManager().getItems()[0].setVisible(visible);
+		// window.getStatusLineManager().getControl().setVisible(visible);
+
+		//A hack to set status line invisible.
+		for (Control child : window.getShell().getChildren()) {
+			if (child.isDisposed())
+				continue;
+			if (child.getClass().equals(Canvas.class))
+				continue;
+			if (child.getClass().equals(Composite.class))
+				continue;
+			child.setVisible(visible);
+
+		}
+		window.getShell().layout();
+		
 	}
 	
 }
