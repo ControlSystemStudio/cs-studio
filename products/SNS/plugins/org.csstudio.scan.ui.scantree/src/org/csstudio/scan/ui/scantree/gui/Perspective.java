@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree.gui;
 
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -23,7 +24,7 @@ public class Perspective implements IPerspectiveFactory
 {
     /** Perspective ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.perspective"; //$NON-NLS-1$
-    
+
     /** Try to switch to the DataBrowser perspective
      *  @throws WorkbenchException on error
      */
@@ -33,16 +34,16 @@ public class Perspective implements IPerspectiveFactory
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         workbench.showPerspective(ID, window);
     }
-    
+
     @SuppressWarnings("deprecation")
     @Override
     public void createInitialLayout(final IPageLayout layout)
     {
         // left | editor      | right
-        //      |             |
-        //      |             |
-        //      +-------------+
-        //      | bottom      |
+        //      |             | top
+        //      |             +------
+        //      +-------------+ right
+        //      | bottom      | bottom
         final String editor = layout.getEditorArea();
         final IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.20f, editor);
@@ -53,26 +54,28 @@ public class Perspective implements IPerspectiveFactory
 
         final IFolderLayout right_top = layout.createFolder("right_top",
                 IPageLayout.TOP, 0.33f, "right");
-        
+
         // Stuff for 'left'
         left.addView(IPageLayout.ID_RES_NAV);
 
         // Stuff for 'bottom'
-        bottom.addView("org.csstudio.scan.ui.scanmonitor");
-        bottom.addPlaceholder("org.csstudio.scan.ui.plot.view");
-        bottom.addPlaceholder("org.csstudio.scan.ui.plot.view:*");
+        bottom.addView(ScanUIActivator.ID_SCAN_MONITOR_VIEW);
+        bottom.addView("org.eclipse.ui.console.ConsoleView");
+        bottom.addPlaceholder(ScanUIActivator.ID_SCAN_PLOT_VIEW);
+        bottom.addPlaceholder(ScanUIActivator.ID_SCAN_PLOT_VIEW + ":*");
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Stuff for 'right_top'
         right_top.addView(CommandListView.ID);
-        
-        // Stuff for 'right'
+
+        // Stuff for 'right' (bottom)
         right.addView(IPageLayout.ID_PROP_SHEET);
 
-        
         // Populate the "Window/Views..." menu with suggested views
         layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
         layout.addShowViewShortcut(CommandListView.ID);
+        layout.addShowViewShortcut(ScanUIActivator.ID_SCAN_MONITOR_VIEW);
+        layout.addShowViewShortcut(ScanUIActivator.ID_SCAN_PLOT_VIEW);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
         layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
     }
