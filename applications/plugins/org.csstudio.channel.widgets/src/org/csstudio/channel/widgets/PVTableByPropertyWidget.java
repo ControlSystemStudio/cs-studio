@@ -7,6 +7,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.vStringConstants;
 import static org.epics.pvmanager.data.ExpressionLanguage.vTable;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.ChannelUtil;
 
@@ -19,7 +20,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.utility.channel.CSSChannelUtils;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplayCell;
@@ -38,13 +41,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VTable;
 import org.epics.pvmanager.data.VTableColumn;
 
-public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider {
+public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
+	ConfigurableWidget {
 	
 	private static final int MAX_COLUMNS = 200;
 	private static final int MAX_CELLS = 50000;
@@ -99,7 +104,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			
-			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty");
+			List<String> properties = Arrays.asList("channels", "rowProperty", "columnProperty", "columnTags");
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
@@ -126,6 +131,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	
 	private String rowProperty;
 	private String columnProperty;
+	private List<String> columnTags = new ArrayList<String>();
 	
 	private List<List<String>> cellPvs;
 	private List<List<Collection<Channel>>> cellChannels;
@@ -191,6 +197,16 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		changeSupport.firePropertyChange("columnProperty", oldValue, columnProperty);
 	}
 	
+	public List<String> getColumnTags() {
+		return columnTags;
+	}
+	
+	public void setColumnTags(List<String> tags) {
+		List<String> oldValue = this.columnTags;
+		columnTags = Collections.unmodifiableList(new ArrayList<String>(tags));
+		changeSupport.firePropertyChange("columnTags", oldValue, columnTags);
+	}
+	
 	public Collection<Channel> getChannels() {
 		return channels;
 	}
@@ -203,22 +219,42 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 	
+	/**
+	 * True if enough properties are set to compute the table channels.
+	 * @return true if we can compute the table
+	 */
+	private boolean propertiesReady() {
+		return rowProperty != null && (columnProperty != null ||
+				(columnTags != null && !columnTags.isEmpty() ));
+	}
+	
+	private void clearTableChannels() {
+		columnNames = null;
+		rowNames = null;
+		cellPvs = null;
+		cellChannels = null;
+		reconnect();
+	}
+	
 	private void computeTableChannels() {
 		// Not have all the bits to prepare the channel list
-		if (channels == null || rowProperty == null || columnProperty == null) {
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (!propertiesReady() || channels == null) {
+			clearTableChannels();
 			return;
 		}
 
 		// Filter only the channels that actually have the properties
 		// If none, then nothing should be shown
-		Collection<Channel> channelsInTable = ChannelUtil.filterbyProperties(channels, Arrays.asList(rowProperty, columnProperty));
+		Collection<Channel> channelsWithRow = ChannelUtil.filterbyProperties(channels, Arrays.asList(rowProperty));
+		Collection<String> propertyNames = new ArrayList<String>();
+		if (columnProperty != null)
+			propertyNames.add(columnProperty);
+		List<String> tagNames = this.columnTags;
+		if (tagNames == null)
+			tagNames = new ArrayList<String>();
+		Collection<Channel> channelsInTable = CSSChannelUtils.filterByOneOrMoreElements(channelsWithRow, propertyNames, tagNames);
 		if (channelsInTable.isEmpty()) {
-			columnNames = null;
+			propertyNames = null;
 			rowNames = null;
 			cellPvs = null;
 			cellChannels = null;
@@ -229,24 +265,19 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
 		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
+		//possibleColumns.addAll(tagNames);
+		int nRows = possibleRows.size();
+		int nColumns = possibleColumns.size() + tagNames.size();
 		
 		// Limit column and cell count
-		if (possibleColumns.size() > MAX_COLUMNS) {
-			errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + possibleColumns.size() + ")"));
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (nColumns > MAX_COLUMNS) {
+			errorBar.setException(new RuntimeException("Max column count is " + MAX_COLUMNS + " (would generate " + nColumns + ")"));
+			clearTableChannels();
 			return;
 		}
-		if (possibleRows.size() * possibleColumns.size() > MAX_CELLS) {
-			errorBar.setException(new RuntimeException("Max cell count is " + MAX_CELLS + " (would generate " + possibleRows.size() * possibleColumns.size() + ")"));
-			columnNames = null;
-			rowNames = null;
-			cellPvs = null;
-			cellChannels = null;
-			reconnect();
+		if (nRows * nColumns > MAX_CELLS) {
+			errorBar.setException(new RuntimeException("Max cell count is " + MAX_CELLS + " (would generate " + nRows * nColumns + ")"));
+			clearTableChannels();
 			return;
 		}
 		
@@ -255,10 +286,10 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		
 		List<List<String>> cells = new ArrayList<List<String>>();
 		List<List<Collection<Channel>>> channels = new ArrayList<List<Collection<Channel>>>();
-		for (int nColumn = 0; nColumn < possibleColumns.size(); nColumn++) {
+		for (int nColumn = 0; nColumn < nColumns; nColumn++) {
 			List<String> column = new ArrayList<String>();
 			List<Collection<Channel>> channelColumn = new ArrayList<Collection<Channel>>();
-			for (int nRow = 0; nRow < possibleRows.size(); nRow++) {
+			for (int nRow = 0; nRow < nRows; nRow++) {
 				column.add(null);
 				channelColumn.add(new HashSet<Channel>());
 			}
@@ -267,18 +298,32 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		
 		for (Channel channel : channelsInTable) {
+			int nColumn = -1;
+			// Row is guaranteed to have the property, column may not
 			String row = channel.getProperty(rowProperty).getValue();
-			String column = channel.getProperty(columnProperty).getValue();
+			if (channel.getProperty(columnProperty) != null) {
+				nColumn = possibleColumns.indexOf(channel.getProperty(columnProperty).getValue());
+			}
 			
 			int nRow = possibleRows.indexOf(row);
-			int nColumn = possibleColumns.indexOf(column);
 			
 			if (nRow != -1 && nColumn != -1) {
 				cells.get(nColumn).set(nRow, channel.getName());
 				channels.get(nColumn).get(nRow).add(channel);
 			}
+
+			int tagCount = 0;
+			for (String tagName : tagNames) {
+				if (channel.getTag(tagName) != null) {
+					nColumn = possibleColumns.size() + tagCount;
+					cells.get(nColumn).set(nRow, channel.getName());
+					channels.get(nColumn).get(nRow).add(channel);
+				}
+				tagCount++;
+			}
 		}
 		
+		possibleColumns.addAll(tagNames);
 		columnNames = possibleColumns;
 		rowNames = possibleRows;
 		cellPvs = cells;
@@ -377,6 +422,78 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 	protected void queryExecuted(Result result) {
 		errorBar.setException(result.exception);
 		setChannels(result.channels);
+	}
+
+	private boolean configurable = true;
+
+	private PVTableByPropertyConfigurationDialog dialog;
+
+	public void openConfigurationDialog() {
+		if (dialog != null)
+			return;
+		dialog = new PVTableByPropertyConfigurationDialog(this);
+		dialog.open();
+	}
+
+	@Override
+	public boolean isConfigurable() {
+		return configurable;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
+		boolean oldConfigurable = configurable;
+		this.configurable = configurable;
+		changeSupport.firePropertyChange("configurable", oldConfigurable,
+				configurable);
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		return dialog != null;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
+		dialog = null;
+	}
+	
+	/** Memento tag */
+	private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_ROW_PROPERTY = "rowProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_COLUMN_PROPERTY = "columnProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_COLUMN_TAGS = "columnTags"; //$NON-NLS-1$
+	
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
+		}
+		if (getRowProperty() != null) {
+			memento.putString(MEMENTO_ROW_PROPERTY, getRowProperty());
+		}
+		if (getColumnProperty() != null) {
+			memento.putString(MEMENTO_COLUMN_PROPERTY, getColumnProperty());
+		}
+		if (getColumnTags() != null && !getColumnTags().isEmpty()) {
+			memento.putString(MEMENTO_COLUMN_TAGS, MementoUtil.toCommaSeparated(getColumnTags()));
+		}
+	}
+	
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_ROW_PROPERTY) != null) {
+				setRowProperty(memento.getString(MEMENTO_ROW_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_COLUMN_PROPERTY) != null) {
+				setColumnProperty(memento.getString(MEMENTO_COLUMN_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_COLUMN_TAGS) != null) {
+				setColumnTags(MementoUtil.fromCommaSeparated(memento.getString(MEMENTO_COLUMN_TAGS)));
+			}
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_CHANNEL_QUERY)).build());
+			}
+		}
 	}
 	
 }

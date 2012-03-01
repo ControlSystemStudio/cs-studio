@@ -10,7 +10,7 @@
       <view
             category="org.csstudio"
             class="org.csstudio.logbook.ui.ELogEntryView"
-            icon="icons/logbook-16.png"
+            icon="icons/logentry-add-16.png"
             id="org.csstudio.logbook.ui.ELogEntryView"
             name="%MakeLogEntry"
             restorable="true">
@@ -23,7 +23,7 @@
             locationURI="menu:utility">
          <command
                commandId="org.eclipse.ui.views.showView"
-               icon="icons/logbook-16.png"
+               icon="icons/logentry-add-16.png"
                label="%MakeLogEntry"
                style="push">
             <parameter

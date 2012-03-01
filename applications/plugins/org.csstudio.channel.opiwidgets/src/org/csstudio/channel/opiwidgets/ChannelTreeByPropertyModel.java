@@ -28,13 +28,7 @@ public class ChannelTreeByPropertyModel extends AbstractChannelWidgetWithNotific
 	}
 	
 	public List<String> getTreeProperties() {
-		String list = getCastedPropertyValue(TREE_PROPERTIES);
-		String[] tokens = list.split(",");
-		List<String> properties = new ArrayList<String>();
-		for (String token : tokens) {
-			properties.add(token.trim());
-		}
-		return properties;
+		return getListProperty(TREE_PROPERTIES);
 	}
 	
 	@Override

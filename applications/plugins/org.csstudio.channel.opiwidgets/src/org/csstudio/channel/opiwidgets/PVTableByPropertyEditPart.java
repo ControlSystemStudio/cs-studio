@@ -39,6 +39,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 		}
 		widget.setRowProperty(model.getRowProperty());
 		widget.setColumnProperty(model.getColumnProperty());
+		widget.setColumnTags(model.getColumnTags());
 	}
 
 	@Override
@@ -55,6 +56,7 @@ extends AbstractChannelWidgetEditPart<PVTableByPropertyFigure, PVTableByProperty
 		setPropertyChangeHandler(PVTableByPropertyModel.CHANNEL_QUERY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.ROW_PROPERTY, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.COLUMN_PROPERTY, reconfigure);
+		setPropertyChangeHandler(PVTableByPropertyModel.COLUMN_TAGS, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_EXPRESSION, reconfigure);
 		setPropertyChangeHandler(PVTableByPropertyModel.SELECTION_PV, reconfigure);
 	}

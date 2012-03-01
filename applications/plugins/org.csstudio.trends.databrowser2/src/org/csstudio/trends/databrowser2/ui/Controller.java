@@ -65,7 +65,7 @@ public class Controller implements ArchiveFetchJobListener
     final private Model model;
 
     /** Listener to model that informs this controller */
-	private ModelListener model_listener;
+    private ModelListener model_listener;
 
     /** GUI for displaying the data */
     final private Plot plot;
@@ -242,32 +242,21 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                    final ModelItem item = model.getItem(name.getName());
-                    if (item == null)
-                    {
-                        final OperationsManager operations_manager = plot.getOperationsManager();
+                    
+                    // Add the given PV to the model anyway even if the same PV
+                    // exists in the model.
+                    final OperationsManager operations_manager = plot.getOperationsManager();
 
-                        // Add to first empty axis, or create new axis
-                        AxisConfig axis = model.getEmptyAxis();
-                        if (axis == null)
-                            axis = new AddAxisCommand(operations_manager, model).getAxis();
+                    // Add to first empty axis, or create new axis
+                    AxisConfig axis = model.getEmptyAxis();
+                    if (axis == null)
+                        axis = new AddAxisCommand(operations_manager, model).getAxis();
 
-                        // Add new PV
-                        AddModelItemCommand.forPV(shell, operations_manager,
-                                model, name.getName(), Preferences.getScanPeriod(),
-                                axis, archive);
-                        return;
-                    }
-                    if (archive == null  ||   ! (item instanceof PVItem))
-                    {   // Duplicate PV, or a formula to which we cannot add archives
-                        MessageDialog.openError(shell, Messages.Error,
-                                NLS.bind(Messages.DuplicateItemFmt, name));
-                        return;
-                    }
-                    // Add archive to existing PV
-                    if (item instanceof PVItem)
-                        new AddArchiveCommand(plot.getOperationsManager(),
-                                (PVItem) item, archive);
+                    // Add new PV
+                    AddModelItemCommand.forPV(shell, operations_manager,
+                            model, name.getName(), Preferences.getScanPeriod(),
+                            axis, archive);
+                    return;
                 }
             }
         });
@@ -534,23 +523,23 @@ public class Controller implements ArchiveFetchJobListener
     /** Add annotations from model to plot */
     private void createAnnotations()
     {
-		final XYGraph graph = plot.getXYGraph();
-    	final List<Axis> yaxes = graph.getYAxisList();
-    	final AnnotationInfo[] annotations = model.getAnnotations();
+        final XYGraph graph = plot.getXYGraph();
+        final List<Axis> yaxes = graph.getYAxisList();
+        final AnnotationInfo[] annotations = model.getAnnotations();
         for (AnnotationInfo info : annotations)
         {
-			final int axis_index = info.getAxis();
-			if (axis_index < 0  ||  axis_index >= yaxes.size())
-				continue;
-			final Axis axis = yaxes.get(axis_index);
-        	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
-        			info.getValue());
-			graph.addAnnotation(annotation);
+            final int axis_index = info.getAxis();
+            if (axis_index < 0  ||  axis_index >= yaxes.size())
+                continue;
+            final Axis axis = yaxes.get(axis_index);
+            final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
+            annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
+                    info.getValue());
+            graph.addAnnotation(annotation);
         }
     }
 
-	/** Scroll the plot to 'now' */
+    /** Scroll the plot to 'now' */
     protected void performScroll()
     {
         if (! model.isScrollEnabled())

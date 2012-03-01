@@ -13,7 +13,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 /** Ring buffer for 'live' samples.
  *  <p>
  *  New samples are always added to the end of a ring buffer.
- *
+ * 
  *  @author Kay Kasemir
  *  @author Takashi Nakamoto changed LiveSamples to handle waveform index.
  */
@@ -21,27 +21,27 @@ public class LiveSamples extends PlotSamples
 {
     private RingBuffer<PlotSample> samples =
         new RingBuffer<PlotSample>(Preferences.getLiveSampleBufferSize());
-
+    
     /** Waveform index */
     private int waveform_index = 0;
-
+    
     /** @param index Waveform index to show */
-    synchronized public void setWaveformIndex(final int index)
+    synchronized public void setWaveformIndex(int index)
     {
-    	waveform_index = index;
+        waveform_index = index;
 
-    	// Change the index of all samples in this instance
-    	for (int i=0; i<samples.size(); i++) {
-    		samples.get(i).setWaveformIndex(waveform_index);
-    	}
+        // Change the index of all samples in this instance
+        for (int i=0; i<samples.size(); i++) {
+            samples.get(i).setWaveformIndex(waveform_index);
+        }
     }
-
+    
     /** @return Maximum number of samples in ring buffer */
     synchronized public int getCapacity()
     {
         return samples.getCapacity();
     }
-
+    
     /** Set new capacity.
      *  <p>
      *  Tries to preserve the newest samples.
@@ -58,7 +58,7 @@ public class LiveSamples extends PlotSamples
     /** @param sample Sample to add to ring buffer */
     synchronized void add(final PlotSample sample)
     {
-    	sample.setWaveformIndex(waveform_index);
+        sample.setWaveformIndex(waveform_index);
         samples.add(sample);
         have_new_samples = true;
     }

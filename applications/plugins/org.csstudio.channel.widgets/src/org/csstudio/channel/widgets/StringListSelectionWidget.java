@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -121,8 +122,8 @@ public class StringListSelectionWidget extends Composite {
 		return possibleValues;
 	}
 	
-	public void setPossibleValues(List<String> possibleValues) {
-		this.possibleValues = possibleValues;
+	public void setPossibleValues(Collection<String> possibleValues) {
+		this.possibleValues = new ArrayList<String>(possibleValues);
 		Collections.sort(this.possibleValues);
 	}
 	

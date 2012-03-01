@@ -6,7 +6,7 @@
       <view
             category="org.csstudio.channel.application.category"
             class="org.csstudio.graphene.HistogramView"
-            icon="platform:/plugin/org.csstudio.channel.widgets/icons/histogram-16.png"
+            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
             id="org.csstudio.graphene.HistogramView"
             name="Histogram"
             restorable="true">
@@ -24,7 +24,7 @@
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
-                  value="org.csstudio.channel.views.HistogramView">
+                  value="org.csstudio.graphene.HistogramView">
             </parameter>
          </command>
       </menuContribution>
