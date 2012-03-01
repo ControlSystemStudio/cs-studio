@@ -35,6 +35,7 @@ org.csstudio.display.multichannelviewer
 org.csstudio.display.waterfall
 org.csstudio.email
 org.csstudio.email.ui
+org.csstudio.graphene
 org.csstudio.java
 org.csstudio.logbook
 org.csstudio.logbook.olog
@@ -109,5 +110,7 @@ org.csstudio.utility.pvmanager.sim
 org.csstudio.utility.pvmanager.ui
 org.csstudio.utility.pvmanager.ui.toolbox
 org.csstudio.utility.pvmanager.widgets
+org.csstudio.utility.pvmanager.graphene
 org.csstudio.workspace
+org.epics.graphene
 org.slf4j.api

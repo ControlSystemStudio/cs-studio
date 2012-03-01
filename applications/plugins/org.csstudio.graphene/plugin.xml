@@ -8,7 +8,7 @@
             class="org.csstudio.graphene.HistogramView"
             icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
             id="org.csstudio.graphene.HistogramView"
-            name="Histogram"
+            name="Histogram (alpha)"
             restorable="true">
       </view>
    </extension>
@@ -20,7 +20,7 @@
          <command
                commandId="org.eclipse.ui.views.showView"
                icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
-               label="Histogram"
+               label="Histogram (alpha)"
                style="push">
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
@@ -36,7 +36,7 @@
             editpart_class="org.csstudio.graphene.HistogramEditPart"
             icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
             model_class="org.csstudio.graphene.HistogramModel"
-            name="Histogram"
+            name="Histogram (alpha)"
             typeId="org.csstudio.graphene.Histogram">
       </widget>
    </extension>

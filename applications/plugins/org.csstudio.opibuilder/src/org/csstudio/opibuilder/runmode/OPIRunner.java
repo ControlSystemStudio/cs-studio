@@ -7,9 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import org.csstudio.opibuilder.actions.CompactModeAction;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.util.WorkbenchWindowService;
+import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -45,8 +50,11 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 	public void init(final IEditorSite site, final IEditorInput input)
 			throws PartInitException {
 		setSite(site);
-		setInput(input);
-		opiRuntimeDelegate.init(site, input);
+		
+		setInput(!(input instanceof IRunnerInput) && !(input instanceof NoResourceEditorInput) ? 
+						new NoResourceEditorInput(input) : input);
+		opiRuntimeDelegate.init(site, input instanceof NoResourceEditorInput ? 
+				((NoResourceEditorInput)input).getOriginEditorInput() : input);
 	}
 	
 	public void setOPIInput(IEditorInput input) throws PartInitException {
@@ -65,8 +73,38 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 	}
 
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		opiRuntimeDelegate.createGUI(parent);
+		//if this is the first OPI in this window, resize the window to match the OPI size.
+		//Make it in compact mode if it is configured.
+		Display.getCurrent().asyncExec(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (getSite().getWorkbenchWindow().getActivePage()
+						.getEditorReferences().length == 1) {
+					int trimWidth = 45, trimHeight = 165;
+					CompactModeAction action = WorkbenchWindowService.getInstance().getCompactModeAction(
+							getSite().getWorkbenchWindow());
+					if (WorkbenchWindowService.isInCompactMode()) {
+						if(!action.isInCompactMode())
+							action.run();
+						trimHeight = 65;
+					}
+					final Rectangle bounds;
+					if (opiRuntimeDelegate.getDisplayModel() != null)
+						bounds = opiRuntimeDelegate.getDisplayModel()
+								.getBounds();
+					else
+						bounds = new Rectangle(-1, -1, 800, 600);
+					if (bounds.x >= 0 && bounds.y >= 0)
+						parent.getShell().setLocation(bounds.x, bounds.y);
+					parent.getShell().setSize(bounds.width + trimWidth,
+							bounds.height + trimHeight);
+				}
+			}
+		});
+		
 	}
 
 	@Override
