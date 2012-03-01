@@ -33,8 +33,19 @@ install="/Users/Fred/Desktop/CSS/plugins"
 sys.path.append(install + "/org.csstudio.scan_1.0.0")
 sys.path.append(install + "/org.csstudio.scan.client_1.0.0")
 
-# -------------------------------------------------------
 
+# -------------------------------------------------------
+# Scan Server connection setup
+import org.csstudio.scan.server.ScanServer as ScanServer
+import java.lang.System as System
+
+# Set scan server host and port if they're not the default
+#System.setProperty(ScanServer.HOST_PROPERTY, "ky9linux.ornl.gov")
+#System.setProperty(ScanServer.PORT_PROPERTY, str(4810))
+
+
+# -------------------------------------------------------
+# Leave rest as is
 import org.csstudio.scan.client.ScanServerConnector as ScanServerConnector
 from org.csstudio.scan.command import *
 import time

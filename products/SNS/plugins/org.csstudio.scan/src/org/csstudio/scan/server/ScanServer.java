@@ -31,10 +31,10 @@ import org.csstudio.scan.device.DeviceInfo;
  *  They can be overriddden via Java system preferences
  *  to allow doing this from any Java tool (jython, Matlab, ...).
  *
- *  TODO Eclipse-based tools set the system properties from Eclipse preferences,
+ *  Eclipse-based tools set the system properties from Eclipse preferences,
  *  so what's used in the end are the system preference values,
  *  but they can be configured from Eclipse preferences
- *  TODO and the GUI tools include preference pages.
+ *  and the GUI tools include preference pages.
  *
  *  @author Kay Kasemir
  */
