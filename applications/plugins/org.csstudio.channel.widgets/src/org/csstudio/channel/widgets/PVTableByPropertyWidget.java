@@ -174,7 +174,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		// so it's limited to 500 ms.
 		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
-		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
+		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
 	}
 	
 	public String getRowProperty() {
