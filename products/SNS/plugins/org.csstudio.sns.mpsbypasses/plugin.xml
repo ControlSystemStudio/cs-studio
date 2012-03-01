@@ -55,6 +55,7 @@
       <factory
             adaptableType="org.csstudio.sns.mpsbypasses.model.Bypass"
             class="org.csstudio.sns.mpsbypasses.model.BypassAdapterFactory">
+         <!-- IDE warns about "[L...;", but this is the correct syntax for an array type -->
          <adapter
                type="[Lorg.csstudio.csdata.ProcessVariable;">
          </adapter>
