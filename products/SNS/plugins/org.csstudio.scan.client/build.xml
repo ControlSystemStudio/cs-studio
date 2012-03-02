@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+
+<!-- Ant file for building a scan system client
+     library that Jython, Matlab or other plain java,
+     i.e. non-Eclipse tools can use.
+
+     Required environment variables:
+     TOMCAT - Tomcat installation,
+              e.g. /usr/local/java/apache-tomcat-7.0.11
+
+     Kay Kasemir
+  -->
+<project name="scan.client" default="all">
+    <!-- Map all environment variables XYZ to ${env.XYZ} -->
+    <property environment="env"/>
+
+    <!-- Build directory -->
+    <property name="build_dir" value="build_dir" />
+
+    <!-- The following settings are essentially fixed based on the
+         Eclipse JEE project setup, Tomcat or WAR file requirements
+      -->
+    <property name="classes" value="${build_dir}/classes" />
+    <path id="build.classpath">
+        <fileset dir="lib">
+          <include name="*.jar"/>
+        </fileset>
+    </path>
+	
+    <!-- Remove all that might have been built previously -->
+    <target name="clean">
+        <delete dir="${build_dir}" />
+        <delete file="${ant.project.name}.jar" />
+    </target>
+
+    <!-- Create build directory structure -->
+    <target name="prepare">
+        <mkdir dir="${classes}" />
+    </target>
+
+    <!-- Compile Java sources -->
+    <target name="compile" depends="prepare">
+    	<!-- org.csstudio.scan, excluding Eclipse-only code -->
+        <javac srcdir="../org.csstudio.scan/src" destdir="${classes}"
+               excludes="**/Activator.java, **/Preferences.java, **/ScanCommandFactory.java"
+               includeantruntime="true" deprecation="on" debug="on">
+            <classpath><path refid="build.classpath"/></classpath>
+        </javac>
+        <!-- org.csstudio.scan.client -->
+        <javac srcdir="src" destdir="${classes}"
+               includeantruntime="true" deprecation="on" debug="on">
+            <classpath>
+            	<path refid="build.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Create jar file with client code -->
+    <target name="zip" depends="compile">
+        <jar jarfile="${ant.project.name}.jar" basedir="${classes}">
+            <fileset dir="${classes}"/>
+        </jar>
+    </target>
+
+    <!-- Run the whole chain -->
+    <target name="all" depends="compile,zip">
+        <echo>=== Completed building ${ant.project.name}.jar ===</echo>
+    </target>
+</project>

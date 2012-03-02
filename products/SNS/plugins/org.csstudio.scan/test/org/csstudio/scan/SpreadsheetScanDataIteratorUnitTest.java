@@ -33,7 +33,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SpreadsheetScanDataIteratorTest
+public class SpreadsheetScanDataIteratorUnitTest
 {
     @Test
     public void testSpreadsheetScanDataIteratorScanData()

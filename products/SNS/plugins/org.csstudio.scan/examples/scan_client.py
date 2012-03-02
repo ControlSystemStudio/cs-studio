@@ -6,7 +6,7 @@ to assemble commands for a scan,
 submit them to the server,
 monitor the execution.
 
-Shortcuts for 1D, 2D scans.
+Shortcuts for 1D, 2D, *D scans.
 
 This code depends on the basic org.csstudio.scan.*
 packages and can be invoked from Jython command
@@ -22,23 +22,35 @@ lines outside of CSS.
 # from BOY scripts
 import sys
 
-# Path to workspace, when running within IDE
+# Path to scan client library
+# Should point to the scan client jar
+scan_client_jar="/Kram/MerurialRepos/cs-studio/products/SNS/plugins/org.csstudio.scan.client/scan.client.jar"
+
+# Alternatively, especially during development,
+# can use the binaries that the IDE creates within
+# the workspace
 workspace="/Kram/MerurialRepos/cs-studio/products/SNS/plugins"
-sys.path.append(workspace + "/org.csstudio.scan/bin")
-sys.path.append(workspace + "/org.csstudio.scan.client/bin")
 
-# Path to binaries, when running within exported product.
-# Note that the plugin name must include the correct version number!
-install="/Users/Fred/Desktop/CSS/plugins"
-sys.path.append(install + "/org.csstudio.scan_1.0.0")
-sys.path.append(install + "/org.csstudio.scan.client_1.0.0")
-
+# Avoid Python os.path because that doesn't exist in stripped-down jython.jar
+import java.io.File as File
+ 
+#
+if File(scan_client_jar).exists():
+    # print "Using Scan Client Jar " + scan_client_jar
+    sys.path.append(scan_client_jar)
+elif File(workspace).isDirectory():
+    # print "Using Workspace " + workspace
+    sys.path.append(workspace + "/org.csstudio.scan/bin")
+    sys.path.append(workspace + "/org.csstudio.scan.client/bin")
+else:
+    raise Exception("Scan client library not configured")
 
 # -------------------------------------------------------
 # Scan Server connection setup
+
 import org.csstudio.scan.server.ScanServer as ScanServer
 import java.lang.System as System
-
+    
 # Set scan server host and port if they're not the default.
 # Can also pass this as command-line arg to jython:
 #  jython  -DScanServerHost=ky9linux.ornl.gov ....
@@ -48,8 +60,25 @@ import java.lang.System as System
 
 # -------------------------------------------------------
 # Leave rest as is
+
+# Python packages are different from Java Packages
+# There can be issues with 'package scanning' that cause
+# jython to not find classes when using
+#   from org.csstudio.scan.command import *
+# or
+#   import org.csstudio.scan.command
+#
+# The most dependable way is to explicitly import one-by-one
 import org.csstudio.scan.client.ScanServerConnector as ScanServerConnector
-from org.csstudio.scan.command import *
+import org.csstudio.scan.command.CommandSequence as CommandSequence
+import org.csstudio.scan.command.LoopCommand as LoopCommand
+import org.csstudio.scan.command.Comparison as Comparison
+import org.csstudio.scan.command.ScanCommand as ScanCommand
+import org.csstudio.scan.command.WaitCommand as WaitCommand
+import org.csstudio.scan.command.DelayCommand as DelayCommand
+import org.csstudio.scan.command.LogCommand as LogCommand
+import org.csstudio.scan.command.SetCommand as SetCommand
+
 import time
 
 

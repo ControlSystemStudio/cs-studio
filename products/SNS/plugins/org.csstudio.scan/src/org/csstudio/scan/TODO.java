@@ -108,7 +108,7 @@ public interface TODO
      *
      *  Done Scan tree use 'virtual' viewer
      *
-     *  TODO ant build.xml to create standalone client lib?
+     *  Done ant build.xml to create standalone client lib
      *
      *  TODO Support pre- and post-scan commands, configured when scan server starts,
      *       to for example enable and disable the data acquisition.
