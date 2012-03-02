@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.basiccore"
       label="Core CSS Components for &apos;Basic&apos; product"
-      version="3.1.0.qualifier"
+      version="3.1.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
@@ -45,6 +45,9 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.apputil.ui" version="1.1.9" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu.app" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu.web" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.sns.startuphelper" version="3.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -52,5 +55,12 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.csstudio.sns.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
