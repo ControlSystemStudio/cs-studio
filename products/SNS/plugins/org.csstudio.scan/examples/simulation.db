@@ -2,6 +2,15 @@
 #
 #  softIoc -s -d simulation.db
 
+record(bi, "active")
+{
+    field(DESC, "Take data?")
+    field(INP,  "0")
+    field(PINI, "YES")
+    field(ZNAM, "Idle")
+    field(ONAM, "Scanning")
+}
+
 record(ai, "motor_x")
 {
     field(INP,  "0")

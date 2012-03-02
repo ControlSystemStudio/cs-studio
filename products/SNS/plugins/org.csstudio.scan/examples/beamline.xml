@@ -75,6 +75,11 @@
             <pv><name>readback</name><alias>readback</alias><log/></pv>
         </device>
 
+        <device>
+            <name>Scan/Data Acquisition</name>
+            <pv><name>active</name><alias>active</alias><scan/></pv>
+        </device>
+
 <!-- 
         <device>
             <name>Motor</name>

@@ -17,6 +17,7 @@ package org.csstudio.scan.server.internal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,7 @@ public class Scan implements ScanContext
 
     final private DeviceContext devices;
 
-    final private List<ScanCommandImpl<?>> implementations;
+    final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
     private volatile ScanState state = ScanState.Idle;
 
@@ -87,20 +88,30 @@ public class Scan implements ScanContext
      */
     public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations)
     {
-        this(name, devices, Arrays.asList(implementations));
+        this(name, devices,
+            Collections.<ScanCommandImpl<?>>emptyList(),
+            Arrays.asList(implementations),
+            Collections.<ScanCommandImpl<?>>emptyList());
     }
 
     /** Initialize
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
+     *  @param pre_scan Commands to execute before the 'main' section of the scan
      *  @param implementations Commands to execute in this scan
+     *  @param post_scan Commands to execute before the 'main' section of the scan
      */
-    public Scan(final String name, final DeviceContext devices, final List<ScanCommandImpl<?>> implementations)
+    public Scan(final String name, final DeviceContext devices,
+            final List<ScanCommandImpl<?>> pre_scan,
+            final List<ScanCommandImpl<?>> implementations,
+            final List<ScanCommandImpl<?>> post_scan)
     {
         id = ids.incrementAndGet();
         this.name = name;
         this.devices = devices;
+        this.pre_scan = pre_scan;
         this.implementations = implementations;
+        this.post_scan = post_scan;
 
         // Assign addresses to all commands
         long address = 0;
@@ -267,21 +278,27 @@ public class Scan implements ScanContext
         try
         {
             // TODO Do something about commands that are not part of the submitted commands:
-            //      Special handling of address
+            //      Special handling of address?
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices())));
             try
             {
-                // TODO Execute pre-scan commands
+                // Execute pre-scan commands
+                execute(pre_scan);
 
                 // Execute the submitted commands
                 execute(implementations);
+
+                // Successful finish
+                state = ScanState.Finished;
             }
             finally
             {
-                // TODO Try post-scan commands even if submitted commands ran into problem
+                // Try post-scan commands even if submitted commands ran into problem
+                final ScanState saved_state = state;
+                state = ScanState.Running;
+                execute(post_scan);
+                state = saved_state;
             }
-            // Successful finish
-            state = ScanState.Finished;
         }
         finally
         {

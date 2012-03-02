@@ -22,6 +22,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,6 +31,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.Preferences;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
+import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.data.DataFormatter;
@@ -184,14 +186,21 @@ public class ScanServerImpl implements ScanServer
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
-            // Obtain implementations for the requested commands
-            final List<ScanCommandImpl<?>> implementations = ScanCommandImplTool.getInstance().implement(commands);
+            // TODO Read pre-scan commands from somewhere
+            final List<ScanCommand> pre_commands = Arrays.asList((ScanCommand)new SetCommand("active", 1.0));
+            final List<ScanCommand> post_commands = Arrays.asList((ScanCommand)new SetCommand("active", 0.0));
+
+            // Obtain implementations for the requested commands as well as pre/post scan
+            final ScanCommandImplTool implementor = ScanCommandImplTool.getInstance();
+            final List<ScanCommandImpl<?>> pre_impl = implementor.implement(pre_commands);
+            final List<ScanCommandImpl<?>> main_impl = implementor.implement(commands);
+            final List<ScanCommandImpl<?>> post_impl = implementor.implement(post_commands);
 
             // Get default devices
     		final DeviceContext devices = DeviceContext.getDefault();
 
             // Submit scan to engine for execution
-            final Scan scan = new Scan(scan_name, devices, implementations);
+            final Scan scan = new Scan(scan_name, devices, pre_impl, main_impl, post_impl);
             scan_engine.submit(scan);
             return scan.getId();
         }
