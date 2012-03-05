@@ -48,6 +48,21 @@ public class PropertyChangeOperation extends AbstractOperation
         this.new_value = new_value;
     }
 
+    public long getCommandAddress()
+    {
+        return command.getAddress();
+    }
+
+    public String getProperty()
+    {
+        return property;
+    }
+
+    public Object getValue()
+    {
+        return new_value;
+    }
+
     /** {@inheritDoc} */
     @Override
     public IStatus execute(final IProgressMonitor monitor, final IAdaptable info)

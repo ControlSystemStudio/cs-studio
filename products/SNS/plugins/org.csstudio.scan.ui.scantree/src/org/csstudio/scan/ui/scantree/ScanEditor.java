@@ -28,6 +28,7 @@ import org.csstudio.scan.ui.scantree.gui.EmptyEditorInput;
 import org.csstudio.scan.ui.scantree.gui.ScanTreeGUI;
 import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
 import org.csstudio.scan.ui.scantree.model.ScanTreeModelListener;
+import org.csstudio.scan.ui.scantree.operations.PropertyChangeOperation;
 import org.csstudio.scan.ui.scantree.operations.RedoHandler;
 import org.csstudio.scan.ui.scantree.operations.UndoHandler;
 import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
@@ -551,12 +552,34 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         // Prompt when in 'live' mode
         if (scan_id >= 0)
         {
-            if (! MessageDialog.openConfirm(info_section.getShell(),
-                    Messages.EndLiveMode, Messages.EndLiveModePrompt))
-                return;
-            // End live mode
-            scan_id = -1;
-            showInfoSection(false);
+            if (operation instanceof PropertyChangeOperation)
+            {   // TODO prompt abt. online change
+                // TODO undo for online change
+                // TODO perform server access in background job
+                final PropertyChangeOperation change = (PropertyChangeOperation) operation;
+                try
+                {
+                    scan_info.getServer().updateScanProperty(scan_id,
+                            change.getCommandAddress(),
+                            change.getProperty(),
+                            change.getValue());
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(getSite().getShell(),
+                            Messages.Error, ex);
+                    return;
+                }
+            }
+            else
+            {
+                if (! MessageDialog.openConfirm(info_section.getShell(),
+                        Messages.EndLiveMode, Messages.EndLiveModePrompt))
+                    return;
+                // End live mode
+                scan_id = -1;
+                showInfoSection(false);
+            }
         }
         operation.execute(new NullProgressMonitor(), null);
         operation.addContext(undo_context);
