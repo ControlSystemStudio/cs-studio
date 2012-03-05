@@ -34,8 +34,22 @@ public class Preferences
 	public static String getBeamlineConfigPath()
 	{
     	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getString(Activator.ID, "beamline_config", "examples/beamline.xml", null);
+    	return service.getString(Activator.ID, "beamline_config", "platform:/plugin/org.csstudio.scan/examples/beamline.xml", null);
 	}
+
+	/** @return Path to the pre-scan commands */
+    public static String getPreScanPath()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getString(Activator.ID, "pre_scan", "platform:/plugin/org.csstudio.scan/examples/pre_scan.scn", null);
+    }
+
+    /** @return Path to the post-scan commands */
+    public static String getPostScanPath()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
+    }
 
 	/** @return Scan server host name */
     public static String getServerHost()

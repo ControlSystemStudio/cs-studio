@@ -16,7 +16,6 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.scan.ui.messages"; //$NON-NLS-1$
 
-    public static String BeamlineConfig;
     public static String ScanPrefsMessage;
     public static String ServerHost;
     public static String ServerPort;

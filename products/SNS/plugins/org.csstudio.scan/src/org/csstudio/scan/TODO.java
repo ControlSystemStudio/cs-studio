@@ -110,7 +110,7 @@ public interface TODO
      *
      *  Done ant build.xml to create standalone client lib
      *
-     *  TODO Support pre- and post-scan commands, configured when scan server starts,
+     *  Done Support pre- and post-scan commands, configured when scan server starts,
      *       to for example enable and disable the data acquisition.
      *
      *  TODO Allow update of command parameters while scan is running?

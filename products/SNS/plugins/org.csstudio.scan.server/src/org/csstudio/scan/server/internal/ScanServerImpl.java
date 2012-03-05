@@ -22,7 +22,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,7 +31,6 @@ import java.util.logging.Logger;
 import org.csstudio.scan.Preferences;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
-import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.data.DataFormatter;
@@ -182,13 +181,24 @@ public class ScanServerImpl implements ScanServer
             throws RemoteException
     {
         try
-        {   // Parse received scan from XML
+        {   // Parse received 'main' scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
-            // TODO Read pre-scan commands from somewhere
-            final List<ScanCommand> pre_commands = Arrays.asList((ScanCommand)new SetCommand("active", 1.0));
-            final List<ScanCommand> post_commands = Arrays.asList((ScanCommand)new SetCommand("active", 0.0));
+            // Read pre- and post-scan commands
+            String path = Preferences.getPreScanPath();
+            final List<ScanCommand> pre_commands;
+            if (path.isEmpty())
+                pre_commands = Collections.<ScanCommand>emptyList();
+            else
+                pre_commands = reader.readXMLStream(PathStreamTool.openStream(path));
+
+            path = Preferences.getPostScanPath();
+            final List<ScanCommand> post_commands;
+            if (path.isEmpty())
+                post_commands = Collections.<ScanCommand>emptyList();
+            else
+                post_commands = reader.readXMLStream(PathStreamTool.openStream(path));
 
             // Obtain implementations for the requested commands as well as pre/post scan
             final ScanCommandImplTool implementor = ScanCommandImplTool.getInstance();

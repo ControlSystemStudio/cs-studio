@@ -53,7 +53,6 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         addField(new StringFieldEditor("server_host", Messages.ServerHost, parent));
         addField(new IntegerFieldEditor("server_port", Messages.ServerPort, parent));
-        addField(new StringFieldEditor("beamline_config", Messages.BeamlineConfig, parent));
     }
 
     /** {@inheritDoc} */

@@ -22,7 +22,7 @@ For example, at each step of moving the "horizontal"
 position of a sample, an inner loop can vary the
 "vertical" position of the sample to perform a
 2-dimensional scan of the sample surface.
-As another example, another outer loop may vary the sample
+As another example, an outer loop may vary the sample
 temperature while inner loops vary the sample position.
 </p>
 
@@ -35,7 +35,7 @@ and to monitor it:
 <li>Scans are configured via a control system panel,
 a scan editor, or a script.
 </li>
-<li>The commands of the scans are then submitted
+<li>The commands of a scan are then submitted
 to a Scan Server for execution.
 </li>
 <li>You can monitor the execution of a scan in various ways.
@@ -225,9 +225,9 @@ number of seconds.
 <code>Delay 1.0 sec</code>
 will delay the scan for 1 second.
 </p>
-<p>Note that you should <u>avoid</u> using this command.
-It is usually a bad idea to simply wait some time,
-hoping that the experiment reached a desired state
+<p>Note that you should <u>avoid using the delay command</u>.
+It is usually a bad idea to simply wait for a fixed amount of time,
+hoping that the experiment reached a desired state,
 for example a certain temperature or a certain amount
 of beam exposure.
 </p>
@@ -249,9 +249,8 @@ indicate a certain amount of beam exposure.
 <p>The scan server is a program that executes submitted scans.
 There is typically one scan server instance per beam line.
 </p>
-<p>
-When multiple scans are submitted, they are executed in the order
-of submission. If a user accidentally submits a scan while the
+<p>When multiple scans are submitted, they are executed in the order
+of submission. If a user submits a scan while the
 scan server is still executing a scan, this will not impact the
 ongoing scan. The new scan is simply queued for execution after
 the current scan finishes.
@@ -265,6 +264,26 @@ Users can monitor the progress via directly monitoring the
 temperature, sample position or other experiment properties
 affected by the scan, or use the <a href="#monitor">Scan Monitor</a>
 to track the progress of a scan and potentially pause or abort it.
+</p>
+
+<h3>Scan Server Setup</h3>
+
+<p>The scan server is maintained by a system administrator,
+it should always be available.
+End users can submit scans to the scan server, monitor their
+progress and also abort scans, but end users will typically not
+start or stop the scan server itself.
+</p>
+<p>End users may have to know the host where the scan server is running
+so that they can connect to the scan server from scripts,
+or verify their CSS preference settings.
+The CSS menu <code>Edit/Preferences/Scan</code> shows
+the host name and port number for connecting to the scan server,
+and scripts use Java properties <code>ScanServerHost</code>
+and <code>ScanServerPort</code> for the respective settings.
+</p>
+<p>The scan server itself if configured via a plugin customization file,
+review the one included in the server for an example.
 </p>
 
 
