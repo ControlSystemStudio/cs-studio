@@ -38,6 +38,8 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -72,9 +74,11 @@ public class GUI implements ScanInfoModelListener
      */
     public GUI(final Composite parent, final ScanInfoModel model)
     {
-        createComponents(parent);
-        createContextMenu();
         this.model = model;
+
+        createComponents(parent);
+        hookActions();
+        createContextMenu();
         table_viewer.setInput(model);
         model.addListener(this);
     }
@@ -312,6 +316,32 @@ public class GUI implements ScanInfoModelListener
         return view_col;
     }
 
+    /** Connect actions to GUI */
+    private void hookActions()
+    {
+        // Double-click on scan opens editor
+        table_viewer.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(final DoubleClickEvent event)
+            {
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
+                    return;
+                new OpenScanTreeAction(info).run();
+            }
+        });
+    }
+
+    /** @return Currently selected {@link ScanInfo} or <code>null</code> */
+    private ScanInfo getSelectedScan()
+    {
+        final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
+        if (selection.isEmpty())
+            return null;
+        return (ScanInfo) selection.getFirstElement();
+    }
+
     /** Add context menu to table */
     private void createContextMenu()
     {
@@ -323,10 +353,9 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void menuAboutToShow(final IMenuManager manager)
             {
-                final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
-                if (selection.isEmpty())
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
                     return;
-                final ScanInfo info = (ScanInfo) selection.getFirstElement();
                 if (info.getState() == ScanState.Paused)
                 {
                     manager.add(new ResumeAction(model, info));
