@@ -211,44 +211,38 @@ class ScanNd(ScanClient):
         else:
             name = "Scan"
         
-        # Determine the (nested) scans and inner commands and devices to log
-        # (doesn't really care if the log devices are listed last)
+        # Prepare body of innermost loop
+        body = CommandSequence()
+        # Determine the (nested) scans, inner loop commands and devices to log
+        # (doesn't really care if inner commands and log devices are listed last)
         scans = []
-        commands = []
         log = []
         for arg in args:
             if isinstance(arg, tuple):
                 scan = self._decodeScan(arg)
                 scans.append(scan)
             elif isinstance(arg, ScanCommand):
-                commands.append(arg)
+                body.add(arg)
             else:
                 log.append(arg)
         
+        # Innermost loop's log command
+        if len(log) > 0:
+            body.log(log)
+
         # Wrap by scans, going in reverse from inner loop
         scans.reverse()
         cmds = CommandSequence()
         for scan in scans:
-            body = CommandSequence()
-            
-            # Add cmds from inner loop
+            # Add cmds from inner loop (nothing on first iteration)
             body.add(cmds)
-            
-            # Commands for innermost loop
-            if len(commands) > 0:
-                for command in commands:
-                    body.add(command)
-                commands = []
-
-            # Innermost loop logs
-            if len(log) > 0:
-                body.log(log)
-                log = []
             
             # Wrap in loop which then becomes cmds to next loop 'up'
             cmds = CommandSequence()
             cmds.loop(scan[0], scan[1], scan[2], scan[3], body)
             
+            # Prepare empty body for next loop
+            body = CommandSequence()
             
         id = self.submit(name, cmds)
         if __name__ == '__main__':
