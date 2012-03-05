@@ -113,6 +113,8 @@ public interface TODO
      *  Done Support pre- and post-scan commands, configured when scan server starts,
      *       to for example enable and disable the data acquisition.
      *
+     *  Done Move jython.jar and /Lib into own plugin. Share with BOY.
+     *
      *  TODO Allow update of command parameters while scan is running?
      *
      *  TODO Unclear if devices will ever be anything but PVs.
@@ -123,8 +125,6 @@ public interface TODO
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
-     *
-     *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
      *  TODO RMI timeout?
      *  System.setProperty("sun.rmi.transport.tcp.responseTimeout", "10000");
