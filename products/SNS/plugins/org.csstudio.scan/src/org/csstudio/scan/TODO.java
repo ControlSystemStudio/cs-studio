@@ -115,7 +115,7 @@ public interface TODO
      *
      *  Done Move jython.jar and /Lib into own plugin. Share with BOY.
      *
-     *  TODO Allow update of command parameters while scan is running?
+     *  Done Allow update of command parameters while scan is running
      *
      *  TODO Unclear if devices will ever be anything but PVs.
      *

@@ -9,6 +9,7 @@ package org.csstudio.scan.ui.scantree;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -505,6 +506,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         }
 
         // Update status of this scan in editor
+        if (this_scan.getState().isDone())
+        {   // Scan finished
+            scan_id = -1;
+            gui.setActiveCommand(-1);
+            setMessage(null);
+            return;
+        }
         final long address = this_scan.getCurrentAddress();
         gui.setActiveCommand(address);
         setMessage(this_scan.toString());
@@ -552,31 +560,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         // Prompt when in 'live' mode
         if (scan_id >= 0)
         {
-            if (operation instanceof PropertyChangeOperation)
-            {   // TODO prompt abt. online change
-                // TODO undo for online change
-                // TODO perform server access in background job
-                final PropertyChangeOperation change = (PropertyChangeOperation) operation;
-                try
-                {
-                    scan_info.getServer().updateScanProperty(scan_id,
-                            change.getCommandAddress(),
-                            change.getProperty(),
-                            change.getValue());
-                }
-                catch (Exception ex)
-                {
-                    ExceptionDetailsErrorDialog.openError(getSite().getShell(),
-                            Messages.Error, ex);
-                    return;
-                }
-            }
-            else
-            {
-                if (! MessageDialog.openConfirm(info_section.getShell(),
-                        Messages.EndLiveMode, Messages.EndLiveModePrompt))
-                    return;
-                // End live mode
+            if (! MessageDialog.openConfirm(info_section.getShell(),
+                    Messages.EndLiveMode, Messages.EndLiveModePrompt))
+                return;
+
+            // Only property change is possible while running
+            if (! (operation instanceof PropertyChangeOperation))
+            {   // End live mode
                 scan_id = -1;
                 showInfoSection(false);
             }
@@ -584,6 +574,22 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         operation.execute(new NullProgressMonitor(), null);
         operation.addContext(undo_context);
         operations.add(operation);
+    }
+
+    /** Change a command's property on the scan server, i.e. for a 'live' scan
+     *  @param command Command to change
+     *  @param property_id Property to change
+     *  @param value New value
+     *  @throws RemoteException on error
+     */
+    public void changeLiveProperty(final ScanCommand command, final String property_id,
+            final Object value) throws RemoteException
+    {
+        final long id = scan_id;
+        if (id < 0)
+            return;
+        scan_info.getServer().updateScanProperty(id, command.getAddress(),
+                property_id, value);
     }
 
     /** Submit scan in GUI to server */
