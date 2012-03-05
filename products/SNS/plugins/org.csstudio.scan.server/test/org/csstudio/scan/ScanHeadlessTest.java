@@ -102,8 +102,7 @@ public class ScanHeadlessTest
                 new LoopCommand("ypos", 1.0, 5.0, 1.0,
                         new SetCommand("setpoint", 0),
                         new WaitCommand("readback", Comparison.EQUALS, 0, 0.2, 0.0),
-                        new SetCommand("setpoint", 0.5),
-                        new WaitCommand("readback", Comparison.EQUALS, 0.5, 0.1, 0.0),
+                        new SetCommand("setpoint", 1.0, "readback", true, 0.1, 0.0),
                         new LogCommand("xpos", "ypos", "readback")
                 )
             );
@@ -112,6 +111,12 @@ public class ScanHeadlessTest
         final List<ScanCommand> commands = scan.getScanCommands();
         assertEquals(1, commands.size());
         assertSame(command, commands.get(0));
+
+        // Check addressing and updating of command property
+        final SetCommand set = (SetCommand)scan.getCommandByAddress(4);
+        assertEquals(1.0, (Double)set.getValue(), 0.1);
+        scan.updateScanProperty(4, "value", 0.5);
+        assertEquals(0.5, (Double)set.getValue(), 0.1);
 
         // Check Idle state
         ScanInfo info = scan.getScanInfo();

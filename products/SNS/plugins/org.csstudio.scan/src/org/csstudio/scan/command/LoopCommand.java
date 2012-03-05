@@ -59,14 +59,14 @@ public class LoopCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-    private double start;
-    private double end;
-    private double stepsize;
-    private String readback = "";
-    private boolean wait = true;
-    private double tolerance = 0.1;
-    private double timeout = 0.0;
+    private volatile String device_name;
+    private volatile double start;
+    private volatile double end;
+    private volatile double stepsize;
+    private volatile String readback = "";
+    private volatile boolean wait = true;
+    private volatile double tolerance = 0.1;
+    private volatile double timeout = 0.0;
 
 	private List<ScanCommand> body;
 

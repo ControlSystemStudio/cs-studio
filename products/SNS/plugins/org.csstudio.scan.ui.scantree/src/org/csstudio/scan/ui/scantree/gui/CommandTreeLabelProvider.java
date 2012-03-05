@@ -77,9 +77,6 @@ public class CommandTreeLabelProvider extends CellLabelProvider
     {
         // Show base of command class and address
         final ScanCommand command = (ScanCommand) element;
-        final String name = command.getClass().getName();
-        final int sep = name.lastIndexOf('.');
-        final String base = name.substring(sep + 1);
-        return base + " @ " + command.getAddress();
+        return command.getCommandName() + " @ " + command.getAddress();
     }
 }

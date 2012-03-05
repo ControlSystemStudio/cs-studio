@@ -127,6 +127,15 @@ public interface ScanServer extends Remote
      */
     public ScanData getScanData(long id) throws RemoteException;
 
+    /** Ask server to update a command parameter to a new value
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param address Address of the command
+     *  @param property_id Property to update
+     *  @param value New value for the property
+     *  @throws RemoteException on error in remote access
+     */
+    public void updateScanProperty(long id, long address, String property_id, Object value) throws RemoteException;
+
     /** Ask server to pause a scan
      *
      *  <p>Note that pausing has no effect if the scan is not running.

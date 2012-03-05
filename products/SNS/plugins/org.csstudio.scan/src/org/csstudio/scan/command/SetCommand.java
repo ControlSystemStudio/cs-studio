@@ -36,12 +36,12 @@ public class SetCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-	private Object value;
-	private String readback;
-	private boolean wait;
-    private double tolerance;
-    private double timeout;
+    private volatile String device_name;
+	private volatile Object value;
+	private volatile String readback;
+	private volatile boolean wait;
+    private volatile double tolerance;
+    private volatile double timeout;
 
     /** Initialize empty set command */
     public SetCommand()

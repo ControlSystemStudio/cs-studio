@@ -15,11 +15,13 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
+import java.rmi.RemoteException;
+
 /** Exception thrown by {@link ScanCommand}s when
  *  trying to access an unknown {@link ScanCommandProperty}
  *  @author Kay Kasemir
  */
-public class UnknownScanCommandPropertyException extends Exception
+public class UnknownScanCommandPropertyException extends RemoteException
 {
     private static final long serialVersionUID = 1L;
 

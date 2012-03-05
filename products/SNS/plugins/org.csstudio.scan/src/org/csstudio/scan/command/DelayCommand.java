@@ -31,7 +31,7 @@ public class DelayCommand extends ScanCommand
         new ScanCommandProperty("seconds", "Delay (seconds)", Double.class)
     };
 
-    private double seconds;
+    private volatile double seconds;
 
     /** Initialize delay with 1 second */
     public DelayCommand()

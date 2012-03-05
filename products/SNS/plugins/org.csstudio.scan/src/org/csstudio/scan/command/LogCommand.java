@@ -36,7 +36,7 @@ public class LogCommand extends ScanCommand
         new ScanCommandProperty("device_names", "Device Names", DeviceInfo[].class)
     };
 
-    private String[] device_names;
+    private volatile String[] device_names;
 
     /** Initialize empty log command */
     public LogCommand()

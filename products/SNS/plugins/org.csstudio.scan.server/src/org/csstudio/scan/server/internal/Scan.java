@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
@@ -174,6 +176,62 @@ public class Scan implements ScanContext
         for (ScanCommandImpl<?> impl : implementations)
             commands.add(impl.getCommand());
         return commands;
+    }
+
+    /** @param address Command address
+     *  @return ScanCommand with that address
+     *  @throws RemoteException when not found
+     */
+    public ScanCommand getCommandByAddress(final long address) throws RemoteException
+    {
+        final ScanCommand found = findCommandByAddress(getScanCommands(), address);
+        if (found == null)
+            throw new RemoteException("Invalid command address " + address);
+        return found;
+    }
+
+    /** Recursively search for command by address
+     *  @param commands Command list
+     *  @param address Desired command address
+     *  @return Command with that address or <code>null</code>
+     */
+    private ScanCommand findCommandByAddress(final List<ScanCommand> commands,
+            final long address)
+    {
+        for (ScanCommand command : commands)
+        {
+            if (command.getAddress() == address)
+                return command;
+            else if (command instanceof LoopCommand)
+            {
+                final LoopCommand loop = (LoopCommand) command;
+                final ScanCommand found = findCommandByAddress(loop.getBody(), address);
+                if (found != null)
+                    return found;
+            }
+        }
+        return null;
+    }
+
+    /** Attempt to update a command parameter to a new value
+     *  @param address Address of the command
+     *  @param property_id Property to update
+     *  @param value New value for the property
+     *  @throws RemoteException on error
+     */
+    public void updateScanProperty(final long address, final String property_id,
+        final Object value) throws RemoteException
+    {
+        final ScanCommand command = getCommandByAddress(address);
+        try
+        {
+            command.setProperty(property_id, value);
+        }
+        catch (Exception ex)
+        {
+            throw new RemoteException("Cannot update " + property_id + " of " +
+                    command.getCommandName(), ex);
+        }
     }
 
     /** @return Data logger of this scan */

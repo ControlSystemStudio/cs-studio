@@ -31,7 +31,7 @@ public class CommentCommand extends ScanCommand
         new ScanCommandProperty("comment", "Comment", String.class),
     };
 
-    private String comment;
+    private volatile String comment;
 
     /** Initialize with example comment */
     public CommentCommand()

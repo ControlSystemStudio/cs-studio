@@ -32,7 +32,13 @@ import org.w3c.dom.Element;
  *  A property with ID "some_property" must have associated "getSomeProperty"
  *  and "setSomeProperty" methods, i.e. using a CamelCase version
  *  of the property ID.
- *  The setter must accept an Object like Double, not a plain type like double.
+ *
+ *  <p>The setter must accept an {@link Object} like {@link Double} or {@link Boolean},
+ *  not a plain type like double or boolean.
+ *
+ *  <p>The command must allow concurrent access to its
+ *  properties. The getter and setter should <code>synchronize</code>,
+ *  or the property needs to be <code>volatile</code>.
  *
  *  <p>Supported property types:
  *  <ul>
@@ -45,6 +51,7 @@ import org.w3c.dom.Element;
  *  <li><code>Enum</code> - Allows selection among the <code>toString()</code> values of the Enum
  *  <li><code>Object</code> - Edited as String, and if possible converted to Double
  *  </ul>
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -56,6 +63,14 @@ abstract public class ScanCommand
      *  of each command while the sequence is executed.
      */
     private long address = -1;
+
+    /** @return Name of the command, which is the base of the class name */
+    final public String getCommandName()
+    {
+        final String name = getClass().getName();
+        final int sep = name.lastIndexOf('.');
+        return name.substring(sep + 1);
+    }
 
     /** @return Address of this command within command sequence */
     final public long getAddress()

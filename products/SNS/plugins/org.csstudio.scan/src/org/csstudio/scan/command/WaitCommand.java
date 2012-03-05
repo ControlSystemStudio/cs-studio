@@ -35,11 +35,11 @@ public class WaitCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-    private Comparison comparison;
-    private double desired_value;
-    private double tolerance;
-    private double timeout;
+    private volatile String device_name;
+    private volatile Comparison comparison;
+    private volatile double desired_value;
+    private volatile double tolerance;
+    private volatile double timeout;
 
     /** Initialize empty wait command */
     public WaitCommand()
