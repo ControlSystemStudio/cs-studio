@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Python (Jython) support
+Bundle-SymbolicName: org.python
+Bundle-Version: 2.5.2.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: jython.jar
+Export-Package: org.python,
+ org.python.core,
+ org.python.util
