@@ -160,21 +160,27 @@ class ScanNd(ScanClient):
     * Optional scan name
     * One or more scan specifications: ('device', start, end[, step])
     * Names of device to log in addition to loop'ed devices
+    * Commands to perform in innermost loop
     
     Examples:
     
-    # Scan 'xpos' from 1 to 10, stepping 1, automatically logging 'xpos'
+    # Scan 'xpos' from 1 to 10, stepping 1
     scan('My first one', ('xpos', 1, 10) )
+    # Scan name is optional
     scan( ('xpos', 1, 10) )
 
-    # ... also 'readback'
+    # Log the 'readback' (xpos is logged automatically)
     scan( ('xpos', 1, 10), 'readback')
     
     # Scan 'xpos' from 1 to 10, stepping 1,
     # inside that looping 'ypos' from 1 to 5 by 0.2,
     # logging 'readback'
-
     scan('XY Example', ('xpos', 1, 10), ('ypos', 1, 5, 0.2), 'readback')
+
+    # Scan 'xpos' and 'ypos', set something to '1' and then '3' (with readback)
+    scan('XY Example', ('xpos', 1, 10), ('ypos', 1, 5, 0.2),
+         SetCommand('setpoint', 1, 'readback'),
+         SetCommand('setpoint', 3, 'readback'))
     """
     
     def __init__(self):
@@ -205,14 +211,17 @@ class ScanNd(ScanClient):
         else:
             name = "Scan"
         
-        # Determine the (nested) scans and the devices to log
+        # Determine the (nested) scans and inner commands and devices to log
         # (doesn't really care if the log devices are listed last)
         scans = []
+        commands = []
         log = []
         for arg in args:
             if isinstance(arg, tuple):
                 scan = self._decodeScan(arg)
                 scans.append(scan)
+            elif isinstance(arg, ScanCommand):
+                commands.append(arg)
             else:
                 log.append(arg)
         
@@ -221,10 +230,16 @@ class ScanNd(ScanClient):
         cmds = CommandSequence()
         for scan in scans:
             body = CommandSequence()
-
+            
             # Add cmds from inner loop
             body.add(cmds)
             
+            # Commands for innermost loop
+            if len(commands) > 0:
+                for command in commands:
+                    body.add(command)
+                commands = []
+
             # Innermost loop logs
             if len(log) > 0:
                 body.log(log)

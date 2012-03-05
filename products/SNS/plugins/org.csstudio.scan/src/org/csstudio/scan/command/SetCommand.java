@@ -69,6 +69,17 @@ public class SetCommand extends ScanCommand
     }
 
     /** Initialize
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param readback Readback device
+     */
+    public SetCommand(final String device_name, final Object value,
+            final String readback)
+    {
+        this(device_name, value, readback, true, 0.1, 0.0);
+    }
+
+    /** Initialize
 	 *  @param device_name Name of device
 	 *  @param value Value to write to the device
 	 *  @param readback Readback device

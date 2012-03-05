@@ -21,15 +21,19 @@ if getWidgetPVLong(display, "updown") > 0:
     toggle = -1
 else:
     toggle = 1
-    
-id = scan(name,
-     ('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx))),
-     ('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy))),
-     'readback')
+
+# Delay added for demo because scan is otherwise too fast to see
+delay = DelayCommand(0.5)
 
 #from org.eclipse.jface.dialogs import MessageDialog
 #MessageDialog.openWarning(
-#        None, "Type", "Type is " + id.__class__.__name__)       
+#        None, "Type", "Type is " + delay.__class__.__name__)       
+
+id = scan(name,
+     ('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx))),
+     ('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy))),
+     delay,
+     'readback')
 
 showScans()
 showPlot(name, id, 'xpos', 'ypos')

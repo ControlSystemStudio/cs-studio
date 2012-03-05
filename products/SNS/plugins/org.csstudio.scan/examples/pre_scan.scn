@@ -6,5 +6,4 @@
     <value>1.0</value>
     <tolerance>0.1</tolerance>
   </set>
-  <delay><address>1</address><seconds>5.0</seconds></delay>
 </commands>
