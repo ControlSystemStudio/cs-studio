@@ -107,7 +107,7 @@ public class TableModel extends AbstractWidgetModel {
 
 	}
 
-	private void updateContentPropertyTitles() {
+	public void updateContentPropertyTitles() {
 
 		String[] headers = getColumnHeaders();
 		int c = getColumnsCount();
@@ -133,7 +133,7 @@ public class TableModel extends AbstractWidgetModel {
 	public boolean[] isColumnEditable(){
 		String[][] headers = (String[][]) getPropertyValue(PROP_COLUMN_HEADERS);
 		boolean[] r = new boolean[headers.length];
-		if(headers[0].length <3){
+		if(headers.length ==0 || headers[0].length <3){
 			Arrays.fill(r, true);
 			return r;
 		}

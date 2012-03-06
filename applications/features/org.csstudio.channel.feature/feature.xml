@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.channel.feature"
       label="Channel based applications"
-      version="1.1.0.qualifier"
+      version="1.1.1.qualifier"
       provider-name="Gabriele Carcassi &lt;carcassi@bnl.gov&gt;, Kunal Shroff &lt;kshroff@bnl.gov&gt; - BNL">
 
    <description url="http://www.example.com/description">

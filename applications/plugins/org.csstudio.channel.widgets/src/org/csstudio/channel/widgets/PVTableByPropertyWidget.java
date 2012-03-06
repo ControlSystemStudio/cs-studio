@@ -164,7 +164,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		
 		VTableColumn[] columns = new VTableColumn[columnNames.size() + 1];
-		columns[0] = column(rowProperty + " \\ " + columnProperty, vStringConstants(rowNames));
+		columns[0] = column(rowProperty, vStringConstants(rowNames));
 		for (int nColumn = 0; nColumn < columnNames.size(); nColumn++) {
 			String name = columnNames.get(nColumn);
 			List<String> columnPvs = cellPvs.get(nColumn);
@@ -174,7 +174,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		// so it's limited to 500 ms.
 		pv = PVManager.read(vTable(columns)).notifyOn(SWTUtil.swtThread()).every(ms(500));
 		pv.addPVReaderListener(listener);
-		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellPvs));
+		table.setCellLabelProvider(new PVTableByPropertyCellLabelProvider(cellChannels));
 	}
 	
 	public String getRowProperty() {
@@ -264,10 +264,10 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		
 		// Find the rows and columns
 		List<String> possibleRows = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, rowProperty));
-		List<String> possibleColumns = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
+		List<String> columnPropertyValues = new ArrayList<String>(ChannelUtil.getPropValues(channelsInTable, columnProperty));
 		//possibleColumns.addAll(tagNames);
 		int nRows = possibleRows.size();
-		int nColumns = possibleColumns.size() + tagNames.size();
+		int nColumns = columnPropertyValues.size() + tagNames.size();
 		
 		// Limit column and cell count
 		if (nColumns > MAX_COLUMNS) {
@@ -282,7 +282,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 		}
 		
 		Collections.sort(possibleRows);
-		Collections.sort(possibleColumns);
+		Collections.sort(columnPropertyValues);
 		
 		List<List<String>> cells = new ArrayList<List<String>>();
 		List<List<Collection<Channel>>> channels = new ArrayList<List<Collection<Channel>>>();
@@ -302,7 +302,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 			// Row is guaranteed to have the property, column may not
 			String row = channel.getProperty(rowProperty).getValue();
 			if (channel.getProperty(columnProperty) != null) {
-				nColumn = possibleColumns.indexOf(channel.getProperty(columnProperty).getValue());
+				nColumn = columnPropertyValues.indexOf(channel.getProperty(columnProperty).getValue());
 			}
 			
 			int nRow = possibleRows.indexOf(row);
@@ -315,7 +315,7 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 			int tagCount = 0;
 			for (String tagName : tagNames) {
 				if (channel.getTag(tagName) != null) {
-					nColumn = possibleColumns.size() + tagCount;
+					nColumn = columnPropertyValues.size() + tagCount;
 					cells.get(nColumn).set(nRow, channel.getName());
 					channels.get(nColumn).get(nRow).add(channel);
 				}
@@ -323,8 +323,12 @@ public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget im
 			}
 		}
 		
-		possibleColumns.addAll(tagNames);
-		columnNames = possibleColumns;
+		List<String> newColumnNames = new ArrayList<String>();
+		for (String columnPropertyValue : columnPropertyValues) {
+			newColumnNames.add(columnProperty + "=" + columnPropertyValue);
+		}
+		newColumnNames.addAll(tagNames);
+		columnNames = newColumnNames;
 		rowNames = possibleRows;
 		cellPvs = cells;
 		cellChannels = channels;

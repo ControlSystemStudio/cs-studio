@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!-- Contributed by Laurier Baribeau,
      <Laurier.Baribeau@lightsource.ca>
+     Updated by Denis Stepanov,
+     <Denis.Stepanov@iter.org>
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
@@ -12,18 +14,38 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	
+	<xs:element name="display">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="title" type="xs:string"/>
+				<xs:element name="details" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="command">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="title" type="xs:string"/>
+				<xs:element name="details" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="pv">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="description" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
 				<xs:element name="enabled" type="xs:boolean" minOccurs="0"/>
 				<xs:element name="latching" type="xs:boolean" minOccurs="0"/>
 				<xs:element name="annunciating" type="xs:boolean" minOccurs="0"/>
 				<xs:element name="delay" type="xs:decimal" minOccurs="0"/>
-				<xs:element name="count" type="xs:positiveInteger" minOccurs="0"/>
+				<xs:element name="count" type="xs:unsignedInt" minOccurs="0"/>
 				<xs:element name="filter" type="xs:string" minOccurs="0"/>
 				<xs:element ref="guidance" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="display" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="command" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" use="required"/>
 		</xs:complexType>
@@ -32,8 +54,8 @@
 	<xs:element name="component">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" use="required"/>
 		</xs:complexType>
@@ -42,8 +64,8 @@
 	<xs:element name="config">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
 				<xs:element ref="pv" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="component" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" use="required"/>
 		</xs:complexType>
@@ -51,7 +73,7 @@
 </xs:schema>
 
 
-<!-- My notepad:
+<!-- My notepad (Laurier Baribeau):
 - Add definitions for 'command' element and 'display' element.
 - 'latching' tag is to be investigated... I think its optional but don't know 
 the default. 
