@@ -65,6 +65,11 @@ public abstract class AbstractWidgetProperty {
 		pcsDelegate = new PropertyChangeSupport(this);	
 	}
 	
+	/**Add listener on property change event. The listener will be removed when widget deactivated,
+	 * so it is better to call this method in edit part during activating the widget to make sure the widget
+	 * always have necessary listeners added.
+	 * @param listener the listener which will be notified when property value changed.
+	 */
 	public synchronized final void addPropertyChangeListener(PropertyChangeListener listener){
 		if(listener == null){
 			return;
