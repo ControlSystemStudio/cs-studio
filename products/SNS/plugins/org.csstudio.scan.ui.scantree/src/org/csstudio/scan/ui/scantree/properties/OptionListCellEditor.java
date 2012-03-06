@@ -30,6 +30,21 @@ import org.eclipse.swt.widgets.Control;
  */
 abstract public class OptionListCellEditor extends CellEditor
 {
+    /** When the user presses 'return' in the combo box,
+     *  a property update will be fired.
+     *
+     *  <p>While in 'live' mode, this can open
+     *  a confirmation message dialog ("Change property of live scan?").
+     *  When that dialog opens, the combo box looses focus,
+     *  which by default would trigger another property update,
+     *  and in 'live' mode result in another message dialog...
+     *
+     *  <p>This flag tracks if we're in the 'return' handling code
+     *  to avoid the extra update from loss-of-focus.
+     */
+    private boolean handling_return_key = false;
+
+    /** Labels to display for available options */
     private String[] labels;
 
     /** Initialize
@@ -45,11 +60,13 @@ abstract public class OptionListCellEditor extends CellEditor
         setValueValid(true);
     }
 
+    /** @return Control correctly casted as {@link CCombo} */
     private CCombo getCombo()
     {
         return (CCombo) getControl();
     }
 
+    /** Initialize combo box content */
     private void initCombo()
     {
         final CCombo combo = getCombo();
@@ -88,7 +105,14 @@ abstract public class OptionListCellEditor extends CellEditor
             @Override
             public void keyPressed(final KeyEvent e)
             {
-                keyReleaseOccured(e);
+                if (e.keyCode == 13)
+                {
+                    handling_return_key = true;
+                    keyReleaseOccured(e);
+                    handling_return_key = false;
+                }
+                else
+                    keyReleaseOccured(e);
             }
         });
         combo.addTraverseListener(new TraverseListener()
@@ -110,7 +134,8 @@ abstract public class OptionListCellEditor extends CellEditor
             @Override
             public void focusLost(final FocusEvent e)
             {
-                OptionListCellEditor.this.focusLost();
+                if (! handling_return_key)
+                    OptionListCellEditor.this.focusLost();
             }
         });
     }
