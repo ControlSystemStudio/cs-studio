@@ -139,6 +139,7 @@ public class TableEditPart extends AbstractBaseEditPart {
 				int[] w = getWidgetModel().getColumnWidthes();
 				spreadSheetTable.setColumnWidths(w);
 				setPropertyValue(TableModel.PROP_COLUMNS_COUNT, s.length);
+				getWidgetModel().updateContentPropertyTitles();
 				return false;
 			}
 		};
@@ -162,6 +163,7 @@ public class TableEditPart extends AbstractBaseEditPart {
 					setPropertyValue(TableModel.PROP_COLUMN_HEADERS, newHeaders);
 				}
 				spreadSheetTable.setColumnsCount((Integer)newValue);
+				getWidgetModel().updateContentPropertyTitles();
 				return false;
 			}
 		};

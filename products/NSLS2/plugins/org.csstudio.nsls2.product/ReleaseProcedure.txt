@@ -1,0 +1,6 @@
+NSLS-II Product Release Procedure
+------------------------------------------------------------
+
+Pre-release
+* Make sure all the dependencies were released (if possible)
+* Update splash screen

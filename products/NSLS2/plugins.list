@@ -113,4 +113,5 @@ org.csstudio.utility.pvmanager.widgets
 org.csstudio.utility.pvmanager.graphene
 org.csstudio.workspace
 org.epics.graphene
+org.python
 org.slf4j.api
