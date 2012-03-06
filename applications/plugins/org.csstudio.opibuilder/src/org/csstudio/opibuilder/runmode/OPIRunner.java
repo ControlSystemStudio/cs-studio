@@ -82,7 +82,8 @@ public class OPIRunner extends EditorPart implements IOPIRuntime{
 			@Override
 			public void run() {
 				if (getSite().getWorkbenchWindow().getActivePage()
-						.getEditorReferences().length == 1) {
+						.getEditorReferences().length == 1 && 
+						getSite().getWorkbenchWindow().getActivePage().getViewReferences().length ==0) {
 					int trimWidth = 45, trimHeight = 165;
 					CompactModeAction action = WorkbenchWindowService.getInstance().getCompactModeAction(
 							getSite().getWorkbenchWindow());
