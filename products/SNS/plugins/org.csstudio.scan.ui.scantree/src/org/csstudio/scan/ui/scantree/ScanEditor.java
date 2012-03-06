@@ -77,6 +77,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 
 /** Eclipse Editor for the Scan Tree
  *
@@ -138,6 +140,9 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
 
     /** Buttons */
     private Button pause, resume, abort;
+
+    /** Property sheet page (if property view is open) */
+    private PropertySheetPage property_page = null;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -763,5 +768,32 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     public void commandPropertyChanged(final ScanCommand command)
     {
         setDirty(true);
+        // Update property sheet
+        if (property_page != null)
+            property_page.refresh();
+    }
+
+    /** The property view does not update when the properties change.
+     *  It only updates when the selection changes.
+     *  Tried to re-post the current selection in commandPropertyChanged,
+     *  but the easiest solution seems to be
+     *
+     *  http://stackoverflow.com/questions/2973543/how-to-refresh-the-properties-view-in-eclipse-rcp
+     *
+     *  Provide the original PropertySheetPage, but keep a reference
+     *  to it so that we can invoke its refresh()
+     */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object getAdapter(final Class adapter)
+    {
+        if (adapter == IPropertySheetPage.class)
+        {   // Provide default PSP, but keep reference for refresh
+            if (property_page == null)
+                property_page = new PropertySheetPage();
+            return property_page;
+        }
+        // Not looking for PSP
+        return super.getAdapter(adapter);
     }
 }
