@@ -7,7 +7,7 @@ import org.csstudio.utility.pv.PVFactory;
 import org.csstudio.utility.pv.PVListener;
 
 /** Info about one Bypass
- * 
+ *
  *  <p>Combines the 'live' info from PVs with the 'static'
  *  info from the RDB
  *
@@ -17,20 +17,21 @@ import org.csstudio.utility.pv.PVListener;
  *  to determine if the bypass is possible (jumper)
  *  and actually masked (software mask),
  *  summarizing that as the live {@link BypassState}
- * 
+ *
  *  @author Delphy Armstrong - Original MPSBypassInfo
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Bypass implements PVListener
 {
 	final private String name;
 	final private String chain;
 	final private Request request;
 	final private BypassListener listener;
-	
+
 	final private PV jumper_pv, mask_pv;
 	private volatile BypassState state = BypassState.Disconnected;
-	
+
 	/** Initialize
 	 *  @param pv_basename Base name, e.g. "Ring_Vac:SGV_AB:FPL_Ring"
 	 *  @param request Who requested the bypass? <code>null</code> if not requested.
@@ -57,11 +58,11 @@ public class Bypass implements PVListener
 
 		this.request = request;
 		this.listener = listener;
-		
+
 		jumper_pv = PVFactory.createPV(pv_basename + "_sw_jump_status");
 		mask_pv = PVFactory.createPV(pv_basename + "_swmask");
 	}
-	
+
 	/** Create a pseudo-Bypass that is used to display
 	 *  messages in the bypass table
 	 *  @param message Message
@@ -88,26 +89,37 @@ public class Bypass implements PVListener
 	{
 		return chain;
 	}
-	
+
 	/** @return Bypass name and chain, for example "Ring_Vac:SGV_AB (FPL Ring)" */
 	public String getFullName()
 	{
 		return name + " (" + chain + ")";
 	}
 
-	
+    /** @return Name of the Jumper PV, for example "Ring_Vac:SGV_AB:FPL_Ring_sw_jump_status" */
+    public String getJumperPVName()
+    {
+        return jumper_pv.getName();
+    }
+
+    /** @return Name of the Mask PV, for example "Ring_Vac:SGV_AB:FPL_Ring_swmask" */
+    public String getMaskPVName()
+    {
+        return mask_pv.getName();
+    }
+
 	/** @return Request for this bypass or <code>null</code> */
 	public Request getRequest()
 	{
 		return request;
 	}
-	
+
 	/** @return Bypass state */
 	public BypassState getState()
 	{
 		return state;
 	}
-	
+
 	/** Connect to PVs */
 	public void start() throws Exception
 	{
@@ -129,7 +141,7 @@ public class Bypass implements PVListener
 		mask_pv.removeListener(this);
 		jumper_pv.stop();
 		mask_pv.stop();
-		
+
 		state = BypassState.Disconnected;
 		// Does NOT notify listener
 		// because the way this is used the listener
@@ -137,7 +149,7 @@ public class Bypass implements PVListener
 		// or close down.
 		// Either way, no update needed.
 	}
-	
+
 	/** @see PVListener */
 	@Override
     public void pvValueUpdate(final PV pv)
@@ -152,9 +164,9 @@ public class Bypass implements PVListener
 		updateState(jumper_pv.getValue(), mask_pv.getValue());
     }
 
-	/** Update alarm state from current values of PVs 
+	/** Update alarm state from current values of PVs
 	 * @param jumper
-	 * @param mask 
+	 * @param mask
 	 */
 	private void updateState(final IValue jumper, final IValue mask)
     {
@@ -168,7 +180,7 @@ public class Bypass implements PVListener
 		{	// Determine state
 			final boolean jumpered = ValueUtil.getDouble(jumper) > 0.0;
 			final boolean masked = ValueUtil.getDouble(mask) > 0.0;
-			
+
 			if (jumpered)
 			{
 				if (masked)
@@ -184,7 +196,7 @@ public class Bypass implements PVListener
 					state = BypassState.NotBypassable;
 			}
 		}
-		
+
 	    // send update
 		listener.bypassChanged(this);
     }

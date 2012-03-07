@@ -11,11 +11,12 @@ import java.util.Map;
  *  @author Delphy Armstrong - SQL in original MPSBypassModel
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class RequestLookup
 {
 	/** Map of device IDs to {@link Request}s */
 	final private Map<String, Request> requests = new HashMap<String, Request>();
-	
+
 	/** Initialize
 	 *  @param connection RDB connection
 	 *  @throws Exception on error
@@ -43,7 +44,7 @@ public class RequestLookup
 			" JOIN oper.bypass_dvc d ON r.bypass_nbr = d.bypass_nbr" +
 			" LEFT OUTER JOIN oper.employee e ON e.bn = r.ADD_BN" +
 			" WHERE r.status_cd = 'I'");
-		
+
 		try
 		{
 			final ResultSet result = statement.executeQuery();
@@ -65,7 +66,7 @@ public class RequestLookup
 					requestor = first + " " + last + " (" + badge + ")";
 				else
 					requestor = "Badge " + badge;
-				
+
 				if (debug)
 					System.out.println(device + " by " + requestor + " on " + date);
 				requests.put(device, new Request(requestor, date));
@@ -76,7 +77,7 @@ public class RequestLookup
 			statement.close();
 		}
     }
-	
+
 	/** Check if there is a bypass request
 	 *  @param device_id Device ID
 	 *  @return {@link Request} that asked for a bypass or <code>null</code>

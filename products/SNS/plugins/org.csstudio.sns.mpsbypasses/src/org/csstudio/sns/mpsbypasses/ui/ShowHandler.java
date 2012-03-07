@@ -15,6 +15,7 @@ import org.eclipse.ui.PlatformUI;
 /** Command handler that displays the MPS Bypass 'Editor'
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ShowHandler extends AbstractHandler
 {
 	@Override

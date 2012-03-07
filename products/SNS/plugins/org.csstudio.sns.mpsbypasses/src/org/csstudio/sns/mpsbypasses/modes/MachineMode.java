@@ -1,11 +1,12 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
 /** Enumerations for the different MPS Bypass Machine Modes
- * 
+ *
  *  @author Delphy Armstrong - original
  *  @author Kay Kasemir
  */
-public enum MachineMode 
+@SuppressWarnings("nls")
+public enum MachineMode
 {
 	/** Site, the first element, will be used by default in the GUI.
 	 *  It will also be skipped when monitoring PVs.
@@ -23,7 +24,7 @@ public enum MachineMode
 
 	/** Human-readable representation */
 	final private String label;
-	
+
 	/** Initialize
 	 *  @param label Human-readable representation
 	 */
@@ -31,16 +32,16 @@ public enum MachineMode
 	{
 		this.label = label;
 	}
-	
+
 	/** @return Human-readable representation */
 	@Override
     public String toString()
 	{
 		return label;
 	}
-	
+
 	/** Return the enum machine mode of the input String's machine mode enum
-	 * 
+	 *
 	 * @param name of the machine mode
 	 * @return enum of the machine mode, defaulting to Site for invalid name
 	 */
