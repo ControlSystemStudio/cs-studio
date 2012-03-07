@@ -59,6 +59,8 @@ public class CompactModeAction extends Action implements
 	 */
 	public CompactModeAction() {
 		setActionDefinitionId(ID);
+		setText(COMPACT_MODE);
+		setImageDescriptor(compactModeImage);
 	}
 
 	/**
@@ -170,6 +172,8 @@ public class CompactModeAction extends Action implements
 		this.menuBar = action.getMenuBar();
 		this.inCompactMode = action.inCompactMode;
 		this.toolbarWasInvisible=action.toolbarWasInvisible;
+		setText(action.getText());
+		setImageDescriptor(action.getImageDescriptor());
 	}
 	
 }
