@@ -28,11 +28,10 @@ package org.csstudio.ams.delivery.sms;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.device.DeviceListener;
 import org.csstudio.ams.delivery.device.DeviceObject;
@@ -49,13 +48,11 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.smslib.AGateway;
 import org.smslib.IInboundMessageNotification;
 import org.smslib.InboundBinaryMessage;
 import org.smslib.InboundMessage;
 import org.smslib.InboundMessage.MessageClasses;
 import org.smslib.Message.MessageEncodings;
-import org.smslib.Message.MessageTypes;
 import org.smslib.OutboundMessage;
 import org.smslib.Service;
 import org.smslib.modem.SerialModemGateway;
@@ -65,9 +62,9 @@ import org.smslib.modem.SerialModemGateway;
  * @version 1.0
  * @since 18.12.2011
  */
-public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
-                                          IReadableDevice<InboundMessage>,
-                                          IInboundMessageNotification {
+public class SmsDeliveryDevice implements Runnable,
+                                          IDeliveryDevice<SmsAlarmMessage>,
+                                          IReadableDevice<InboundMessage> {
 
     /** The static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(SmsDeliveryDevice.class);
@@ -81,32 +78,76 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
     /** Text for the test SMS */
     private static final String SMS_TEST_TEXT = "[MODEMTEST{$CHECKID,$GATEWAYID}]";
 
-    private final JmsProperties jmsProps;
+    private Object deviceLock;
+    
+    private JmsProperties jmsProps;
 
     private Service modemService;
 
     /** This class contains all modem ids (names) */
-    private final ModemInfoContainer modemInfo;
+    private ModemInfoContainer modemInfo;
 
     /** This listener is informed if a inbound message has been receibved. */
-    private final List<DeviceListener> listener;
+    private List<DeviceListener> listener;
 
     /** Status information of the current modem test */
-    private final ModemTestStatus testStatus;
+    private ModemTestStatus testStatus;
 
     /** Reading period (in ms) for the modem */
-    private final long readWaitingPeriod;
+    private long readWaitingPeriod;
+    
+    private boolean working;
 
     public SmsDeliveryDevice(final ModemInfoContainer deviceInfo, final JmsProperties jms, final long readInterval) {
         modemService = null;
         modemInfo = deviceInfo;
+        deviceLock = new Object();
         jmsProps = jms;
         listener = Collections.synchronizedList(new ArrayList<DeviceListener>());
         testStatus = new ModemTestStatus();
         readWaitingPeriod = readInterval;
-        initModem();
+        working = initModem();
     }
 
+    @Override
+    public void run() {
+        
+        while (working) {
+            
+            synchronized (deviceLock) {
+                try {
+                    deviceLock.wait(readWaitingPeriod);
+                } catch (InterruptedException ie) {
+                    LOG.warn("I have been interrupted.");
+                }
+            }
+            
+            LinkedList<InboundMessage> inMsgs = new LinkedList<InboundMessage>();
+            int count = readMessages(inMsgs);
+            
+            if (count > 0) {
+                
+                for (InboundMessage message : inMsgs) {
+                    final Object[] param = { message.getText(),
+                                             message.getOriginator(),
+                                             message.getGatewayId() };
+                    LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
+                    
+                    final IncomingSmsMessage inMsg = new IncomingSmsMessage(message);
+                    for (final DeviceListener o : listener) {
+                        o.onIncomingMessage(new DeviceObject(this, inMsg));
+                    }
+            
+                    if (deleteMessage(message)) {
+                        LOG.info("Message has been deleted.");
+                    } else {
+                        LOG.warn("Message CANNOT be deleted.");
+                    }
+                }
+            }
+        }
+    }
+    
     public void addDeviceListener(final DeviceListener l) {
         listener.add(l);
     }
@@ -119,23 +160,22 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
         return modemService;
     }
 
-    @Override
-    public void process(final AGateway gateway, final MessageTypes msgType, final InboundMessage msg) {
-
-        final Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
-        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
-
-        final IncomingSmsMessage inMsg = new IncomingSmsMessage(msg);
-        for (final DeviceListener o : listener) {
-            o.onIncomingMessage(new DeviceObject(this, inMsg));
-        }
-
-        if (deleteMessage(msg)) {
-            LOG.info("Message has been deleted.");
-        } else {
-            LOG.warn("Message CANNOT be deleted.");
-        }
-    }
+//    public void process(final AGateway gateway, final MessageTypes msgType, final InboundMessage msg) {
+//
+//        final Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
+//        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
+//
+//        final IncomingSmsMessage inMsg = new IncomingSmsMessage(msg);
+//        for (final DeviceListener o : listener) {
+//            o.onIncomingMessage(new DeviceObject(this, inMsg));
+//        }
+//
+//        if (deleteMessage(msg)) {
+//            LOG.info("Message has been deleted.");
+//        } else {
+//            LOG.warn("Message CANNOT be deleted.");
+//        }
+//    }
 
     public void setInboundMessageListener(final IInboundMessageNotification notification) {
         modemService.setInboundMessageNotification(notification);
@@ -298,6 +338,10 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
                 LOG.warn("[*** {} ***]: {}", e.getClass().getSimpleName(), e.getMessage());
             }
         }
+        working = false;
+        synchronized (deviceLock) {
+            deviceLock.notify();
+        }
     }
 
     private boolean initModem() {
@@ -406,7 +450,7 @@ public class SmsDeliveryDevice implements IDeliveryDevice<SmsAlarmMessage>,
             LOG.info("Modem(s) are initialized");
 
             modemService.setGatewayStatusNotification(new GatewayStatusNotification(modemInfo.getModemNames()));
-            modemService.setInboundMessageNotification(this);
+//            modemService.setInboundMessageNotification(this);
 
             if(result == true && modemCount > 0) {
                 LOG.info("Try to start service");
