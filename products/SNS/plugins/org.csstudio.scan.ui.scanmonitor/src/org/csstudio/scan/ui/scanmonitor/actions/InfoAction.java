@@ -44,6 +44,6 @@ public class InfoAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
     	MessageDialog.openInformation(shell, Messages.InfoTitle,
-    			model.getServerInfo());
+    			model.getServerInfoText());
     }
 }
