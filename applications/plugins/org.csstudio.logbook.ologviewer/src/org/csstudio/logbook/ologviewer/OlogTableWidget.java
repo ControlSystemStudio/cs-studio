@@ -27,6 +27,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -273,8 +274,11 @@ public class OlogTableWidget extends Composite implements ISelectionProvider {
 		selectionProvider.setSelection(selection);
 	}	
 	
-	Control getControl(){
-		return this.table;
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		table.setMenu(menu);
 	}
+
 
 }

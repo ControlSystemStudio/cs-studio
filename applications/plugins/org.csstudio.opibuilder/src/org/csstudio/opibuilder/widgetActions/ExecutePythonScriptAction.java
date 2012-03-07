@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
+import org.csstudio.opibuilder.script.JythonScriptStore;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -51,6 +52,9 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 		if(code == null){			
 			//read file
 			IPath absolutePath = getAbsolutePath();
+			PySystemState state = new PySystemState();				
+			state.setClassLoader(JythonScriptStore.COMBINDED_CLASS_LOADER);
+			
 			//Add the path of script to python module search path
 			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
 				try {
@@ -60,7 +64,6 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 		            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
 					ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
 				}
-				PySystemState state = new PySystemState();
 				//If it is a workspace file.
 				if(ResourceUtil.isExistingWorkspaceFile(absolutePath)){
 					IPath folderPath = absolutePath.removeLastSegments(1);
@@ -69,11 +72,11 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 				}else if(ResourceUtil.isExistingLocalFile(absolutePath)){
 					IPath folderPath = absolutePath.removeLastSegments(1);
 					state.path.append(new PyString(folderPath.toOSString()));
-				}
-				
-				interpreter = new PythonInterpreter(null,state);
-			}else
-				interpreter = new PythonInterpreter();	
+				}				
+			}
+			
+			interpreter = new PythonInterpreter(null,state);
+			
 			GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
 			if(viewer != null){
 				Object obj = viewer.getEditPartRegistry().get(getWidgetModel());
@@ -150,4 +153,6 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 		return ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
 	}
 
+
+	
 }

@@ -111,5 +111,6 @@ org.csstudio.nsls2.startup.intro
 org.csstudio.workspace
 org.jdom
 org.joda.time
+org.python
 org.slf4j
 

@@ -28,6 +28,11 @@
                      <adapt
                            type="edu.msu.nscl.olog.api.Log">
                      </adapt></iterate>
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                  </and>
                </with>
             </visibleWhen>
          </menu>
@@ -78,16 +83,16 @@
    <extension
          point="org.csstudio.logbook.ologtable.columndescription">
       <ologcolumndescription
-            cellLabelProvider="org.csstudio.logbook.ologviewer.TagCellLabelProvider"
-            text="Taga"
-            tooltip="Taga"
-            weight="5">
-      </ologcolumndescription>
-      <ologcolumndescription
             cellLabelProvider="org.csstudio.logbook.ologviewer.OwnerCellLabelProvider"
             text="Owner"
             tooltip="Owner"
             weight="10">
+      </ologcolumndescription>
+      <ologcolumndescription
+            cellLabelProvider="org.csstudio.logbook.ologviewer.TagCellLabelProvider"
+            text="Taga"
+            tooltip="Taga"
+            weight="5">
       </ologcolumndescription>
    </extension>
 
