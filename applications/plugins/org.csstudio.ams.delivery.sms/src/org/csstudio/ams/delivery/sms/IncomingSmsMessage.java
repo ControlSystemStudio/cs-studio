@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,38 +23,37 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.jms;
+package org.csstudio.ams.delivery.sms;
+
+import org.csstudio.ams.delivery.message.BaseIncomingMessage;
+import org.smslib.InboundMessage;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
- * @since 27.12.2011
+ * @since 27.02.2012
  */
-public class JmsProperties {
+public class IncomingSmsMessage extends BaseIncomingMessage {
     
-    private String jmsFactoryClass;
-    
-    private String jmsUrl;
-    
-    private String jmsTopic;
-
-    public JmsProperties(String factoryClass, String url, String topic) {
-        this.jmsFactoryClass = factoryClass;
-        this.jmsUrl = url;
-        this.jmsTopic = topic;
+    public IncomingSmsMessage(Object origMessage) {
+        super(origMessage);
     }
 
-    public String getJmsFactoryClass() {
-        return jmsFactoryClass;
+    public InboundMessage getInboundMessage() {
+        InboundMessage result = null;
+        if (getOriginalMessage() instanceof InboundMessage) {
+            result = (InboundMessage) getOriginalMessage();
+        }
+        return result;
     }
 
-    public String getJmsUrl() {
-        return jmsUrl;
-    }
-
-    public String getJmsTopic() {
-        return jmsTopic;
+    @Override
+    public boolean isTestAnswer() {
+        boolean testAnswer = false;
+        if (getInboundMessage() != null) {
+            String text = getInboundMessage().getText().trim();
+            testAnswer = text.startsWith("[MODEMTEST{");
+        }
+        return testAnswer;
     }
 }

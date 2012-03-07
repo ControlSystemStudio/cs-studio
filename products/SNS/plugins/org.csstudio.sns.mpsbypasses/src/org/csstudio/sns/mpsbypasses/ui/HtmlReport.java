@@ -11,13 +11,14 @@ import org.csstudio.sns.mpsbypasses.model.Request;
  *  @author Delphy Armstrong - Original BypassHTML
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class HtmlReport
 {
 	final private static String HTML_VERSION = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"http://www.w3.org/TR/html4/loose.dtd\">";
 
 	final private PrintStream out;
 	final private BypassModel model;
-	
+
 	public HtmlReport(final PrintStream out, final BypassModel model)
     {
 	    this.out = out;
@@ -72,7 +73,7 @@ public class HtmlReport
 			}
 			out.println("</table>");
 		}
-	    
+
 		out.println("</body>");
 		out.println("</html>");
     }
@@ -87,7 +88,7 @@ public class HtmlReport
 		out.append(content);
 		out.append("</").append(tag).append(">");
 	}
-	
+
 	private void printTableHeader(final String... columns)
     {
 		out.print("  <tr>");

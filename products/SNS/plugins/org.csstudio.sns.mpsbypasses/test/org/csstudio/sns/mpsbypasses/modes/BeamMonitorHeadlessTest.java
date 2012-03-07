@@ -1,17 +1,19 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 /** [Headless] JUnit test of the {@link BeamModeMonitor}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BeamMonitorHeadlessTest implements BeamModeListener
 {
 	private BeamMode rtdl_mode = null;
 	private BeamMode switch_mode = null;
-	
+
 	@Override
     public void beamModeUpdate(final BeamMode new_rtdl_mode, final BeamMode new_switch_mode)
     {
@@ -22,7 +24,7 @@ public class BeamMonitorHeadlessTest implements BeamModeListener
 	        notifyAll();
         }
     }
-	
+
 	@Test
 	public void testBeamModeMonitor() throws Exception
 	{
