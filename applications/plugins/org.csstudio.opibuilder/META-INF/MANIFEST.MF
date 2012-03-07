@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional;visibility:=reexport,
  org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional;visibility:=reexport,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional;visibility:=reexport,
  org.eclipse.draw2d.rap;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.swt.widgets;bundle-version="1.0.2"
+ org.csstudio.swt.widgets;bundle-version="1.0.2",
+ org.python;bundle-version="2.5.2"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.actions,
@@ -47,6 +48,5 @@ Export-Package: org.csstudio.opibuilder,
  org.csstudio.opibuilder.widgetActions,
  org.csstudio.platform.data
 Bundle-ClassPath: lib/rhino/js.jar,
- lib/jython/jython.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
