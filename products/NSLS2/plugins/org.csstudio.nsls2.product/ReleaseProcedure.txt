@@ -11,6 +11,7 @@ Pre-release
 
 Release
 * Binaries are build during the product build
+* tag repository with tag NSLS2_${version}
 * copy the jenkins@irmis-dev:/home/jenkins/.jenkins/CSS-NSLSII/build/build/BuildDirectory/I.CSS-NSLSII/*.zip to sf-shell /home/project-web/cs-studio/htdocs/nsls2
 * repackage the products with the appropriate version number cp -r CSS-NSLSII-*.zip CSS-NSLSII-linux-*-${version}.zip
   e.g cp -r CSS-NSLSII-linux.gtk.x86.zip CSS-NSLSII-linux-3.1.0.zip
