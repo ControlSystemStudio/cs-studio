@@ -24,12 +24,12 @@ import sys
 
 # Path to scan client library
 # Should point to the scan client jar
-scan_client_jar="/Kram/MerurialRepos/cs-studio/products/SNS/plugins/org.csstudio.scan.client/scan.client.jar"
+scan_client_jar="/Kram/MerurialRepos/cs-studio-3.1/products/SNS/plugins/org.csstudio.scan.client/scan.client.jar"
 
 # Alternatively, especially during development,
 # can use the binaries that the IDE creates within
 # the workspace
-workspace="/Kram/MerurialRepos/cs-studio/products/SNS/plugins"
+workspace="/Kram/MerurialRepos/cs-studio-3.1/products/SNS/plugins"
 
 # Avoid Python os.path because that doesn't exist in stripped-down jython.jar
 import java.io.File as File
