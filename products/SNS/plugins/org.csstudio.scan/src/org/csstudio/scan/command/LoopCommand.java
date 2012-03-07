@@ -16,10 +16,9 @@
 package org.csstudio.scan.command;
 
 import java.io.PrintStream;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.device.DeviceInfo;
 import org.w3c.dom.Element;
 
 /** Command that performs a loop
@@ -50,7 +49,7 @@ public class LoopCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-        new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class),
+        ScanCommandProperty.DEVICE_NAME,
         new ScanCommandProperty("start", "Initial Value", Double.class),
         new ScanCommandProperty("end", "Final Value", Double.class),
         new ScanCommandProperty("step_size", "Step Size", Double.class),
@@ -60,14 +59,14 @@ public class LoopCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-    private double start;
-    private double end;
-    private double stepsize;
-    private String readback = "";
-    private boolean wait = true;
-    private double tolerance = 0.1;
-    private double timeout = 0.0;
+    private volatile String device_name;
+    private volatile double start;
+    private volatile double end;
+    private volatile double stepsize;
+    private volatile String readback = "";
+    private volatile boolean wait = true;
+    private volatile double tolerance = 0.1;
+    private volatile double timeout = 0.0;
 
 	private List<ScanCommand> body;
 
@@ -88,11 +87,18 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final ScanCommand... body)
     {
-        this.device_name = device_name;
-        this.start = start;
-        this.end = end;
-        setStepSize(stepsize);
-        this.body = Arrays.asList(body);
+        this(device_name, start, end, stepsize, toList(body));
+    }
+
+    /** @param commands Array of commands
+     *  @return Mutable list of commands
+     */
+    private static List<ScanCommand> toList(final ScanCommand[] commands)
+    {
+        final List<ScanCommand> list = new ArrayList<ScanCommand>(commands.length);
+        for (ScanCommand command : commands)
+            list.add(command);
+        return list;
     }
 
     /** Initialize
@@ -106,11 +112,25 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final List<ScanCommand> body)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
         setStepSize(stepsize);
         this.start = start;
         this.end = end;
         this.body = body;
+    }
+
+    /** Set address of loop as well as body commands
+     *  {@inheritDoc}
+     */
+    @Override
+    public long setAddress(final long address)
+    {
+        long next = super.setAddress(address);
+        for (ScanCommand command : body)
+            next = command.setAddress(next);
+        return next;
     }
 
     /** {@inheritDoc} */
@@ -120,7 +140,7 @@ public class LoopCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Device name */
+	/** @return Device name (may be "" but not <code>null</code>) */
     public String getDeviceName()
     {
         return device_name;
@@ -129,6 +149,8 @@ public class LoopCommand extends ScanCommand
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -185,7 +207,7 @@ public class LoopCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device */
+    /** @return Name of readback device (may be "" but not <code>null</code>) */
     public String getReadback()
     {
         return readback;
@@ -194,6 +216,8 @@ public class LoopCommand extends ScanCommand
     /** @param readback Name of readback device */
     public void setReadback(final String readback)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.readback = readback;
     }
 
@@ -240,6 +264,8 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<loop>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<start>" + start + "</start>");
@@ -247,7 +273,6 @@ public class LoopCommand extends ScanCommand
         out.println("<end>" + end + "</end>");
         writeIndent(out, level+1);
         out.println("<step>" + stepsize + "</step>");
-        writeIndent(out, level+1);
         if (! readback.isEmpty())
         {
             writeIndent(out, level+1);
@@ -268,6 +293,7 @@ public class LoopCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        writeIndent(out, level+1);
         out.println("<body>");
         for (ScanCommand cmd : body)
             cmd.writeXML(out, level + 2);
@@ -285,14 +311,15 @@ public class LoopCommand extends ScanCommand
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
-        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
     }
 

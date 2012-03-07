@@ -36,12 +36,12 @@ public class SetCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-	private Object value;
-	private String readback;
-	private boolean wait;
-    private double tolerance;
-    private double timeout;
+    private volatile String device_name;
+	private volatile Object value;
+	private volatile String readback;
+	private volatile boolean wait;
+    private volatile double tolerance;
+    private volatile double timeout;
 
     /** Initialize empty set command */
     public SetCommand()
@@ -49,13 +49,34 @@ public class SetCommand extends ScanCommand
         this("device", 0.0, "", true, 0.1, 0.0);
     }
 
-    /** Initialize
-     *  @param device_name Name of device
+    /** Initialize for readback with default tolerance and timeout
+     *  @param device_name Name of device and readback
      *  @param value Value to write to the device
      */
     public SetCommand(final String device_name, final Object value)
     {
         this(device_name, value, device_name, true, 0.1, 0.0);
+    }
+
+    /** Initialize with default tolerance and timeout
+     *  @param device_name Name of device and readback (if used)
+     *  @param value Value to write to the device
+     *  @param wait Wait for readback to match?
+     */
+    public SetCommand(final String device_name, final Object value, final boolean wait)
+    {
+        this(device_name, value, device_name, wait, 0.1, 0.0);
+    }
+
+    /** Initialize
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param readback Readback device
+     */
+    public SetCommand(final String device_name, final Object value,
+            final String readback)
+    {
+        this(device_name, value, readback, true, 0.1, 0.0);
     }
 
     /** Initialize
@@ -70,8 +91,12 @@ public class SetCommand extends ScanCommand
 	        final String readback, final boolean wait,
             final double tolerance, final double timeout)
     {
+	    if (device_name == null)
+	        throw new NullPointerException();
 		this.device_name = device_name;
 		this.value = value;
+		if (readback == null)
+            throw new NullPointerException();
 		this.readback = readback;
 		this.wait = wait;
         this.tolerance = tolerance;
@@ -85,7 +110,7 @@ public class SetCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Name of device to set */
+	/** @return Name of device to set (may be "" but not <code>null</code>) */
 	public String getDeviceName()
     {
         return device_name;
@@ -94,6 +119,8 @@ public class SetCommand extends ScanCommand
 	/** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -121,7 +148,7 @@ public class SetCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device */
+    /** @return Name of readback device (may be "" but not <code>null</code>) */
     public String getReadback()
     {
         return readback;
@@ -130,6 +157,8 @@ public class SetCommand extends ScanCommand
     /** @param readback Name of readback device */
     public void setReadback(final String readback)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.readback = readback;
     }
 
@@ -164,6 +193,8 @@ public class SetCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<set>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<value>" + value + "</value>");
@@ -187,6 +218,7 @@ public class SetCommand extends ScanCommand
             writeIndent(out, level+1);
             out.println("<timeout>" + timeout + "</timeout>");
         }
+        writeIndent(out, level);
         out.println("</set>");
     }
 
@@ -194,12 +226,13 @@ public class SetCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
-        setValue(DOMHelper.getSubelementDouble(element, "value"));
-        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
-        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
+        setValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
     }
 
     /** {@inheritDoc} */

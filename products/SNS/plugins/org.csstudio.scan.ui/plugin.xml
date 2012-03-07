@@ -24,4 +24,12 @@
             primary="true">
       </toc>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.csstudio.scan.ui.PreferencePage"
+            id="org.csstudio.scan.ui.prefpage"
+            name="%Scan">
+      </page>
+   </extension>
 </plugin>

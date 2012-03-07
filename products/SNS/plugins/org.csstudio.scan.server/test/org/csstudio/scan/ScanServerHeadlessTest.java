@@ -77,7 +77,7 @@ public class ScanServerHeadlessTest implements Runnable
             pv.write(0.0);
 
             // Connect to scan server
-            final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.RMI_PORT);
+            final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.DEFAULT_PORT);
             final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
             System.out.println("Client connected to " + server.getInfo());
             assertTrue(server.getInfo().length() > 0);
@@ -131,8 +131,32 @@ public class ScanServerHeadlessTest implements Runnable
             server.pause(id);
             System.out.println("All Scans on server:");
             infos = server.getScanInfos();
+
+            // Only that one scan should be paused
             for (ScanInfo info : infos)
+            {
                 System.out.println(info);
+                if (info.getId() == id)
+                    assertEquals(ScanState.Paused, info.getState());
+                else
+                    assertTrue(ScanState.Paused != info.getState());
+            }
+
+            // Resume 'all' and pause 'all' should again pause the running scan
+            server.resume(-1);
+            server.pause(-1);
+            System.out.println("All Scans on server:");
+            infos = server.getScanInfos();
+            // Only that one scan should be paused
+            for (ScanInfo info : infos)
+            {
+                System.out.println(info);
+                if (info.getId() == id)
+                    assertEquals(ScanState.Paused, info.getState());
+                else
+                    assertTrue(ScanState.Paused != info.getState());
+            }
+
             // Should stay paused
             for (int i=0; i<3; ++i)
             {

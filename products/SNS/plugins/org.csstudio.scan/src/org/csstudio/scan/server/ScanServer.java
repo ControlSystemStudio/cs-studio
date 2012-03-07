@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -26,6 +26,16 @@ import org.csstudio.scan.device.DeviceInfo;
  *
  *  <p>Used by the (remote) client to communicate
  *  with the scan server.
+ *
+ *  <p>Default host and port are defined in here.
+ *  They can be overriddden via Java system preferences
+ *  to allow doing this from any Java tool (jython, Matlab, ...).
+ *
+ *  Eclipse-based tools set the system properties from Eclipse preferences,
+ *  so what's used in the end are the system preference values,
+ *  but they can be configured from Eclipse preferences
+ *  and the GUI tools include preference pages.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -35,13 +45,21 @@ public interface ScanServer extends Remote
     final public static long SERIAL_VERSION = 1;
 
     /** Default host for scan server */
-    final public static String RMI_HOST = "localhost";
+    final public static String DEFAULT_HOST = "localhost";
 
-    /** Port used by RMI
-     *  Default RMI port is 1099, but use a different port for
-     *  the scan server.
+    /** Default port used by scan server
+     *
+     *  <p>Default RMI port is 1099,
+     *  but use a different port for the scan server
+     *  to avoid conflicts with other RMI tools.
      */
-    final public static int RMI_PORT = 4810;
+    final public static int DEFAULT_PORT = 4810;
+
+    /** System property for overriding the scan server host */
+    final public static String HOST_PROPERTY = "ScanServerHost";
+
+    /** System property for overriding the scan server port */
+    final public static String PORT_PROPERTY = "ScanServerPort";
 
     /** Name under which this interface is registered with RMI */
     final public static String RMI_SCAN_SERVER_NAME = "ScanServer";
@@ -49,17 +67,19 @@ public interface ScanServer extends Remote
     /** Port on which this interface's implementation is exported with RMI */
     final public static int RMI_SCAN_SERVER_PORT = 4811;
 
-    /** @return Human-readable info about the scan server
+    /** @return Human-readable info about the scan server, multi-line.
      *  @throws RemoteException on error in remote access
      */
     public String getInfo() throws RemoteException;
 
-    /** Query server for devices used by a scan 
+    /** Query server for devices used by a scan
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *            or -1 for default devices
      *  @return Info about devices
      *  @throws RemoteException on error in remote access
      */
-    public DeviceInfo[] getDeviceInfos() throws RemoteException;
-    
+    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException;
+
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
@@ -87,18 +107,18 @@ public interface ScanServer extends Remote
      *  @throws RemoteException on error in remote access
      */
     public String getScanCommands(long id) throws RemoteException;
-    
+
     /** Get serial of last logged sample.
-     *  
+     *
      *  <p>Can be used to determine if there are new samples
      *  that should be fetched via <code>getScanData()</code>
-     *  
+     *
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Serial of last sample in scan data
      *  @see #getScanData(long)
      */
     public long getLastScanDataSerial(final long id) throws RemoteException;
-    
+
     /** Query server for scan data
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @return Data for that scan on the server or <code>null</code>
@@ -106,6 +126,15 @@ public interface ScanServer extends Remote
      *  @see #getLastScanDataSerial(long)
      */
     public ScanData getScanData(long id) throws RemoteException;
+
+    /** Ask server to update a command parameter to a new value
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @param address Address of the command
+     *  @param property_id Property to update
+     *  @param value New value for the property
+     *  @throws RemoteException on error in remote access
+     */
+    public void updateScanProperty(long id, long address, String property_id, Object value) throws RemoteException;
 
     /** Ask server to pause a scan
      *

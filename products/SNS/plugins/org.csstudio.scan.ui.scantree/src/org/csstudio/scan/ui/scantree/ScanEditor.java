@@ -9,18 +9,38 @@ package org.csstudio.scan.ui.scantree;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.client.ScanServerConnector;
+import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
-import org.csstudio.scan.ui.scantree.properties.ScanCommandAdapterFactory;
+import org.csstudio.scan.server.ScanState;
+import org.csstudio.scan.ui.ScanUIActivator;
+import org.csstudio.scan.ui.scantree.gui.EmptyEditorInput;
+import org.csstudio.scan.ui.scantree.gui.ScanTreeGUI;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModelListener;
+import org.csstudio.scan.ui.scantree.operations.PropertyChangeOperation;
+import org.csstudio.scan.ui.scantree.operations.RedoHandler;
+import org.csstudio.scan.ui.scantree.operations.UndoHandler;
+import org.csstudio.scan.ui.scantree.properties.ScanCommandPropertyAdapterFactory;
+import org.csstudio.ui.util.NoResourceEditorInput;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IUndoContext;
+import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryFactory;
+import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -33,7 +53,19 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -45,17 +77,19 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheetPage;
 
 /** Eclipse Editor for the Scan Tree
  *
  *  <p>Displays the scan tree and uses
  *  it as selection provider.
- *  {@link ScanCommandAdapterFactory} then adapts
+ *  {@link ScanCommandPropertyAdapterFactory} then adapts
  *  as necessary to support Properties view/editor.
  *
  *  @author Kay Kasemir
  */
-public class ScanEditor extends EditorPart implements ScanTreeGUIListener
+public class ScanEditor extends EditorPart implements ScanInfoModelListener, ScanTreeModelListener
 {
     /** Editor ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.editor"; //$NON-NLS-1$
@@ -63,7 +97,33 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     /** File extension used to save files */
     final private static String FILE_EXTENSION = "scn"; //$NON-NLS-1$
 
+    /** Info about scan server */
+    private ScanInfoModel scan_info = null;
 
+    /** Commands displayed and edited in this editor*/
+    final private ScanTreeModel model = new ScanTreeModel();
+
+    /** Operations history for undo/redo.
+     *
+     *  <p>All scan editors share the same operations history,
+     *  but each editor has its own undo context.
+     *
+     *  <p>This was done because the {@link UndoHandler} and {@link RedoHandler}
+     *  in the editor's toolbar are shared between all scan editors,
+     *  so it's natural for them to interface to just one operations history.
+     */
+    final private static IOperationHistory operations = OperationHistoryFactory.getOperationHistory();
+
+    /** Undo context for undo/redo */
+    final private IUndoContext undo_context;
+
+    /** Info section, not always shown */
+    private Composite info_section;
+
+    /** Message within info section */
+    private Label message;
+
+    /** Tree GUI */
     private ScanTreeGUI gui;
 
     /** @see #isDirty() */
@@ -71,6 +131,18 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
 
     /** @return Devices available on scan server */
     private volatile DeviceInfo[] devices = null;
+
+    /** ID of scan that was submitted, the 'live' scan, or -1 */
+    private volatile long scan_id = -1;
+
+    /** Button icons */
+    private Image pause_icon = null, resume_icon = null, abort_icon = null;
+
+    /** Buttons */
+    private Button pause, resume, abort;
+
+    /** Property sheet page (if property view is open) */
+    private PropertySheetPage property_page = null;
 
     /** Create scan editor
      *  @param input Input for editor, must be scan config file or {@link EmptyEditorInput}
@@ -103,15 +175,81 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         return createInstance(new EmptyEditorInput());
     }
 
+    /** Create scan editor
+     *  @param scan_id ID of the scan on server
+     *  @param commands Commands of the scan
+     *  @return
+     */
+    public static ScanEditor createInstance(final ScanInfo scan, final List<ScanCommand> commands)
+    {
+        final ScanEditor editor = createInstance(new EmptyEditorInput());
+        editor.model.setCommands(commands);
+        if (! scan.getState().isDone())
+            editor.scan_id = scan.getId();
+        return editor;
+    }
+
+    /** Initialize */
+    public ScanEditor()
+    {
+        undo_context = new UndoContext();
+        operations.setLimit(undo_context, 50);
+    }
+
     /** {@inheritDoc} */
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
             throws PartInitException
     {
         setSite(site);
-        setInput(input);
+        setInput(new NoResourceEditorInput(input));
+    }
 
-        // Use background Job to obtain device list
+    /** {@inheritDoc} */
+    @Override
+    public void createPartControl(final Composite parent)
+    {
+        // Get scan info model and return if that fails
+        try
+        {
+            scan_info = ScanInfoModel.getInstance();
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+            return;
+        }
+
+        fetchDevices();
+        createComponents(parent);
+
+        final IEditorInput input = getEditorInput();
+        final IFile file = (IFile) input.getAdapter(IFile.class);
+        if (file != null)
+        {
+            try
+            {
+                final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+                final List<ScanCommand> commands = reader.readXMLStream(file.getContents());
+                model.setCommands(commands);
+            }
+            catch (Exception ex)
+            {
+                MessageDialog.openError(parent.getShell(), Messages.Error,
+                        NLS.bind(Messages.FileOpenErrorFmt,
+                                new Object[] { input.getName(), ex.getMessage() }));
+            }
+        }
+        setPartName(input.getName());
+        getSite().setSelectionProvider(gui.getSelectionProvider());
+
+        scan_info.addListener(this);
+        model.addListener(this);
+    }
+
+    /** Read device list from server */
+    private void fetchDevices()
+    {
         final Job job = new Job(Messages.DeviceListFetch)
         {
             @Override
@@ -119,15 +257,8 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             {
                 try
                 {
-                    final ScanServer server = ScanServerConnector.connect();
-                    try
-                    {
-                        devices = server.getDeviceInfos();
-                    }
-                    finally
-                    {
-                        ScanServerConnector.disconnect(server);
-                    }
+                    final ScanServer server = scan_info.getServer();
+                    devices = server.getDeviceInfos(-1);
                 }
                 catch (Exception ex)
                 {
@@ -140,31 +271,142 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         job.schedule();
     }
 
+    /** Create GUI components
+     *  @param parent Parent widget
+     */
+    private void createComponents(final Composite parent)
+    {
+        parent.setLayout(new FormLayout());
+
+        // 1) Info section
+        info_section = new Composite(parent, 0);
+        info_section.setLayout(new GridLayout(4, false));
+
+        message = new Label(info_section, 0);
+        message.setText(Messages.ServerDisconnected);
+        message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+
+        resume_icon = ScanUIActivator.getImageDescriptor("icons/resume.gif").createImage();//$NON-NLS-1$
+        resume = createInfoButton(Messages.ResumeTT, resume_icon,
+                new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().resume(scan_id);
+                    resume.setEnabled(false);
+                    pause.setEnabled(true);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        pause_icon = ScanUIActivator.getImageDescriptor("icons/pause.gif").createImage();//$NON-NLS-1$
+        pause = createInfoButton(Messages.PauseTT, pause_icon,
+                new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().pause(scan_id);
+                    resume.setEnabled(true);
+                    pause.setEnabled(false);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+        abort_icon = ScanUIActivator.getImageDescriptor("icons/abort.gif").createImage();//$NON-NLS-1$
+        abort = createInfoButton(Messages.AbortTT, abort_icon,
+                new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getServer().abort(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
+
+        // Initially, info section is invisible
+        info_section.setVisible(false);
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.top = new FormAttachment(0);
+        info_section.setLayoutData(fd);
+
+        // 2) Scan Tree
+        gui = new ScanTreeGUI(parent, model, this);
+
+        fd = new FormData();
+        fd.left = new FormAttachment(0);
+        fd.right = new FormAttachment(100);
+        fd.top = new FormAttachment(0);
+        fd.bottom = new FormAttachment(100);
+        gui.getControl().setLayoutData(fd);
+    }
+
+    /** Add button to the info_section
+     *  @param tooltip Tool tip
+     *  @param icon Icon image
+     *  @param listener Selection listener
+     *  @return Button
+     */
+    private Button createInfoButton(final String tooltip, final Image icon,
+            final SelectionListener listener)
+    {
+        final Button button = new Button(info_section, SWT.PUSH);
+        button.setLayoutData(new GridData(SWT.RIGHT, 0, false, false));
+        button.setToolTipText(tooltip);
+        button.setImage(icon);
+        button.addSelectionListener(listener);
+        return button;
+    }
+
     /** {@inheritDoc} */
     @Override
-    public void createPartControl(final Composite parent)
+    public void dispose()
     {
-        gui = new ScanTreeGUI(parent, this);
-
-        final IEditorInput input = getEditorInput();
-        final IFile file = (IFile) input.getAdapter(IFile.class);
-        if (file != null)
+        model.removeListener(this);
+        if (scan_info != null)
         {
-            try
-            {
-                final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-                final List<ScanCommand> commands = reader.readXMLStream(file.getContents());
-                gui.setCommands(commands);
-            }
-            catch (Exception ex)
-            {
-                MessageDialog.openError(parent.getShell(), Messages.Error,
-                        NLS.bind(Messages.FileOpenErrorFmt,
-                                new Object[] { input.getName(), ex.getMessage() }));
-            }
+            scan_info.removeListener(this);
+            scan_info.release();
+            scan_info = null;
         }
-        setPartName(input.getName());
-        getSite().setSelectionProvider(gui.getSelectionProvider());
+        clearUndoHistory();
+
+        if (resume_icon != null)
+            resume_icon.dispose();
+        if (pause_icon != null)
+            pause_icon.dispose();
+        if (abort_icon != null)
+            abort_icon.dispose();
+
+        super.dispose();
+    }
+
+    /** Remove undo/redo operations associated with this editor
+     *  from the shared operations history of all scan editors
+     */
+    private void clearUndoHistory()
+    {
+        operations.dispose(undo_context, true, true, true);
     }
 
     /** {@inheritDoc} */
@@ -174,38 +416,191 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         gui.setFocus();
     }
 
-    /** Called when a command has been changed to update the display
-     *  @param command Command that has been edited
+    /** Show or hide the info section
+     *  @param show <code>true</code> to show
      */
-    public void refreshCommand(final ScanCommand command)
+    private void showInfoSection(final boolean show)
     {
-        gui.refreshCommand(command);
+        final FormData fd = (FormData) gui.getControl().getLayoutData();
+        if (show)
+        {
+            if (info_section.isVisible())
+                return;
+            fd.top.control = info_section;
+            info_section.setVisible(true);
+        }
+        else
+        {
+            if (! info_section.isVisible())
+                return;
+            fd.top.control = null;
+            info_section.setVisible(false);
+        }
+        info_section.getParent().layout();
     }
 
-    /** @param commands Commands to edit */
-    public void setCommands(final List<ScanCommand> commands)
+    /** @param text Message to show or null to hide */
+    private void setMessage(final String text)
     {
-        gui.setCommands(commands);
-        setDirty(true);
+        if (message.isDisposed())
+            return;
+        message.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (message.isDisposed())
+                    return;
+                if (text == null)
+                    showInfoSection(false);
+                else
+                {
+                    message.setText(text);
+                    showInfoSection(true);
+                }
+            }
+        });
     }
 
-    /** @see ScanTreeGUIListener */
+    private void updateButtons(final ScanState state)
+    {
+        if (resume.isDisposed())
+            return;
+        resume.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (resume.isDisposed())
+                    return;
+                resume.setEnabled(state == ScanState.Paused);
+                pause.setEnabled(state == ScanState.Running);
+                abort.setEnabled(state == ScanState.Idle  ||  state.isActive());
+            }
+        });
+    }
+
+    /** {@inheritDoc} */
     @Override
-    public void scanTreeChanged()
+    public void scanUpdate(final List<ScanInfo> infos)
     {
-        setDirty(true);
+        final long this_id = scan_id;
+        if (this_id < 0)
+        {   // Nothing to show, scan in editor is not 'live'
+            gui.setActiveCommand(-1);
+            setMessage(null);
+            return;
+        }
+
+        // Get info for this scan
+        ScanInfo this_scan = null;
+        for (ScanInfo info : infos)
+        {
+            if (info.getId() == this_id)
+            {
+                this_scan = info;
+                break;
+            }
+        }
+
+        if (this_scan == null)
+        {   // No info about this scan on server: Done & deleted?
+            gui.setActiveCommand(-1);
+            setMessage(NLS.bind(Messages.ScanSubmittedButNotRunningFmt, this_id));
+            return;
+        }
+
+        // Update status of this scan in editor
+        if (this_scan.getState().isDone())
+        {   // Scan finished
+            scan_id = -1;
+            gui.setActiveCommand(-1);
+            setMessage(null);
+            return;
+        }
+        final long address = this_scan.getCurrentAddress();
+        gui.setActiveCommand(address);
+        setMessage(this_scan.toString());
+        updateButtons(this_scan.getState());
     }
 
-    /** @return Devices available on scan server */
+    /** {@inheritDoc} */
+    @Override
+    public void connectionError()
+    {
+        gui.setActiveCommand(-1);
+        setMessage(Messages.ServerDisconnected);
+    }
+
+    /** @return Devices available on scan server. May be <code>null</code> */
     public DeviceInfo[] getDevices()
     {
         return devices;
     }
 
+    /** @return Commands displayed/edited in this editor */
+    public ScanTreeModel getModel()
+    {
+        return model;
+    }
+
+    /** @return Currently selected scan commands or <code>null</code> */
+    public List<ScanCommand> getSelectedCommands()
+    {
+        return gui.getSelectedCommands();
+    }
+
+    /** @return Operation history (for undo/redo) */
+    public static IOperationHistory getOperationHistory()
+    {
+        return operations;
+    }
+
+    /** Execute an undo-able operation and add to history
+     *  @param operation Operation to add to the undo/redo history
+     *  @throws ExecutionException on error
+     */
+    public void executeForUndo(final IUndoableOperation operation) throws ExecutionException
+    {
+        // Prompt when in 'live' mode
+        if (scan_id >= 0)
+        {
+            if (! MessageDialog.openConfirm(info_section.getShell(),
+                    Messages.EndLiveMode, Messages.EndLiveModePrompt))
+                return;
+
+            // Only property change is possible while running
+            if (! (operation instanceof PropertyChangeOperation))
+            {   // End live mode
+                scan_id = -1;
+                showInfoSection(false);
+            }
+        }
+        operation.execute(new NullProgressMonitor(), null);
+        operation.addContext(undo_context);
+        operations.add(operation);
+    }
+
+    /** Change a command's property on the scan server, i.e. for a 'live' scan
+     *  @param command Command to change
+     *  @param property_id Property to change
+     *  @param value New value
+     *  @throws RemoteException on error
+     */
+    public void changeLiveProperty(final ScanCommand command, final String property_id,
+            final Object value) throws RemoteException
+    {
+        final long id = scan_id;
+        if (id < 0)
+            return;
+        scan_info.getServer().updateScanProperty(id, command.getAddress(),
+                property_id, value);
+    }
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
-        final List<ScanCommand> commands = gui.getCommands();
+        final List<ScanCommand> commands = model.getCommands();
 
         String name = getEditorInput().getName();
         final int sep = name.lastIndexOf('.');
@@ -222,18 +617,12 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             {
                 try
                 {
-                    final ScanServer server = ScanServerConnector.connect();
-                    try
-                    {
-                        server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
-                    }
-                    finally
-                    {
-                        ScanServerConnector.disconnect(server);
-                    }
+                    final ScanServer server = scan_info.getServer();
+                    scan_id = server.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
                 }
                 catch (Exception ex)
                 {
+                    scan_id = -1;
                     return new Status(IStatus.ERROR,
                             Activator.PLUGIN_ID,
                             NLS.bind(Messages.ScanSubmitErrorFmt, ex.getMessage()),
@@ -263,7 +652,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
         {
             // Write commands as XML to buffer
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-            XMLCommandWriter.write(buf, gui.getCommands());
+            XMLCommandWriter.write(buf, model.getCommands());
             buf.close();
 
             // Write the buffer to file
@@ -273,6 +662,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             else
                 file.create(stream, true, monitor);
             setDirty(false);
+            clearUndoHistory();
             return true;
         }
         catch (Exception ex)
@@ -305,7 +695,7 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
             return;
         if (saveToFile(new NullProgressMonitor(), file))
         {
-            setInput(new FileEditorInput(file));
+            setInput(new NoResourceEditorInput(new FileEditorInput(file)));
             setPartName(file.getName());
         }
     }
@@ -350,5 +740,60 @@ public class ScanEditor extends EditorPart implements ScanTreeGUIListener
     {
         is_dirty = dirty;
         firePropertyChange(IEditorPart.PROP_DIRTY);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void commandsChanged()
+    {
+        setDirty(true);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void commandAdded(final ScanCommand command)
+    {
+        setDirty(true);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void commandRemoved(final ScanCommand command)
+    {
+        setDirty(true);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void commandPropertyChanged(final ScanCommand command)
+    {
+        setDirty(true);
+        // Update property sheet
+        if (property_page != null)
+            property_page.refresh();
+    }
+
+    /** The property view does not update when the properties change.
+     *  It only updates when the selection changes.
+     *  Tried to re-post the current selection in commandPropertyChanged,
+     *  but the easiest solution seems to be
+     *
+     *  http://stackoverflow.com/questions/2973543/how-to-refresh-the-properties-view-in-eclipse-rcp
+     *
+     *  Provide the original PropertySheetPage, but keep a reference
+     *  to it so that we can invoke its refresh()
+     */
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object getAdapter(final Class adapter)
+    {
+        if (adapter == IPropertySheetPage.class)
+        {   // Provide default PSP, but keep reference for refresh
+            if (property_page == null)
+                property_page = new PropertySheetPage();
+            return property_page;
+        }
+        // Not looking for PSP
+        return super.getAdapter(adapter);
     }
 }

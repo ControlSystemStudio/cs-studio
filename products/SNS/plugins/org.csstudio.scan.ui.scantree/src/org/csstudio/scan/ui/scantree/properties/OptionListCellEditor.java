@@ -30,8 +30,22 @@ import org.eclipse.swt.widgets.Control;
  */
 abstract public class OptionListCellEditor extends CellEditor
 {
+    /** When the user presses 'return' in the combo box,
+     *  a property update will be fired.
+     *
+     *  <p>While in 'live' mode, this can open
+     *  a confirmation message dialog ("Change property of live scan?").
+     *  When that dialog opens, the combo box looses focus,
+     *  which by default would trigger another property update,
+     *  and in 'live' mode result in another message dialog...
+     *
+     *  <p>This flag tracks if we're in the 'return' handling code
+     *  to avoid the extra update from loss-of-focus.
+     */
+    private boolean handling_return_key = false;
+
+    /** Labels to display for available options */
     private String[] labels;
-    private CCombo combo;
 
     /** Initialize
      *  @param parent Parent widget
@@ -39,18 +53,42 @@ abstract public class OptionListCellEditor extends CellEditor
      */
     public OptionListCellEditor(final Composite parent, final String[] labels)
     {
+        // Parent constructor calls createControl() to create combo
         super(parent);
         this.labels = labels;
+        initCombo();
+        setValueValid(true);
+    }
+
+    /** @return Control correctly casted as {@link CCombo} */
+    private CCombo getCombo()
+    {
+        return (CCombo) getControl();
+    }
+
+    /** Initialize combo box content */
+    private void initCombo()
+    {
+        final CCombo combo = getCombo();
         combo.setItems(labels);
         combo.select(0);
-        setValueValid(true);
+    }
+
+    /** The default editor is a read-only combo,
+     *  but derived classes can override
+     *  @return true if the editor is read-only
+     */
+    protected boolean isReadOnly()
+    {
+        return true;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected Control createControl(final Composite parent)
+    final protected Control createControl(final Composite parent)
     {
-        combo = new CCombo(parent, SWT.READ_ONLY);
+        final int style = isReadOnly() ? SWT.READ_ONLY : 0;
+        final CCombo combo = new CCombo(parent, style);
         combo.setFont(parent.getFont());
 
         addGuiTweaks(combo);
@@ -67,15 +105,24 @@ abstract public class OptionListCellEditor extends CellEditor
             @Override
             public void keyPressed(final KeyEvent e)
             {
-                keyReleaseOccured(e);
+                if (e.keyCode == 13)
+                {
+                    handling_return_key = true;
+                    keyReleaseOccured(e);
+                    handling_return_key = false;
+                }
+                else
+                    keyReleaseOccured(e);
             }
         });
         combo.addTraverseListener(new TraverseListener()
         {
             @Override
-            public void keyTraversed(TraverseEvent e) {
+            public void keyTraversed(final TraverseEvent e)
+            {
                 if (e.detail == SWT.TRAVERSE_ESCAPE
-                        || e.detail == SWT.TRAVERSE_RETURN) {
+                        || e.detail == SWT.TRAVERSE_RETURN)
+                {
                     e.doit = false;
                 }
             }
@@ -85,36 +132,26 @@ abstract public class OptionListCellEditor extends CellEditor
         combo.addFocusListener(new FocusAdapter()
         {
             @Override
-            public void focusLost(FocusEvent e) {
-                OptionListCellEditor.this.focusLost();
+            public void focusLost(final FocusEvent e)
+            {
+                if (! handling_return_key)
+                    OptionListCellEditor.this.focusLost();
             }
         });
-    }
-
-    /** Applies the currently selected value and deactivates the cell editor */
-    void applyEditorValueAndDeactivate()
-    {
-        final Object newValue = doGetValue();
-        markDirty();
-        final boolean isValid = isCorrect(newValue);
-        setValueValid(isValid);
-
-        fireApplyEditorValue();
-        deactivate();
     }
 
     /** {@inheritDoc} */
     @Override
     protected void doSetFocus()
     {
-        combo.setFocus();
+        getControl().setFocus();
     }
 
     /** @return Currently selected item in the combo as Enum */
     @Override
     final protected Object doGetValue()
     {
-        final String label = combo.getText();
+        final String label = getCombo().getText();
         return optionForLabel(label);
     }
 
@@ -131,7 +168,7 @@ abstract public class OptionListCellEditor extends CellEditor
     final protected void doSetValue(final Object value)
     {
         final String label = labelForOption(value);
-        combo.select(getSelectionIndex(label));
+        getCombo().select(getSelectionIndex(label));
     }
 
     /** To be implemented by derived class:
@@ -143,7 +180,7 @@ abstract public class OptionListCellEditor extends CellEditor
     /** @param label Label that is currently entered/selected in the combo box
      *  @return Index of corresponding combo box entry, using 0 if there is no match
      */
-    protected int getSelectionIndex(final String label)
+    final protected int getSelectionIndex(final String label)
     {
         for (int i=0; i<labels.length; ++i)
             if (labels[i].equals(label))

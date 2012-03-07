@@ -16,9 +16,11 @@
 package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.csstudio.scan.command.ScanCommandProperty;
 import org.csstudio.scan.command.SetCommand;
+import org.csstudio.scan.command.UnknownScanCommandPropertyException;
 import org.junit.Test;
 
 /** JUnit test of the ScanCommand property handling
@@ -46,5 +48,25 @@ public class ScanCommandPropertyUnitTest
         final Object value = command.getProperty("value");
         assertEquals(Double.class, value.getClass());
         assertEquals(5.0, (Double) value, 0.1);
+
+        try
+        {
+            command.getProperty("invalid_property");
+            fail("allowed invalid property name");
+        }
+        catch (UnknownScanCommandPropertyException ex)
+        {
+            System.out.println("Caught " + ex.getMessage());
+        }
+
+        try
+        {
+            command.setProperty("device_name", Double.NaN);
+            fail("allowed invalid property value");
+        }
+        catch (UnknownScanCommandPropertyException ex)
+        {
+            System.out.println("Caught " + ex.getMessage());
+        }
     }
 }

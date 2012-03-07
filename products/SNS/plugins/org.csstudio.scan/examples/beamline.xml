@@ -74,5 +74,19 @@
             <pv><name>setpoint</name><alias>setpoint</alias><scan/></pv>
             <pv><name>readback</name><alias>readback</alias><log/></pv>
         </device>
+
+        <device>
+            <name>Scan/Data Acquisition</name>
+            <pv><name>active</name><alias>active</alias><scan/></pv>
+        </device>
+
+<!-- 
+        <device>
+            <name>Motor</name>
+            <ioc><name>motorSim</name></ioc>
+            <pv><name>IOC:m1</name><alias>IOC:m1</alias><scan/></pv>
+            <pv><name>IOC:m1.RBV</name><alias>IOC:m1.RBV</alias><log/></pv>
+        </device>
+ -->
 	</devices>
 </beamline>

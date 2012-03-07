@@ -9,7 +9,7 @@
         <green>255</green>
         <blue>255</blue>
     </background>
-    <archive_rescale>STAGGER</archive_rescale>
+    <archive_rescale>NONE</archive_rescale>
     <axes>
         <axis>
             <name>Motors</name>
@@ -53,9 +53,15 @@
                 <blue>196</blue>
             </color>
             <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
             <period>0.0</period>
             <ring_size>5000</ring_size>
             <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
+                <url>jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))</url>
+                <key>1</key>
+            </archive>
         </pv>
         <pv>
             <name>motor_y</name>
@@ -69,9 +75,15 @@
                 <blue>26</blue>
             </color>
             <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
             <period>0.0</period>
             <ring_size>5000</ring_size>
             <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
+                <url>jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))</url>
+                <key>1</key>
+            </archive>
         </pv>
         <pv>
             <name>setpoint</name>
@@ -85,9 +97,15 @@
                 <blue>33</blue>
             </color>
             <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
             <period>0.0</period>
             <ring_size>5000</ring_size>
             <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
+                <url>jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))</url>
+                <key>1</key>
+            </archive>
         </pv>
         <pv>
             <name>readback</name>
@@ -101,9 +119,15 @@
                 <blue>0</blue>
             </color>
             <trace_type>AREA</trace_type>
+            <waveform_index>0</waveform_index>
             <period>0.0</period>
             <ring_size>5000</ring_size>
             <request>OPTIMIZED</request>
+            <archive>
+                <name>RDB</name>
+                <url>jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))</url>
+                <key>1</key>
+            </archive>
         </pv>
     </pvlist>
 </databrowser>

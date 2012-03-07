@@ -13,8 +13,10 @@ import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.DeviceContext;
+import org.csstudio.scan.logger.DataLogger;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.internal.ScanContextImpl;
+import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.internal.Scan;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +28,8 @@ import org.junit.Test;
 public class SetCommandImplHeadlessTest
 {
     private DeviceContext devices;
-    private ScanContextImpl context;
+    private ScanContext context;
+    private DataLogger data_logger;
 
     @Before
     public void setup() throws Exception
@@ -42,9 +45,12 @@ public class SetCommandImplHeadlessTest
         Logger.getLogger("org.csstudio.scan.device.PVDevice").setLevel(Level.WARNING);
 
         devices = DeviceContext.getDefault();
-        context = new ScanContextImpl(devices);
         devices.startDevices();
         new WaitForDevicesCondition(devices.getDevices()).await();
+
+        final Scan scan = new Scan("Test", devices);
+        context = scan;
+        data_logger = scan.getDataLogger();
     }
 
     @After
@@ -76,7 +82,7 @@ public class SetCommandImplHeadlessTest
 
         System.out.println("Data logged for 'setpoint':");
         final List<ScanSample> samples =
-                context.getDataLogger().getScanData().getSamples("setpoint");
+                data_logger.getScanData().getSamples("setpoint");
         for (ScanSample sample : samples)
             System.out.println(sample);
         assertEquals(3, samples.size());
@@ -114,7 +120,7 @@ public class SetCommandImplHeadlessTest
 
         System.out.println("Data logged for 'readback':");
         final List<ScanSample> samples =
-                context.getDataLogger().getScanData().getSamples("readback");
+                data_logger.getScanData().getSamples("readback");
         for (ScanSample sample : samples)
             System.out.println(sample);
         assertEquals(3, samples.size());

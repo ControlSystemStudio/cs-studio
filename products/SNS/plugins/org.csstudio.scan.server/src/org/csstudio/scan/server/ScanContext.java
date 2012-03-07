@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -34,22 +34,21 @@ import org.csstudio.scan.server.internal.Scan;
  */
 public interface ScanContext
 {
-	/** Get a device by name
+	/** Get a device by (alias) name
 	 *  @param name
 	 *  @return {@link Device} with that name
 	 *  @throws Exception when device name not known
 	 */
 	public Device getDevice(final String name) throws Exception;
-	
-    /** @return All Devices */
-    public Device[] getDevices();
 
-    /** @param commands {@link ScanCommandImpl}s to execute
+    /** Execute a list of commands
+     *  @param commands {@link ScanCommandImpl}s to execute
      *  @throws Exception on error in executing a command
      */
     public void execute(final List<ScanCommandImpl<?>> commands) throws Exception;
 
-    /** @param command {@link ScanCommandImpl} to execute
+    /** Execute a single command
+     *  @param command {@link ScanCommandImpl} to execute
      *  @throws Exception on error in executing the command
      */
     public void execute(final ScanCommandImpl<?> command) throws Exception;

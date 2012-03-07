@@ -18,6 +18,7 @@ package org.csstudio.scan.ui.scantree;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.gui.CommandsInfo;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.junit.Test;

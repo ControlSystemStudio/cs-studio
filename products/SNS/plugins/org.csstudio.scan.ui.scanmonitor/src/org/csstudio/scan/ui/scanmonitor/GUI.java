@@ -28,7 +28,8 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
-import org.csstudio.scan.ui.scantree.actions.OpenScanTreeAction;
+import org.csstudio.scan.ui.scanmonitor.actions.ShowDevicesAction;
+import org.csstudio.scan.ui.scantree.OpenScanTreeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -37,6 +38,8 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -50,6 +53,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -70,9 +74,11 @@ public class GUI implements ScanInfoModelListener
      */
     public GUI(final Composite parent, final ScanInfoModel model)
     {
-        createComponents(parent);
-        createContextMenu();
         this.model = model;
+
+        createComponents(parent);
+        hookActions();
+        createContextMenu();
         table_viewer.setInput(model);
         model.addListener(this);
     }
@@ -182,6 +188,21 @@ public class GUI implements ScanInfoModelListener
                 final ScanInfo info = (ScanInfo) cell.getElement();
                 cell.setText(Integer.toString(info.getPercentage()));
                 */
+            }
+        });
+        createColumn(table_viewer, table_layout, Messages.Runtime, 65, 5, new CellLabelProvider()
+        {
+            @Override
+            public String getToolTipText(final Object element)
+            {
+                return Messages.Runtime_TT;
+            }
+
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ScanInfo info = (ScanInfo) cell.getElement();
+                cell.setText(info.getRuntimeText());
             }
         });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
@@ -295,9 +316,36 @@ public class GUI implements ScanInfoModelListener
         return view_col;
     }
 
+    /** Connect actions to GUI */
+    private void hookActions()
+    {
+        // Double-click on scan opens editor
+        table_viewer.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(final DoubleClickEvent event)
+            {
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
+                    return;
+                new OpenScanTreeAction(info).run();
+            }
+        });
+    }
+
+    /** @return Currently selected {@link ScanInfo} or <code>null</code> */
+    private ScanInfo getSelectedScan()
+    {
+        final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
+        if (selection.isEmpty())
+            return null;
+        return (ScanInfo) selection.getFirstElement();
+    }
+
     /** Add context menu to table */
     private void createContextMenu()
     {
+        final Shell shell = table_viewer.getControl().getShell();
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
@@ -305,10 +353,9 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void menuAboutToShow(final IMenuManager manager)
             {
-                final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
-                if (selection.isEmpty())
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
                     return;
-                final ScanInfo info = (ScanInfo) selection.getFirstElement();
                 if (info.getState() == ScanState.Paused)
                 {
                     manager.add(new ResumeAction(model, info));
@@ -329,6 +376,7 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new RemoveCompletedAction(model));
                 manager.add(new Separator());
                 manager.add(new OpenPlotAction(info));
+                manager.add(new ShowDevicesAction(shell, model, info));
                 manager.add(new OpenScanTreeAction(info));
             }
         });
