@@ -28,13 +28,12 @@ ln -s CSS-NSLSII-linux64-$VERSION.zip CSS-NSLSII-linux64.zip
 ln -s CSS-NSLSII-macosx-$VERSION.zip CSS-NSLSII-macosx.zip
 ln -s CSS-NSLSII-win32-$VERSION.zip CSS-NSLSII-win32.zip
 ln -s CSS-NSLSII-win64-$VERSION.zip CSS-NSLSII-win64.zip
-scp *.zip scp bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2
+scp *.zip bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2
 * update p2 repository
 cd ~
-rm -rf nsls2Repository
-java -jar ../.jenkins/CSS-NSLSII/release/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
-java -jar ../.jenkins/CSS-NSLSII/release/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
+scp -r release/nsls2Repository bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates-$VERSION
+java -jar .jenkins/CSS-NSLSII/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination release/nsls2Repository/
+java -jar .jenkins/CSS-NSLSII/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination release/nsls2Repository/
 scp -r bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates-previous
-scp -r nsls2Repository/* bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates (create a backup before replacing the existing repository)
-rm -rf nsls2Repository
+scp -r release/nsls2Repository bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates
 * tag repository with tag NSLS2_$VERSION
