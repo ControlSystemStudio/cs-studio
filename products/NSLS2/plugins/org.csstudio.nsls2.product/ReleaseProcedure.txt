@@ -10,15 +10,31 @@ Pre-release
 * Ensure COMMON CORE and NSLS2 builds succeed
 
 Release
-* Binaries are build during the product build
-* tag repository with tag NSLS2_${version}
-* copy the jenkins@irmis-dev:/home/jenkins/.jenkins/CSS-NSLSII/build/build/BuildDirectory/I.CSS-NSLSII/*.zip to sf-shell /home/project-web/cs-studio/htdocs/nsls2
-* repackage the products with the appropriate version number cp -r CSS-NSLSII-*.zip CSS-NSLSII-linux-*-${version}.zip
-  e.g cp -r CSS-NSLSII-linux.gtk.x86.zip CSS-NSLSII-linux-3.1.0.zip
-* update the soft link to point to the new release
-* update the css nsls2 released repository
-check if the product/NSLS2/category.xml files has features listed with correct version numbers.
-the p2 repository is created as part of the build process, mirror this repository into the released repository on sourceforge.
-java -jar ../.jenkins/CSS-NSLSII/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
-java -jar ../.jenkins/CSS-NSLSII/build/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
-scp -r nsls2Repository/* shroffk,cs-studio@web.sourceforge.net:htdocs/nsls2/updates (create a backup before replacing the existing repository)
+* Let Jenkins finish the build
+* Login as Jenkins on the build server
+* While Jenkins is _NOT_ building
+mv ~/.jenkins/CSS-NSLSII/build/build release
+* set version number
+export VERSION=3.1.0
+* rename and push tarballs
+cd release/BuildDirectory/I.CSS-NSLSII/
+mv CSS-NSLSII-linux.gtk.x86.zip CSS-NSLSII-linux-$VERSION.zip
+mv CSS-NSLSII-linux.gtk.x86_64.zip CSS-NSLSII-linux64-$VERSION.zip
+mv CSS-NSLSII-macosx.cocoa.x86.zip CSS-NSLSII-macosx-$VERSION.zip
+mv CSS-NSLSII-win32.win32.x86.zip CSS-NSLSII-win32-$VERSION.zip
+mv CSS-NSLSII-win32.win32.x86_64.zip CSS-NSLSII-win64-$VERSION.zip
+ln -s CSS-NSLSII-linux-$VERSION.zip CSS-NSLSII-linux.zip
+ln -s CSS-NSLSII-linux64-$VERSION.zip CSS-NSLSII-linux64.zip
+ln -s CSS-NSLSII-macosx-$VERSION.zip CSS-NSLSII-macosx.zip
+ln -s CSS-NSLSII-win32-$VERSION.zip CSS-NSLSII-win32.zip
+ln -s CSS-NSLSII-win64-$VERSION.zip CSS-NSLSII-win64.zip
+scp *.zip scp bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2
+* update p2 repository
+cd ~
+rm -rf nsls2Repository
+java -jar ../.jenkins/CSS-NSLSII/release/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.artifact.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
+java -jar ../.jenkins/CSS-NSLSII/release/ext/eclipse/plugins/org.eclipse.equinox.launcher_1.2.*.jar -application org.eclipse.equinox.p2.metadata.repository.mirrorApplication -verbose -source http://cs-studio.sourceforge.net/nsls2/updates -destination nsls2Repository/
+scp -r bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates-previous
+scp -r nsls2Repository/* bnl-jenkins,cs-studio@web.sourceforge.net:htdocs/nsls2/updates (create a backup before replacing the existing repository)
+rm -rf nsls2Repository
+* tag repository with tag NSLS2_$VERSION
