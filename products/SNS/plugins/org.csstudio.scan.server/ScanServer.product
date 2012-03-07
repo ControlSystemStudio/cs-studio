@@ -9,8 +9,8 @@
    <launcherArgs>
       <programArgs>-console</programArgs>
       <vmArgs>-Djava.awt.headless=true
--Xms64m
--Xmx256m</vmArgs>
+-Xms10m
+-Xmx1024m</vmArgs>
       <vmArgsMac>-d32 -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 

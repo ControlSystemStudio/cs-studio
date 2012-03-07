@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -32,7 +32,7 @@ public class MemoryDataLogger implements DataLogger
 	/** Map from device name to list of samples for that device */
 	final private Map<String, List<ScanSample>> device_logs =
 			new HashMap<String, List<ScanSample>>();
-	
+
 	/** Serial of last logged sample */
     private long last_serial = -1;
 
@@ -47,6 +47,7 @@ public class MemoryDataLogger implements DataLogger
 			device_logs.put(sample.getDeviceName(), samples);
 		}
 		samples.add(sample);
+		// TODO Check MemoryUsageInfo, drop older samples?
 		last_serial  = sample.getSerial();
     }
 
@@ -56,7 +57,7 @@ public class MemoryDataLogger implements DataLogger
 	{
 	    return last_serial;
 	}
-	
+
     /** @return {@link ScanData} with copy of currently logged data */
 	@Override
     public synchronized ScanData getScanData()

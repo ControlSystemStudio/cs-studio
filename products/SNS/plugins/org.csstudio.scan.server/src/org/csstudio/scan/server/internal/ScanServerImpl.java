@@ -33,7 +33,6 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -43,6 +42,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.UnknownScanException;
 
 /** Server-side implementation of the {@link ScanServer} interface
@@ -119,13 +119,10 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public String getInfo() throws RemoteException
+    public ScanServerInfo getInfo() throws RemoteException
     {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("Scan Server V").append(ScanServer.SERIAL_VERSION).append("\n");
-        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
-        buf.append("Beamline Configuration: " + Preferences.getBeamlineConfigPath()).append("\n");
-        return buf.toString();
+    	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
+    			start_time, Preferences.getBeamlineConfigPath());
     }
 
     /** {@inheritDoc} */
