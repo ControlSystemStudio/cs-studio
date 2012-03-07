@@ -173,7 +173,7 @@ public class OlogEditor extends EditorPart {
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
 		gridLayout_1.numColumns = 2;
 				
-		PopupMenuUtil.installPopupForView(ologTableWidget.getControl(), getSite(), ologTableWidget);
+		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(), ologTableWidget);
 	}
 
 	@Override
