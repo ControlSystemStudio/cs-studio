@@ -449,7 +449,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 		final TableColumnLayout table_layout = new TableColumnLayout();
 		box.setLayout(table_layout);
 
-		final TableViewer table_viewer = new TableViewer(box, 0);
+		final TableViewer table_viewer = new TableViewer(box, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		final Table table = table_viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
