@@ -14,6 +14,6 @@ Pre-release
 * Commit changes
 
 Release
-* Should we tag?
 * Binaries are build during the product build
 * Mark version in JIRA as released, with the correct date
+* Update changelog with the correct date
