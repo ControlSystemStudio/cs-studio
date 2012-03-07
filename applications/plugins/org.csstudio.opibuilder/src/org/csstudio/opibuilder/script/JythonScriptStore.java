@@ -27,7 +27,10 @@ public class JythonScriptStore extends AbstractScriptStore{
 
 	private PythonInterpreter interpreter;
 
-	private PyCode code;	
+	private PyCode code;
+
+	
+	public static CombinedJythonClassLoader COMBINDED_CLASS_LOADER = new CombinedJythonClassLoader();
 
 	public JythonScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
 			final PV[] pvArray) throws Exception {	
@@ -38,8 +41,10 @@ public class JythonScriptStore extends AbstractScriptStore{
 	protected void initScriptEngine() {		
 		IPath scriptPath = getAbsoluteScriptPath();
 		//Add the path of script to python module search path
+		PySystemState state = new PySystemState();
+		state.setClassLoader(COMBINDED_CLASS_LOADER);
 		if(scriptPath != null && !scriptPath.isEmpty()){
-			PySystemState state = new PySystemState();
+			
 			//If it is a workspace file.
 			if(ResourceUtil.isExistingWorkspaceFile(scriptPath)){
 				IPath folderPath = scriptPath.removeLastSegments(1);
@@ -49,9 +54,9 @@ public class JythonScriptStore extends AbstractScriptStore{
 				IPath folderPath = scriptPath.removeLastSegments(1);
 				state.path.append(new PyString(folderPath.toOSString()));
 			}
-			interpreter = new PythonInterpreter(null,state);
-		}else
-			interpreter = new PythonInterpreter();	
+		}
+		
+		interpreter = new PythonInterpreter(null, state);	
 	}
 	
 	@Override
