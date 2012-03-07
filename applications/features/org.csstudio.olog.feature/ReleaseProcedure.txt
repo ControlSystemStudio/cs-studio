@@ -1,0 +1,19 @@
+Olog Integration and Applications Release Procedure
+------------------------------------------------------------
+
+Should have been done at release planning:
+* Make sure all the plugins/feature have the correct release number
+* Make sure JIRA has the version "CSS-Integration-X" already created
+
+Pre-release
+* Review if any unscheduled issues were done, and add them to "CSS-Integration-X"
+* Remove scheduled issues from "CSS-Integration-X" if they don't make the release
+* Go through version control, and add any solved and unreported issues
+* Close all the issues
+* Update the changelog in org.csstudio.utility.olog.ui/html
+* Commit changes
+
+Release
+* Binaries are build during the product build
+* Mark version in JIRA as released, with the correct date
+* Update changelog with the correct date
