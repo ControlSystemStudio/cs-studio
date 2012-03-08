@@ -9,9 +9,8 @@ can only be used within CSS BOY scripts.
 @author: Kay Kasemir
 """
 
-import org.eclipse.ui.PlatformUI
+from org.eclipse.ui import PlatformUI
 from org.csstudio.opibuilder.scriptUtil import PVUtil
-
 
 def getWidgetPVDouble(display, widget):
     """Fetch value of a widget's PV
@@ -48,7 +47,7 @@ def __showView__(view_id):
         @param view_id View ID
         @return View
     """
-    workbench = org.eclipse.ui.PlatformUI.getWorkbench()
+    workbench = PlatformUI.getWorkbench()
     window = workbench.getActiveWorkbenchWindow()
     page = window.getActivePage()
     return page.showView(view_id)
