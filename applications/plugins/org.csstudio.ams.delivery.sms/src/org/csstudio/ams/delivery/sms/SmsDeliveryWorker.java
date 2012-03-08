@@ -39,6 +39,7 @@ import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.message.BaseIncomingMessage;
 import org.csstudio.ams.delivery.queue.IncomingQueue;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
+import org.csstudio.ams.delivery.sms.util.DeviceUncaughtExceptionHandler;
 import org.csstudio.ams.delivery.util.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.util.jms.JmsProperties;
 import org.csstudio.ams.delivery.util.jms.JmsSender;
@@ -119,6 +120,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                           readWaitingPeriod);
         smsDevice.addDeviceListener(this);
         Thread smsDeviceThread = new Thread(smsDevice);
+        smsDeviceThread.setName("SMS Device Thread");
+        smsDeviceThread.setUncaughtExceptionHandler(new DeviceUncaughtExceptionHandler());
         smsDeviceThread.start();
 
         running = true;

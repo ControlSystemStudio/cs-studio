@@ -40,6 +40,7 @@ import org.csstudio.ams.delivery.device.IReadableDevice;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.service.Environment;
 import org.csstudio.ams.delivery.sms.internal.SmsConnectorPreferenceKey;
+import org.csstudio.ams.delivery.sms.util.DeviceUncaughtExceptionHandler;
 import org.csstudio.ams.delivery.util.jms.JmsProperties;
 import org.csstudio.ams.delivery.util.jms.JmsSender;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -256,6 +257,8 @@ public class SmsDeliveryDevice implements Runnable,
 
         final DeviceCheckWorker checkWorker = new DeviceCheckWorker(testStatus, modemInfo, readWaitingPeriod);
         final Thread checkerThread = new Thread(checkWorker);
+        checkerThread.setName("Checker-Thread");
+        checkerThread.setUncaughtExceptionHandler(new DeviceUncaughtExceptionHandler());
         addDeviceListener(checkWorker);
         checkerThread.start();
     }
