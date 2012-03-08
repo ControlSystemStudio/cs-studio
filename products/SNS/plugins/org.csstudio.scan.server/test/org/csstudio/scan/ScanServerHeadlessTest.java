@@ -35,6 +35,7 @@ import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.PVDevice;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.junit.Test;
@@ -79,8 +80,8 @@ public class ScanServerHeadlessTest implements Runnable
             // Connect to scan server
             final Registry registry = LocateRegistry.getRegistry("localhost", ScanServer.DEFAULT_PORT);
             final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
-            System.out.println("Client connected to " + server.getInfo());
-            assertTrue(server.getInfo().length() > 0);
+            final ScanServerInfo server_info = server.getInfo();
+			System.out.println("Client connected to " + server_info);
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();

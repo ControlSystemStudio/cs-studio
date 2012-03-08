@@ -81,6 +81,7 @@ public class ScanEngine
         synchronized (scan_queue)
         {
             scan_queue.add(new ScanQueueItem(executor, scan));
+            // TODO Drop older, finished scans?
         }
     }
 

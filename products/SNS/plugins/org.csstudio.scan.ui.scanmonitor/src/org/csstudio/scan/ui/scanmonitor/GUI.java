@@ -21,6 +21,7 @@ import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.plot.OpenPlotAction;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
@@ -48,9 +49,12 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
@@ -67,6 +71,8 @@ public class GUI implements ScanInfoModelListener
 
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
+
+	private Label mem_info_text;
 
     /** Initialize
      *  @param parent Parent component
@@ -90,13 +96,18 @@ public class GUI implements ScanInfoModelListener
     {
         final Display display = parent.getDisplay();
 
+        parent.setLayout(new GridLayout(2, false));
+
         // Note: TableColumnLayout requires that table is only child element!
+        final Composite table_box = new Composite(parent, 0);
+        table_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+
         // If more components are added, the table will need to be wrapped
         // into its own Composite.
         final TableColumnLayout table_layout = new TableColumnLayout();
-        parent.setLayout(table_layout);
+        table_box.setLayout(table_layout);
 
-        table_viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        table_viewer = new TableViewer(table_box, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -263,8 +274,8 @@ public class GUI implements ScanInfoModelListener
                 final GC gc = event.gc;
                 final TableItem item = (TableItem) event.item;
                 final ScanInfo info = (ScanInfo) item.getData();
-                Color foreground = gc.getForeground();
-                Color background = gc.getBackground();
+                final Color foreground = gc.getForeground();
+                final Color background = gc.getBackground();
                 gc.setForeground(getStateColor(display, info));
                 gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
                 final int width = (perc_col.getColumn().getWidth() - 1) * info.getPercentage() / 100;
@@ -277,6 +288,14 @@ public class GUI implements ScanInfoModelListener
 
         ColumnViewerToolTipSupport.enableFor(table_viewer);
         table_viewer.setContentProvider(new ScanInfoModelContentProvider());
+
+        Label l = new Label(parent, 0);
+        l.setText("Scan Server Memory Usage:");
+        l.setLayoutData(new GridData());
+
+        mem_info_text = new Label(parent, 0);
+        mem_info_text.setText("unknown");
+        mem_info_text.setLayoutData(new GridData(SWT.FILL, 0, true, false));
     }
 
     /** @param display Display
@@ -403,6 +422,10 @@ public class GUI implements ScanInfoModelListener
                 // Received update -> enable table and display info
                 table.setEnabled(true);
                 table_viewer.refresh();
+
+                final ScanServerInfo server_info = model.getServerInfo();
+                if (server_info != null)
+                	mem_info_text.setText(server_info.getMemoryInfo());
             }
         });
     }

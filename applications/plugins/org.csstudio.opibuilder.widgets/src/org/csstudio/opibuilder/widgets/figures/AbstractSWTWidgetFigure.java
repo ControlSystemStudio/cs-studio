@@ -145,8 +145,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
-				if (swtWidget == null) {
-					throw new RuntimeException("getSWTWidget() returns null!");
+				if (swtWidget == null || swtWidget.isDisposed()) {
+					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
 				//newly created widget on top	
 				if(wrapComposite==null)

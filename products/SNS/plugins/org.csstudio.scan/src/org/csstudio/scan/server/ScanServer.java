@@ -67,10 +67,10 @@ public interface ScanServer extends Remote
     /** Port on which this interface's implementation is exported with RMI */
     final public static int RMI_SCAN_SERVER_PORT = 4811;
 
-    /** @return Human-readable info about the scan server, multi-line.
+    /** @return Info about the scan server
      *  @throws RemoteException on error in remote access
      */
-    public String getInfo() throws RemoteException;
+    public ScanServerInfo getInfo() throws RemoteException;
 
     /** Query server for devices used by a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)

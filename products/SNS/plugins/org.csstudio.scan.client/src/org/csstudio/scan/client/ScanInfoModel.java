@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model of scan information on scan server
  *
@@ -62,11 +63,15 @@ public class ScanInfoModel
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
 
+    /** Most recent server info from <code>server</code> */
+    private volatile ScanServerInfo server_info = null;
+
     /** Are we currently connected? */
     private volatile boolean is_connected = false;
 
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
+
 
     /** Obtain reference to the singleton instance.
      *  Must release when no longer used.
@@ -211,14 +216,18 @@ public class ScanInfoModel
     {
         try
         {
-            final List<ScanInfo> update = getServer().getScanInfos();
+            final ScanServer current_server = getServer();
+			final List<ScanInfo> update = current_server.getScanInfos();
             if (update.equals(infos) && is_connected)
                 return;
+
+            server_info = current_server.getInfo();
             // Received new information, remember and notify listeners
             is_connected = true;
             infos = update;
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
+
         }
         catch (RemoteException ex)
         {
@@ -251,13 +260,19 @@ public class ScanInfoModel
         }
     }
 
+    /** @return Scan Server info or <code>null</code> */
+    public ScanServerInfo getServerInfo()
+    {
+    	return server_info;
+    }
+
     /** @return Scan Server info
 	 *  @throws RemoteException on error in remote access
      */
-    public String getServerInfo() throws RemoteException
+    public String getServerInfoText() throws RemoteException
     {
     	final StringBuilder buf = new StringBuilder();
-    	buf.append(getServer().getInfo()).append("\n");
+    	buf.append(server_info).append("\n");
     	buf.append("\n");
     	buf.append("Devices:\n");
     	final DeviceInfo[] devices = getServer().getDeviceInfos(-1);

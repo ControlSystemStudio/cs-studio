@@ -219,7 +219,7 @@ public class PreferencesHelper {
     		}else{
     			sb.append(rawPath);
     		}    		
-			sb.append(System.getProperty("path.separator"));			
+			sb.append(System.getProperty("path.separator"));	//$NON-NLS-1$	
     	}
     	sb.deleteCharAt(sb.length()-1);
     	return sb.toString();
