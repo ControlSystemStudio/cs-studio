@@ -1,5 +1,5 @@
 """
-Schedule YABES scan with parameters from BOY table.
+Schedule scan with parameters from BOY table.
 
 @author:Xihui Chen
 """

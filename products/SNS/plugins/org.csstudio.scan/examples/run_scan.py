@@ -1,5 +1,5 @@
 """
-Schedule YABES scan with parameters from BOY script
+Schedule scan with parameters from BOY script
 
 @author: Kay Kasemir
 """
