@@ -22,7 +22,7 @@
  *
  */
 
-package org.csstudio.ams.delivery.jms;
+package org.csstudio.ams.delivery.util.jms;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

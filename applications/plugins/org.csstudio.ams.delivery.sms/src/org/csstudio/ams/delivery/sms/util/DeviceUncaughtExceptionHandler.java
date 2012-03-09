@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,38 +23,26 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.jms;
+package org.csstudio.ams.delivery.sms.util;
+
+import java.lang.Thread.UncaughtExceptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
- * @since 27.12.2011
+ * @since 08.03.2012
  */
-public class JmsProperties {
+public class DeviceUncaughtExceptionHandler implements UncaughtExceptionHandler {
     
-    private String jmsFactoryClass;
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceUncaughtExceptionHandler.class);
     
-    private String jmsUrl;
-    
-    private String jmsTopic;
-
-    public JmsProperties(String factoryClass, String url, String topic) {
-        this.jmsFactoryClass = factoryClass;
-        this.jmsUrl = url;
-        this.jmsTopic = topic;
-    }
-
-    public String getJmsFactoryClass() {
-        return jmsFactoryClass;
-    }
-
-    public String getJmsUrl() {
-        return jmsUrl;
-    }
-
-    public String getJmsTopic() {
-        return jmsTopic;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void uncaughtException(Thread t, Throwable e) {
+        LOG.error("Uncaught exception in thread {}: {}", t.getName(), e.getMessage());
     }
 }

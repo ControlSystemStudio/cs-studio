@@ -37,7 +37,6 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -65,7 +64,7 @@ public class Controller implements ArchiveFetchJobListener
     final private Model model;
 
     /** Listener to model that informs this controller */
-	private ModelListener model_listener;
+    private ModelListener model_listener;
 
     /** GUI for displaying the data */
     final private Plot plot;
@@ -242,9 +241,9 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                	
-                	// Add the given PV to the model anyway even if the same PV
-                	// exists in the model.
+
+                    // Add the given PV to the model anyway even if the same PV
+                    // exists in the model.
                     final OperationsManager operations_manager = plot.getOperationsManager();
 
                     // Add to first empty axis, or create new axis
@@ -523,23 +522,23 @@ public class Controller implements ArchiveFetchJobListener
     /** Add annotations from model to plot */
     private void createAnnotations()
     {
-		final XYGraph graph = plot.getXYGraph();
-    	final List<Axis> yaxes = graph.getYAxisList();
-    	final AnnotationInfo[] annotations = model.getAnnotations();
+        final XYGraph graph = plot.getXYGraph();
+        final List<Axis> yaxes = graph.getYAxisList();
+        final AnnotationInfo[] annotations = model.getAnnotations();
         for (AnnotationInfo info : annotations)
         {
-			final int axis_index = info.getAxis();
-			if (axis_index < 0  ||  axis_index >= yaxes.size())
-				continue;
-			final Axis axis = yaxes.get(axis_index);
-        	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
-        	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
-        			info.getValue());
-			graph.addAnnotation(annotation);
+            final int axis_index = info.getAxis();
+            if (axis_index < 0  ||  axis_index >= yaxes.size())
+                continue;
+            final Axis axis = yaxes.get(axis_index);
+            final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
+            annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
+                    info.getValue());
+            graph.addAnnotation(annotation);
         }
     }
 
-	/** Scroll the plot to 'now' */
+    /** Scroll the plot to 'now' */
     protected void performScroll()
     {
         if (! model.isScrollEnabled())

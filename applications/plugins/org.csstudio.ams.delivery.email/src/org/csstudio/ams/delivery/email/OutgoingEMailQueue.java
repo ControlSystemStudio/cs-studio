@@ -48,8 +48,8 @@ public class OutgoingEMailQueue extends AbstractMessageQueue<EMailAlarmMessage> 
     
     private EMailWorkerProperties props;
     
-    public OutgoingEMailQueue(EMailWorkerProperties properties) {
-        super();
+    public OutgoingEMailQueue(Object lock, EMailWorkerProperties properties) {
+        super(lock);
         props = properties;
     }
     

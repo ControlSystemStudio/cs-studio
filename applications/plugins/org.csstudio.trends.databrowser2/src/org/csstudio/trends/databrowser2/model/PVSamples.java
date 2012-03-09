@@ -34,7 +34,7 @@ public class PVSamples extends PlotSamples
 
     /** Live samples. Should start after end of historic samples */
     final private LiveSamples live = new LiveSamples();
-    
+
     private ArrayList<IDataProviderListener> listeners = new ArrayList<IDataProviderListener>();
 
     /** {@inheritDoc} */
@@ -58,7 +58,7 @@ public class PVSamples extends PlotSamples
     }
     
     /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
+    public void setWaveformIndex(final int index)
     {
     	live.setWaveformIndex(index);
     	history.setWaveformIndex(index);
