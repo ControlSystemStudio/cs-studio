@@ -48,6 +48,8 @@ while ~ server.getScanInfo(id).getState().isDone()
     xpos=scan_decode_samples(scandata.getSamples('xpos'));
     ypos=scan_decode_samples(scandata.getSamples('ypos'));
 
+    % TODO Interpolate on matching time stamps
+    % For now just cropping to same length
     N = min(length(xpos.val), length(ypos.val));
     plot(xpos.val(1:N), ypos.val(1:N), '.');
     legend('Position');
