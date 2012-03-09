@@ -30,7 +30,7 @@ seq = CommandSequence();
 for i = 1:N
     seq.add(SetCommand('xpos', x(i)));
     seq.add(SetCommand('ypos', y(i)));
-    seq.add(SetCommand('setpoint', 2, 'readback', true, 0.1, 0.0));
+    seq.add(SetCommand('setpoint', 2.0, 'readback', true, 0.1, 0.0));
     seq.add(SetCommand('setpoint', 2.5, 'readback', true, 0.1, 0.0));
 end
 seq.dump();
