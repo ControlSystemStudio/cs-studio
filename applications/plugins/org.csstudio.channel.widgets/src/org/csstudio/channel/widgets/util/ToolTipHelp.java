@@ -25,7 +25,6 @@ public class ToolTipHelp extends DefaultToolTip {
 	@Override
 	protected Composite createToolTipContentArea(Event event,
 			Composite parent) {
-		System.out.println("Creating for " + event);
 		setShift(new Point(- event.x, control.getSize().y - event.y));
 		CLabel label = (CLabel) super.createToolTipContentArea(event, parent);
 		// The tooltip background on windows 7 does not match
