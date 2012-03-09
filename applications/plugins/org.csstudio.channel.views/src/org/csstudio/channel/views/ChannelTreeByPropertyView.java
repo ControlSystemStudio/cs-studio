@@ -88,7 +88,9 @@ public class ChannelTreeByPropertyView extends ViewPart {
 		if (oldQuery != null) {
 			oldQuery.removeChannelQueryListener(channelQueryListener);
 		}
-		query.execute(channelQueryListener);
+		if (query != null) {
+			query.execute(channelQueryListener);
+		}
 		treeWidget.setChannelQuery(query);
 	}
 	
