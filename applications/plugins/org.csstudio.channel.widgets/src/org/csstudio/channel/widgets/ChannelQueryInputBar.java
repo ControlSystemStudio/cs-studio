@@ -15,6 +15,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -80,6 +82,28 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 					return new StructuredSelection();
 			}
 		};
+		
+		combo.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// If focus is lost and the text is different,
+				// change the query
+				String comboText = combo.getText();
+				String queryText = "";
+				if (getChannelQuery() != null) {
+					queryText = getChannelQuery().getQuery();
+				}
+				if (!comboText.equals(queryText)) {
+					setChannelQuery(ChannelQuery.query(comboText).build());
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// Nothing to do
+			}
+		});
 		
 		name_helper.loadSettings();
 	}
