@@ -1,8 +1,8 @@
-function data = DecodeScanSamples(samples)
+function data = scan_decode_samples(samples)
 % Decode ScanSamples from Scan Server into Matlab data
 %
 %  samples = scandata=server.getScanData(id).getSamples('some_device');
-%  data = DecodeScanSamples(samples)
+%  data = scan_decode_samples(samples)
 %  plot(data.time, data.val);
 %  datetick('x');
 
@@ -11,6 +11,6 @@ function data = DecodeScanSamples(samples)
 data.time=[];
 data.val=[];
 for i=1:samples.size()
-    data.time(i) = JDate2MDate(samples.get(i-1).getTimestamp());
+    data.time(i) = scan_jdate2mdate(samples.get(i-1).getTimestamp());
     data.val(i) = samples.get(i-1).getValue();
 end

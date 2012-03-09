@@ -1,7 +1,7 @@
-function [ mdate ] = JDate2MDate(jdate)
+function [ mdate ] = scan_jdate2mdate(jdate)
 % Convert Java Date to Matlab datenum
 %
-%  num = JDate2MDate(java.util.Date())
+%  num = scan_jdate2mdate(java.util.Date())
 %  datestr(num)
 
 % @author: Kay Kasemir
