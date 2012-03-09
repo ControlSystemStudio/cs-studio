@@ -697,15 +697,14 @@ public class SpreadSheetTable extends Composite {
 			tableViewer.refresh();
 			return;
 		}
+		setColumnsCount(content[0].length);
 		for (int i = 0; i < content.length; i++) {
 			List<String> row = new ArrayList<String>(content[0].length);
 			for (int j = 0; j < content[0].length; j++) {
 				row.add(content[i][j]);
 			}
 			input.add(row);
-
-		}
-		setColumnsCount(content[0].length);
+		}		
 		tableViewer.refresh();
 		fireTableModified();
 	}
