@@ -40,6 +40,7 @@ javaclasspath('/usr/local/css/scan.client.jar')
 import org.csstudio.scan.server.*
 import org.csstudio.scan.client.*
 import org.csstudio.scan.command.*
+import org.csstudio.scan.data.*
 
 % Default is localhost:4810. Change as needed
 import java.lang.System

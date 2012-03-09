@@ -10,4 +10,4 @@ function [ mdate ] = scan_jdate2mdate(jdate)
 % for for now that's the easiest
 sdf=java.text.SimpleDateFormat('yyyy-MM-dd HH:mm:ss.SS');
 date_str = char(cell(sdf.format(jdate)));
-mdate = datenum(date_str, 'yyyy-mm-dd HH:MM:SS');
+mdate = datenum(date_str, 'yyyy-mm-dd HH:MM:SS.FFF');
