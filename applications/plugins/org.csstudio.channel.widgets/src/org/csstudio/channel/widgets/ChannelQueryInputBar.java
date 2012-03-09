@@ -5,6 +5,7 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.channel.widgets.util.ToolTipHelp;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -37,12 +38,13 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 
 		ComboViewer comboViewer = new ComboViewer(this, SWT.NONE);
 		combo = comboViewer.getCombo();
-		combo.setToolTipText(
-				"Space seperated search criterias, patterns may include * and ? wildcards\r\n" +
-				"channelNamePattern\r\n" +
-				"propertyName=valuePattern1,valuePattern2 \r\n" +
-				"Tags=tagNamePattern\r\n" +
-				"Each criteria is logically ANDed, || seperated values are logically ORed\r\n");
+		ToolTipHelp tooltip = new ToolTipHelp(combo);
+		tooltip.setText(
+				"Space seperated search criterias, patterns may include * and ? wildcards\n" +
+				"channelNamePattern\n" +
+				"propertyName=valuePattern1,valuePattern2\n" +
+				"Tags=tagNamePattern\n" +
+				"Each criteria is logically ANDed, || seperated values are logically ORed");
 
 		ComboHistoryHelper name_helper = new ComboHistoryHelper(dialogSettings,
 				settingsKey, combo, 20, true) {
