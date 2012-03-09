@@ -22,6 +22,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
@@ -51,6 +52,8 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	public static final String PROP_INTEGER_DIGITS_PART = "integerDigits"; //$NON-NLS-1$
 
 	public static final String PROP_DECIMAL_DIGITS_PART = "decimalDigits"; //$NON-NLS-1$
+	/** Load limit from PV. */
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$	
 
 	public static final String ID = "org.csstudio.opibuilder.widgets.ThumbWheel"; //$NON-NLS-1$
 
@@ -111,6 +114,8 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 		addProperty(new IntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, 
 				"Internal Frame Thickness", WidgetPropertyCategory.Display, 1));
+		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
+				WidgetPropertyCategory.Behavior, false));
 
 	}
 
@@ -161,5 +166,12 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	public int getInternalBorderWidth() {
 		return (Integer)getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
+	}
+	
+	/**
+	 * @return true if limits will be load from DB, false otherwise
+	 */
+	public boolean isLimitsFromPV() {
+		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
 	}
 }
