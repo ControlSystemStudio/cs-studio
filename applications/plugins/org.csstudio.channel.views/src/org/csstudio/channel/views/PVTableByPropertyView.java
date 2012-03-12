@@ -86,7 +86,9 @@ public class PVTableByPropertyView extends ViewPart {
 		if (oldQuery != null) {
 			oldQuery.removeChannelQueryListener(channelQueryListener);
 		}
-		channelQuery.execute(channelQueryListener);
+		if (channelQuery != null) {
+			channelQuery.execute(channelQueryListener);
+		}
 		tableWidget.setChannelQuery(channelQuery);
 	}
 	
