@@ -17,6 +17,7 @@ import org.csstudio.opibuilder.widgetActions.OpenFileAction;
 import org.csstudio.opibuilder.widgetActions.OpenWebpageAction;
 import org.csstudio.opibuilder.widgetActions.PlayWavFileAction;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -217,6 +218,19 @@ public class FileUtil {
 		if(!path.isAbsolute())
 			path = ResourceUtil.buildAbsolutePath(widget.getWidgetModel(), path);
 		return path;
+	}
+	
+
+	/**Convert an exist workspace path to system path.
+	 * @param workspacePath path in workspace.
+	 * @return the system path on OS.
+	 * @throws RuntimeException if the workspace path doesn't exist.
+	 */
+	public static String workspacePathToSysPath(String workspacePath) throws RuntimeException{
+		IPath path = ResourceUtil.workspacePathToSysPath(new Path(workspacePath));
+		if(path == null)
+			throw new RuntimeException(workspacePath + " doesn't exist!");				
+		return path.toOSString();
 	}
 	
 }

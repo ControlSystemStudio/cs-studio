@@ -37,6 +37,8 @@ scan_client_jar="/usr/local/css/scan.client.jar"
 plugin_install_location="/usr/local/css/CSS_3.2/plugins/"
 
 # Try to resolve the paths when running outside of Eclipse
+scan_plugin = None
+client_plugin = None
 try:
     scan_plugin = glob.glob(plugin_install_location + "org.csstudio.scan_*")[0]
     client_plugin = glob.glob(plugin_install_location + "org.csstudio.scan.client_*")[0]
@@ -75,7 +77,7 @@ if path:
     client_plugin = path
 
 # Now one of the possibilities should work out...
-if os.path.exists(scan_plugin) and os.path.exists(client_plugin):
+if scan_plugin and os.path.exists(scan_plugin) and client_plugin and os.path.exists(client_plugin):
     sys.path.append(scan_plugin)
     sys.path.append(client_plugin)
 elif os.path.exists(scan_client_jar):
@@ -120,6 +122,7 @@ import org.csstudio.scan.command.WaitCommand as WaitCommand
 import org.csstudio.scan.command.DelayCommand as DelayCommand
 import org.csstudio.scan.command.LogCommand as LogCommand
 import org.csstudio.scan.command.SetCommand as SetCommand
+import org.csstudio.scan.data.SpreadsheetScanDataIterator as SpreadsheetScanDataIterator
 
 import time
 
@@ -173,7 +176,24 @@ class ScanClient(object):
         if id == -1:
             id = self.id
         return self.server.getScanInfo(id)
-
+    
+    def printData(self, id=-1, *devices):
+        """
+        Print scan data
+        
+        @param id Scan ID, defaulting to the last submitted scan
+        @param devices One or more device names. Default: All devices in scan.
+        """
+        self.checkServer()
+        if id == -1:
+            id = self.id
+        data = self.server.getScanData(id)
+        if devices:
+            sheet = SpreadsheetScanDataIterator(data, devices)
+        else:
+            sheet = SpreadsheetScanDataIterator(data)
+        sheet.dump(System.out)
+            
     def waitUntilDone(self, id=-1):
         """
         Wait until a submitted scan has finished

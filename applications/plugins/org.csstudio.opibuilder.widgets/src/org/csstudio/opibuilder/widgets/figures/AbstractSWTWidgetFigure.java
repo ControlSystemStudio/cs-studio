@@ -293,12 +293,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	protected void paintOutlineFigure(Graphics graphics){
 		// draw this so that it can be seen in the outline view
 		if (!runmode) {
+			graphics.pushState();
 			graphics.setBackgroundColor(ColorConstants.white);
 			graphics.fillRectangle(getClientArea());
 			if(getBorder() == null){
 				graphics.setForegroundColor(ColorConstants.gray);
 				graphics.drawRectangle(getBounds());
 			}
+			graphics.popState();
 		}
 	}
 

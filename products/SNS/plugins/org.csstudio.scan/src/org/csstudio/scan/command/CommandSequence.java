@@ -44,12 +44,27 @@ public class CommandSequence
         commands = new ArrayList<ScanCommand>();
     }
 
-    /** Initialize with a given sequence of
-     *  commands.
-     *  The command sequence is then immutable.
+    /** Initialize with a command.
+     *
+     * 	<p>This constructor simplifies invocation from Matlab.
+	 *  In principle, the "ScanCommand..." constructor
+	 *  handles zero, one, many commands, i.e. all cases.
+	 *  Matlab, however, turns a single-element array into a scalar
+	 *  in a way incompatible with the var-length argument
+	 *  constructor.
+     *
      *  @param commands Sequence of commands
      */
-    public CommandSequence(final ScanCommand[] commands)
+    public CommandSequence(final ScanCommand commands)
+    {
+        this.commands = Arrays.asList(commands);
+    }
+
+    /** Initialize with a given sequence of commands.
+     *  <p>The command sequence is then immutable.
+     *  @param commands Sequence of commands
+     */
+    public CommandSequence(final ScanCommand... commands)
     {
         this.commands = Arrays.asList(commands);
     }

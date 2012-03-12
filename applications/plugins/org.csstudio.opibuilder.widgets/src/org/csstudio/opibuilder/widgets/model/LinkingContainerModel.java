@@ -140,8 +140,8 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	@Override
 	public void scale(double widthRatio, double heightRatio) {
 		super.scale(widthRatio, heightRatio);
-		
-		scaleChildren();
+		if(!isAutoFit())
+			scaleChildren();
 		
 	}
 

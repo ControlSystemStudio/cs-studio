@@ -24,6 +24,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
@@ -36,6 +37,8 @@ import org.csstudio.opibuilder.widgets.model.ThumbWheelModel;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure;
 import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
@@ -50,6 +53,9 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 	private ThumbWheelLogic logic;
 	private ThumbWheelModel model;
 	private ThumbWheelFigure figure;
+	private PVListener pvLoadLimitsListener;
+	private INumericMetaData meta = null;
+
 
 	/**
 	 * {@inheritDoc}
@@ -162,6 +168,55 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		figure.revalidate();
 	}
 
+	@Override
+	public ThumbWheelModel getWidgetModel() {
+		return (ThumbWheelModel) super.getWidgetModel();
+	}
+	
+	@Override
+	protected void doActivate() {
+		super.doActivate();
+		registerLoadLimitsListener();
+	}
+	
+	/**
+	 *
+	 */
+	private void registerLoadLimitsListener() {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			final ThumbWheelModel model = getWidgetModel();
+			if (model.isLimitsFromPV()) {
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if (pv != null) {
+					if (pvLoadLimitsListener == null)
+						pvLoadLimitsListener = new PVListener() {
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null
+										&& value.getMetaData() instanceof INumericMetaData) {
+									INumericMetaData new_meta = (INumericMetaData) value
+											.getMetaData();
+									if (meta == null || !meta.equals(new_meta)) {
+										meta = new_meta;
+										model.setPropertyValue(
+												ThumbWheelModel.PROP_MAX,
+												meta.getDisplayHigh());
+										model.setPropertyValue(
+												ThumbWheelModel.PROP_MIN,
+												meta.getDisplayLow());
+									}
+								}
+							}
+
+							public void pvDisconnected(PV pv) {
+							}
+						};
+					pv.addListener(pvLoadLimitsListener);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -182,6 +237,17 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		};
 		setPropertyChangeHandler(ThumbWheelModel.PROP_PVVALUE, pvhandler);
 
+		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				registerLoadLimitsListener();
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
+				pvNameHandler);
+		
 		// decimal wheels
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,

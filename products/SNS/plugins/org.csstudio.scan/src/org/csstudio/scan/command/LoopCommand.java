@@ -76,6 +76,28 @@ public class LoopCommand extends ScanCommand
         this("device", 0, 10, 1, new ScanCommand[0]);
     }
 
+	/** Initialize with single command
+	 *
+	 *  <p>This constructor simplifies invocation from Matlab.
+	 *  In principle, the "ScanCommand... body" constructor
+	 *  handles loops with zero, one, many commands, i.e. all cases.
+	 *  Matlab, however, turns a single-element array into a scalar
+	 *  in a way incompatible with the var-length argument
+	 *  constructor.
+	 *
+     *  @param device_name Device to update with the loop variable
+     *  @param start Initial loop value
+     *  @param end Final loop value
+     *  @param stepsize Increment of the loop variable
+     *  @param command Single-command body
+     */
+    public LoopCommand(final String device_name, final double start,
+            final double end, final double stepsize,
+            final ScanCommand command)
+    {
+        this(device_name, start, end, stepsize, new ScanCommand[] { command });
+    }
+
 	/** Initialize
      *  @param device_name Device to update with the loop variable
      *  @param start Initial loop value
