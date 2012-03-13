@@ -13,6 +13,7 @@ import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -374,4 +375,10 @@ public class WaveformView extends DataBrowserAwareView
 
 	@Override
 	public void scrollEnabled(boolean scroll_enabled) {}
+
+	@Override
+	public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+		// TODO Auto-generated method stub
+		
+	}
 }

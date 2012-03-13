@@ -8,6 +8,8 @@
 package org.csstudio.swt.xygraph.figures;
 
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.Log10;
@@ -39,8 +42,59 @@ import org.eclipse.swt.widgets.Display;
  * XY-Graph Figure.
  * @author Xihui Chen
  * @author Kay Kasemir (performStagger)
+ * @author Laurent PHILIPPE (property change support)
  */
 public class XYGraph extends Figure{
+	
+	/**
+	 * Add property change support to XYGraph
+	 * Use for inform listener of xyGraphMem property changed
+	 * @author L.PHILIPPE (GANIL)
+	 */
+	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+
+	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(listener);
+	}
+
+	@Override
+	public void addPropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(property, listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(property, listener);
+	}
+
+
+	/**
+	 * Save the Graph settings
+	 * Send a property changed event when changed
+	 * @author L.PHILIPPE (GANIL)
+	 */
+	private XYGraphMemento xyGraphMem;
+	
+	public XYGraphMemento getXyGraphMem() {
+		return xyGraphMem;
+	}
+
+	public void setXyGraphMem(XYGraphMemento xyGraphMem) {
+		XYGraphMemento old = this.xyGraphMem;
+		this.xyGraphMem = xyGraphMem;
+		changeSupport.firePropertyChange("xyGraphMem", old, this.xyGraphMem);
+	
+		System.out.println("**** XYGraph.setXyGraphMem() ****");
+	}
 
 	private static final int GAP = 2;
 //	public final static Color WHITE_COLOR = ColorConstants.white;
