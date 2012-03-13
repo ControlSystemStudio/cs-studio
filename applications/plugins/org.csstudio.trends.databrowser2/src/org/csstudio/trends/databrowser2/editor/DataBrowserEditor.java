@@ -483,7 +483,7 @@ public class DataBrowserEditor extends EditorPart
                       try
                       {
                     	  // Update model with info that's kept in plot
-                    	  model.setAnnotations(plot.getAnnotations());
+                    	  model.setAnnotations(plot.getAnnotations(), false);
                           model.write(out);
                       }
                       catch (Exception ex)

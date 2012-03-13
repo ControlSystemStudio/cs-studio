@@ -625,9 +625,15 @@ public class Model
     /** @param annotations Annotations to keep in model */
     public void setAnnotations(AnnotationInfo[] annotations)
     {
-    	this.annotations = annotations;
-    	fireAnnotationsChanged();
+    	setAnnotations(annotations, true);
     }
+    
+    public void setAnnotations(AnnotationInfo[] annotations, boolean fireChanged) {
+		// TODO Auto-generated method stub
+    	this.annotations = annotations;
+    	if(fireChanged)
+    		fireAnnotationsChanged();
+	}
     
     protected void fireAnnotationsChanged(){
     	for (ModelListener listener : listeners)
@@ -1026,4 +1032,6 @@ public class Model
             }
         }
     }
+
+	
 }

@@ -727,6 +727,8 @@ class Pointer extends Figure{
 		private MovingAnnotationCommand command;
 		@Override
 		public void mouseDragged(MouseEvent me) {
+			//System.out.println("Annotation.Pointer.PointerDragger.mouseDragged()");
+			
 			//free
 			if(trace == null){
 				setCurrentPosition(me.getLocation(), 
