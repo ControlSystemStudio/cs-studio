@@ -1,6 +1,9 @@
 function data = scan_decode_samples(samples)
 % Decode ScanSamples from Scan Server into Matlab data
 %
+% This example decodes the time stamps and values for
+% some device from the scan data:
+%
 %  samples = scandata=server.getScanData(id).getSamples('some_device');
 %  data = scan_decode_samples(samples)
 %  plot(data.time, data.val);
