@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
@@ -733,4 +734,16 @@ public class DataBrowserPropertySheetPage extends Page
     {
         changedTimerange();
     }
+
+	@Override
+	public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void changedAnnotations() {
+		// TODO Auto-generated method stub
+		
+	}
 }

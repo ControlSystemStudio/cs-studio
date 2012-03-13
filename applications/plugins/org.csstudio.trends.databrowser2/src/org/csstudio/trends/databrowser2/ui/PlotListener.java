@@ -8,11 +8,17 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 
 /** Interface used by Plot to send events in response to user input:
  *  Zoom changed, scrolling turned on/off
  *  @author Kay Kasemir
+ *  
+ *  Add events necessary in response of GRAPH settings changed by user
+ *  ADD events link to add/remove annotation
+ *  @author Laurent PHILIPPE (GANIL) 
  */
 public interface PlotListener
 {
@@ -47,5 +53,26 @@ public interface PlotListener
      *  @param archive Archive data source or <code>null</code>
      */
     public void droppedPVName(ProcessVariable name, ArchiveDataSource archive);
+
+    /**
+	 * Called when the user changed graph settings
+	 * @param newValue
+	 *            The new graph settings
+	 */
+	public void xyGraphMemChanged(XYGraphMemento newValue);
+
+	/**
+	 * Called when the user remove an annotation
+	 * @param oldValue
+	 *            The annotation removed
+	 */
+	public void removeAnnotationChanged(Annotation oldValue);
+
+	/**
+	 * Called when the user add an annotation
+	 * @param newValue
+	 *            The annotation added
+	 */
+	public void addAnnotationChanged(Annotation newValue);
 
 }

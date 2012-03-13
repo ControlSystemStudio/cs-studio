@@ -21,6 +21,8 @@ import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
+import org.csstudio.swt.xygraph.undo.XYGraphMementoUtil;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
@@ -37,7 +39,6 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -153,6 +154,7 @@ public class Controller implements ArchiveFetchJobListener
         checkAutoscaleAxes();
         createPlotTraces();
         createAnnotations();
+        createXYGraphMemento(); //ADD LAURENT PHILIPPE
 
         // Listen to user input from Plot UI, update model
         plot.addListener(new PlotListener()
@@ -259,6 +261,24 @@ public class Controller implements ArchiveFetchJobListener
                     return;
                 }
             }
+
+			@Override
+			public void xyGraphMemChanged(XYGraphMemento newValue) {
+				// TODO Auto-generated method stub
+				System.out
+				.println("**** Controller.Controller(...).new ModelListener() {...}.changedXYGraphMemento() ****");
+				model.setXYGraphMem(newValue);
+			}
+
+			@Override
+			public void removeAnnotationChanged(Annotation oldValue) {
+				model.setAnnotations(plot.getAnnotations());
+			}
+
+			@Override
+			public void addAnnotationChanged(Annotation newValue) {
+				model.setAnnotations(plot.getAnnotations());
+			}  
         });
 
         model_listener = new ModelListener()
@@ -360,6 +380,21 @@ public class Controller implements ArchiveFetchJobListener
             {
                 plot.updateScrollButton(scroll_enabled);
             }
+
+            /**
+             * ADD L.PHILIPPE
+             */
+			@Override
+			public void changedXYGraphMemento(XYGraphMemento newValue) {
+				
+			}
+
+			@Override
+			public void changedAnnotations() {
+				// TODO Auto-generated method stub
+				
+			}
+			
         };
         model.addListener(model_listener);
     }
@@ -538,6 +573,17 @@ public class Controller implements ArchiveFetchJobListener
 			graph.addAnnotation(annotation);
         }
     }
+    
+    
+    /**
+     * Add XYGraphMemento (Graph config settings from model to plot)
+     */
+    private void createXYGraphMemento() {
+ 		// TODO Auto-generated method stub
+     	final XYGraph graph = plot.getXYGraph();
+     	plot.getXYGraph().setXyGraphMem(model.getXYGraphMem());
+     	XYGraphMementoUtil.restoreXYGraphPropsFromMemento(graph, model.getXYGraphMem());	
+ 	}
 
 	/** Scroll the plot to 'now' */
     protected void performScroll()

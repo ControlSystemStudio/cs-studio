@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.propsheet;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -111,6 +112,16 @@ public class TraceTableHandler implements IStructuredContentProvider
         
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
+		@Override
+		public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+			// TODO Auto-generated method stub
+			
+		}
+		@Override
+		public void changedAnnotations() {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     /** Create table columns: Auto-sizable, with label provider and editor

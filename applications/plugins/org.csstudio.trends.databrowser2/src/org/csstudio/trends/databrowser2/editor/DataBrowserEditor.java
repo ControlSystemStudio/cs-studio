@@ -17,6 +17,7 @@ import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
@@ -215,6 +216,14 @@ public class DataBrowserEditor extends EditorPart
             @Override
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
+
+			@Override
+			public void changedXYGraphMemento(XYGraphMemento xYGraphMem) 
+			{   setDirty(true);   }
+
+			@Override
+			public void changedAnnotations() 
+			{   setDirty(true);   }
         };
         model.addListener(model_listener);
     }
@@ -474,7 +483,7 @@ public class DataBrowserEditor extends EditorPart
                       try
                       {
                     	  // Update model with info that's kept in plot
-                    	  model.setAnnotations(plot.getAnnotations());
+                    	  model.setAnnotations(plot.getAnnotations(), false);
                           model.write(out);
                       }
                       catch (Exception ex)
