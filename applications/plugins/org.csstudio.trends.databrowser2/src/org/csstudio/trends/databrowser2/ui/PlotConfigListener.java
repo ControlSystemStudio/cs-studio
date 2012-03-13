@@ -51,9 +51,9 @@ public class PlotConfigListener implements PropertyChangeListener {
 		if(evt.getPropertyName().equals(ANNOTATION_LIST)){
 			//Configure Graph settings of the plot changed
 			if(evt.getNewValue() == null)
-//=>				listener.removeAnnotationChanged((Annotation)evt.getOldValue());
-//			else
-//=>				listener.addAnnotationChanged((Annotation)evt.getNewValue());
+				listener.removeAnnotationChanged((Annotation)evt.getOldValue());
+			else
+				listener.addAnnotationChanged((Annotation)evt.getNewValue());
 			System.err.println("ANNOTATION_LIST CHANGED");
 		}
 	}

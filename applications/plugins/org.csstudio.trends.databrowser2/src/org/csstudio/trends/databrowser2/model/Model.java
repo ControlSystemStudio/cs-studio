@@ -626,6 +626,12 @@ public class Model
     public void setAnnotations(AnnotationInfo[] annotations)
     {
     	this.annotations = annotations;
+    	fireAnnotationsChanged();
+    }
+    
+    protected void fireAnnotationsChanged(){
+    	for (ModelListener listener : listeners)
+            listener.changedAnnotations();
     }
 
     /** @return Annotation infos of model */

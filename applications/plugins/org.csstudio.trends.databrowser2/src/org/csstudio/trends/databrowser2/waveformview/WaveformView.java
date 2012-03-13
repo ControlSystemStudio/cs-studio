@@ -381,4 +381,10 @@ public class WaveformView extends DataBrowserAwareView
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void changedAnnotations() {
+		// TODO Auto-generated method stub
+		
+	}
 }

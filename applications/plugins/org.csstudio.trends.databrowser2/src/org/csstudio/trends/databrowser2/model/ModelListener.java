@@ -54,4 +54,7 @@ public interface ModelListener
     void scrollEnabled(boolean scroll_enabled);
 
 	void changedXYGraphMemento(XYGraphMemento xYGraphMem);
+
+	/** The annotation list changed*/
+	void changedAnnotations();
 }

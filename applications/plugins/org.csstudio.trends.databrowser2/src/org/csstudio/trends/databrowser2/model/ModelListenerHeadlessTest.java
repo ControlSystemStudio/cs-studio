@@ -109,6 +109,12 @@ public class ModelListenerHeadlessTest
 			// TODO Auto-generated method stub
 			
 		}
+
+		@Override
+		public void changedAnnotations() {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     /** Test if listener is invoked as expected */

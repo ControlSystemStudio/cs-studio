@@ -8,6 +8,7 @@
 package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 
@@ -59,5 +60,19 @@ public interface PlotListener
 	 *            The new graph settings
 	 */
 	public void xyGraphMemChanged(XYGraphMemento newValue);
+
+	/**
+	 * Called when the user remove an annotation
+	 * @param oldValue
+	 *            The annotation removed
+	 */
+	public void removeAnnotationChanged(Annotation oldValue);
+
+	/**
+	 * Called when the user add an annotation
+	 * @param newValue
+	 *            The annotation added
+	 */
+	public void addAnnotationChanged(Annotation newValue);
 
 }

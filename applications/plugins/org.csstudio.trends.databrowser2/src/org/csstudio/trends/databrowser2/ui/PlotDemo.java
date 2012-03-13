@@ -14,6 +14,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -90,6 +91,18 @@ public class PlotDemo
 
 		@Override
 		public void xyGraphMemChanged(XYGraphMemento newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeAnnotationChanged(Annotation oldValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void addAnnotationChanged(Annotation newValue) {
 			// TODO Auto-generated method stub
 			
 		}

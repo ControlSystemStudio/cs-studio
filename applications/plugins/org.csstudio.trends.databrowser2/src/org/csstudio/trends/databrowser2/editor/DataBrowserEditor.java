@@ -220,6 +220,10 @@ public class DataBrowserEditor extends EditorPart
 			@Override
 			public void changedXYGraphMemento(XYGraphMemento xYGraphMem) 
 			{   setDirty(true);   }
+
+			@Override
+			public void changedAnnotations() 
+			{   setDirty(true);   }
         };
         model.addListener(model_listener);
     }

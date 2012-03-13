@@ -91,6 +91,11 @@ public class AxesTableHandler implements ILazyContentProvider
 			// TODO Auto-generated method stub
 			
 		}
+		@Override
+		public void changedAnnotations() {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     /** Initialize

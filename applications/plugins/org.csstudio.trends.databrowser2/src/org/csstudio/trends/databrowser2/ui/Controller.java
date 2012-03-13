@@ -269,6 +269,16 @@ public class Controller implements ArchiveFetchJobListener
 				.println("**** Controller.Controller(...).new ModelListener() {...}.changedXYGraphMemento() ****");
 				model.setXYGraphMem(newValue);
 			}
+
+			@Override
+			public void removeAnnotationChanged(Annotation oldValue) {
+				model.setAnnotations(plot.getAnnotations());
+			}
+
+			@Override
+			public void addAnnotationChanged(Annotation newValue) {
+				model.setAnnotations(plot.getAnnotations());
+			}  
         });
 
         model_listener = new ModelListener()
@@ -376,6 +386,12 @@ public class Controller implements ArchiveFetchJobListener
              */
 			@Override
 			public void changedXYGraphMemento(XYGraphMemento newValue) {
+				
+			}
+
+			@Override
+			public void changedAnnotations() {
+				// TODO Auto-generated method stub
 				
 			}
 			

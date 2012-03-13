@@ -239,7 +239,7 @@ public class Plot
         
         PlotConfigListener configListener = new PlotConfigListener(listener);
         xygraph.addPropertyChangeListener(configListener);
-       //xygraph.getPlotArea().addPropertyChangeListener(configListener);   
+        xygraph.getPlotArea().addPropertyChangeListener(configListener);   
         
     }
 

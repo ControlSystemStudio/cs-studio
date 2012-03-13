@@ -117,6 +117,11 @@ public class TraceTableHandler implements IStructuredContentProvider
 			// TODO Auto-generated method stub
 			
 		}
+		@Override
+		public void changedAnnotations() {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     /** Create table columns: Auto-sizable, with label provider and editor

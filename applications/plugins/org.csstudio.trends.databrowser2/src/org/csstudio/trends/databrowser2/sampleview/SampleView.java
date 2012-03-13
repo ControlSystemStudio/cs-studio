@@ -371,4 +371,10 @@ public class SampleView extends DataBrowserAwareView
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void changedAnnotations() {
+		// TODO Auto-generated method stub
+		
+	}
 }
