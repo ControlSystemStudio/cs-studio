@@ -1,4 +1,6 @@
-% Matlab Example: Submit scan, monitor progress, plot data
+% Matlab Example:
+% Submit scan, monitor progress, plot data
+% for a 2-D X/Y scan going up/down/left/right
 %
 % @author: Kay Kasemir
 
