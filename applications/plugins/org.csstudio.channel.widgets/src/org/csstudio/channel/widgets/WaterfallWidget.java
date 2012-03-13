@@ -90,13 +90,14 @@ implements ConfigurableWidget, ISelectionProvider {
 		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
-		gridLayout.verticalSpacing = 5;
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		errorBar.setMarginBottom(5);
 		
 		rangeWidget = new RangeWidget(this, SWT.NONE);
 		rangeWidget.addRangeListener(new RangeListener() {
