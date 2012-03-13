@@ -17,6 +17,7 @@ import org.csstudio.apputil.ui.workbench.OpenPerspectiveAction;
 import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
@@ -215,6 +216,10 @@ public class DataBrowserEditor extends EditorPart
             @Override
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
+
+			@Override
+			public void changedXYGraphMemento(XYGraphMemento xYGraphMem) 
+			{   setDirty(true);   }
         };
         model.addListener(model_listener);
     }

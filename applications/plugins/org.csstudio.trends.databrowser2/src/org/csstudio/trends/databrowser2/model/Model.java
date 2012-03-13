@@ -27,10 +27,13 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -92,6 +95,14 @@ public class Model
     final public static String TAG_VALUE = "value";
     final public static String TAG_WAVEFORM_INDEX = "waveform_index";
     
+    
+    /**AJOUT XYGraphMemento
+     * @author L.PHILIPPE GANIL
+     */
+    final public static String TAG_XYGRAPHMEMENTO = "XYGraphMemento";
+    final public static String TAG_TITLE = "title";
+    final public static String TAG_TITLE_COLOR= "title_color";
+    final public static String TAG_TITLE_FONT ="title_font";
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -156,6 +167,28 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
+    
+    /**
+     *  Manage XYGraph Configuration Settings
+     *  @author L.PHILIPPE GANIL
+     */
+	private XYGraphMemento XYGraphMem = new XYGraphMemento();
+
+    public XYGraphMemento getXYGraphMem() {
+		return XYGraphMem;
+	}
+
+	public void setXYGraphMem(XYGraphMemento xYGraphMem) {
+		XYGraphMem = xYGraphMem;
+		fireXYGraphMemChanged(XYGraphMem);
+	}
+	
+	protected void fireXYGraphMemChanged(XYGraphMemento xYGraphMem) {
+		// TODO Auto-generated method stub
+		 for (ModelListener listener : listeners)
+	            listener.changedXYGraphMemento(xYGraphMem);
+	}
+	
     /** @param macros Macros to use in this model */
     public void setMacros(final IMacroTableProvider macros)
     {
@@ -766,6 +799,13 @@ public class Model
         XMLWriter.header(writer);
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
+       
+        //L.PHILIPPE
+        //Save config graph settings
+        XYGraphMementoXMLUtil XYGraphMemXML = new XYGraphMementoXMLUtil(XYGraphMem);
+        XYGraphMemXML.write(writer);
+        
+        
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, isScrollEnabled());
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, getUpdatePeriod());
@@ -903,6 +943,38 @@ public class Model
             }
             // Add to document
             annotations = infos.toArray(new AnnotationInfo[infos.size()]);
+        }
+        
+        //ADD by Laurent PHILIPPE
+        // Load XYGraphMemento
+        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_XYGRAPHMEMENTO);
+        if (list != null)
+        {
+            XYGraphMem = new XYGraphMemento();
+        	// Load PV items
+        	try{
+        		String title = DOMHelper.getSubelementString(list, TAG_TITLE);
+        		RGB titleColor = loadColorFromDocument(list, TAG_TITLE_COLOR);
+        		
+        		XYGraphMem.setTitle(title);	
+        	
+        		if(titleColor != null)
+        			XYGraphMem.setTitleColor(XYGraphMediaFactory.getInstance().getColor(titleColor));
+        		
+        		String fontInfo = DOMHelper.getSubelementString(list, TAG_TITLE_FONT);
+        		
+        		if(fontInfo != null){
+        			FontData fontData = new FontData(fontInfo);
+        			//System.err.println("FONT DATA " + fontData.name + " " + fontData.height);
+        			XYGraphMem.setTitleFont(XYGraphMediaFactory.getInstance().getFont(fontData));
+        		}
+ 
+        	}catch (Throwable ex)
+            {
+            	ex.printStackTrace();
+            	
+            }
+            // Add to document
         }
         
         // Backwards compatibility with previous data browser which

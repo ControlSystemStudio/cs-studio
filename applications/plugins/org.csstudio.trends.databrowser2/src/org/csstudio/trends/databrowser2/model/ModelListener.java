@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
+
 /** Listener interface for the Model
  *  @author Kay Kasemir
  */
@@ -50,4 +52,6 @@ public interface ModelListener
     
     /** @param scroll_enabled <code>true</code> when scrolling was turned 'on' */
     void scrollEnabled(boolean scroll_enabled);
+
+	void changedXYGraphMemento(XYGraphMemento xYGraphMem);
 }

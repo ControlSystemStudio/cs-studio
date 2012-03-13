@@ -14,6 +14,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
@@ -86,6 +87,12 @@ public class PlotDemo
         {
             System.out.println("PV Name dropped: " + name);
         }
+
+		@Override
+		public void xyGraphMemChanged(XYGraphMemento newValue) {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     private void createGUI(final Composite parent)

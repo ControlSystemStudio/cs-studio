@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Test;
 
@@ -102,6 +103,12 @@ public class ModelListenerHeadlessTest
             System.out.println("Scrolling turned " + (scroll_enabled ? "on" : "off"));
             ++changes;
         }
+
+		@Override
+		public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+			// TODO Auto-generated method stub
+			
+		}
     };
 
     /** Test if listener is invoked as expected */

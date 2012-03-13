@@ -48,6 +48,10 @@ import org.eclipse.swt.widgets.Display;
  *  Plot helps with linking that to an SWT Canvas.
  *
  *  @author Kay Kasemir
+ *  
+ *  Modify addListener method to add property changed event capability 
+ *  @see PlotConfigListener
+ *  @author Laurent PHILIPPE
  */
 public class Plot
 {
@@ -228,6 +232,15 @@ public class Plot
         this.listener = listener;
         scroll_button.addPlotListener(listener);
         time_config_button.addPlotListener(listener);
+        
+        //Ajout L.PHILIPPE
+      
+        System.out.println("**** Plot.addListener() ****");
+        
+        PlotConfigListener configListener = new PlotConfigListener(listener);
+        xygraph.addPropertyChangeListener(configListener);
+       //xygraph.getPlotArea().addPropertyChangeListener(configListener);   
+        
     }
 
     /** @return Operations manager for undo/redo */

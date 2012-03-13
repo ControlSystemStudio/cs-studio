@@ -15,6 +15,7 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.XYGraphConfigCommand;
+import org.csstudio.swt.xygraph.undo.XYGraphMementoUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -260,7 +261,10 @@ public class XYGraphConfigDialog extends Dialog {
 		for(TraceConfigPage traceConfigPage : traceConfigPageList)
 			traceConfigPage.applyChanges();
 		for(AnnotationConfigPage annotationConfigPage : annotationConfigPageList)
-			annotationConfigPage.applyChanges();					
+			annotationConfigPage.applyChanges();	
+		
+		//Add L.PHILIPPE
+		xyGraph.setXyGraphMem(XYGraphMementoUtil.createMemento(xyGraph));
 	}
 	
 	@Override
