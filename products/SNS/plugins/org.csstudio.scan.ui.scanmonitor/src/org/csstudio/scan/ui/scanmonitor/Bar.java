@@ -25,8 +25,8 @@ import org.eclipse.swt.widgets.Composite;
 @SuppressWarnings("nls")
 public class Bar extends Canvas implements PaintListener
 {
-	final private static int CRITICAL_PERCENTAGE = 0;
-	private float percentage = 75.0f;
+	final private static int CRITICAL_PERCENTAGE = 75;
+	private float percentage = 0.0f;
     private String text = "";
 	private GC gc;
 
