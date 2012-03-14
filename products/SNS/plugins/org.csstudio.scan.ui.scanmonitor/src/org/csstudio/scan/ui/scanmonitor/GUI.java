@@ -72,7 +72,7 @@ public class GUI implements ScanInfoModelListener
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
 
-	private Label mem_info_text;
+	private Bar mem_info;
 
     /** Initialize
      *  @param parent Parent component
@@ -290,12 +290,12 @@ public class GUI implements ScanInfoModelListener
         table_viewer.setContentProvider(new ScanInfoModelContentProvider());
 
         Label l = new Label(parent, 0);
-        l.setText("Scan Server Memory Usage:");
+        l.setText(Messages.MemInfo);
         l.setLayoutData(new GridData());
 
-        mem_info_text = new Label(parent, 0);
-        mem_info_text.setText("unknown");
-        mem_info_text.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        mem_info = new Bar(parent, 0);
+        mem_info.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        mem_info.setToolTipText(Messages.MemInfoTT);
     }
 
     /** @param display Display
@@ -425,7 +425,8 @@ public class GUI implements ScanInfoModelListener
 
                 final ScanServerInfo server_info = model.getServerInfo();
                 if (server_info != null)
-                	mem_info_text.setText(server_info.getMemoryInfo());
+                	mem_info.update(server_info.getMemoryInfo(),
+                			server_info.getMemoryPercentage());
             }
         });
     }

@@ -22,8 +22,11 @@ import org.eclipse.ui.WorkbenchException;
 @SuppressWarnings("nls")
 public class Perspective implements IPerspectiveFactory
 {
-    /** Perspective ID defined in plugin.xml */
-    final public static String ID = "org.csstudio.scan.ui.scantree.perspective"; //$NON-NLS-1$
+	/** Perspective ID defined in plugin.xml */
+    final public static String ID = "org.csstudio.scan.ui.scantree.perspective";
+
+    /** ID of console view */
+    final private static String ID_CONSOLE = "org.eclipse.ui.console.ConsoleView";
 
     /** Try to switch to the DataBrowser perspective
      *  @throws WorkbenchException on error
@@ -60,7 +63,7 @@ public class Perspective implements IPerspectiveFactory
 
         // Stuff for 'bottom'
         bottom.addView(ScanUIActivator.ID_SCAN_MONITOR_VIEW);
-        bottom.addView("org.eclipse.ui.console.ConsoleView");
+        bottom.addView(ID_CONSOLE);
         bottom.addPlaceholder(ScanUIActivator.ID_SCAN_PLOT_VIEW);
         bottom.addPlaceholder(ScanUIActivator.ID_SCAN_PLOT_VIEW + ":*");
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
@@ -78,5 +81,6 @@ public class Perspective implements IPerspectiveFactory
         layout.addShowViewShortcut(ScanUIActivator.ID_SCAN_PLOT_VIEW);
         layout.addShowViewShortcut(IPageLayout.ID_PROP_SHEET);
         layout.addShowViewShortcut(IPageLayout.ID_PROGRESS_VIEW);
+        layout.addShowViewShortcut(ID_CONSOLE);
     }
 }
