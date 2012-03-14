@@ -468,4 +468,10 @@ public class Scan implements ScanContext
         final Scan other = (Scan) obj;
         return id == other.getId();
     }
+
+	@Override
+    public String toString()
+    {
+	    return "Scan " + name + " (" + id + ")";
+    }
 }

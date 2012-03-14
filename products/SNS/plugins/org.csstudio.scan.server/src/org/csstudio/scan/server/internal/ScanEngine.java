@@ -81,7 +81,6 @@ public class ScanEngine
         synchronized (scan_queue)
         {
             scan_queue.add(new ScanQueueItem(executor, scan));
-            // TODO Drop older, finished scans?
         }
     }
 
@@ -147,6 +146,20 @@ public class ScanEngine
                 if (iterator.next().isDone())
                     iterator.remove();
             }
+        }
+    }
+
+    /** Remove the oldest completed scan */
+    public void removeOldestCompletedScan()
+    {
+        synchronized (scan_queue)
+        {
+        	for (ScanQueueItem item : scan_queue)
+        		if (item.isDone())
+        		{
+        			scan_queue.remove(item);
+        			return;
+        		}
         }
     }
 }
