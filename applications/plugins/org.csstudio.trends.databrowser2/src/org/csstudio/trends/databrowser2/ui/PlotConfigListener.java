@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class PlotConfigListener implements PropertyChangeListener {
 
-	public String BG_COLOR= "bgColor";
+	public String BG_COLOR= "background_color";
 	public String XY_GRAPH_MEMENTO = "xyGraphMem";
 	public String ANNOTATION_LIST = "annotationList";
 	
@@ -34,11 +34,11 @@ public class PlotConfigListener implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		
-		//System.err.println("PROPERTY CHANGED " + evt.getPropertyName() + " " + evt.getNewValue());
+		System.err.println("PROPERTY CHANGED " + evt.getPropertyName() + " " + evt.getNewValue());
 		
 		if(evt.getPropertyName().equals(BG_COLOR)){
 			//Background color of the plot changed
-//=>			listener.backgroundColorChanged((Color)evt.getNewValue());
+			listener.backgroundColorChanged((Color)evt.getNewValue());
 			//System.err.println("BGCOLOR CHANGED");
 		}
 		

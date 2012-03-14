@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.xygraph.figures;
 
+import org.eclipse.swt.graphics.Color;
+
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
@@ -54,5 +56,27 @@ public class Grid extends Figure implements IAxisListener{
 
     public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
 		//do nothing
+	}
+
+	public void axisForegroundColorChanged(Axis axis, Color oldColor,
+			Color newColor) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
+			boolean newAutoScale) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
+		// TODO Auto-generated method stub
+		
 	}
 }
