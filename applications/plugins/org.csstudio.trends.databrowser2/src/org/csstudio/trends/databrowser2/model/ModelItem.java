@@ -158,7 +158,8 @@ abstract public class ModelItem
     /** If (!) assigned to a model, inform it about a configuration change */
     protected void fireItemLookChanged()
     {
-        if (model != null)
+       System.out.println("ModelItem.fireItemLookChanged()");
+    	if (model != null)
             model.fireItemLookChanged(this);
     }
 
@@ -231,9 +232,13 @@ abstract public class ModelItem
     /** @param axis New X-Axis index */
     public void setAxis(final AxisConfig axis)
     {   // Comparing exact AxisConfig reference, not equals()!
-        if (axis == this.axis)
+        System.out.println("ModelItem.setAxis() " + axis.getName());
+    	
+    	if (axis == this.axis)
             return;
         this.axis = axis;
+        
+   
         fireItemLookChanged();
     }
     

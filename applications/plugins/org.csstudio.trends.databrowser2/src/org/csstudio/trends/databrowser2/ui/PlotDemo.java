@@ -24,6 +24,7 @@ import org.csstudio.trends.databrowser2.model.TestSampleBuilder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -103,6 +104,46 @@ public class PlotDemo
 
 		@Override
 		public void addAnnotationChanged(Annotation newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void backgroundColorChanged(Color newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void timeAxisForegroundColorChanged(Color oldColor,
+				Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisForegroundColorChanged(int index, Color oldColor,
+				Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisTitleChanged(int index, String oldTitle,
+				String newTitle) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
+				boolean newAutoScale) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceNameChanged(int index, String oldName, String newName) {
 			// TODO Auto-generated method stub
 			
 		}

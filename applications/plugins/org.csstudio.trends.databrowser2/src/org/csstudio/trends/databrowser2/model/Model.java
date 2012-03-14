@@ -184,8 +184,9 @@ public class Model
 	}
 	
 	protected void fireXYGraphMemChanged(XYGraphMemento xYGraphMem) {
-		// TODO Auto-generated method stub
-		 for (ModelListener listener : listeners)
+		// TODO Auto-generated method stub 
+		
+		for (ModelListener listener : listeners)
 	            listener.changedXYGraphMemento(xYGraphMem);
 	}
 	
@@ -239,6 +240,22 @@ public class Model
     public AxisConfig getAxis(final int axis_index)
     {
         return axes.get(axis_index);
+    }
+    
+    /** 
+     *  Return the AxisConfig with the specifc name or null
+     *  @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
+     *  @return {@link AxisConfig}
+     */
+    public AxisConfig getAxis(final String name)
+    {
+        for(AxisConfig axis : axes){
+        	//System.err.println(axis.getName() + " == " + name + "=" + (axis.getName().equals(name)));
+        	if(axis.getName().equals(name))
+        		return axis;
+        }
+        
+        return null;
     }
 
     /** Locate index of value axis
@@ -618,6 +635,8 @@ public class Model
             return;
         background = rgb;
         // Notify listeners
+        System.out.println("**** Model.setPlotBackground() ****");
+        
         for (ModelListener listener : listeners)
             listener.changedColors();
     }
