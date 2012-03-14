@@ -75,7 +75,7 @@ public class Scan implements ScanContext
 
     private volatile long end_ms = 0;
 
-    private volatile long total_work_units = 0;
+    final private long total_work_units;
 
     final private MemoryDataLogger data_logger = new MemoryDataLogger();
 
@@ -115,10 +115,16 @@ public class Scan implements ScanContext
         this.implementations = implementations;
         this.post_scan = post_scan;
 
-        // Assign addresses to all commands
+        // Assign addresses to all commands,
+        // determine work units
         long address = 0;
+        long work_units = 0;
         for (ScanCommandImpl<?> impl : implementations)
+        {
             address = impl.setAddress(address);
+        	work_units += impl.getWorkUnits();
+        }
+        total_work_units = work_units;
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */
@@ -302,14 +308,11 @@ public class Scan implements ScanContext
             throw new IllegalStateException("Cannot run Scan that is " + state);
 
         // Inspect all commands before executing them:
-        // * Determine work units
-        // * Add devices that are not available (via alias)
-        //   in the device context
-        total_work_units = 1; // WaitForDevicesCommand
+        // Add devices that are not available (via alias)
+        // in the device context
         final Set<String> required_devices = new HashSet<String>();
         for (ScanCommandImpl<?> command : implementations)
         {
-            total_work_units += command.getWorkUnits();
             for (String device_name : command.getDeviceNames())
                 required_devices.add(device_name);
         }
@@ -335,13 +338,14 @@ public class Scan implements ScanContext
         start_ms = System.currentTimeMillis();
         try
         {
-            // TODO Do something about commands that are not part of the submitted commands:
-            //      Special handling of address?
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices())));
             try
             {
                 // Execute pre-scan commands
                 execute(pre_scan);
+
+                // Reset work step counter to only count the 'main' commands
+                work_performed.set(0);
 
                 // Execute the submitted commands
                 execute(implementations);
@@ -352,9 +356,15 @@ public class Scan implements ScanContext
             finally
             {
                 // Try post-scan commands even if submitted commands ran into problem
+            	// Save the state at the end of executing 'main' commands
                 final ScanState saved_state = state;
+                final long saved_steps = work_performed.get();
                 state = ScanState.Running;
+
                 execute(post_scan);
+
+                // Restore saved state
+                work_performed.set(saved_steps);
                 state = saved_state;
             }
         }

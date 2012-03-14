@@ -121,7 +121,7 @@ public interface TODO
      *
      *  Done 'WaitingForDevices' shows missing devices
      *
-     *  TODO Details of pre- and post scan command progress info
+     *  Done Details of pre- and post scan command progress info
      *
      *  TODO Unclear if devices will ever be anything but PVs.
      *
