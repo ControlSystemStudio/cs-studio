@@ -15,8 +15,10 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
@@ -144,6 +146,33 @@ public class PlotDemo
 
 		@Override
 		public void traceNameChanged(int index, String oldName, String newName) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceYAxisChanged(int index, AxisConfig oldConfig,
+				AxisConfig config) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceTypeChanged(int index, TraceType old,
+				TraceType newTraceType) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceColorChanged(int index, Color old, Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisLogScaleChanged(int index, boolean old,
+				boolean logScale) {
 			// TODO Auto-generated method stub
 			
 		}
