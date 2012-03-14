@@ -212,9 +212,12 @@ public class ScanServerImpl implements ScanServer
     /** If memory consumption is high, remove (one) older scan */
 	private void cullScans() throws RemoteException
     {
-	    final ScanServerInfo server_info = getInfo();
-    	if (server_info.getMemoryPercentage() > Preferences.getOldScanRemovalMemoryThreshold())
-    		scan_engine.removeOldestCompletedScan();
+	    final double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+		while (getInfo().getMemoryPercentage() > threshold)
+	    {
+	    	if (! scan_engine.removeOldestCompletedScan())
+	    		return;
+	    }
     }
 
 	/** {@inheritDoc} */
