@@ -217,17 +217,21 @@ public class ScanInfoModel
         try
         {
             final ScanServer current_server = getServer();
+            // General server info, always inform listeners
+            server_info = current_server.getInfo();
+            for (ScanInfoModelListener listener : listeners)
+                listener.scanServerUpdate(server_info);
+
+            // List of scans. Suppress updates if there is no change
 			final List<ScanInfo> update = current_server.getScanInfos();
             if (update.equals(infos) && is_connected)
                 return;
 
-            server_info = current_server.getInfo();
             // Received new information, remember and notify listeners
             is_connected = true;
             infos = update;
             for (ScanInfoModelListener listener : listeners)
                 listener.scanUpdate(infos);
-
         }
         catch (RemoteException ex)
         {
