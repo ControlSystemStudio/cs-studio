@@ -24,16 +24,21 @@ for x in range(1, 5):
     seq.set('xpos', x)
     seq.delay(1)
     seq.log('xpos', 'readback')
-seq.set('xpos', 1)
 
 # Schedule for execution on server
 id = client.submit("My Scan 1", seq)
 client.waitUntilDone(id)
 client.printData(id, 'xpos', 'ypos')
 
+# Equivalent result:
+scan("My Scan 1b",
+      SetCommand('ypos', 5),
+      ('xpos', 1, 4),
+          DelayCommand(1),
+          'xpos', 'readback')
+scan.waitUntilDone()
 
-
-# Create some scan by assembling the commands
+# Create some scan by assembling the basic commands
 # as a python list
 cmds = [
   DelayCommand(2.0),

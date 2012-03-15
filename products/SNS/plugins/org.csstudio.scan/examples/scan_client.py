@@ -221,10 +221,10 @@ class ScanNd(ScanClient):
     
     Arguments:
     
-    * Optional scan name
-    * One or more scan specifications: ('device', start, end[, step])
+    * First argument can be scan name. Optional.
+    * Loop specification for all following arguments: ('device', start, end[, step])
     * Names of device to log in addition to loop'ed devices
-    * Commands to perform in innermost loop
+    * Basic ScanCommand to perform: SetCommand, WaitCommand, ...
     
     Examples:
     
