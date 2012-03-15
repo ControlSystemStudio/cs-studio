@@ -14,17 +14,13 @@ but also from jython command lines outside of CSS.
 
 @author: Kay Kasemir
 """
-import sys
-import os
-import glob
+import sys, os, glob
 
 # -------------------------------------------------------
 # Path setup
 #
 # 1)  When running under Eclipse (from BOY displays),
-#     this code locates the scan plugins.
-#     Nothing else to do; variables set below are replaced
-#     by the actual plugin location.
+#     path variables will auto-configure from the plugin registry.
 #
 # 2a) When running outside of Eclipse
 #     (jython command-line, Matlab, also scripts executed from PyDev)
@@ -33,15 +29,20 @@ import glob
 scan_client_jar="/usr/local/css/scan.client.jar"
 
 # 2b) ... or give the path to the plugin directory
-#     (which is automatically determined for case 1)
-plugin_install_location="/usr/local/css/CSS_3.2/plugins/"
+plugin_install_location="../../"
 
 # Try to resolve the paths when running outside of Eclipse
 scan_plugin = None
 client_plugin = None
 try:
-    scan_plugin = glob.glob(plugin_install_location + "org.csstudio.scan_*")[0]
-    client_plugin = glob.glob(plugin_install_location + "org.csstudio.scan.client_*")[0]
+    # Look for "org.csstudio.scan/bin" when running with IDE and plugin source,
+    # or "org.csstudio.scan_{version}[.jar]" for exported product
+    if os.path.exists(plugin_install_location + "org.csstudio.scan/bin"):
+        scan_plugin = plugin_install_location + "org.csstudio.scan/bin"
+        client_plugin = plugin_install_location + "org.csstudio.scan.client/bin"
+    else:
+        scan_plugin = glob.glob(plugin_install_location + "org.csstudio.scan_*")[0]
+        client_plugin = glob.glob(plugin_install_location + "org.csstudio.scan.client*")[0]
 except:
     pass # Ignore. May use scan_client_jar or be running under Eclipse
 
@@ -86,7 +87,8 @@ else:
     raise Exception("Scan client library not configured")
     
 #from org.eclipse.jface.dialogs import MessageDialog
-#for p in sys.path:
+# for p in sys.path:
+#    print p
 #    MessageDialog.openWarning(None, "Debug", "Using " + p)
 
 # -------------------------------------------------------
@@ -254,6 +256,7 @@ class ScanNd(ScanClient):
              or 
                 ('device', start, end)
              for a default step size of 1
+             @return ('device', start, end, step)
         """
         if (len(parms) == 4):
             return (parms[0], parms[1], parms[2], parms[3])
@@ -266,49 +269,41 @@ class ScanNd(ScanClient):
         """ N-dimensional scan command.
             @return ID of scan that was scheduled on the scan server
         """
+        # Turn args into modifyable list
         args = list(args)
+        
+        # First string is optional scan title
         if len(args) > 0  and  isinstance(args[0], str):
             name = args[0]
             args.pop(0)
         else:
             name = "Scan"
-        
-        # Prepare body of innermost loop
-        body = CommandSequence()
-        # Determine the (nested) scans, inner loop commands and devices to log
-        # (doesn't really care if inner commands and log devices are listed last)
-        scans = []
-        log = []
-        for arg in args:
+
+        # Work backwards, starting with 'inner' loop
+        cmds = []
+        while len(args) > 0:
+            arg = args.pop()
             if isinstance(arg, tuple):
                 scan = self._decodeScan(arg)
-                scans.append(scan)
+                cmds = [ LoopCommand(scan[0], scan[1], scan[2], scan[3], cmds) ]
             elif isinstance(arg, ScanCommand):
-                body.add(arg)
+                cmds.insert(0, arg)
+            elif isinstance(arg, str):
+                # If the 'current' command is already a log command, extend it
+                if len(cmds) > 0  and  isinstance(cmds[len(cmds)-1], LogCommand):
+                    log = cmds[len(cmds)-1]
+                    devices = list(log.getDeviceNames())
+                    devices.insert(0, arg)
+                    log.setDeviceNames(devices)
+                else:
+                    cmds.insert(0, LogCommand(arg))
             else:
-                log.append(arg)
-        
-        # Innermost loop's log command
-        if len(log) > 0:
-            body.log(log)
+                raise Exception('Cannot handle scan parameter of type %s' % arg.__class__.__name__)
 
-        # Wrap by scans, going in reverse from inner loop
-        scans.reverse()
-        cmds = CommandSequence()
-        for scan in scans:
-            # Add cmds from inner loop (nothing on first iteration)
-            body.add(cmds)
-            
-            # Wrap in loop which then becomes cmds to next loop 'up'
-            cmds = CommandSequence()
-            cmds.loop(scan[0], scan[1], scan[2], scan[3], body)
-            
-            # Prepare empty body for next loop
-            body = CommandSequence()
-            
-        id = self.submit(name, cmds)
+        seq = CommandSequence(cmds)
+        id = self.submit(name, seq)
         if __name__ == '__main__':
-            cmds.dump()
+            seq.dump()
             self.waitUntilDone()
         return id
 
