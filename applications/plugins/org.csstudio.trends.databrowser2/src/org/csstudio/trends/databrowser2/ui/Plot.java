@@ -49,14 +49,15 @@ import org.eclipse.swt.widgets.Display;
  * <p>
  * Underlying XYChart is a Draw2D Figure. Plot helps with linking that to an SWT
  * Canvas.
- * 
+ *
  * @author Kay Kasemir
- * 
+ *
  *         Modify addListener method to add property changed event capability
  * @see PlotConfigListener
  * @author Laurent PHILIPPE
  */
-public class Plot {
+public class Plot
+{
 	/** Plot Listener */
 	private PlotListener listener = null;
 
@@ -64,8 +65,7 @@ public class Plot {
 	final private Display display;
 
 	/** Color, Font, ... registry */
-	final private XYGraphMediaFactory media_registry = XYGraphMediaFactory
-			.getInstance();
+	final private XYGraphMediaFactory media_registry = XYGraphMediaFactory.getInstance();
 
 	/** Font applied to axes */
 	final private Font axis_font;
@@ -97,12 +97,13 @@ public class Plot {
 
 	/**
 	 * Create a plot that is attached to an SWT canvas
-	 * 
+	 *
 	 * @param canvas
 	 *            SWT Canvas
 	 * @return Plot
 	 */
-	public static Plot forCanvas(final Canvas canvas) {
+	public static Plot forCanvas(final Canvas canvas)
+	{
 		final Plot plot = new Plot(canvas.getDisplay());
 
 		final LightweightSystem lws = new LightweightSystem(canvas);
@@ -114,21 +115,22 @@ public class Plot {
 
 	/**
 	 * Create a plot to be used in Draw2D
-	 * 
+	 *
 	 * @return Plot
 	 */
-	public static Plot forDraw2D() {
+	public static Plot forDraw2D()
+	{
 		final Plot plot = new Plot(Display.getCurrent());
-
 		return plot;
 	}
 
 	/**
 	 * Initialize plot
-	 * 
+	 *
 	 * @param display
 	 */
-	private Plot(final Display display) {
+	private Plot(final Display display)
+	{
 		this.display = display;
 
 		// Use system font for axis labels
@@ -164,22 +166,19 @@ public class Plot {
 
 		// Forward time axis changes from the GUI to PlotListener
 		// (Ignore changes from setTimeRange)
-		time_axis.addListener(new IAxisListener() {
+		time_axis.addListener(new IAxisListener()
+		{
 			@Override
-			public void axisRevalidated(final Axis axis) {
+			public void axisRevalidated(final Axis axis)
+			{
 				// NOP
 			}
 
 			@Override
 			public void axisRangeChanged(final Axis axis,
-					final Range old_range, final Range new_range) { // Check
-																	// that it's
-																	// not
-																	// caused by
-																	// ourself,
-																	// and a
-																	// real
-																	// change
+					final Range old_range, final Range new_range)
+			{
+				// Check that it's not caused by ourself, and a real change
 				if (!plot_changes_timeaxis && !old_range.equals(new_range)
 						&& listener != null)
 					listener.timeAxisChanged((long) new_range.getLower(),
@@ -188,30 +187,30 @@ public class Plot {
 
 			@Override
 			public void axisForegroundColorChanged(Axis axis, Color oldColor,
-					Color newColor) {
+					Color newColor)
+			{
 				listener.timeAxisForegroundColorChanged(oldColor, newColor);
-
 			}
 
 			@Override
 			public void axisTitleChanged(Axis axis, String oldTitle,
-					String newTitle) {
+					String newTitle)
+			{
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
-					boolean newAutoScale) {
+					boolean newAutoScale)
+			{
 				// TODO Auto-generated method stub
-
 			}
 
 			@Override
 			public void axisLogScaleChanged(Axis axis, boolean old,
-					boolean logScale) {
+					boolean logScale)
+			{
 				// TODO Auto-generated method stub
-				
 			}
 		});
 
@@ -220,45 +219,56 @@ public class Plot {
 
 	/**
 	 * Attach to drag-and-drop, notifying the plot listener
-	 * 
+	 *
 	 * @param canvas
 	 */
-	private void hookDragAndDrop(final Canvas canvas) {
+	private void hookDragAndDrop(final Canvas canvas)
+	{
 		// Allow dropped arrays
 		new ControlSystemDropTarget(canvas, ChannelInfo[].class,
 				ProcessVariable[].class, ArchiveDataSource[].class,
-				String.class) {
+				String.class)
+		{
 			@Override
-			public void handleDrop(final Object item) {
+			public void handleDrop(final Object item)
+			{
 				if (listener == null)
 					return;
 
-				if (item instanceof ChannelInfo[]) {
+				if (item instanceof ChannelInfo[])
+				{
 					final ChannelInfo[] channels = (ChannelInfo[]) item;
 					for (ChannelInfo channel : channels)
 						listener.droppedPVName(channel.getProcessVariable(),
 								channel.getArchiveDataSource());
-				} else if (item instanceof ProcessVariable[]) {
+				}
+				else if (item instanceof ProcessVariable[])
+				{
 					final ProcessVariable[] pvs = (ProcessVariable[]) item;
 					for (ProcessVariable pv : pvs)
 						listener.droppedPVName(pv, null);
-				} else if (item instanceof ArchiveDataSource[]) {
+				}
+				else if (item instanceof ArchiveDataSource[])
+				{
 					final ArchiveDataSource[] archives = (ArchiveDataSource[]) item;
 					for (ArchiveDataSource archive : archives)
 						listener.droppedPVName(null, archive);
-				} else if (item instanceof String)
+				}
+				else if (item instanceof String)
 					listener.droppedName(item.toString());
 			}
 		};
 	}
 
 	/** @return Draw2D Figure */
-	public IFigure getFigure() {
+	public IFigure getFigure()
+	{
 		return plot;
 	}
 
 	/** Add a listener (currently only one supported) */
-	public void addListener(final PlotListener listener) {
+	public void addListener(final PlotListener listener)
+	{
 		if (this.listener != null)
 			throw new IllegalStateException();
 		this.listener = listener;
@@ -266,22 +276,20 @@ public class Plot {
 		time_config_button.addPlotListener(listener);
 
 		// Ajout L.PHILIPPE
-
-		System.out.println("**** Plot.addListener() ****");
-
 		PlotConfigListener configListener = new PlotConfigListener(listener);
 		xygraph.addPropertyChangeListener(configListener);
 		xygraph.getPlotArea().addPropertyChangeListener(configListener);
-
 	}
 
 	/** @return Operations manager for undo/redo */
-	public OperationsManager getOperationsManager() {
+	public OperationsManager getOperationsManager()
+	{
 		return xygraph.getOperationsManager();
 	}
 
 	/** @return <code>true</code> if toolbar is visible */
-	public boolean isToolbarVisible() {
+	public boolean isToolbarVisible()
+	{
 		return plot.isShowToolbar();
 	}
 
@@ -289,12 +297,14 @@ public class Plot {
 	 * @param visible
 	 *            <code>true</code> to display the tool bar
 	 */
-	public void setToolbarVisible(final boolean visible) {
+	public void setToolbarVisible(final boolean visible)
+	{
 		plot.setShowToolbar(visible);
 	}
 
 	/** Remove all axes and traces */
-	public void removeAll() {
+	public void removeAll()
+	{
 		// Remove all traces
 		int N = xygraph.getPlotArea().getTraceList().size();
 		while (N > 0)
@@ -310,10 +320,12 @@ public class Plot {
 	 *            Index of Y axis. If it doesn't exist, it will be created.
 	 * @return Y Axis
 	 */
-	private Axis getYAxis(final int index) {
+	private Axis getYAxis(final int index)
+	{
 		// Get Y Axis, creating new ones if needed
 		final List<Axis> axes = xygraph.getYAxisList();
-		while (axes.size() <= index) {
+		while (axes.size() <= index)
+		{
 			final int new_axis_index = axes.size();
 			final Axis axis = new Axis(NLS.bind(Messages.Plot_ValueAxisNameFMT,
 					new_axis_index + 1), true);
@@ -321,29 +333,34 @@ public class Plot {
 			axis.setTitleFont(axis_title_font);
 			xygraph.addAxis(axis);
 			axis.addListener(createValueAxisListener(new_axis_index));
-		
+
 		}
 		return axes.get(index);
 	}
 
 	/**
 	 * Create value axis listener
-	 * 
+	 *
 	 * @param index
 	 *            Index of the axis, 0 ...
 	 * @return IAxisListener
 	 */
-	private IAxisListener createValueAxisListener(final int index) {
-		return new IAxisListener() {
+	private IAxisListener createValueAxisListener(final int index)
+	{
+		return new IAxisListener()
+		{
 			@Override
-			public void axisRevalidated(Axis axis) {
+			public void axisRevalidated(final Axis axis)
+			{
 				// NOP
 			}
 
+			// for new/old comparisons note that old values may be null
 			@Override
 			public void axisRangeChanged(final Axis axis,
-					final Range old_range, final Range new_range) {
-				if (plot_changes_valueaxis || old_range.equals(new_range)
+					final Range old_range, final Range new_range)
+			{
+				if (plot_changes_valueaxis || new_range.equals(old_range)
 						|| listener == null)
 					return;
 				listener.valueAxisChanged(index, new_range.getLower(),
@@ -351,61 +368,52 @@ public class Plot {
 			}
 
 			@Override
-			public void axisForegroundColorChanged(Axis axis, Color oldColor,
-					Color newColor) {
-				// System.err.println("OLD " + oldColor + " NEW " + newColor);
-				if (oldColor.getRGB().equals(newColor.getRGB())
-						|| listener == null)
+			public void axisForegroundColorChanged(final Axis axis, final Color oldColor,
+					final Color newColor)
+			{
+				if (newColor.equals(oldColor)  ||  listener == null)
 					return;
-
-				listener.valueAxisForegroundColorChanged(index, oldColor,
-						newColor);
+				listener.valueAxisForegroundColorChanged(index, oldColor, newColor);
 			}
 
 			@Override
-			public void axisTitleChanged(Axis axis, String oldTitle,
-					String newTitle) {
-
-				if (oldTitle.trim().equals(newTitle.trim()) || listener == null)
+			public void axisTitleChanged(final Axis axis, final String oldTitle,
+					final String newTitle)
+			{
+				if (newTitle.equals(oldTitle) || listener == null)
 					return;
-
 				listener.valueAxisTitleChanged(index, oldTitle, newTitle);
 			}
 
 			@Override
-			public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
-					boolean newAutoScale) {
-
+			public void axisAutoScaleChanged(final Axis axis, final boolean oldAutoScale,
+					final boolean newAutoScale)
+			{
 				if (oldAutoScale == newAutoScale || listener == null)
 					return;
-
-				listener.valueAxisAutoScaleChanged(index, oldAutoScale,
-						newAutoScale);
-
+				listener.valueAxisAutoScaleChanged(index, oldAutoScale,	newAutoScale);
 			}
 
 			@Override
-			public void axisLogScaleChanged(Axis axis, boolean old,
-					boolean logScale) {
-				
-				if(listener == null)return;
-				
-				listener.valueAxisLogScaleChanged(index, old,
-						logScale);
-
+			public void axisLogScaleChanged(final Axis axis, final boolean old,
+					final boolean logScale)
+			{
+				if (listener != null)
+					listener.valueAxisLogScaleChanged(index, old, logScale);
 			}
 		};
 	}
 
 	/**
 	 * Update configuration of axis
-	 * 
+	 *
 	 * @param index
 	 *            Axis index. Y axes will be created as needed.
 	 * @param config
 	 *            Desired axis configuration
 	 */
-	public void updateAxis(final int index, final AxisConfig config) {
+	public void updateAxis(final int index, final AxisConfig config)
+	{
 		final Axis axis = getYAxis(index);
 		axis.setVisible(config.isVisible());
 		axis.setTitle(config.getName());
@@ -419,12 +427,13 @@ public class Plot {
 
 	/**
 	 * Add a trace to the XYChart
-	 * 
+	 *
 	 * @param item
 	 *            ModelItem for which to add a trace
 	 * @author Laurent PHILIPPE
 	 */
-	public void addTrace(final ModelItem item) {
+	public void addTrace(final ModelItem item)
+	{
 		addTrace(item, null);
 	}
 
@@ -432,9 +441,10 @@ public class Plot {
 	 * Add a trace to the XYChart
 	 * @param item
 	 *            ModelItem for which to add a trace
-	 * @param modelIndex item index in the model 
+	 * @param modelIndex item index in the model
 	 */
-	public void addTrace(final ModelItem item, Integer modelIndex) {
+	public void addTrace(final ModelItem item, Integer modelIndex)
+	{
 		final Axis xaxis = xygraph.primaryXAxis;
 		final Axis yaxis = getYAxis(item.getAxisIndex());
 		final Trace trace = new Trace(item.getResolvedDisplayName(), xaxis,
@@ -445,7 +455,8 @@ public class Plot {
 		trace.setLineWidth(item.getLineWidth());
 		xygraph.addTrace(trace);
 
-		if (modelIndex != null) {
+		if (modelIndex != null)
+		{
 			//System.out.println("*** Plot.addTrace() "
 			//		+ modelIndex
 			//		+ " => " + item.getDisplayName() + " ****");
@@ -456,55 +467,57 @@ public class Plot {
 
 	/**
 	 * Create value axis listener
-	 * 
+	 *
 	 * @param index
 	 *            Index of the axis, 0 ...
 	 * @return IAxisListener
 	 */
-	private ITraceListener createTraceListener(final int index) {
-		return new ITraceListener() {
+	private ITraceListener createTraceListener(final int index)
+	{
+		return new ITraceListener()
+		{
 
 			@Override
 			public void traceNameChanged(Trace trace, String oldName,
-					String newName) {
-				// TODO Auto-generated method stub
-				System.out
-						.println("Plot.createTraceListener(...).new ITraceListener() {...}.traceNameChanged()");
+					String newName)
+			{
 				if (listener == null)
 					return;
-
 				listener.traceNameChanged(index, oldName, newName);
 			}
 
 			@Override
 			public void traceYAxisChanged(Trace trace, Axis oldAxis,
-					Axis newAxis) {
+					Axis newAxis)
+			{
 				if (listener == null)
 					return;
-				
+
 				AxisConfig oldConfig = new AxisConfig(oldAxis.getTitle());
 				AxisConfig config = new AxisConfig(newAxis.getTitle());
-				
+
 				listener.traceYAxisChanged(index, oldConfig, config);
-	
+
 			}
 
 			@Override
 			public void traceTypeChanged(Trace trace, TraceType old,
-					TraceType newTraceType) {
-			
+					TraceType newTraceType)
+			{
+
 				if (listener == null)
 					return;
-				
+
 				listener.traceTypeChanged(index, old, newTraceType);
 			}
 
 			@Override
-			public void traceColorChanged(Trace trace, Color old, Color newColor) {
-			
+			public void traceColorChanged(Trace trace, Color old, Color newColor)
+			{
+
 				if (listener == null)
 					return;
-				
+
 				listener.traceColorChanged(index, old, newColor);
 			}
 
@@ -513,15 +526,17 @@ public class Plot {
 
 	/**
 	 * Configure the XYGraph Trace's
-	 * 
+	 *
 	 * @param item
 	 *            ModelItem whose Trace Type combines the basic line type and
 	 *            the error bar display settings
 	 * @param trace
 	 *            Trace to configure
 	 */
-	private void setTraceType(final ModelItem item, final Trace trace) {
-		switch (item.getTraceType()) {
+	private void setTraceType(final ModelItem item, final Trace trace)
+	{
+		switch (item.getTraceType())
+		{
 		case AREA:
 			// None of these seem to cause an immediate redraw, so
 			// don't bother to check for changes
@@ -582,11 +597,12 @@ public class Plot {
 
 	/**
 	 * Remove a trace from the XYChart
-	 * 
+	 *
 	 * @param item
 	 *            ModelItem to remove
 	 */
-	public void removeTrace(final ModelItem item) {
+	public void removeTrace(final ModelItem item)
+	{
 		final Trace trace = findTrace(item);
 		if (trace == null)
 			throw new RuntimeException("No trace for " + item.getName()); //$NON-NLS-1$
@@ -595,11 +611,12 @@ public class Plot {
 
 	/**
 	 * Update the configuration of a trace from Model Item
-	 * 
+	 *
 	 * @param item
 	 *            Item that was previously added to the Plot
 	 */
-	public void updateTrace(final ModelItem item) {
+	public void updateTrace(final ModelItem item)
+	{
 		final Trace trace = findTrace(item);
 		if (trace == null)
 			throw new RuntimeException("No trace for " + item.getName()); //$NON-NLS-1$
@@ -633,7 +650,8 @@ public class Plot {
 	 *             on error
 	 */
 	@SuppressWarnings("nls")
-	private Trace findTrace(ModelItem item) {
+	private Trace findTrace(ModelItem item)
+	{
 		final List<Trace> traces = xygraph.getPlotArea().getTraceList();
 		for (Trace trace : traces)
 			if (trace.getDataProvider() == item.getSamples())
@@ -643,18 +661,21 @@ public class Plot {
 
 	/**
 	 * Update plot to given time range.
-	 * 
+	 *
 	 * Can be called from any thread.
-	 * 
+	 *
 	 * @param start_ms
 	 *            Milliseconds since 1970 for start time
 	 * @param end_ms
 	 *            ... end time
 	 */
-	public void setTimeRange(final long start_ms, final long end_ms) {
-		display.asyncExec(new Runnable() {
+	public void setTimeRange(final long start_ms, final long end_ms)
+	{
+		display.asyncExec(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				plot_changes_timeaxis = true;
 				xygraph.primaryXAxis.setRange(start_ms, end_ms);
 				plot_changes_timeaxis = false;
@@ -664,13 +685,14 @@ public class Plot {
 
 	/**
 	 * Update plot to given time range.
-	 * 
+	 *
 	 * @param start
 	 *            Start time
 	 * @param end
 	 *            End time
 	 */
-	public void setTimeRange(final ITimestamp start, final ITimestamp end) {
+	public void setTimeRange(final ITimestamp start, final ITimestamp end)
+	{
 		final double start_ms = start.toDouble() * 1000;
 		final double end_ms = end.toDouble() * 1000;
 		plot_changes_timeaxis = true;
@@ -680,19 +702,23 @@ public class Plot {
 
 	/**
 	 * Update the scroll button
-	 * 
+	 *
 	 * @param on
 	 *            <code>true</code> when scrolling is 'on'
 	 */
-	public void updateScrollButton(final boolean scroll_on) {
+	public void updateScrollButton(final boolean scroll_on)
+	{
 		scroll_button.setButtonState(scroll_on);
 	}
 
 	/** Update Y axis auto-scale */
-	public void updateAutoscale() {
-		display.asyncExec(new Runnable() {
+	public void updateAutoscale()
+	{
+		display.asyncExec(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				for (Axis yaxis : xygraph.getYAxisList())
 					yaxis.performAutoScale(false);
 			}
@@ -700,10 +726,13 @@ public class Plot {
 	}
 
 	/** Refresh the plot because the data has changed */
-	public void redrawTraces() {
-		display.asyncExec(new Runnable() {
+	public void redrawTraces()
+	{
+		display.asyncExec(new Runnable()
+		{
 			@Override
-			public void run() {
+			public void run()
+			{
 				for (Axis yaxis : xygraph.getYAxisList())
 					yaxis.performAutoScale(false);
 				xygraph.revalidate();
@@ -715,7 +744,8 @@ public class Plot {
 	 * @param color
 	 *            New background color
 	 */
-	public void setBackgroundColor(final RGB color) {
+	public void setBackgroundColor(final RGB color)
+	{
 		xygraph.getPlotArea()
 				.setBackgroundColor(media_registry.getColor(color));
 	}
@@ -723,16 +753,19 @@ public class Plot {
 	// To decouple the code from the plot library, this would not be
 	// necessary...
 	/** @return Get the {@link XYGraph} used by the plot */
-	public XYGraph getXYGraph() {
+	public XYGraph getXYGraph()
+	{
 		return xygraph;
 	}
 
 	/** @return Information about current annotations */
-	public AnnotationInfo[] getAnnotations() {
+	public AnnotationInfo[] getAnnotations()
+	{
 		final List<Annotation> annotations = xygraph.getPlotArea()
 				.getAnnotationList();
 		final AnnotationInfo[] infos = new AnnotationInfo[annotations.size()];
-		for (int i = 0; i < infos.length; ++i) {
+		for (int i = 0; i < infos.length; ++i)
+		{
 			final Annotation annotation = annotations.get(i);
 			final String title = annotation.getName();
 			final Axis axis = annotation.getYAxis();
