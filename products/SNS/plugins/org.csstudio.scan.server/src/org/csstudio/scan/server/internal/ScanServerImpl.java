@@ -167,6 +167,8 @@ public class ScanServerImpl implements ScanServer
     public long submitScan(final String scan_name, final String commands_as_xml)
             throws RemoteException
     {
+    	cullScans();
+
         try
         {   // Parse received 'main' scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
@@ -205,6 +207,17 @@ public class ScanServerImpl implements ScanServer
         {
             throw new ServerException("Scan Engine error while submitting scan", ex);
         }
+    }
+
+    /** If memory consumption is high, remove (one) older scan */
+	private void cullScans() throws RemoteException
+    {
+	    final double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+		while (getInfo().getMemoryPercentage() > threshold)
+	    {
+	    	if (! scan_engine.removeOldestCompletedScan())
+	    		return;
+	    }
     }
 
 	/** {@inheritDoc} */

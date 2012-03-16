@@ -15,8 +15,10 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ModelItem;
 import org.csstudio.trends.databrowser2.model.PlotSampleArray;
 import org.csstudio.trends.databrowser2.model.PlotSamples;
@@ -24,6 +26,7 @@ import org.csstudio.trends.databrowser2.model.TestSampleBuilder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -103,6 +106,73 @@ public class PlotDemo
 
 		@Override
 		public void addAnnotationChanged(Annotation newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void backgroundColorChanged(Color newValue) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void timeAxisForegroundColorChanged(Color oldColor,
+				Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisForegroundColorChanged(int index, Color oldColor,
+				Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisTitleChanged(int index, String oldTitle,
+				String newTitle) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
+				boolean newAutoScale) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceNameChanged(int index, String oldName, String newName) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceYAxisChanged(int index, AxisConfig oldConfig,
+				AxisConfig config) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceTypeChanged(int index, TraceType old,
+				TraceType newTraceType) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void traceColorChanged(int index, Color old, Color newColor) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void valueAxisLogScaleChanged(int index, boolean old,
+				boolean logScale) {
 			// TODO Auto-generated method stub
 			
 		}

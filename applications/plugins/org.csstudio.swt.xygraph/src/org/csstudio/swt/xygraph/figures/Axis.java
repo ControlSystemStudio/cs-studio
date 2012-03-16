@@ -85,6 +85,8 @@ public class Axis extends LinearScale{
 	private Range startRange;
 	private Cursor grabbing;
 	private Color revertBackColor;
+	
+
 
 	/**Constructor
 	 * @param title title of the axis
@@ -151,11 +153,20 @@ public class Axis extends LinearScale{
 		revalidate();
 	}
 	@Override
-	public void setForegroundColor(final Color color) {
+	public void setForegroundColor(final Color color) {	
+		Color oldColor = getForegroundColor();
 		super.setForegroundColor(color);
 		if(xyGraph != null)
 			xyGraph.repaint();
+		fireAxisForegroundColorChanged(oldColor, color);
 	}
+	
+	private void fireAxisForegroundColorChanged(Color oldColor,
+			Color newColor) {
+		for(IAxisListener listener : listeners)
+			listener.axisForegroundColorChanged(this, oldColor, newColor);	
+	}
+	
 	@Override
 	public void setBackgroundColor(Color bg) {
 		RGB backRGB = bg.getRGB();
@@ -363,10 +374,19 @@ public class Axis extends LinearScale{
 	 * @param title the title to set
 	 */
 	public void setTitle(final String title) {
+		
+		String oldTitle = this.title;
 		this.title = title;
 		if(xyGraph != null)
 			xyGraph.repaint();
+		fireAxisTitleChanged(oldTitle, title);
 	}
+	
+	private void fireAxisTitleChanged(String oldTitle, String newTitle) {
+		for(IAxisListener listener : listeners)
+			listener.axisTitleChanged(this, oldTitle, newTitle);
+	}
+
 
 	/**
 	 * @return the title
@@ -386,8 +406,18 @@ public class Axis extends LinearScale{
 	 * @param autoScale the autoScale to set
 	 */
 	public void setAutoScale(final boolean autoScale) {
+	
+		boolean oldAutoScale = this.autoScale;
 		this.autoScale = autoScale;
 		performAutoScale(false);
+		fireAxisAutoScaleChanged(oldAutoScale, this.autoScale);
+	}
+
+	private void fireAxisAutoScaleChanged(boolean oldAutoScale,
+			boolean newAutoScale) {
+		for(IAxisListener listener : listeners)
+			listener.axisAutoScaleChanged(this, oldAutoScale, newAutoScale);
+		
 	}
 
 	/**
@@ -666,6 +696,26 @@ public class Axis extends LinearScale{
 	public Grid getGrid() {
 		return grid;
 	}
+
+
+
+	@Override
+	public void setLogScale(boolean enabled) throws IllegalStateException {
+		// TODO Auto-generated method stub
+		boolean old = isLogScaleEnabled();
+		super.setLogScale(enabled);
+		fireAxisLogScaleChanged(old, logScaleEnabled);
+	}
+	
+	private void fireAxisLogScaleChanged(boolean old, boolean logScale) {
+		
+		if(old == logScale)
+			return;
+		
+		for(IAxisListener listener : listeners)
+			listener.axisLogScaleChanged(this, old, logScale);
+	}
+
 
 
 	/** Listener to mouse events, performs panning and some zooms

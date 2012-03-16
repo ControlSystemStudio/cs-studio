@@ -300,6 +300,7 @@ public abstract class AbstractScale extends Figure{
         setDirty(true);
 		revalidate();
 		repaint();
+		
     }
 
 	/**

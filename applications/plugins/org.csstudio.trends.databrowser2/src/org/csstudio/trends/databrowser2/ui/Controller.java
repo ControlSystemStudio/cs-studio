@@ -19,6 +19,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
@@ -42,6 +43,7 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -278,7 +280,101 @@ public class Controller implements ArchiveFetchJobListener
 			@Override
 			public void addAnnotationChanged(Annotation newValue) {
 				model.setAnnotations(plot.getAnnotations());
+			}
+
+			@Override
+			public void backgroundColorChanged(Color newValue) {
+				System.out
+						.println("**** Controller.Controller(...).new PlotListener() {...}.backgroundColorChanged() ****");
+				model.setPlotBackground(newValue.getRGB());		
 			}  
+			
+			
+			@Override
+			public void timeAxisForegroundColorChanged(Color oldColor,
+					Color newColor) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void valueAxisForegroundColorChanged(int index,
+					Color oldColor, Color newColor) {
+				// TODO Auto-generated method stub
+				
+				//System.err.println("valueAxis color changed");
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setColor(newColor.getRGB());
+			}
+
+			@Override
+			public void valueAxisTitleChanged(int index, String oldTitle,
+					String newTitle) {
+				System.err.println("valueAxis title changed");
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setName(newTitle);
+				
+			}
+
+			@Override
+			public void valueAxisAutoScaleChanged(int index,
+					boolean oldAutoScale, boolean newAutoScale) {
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setAutoScale(newAutoScale);
+				
+			}
+			
+			@Override
+			public void traceNameChanged(int index, String oldName,
+					String newName) {
+			
+				//System.err.print("TRACE NEW NAME ");
+				try {
+					System.err.println(model.getItem(index).getName() + " " + model.getItem(index).getDisplayName() );
+					model.getItem(index).setDisplayName(newName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void traceYAxisChanged(int index, AxisConfig oldAxis, AxisConfig newAxis) {
+				//System.out
+					//	.println("**** Controller.Controller(...).new PlotListener() {...}.traceYAxisChanged() ****");
+				ModelItem item = model.getItem(index);
+				System.out.println("AXIS OLD NAME  " + oldAxis.getName() + " NEW NAME " + newAxis.getName());
+				AxisConfig c = model.getAxis(newAxis.getName()); 
+				System.out.println("AXIS CONFIG " + c.getName());
+				item.setAxis(c);
+			}
+
+			@Override
+			public void traceTypeChanged(int index, TraceType old,
+					TraceType newTraceType) {
+				
+				//DO NOTHING
+				//The model trace type is not the same concept that graph settings traceType
+				//The model trace type gather TraceType, PointStyle, ErrorBar graph config settings
+				
+				//ModelItem item = model.getItem(index);
+				//item.setTraceType(org.csstudio.trends.databrowser2.model.TraceType.newTraceType);
+			}
+
+			@Override
+			public void traceColorChanged(int index, Color old, Color newColor) {
+				
+				ModelItem item = model.getItem(index);
+				item.setColor(newColor.getRGB());
+			}
+
+			@Override
+			public void valueAxisLogScaleChanged(int index, boolean old,
+					boolean logScale) {
+				
+				final AxisConfig axis = model.getAxis(index);
+				axis.setLogScale(logScale);
+			}
+
         });
 
         model_listener = new ModelListener()
@@ -550,8 +646,11 @@ public class Controller implements ArchiveFetchJobListener
         for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem item = model.getItem(i);
-            if (item.isVisible())
-                plot.addTrace(item);
+            
+            if (item.isVisible()){
+            	//System.out.println("Controller.createPlotTraces() INDEX " + i + " => " + model.getItem(i).getDisplayName());
+                plot.addTrace(item, i);
+            }
         }
     }
 

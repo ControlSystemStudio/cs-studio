@@ -119,9 +119,9 @@ public interface TODO
      *
      *  Done Other scan configuration GUIs: 'Spreadsheet' table of loop variable, start/end
      *
-     *  TODO 'WaitingForDevices' shows missing devices
+     *  Done 'WaitingForDevices' shows missing devices
      *
-     *  TODO Details of pre- and post scan command progress info
+     *  Done Details of pre- and post scan command progress info
      *
      *  TODO Unclear if devices will ever be anything but PVs.
      *

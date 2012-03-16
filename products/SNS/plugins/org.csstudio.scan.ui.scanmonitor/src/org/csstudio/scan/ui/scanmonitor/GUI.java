@@ -405,7 +405,26 @@ public class GUI implements ScanInfoModelListener
         table.setMenu(menu);
     }
 
-    /** @see ScanInfoModelListener */
+	/** @see ScanInfoModelListener */
+    @Override
+    public void scanServerUpdate(final ScanServerInfo server_info)
+    {
+    	if (mem_info.isDisposed())
+    		return;
+    	mem_info.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mem_info.isDisposed())
+                    return;
+                mem_info.update(server_info.getMemoryInfo(),
+                			server_info.getMemoryPercentage());
+            }
+        });
+    }
+
+	/** @see ScanInfoModelListener */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
@@ -422,11 +441,6 @@ public class GUI implements ScanInfoModelListener
                 // Received update -> enable table and display info
                 table.setEnabled(true);
                 table_viewer.refresh();
-
-                final ScanServerInfo server_info = model.getServerInfo();
-                if (server_info != null)
-                	mem_info.update(server_info.getMemoryInfo(),
-                			server_info.getMemoryPercentage());
             }
         });
     }

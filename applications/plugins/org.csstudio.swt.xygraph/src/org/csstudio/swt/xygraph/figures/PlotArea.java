@@ -46,27 +46,25 @@ public class PlotArea extends Figure {
 
 	@Override
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
+		//System.out.println("**** PlotArea.addPropertyChangeListener() ****");
 		changeSupport.addPropertyChangeListener(listener);
 	}
 
 	@Override
 	public void addPropertyChangeListener(String property,
 			PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
+		//System.out.println("**** PlotArea.addPropertyChangeListener() ****");
 		changeSupport.addPropertyChangeListener(property, listener);
 	}
 
 	@Override
 	public void removePropertyChangeListener(PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
 		changeSupport.removePropertyChangeListener(listener);
 	}
 
 	@Override
 	public void removePropertyChangeListener(String property,
 			PropertyChangeListener listener) {
-		// TODO Auto-generated method stub
 		changeSupport.removePropertyChangeListener(property, listener);
 	}
 
@@ -106,12 +104,14 @@ public class PlotArea extends Figure {
 
 	@Override
 	public void setBackgroundColor(final Color bg) {
+		//System.out.println("**** PlotArea.setBackgroundColor() ****");
 		RGB backRGB = bg.getRGB();
 		revertBackColor = XYGraphMediaFactory.getInstance().getColor(
 				255 - backRGB.red, 255 - backRGB.green, 255 - backRGB.blue);
 		Color oldColor = getBackgroundColor();
 		super.setBackgroundColor(bg);
-		firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
+		
+		changeSupport.firePropertyChange(BACKGROUND_COLOR, oldColor, bg);
 
 	}
 
