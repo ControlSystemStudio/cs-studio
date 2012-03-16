@@ -164,11 +164,11 @@ public class ConsoleCommands implements CommandProvider
             {
                 final List<ScanSample> line = sheet.getSamples();
                 for (ScanSample sample : line)
-                    System.out.print(sample + "  ");
-                System.out.println();
+                	intp.print(sample + "  ");
+                intp.println();
             }
             // Dump scan info
-            System.out.println(server.getScanInfo(id));
+            intp.println(server.getScanInfo(id));
         }
         catch (Throwable ex)
         {
