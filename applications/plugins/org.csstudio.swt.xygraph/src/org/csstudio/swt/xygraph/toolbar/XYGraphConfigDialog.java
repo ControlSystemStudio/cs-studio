@@ -264,7 +264,7 @@ public class XYGraphConfigDialog extends Dialog {
 			annotationConfigPage.applyChanges();	
 		
 		//Add L.PHILIPPE
-		xyGraph.setXyGraphMem(XYGraphMementoUtil.createMemento(xyGraph));
+		//xyGraph.setXyGraphMem(XYGraphMementoUtil.createMemento(xyGraph));
 	}
 	
 	@Override

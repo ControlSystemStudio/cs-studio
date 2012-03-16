@@ -18,6 +18,7 @@ import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.ITraceListener;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
@@ -32,6 +33,7 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.XYGraphSettings;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
@@ -409,12 +411,31 @@ public class Plot {
 		final Axis axis = getYAxis(index);
 		axis.setVisible(config.isVisible());
 		axis.setTitle(config.getName());
+		
+		if(config.getFontData() != null)
+			axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(config.getFontData()));
+		
+		if(config.getScaleFontData() != null)
+			axis.setFont(XYGraphMediaFactory.getInstance().getFont(config.getScaleFontData()));
+		
 		axis.setForegroundColor(media_registry.getColor(config.getColor()));
 		plot_changes_valueaxis = true;
 		axis.setRange(config.getMin(), config.getMax());
 		axis.setLogScale(config.isLogScale());
 		axis.setAutoScale(config.isAutoScale());
 		plot_changes_valueaxis = false;
+		
+		//GRID
+		axis.setShowMajorGrid(config.isShowGridLine());
+		axis.setDashGridLine(config.isDashGridLine());
+		
+		if(config.getGridLineColor() != null)
+			axis.setMajorGridColor(media_registry.getColor(config.getGridLineColor()));
+		
+		//FORMAT
+		axis.setAutoFormat(config.isAutoFormat());
+		axis.setFormatPattern(config.getFormat());
+		axis.setDateEnabled(config.isTimeFormatEnabled());
 	}
 
 	/**
@@ -743,8 +764,25 @@ public class Plot {
 					.getXValue() / 1000.0);
 			final double value = annotation.getYValue();
 
-			infos[i] = new AnnotationInfo(timestamp, value, y, title);
+			//ADD Laurent PHILIPPE
+			final CursorLineStyle lineStyle = annotation.getCursorLineStyle();
+			
+			FontData data = null;
+			if(annotation.getFontData() != null)
+				data = annotation.getFontData();
+			
+			RGB rgb = annotation.getAnnotationColorRGB();
+			
+			infos[i] = new AnnotationInfo(timestamp, value, y, title, lineStyle, annotation.isShowName(), annotation.isShowPosition(), data, rgb );
 		}
 		return infos;
+	}
+
+	public XYGraphSettings getGraphSettings() {
+		return XYGraphSettingsUtil.createGraphSettings(plot.getXYGraph());
+	}
+	
+	public void setGraphSettings(XYGraphSettings settings) {
+		XYGraphSettingsUtil.restoreXYGraphPropsFromSettings(plot.getXYGraph(), settings);
 	}
 }
