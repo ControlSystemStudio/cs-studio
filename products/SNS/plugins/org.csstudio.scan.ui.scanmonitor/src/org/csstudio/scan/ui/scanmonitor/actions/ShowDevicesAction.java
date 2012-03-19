@@ -29,16 +29,14 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("nls")
 public class ShowDevicesAction extends AbstractGUIAction
 {
-    final private Shell shell;
-
     /** Initialize
+     *  @param shell Parent shell
      *  @param model
      *  @param info
      */
     public ShowDevicesAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
-        this.shell = shell;
+        super(shell, model, info, Messages.ShowDevices, Activator.getImageDescriptior("icons/information.gif"));
     }
 
     /** {@inheritDoc} */

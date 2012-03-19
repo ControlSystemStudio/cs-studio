@@ -19,6 +19,7 @@ import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that pauses a scan
  *  @author Kay Kasemir
@@ -26,12 +27,13 @@ import org.csstudio.scan.ui.scanmonitor.Messages;
 public class PauseAction extends AbstractGUIAction
 {
     /** Initialize
+     *  @param shell Parent shell
      *  @param model
      *  @param info
      */
-    public PauseAction(final ScanInfoModel model, final ScanInfo info)
+    public PauseAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.Pause, ScanUIActivator.getImageDescriptor("icons/pause.gif")); //$NON-NLS-1$
+        super(shell, model, info, Messages.Pause, ScanUIActivator.getImageDescriptor("icons/pause.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

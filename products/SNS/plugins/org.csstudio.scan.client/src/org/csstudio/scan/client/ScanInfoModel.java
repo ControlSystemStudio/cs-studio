@@ -188,15 +188,24 @@ public class ScanInfoModel
     /** (Re-) connect to the server
      *  @throws Exception on error
      */
-    private synchronized void reconnect() throws Exception
+    private void reconnect() throws Exception
     {
-        if (server != null)
+    	// Only briefly synchronize.
+    	// Connection can take a long time, so do that outside of the sync block.
+    	final ScanServer old_server;
+    	synchronized (this)
         {
-            ScanServerConnector.disconnect(server);
-            server = null;
+	        old_server = server;
+	        server = null;
         }
+        if (old_server != null)
+            ScanServerConnector.disconnect(old_server);
         // Connect to server
-        server = ScanServerConnector.connect();
+        final ScanServer new_server = ScanServerConnector.connect();
+        synchronized (this)
+        {
+	        server = new_server;
+        }
     }
 
     /** @return Server

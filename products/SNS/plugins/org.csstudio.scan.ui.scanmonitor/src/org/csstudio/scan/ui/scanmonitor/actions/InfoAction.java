@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class InfoAction extends AbstractGUIAction
 {
-    final private Shell shell;
-
     /** Initialize
      *  @param shell
      *  @param model
@@ -35,8 +33,7 @@ public class InfoAction extends AbstractGUIAction
      */
     public InfoAction(final Shell shell, final ScanInfoModel model)
     {
-        super(model, null, Messages.Info, Activator.getImageDescriptior("icons/information.gif")); //$NON-NLS-1$
-        this.shell = shell;
+        super(shell, model, null, Messages.Info, Activator.getImageDescriptior("icons/information.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

@@ -377,22 +377,22 @@ public class GUI implements ScanInfoModelListener
                     return;
                 if (info.getState() == ScanState.Paused)
                 {
-                    manager.add(new ResumeAction(model, info));
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new ResumeAction(shell, model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else if (info.getState() == ScanState.Running)
                 {
-                    manager.add(new PauseAction(model, info));
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new PauseAction(shell, model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else if (info.getState() == ScanState.Idle)
                 {
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else
-                    manager.add(new RemoveAction(model, info));
+                    manager.add(new RemoveAction(shell, model, info));
                 manager.add(new Separator());
-                manager.add(new RemoveCompletedAction(model));
+                manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
                 manager.add(new OpenPlotAction(info));
                 manager.add(new ShowDevicesAction(shell, model, info));

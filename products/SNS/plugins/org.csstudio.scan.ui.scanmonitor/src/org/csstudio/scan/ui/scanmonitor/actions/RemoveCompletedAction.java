@@ -18,6 +18,7 @@ package org.csstudio.scan.ui.scanmonitor.actions;
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that removes all completed scans
  *  @author Kay Kasemir
@@ -25,11 +26,12 @@ import org.csstudio.scan.ui.scanmonitor.Messages;
 public class RemoveCompletedAction extends AbstractGUIAction
 {
     /** Initialize
+     *  @param shell Parent shell
      *  @param model
      */
-    public RemoveCompletedAction(final ScanInfoModel model)
+    public RemoveCompletedAction(final Shell shell, final ScanInfoModel model)
     {
-        super(model, null, Messages.RemoveCompleted, Activator.getImageDescriptior("icons/remove_completed.gif")); //$NON-NLS-1$
+        super(shell, model, null, Messages.RemoveCompleted, Activator.getImageDescriptior("icons/remove_completed.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
