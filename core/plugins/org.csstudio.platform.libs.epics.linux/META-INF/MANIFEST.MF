@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JNI bindings for Linux
 Bundle-SymbolicName: org.csstudio.platform.libs.epics.linux
-Bundle-Version: 1.1.6.qualifier
+Bundle-Version: 1.1.7.qualifier
 Fragment-Host: org.csstudio.platform.libs.epics;bundle-version="1.1.6"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: DESY/ORNL/SLAC
-Eclipse-PlatformFilter: (| (osgi.os=linux))
+Eclipse-PlatformFilter: (& (osgi.os=linux) (osgi.arch=x86))
 Bundle-NativeCode: 
  lib/linux/x86/libjca.so;    osname=linux; processor=x86

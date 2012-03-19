@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <databrowser>
+    <XYGraphMemento>
+        <title></title>
+        <title_color>
+            <red>0</red>
+            <green>0</green>
+            <blue>0</blue>
+        </title_color>
+        <title_font>1|Lucida Grande|11.0|0|COCOA|1|LucidaGrande</title_font>
+    </XYGraphMemento>
     <scroll>true</scroll>
     <update_period>0.5</update_period>
     <start>-1 minutes 0.0 seconds</start>
@@ -18,8 +27,8 @@
                 <green>21</green>
                 <blue>196</blue>
             </color>
-            <min>0.0</min>
-            <max>10.0</max>
+            <min>-5.0</min>
+            <max>8.0</max>
             <log_scale>false</log_scale>
             <autoscale>false</autoscale>
             <visible>true</visible>
@@ -32,7 +41,7 @@
                 <blue>20</blue>
             </color>
             <min>0.0</min>
-            <max>10.0</max>
+            <max>20.0</max>
             <log_scale>false</log_scale>
             <autoscale>false</autoscale>
             <visible>true</visible>

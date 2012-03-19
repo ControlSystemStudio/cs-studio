@@ -7,7 +7,6 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console</programArgs>
       <vmArgs>-Djava.awt.headless=true
 -Xms10m
 -Xmx1024m</vmArgs>

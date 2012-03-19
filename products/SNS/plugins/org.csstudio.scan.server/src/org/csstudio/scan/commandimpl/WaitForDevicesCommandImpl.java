@@ -28,6 +28,8 @@ import org.csstudio.scan.server.ScanContext;
 @SuppressWarnings("nls")
 public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCommand>
 {
+	private volatile Condition condition = null;
+
     public WaitForDevicesCommandImpl(final WaitForDevicesCommand command)
     {
         super(command);
@@ -39,8 +41,19 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
     {
 		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
 
-		final Condition ready = new WaitForDevicesCondition(command.getDevices());
-		ready.await();
+		condition = new WaitForDevicesCondition(command.getDevices());
+		condition.await();
+		condition = null;
         context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+    	final Condition active = condition;
+    	if (active != null)
+    		return active.toString();
+        return super.toString();
     }
 }

@@ -79,6 +79,14 @@ public class Preferences
         return ScanServer.DEFAULT_PORT;
     }
 
+
+    /** @return Memory threshold for removing older scans */
+    public static double getOldScanRemovalMemoryThreshold()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", 50.0, null);
+    }
+
     /** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools
      *  with plugin_customization or preference GUI)
