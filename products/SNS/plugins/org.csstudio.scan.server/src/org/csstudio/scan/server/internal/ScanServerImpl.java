@@ -96,7 +96,7 @@ public class ScanServerImpl implements ScanServer
         }
         start_time = new Date();
 
-        final ScanServer stub = (ScanServer) UnicastRemoteObject.exportObject(this, ScanServer.RMI_SCAN_SERVER_PORT);
+        final ScanServer stub = (ScanServer) UnicastRemoteObject.exportObject(this, port+1);
         registry.rebind(ScanServer.RMI_SCAN_SERVER_NAME, stub);
     }
 

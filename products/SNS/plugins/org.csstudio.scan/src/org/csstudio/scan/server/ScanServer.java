@@ -52,6 +52,11 @@ public interface ScanServer extends Remote
      *  <p>Default RMI port is 1099,
      *  but use a different port for the scan server
      *  to avoid conflicts with other RMI tools.
+     *
+     *  <p>Note that the scan server then uses the 'next'
+     *  port for itself.
+     *  So setting this to 4810 means: 4810 will be the RMI registry
+     *  and 4811 will be the scan server published on that registry.
      */
     final public static int DEFAULT_PORT = 4810;
 
@@ -63,9 +68,6 @@ public interface ScanServer extends Remote
 
     /** Name under which this interface is registered with RMI */
     final public static String RMI_SCAN_SERVER_NAME = "ScanServer";
-
-    /** Port on which this interface's implementation is exported with RMI */
-    final public static int RMI_SCAN_SERVER_PORT = 4811;
 
     /** @return Info about the scan server
      *  @throws RemoteException on error in remote access
