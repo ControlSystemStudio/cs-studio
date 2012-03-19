@@ -9,6 +9,7 @@ can only be used within CSS BOY scripts.
 @author: Kay Kasemir
 """
 
+import re
 from org.eclipse.ui import PlatformUI
 from org.csstudio.opibuilder.scriptUtil import PVUtil
 
@@ -41,6 +42,29 @@ def getWidgetPVString(display, widget):
     pv = display.getWidget(widget).getPV()
     return str(PVUtil.getString(pv))
 
+def setWidgetPV(display, widget, value):
+    """Set value of a widget's PV
+       @param display BOY Display
+       @param widget Widget name
+       @param value Value of that PV as string
+    """
+    pv = display.getWidget(widget).getPV()
+    pv.setValue(value)
+
+def incrementScan(name):
+    """When called with a scan name like 'XY Scan',
+       return the next name 'XY Scan1'.
+       When called with name that ends in number
+       like 'XY Scan1', return 'XY Scan2'
+    """
+    pieces = re.match("([^0-9]*)([0-9]+)\\Z", name)
+    if pieces:
+        name = pieces.group(1)
+        number = int(pieces.group(2)) + 1
+    else:
+        # Leave name as received, cannot parse
+        number = 1
+    return name + str(number)
 
 def __showView__(view_id):
     """ Display Eclipse view

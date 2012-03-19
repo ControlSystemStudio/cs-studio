@@ -38,6 +38,4 @@ id = scan(name,
 showScans()
 showPlot(name, id, 'xpos', 'ypos')
 
-
-
-
+setWidgetPV(display, "name", incrementScan(name))
