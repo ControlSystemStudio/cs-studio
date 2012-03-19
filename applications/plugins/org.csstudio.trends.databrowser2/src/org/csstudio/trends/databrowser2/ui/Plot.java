@@ -9,18 +9,16 @@ package org.csstudio.trends.databrowser2.ui;
 
 import java.util.List;
 
-import javax.rmi.CORBA.Tie;
-
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.ITraceListener;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
-import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
