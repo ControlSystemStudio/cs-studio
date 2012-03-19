@@ -91,9 +91,10 @@
       <import plugin="org.eclipse.jdt.core.manipulation" version="1.4.0" match="compatible"/>
       <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
-      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.client" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.ui.plot" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.ui.scantree" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.0.1" match="greaterOrEqual"/>
@@ -102,10 +103,14 @@
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.scan.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
