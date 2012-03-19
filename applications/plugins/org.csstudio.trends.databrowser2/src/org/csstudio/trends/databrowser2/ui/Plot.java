@@ -13,6 +13,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
+import org.csstudio.swt.xygraph.figures.Annotation.CursorLineStyle;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.IAxisListener;
 import org.csstudio.swt.xygraph.figures.ITraceListener;
@@ -32,6 +33,7 @@ import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
+import org.csstudio.trends.databrowser2.model.XYGraphSettings;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LightweightSystem;
@@ -189,7 +191,8 @@ public class Plot
 			public void axisForegroundColorChanged(Axis axis, Color oldColor,
 					Color newColor)
 			{
-				listener.timeAxisForegroundColorChanged(oldColor, newColor);
+				// if(listener != null)
+				// listener.timeAxisForegroundColorChanged(oldColor, newColor);
 			}
 
 			@Override
@@ -211,6 +214,7 @@ public class Plot
 					boolean logScale)
 			{
 				// TODO Auto-generated method stub
+
 			}
 		});
 
@@ -415,14 +419,69 @@ public class Plot
 	public void updateAxis(final int index, final AxisConfig config)
 	{
 		final Axis axis = getYAxis(index);
+		updateAxis(axis, config, false); //False => ValueAxis
+	}
+
+	/**
+	 * Update configuration of time axis
+	 * @param config
+	 *            Desired axis configuration
+	 */
+	public void updateTimeAxis(final AxisConfig config) {
+		final Axis axis = xygraph.getXAxisList().get(0);
+		updateAxis(axis, config, true);
+	}
+
+	/**
+	 * Update configuration of axis
+	 * 
+	 * @param axis The axis to update
+	 * @param config Desired axis configuration
+	 * @param timeAxis Update the time Axis (TRUE) or a value Axis (FALSE)
+	 */
+	private void updateAxis(Axis axis, final AxisConfig config, boolean timeAxis) {
 		axis.setVisible(config.isVisible());
 		axis.setTitle(config.getName());
+
+		if (config.getFontData() != null)
+			axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(
+					config.getFontData()));
+
+		if (config.getScaleFontData() != null)
+			axis.setFont(XYGraphMediaFactory.getInstance().getFont(
+					config.getScaleFontData()));
+
 		axis.setForegroundColor(media_registry.getColor(config.getColor()));
-		plot_changes_valueaxis = true;
-		axis.setRange(config.getMin(), config.getMax());
+
+		if (timeAxis == false) {
+			plot_changes_valueaxis = true;
+			axis.setRange(config.getMin(), config.getMax());
+		} else {
+			plot_changes_timeaxis = true;
+			//IGNORE RANGE because the the range is not set from time axis config but from model start/end
+		}
+		
 		axis.setLogScale(config.isLogScale());
 		axis.setAutoScale(config.isAutoScale());
-		plot_changes_valueaxis = false;
+
+		if (timeAxis == false) {
+			plot_changes_valueaxis = false;
+		} else {
+			plot_changes_timeaxis = false;
+		}	
+
+		// GRID
+		axis.setShowMajorGrid(config.isShowGridLine());
+		axis.setDashGridLine(config.isDashGridLine());
+
+		if (config.getGridLineColor() != null)
+			axis.setMajorGridColor(media_registry.getColor(config
+					.getGridLineColor()));
+
+		// FORMAT
+		axis.setAutoFormat(config.isAutoFormat());
+		axis.setFormatPattern(config.getFormat());
+		axis.setDateEnabled(config.isTimeFormatEnabled());
 	}
 
 	/**
@@ -439,6 +498,7 @@ public class Plot
 
 	/**
 	 * Add a trace to the XYChart
+	 * 
 	 * @param item
 	 *            ModelItem for which to add a trace
 	 * @param modelIndex item index in the model
@@ -457,9 +517,9 @@ public class Plot
 
 		if (modelIndex != null)
 		{
-			//System.out.println("*** Plot.addTrace() "
-			//		+ modelIndex
-			//		+ " => " + item.getDisplayName() + " ****");
+			// System.out.println("*** Plot.addTrace() "
+			// + modelIndex
+			// + " => " + item.getDisplayName() + " ****");
 			// ADD Laurent PHILIPPE
 			trace.addListener(createTraceListener(modelIndex));
 		}
@@ -502,8 +562,7 @@ public class Plot
 
 			@Override
 			public void traceTypeChanged(Trace trace, TraceType old,
-					TraceType newTraceType)
-			{
+					TraceType newTraceType) {
 
 				if (listener == null)
 					return;
@@ -776,8 +835,28 @@ public class Plot
 					.getXValue() / 1000.0);
 			final double value = annotation.getYValue();
 
-			infos[i] = new AnnotationInfo(timestamp, value, y, title);
+			// ADD Laurent PHILIPPE
+			final CursorLineStyle lineStyle = annotation.getCursorLineStyle();
+
+			FontData data = null;
+			if (annotation.getFontData() != null)
+				data = annotation.getFontData();
+
+			RGB rgb = annotation.getAnnotationColorRGB();
+
+			infos[i] = new AnnotationInfo(timestamp, value, y, title,
+					lineStyle, annotation.isShowName(),
+					annotation.isShowPosition(), data, rgb);
 		}
 		return infos;
+	}
+
+	public XYGraphSettings getGraphSettings() {
+		return XYGraphSettingsUtil.createGraphSettings(plot.getXYGraph());
+	}
+
+	public void setGraphSettings(XYGraphSettings settings) {
+		XYGraphSettingsUtil.restoreXYGraphPropsFromSettings(plot.getXYGraph(),
+				settings);
 	}
 }

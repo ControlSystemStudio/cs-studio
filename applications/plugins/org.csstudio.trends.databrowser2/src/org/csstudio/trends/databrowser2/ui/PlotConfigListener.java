@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.eclipse.swt.graphics.Color;
 
 
@@ -22,7 +22,7 @@ import org.eclipse.swt.graphics.Color;
 public class PlotConfigListener implements PropertyChangeListener {
 
 	public String BG_COLOR= "background_color";
-	public String XY_GRAPH_MEMENTO = "xyGraphMem";
+	public String XYGRAPH_CONFIG = "config";
 	public String ANNOTATION_LIST = "annotationList";
 	
 	private PlotListener listener;
@@ -42,10 +42,10 @@ public class PlotConfigListener implements PropertyChangeListener {
 			//System.err.println("BGCOLOR CHANGED");
 		}
 		
-		if(evt.getPropertyName().equals(XY_GRAPH_MEMENTO)){
+		if(evt.getPropertyName().equals(XYGRAPH_CONFIG)){
 			//Configure Graph settings of the plot changed
-			listener.xyGraphMemChanged((XYGraphMemento)evt.getNewValue());
-			System.err.println("**** XYGRAPHMEM CHANGED ****");
+			listener.xyGraphConfigChanged((XYGraph)evt.getNewValue());  
+			//System.err.println("**** XYGRAPHMEM CHANGED ****");
 		}
 		
 		if(evt.getPropertyName().equals(ANNOTATION_LIST)){
