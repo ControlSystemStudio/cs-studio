@@ -102,6 +102,7 @@ public class Axis extends LinearScale{
 	private Cursor grabbing;
 	private Color revertBackColor;
 
+	private RGB colorRGB;
 	private RGB majorGridColorRGB;
 
 	
@@ -182,9 +183,15 @@ public class Axis extends LinearScale{
 	public void setForegroundColor(final Color color) {	
 		Color oldColor = getForegroundColor();
 		super.setForegroundColor(color);
+		colorRGB = color.getRGB();
 		if(xyGraph != null)
 			xyGraph.repaint();
 		fireAxisForegroundColorChanged(oldColor, color);
+	}
+	
+	
+	public RGB getForegroundColorRGB(){
+		return colorRGB;
 	}
 	
 	private void fireAxisForegroundColorChanged(Color oldColor,

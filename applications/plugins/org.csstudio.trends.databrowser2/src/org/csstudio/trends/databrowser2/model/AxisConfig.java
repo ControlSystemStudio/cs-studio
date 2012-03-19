@@ -47,6 +47,11 @@ public class AxisConfig {
 
 	/** Logarithmic scale? */
 	private boolean log_scale;
+	
+	/**
+	 * Fire Event when Axis config changed ?
+	 */
+	private boolean fireEvent;
 
 	
 	// GRID LINE 
@@ -183,7 +188,7 @@ public class AxisConfig {
 	 */
 	public void setVisible(final boolean visible) {
 		this.visible = visible;
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
 	}
 
 	/** @return Axis title */
@@ -197,7 +202,7 @@ public class AxisConfig {
 	 */
 	public void setName(final String name) {
 		this.name = name;
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
 	}
 
 	public FontData getFontData() {
@@ -221,13 +226,17 @@ public class AxisConfig {
 		return rgb;
 	}
 
+	
+	
 	/**
 	 * @param color
 	 *            New color
 	 */
 	public void setColor(final RGB color) {
 		rgb = color;
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
+		
+		
 	}
 
 	/** @return Axis range minimum */
@@ -256,7 +265,7 @@ public class AxisConfig {
 			this.min = max;
 			this.max = min;
 		}
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
 	}
 
 	/** @return Auto-scale? */
@@ -270,7 +279,7 @@ public class AxisConfig {
 	 */
 	public void setAutoScale(final boolean auto_scale) {
 		this.auto_scale = auto_scale;
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
 	}
 
 	/** @return Logarithmic scale? */
@@ -284,7 +293,7 @@ public class AxisConfig {
 	 */
 	public void setLogScale(final boolean log_scale) {
 		this.log_scale = log_scale;
-		fireAxisChangeEvent();
+		if(fireEvent)fireAxisChangeEvent();
 	}
 
 	/** Notify model about changes */
@@ -440,4 +449,14 @@ public class AxisConfig {
 		return new AxisConfig(visible, name, rgb, min, max, auto_scale,
 				log_scale);
 	}
+
+	public boolean isFireEvent() {
+		return fireEvent;
+	}
+
+	public void setFireEvent(boolean fireEvent) {
+		this.fireEvent = fireEvent;
+	}
+
+
 }

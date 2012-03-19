@@ -268,10 +268,9 @@ public class Controller implements ArchiveFetchJobListener
             }
 
 			@Override
-			public void xyGraphMemChanged(XYGraphMemento newValue) {
+			public void xyGraphConfigChanged(XYGraph newValue) {
 				// TODO Auto-generated method stub
-				System.out
-				.println("**** Controller.Controller(...).new ModelListener() {...}.changedXYGraphMemento() ****");
+				model.fireGraphConfigChanged();
 				//model.setXYGraphMem(newValue);
 			}
 
@@ -480,16 +479,22 @@ public class Controller implements ArchiveFetchJobListener
                 plot.updateScrollButton(scroll_enabled);
             }
 
+        
+		
             /**
              * ADD L.PHILIPPE
              */
 			@Override
-			public void changedXYGraphMemento(XYGraphMemento newValue) {
+			public void changedAnnotations() {
+				// TODO Auto-generated method stub
 				
 			}
 
+		    /**
+             * ADD L.PHILIPPE
+             */
 			@Override
-			public void changedAnnotations() {
+			public void changedXYGraphConfig() {
 				// TODO Auto-generated method stub
 				
 			}
@@ -644,6 +649,12 @@ public class Controller implements ArchiveFetchJobListener
         plot.setBackgroundColor(model.getPlotBackground());
         plot.updateScrollButton(model.isScrollEnabled());
         plot.removeAll();
+       
+        
+        //Time axe
+        if(model.getTimeAxis() != null)
+        	plot.updateTimeAxis( model.getTimeAxis());
+        
         for (int i=0; i<model.getAxisCount(); ++i)
             plot.updateAxis(i, model.getAxis(i));
         for (int i=0; i<model.getItemCount(); ++i)

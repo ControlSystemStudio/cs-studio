@@ -27,13 +27,11 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -114,6 +112,8 @@ public class Model
     public static final String TAG_FONT = "font";
 	public static final String TAG_SCALE_FONT = "scale_font";
 	
+	final public static String TAG_TIME_AXIS = "time_axis";
+	
 	
 	//GRID LINE
 	public static final String TAG_GRID_LINE = "grid_line";
@@ -162,8 +162,18 @@ public class Model
 
     /** Axes configurations */
     final private ArrayList<AxisConfig> axes = new ArrayList<AxisConfig>();
+    
+    /** 
+     * Time Axes configurations 
+     * Ignore MIN-MAX part because the range is set by start & end properties 
+     */
+    private  AxisConfig timeAxis;
 
-    /** All the items in this model */
+    public AxisConfig getTimeAxis() {
+		return timeAxis;
+	}
+
+	/** All the items in this model */
     final private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
 
     /** 'run' flag
@@ -212,10 +222,10 @@ public class Model
 		//fireXYGraphMemChanged(settings);
 	}
 	
-	protected void fireXYGraphMemChanged(XYGraphMemento xYGraphMem) {
+	public void fireGraphConfigChanged() {
 		
 		for (ModelListener listener : listeners)
-	            listener.changedXYGraphMemento(xYGraphMem);
+	            listener.changedXYGraphConfig();
 	}
 	
     /** @param macros Macros to use in this model */
@@ -879,6 +889,14 @@ public class Model
             XMLWriter.XML(writer, 1, TAG_END, getEndTime());
         }
         
+        // Time axis config
+        XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+        timeAxis.write(writer);
+        XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+        
+        
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
@@ -910,7 +928,11 @@ public class Model
         writer.close();
     }
 
-    /** Read XML formatted Model content.
+    public void setTimeAxis(AxisConfig timeAxis) {
+		this.timeAxis = timeAxis;
+	}
+
+	/** Read XML formatted Model content.
      *  @param stream InputStream, will be closed when done.
      *  @throws Exception on error
      *  @throws RuntimeException if model was already in use
@@ -965,6 +987,15 @@ public class Model
             archive_rescale = ArchiveRescale.STAGGER;
         }
 
+        // Load Time Axe
+        Element timeAxeNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);  
+        if (timeAxeNode != null)
+        {
+            // Load PV items  
+           Element axisNode = DOMHelper.findFirstElementNode(timeAxeNode.getFirstChild(), TAG_AXIS);
+           timeAxis = AxisConfig.fromDocument(axisNode);
+        }
+        
         // Load Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)

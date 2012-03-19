@@ -77,6 +77,10 @@ public class XYGraph extends Figure{
 			PropertyChangeListener listener) {
 		changeSupport.removePropertyChangeListener(property, listener);
 	}
+	
+	public void fireConfigChanged() {
+		changeSupport.firePropertyChange("config", null, this);
+	}
 
 
 	/**

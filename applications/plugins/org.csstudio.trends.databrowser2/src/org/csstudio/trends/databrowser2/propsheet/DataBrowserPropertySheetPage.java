@@ -736,13 +736,13 @@ public class DataBrowserPropertySheetPage extends Page
     }
 
 	@Override
-	public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+	public void changedAnnotations() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void changedAnnotations() {
+	public void changedXYGraphConfig() {
 		// TODO Auto-generated method stub
 		
 	}

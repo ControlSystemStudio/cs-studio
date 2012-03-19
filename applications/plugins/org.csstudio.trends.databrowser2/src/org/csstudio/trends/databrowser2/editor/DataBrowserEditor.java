@@ -219,12 +219,13 @@ public class DataBrowserEditor extends EditorPart
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
 
+		
 			@Override
-			public void changedXYGraphMemento(XYGraphMemento xYGraphMem) 
+			public void changedAnnotations() 
 			{   setDirty(true);   }
 
 			@Override
-			public void changedAnnotations() 
+			public void changedXYGraphConfig() 
 			{   setDirty(true);   }
         };
         model.addListener(model_listener);
@@ -488,7 +489,17 @@ public class DataBrowserEditor extends EditorPart
                         
                     	  //TIME AXIS 
                     	 Axis timeAxis = plot.getXYGraph().getXAxisList().get(0);
-                    	// setAxisConfig(model.getTimeA, axis)
+                    	 AxisConfig confTime = model.getTimeAxis();
+                    
+                    	 System.out
+								.println("DataBrowserEditor.saveToFile(...).new Runnable() {...}.run() " + timeAxis.getTitle());
+                    	 
+                    	 if(confTime == null){
+                    		 confTime = new AxisConfig(timeAxis.getTitle());
+                    		 model.setTimeAxis(confTime);
+                    	 }
+                    	 
+                    	 setAxisConfig(confTime, timeAxis);
                     	  
                     	  
                     	 for(int i= 0; i < model.getAxisCount(); i++){
@@ -533,10 +544,25 @@ public class DataBrowserEditor extends EditorPart
         return true;
     }
     
+    
+    /**
+     * Set AxisConfigProperties from Axis 
+     * @param conf
+     * @param axis
+     */
     private void setAxisConfig(AxisConfig conf , Axis axis){
+    	
+    	 //Don't fire axis change event to avoid SWT Illegal Thread Access
+    	 conf.setFireEvent(false);
+    		
     	 conf.setFontData(axis.getTitleFontData());
-		 conf.setScaleFontData(axis.getScaleFontData());
+    	 conf.setColor(axis.getForegroundColorRGB());
+    	 conf.setScaleFontData(axis.getScaleFontData());
 		 
+    	 
+    	 //MIN MAX RANGE
+    	 conf.setRange(axis.getRange().getLower(), axis.getRange().getUpper());
+    	 
 		 //GRID
 		 conf.setShowGridLine(axis.isShowMajorGrid());
 		 conf.setDashGridLine(axis.isDashGridLine());
@@ -546,5 +572,7 @@ public class DataBrowserEditor extends EditorPart
 		 conf.setAutoFormat(axis.isAutoFormat());
 		 conf.setTimeFormatEnabled(axis.isDateEnabled());
 		 conf.setFormat(axis.getFormatPattern());
+		 
+		 conf.setFireEvent(true);
     }
 }
