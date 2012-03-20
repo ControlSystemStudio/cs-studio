@@ -25,7 +25,7 @@
       </command>
    </extension>
    <extension
-         id="AmsDeliverySystemProduct"
+         id="AmsDeliveryProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
@@ -33,6 +33,18 @@
          <property
                name="appName"
                value="AmsDeliverySystem">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="AmsJmsDeliverySystemProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
+            name="AmsJmsDeliverySystem">
+         <property
+               name="appName"
+               value="AmsJmsDeliverySystem">
          </property>
       </product>
    </extension>

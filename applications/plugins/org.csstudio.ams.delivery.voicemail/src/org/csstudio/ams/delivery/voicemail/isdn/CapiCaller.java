@@ -114,7 +114,7 @@ public class CapiCaller implements MetadataListener {
         String key = null;
         boolean repeat = true;
         
-        if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+        if(speech.getLocal().compareToIgnoreCase("de") == 0) {
             baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         } else {
             baos = speech.getAudioStream("Hello. This is a message from the alarm system.  Use key 1 to hear the text.");            
@@ -184,7 +184,7 @@ public class CapiCaller implements MetadataListener {
                 writeStream(message);
 
                 // Send info / menu text
-                if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+                if(speech.getLocal().compareToIgnoreCase("de") == 0) {
                     writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 } else {
                     writeStream("Use key 1, if you want to hear the text again.");
@@ -201,7 +201,7 @@ public class CapiCaller implements MetadataListener {
                 }
             }
             
-            if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+            if(speech.getLocal().compareToIgnoreCase("de") == 0) {
                 writeStream("Danke. Auf Wiederhören.");
             } else {
                 writeStream("Thank you. Good bye.");
@@ -252,7 +252,7 @@ public class CapiCaller implements MetadataListener {
         String key = null;
         boolean repeat = true;
         
-        if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+        if(speech.getLocal().compareToIgnoreCase("de") == 0) {
             baos = speech.getAudioStream("Guten Tag. Dies ist eine Nachricht des Alarmsystems. Benutzen Sie die Taste 1, um den Text zu hören.");
         } else {
             baos = speech.getAudioStream("Hello. This is a message from the alarm system. Use key 1 to hear the text.");            
@@ -325,7 +325,7 @@ public class CapiCaller implements MetadataListener {
                 
                 writeStream(message);
                 
-                if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+                if(speech.getLocal().compareToIgnoreCase("de") == 0) {
                     writeStream("Benutzen Sie die Taste 1, wenn Sie den Text nochmal hören wollen.");
                 } else {
                     writeStream("Use key 1, if you want to hear the text again.");
@@ -343,7 +343,7 @@ public class CapiCaller implements MetadataListener {
             }
             
             // Confirmation code
-            if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+            if(speech.getLocal().compareToIgnoreCase("de") == 0) {
                 writeStream("Geben Sie Ihren BestÃ¤tigungsnummer ein und drücken Sie dann die Rautetaste.");
             } else {
                 writeStream("Type in your confirmation code and press the hash or pound key.");
@@ -356,7 +356,7 @@ public class CapiCaller implements MetadataListener {
             }
             
             //TODO:
-            if(speech.getInputType().compareToIgnoreCase("text_de") == 0) {
+            if(speech.getLocal().compareToIgnoreCase("de") == 0) {
                 writeStream("Danke. Auf Wiederhören.");
             } else {
                 writeStream("Thank you. Good bye.");
