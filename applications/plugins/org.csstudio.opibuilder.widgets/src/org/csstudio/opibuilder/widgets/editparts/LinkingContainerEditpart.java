@@ -180,6 +180,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				getWidgetModel().addChild(child, false); //don't change model's parent.
 			}
 			getWidgetModel().setBackgroundColor(loadTarget.getBackgroundColor());
+			getWidgetModel().setDisplayModel(tempDisplayModel);
 			//tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
@@ -199,9 +200,14 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				layout();
-				if(getExecutionMode() == ExecutionMode.RUN_MODE && 
-						!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize())
+				if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
+						!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
+					Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
+					getWidgetModel().setChildrenGeoSize(new Dimension(
+						childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
+						childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
 					getWidgetModel().scaleChildren();
+				}
 				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
