@@ -13,7 +13,6 @@ import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -91,8 +90,8 @@ public class WaveformView extends DataBrowserAwareView
             public void widgetDisposed(DisposeEvent e)
             {
                 if (color != null)
-                    color.dispose();  
-                
+                    color.dispose();
+
                 // Be ignorant of any change of the current model after
                 // this view is disposed.
                 if (model != null)
@@ -205,14 +204,14 @@ public class WaveformView extends DataBrowserAwareView
     	if (old_model != model) {
     		if (old_model != null)
     			old_model.removeListener(this);
-    		
+
     		if (model != null)
     			model.addListener(this);
     	}
     	update(old_model != model);
     }
-    
-    /** Update combo box of this view. 
+
+    /** Update combo box of this view.
      * @param model_changed set true if the model was changed
      */
     private void update(final boolean model_changed)
@@ -322,7 +321,7 @@ public class WaveformView extends DataBrowserAwareView
         timestamp.setText(""); //$NON-NLS-1$
         status.setText(""); //$NON-NLS-1$
     }
-    
+
     /** {@inheritDoc} */
 	@Override
 	public void itemAdded(ModelItem item) {
@@ -377,14 +376,8 @@ public class WaveformView extends DataBrowserAwareView
 	public void scrollEnabled(boolean scroll_enabled) {}
 
 	@Override
-	public void changedAnnotations() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void changedAnnotations() {}
 
 	@Override
-	public void changedXYGraphConfig() {
-		// TODO Auto-generated method stub
-		
-	}
+	public void changedXYGraphConfig() {}
 }

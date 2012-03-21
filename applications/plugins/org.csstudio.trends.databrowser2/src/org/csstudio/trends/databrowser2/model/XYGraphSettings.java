@@ -1,6 +1,5 @@
 package org.csstudio.trends.databrowser2.model;
 
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
@@ -8,16 +7,16 @@ public class XYGraphSettings {
 
 	private String Title;
 	private FontData titleFontData;
-	
+
 	private RGB titleColor;
-	
+
 	//private Color plotAreaBackColor;
-	
+
 	private boolean showTitle;
 	private boolean showLegend;
 	private boolean showPlotAreaBorder;
 	private boolean transparent;
-	
+
 	public String getTitle() {
 		return Title;
 	}
