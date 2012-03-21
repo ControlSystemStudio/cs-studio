@@ -12,31 +12,59 @@
 source settings.sh
 
 # Fetch new copy of sources
-ant clean
+$ANT clean
 
 echo Fetching sources
-ant get_sources
+$ANT get_sources
 
-PRODS="config_build_Basic_CSS config_build_SNS_CSS config_build_optional"
+PRODS="config_build_Basic_CSS config_build_SNS_CSS"
+FEATS="config_build_optional config_build_scan"
 
-# Build products and optional feature
-for prod in $PRODS
+# Build products and features
+for PROD in $PRODS
 do
-    export PROD=$prod
-    echo $prod
-    (cd $prod; sh build.sh)
-    echo Done with $prod
+    echo $PROD
+
+	$ECLIPSE_ANT \
+	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/productBuild/productBuild.xml \
+	  -Dbuilder=`pwd`/$PROD \
+	  -DbuildDirectory=$BUILDDIR \
+	  -Dversion=$VERSION \
+	  -Dbase=$ECLIPSE_BASE \
+	  -Ddeltapack=$DELTAPACK \
+	  -Dqualifier=$QUALIFIER \
+	   > $BUILDDIR/$PROD.log 2>&1
+	   
+	tail $BUILDDIR/$PROD.log
 done
+
+for FEAT in $FEATS
+do
+    echo $FEAT
+
+	$ECLIPSE_ANT \
+	  -buildfile $ECLIPSE/plugins/org.eclipse.pde.build_$PDE_VER*/scripts/build.xml \
+	  -Dbuilder=`pwd`/$FEAT \
+	  -DbuildDirectory=$BUILDDIR \
+	  -Dversion=$VERSION \
+	  -Dbase=$ECLIPSE_BASE \
+	  -Ddeltapack=$DELTAPACK \
+	  -Dqualifier=$QUALIFIER \
+	   > $BUILDDIR/$FEAT.log 2>&1
+	   
+	tail $BUILDDIR/$FEAT.log
+done
+
 
 OK=1
 # Each build log contains 2(!) "BUILD SUCCESSFUL" lines
-for prod in $PRODS
+for out in $PRODS $FEATS
 do
-    if [ `cat $BUILDDIR/$prod.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
+    if [ `cat $BUILDDIR/$out.log | grep -c "BUILD SUCCESSFUL"` -eq 2 ]
     then
-        echo OK: $prod
+        echo OK: $out
     else
-        echo Build failed: $prod
+        echo Build failed: $out
         OK=0
     fi
 done
@@ -47,23 +75,22 @@ then
     mkdir -p $BUILDDIR/apps
     
     ## Basic EPICS
-    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-macosx.$OSWIN.x86.zip  CSS_EPICS_$VERSION apps/epics_css_$VERSION-macosx.$OSWIN.x86.zip
+    sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-macosx.cocoa.x86.zip   CSS_EPICS_$VERSION apps/epics_css_$VERSION-macosx.cocoa.x86.zip
     sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86.zip
     sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION apps/epics_css_$VERSION-linux.gtk.x86_64.zip
     sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86.zip
     sh patch_product.sh I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86_64.zip CSS_EPICS_$VERSION apps/epics_css_$VERSION-win32.win32.x86_64.zip
 
     ## SNS CSS
-    # OS X
-    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.$OSWIN.x86.zip      CSS_$VERSION      apps/sns_css_$VERSION-macosx.$OSWIN.x86.zip
+    sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip       CSS_$VERSION      apps/sns_css_$VERSION-macosx.cocoa.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip          CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip       CSS_$VERSION      apps/sns_css_$VERSION-linux.gtk.x86_64.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip        CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86.zip
 	sh patch_product.sh I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86_64.zip     CSS_$VERSION      apps/sns_css_$VERSION-win32.win32.x86_64.zip
 
-    ## Optional feature is already in buildRepo
+    ## Optional features are already in buildRepo
 
     ## Source code
-    ant zip_sources
+    $ANT zip_sources
 fi
 
