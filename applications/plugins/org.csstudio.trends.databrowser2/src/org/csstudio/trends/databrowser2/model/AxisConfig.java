@@ -17,7 +17,7 @@ import org.w3c.dom.Element;
 
 /**
  * Information about configuration of an axis
- * 
+ *
  * @author Kay Kasemir
  */
 public class AxisConfig {
@@ -47,25 +47,25 @@ public class AxisConfig {
 
 	/** Logarithmic scale? */
 	private boolean log_scale;
-	
+
 	/**
 	 * Fire Event when Axis config changed ?
 	 */
 	private boolean fireEvent;
 
-	
-	// GRID LINE 
-	
+
+	// GRID LINE
+
 	private RGB gridLineColor;
 	private boolean showGridLine;
 	private boolean dashGridLine;
-	
-	
+
+
 	// FORMAT
 	private boolean timeFormatEnabled;
 	private boolean autoFormat;
 	private String format;
-	
+
 
 	public RGB getGridLineColor() {
 		return gridLineColor;
@@ -119,12 +119,12 @@ public class AxisConfig {
 			final double min, final double max, final boolean auto_scale,
 			final boolean log_scale) {
 		this(true, name, null, null, new RGB(0, 0, 0), 0.0, 10.0, false, false,
-				false, true, null, true, false, "");
+				false, true, null, true, false, ""); //$NON-NLS-1$
 	}
 
 	/**
 	 * Initialize
-	 * 
+	 *
 	 * @param name
 	 * @param font
 	 * @param scaleFont
@@ -153,7 +153,7 @@ public class AxisConfig {
 		this.showGridLine = showGridLine;
 		this.dashGridLine = dashGridLine;
 		this.gridLineColor = gridLineColor;
-		
+
 		//FORMAT
 		this.autoFormat = autoFormat;
 		this.timeFormatEnabled = timeFormat;
@@ -162,7 +162,7 @@ public class AxisConfig {
 
 	/**
 	 * Initialize with defaults
-	 * 
+	 *
 	 * @param name
 	 */
 	public AxisConfig(final String name) {
@@ -226,8 +226,8 @@ public class AxisConfig {
 		return rgb;
 	}
 
-	
-	
+
+
 	/**
 	 * @param color
 	 *            New color
@@ -235,8 +235,8 @@ public class AxisConfig {
 	public void setColor(final RGB color) {
 		rgb = color;
 		if(fireEvent)fireAxisChangeEvent();
-		
-		
+
+
 	}
 
 	/** @return Axis range minimum */
@@ -304,7 +304,7 @@ public class AxisConfig {
 
 	/**
 	 * Write XML formatted axis configuration
-	 * 
+	 *
 	 * @param writer
 	 *            PrintWriter
 	 */
@@ -343,11 +343,11 @@ public class AxisConfig {
 
 		if (gridLineColor != null)
 			Model.writeColor(writer, 4, Model.TAG_COLOR, gridLineColor);
-		
+
 		XMLWriter.end(writer, 3, Model.TAG_GRID_LINE);
 		writer.println();
-		
-		//FORMAT 
+
+		//FORMAT
 		XMLWriter.start(writer, 3, Model.TAG_FORMAT);
 		writer.println();
 
@@ -358,7 +358,7 @@ public class AxisConfig {
 		XMLWriter.end(writer, 3, Model.TAG_FORMAT);
 		writer.println();
 
-	
+
 
 		XMLWriter.end(writer, 2, Model.TAG_AXIS);
 
@@ -367,7 +367,7 @@ public class AxisConfig {
 
 	/**
 	 * Create Axis info from XML document
-	 * 
+	 *
 	 * @param node
 	 * @return AxisConfig
 	 * @throws Exception
@@ -379,14 +379,14 @@ public class AxisConfig {
 		String fontInfo = DOMHelper.getSubelementString(node, Model.TAG_FONT);
 
 		FontData fontData = null;
-		if (fontInfo != null && !fontInfo.trim().equals("")) {
+		if (fontInfo != null && !fontInfo.trim().isEmpty()) {
 			fontData = new FontData(fontInfo);
 		}
 
 		fontInfo = DOMHelper.getSubelementString(node, Model.TAG_SCALE_FONT);
 
 		FontData scaleFontData = null;
-		if (fontInfo != null && !fontInfo.trim().equals("")) {
+		if (fontInfo != null && !fontInfo.trim().isEmpty()) {
 			scaleFontData = new FontData(fontInfo);
 		}
 
@@ -406,30 +406,28 @@ public class AxisConfig {
 			rgb = new RGB(0, 0, 0);
 
 		// GRID LINE
-		Element gridNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_GRID_LINE);
-		System.out.println("GRID NODE " + gridNode.getNodeName());
-		
-		final boolean showGridLine = DOMHelper.getSubelementBoolean(gridNode,
-				Model.TAG_SHOW_GRID_LINE, false);
+		boolean showGridLine = false;
+		boolean dashGridLine = false;
+		RGB rgbGridLine = new RGB(0, 0, 0);
+		final Element gridNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_GRID_LINE);
+		if (gridNode != null)
+		{
+			showGridLine = DOMHelper.getSubelementBoolean(gridNode, Model.TAG_SHOW_GRID_LINE, showGridLine);
+			dashGridLine = DOMHelper.getSubelementBoolean(gridNode,	Model.TAG_DASH_GRID_LINE, dashGridLine);
+			rgbGridLine = Model.loadColorFromDocument(gridNode);
+		}
 
-		final boolean dashGridLine = DOMHelper.getSubelementBoolean(gridNode,
-				Model.TAG_DASH_GRID_LINE, false);
-
-		RGB rgbGridLine = Model.loadColorFromDocument(gridNode);
-		
-		// GRID LINE
-				Element formatNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_FORMAT);
-				
-				
-				final boolean autoFormat = DOMHelper.getSubelementBoolean(formatNode,
-						Model.TAG_AUTO_FORMAT, true);
-
-				final boolean timeFormat = DOMHelper.getSubelementBoolean(formatNode,
-						Model.TAG_TIME_FORMAT, false);
-				
-				final String format = DOMHelper.getSubelementString(formatNode,
-						Model.TAG_FORMAT_PATTERN, "");
-
+		// FORMAT
+		boolean autoFormat = true;
+		boolean timeFormat = false;
+		String format = ""; //$NON-NLS-1$
+		final Element formatNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_FORMAT);
+		if (formatNode != null)
+		{
+			autoFormat = DOMHelper.getSubelementBoolean(formatNode,	Model.TAG_AUTO_FORMAT, autoFormat);
+			timeFormat = DOMHelper.getSubelementBoolean(formatNode, Model.TAG_TIME_FORMAT, timeFormat);
+			format = DOMHelper.getSubelementString(formatNode, Model.TAG_FORMAT_PATTERN, format);
+		}
 
 		return new AxisConfig(visible, name, fontData, scaleFontData, rgb, min,
 				max, auto_scale, log_scale, showGridLine, dashGridLine,

@@ -10,7 +10,6 @@ package org.csstudio.trends.databrowser2.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Test;
 
@@ -104,18 +103,18 @@ public class ModelListenerHeadlessTest
             ++changes;
         }
 
-	
+
 
 		@Override
 		public void changedAnnotations() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void changedXYGraphConfig() {
 			// TODO Auto-generated method stub
-			
+
 		}
     };
 
@@ -184,7 +183,7 @@ public class ModelListenerHeadlessTest
         assertEquals(8, changes);
         item.setVisible(false);
         assertEquals(8, changes);
-        
+
         // Change waveform index
         item.setWaveformIndex(1);
         assertEquals(9, changes);

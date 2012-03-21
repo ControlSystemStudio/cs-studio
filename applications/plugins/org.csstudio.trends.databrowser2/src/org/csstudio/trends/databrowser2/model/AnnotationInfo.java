@@ -42,13 +42,13 @@ public class AnnotationInfo
 	final private double value;
 	final private int axis;
 	final private String title;
-	
-	//ADD Laurent PHILIPPE 
+
+	//ADD Laurent PHILIPPE
 	final private CursorLineStyle cursorLineStyle;
 	final private boolean showName;
 	final private boolean showPosition;
 	/**
-	 * Add because getTitleFont send a SWTERROR if the receiver is dispose. 
+	 * Add because getTitleFont send a SWTERROR if the receiver is dispose.
 	 * It is the case when you save the plt file after ask to close CSS.
 	 */
 	final private FontData FontData;
@@ -61,10 +61,10 @@ public class AnnotationInfo
 	}
 
 	final private RGB Color;
-	
-	
+
+
 	//No need to save Sample Information and show sample information
-	
+
 	public boolean isShowName() {
 		return showName;
 	}
@@ -76,7 +76,7 @@ public class AnnotationInfo
 	public AnnotationInfo(final ITimestamp timestamp, final double value, final int axis,
 			final String title, CursorLineStyle lineStyle, final boolean showName, final boolean showPosition, final FontData fontData, final RGB color)
     {
-		
+
 		this.timestamp = timestamp;
 		this.value = value;
 		this.axis = axis;
@@ -86,7 +86,7 @@ public class AnnotationInfo
 		this.showPosition = showPosition;
 		this.FontData = fontData;
 		this.Color = color;
-		
+
     }
 
 	public AnnotationInfo(final ITimestamp timestamp, final double value, final int axis,
@@ -141,20 +141,20 @@ public class AnnotationInfo
         XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_CURSOR_LINE_STYLE, cursorLineStyle.name());
         XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_NAME, showName);
         XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_SHOW_POSITION, showPosition);
-        
+
         if(Color != null)
 	    	 Model.writeColor(writer, 3, Model.TAG_ANNOTATION_COLOR, Color);
-	   
-	    
+
+
 	     if(FontData != null)
 	    	 XMLWriter.XML(writer, 3, Model.TAG_ANNOTATION_FONT, FontData);
-        
+
         XMLWriter.end(writer, 2, Model.TAG_ANNOTATION);
-        
-        
+
+
         writer.println();
     }
-  
+
     /** Create {@link AnnotationInfo} from XML document
      *  @param node XML node with item configuration
      *  @return PVItem
@@ -168,19 +168,18 @@ public class AnnotationInfo
         final double value = DOMHelper.getSubelementDouble(node, Model.TAG_VALUE, 0.0);
         final int axis = DOMHelper.getSubelementInt(node, Model.TAG_AXIS, 0);
 		final String title = DOMHelper.getSubelementString(node, Model.TAG_NAME, "Annotation"); //$NON-NLS-1$
-		final String lineStyle = DOMHelper.getSubelementString(node, Model.TAG_ANNOTATION_CURSOR_LINE_STYLE, CursorLineStyle.NONE.name()); //$NON-NLS-1$
-		
-		final boolean showName = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_NAME, false); 
-		final boolean showPosition = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_POSITION, false); 
-		
-		final RGB Color = Model.loadColorFromDocument(node, Model.TAG_ANNOTATION_COLOR);	
+		final String lineStyle = DOMHelper.getSubelementString(node, Model.TAG_ANNOTATION_CURSOR_LINE_STYLE, CursorLineStyle.NONE.name());
+
+		final boolean showName = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_NAME, false);
+		final boolean showPosition = DOMHelper.getSubelementBoolean(node, Model.TAG_ANNOTATION_SHOW_POSITION, false);
+
+		final RGB Color = Model.loadColorFromDocument(node, Model.TAG_ANNOTATION_COLOR);
 		String fontInfo = DOMHelper.getSubelementString(node, Model.TAG_ANNOTATION_FONT);
-	
+
 		FontData fontData = null;
-		if(fontInfo != null && !fontInfo.trim().equals("")){
+		if (fontInfo != null && !fontInfo.trim().isEmpty())
 			fontData = new FontData(fontInfo);
-		}
-		
+
         return new AnnotationInfo(timestamp, value, axis, title, CursorLineStyle.valueOf(lineStyle), showName, showPosition, fontData, Color);
     }
 
