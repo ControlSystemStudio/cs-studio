@@ -4,6 +4,7 @@
  */
 package org.epics.graphene;
 
+import java.math.BigDecimal;
 import java.text.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -135,17 +136,18 @@ public class ValueAxis {
     static double incrementForRange(double min, double max, int maxTick, double minIncrement) {
         double range = max - min;
         double increment = Math.max(range/maxTick, minIncrement);
-        double magnitude = Math.pow(10.0, orderOfMagnitude(increment));
-        double normalizedIncrement = increment / magnitude;
+        int order = (int) orderOfMagnitude(increment);
+        BigDecimal magnitude = BigDecimal.ONE.scaleByPowerOfTen(order);
+        double normalizedIncrement = increment / magnitude.doubleValue();
         
         if (normalizedIncrement <= 1.0) {
-            return magnitude;
+            return magnitude.doubleValue();
         } else if (normalizedIncrement <= 2.0) {
-            return magnitude * 2;
+            return magnitude.multiply(BigDecimal.valueOf(2)).doubleValue();
         } else if (normalizedIncrement <= 5.0) {
-            return magnitude * 5;
+            return magnitude.multiply(BigDecimal.valueOf(5)).doubleValue();
         } else {
-            return magnitude * 10;
+            return magnitude.multiply(BigDecimal.valueOf(10)).doubleValue();
         }
     }
     
@@ -172,9 +174,9 @@ public class ValueAxis {
      * @return values for the ticks
      */
     static double[] createTicks(double min, double max, double increment) {
-        int start = (int) Math.ceil(min / increment);
-        int end = (int) Math.floor(max / increment);
-        double[] ticks = new double[end-start+1];
+        long start = (long) Math.ceil(min / increment);
+        long end = (long) Math.floor(max / increment);
+        double[] ticks = new double[(int) (end-start+1)];
         for (int i = 0; i < ticks.length; i++) {
             ticks[i] = (i + start) * increment;
         }
