@@ -347,9 +347,9 @@
       </widget>
       <widget
             category="Others"
-            description="A container with a moveble sash."
+            description="A container with a moveble sash inside."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.SashContainerEditPart"
-            icon="icons/groupContainer.png"
+            icon="icons/SashContainer.png"
             model_class="org.csstudio.opibuilder.widgets.model.SashContainerModel"
             name="Sash Container"
             typeId="org.csstudio.opibuilder.widgets.sashContainer">
