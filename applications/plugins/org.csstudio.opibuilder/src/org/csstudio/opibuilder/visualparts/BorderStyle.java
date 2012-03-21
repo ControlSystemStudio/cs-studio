@@ -65,7 +65,9 @@ public enum BorderStyle {
 	
 	TITLE_BAR("Title Bar Style"),
 	
-    GROUP_BOX("Group Box Style");
+    GROUP_BOX("Group Box Style"),
+    
+    ROUND_RECTANGLE_BACKGROUND ("Round Rectangle Background");
    
 	
 	private String description;

@@ -367,13 +367,13 @@ public class SampleView extends DataBrowserAwareView
 	public void scrollEnabled(boolean scroll_enabled) {}
 
 	@Override
-	public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+	public void changedAnnotations() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void changedAnnotations() {
+	public void changedXYGraphConfig() {
 		// TODO Auto-generated method stub
 		
 	}

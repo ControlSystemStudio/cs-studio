@@ -8,6 +8,7 @@
 package org.csstudio.swt.xygraph.figures;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.util.SWTConstants;
@@ -22,12 +23,14 @@ public class Grid extends Figure implements IAxisListener{
 
 	private Axis axis;
 
+
 	public Grid(Axis axis) {
 		axis.addListener(this);
 		this.axis = axis;
 		axis.setGrid(this);
 
 	}
+
 
 	@Override
 	protected void paintFigure(Graphics graphics) {
@@ -79,4 +82,6 @@ public class Grid extends Figure implements IAxisListener{
 		// TODO Auto-generated method stub
 		
 	}
+
+
 }

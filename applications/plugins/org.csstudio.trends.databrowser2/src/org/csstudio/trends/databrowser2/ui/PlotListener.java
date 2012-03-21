@@ -11,7 +11,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.eclipse.swt.graphics.Color;
@@ -63,7 +63,7 @@ public interface PlotListener
 	 * @param newValue
 	 *            The new graph settings
 	 */
-	public void xyGraphMemChanged(XYGraphMemento newValue);
+	public void xyGraphConfigChanged(XYGraph newValue);
 
 	/**
 	 * Called when the user remove an annotation

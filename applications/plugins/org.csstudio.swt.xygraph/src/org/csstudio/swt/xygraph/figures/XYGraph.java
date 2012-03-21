@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.rmi.CORBA.Tie;
+
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.csstudio.swt.xygraph.linearscale.Range;
@@ -75,6 +77,10 @@ public class XYGraph extends Figure{
 			PropertyChangeListener listener) {
 		changeSupport.removePropertyChangeListener(property, listener);
 	}
+	
+	public void fireConfigChanged() {
+		changeSupport.firePropertyChange("config", null, this);
+	}
 
 
 	/**
@@ -132,9 +138,17 @@ public class XYGraph extends Figure{
 	 *  can crash.
 	 */
 	private String title = "";
+
+
+
 	private Color titleColor;
+
 	private Label titleLabel;
 
+	//ADD BECAUSE OF SWT invalid Thread acess on getTitleColor()
+	private FontData titleFontData;
+	private RGB titleColorRgb; 
+	
 	private List<Axis> xAxisList;
 	private List<Axis> yAxisList;
 	private PlotArea plotArea;
@@ -146,6 +160,7 @@ public class XYGraph extends Figure{
 	private OperationsManager operationsManager;
 
 	private ZoomType zoomType;
+
 
 	/**
 	 * Constructor.
@@ -475,6 +490,7 @@ public class XYGraph extends Figure{
 	 */
 	public void setTitleFont(Font titleFont) {
 		titleLabel.setFont(titleFont);
+		titleFontData = titleFont.getFontData()[0];
 	}
 
 	/**
@@ -483,6 +499,12 @@ public class XYGraph extends Figure{
 	public Font getTitleFont(){
 		return titleLabel.getFont();
 	}
+	
+	
+
+	public FontData getTitleFontData() {
+		return titleFontData;
+	}
 
 	/**
 	 * @param titleColor the titleColor to set
@@ -490,6 +512,7 @@ public class XYGraph extends Figure{
 	public void setTitleColor(Color titleColor) {
 		this.titleColor = titleColor;
 		titleLabel.setForegroundColor(titleColor);
+		this.titleColorRgb = titleColor.getRGB();
 	}
 
 	/**
@@ -542,6 +565,11 @@ public class XYGraph extends Figure{
 		if(titleColor == null)
 			return getForegroundColor();
 		return titleColor;
+	}
+	
+	
+	public RGB getTitleColorRgb() {
+		return titleColorRgb;
 	}
 
 	/**

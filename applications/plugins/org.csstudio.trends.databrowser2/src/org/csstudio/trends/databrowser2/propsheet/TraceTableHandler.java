@@ -112,13 +112,14 @@ public class TraceTableHandler implements IStructuredContentProvider
         
         @Override
         public void scrollEnabled(final boolean scroll_enabled) { /* Ignored */ }
+	
 		@Override
-		public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+		public void changedAnnotations() {
 			// TODO Auto-generated method stub
 			
 		}
 		@Override
-		public void changedAnnotations() {
+		public void changedXYGraphConfig() {
 			// TODO Auto-generated method stub
 			
 		}

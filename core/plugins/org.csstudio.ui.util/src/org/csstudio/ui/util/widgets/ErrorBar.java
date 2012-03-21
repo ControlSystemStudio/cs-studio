@@ -14,16 +14,27 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.wb.swt.ResourceManager;
 
+/**
+ * An error bar to display an exception message and the details in a pop-up.
+ * 
+ * @author carcassi
+ *
+ */
 public class ErrorBar extends Composite {
 
 	private Label errorImage;
 	private CLabel errorLabel;
 	private Exception exception;
+	private int marginTop = 0;
+	private int marginBottom = 0;
+	private int marginLeft = 0;
+	private int marginRight = 0;
 	
 	/**
-	 * Create the composite.
-	 * @param parent
-	 * @param style
+	 * Create a new error bar.
+	 * 
+	 * @param parent widget parent
+	 * @param style style of the widget
 	 */
 	public ErrorBar(Composite parent, int style) {
 		super(parent, style);
@@ -71,6 +82,10 @@ public class ErrorBar extends Composite {
 				gd = (GridData) errorImage.getLayoutData();
 				gd.exclude = true;
 				errorImage.setLayoutData(gd);
+				((GridLayout) getLayout()).marginBottom = 0;
+				((GridLayout) getLayout()).marginTop = 0;
+				((GridLayout) getLayout()).marginLeft = 0;
+				((GridLayout) getLayout()).marginRight = 0;
 			} else {
 				ex.printStackTrace();
 				errorLabel.setToolTipText(ex.getMessage());
@@ -81,9 +96,91 @@ public class ErrorBar extends Composite {
 				gd = (GridData) errorImage.getLayoutData();
 				gd.exclude = false;
 				errorImage.setLayoutData(gd);
+				((GridLayout) getLayout()).marginBottom = marginBottom;
+				((GridLayout) getLayout()).marginTop = marginTop;
+				// We always want at least one pixel on the left
+				((GridLayout) getLayout()).marginLeft = marginLeft + 1;
+				((GridLayout) getLayout()).marginRight = marginRight;
 			}
 			getParent().layout();
 		}
 	}
+
+	/**
+	 * The margin on the top of the error bar, if displayed.
+	 * 
+	 * @return the top margin
+	 */
+	public int getMarginTop() {
+		return marginTop;
+	}
+
+	/**
+	 * Changes the margin on the top of the error bar, if displayed.
+	 * 
+	 * @param marginTop the new margin
+	 */
+	public void setMarginTop(int marginTop) {
+		this.marginTop = marginTop;
+		getParent().layout();
+	}
+
+	/**
+	 * The margin on the bottom of the error bar, if displayed.
+	 * 
+	 * @return the top margin
+	 */
+	public int getMarginBottom() {
+		return marginBottom;
+	}
+
+	/**
+	 * Changes the margin on the bottom of the error bar, if displayed.
+	 * 
+	 * @param marginBottom the new margin
+	 */
+	public void setMarginBottom(int marginBottom) {
+		this.marginBottom = marginBottom;
+		getParent().layout();
+	}
+
+	/**
+	 * The margin on the left of the error bar, if displayed.
+	 * 
+	 * @return the left margin
+	 */
+	public int getMarginLeft() {
+		return marginLeft;
+	}
+
+	/**
+	 * Changes the margin on the left of the error bar, if displayed.
+	 * 
+	 * @param marginLeft the new margin
+	 */
+	public void setMarginLeft(int marginLeft) {
+		this.marginLeft = marginLeft;
+		getParent().layout();
+	}
+
+	/**
+	 * The margin on the right of the error bar, if displayed.
+	 * 
+	 * @return the right margin
+	 */
+	public int getMarginRight() {
+		return marginRight;
+	}
+
+	/**
+	 * Changes the margin on the right of the error bar, if displayed.
+	 * 
+	 * @param marginRight the new margin
+	 */
+	public void setMarginRight(int marginRight) {
+		this.marginRight = marginRight;
+		getParent().layout();
+	}
+	
 
 }

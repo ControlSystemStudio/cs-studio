@@ -27,13 +27,11 @@ import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
+import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,20 +87,51 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
+  
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
+	public static final String TAG_ANNOTATION_CURSOR_LINE_STYLE = "line_style";
+	public static final String TAG_ANNOTATION_SHOW_NAME = "show_name";
+	public static final String TAG_ANNOTATION_SHOW_POSITION = "show_position";
+	public static final String TAG_ANNOTATION_COLOR = "color";
+	public static final String TAG_ANNOTATION_FONT = "font";
+	
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
     final public static String TAG_WAVEFORM_INDEX = "waveform_index";
     
-    
+     
     /**AJOUT XYGraphMemento
      * @author L.PHILIPPE GANIL
      */
-    final public static String TAG_XYGRAPHMEMENTO = "XYGraphMemento";
     final public static String TAG_TITLE = "title";
-    final public static String TAG_TITLE_COLOR= "title_color";
-    final public static String TAG_TITLE_FONT ="title_font";
+    final public static String TAG_TITLE_TEXT = "text";
+    final public static String TAG_TITLE_COLOR= "color";
+    final public static String TAG_TITLE_FONT ="font";
+    
+    public static final String TAG_FONT = "font";
+	public static final String TAG_SCALE_FONT = "scale_font";
+	
+	final public static String TAG_TIME_AXIS = "time_axis";
+	
+	
+	//GRID LINE
+	public static final String TAG_GRID_LINE = "grid_line";
+	public static final String TAG_SHOW_GRID_LINE = "show_grid_line";
+	public static final String TAG_DASH_GRID_LINE = "dash_grid_line";
+	
+	//FORMAT
+	public static final String TAG_FORMAT = "format";
+	public static final String TAG_AUTO_FORMAT = "auto_format";
+	public static final String TAG_TIME_FORMAT = "time_format";
+	public static final String TAG_FORMAT_PATTERN = "format_pattern";
+
+    
+    public static final String TAG_GRAPH_SETTINGS = "graph_settings";
+    public static final String TAG_SHOW_TITLE = "show_title";
+    public static final String TAG_SHOW_LEGEND = "show_legend";
+    public static final String TAG_SHOW_PLOT_AREA_BORDER = "show_plot_area_border";
+    public static final String TAG_TRANSPARENT = "transparent";
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -133,8 +162,18 @@ public class Model
 
     /** Axes configurations */
     final private ArrayList<AxisConfig> axes = new ArrayList<AxisConfig>();
+    
+    /** 
+     * Time Axes configurations 
+     * Ignore MIN-MAX part because the range is set by start & end properties 
+     */
+    private  AxisConfig timeAxis;
 
-    /** All the items in this model */
+    public AxisConfig getTimeAxis() {
+		return timeAxis;
+	}
+
+	/** All the items in this model */
     final private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
 
     /** 'run' flag
@@ -172,22 +211,21 @@ public class Model
      *  Manage XYGraph Configuration Settings
      *  @author L.PHILIPPE GANIL
      */
-	private XYGraphMemento XYGraphMem = new XYGraphMemento();
+	private XYGraphSettings graphSettings = new XYGraphSettings();
 
-    public XYGraphMemento getXYGraphMem() {
-		return XYGraphMem;
+    public XYGraphSettings getGraphSettings() {
+		return graphSettings;
 	}
 
-	public void setXYGraphMem(XYGraphMemento xYGraphMem) {
-		XYGraphMem = xYGraphMem;
-		fireXYGraphMemChanged(XYGraphMem);
+	public void setGraphSettings(XYGraphSettings xYGraphMem) {
+		graphSettings = xYGraphMem;
+		//fireXYGraphMemChanged(settings);
 	}
 	
-	protected void fireXYGraphMemChanged(XYGraphMemento xYGraphMem) {
-		// TODO Auto-generated method stub 
+	public void fireGraphConfigChanged() {
 		
 		for (ModelListener listener : listeners)
-	            listener.changedXYGraphMemento(xYGraphMem);
+	            listener.changedXYGraphConfig();
 	}
 	
     /** @param macros Macros to use in this model */
@@ -833,7 +871,7 @@ public class Model
        
         //L.PHILIPPE
         //Save config graph settings
-        XYGraphMementoXMLUtil XYGraphMemXML = new XYGraphMementoXMLUtil(XYGraphMem);
+        XYGraphSettingsXMLUtil XYGraphMemXML = new XYGraphSettingsXMLUtil(graphSettings);
         XYGraphMemXML.write(writer);
         
         
@@ -850,6 +888,14 @@ public class Model
             XMLWriter.XML(writer, 1, TAG_START, getStartTime());
             XMLWriter.XML(writer, 1, TAG_END, getEndTime());
         }
+        
+        // Time axis config
+        XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+        timeAxis.write(writer);
+        XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+        
         
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
@@ -882,7 +928,11 @@ public class Model
         writer.close();
     }
 
-    /** Read XML formatted Model content.
+    public void setTimeAxis(AxisConfig timeAxis) {
+		this.timeAxis = timeAxis;
+	}
+
+	/** Read XML formatted Model content.
      *  @param stream InputStream, will be closed when done.
      *  @throws Exception on error
      *  @throws RuntimeException if model was already in use
@@ -937,6 +987,15 @@ public class Model
             archive_rescale = ArchiveRescale.STAGGER;
         }
 
+        // Load Time Axe
+        Element timeAxeNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);  
+        if (timeAxeNode != null)
+        {
+            // Load PV items  
+           Element axisNode = DOMHelper.findFirstElementNode(timeAxeNode.getFirstChild(), TAG_AXIS);
+           timeAxis = AxisConfig.fromDocument(axisNode);
+        }
+        
         // Load Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)
@@ -977,33 +1036,17 @@ public class Model
         }
         
         //ADD by Laurent PHILIPPE
-        // Load XYGraphMemento
-        list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_XYGRAPHMEMENTO);
+        // Load Title and graph settings
+       
         if (list != null)
         {
-            XYGraphMem = new XYGraphMemento();
-        	// Load PV items
-        	try{
-        		String title = DOMHelper.getSubelementString(list, TAG_TITLE);
-        		RGB titleColor = loadColorFromDocument(list, TAG_TITLE_COLOR);
-        		
-        		XYGraphMem.setTitle(title);	
         	
-        		if(titleColor != null)
-        			XYGraphMem.setTitleColor(XYGraphMediaFactory.getInstance().getColor(titleColor));
-        		
-        		String fontInfo = DOMHelper.getSubelementString(list, TAG_TITLE_FONT);
-        		
-        		if(fontInfo != null){
-        			FontData fontData = new FontData(fontInfo);
-        			//System.err.println("FONT DATA " + fontData.name + " " + fontData.height);
-        			XYGraphMem.setTitleFont(XYGraphMediaFactory.getInstance().getFont(fontData));
-        		}
+        	try{
+        		graphSettings = XYGraphSettingsXMLUtil.fromDocument(root_node.getFirstChild());
  
         	}catch (Throwable ex)
             {
-            	ex.printStackTrace();
-            	
+        		Activator.getLogger().log(Level.INFO, "XML error in Title or  graph settings", ex);
             }
             // Add to document
         }
@@ -1051,6 +1094,8 @@ public class Model
             }
         }
     }
+
+	
 
 	
 }

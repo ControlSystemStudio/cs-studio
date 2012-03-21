@@ -241,10 +241,15 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	@Override
 	public void scale(double widthRatio, double heightRatio) {
 		super.scale(widthRatio, heightRatio);
+		scaleChildren();
+	}
+
+	public void scaleChildren() {
 		Dimension size = getSize();
-		double newWidthRatio = 1+(size.width - getOriginSize().width)/(double)getOriginSize().width;
-		double newHeightRatio = 1+(size.height - getOriginSize().height)/(double)getOriginSize().height;
-		for(AbstractWidgetModel child : getChildren())
+		double newWidthRatio = size.width/(double)getOriginSize().width;
+		double newHeightRatio = size.height/(double)getOriginSize().height;
+		for(AbstractWidgetModel child : getChildren()){
 			child.scale(newWidthRatio, newHeightRatio);
+		}
 	}
 }

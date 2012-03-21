@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -187,6 +186,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
@@ -194,6 +194,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
 				1, 1));
+		errorBar.setMarginBottom(5);
 
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);

@@ -9,6 +9,7 @@ import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.extra.ExpressionLanguage.*;
 import static org.epics.pvmanager.util.TimeDuration.*;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 import gov.bnl.channelfinder.api.Property;
 
@@ -22,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
@@ -41,6 +43,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
@@ -90,13 +93,14 @@ implements ConfigurableWidget, ISelectionProvider {
 		
 		GridLayout gridLayout = new GridLayout(2, false);
 		gridLayout.horizontalSpacing = 0;
-		gridLayout.verticalSpacing = 5;
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
+		errorBar.setMarginBottom(5);
 		
 		rangeWidget = new RangeWidget(this, SWT.NONE);
 		rangeWidget.addRangeListener(new RangeListener() {
@@ -519,5 +523,51 @@ implements ConfigurableWidget, ISelectionProvider {
 	public void setSelection(ISelection selection) {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
+	
+	
+	/** Memento tag */
+	private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_ADAPTIVE_RANGE = "adaptiveRange"; //$NON-NLS-1$
+	private static final String MEMENTO_PIXEL_DURATION = "pixelDuration"; //$NON-NLS-1$
+	private static final String MEMENTO_SCROLL_DIRECTION = "scrollDirection"; //$NON-NLS-1$
+	private static final String MEMENTO_SHOW_TIME_AXIS = "showTimeAxis"; //$NON-NLS-1$
+	private static final String MEMENTO_SORT_PROPERTY = "sortProperty"; //$NON-NLS-1$
+	
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery().getQuery());
+		}
+		memento.putBoolean(MEMENTO_ADAPTIVE_RANGE, isAdaptiveRange());
+		memento.putInteger(MEMENTO_PIXEL_DURATION, (int) getPixelDuration().getNanoSec());
+		memento.putInteger(MEMENTO_SCROLL_DIRECTION, getScrollDirection());
+		memento.putBoolean(MEMENTO_SHOW_TIME_AXIS, isShowTimeAxis());
+		if (getSortProperty() != null) {
+			memento.putString(MEMENTO_SORT_PROPERTY, getSortProperty());
+		}
+	}
+	
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getBoolean(MEMENTO_ADAPTIVE_RANGE) != null) {
+				setAdaptiveRange(memento.getBoolean(MEMENTO_ADAPTIVE_RANGE));
+			}
+			if (memento.getInteger(MEMENTO_PIXEL_DURATION) != null) {
+				setPixelDuration(TimeDuration.nanos(memento.getInteger(MEMENTO_PIXEL_DURATION)));
+			}
+			if (memento.getInteger(MEMENTO_SCROLL_DIRECTION) != null) {
+				setScrollDirection(memento.getInteger(MEMENTO_SCROLL_DIRECTION));
+			}
+			if (memento.getBoolean(MEMENTO_SHOW_TIME_AXIS) != null) {
+				setShowTimeAxis(memento.getBoolean(MEMENTO_SHOW_TIME_AXIS));
+			}
+			if (memento.getString(MEMENTO_SORT_PROPERTY) != null) {
+				setSortProperty(memento.getString(MEMENTO_SORT_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.query(memento.getString(MEMENTO_CHANNEL_QUERY)).build());
+			}
+		}
+	}
+	
 
 }

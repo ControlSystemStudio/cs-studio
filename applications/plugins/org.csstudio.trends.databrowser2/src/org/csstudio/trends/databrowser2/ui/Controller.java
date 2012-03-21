@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
@@ -24,6 +25,7 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.undo.XYGraphMementoUtil;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
@@ -44,6 +46,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -156,7 +159,7 @@ public class Controller implements ArchiveFetchJobListener
         checkAutoscaleAxes();
         createPlotTraces();
         createAnnotations();
-        createXYGraphMemento(); //ADD LAURENT PHILIPPE
+        createXYGraphSettings(); //ADD LAURENT PHILIPPE
 
         // Listen to user input from Plot UI, update model
         plot.addListener(new PlotListener()
@@ -265,11 +268,10 @@ public class Controller implements ArchiveFetchJobListener
             }
 
 			@Override
-			public void xyGraphMemChanged(XYGraphMemento newValue) {
+			public void xyGraphConfigChanged(XYGraph newValue) {
 				// TODO Auto-generated method stub
-				System.out
-				.println("**** Controller.Controller(...).new ModelListener() {...}.changedXYGraphMemento() ****");
-				model.setXYGraphMem(newValue);
+				model.fireGraphConfigChanged();
+				//model.setXYGraphMem(newValue);
 			}
 
 			@Override
@@ -477,16 +479,22 @@ public class Controller implements ArchiveFetchJobListener
                 plot.updateScrollButton(scroll_enabled);
             }
 
+        
+		
             /**
              * ADD L.PHILIPPE
              */
 			@Override
-			public void changedXYGraphMemento(XYGraphMemento newValue) {
+			public void changedAnnotations() {
+				// TODO Auto-generated method stub
 				
 			}
 
+		    /**
+             * ADD L.PHILIPPE
+             */
 			@Override
-			public void changedAnnotations() {
+			public void changedXYGraphConfig() {
 				// TODO Auto-generated method stub
 				
 			}
@@ -641,6 +649,12 @@ public class Controller implements ArchiveFetchJobListener
         plot.setBackgroundColor(model.getPlotBackground());
         plot.updateScrollButton(model.isScrollEnabled());
         plot.removeAll();
+       
+        
+        //Time axe
+        if(model.getTimeAxis() != null)
+        	plot.updateTimeAxis( model.getTimeAxis());
+        
         for (int i=0; i<model.getAxisCount(); ++i)
             plot.updateAxis(i, model.getAxis(i));
         for (int i=0; i<model.getItemCount(); ++i)
@@ -669,7 +683,19 @@ public class Controller implements ArchiveFetchJobListener
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
         	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
         			info.getValue());
-			graph.addAnnotation(annotation);
+			
+        	//ADD Laurent PHILIPPE
+			annotation.setCursorLineStyle(info.getCursorLineStyle());
+        	annotation.setShowName(info.isShowName());
+        	annotation.setShowPosition(info.isShowPosition());
+        	
+        	if(info.getColor() != null)
+        		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
+        	
+        	if(info.getFontData() != null)
+       			annotation.setAnnotationFont(XYGraphMediaFactory.getInstance().getFont(info.getFontData()));
+        	
+        	graph.addAnnotation(annotation);
         }
     }
     
@@ -677,11 +703,8 @@ public class Controller implements ArchiveFetchJobListener
     /**
      * Add XYGraphMemento (Graph config settings from model to plot)
      */
-    private void createXYGraphMemento() {
- 		// TODO Auto-generated method stub
-     	final XYGraph graph = plot.getXYGraph();
-     	plot.getXYGraph().setXyGraphMem(model.getXYGraphMem());
-     	XYGraphMementoUtil.restoreXYGraphPropsFromMemento(graph, model.getXYGraphMem());	
+    private void createXYGraphSettings() {
+     	plot.setGraphSettings(model.getGraphSettings());
  	}
 
 	/** Scroll the plot to 'now' */

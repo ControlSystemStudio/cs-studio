@@ -63,7 +63,6 @@ public class WaterfallConfigurationPanel extends AbstractConfigurationComposite 
 				changeSupport.firePropertyChange("adaptiveRange", !isAdaptiveRange(), isAdaptiveRange());
 			}
 		});
-		btnMetadata.setSelection(true);
 		btnMetadata.setText("Metadata");
 		
 		btnAutoRange = new Button(grpRange, SWT.RADIO);

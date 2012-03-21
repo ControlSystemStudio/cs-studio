@@ -52,14 +52,30 @@ public class Axis extends LinearScale{
 //	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 //			XYGraphMediaFactory.COLOR_GRAY);
 
+    
+    
     private String title;
 
-    final private List<Trace> traceList = new ArrayList<Trace>();
+    @Override
+	public void setFont(Font font) {
+		// TODO Auto-generated method stub
+		super.setFont(font);
+		this.scaleFontData = getFont().getFontData()[0];
+	}
+
+
+
+	final private List<Trace> traceList = new ArrayList<Trace>();
 
 	private XYGraph xyGraph;
 	private Grid grid;
 
 	private Font titleFont;
+	//title FontData : Add because of SWT illegal thread access
+		private FontData titleFontData;
+	
+		//title FontData : Add because of SWT illegal thread access
+			private FontData scaleFontData;
 
 	private boolean autoScale = false;
 
@@ -85,8 +101,19 @@ public class Axis extends LinearScale{
 	private Range startRange;
 	private Cursor grabbing;
 	private Color revertBackColor;
+
+	private RGB colorRGB;
+	private RGB majorGridColorRGB;
+
 	
 
+	public FontData getTitleFontData() {
+		return titleFontData;
+	}
+
+	public FontData getScaleFontData() {
+		return scaleFontData;
+	}
 
 	/**Constructor
 	 * @param title title of the axis
@@ -156,9 +183,15 @@ public class Axis extends LinearScale{
 	public void setForegroundColor(final Color color) {	
 		Color oldColor = getForegroundColor();
 		super.setForegroundColor(color);
+		colorRGB = color.getRGB();
 		if(xyGraph != null)
 			xyGraph.repaint();
 		fireAxisForegroundColorChanged(oldColor, color);
+	}
+	
+	
+	public RGB getForegroundColorRGB(){
+		return colorRGB;
 	}
 	
 	private void fireAxisForegroundColorChanged(Color oldColor,
@@ -467,8 +500,15 @@ public class Axis extends LinearScale{
 	 */
 	public void setMajorGridColor(final Color majorGridColor) {
 		this.majorGridColor = majorGridColor;
+		this.majorGridColorRGB = majorGridColor.getRGB();
 		if(xyGraph != null)
 			xyGraph.repaint();
+	}
+
+	
+	
+	public RGB getMajorGridColorRGB() {
+		return majorGridColorRGB;
 	}
 
 	/**
@@ -495,6 +535,7 @@ public class Axis extends LinearScale{
 	 */
 	public void setTitleFont(final Font titleFont) {
 		this.titleFont = titleFont;
+		this.titleFontData = titleFont.getFontData()[0];
 		repaint();
 	}
 

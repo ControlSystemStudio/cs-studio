@@ -86,13 +86,14 @@ public class AxesTableHandler implements ILazyContentProvider
         public void changedItemDataConfig(PVItem item)   { /* NOP */ }
         @Override
         public void scrollEnabled(boolean scrollEnabled) { /* NOP */ }
+	
 		@Override
-		public void changedXYGraphMemento(XYGraphMemento xYGraphMem) {
+		public void changedAnnotations() {
 			// TODO Auto-generated method stub
 			
 		}
 		@Override
-		public void changedAnnotations() {
+		public void changedXYGraphConfig() {
 			// TODO Auto-generated method stub
 			
 		}
