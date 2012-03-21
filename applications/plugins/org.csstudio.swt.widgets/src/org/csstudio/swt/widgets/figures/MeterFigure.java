@@ -205,7 +205,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 				M = Math.max(FigureUtilities.getTextWidth(
 						scale.format(scale.getRange().getLower()), scale.getFont()),
 						FigureUtilities.getTextWidth(
-						scale.format(scale.getRange().getLower()), scale.getFont()))/2;
+						scale.format(scale.getRange().getUpper()), scale.getFont()))/2;
 			
 			int h = area.height;
 			int w = area.width;			

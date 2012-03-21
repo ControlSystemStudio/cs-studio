@@ -9,7 +9,6 @@ package org.csstudio.trends.databrowser2.ui;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -19,10 +18,10 @@ import org.eclipse.swt.graphics.Color;
 /** Interface used by Plot to send events in response to user input:
  *  Zoom changed, scrolling turned on/off
  *  @author Kay Kasemir
- *  
+ *
  *  Add events necessary in response of GRAPH settings changed by user
  *  ADD events link to add/remove annotation
- *  @author Laurent PHILIPPE (GANIL) 
+ *  @author Laurent PHILIPPE (GANIL)
  */
 public interface PlotListener
 {
@@ -81,15 +80,15 @@ public interface PlotListener
 
 	/**
 	 * Called when the user changed the plot background color
-	 * 
+	 *
 	 * @param newValue
 	 *            New background color
 	 */
 	public void backgroundColorChanged(Color newValue);
-	
+
 	/**
 	 * Called when the user changed time axis foreground color
-	 * 
+	 *
 	 * @param oldColor
 	 *            Old foreground color
 	 * @param newColor
@@ -99,7 +98,7 @@ public interface PlotListener
 
 	/**
 	 * Called when the user changed value axis foreground color
-	 * 
+	 *
 	 * @param index
 	 *            Value axis index 0, 1, ...
 	 * @param oldColor
@@ -112,7 +111,7 @@ public interface PlotListener
 
 	/**
 	 * Called when the user changed value axis title
-	 * 
+	 *
 	 * @param index
 	 *            Value axis index 0, 1, ...
 	 * @param oldTitle
@@ -125,11 +124,11 @@ public interface PlotListener
 
 	/**
 	 * Called when the user changed value axis autoscale mode
-	 * 
+	 *
 	 * @param index
 	 *            Value axis index 0, 1, ...
 	 * @param oldAutoScale
-	 *            Old autoscale mode 
+	 *            Old autoscale mode
 	 * @param newAutoScale
 	 *            New autoscale mode
 	 */
@@ -137,7 +136,7 @@ public interface PlotListener
 			boolean newAutoScale);
 
 
-	
+
 	/**
 	 * Called when the user changed trace display name
 	 * @param index		trace index 0, 1, ...
@@ -154,9 +153,9 @@ public interface PlotListener
 	 */
 	public void traceYAxisChanged(int index, AxisConfig oldConfig, AxisConfig config);
 
-	
+
 	/**
-	 * Called when the user changed trace type 
+	 * Called when the user changed trace type
 	 * @param index		trace index 0, 1, ...
 	 * @param old	old trace type
 	 * @param newTraceType	new trace type

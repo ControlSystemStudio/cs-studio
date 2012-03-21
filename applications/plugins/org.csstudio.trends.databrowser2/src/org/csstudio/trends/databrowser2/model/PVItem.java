@@ -78,14 +78,14 @@ public class PVItem extends ModelItem implements PVListener
 
     /** @return Waveform index */
     @Override
-	public int getWaveformIndex()
+    public int getWaveformIndex()
     {
         return waveform_index;
     }
 
     /** @param index New waveform index */
     @Override
-	public void setWaveformIndex(int index)
+    public void setWaveformIndex(int index)
     {
         if (index < 0)
             index = 0;

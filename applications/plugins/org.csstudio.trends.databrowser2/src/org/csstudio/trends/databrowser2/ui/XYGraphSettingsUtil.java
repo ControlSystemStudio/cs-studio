@@ -1,8 +1,5 @@
 package org.csstudio.trends.databrowser2.ui;
 
-import org.csstudio.swt.xygraph.figures.Annotation;
-import org.csstudio.swt.xygraph.figures.Axis;
-import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.model.XYGraphSettings;
@@ -58,19 +55,19 @@ public class XYGraphSettingsUtil {
 	public static void saveXYGraphPropsToSettings(XYGraph xyGraph,
 			XYGraphSettings memento) {
 		memento.setTitle(xyGraph.getTitle());
-		
+
 		if(xyGraph.getTitleFontData() != null)
 			memento.setTitleFontData(xyGraph.getTitleFontData());
-		
+
 		if(xyGraph.getTitleColorRgb() != null)
 			memento.setTitleColor(xyGraph.getTitleColorRgb());
-		
+
 		//memento.setPlotAreaBackColor(xyGraph.getPlotArea().getBackgroundColor());
 		memento.setShowTitle(xyGraph.isShowTitle());
 		memento.setShowLegend(xyGraph.isShowLegend());
 		memento.setShowPlotAreaBorder(xyGraph.getPlotArea().isShowBorder());
 		memento.setTransparent(xyGraph.isTransparent());
-	
+
 	/*	i = 0;
 		for (Axis axis : xyGraph.getAxisList())
 			saveAxisPropsToMemento(axis, memento.getAxisMementoList().get(i++));
@@ -82,15 +79,12 @@ public class XYGraphSettingsUtil {
 
 	public static void restoreXYGraphPropsFromSettings(XYGraph xyGraph,
 			XYGraphSettings memento) {
-
-		System.out
-				.println("XYGraphSettingsUtil.restoreXYGraphPropsFromSettings()");
 		if (memento.getTitle() != null)
 			xyGraph.setTitle(memento.getTitle());
 
 		if(memento.getTitleFontData() != null)
 			xyGraph.setTitleFont(XYGraphMediaFactory.getInstance().getFont(memento.getTitleFontData()));
-		
+
 		if(memento.getTitleColor() != null)
 			xyGraph.setTitleColor(XYGraphMediaFactory.getInstance().getColor(memento.getTitleColor()));
 
@@ -99,7 +93,7 @@ public class XYGraphSettingsUtil {
 		xyGraph.setShowLegend(memento.isShowLegend());
 		xyGraph.getPlotArea().setShowBorder(memento.isShowPlotAreaBorder());
 		xyGraph.setTransparent(memento.isTransparent());
-		
+
 	/*	i = 0;
 		for (AxisMemento axisMemento : memento.getAxisMementoList())
 			restoreAxisPropsFromMemento(xyGraph.getAxisList().get(i++),
@@ -110,7 +104,7 @@ public class XYGraphSettingsUtil {
 					.get(i++), traceMemento);*/
 	}
 
-/*	
+/*
 	private static void saveAxisPropsToMemento(Axis axis, AxisMemento memento) {
 		memento.setTitle(axis.getTitle());
 		memento.setTitleFont(axis.getTitleFont());

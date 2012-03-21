@@ -10,7 +10,7 @@ package org.csstudio.swt.widgets.datadefinition;
 import java.util.EventListener;
 
 /**
- * Definition of listeners that react on knob events.
+ * Definition of listeners that react on manual value change events.
  * 
  * @author Xihui Chen
  * 

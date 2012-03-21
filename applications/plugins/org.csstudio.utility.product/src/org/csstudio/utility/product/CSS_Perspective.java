@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.product;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -26,10 +27,18 @@ public class CSS_Perspective implements IPerspectiveFactory
     final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_DATABROWSER_CONFIG = "org.csstudio.trends.databrowser.configview.ConfigView";
     final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
     final private static String ID_ALARM_TREE = "org.csstudio.alarm.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE= "org.csstudio.alarm.ui.alarmtable.view";
+
+    /** Check if certain plugin is available
+     *  @param plugin_id ID of the plugin
+     *  @return <code>true</code> if available
+     */
+    private boolean isPluginAvailable(final String plugin_id)
+    {
+    	return Platform.getBundle(plugin_id) != null;
+    }
 
     @Override
     public void createInitialLayout(IPageLayout layout)
@@ -48,13 +57,15 @@ public class CSS_Perspective implements IPerspectiveFactory
         // Stuff for 'left'
         left.addView("org.eclipse.ui.views.ResourceNavigator");
         left.addPlaceholder(ID_SNS_PV_UTIL);
-        left.addPlaceholder(ID_ALARM_TREE);
+        final boolean have_alarm = isPluginAvailable("org.csstudio.alarm.beast");
+        if (have_alarm)
+        	left.addPlaceholder(ID_ALARM_TREE);
 
         // Stuff for 'bottom'
         bottom.addPlaceholder(ID_PROBE);
         bottom.addPlaceholder(ID_PROBE + ":*");
-        bottom.addPlaceholder(ID_DATABROWSER_CONFIG);
-        bottom.addPlaceholder(ID_ALARM_TABLE);
+        if (have_alarm)
+        	bottom.addPlaceholder(ID_ALARM_TABLE);
         bottom.addPlaceholder(IPageLayout.ID_PROGRESS_VIEW);
 
         // Populate the "Window/Perspectives..." menu with suggested persp.

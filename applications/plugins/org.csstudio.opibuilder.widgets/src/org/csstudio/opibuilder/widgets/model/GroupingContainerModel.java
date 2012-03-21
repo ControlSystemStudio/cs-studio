@@ -25,14 +25,15 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	public static final String ID = "org.csstudio.opibuilder.widgets.groupingContainer"; //$NON-NLS-1$	
 	
 	/**True if the background color is transparent. */
-	public static final String PROP_TRANSPARENT = "transparent";	
+	public static final String PROP_TRANSPARENT = "transparent";	//$NON-NLS-1$
 	
 	/** True if children widgets are not selectable.*/
-	public static final String PROP_LOCK_CHILDREN = "lock_children";
+	public static final String PROP_LOCK_CHILDREN = "lock_children";//$NON-NLS-1$
 	/**
 	 * True if scrollbar is visible when children widgets are out of range. 
 	 */
-	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";
+	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";//$NON-NLS-1$
+	
 
 	
 	public GroupingContainerModel() {
@@ -48,6 +49,8 @@ public class GroupingContainerModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, false));
 		addProperty(new BooleanProperty(PROP_SHOW_SCROLLBAR, "Show Scrollbar",
 				WidgetPropertyCategory.Behavior, true));
+
+	
 	}
 
 	@Override
@@ -81,6 +84,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
 		return (Boolean) getProperty(PROP_SHOW_SCROLLBAR).getPropertyValue();
 	}
 	
+
 
 	@Override
 	public void flipVertically() {
@@ -119,5 +123,7 @@ public class GroupingContainerModel extends AbstractContainerModel {
 		}
 		setPropertyValue(PROP_LOCK_CHILDREN, oldLock);
 	}
+	
+
 	
 }
