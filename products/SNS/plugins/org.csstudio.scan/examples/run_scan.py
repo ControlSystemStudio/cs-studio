@@ -29,7 +29,6 @@ else:
 #        None, "Type", "Type is " + delay.__class__.__name__)       
 
 id = scan(name,
-    SetCommand('shutter', 1),
      ('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx))),
      ('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy))),
      WaitCommand('neutrons', Comparison.INCREASE_BY, neutrons),
