@@ -141,7 +141,7 @@ public class ConsoleServiceSSHelperImpl extends ConsoleServiceSSHelper {
 	 * @param message the output string.
 	 */
 	public void writeWarning(String message){
-		final String output = getTimeString() + " WARNNING: " + message+ ENTER;
+		final String output = getTimeString() + " WARNING: " + message+ ENTER;
 		switch (PreferencesHelper.getConsolePopupLevel()) {
 		case ALL:
 			popConsoleView();

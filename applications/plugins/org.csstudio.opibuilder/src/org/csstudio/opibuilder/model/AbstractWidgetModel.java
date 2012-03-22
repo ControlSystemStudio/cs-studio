@@ -34,12 +34,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.opibuilder.datadefinition.WidgetScaleData;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.ComplexDataProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
@@ -62,6 +64,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -192,6 +195,13 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public static final String PROP_TGT_CONNETIONS = "tgt_connections"; //$NON-NLS-1$	
 	
 	
+	/**
+	 *The options for its scale behavior.
+	 */
+	public static final String PROP_SCALE_OPTIONS = "scale_options"; //$NON-NLS-1$	
+	
+	
+	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
 	/**
@@ -211,7 +221,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	private List<ConnectionModel> sourceConnections = Collections.emptyList();
 	/** List of incoming Connections. */
 	private List<ConnectionModel> targetConnections = Collections.emptyList();
-	
+
+	private Dimension originSize;
+
+	private Point originLocation;
 
 	public AbstractWidgetModel() {
 		propertyMap = new HashMap<String, AbstractWidgetProperty>();
@@ -331,6 +344,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 				WidgetPropertyCategory.Behavior));
 		addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
 		addProperty(new RulesProperty(PROP_RULES, "Rules", WidgetPropertyCategory.Behavior));	
+		addProperty(new ComplexDataProperty(PROP_SCALE_OPTIONS,
+				"Scale Options", WidgetPropertyCategory.Position, new WidgetScaleData(true, true, false), "Set Scale Options"));
 		addProperty(new StringProperty(PROP_WIDGET_UID, "Widget UID", WidgetPropertyCategory.Basic, 
 				new UID().toString()));	
 		//update the WUID saved in connections without triggering anything
@@ -582,6 +597,108 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public void resetPropertyValue(Object id) {
 		setPropertyValue(id, getProperty((String) id).getDefaultValue());
+	}
+	
+	/**Scale location and size of the widget. 
+	 * If the widget needs to change its scale behavior, 
+	 * it should override {@link #doScale(double, double)} instead of this method.
+	 * @param widthRatio Ratio of width change.
+	 * @param heightRatio Ratio of height change.
+	 */
+	public void scale(double widthRatio, double heightRatio){		
+		if(originSize == null)
+			originSize = getSize();		
+		if(originLocation == null)
+			originLocation = getLocation();
+		doScale(widthRatio, heightRatio); 
+		scaleConnections(widthRatio, heightRatio);
+	}
+
+	/**The actual code that scaling the widget.
+	 * @param widthRatio
+	 * @param heightRatio
+	 */
+	protected void doScale(double widthRatio, double heightRatio) {
+		setLocation((int)Math.round(originLocation.x*widthRatio),(int)Math.round(originLocation.y * heightRatio)); 
+		setSize(getScaledSize(widthRatio, heightRatio));
+	}
+
+	/**
+	 * @param widthRatio
+	 * @param heightRatio
+	 */
+	protected void scaleConnections(double widthRatio, double heightRatio) {
+		for(ConnectionModel conn: getSourceConnections()){
+			
+			if(conn.getPoints() != null && conn.getPoints().size() > 0){
+				PointList pl = conn.getOriginPoints().getCopy();
+				for(int i=0; i<pl.size(); i++){					
+					pl.setPoint(new Point((int)Math.round((pl.getPoint(i).x*widthRatio)),
+							(int)Math.round(pl.getPoint(i).y*heightRatio)), i);
+				}
+				conn.setPoints(pl);
+			}
+			
+		}
+	}
+	
+	/**
+	 * @return the original size before scaling
+	 */
+	public Dimension getOriginSize() {
+		if(originSize == null){
+			originSize = getSize();
+		}
+		return originSize;
+	}
+	
+	/**
+	 * @return the original location before scaling
+	 */
+	public Point getOriginLocation() {
+		if(originLocation == null){
+			originLocation = getLocation();
+		}
+		return originLocation;
+	}
+	
+	public WidgetScaleData getScaleOptions(){
+		return (WidgetScaleData)getPropertyValue(PROP_SCALE_OPTIONS);
+	}
+	
+	public void setScaleOptions(boolean isWidthScalable, boolean isHeightScalable, boolean keepWHRatio){
+		setPropertyValue(PROP_SCALE_OPTIONS, 
+				new WidgetScaleData(isWidthScalable, isHeightScalable, keepWHRatio));
+	}
+	
+	
+	/**Get the widget size after scaled.
+	 * @param widthRatio Ratio of width change.
+	 * @param heightRatio Ratio of height change.
+	 * @return the new size.
+	 */
+	protected Dimension getScaledSize(double widthRatio, double heightRatio){
+		WidgetScaleData scaleOptions = getScaleOptions();
+		int newW = originSize.width, newH = originSize.height;
+		if(scaleOptions.isKeepWHRatio()&& 
+				scaleOptions.isHeightScalable() && scaleOptions.isWidthScalable()){
+			if(widthRatio <= heightRatio){
+				newW=(int)Math.round(originSize.width*widthRatio);
+				newH=originSize.height*newW/originSize.width;
+			}else{
+				newH=(int)Math.round(originSize.height*heightRatio);
+				newW=originSize.width*newH/originSize.height;
+			}				
+		}else{
+			if(scaleOptions.isHeightScalable()){
+				newH=(int)Math.round(originSize.height*heightRatio);
+			}
+			if(scaleOptions.isWidthScalable()){
+				newW=(int)Math.round(originSize.width*widthRatio);
+			}
+		}
+		return new Dimension(newW, newH); 
+
 	}
 	
 	public void setBackgroundColor(RGB color){

@@ -35,16 +35,27 @@ public class WaitCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-    private Comparison comparison;
-    private double desired_value;
-    private double tolerance;
-    private double timeout;
+    private volatile String device_name;
+    private volatile Comparison comparison;
+    private volatile double desired_value;
+    private volatile double tolerance;
+    private volatile double timeout;
 
     /** Initialize empty wait command */
     public WaitCommand()
     {
         this("device", Comparison.EQUALS, 0.0, 0.1, 0.0);
+    }
+
+    /** Initialize with default tolerance and no timeout
+     *  @param device_name Name of device to check
+     *  @param comparison Comparison to use
+     *  @param desired_value Desired value of the device
+     */
+    public WaitCommand(final String device_name,
+            final Comparison comparison, final double desired_value)
+    {
+        this(device_name, comparison, desired_value, 0.1, 0.0);
     }
 
     /** Initialize
@@ -58,6 +69,8 @@ public class WaitCommand extends ScanCommand
 	        final Comparison comparison, final double desired_value,
 	        final double tolerance, final double timeout)
     {
+	    if (device_name == null)
+	        throw new NullPointerException();
         this.device_name = device_name;
         this.desired_value = desired_value;
 	    this.comparison = comparison;
@@ -72,7 +85,7 @@ public class WaitCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Device name */
+	/** @return Device name (may be "" but not <code>null</code>) */
 	public String getDeviceName()
     {
         return device_name;
@@ -81,6 +94,8 @@ public class WaitCommand extends ScanCommand
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -139,6 +154,8 @@ public class WaitCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<wait>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<value>" + desired_value + "</value>");
@@ -162,8 +179,9 @@ public class WaitCommand extends ScanCommand
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
-        setDesiredValue(DOMHelper.getSubelementDouble(element, "value"));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
+        setDesiredValue(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_VALUE));
         try
         {
             setComparison(Comparison.valueOf(DOMHelper.getSubelementString(element, "comparison")));
@@ -172,8 +190,8 @@ public class WaitCommand extends ScanCommand
         {
             setComparison(Comparison.EQUALS);
         }
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
     }
 
     /** {@inheritDoc} */

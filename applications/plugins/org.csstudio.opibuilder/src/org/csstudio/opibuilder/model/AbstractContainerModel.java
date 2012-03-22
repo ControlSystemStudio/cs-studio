@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.properties.MacrosProperty;
 import org.csstudio.opibuilder.properties.UnsavableListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.eclipse.draw2d.geometry.Dimension;
 
 /**The model which could contain children.
  * @author Xihui Chen
@@ -34,6 +35,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 * Macros of the container, which will be available to its children.
 	 */
 	public static final String PROP_MACROS = "macros"; //$NON-NLS-1$
+	
 
 	final private AbstractWidgetProperty childrenProperty;
 
@@ -232,5 +234,22 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	 */
 	public boolean isChildrenOperationAllowable(){
 		return true;
+	}
+	
+
+	
+	@Override
+	public void scale(double widthRatio, double heightRatio) {
+		super.scale(widthRatio, heightRatio);
+		scaleChildren();
+	}
+
+	public void scaleChildren() {
+		Dimension size = getSize();
+		double newWidthRatio = size.width/(double)getOriginSize().width;
+		double newHeightRatio = size.height/(double)getOriginSize().height;
+		for(AbstractWidgetModel child : getChildren()){
+			child.scale(newWidthRatio, newHeightRatio);
+		}
 	}
 }

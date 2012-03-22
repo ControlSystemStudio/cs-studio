@@ -1,17 +1,19 @@
 package org.csstudio.sns.mpsbypasses.modes;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 /** [Headless] JUnit test of the {@link MachineModeMonitor}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class MachineModeMonitorHeadlessTest implements MachineModeListener
 {
 	private MachineMode rtdl_mode = null;
 	private MachineMode switch_mode = null;
-	
+
 	@Override
     public void machineModeUpdate(final MachineMode new_rtdl_mode, final MachineMode new_switch_mode)
     {
@@ -22,7 +24,7 @@ public class MachineModeMonitorHeadlessTest implements MachineModeListener
 	        notifyAll();
         }
     }
-	
+
 	@Test
 	public void testMachineModeMonitor() throws Exception
 	{

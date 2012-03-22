@@ -28,20 +28,17 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class ScanPlotView extends ViewPart
 {
-    /** View ID defined in plugin.xml */
-    final public static String ID = "org.csstudio.scan.ui.plot.view"; //$NON-NLS-1$
-
     /** Memento tags */
     @SuppressWarnings("nls")
     final private static String TAG_SCAN = "scan",
                                 TAG_XDEVICE = "xdevice",
                                 TAG_YDEVICE = "ydevice";
-    
+
     /** Instance of this view, used to create the secondary view ID
      *  necessary to allow multiple views
      */
     final private static AtomicInteger instance = new AtomicInteger(0);
-    
+
     /** State saved from previous instance */
     private IMemento memento = null;
 
@@ -53,13 +50,13 @@ public class ScanPlotView extends ViewPart
     private ScanSelectorAction scan_selector;
     private DeviceSelectorAction y_selector;
     private DeviceSelectorAction x_selector;
-    
+
     /** @return Next secondary view ID for creating multiple plot views */
     public static String getNextViewID()
     {
         return Integer.toString(instance.incrementAndGet());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void init(final IViewSite site, final IMemento memento) throws PartInitException
@@ -97,7 +94,7 @@ public class ScanPlotView extends ViewPart
                 log(Level.WARNING, "Error getting scan info", ex); //$NON-NLS-1$
             return;
         }
-        
+
         parent.addDisposeListener(new DisposeListener()
         {
             @Override
@@ -107,9 +104,9 @@ public class ScanPlotView extends ViewPart
                 model = null;
             }
         });
-        
+
         createComponents(parent);
-        
+
         // Restore saved state
         if (memento != null)
         {
@@ -137,7 +134,7 @@ public class ScanPlotView extends ViewPart
     {
         plot = new Plot(parent);
         plot.addTrace(model.getPlotData());
-        
+
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         scan_selector = new ScanSelectorAction(model, plot);
         x_selector = DeviceSelectorAction.forXAxis(model, plot);

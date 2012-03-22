@@ -69,6 +69,7 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	public KnobModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(new RGB(0,0,0));
+		setScaleOptions(true, true, true);
 	}	
 
 	@Override

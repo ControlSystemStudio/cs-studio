@@ -19,6 +19,9 @@
       <startupParameters
             class="org.csstudio.utility.product.StartupParameters">
       </startupParameters>
+      <workspace
+            class="org.csstudio.sns.startuphelper.WorkspacePrompt">
+      </workspace>
       <project
             class="org.csstudio.startup.module.defaults.DefaultProject">
       </project>

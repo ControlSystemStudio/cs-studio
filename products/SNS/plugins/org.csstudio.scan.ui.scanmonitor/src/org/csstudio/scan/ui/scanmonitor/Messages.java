@@ -17,6 +17,8 @@ public class Messages extends NLS
     public static String ID_Fmt;
     public static String Info;
     public static String InfoTitle;
+	public static String MemInfo;
+	public static String MemInfoTT;
     public static String Name;
     public static String NameFmt;
     public static String NoError;
@@ -26,6 +28,9 @@ public class Messages extends NLS
     public static String Remove;
     public static String RemoveCompleted;
     public static String Resume;
+    public static String Runtime;
+    public static String Runtime_TT;
+    public static String ShowDevices;
     public static String State;
     public static String StateFmt;
     static

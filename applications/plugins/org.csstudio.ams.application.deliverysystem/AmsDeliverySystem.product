@@ -41,6 +41,7 @@
       <plugin id="org.csstudio.ams.application.deliverysystem"/>
       <plugin id="org.csstudio.ams.delivery"/>
       <plugin id="org.csstudio.ams.delivery.email"/>
+      <plugin id="org.csstudio.ams.delivery.jms"/>
       <plugin id="org.csstudio.ams.delivery.sms"/>
       <plugin id="org.csstudio.ams.delivery.voicemail"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -31,19 +31,19 @@ public class SpreadsheetScanDataIterator
 {
     /** Device names, i.e. columns in spreadsheet */
     final private List<String> device_names;
-    
+
     /** Raw data for each device */
     final private List<ScanSample>[] data;
 
     /** Index within data for each device */
     final private int[] index;
-    
+
     /** Timestamp of current spreadsheet line */
     private Date timestamp;
-    
+
     /** Values for current spreadsheet line */
     final private ScanSample[] value;
-    
+
     /** Initialize for all devices in the {@link ScanData}
      *  @param scan_data Scan data
      */
@@ -52,7 +52,16 @@ public class SpreadsheetScanDataIterator
         // Determine for which devices we have samples
         this(scan_data, scan_data.getDevices());
     }
-    
+
+    /** Initialize for specific devices
+     *  @param scan_data Scan data
+     *  @param device_names Devices that must be in the scan data
+     */
+    public SpreadsheetScanDataIterator(final ScanData scan_data, final String... device_names)
+    {
+        this(scan_data, Arrays.asList(device_names));
+    }
+
     /** Initialize for specific devices
      *  @param scan_data Scan data
      *  @param device_names Devices that must be in the scan data
@@ -63,7 +72,7 @@ public class SpreadsheetScanDataIterator
     {
 	    this.device_names = device_names;
         final int N = device_names.size();
-        
+
         data = new List[N];
         value = new ScanSample[N];
         index = new int[N];
@@ -86,13 +95,13 @@ public class SpreadsheetScanDataIterator
 	        return data[i].get(index[i]);
 	    return null;
 	}
-	
+
 	/** @return Device names, i.e. spreadsheet columns */
 	public List<String> getDevices()
 	{
 	    return device_names;
 	}
-	
+
     /** @return <code>true</code> if there is another line in the spreadsheet */
     public boolean hasNext()
 	{
@@ -156,7 +165,7 @@ public class SpreadsheetScanDataIterator
     {
         dump(new PrintWriter(out, true));
     }
-    
+
     /** Write spreadsheet to writer
      *  @param writer {@link Writer}
      */

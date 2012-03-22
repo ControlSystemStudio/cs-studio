@@ -17,3 +17,4 @@ org.csstudio.nsls2.feature.eclipse
 org.csstudio.nsls2.intro.feature
 org.csstudio.nsls2.product.feature
 org.csstudio.opibuilder.feature
+org.csstudio.olog.feature

@@ -30,23 +30,27 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The trace figure.
+ * 
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
+ * @author Laurent PHILIPPE (Add trace listeners)
  */
-public class Trace extends Figure implements IDataProviderListener, IAxisListener{
-    /** Size of 'markers' used on X axis to indicate non-plottable samples */
-    final private static int MARKER_SIZE = 6;
+public class Trace extends Figure implements IDataProviderListener,
+		IAxisListener {
+	/** Size of 'markers' used on X axis to indicate non-plottable samples */
+	final private static int MARKER_SIZE = 6;
 
-    /** Use advanced graphics?
-     *  Might not make a real performance difference, but since this it called a lot,
-     *  keep it in variable
-     */
-    final private static boolean use_advanced_graphics = Preferences.useAdvancedGraphics();
+	/**
+	 * Use advanced graphics? Might not make a real performance difference, but
+	 * since this it called a lot, keep it in variable
+	 */
+	final private static boolean use_advanced_graphics = Preferences
+			.useAdvancedGraphics();
 
-
-
-	/** The way how the trace will be drawn.
-	 *  @author Xihui Chen
+	/**
+	 * The way how the trace will be drawn.
+	 * 
+	 * @author Xihui Chen
 	 */
 	public enum TraceType {
 		/** Solid Line */
@@ -55,113 +59,129 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		/** Dash Line */
 		DASH_LINE(Messages.TraceDash),
 
-		/** Only draw point whose style is defined by pointStyle.
-		 * Its size is defined by pointSize. */
+		/**
+		 * Only draw point whose style is defined by pointStyle. Its size is
+		 * defined by pointSize.
+		 */
 		POINT(Messages.TracePoint),
 
-		/** Draw each data point as a bar whose width is defined by lineWidth.
-		 *  The data point is in the middle of the bar on X direction.
-		 *  The bottom of the bar depends on the baseline.
-		 *  The alpha of the bar is defined by areaAlpha. */
+		/**
+		 * Draw each data point as a bar whose width is defined by lineWidth.
+		 * The data point is in the middle of the bar on X direction. The bottom
+		 * of the bar depends on the baseline. The alpha of the bar is defined
+		 * by areaAlpha.
+		 */
 		BAR(Messages.TraceBar),
 
-		/** Fill the area under the trace.
-		 * The bottom of the filled area depends on the baseline.
-		 *  The alpha of the filled area is defined by areaAlpha. */
+		/**
+		 * Fill the area under the trace. The bottom of the filled area depends
+		 * on the baseline. The alpha of the filled area is defined by
+		 * areaAlpha.
+		 */
 		AREA(Messages.TraceArea),
 		/**
-		 * Solid line in step. It looks like the y value(on vertical direction) changed firstly.
+		 * Solid line in step. It looks like the y value(on vertical direction)
+		 * changed firstly.
 		 */
 		STEP_VERTICALLY(Messages.TraceStepVert),
 
 		/**
-		 * Solid line in step. It looks like the x value(on horizontal direction) changed firstly.
+		 * Solid line in step. It looks like the x value(on horizontal
+		 * direction) changed firstly.
 		 */
 		STEP_HORIZONTALLY(Messages.TraceStepHoriz);
 
-		/** Draw a single point. Only the last data point will be drawn.*/
-		//SINGLE_POINT("Single Point");
+		/** Draw a single point. Only the last data point will be drawn. */
+		// SINGLE_POINT("Single Point");
 
 		private TraceType(String description) {
-			 this.description = description;
+			this.description = description;
 		}
+
 		private String description;
 
 		@Override
 		public String toString() {
 			return description;
 		}
-		public static String[] stringValues(){
+
+		public static String[] stringValues() {
 			String[] sv = new String[values().length];
-			int i=0;
-			for(TraceType p : values())
+			int i = 0;
+			for (TraceType p : values())
 				sv[i++] = p.toString();
 			return sv;
 		}
 	}
 
 	public enum BaseLine {
-		NEGATIVE_INFINITY,
-		ZERO,
-		POSITIVE_INFINITY;
+		NEGATIVE_INFINITY, ZERO, POSITIVE_INFINITY;
 
-		public static String[] stringValues(){
+		public static String[] stringValues() {
 			String[] sv = new String[values().length];
-			int i=0;
-			for(BaseLine p : values())
+			int i = 0;
+			for (BaseLine p : values())
 				sv[i++] = p.toString();
 			return sv;
 		}
 	}
 
-	public enum PointStyle{
-		NONE(Messages.PointNone),
-		POINT(Messages.PointPoint),
-		CIRCLE(Messages.PointCircle),
-		TRIANGLE(Messages.PointTriangle),
-		FILLED_TRIANGLE(Messages.PointFilledTriangle),
-		SQUARE(Messages.PointSquare),
-		FILLED_SQUARE(Messages.PointFilledSquare),
-		DIAMOND(Messages.PointDiamond),
-		FILLED_DIAMOND(Messages.PointFilledDiamond),
-		XCROSS(Messages.PointCross),
-		CROSS(Messages.ProintCross2),
-		BAR(Messages.PointBar);
+	public enum PointStyle {
+		NONE(Messages.PointNone), POINT(Messages.PointPoint), CIRCLE(
+				Messages.PointCircle), TRIANGLE(Messages.PointTriangle), FILLED_TRIANGLE(
+				Messages.PointFilledTriangle), SQUARE(Messages.PointSquare), FILLED_SQUARE(
+				Messages.PointFilledSquare), DIAMOND(Messages.PointDiamond), FILLED_DIAMOND(
+				Messages.PointFilledDiamond), XCROSS(Messages.PointCross), CROSS(
+				Messages.ProintCross2), BAR(Messages.PointBar);
 
 		private PointStyle(String description) {
-			 this.description = description;
+			this.description = description;
 		}
+
 		private String description;
 
 		@Override
 		public String toString() {
 			return description;
 		}
-		public static String[] stringValues(){
+
+		public static String[] stringValues() {
 			String[] sv = new String[values().length];
-			int i=0;
-			for(PointStyle p : values())
+			int i = 0;
+			for (PointStyle p : values())
 				sv[i++] = p.toString();
 			return sv;
 		}
 	}
 
+	public enum ErrorBarType {
+		NONE, PLUS, MINUS, BOTH;
 
-	public enum ErrorBarType{
-		NONE,
-		PLUS,
-		MINUS,
-		BOTH;
-
-		public static String[] stringValues(){
+		public static String[] stringValues() {
 			String[] sv = new String[values().length];
-			int i=0;
-			for(ErrorBarType p : values())
+			int i = 0;
+			for (ErrorBarType p : values())
 				sv[i++] = p.toString();
 			return sv;
 		}
 	}
 
+	/**
+	 * List of trace listeners
+	 * 
+	 * @author Laurent PHILIPPE
+	 */
+	final private List<ITraceListener> listeners = new ArrayList<ITraceListener>();
+
+	public void addListener(final ITraceListener listener) {
+		if (listeners.contains(listener))
+			return;
+		listeners.add(listener);
+	}
+
+	public boolean removeListener(final ITraceListener listener) {
+		return listeners.remove(listener);
+	}
 
 	private String name;
 
@@ -170,9 +190,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	private Axis xAxis;
 	private Axis yAxis;
 
-	/** Color used to draw the main line/marker of the trace.
-	 *  Also used for error bars unless errorBarColor is defined
-     */
+	/**
+	 * Color used to draw the main line/marker of the trace. Also used for error
+	 * bars unless errorBarColor is defined
+	 */
 	private Color traceColor;
 
 	private TraceType traceType = TraceType.SOLID_LINE;
@@ -198,8 +219,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	private int errorBarCapWidth = 4;
 	private boolean errorBarColorSetFlag = false;
 
-	/** Color used for error bars.
-	 *  If <code>null</code>, traceColor is used
+	/**
+	 * Color used for error bars. If <code>null</code>, traceColor is used
 	 */
 	private Color errorBarColor;
 	private boolean drawYErrorInArea = false;
@@ -219,8 +240,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		hotSampleist = new ArrayList<ISample>();
 	}
 
-
-	private void drawErrorBar(Graphics graphics, Point dpPos, ISample dp){
+	private void drawErrorBar(Graphics graphics, Point dpPos, ISample dp) {
 		graphics.pushState();
 		graphics.setForegroundColor(errorBarColor);
 		graphics.setLineStyle(SWTConstants.LINE_SOLID);
@@ -230,16 +250,20 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		case BOTH:
 		case MINUS:
 			ep = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-				yAxis.getValuePosition(dp.getYValue() - dp.getYMinusError(), false));
+					yAxis.getValuePosition(
+							dp.getYValue() - dp.getYMinusError(), false));
 			graphics.drawLine(dpPos, ep);
-			graphics.drawLine(ep.x - errorBarCapWidth/2, ep.y, ep.x + errorBarCapWidth/2, ep.y);
-			if(yErrorBarType != ErrorBarType.BOTH)
-			break;
+			graphics.drawLine(ep.x - errorBarCapWidth / 2, ep.y, ep.x
+					+ errorBarCapWidth / 2, ep.y);
+			if (yErrorBarType != ErrorBarType.BOTH)
+				break;
 		case PLUS:
 			ep = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-				yAxis.getValuePosition(dp.getYValue() + dp.getYPlusError(), false));
+					yAxis.getValuePosition(dp.getYValue() + dp.getYPlusError(),
+							false));
 			graphics.drawLine(dpPos, ep);
-			graphics.drawLine(ep.x - errorBarCapWidth/2, ep.y, ep.x + errorBarCapWidth/2, ep.y);
+			graphics.drawLine(ep.x - errorBarCapWidth / 2, ep.y, ep.x
+					+ errorBarCapWidth / 2, ep.y);
 			break;
 		default:
 			break;
@@ -248,17 +272,21 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		switch (xErrorBarType) {
 		case BOTH:
 		case MINUS:
-			ep = new Point(xAxis.getValuePosition(dp.getXValue() - dp.getXMinusError(), false),
-				yAxis.getValuePosition(dp.getYValue(), false));
+			ep = new Point(xAxis.getValuePosition(
+					dp.getXValue() - dp.getXMinusError(), false),
+					yAxis.getValuePosition(dp.getYValue(), false));
 			graphics.drawLine(dpPos, ep);
-			graphics.drawLine(ep.x, ep.y  - errorBarCapWidth/2, ep.x, ep.y + errorBarCapWidth/2);
-			if(xErrorBarType != ErrorBarType.BOTH)
-			break;
+			graphics.drawLine(ep.x, ep.y - errorBarCapWidth / 2, ep.x, ep.y
+					+ errorBarCapWidth / 2);
+			if (xErrorBarType != ErrorBarType.BOTH)
+				break;
 		case PLUS:
-			ep = new Point(xAxis.getValuePosition(dp.getXValue() + dp.getXPlusError(), false),
-				yAxis.getValuePosition(dp.getYValue(), false));
+			ep = new Point(xAxis.getValuePosition(
+					dp.getXValue() + dp.getXPlusError(), false),
+					yAxis.getValuePosition(dp.getYValue(), false));
 			graphics.drawLine(dpPos, ep);
-			graphics.drawLine(ep.x , ep.y - errorBarCapWidth/2, ep.x, ep.y + errorBarCapWidth/2);
+			graphics.drawLine(ep.x, ep.y - errorBarCapWidth / 2, ep.x, ep.y
+					+ errorBarCapWidth / 2);
 			break;
 		default:
 			break;
@@ -267,28 +295,23 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		graphics.popState();
 	}
 
-
-	private void drawYErrorArea(final Graphics graphics, final ISample predp, final ISample dp, final Point predpPos, final Point dpPos){
+	private void drawYErrorArea(final Graphics graphics, final ISample predp,
+			final ISample dp, final Point predpPos, final Point dpPos) {
 		// Shortcut if there is no error area
-		if (predp.getYPlusError() == 0.0  &&
-			predp.getYMinusError() == 0.0 &&
-			dp.getYPlusError() == 0.0 &&
-			dp.getYMinusError() == 0.0)
+		if (predp.getYPlusError() == 0.0 && predp.getYMinusError() == 0.0
+				&& dp.getYPlusError() == 0.0 && dp.getYMinusError() == 0.0)
 			return;
 
 		graphics.pushState();
 		Color lighter = null;
-		if (use_advanced_graphics)
-		{
-	        graphics.setBackgroundColor(errorBarColor);
-		    graphics.setAlpha(areaAlpha);
-		}
-		else
-		{
-	        final float[] hsb = errorBarColor.getRGB().getHSB();
-		    lighter = new Color(Display.getCurrent(),
-	                new RGB(hsb[0], hsb[1]*areaAlpha/255, 1.0f));
-            graphics.setBackgroundColor(lighter);
+		if (use_advanced_graphics) {
+			graphics.setBackgroundColor(errorBarColor);
+			graphics.setAlpha(areaAlpha);
+		} else {
+			final float[] hsb = errorBarColor.getRGB().getHSB();
+			lighter = new Color(Display.getCurrent(), new RGB(hsb[0], hsb[1]
+					* areaAlpha / 255, 1.0f));
+			graphics.setBackgroundColor(lighter);
 		}
 
 		final int predp_xpos = xAxis.getValuePosition(predp.getXValue(), false);
@@ -297,102 +320,97 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		switch (yErrorBarType) {
 		case BOTH:
 		case PLUS:
-			preEp = new Point(predp_xpos,
-				yAxis.getValuePosition(predp.getYValue() + predp.getYPlusError(), false));
-			ep = new Point(dp_xpos,
-				yAxis.getValuePosition(dp.getYValue() + dp.getYPlusError(), false));
-			graphics.fillPolygon(new int[]{predpPos.x, predpPos.y,
-					preEp.x, preEp.y, ep.x, ep.y, dpPos.x, dpPos.y});
-			if(yErrorBarType != ErrorBarType.BOTH)
+			preEp = new Point(predp_xpos, yAxis.getValuePosition(
+					predp.getYValue() + predp.getYPlusError(), false));
+			ep = new Point(dp_xpos, yAxis.getValuePosition(
+					dp.getYValue() + dp.getYPlusError(), false));
+			graphics.fillPolygon(new int[] { predpPos.x, predpPos.y, preEp.x,
+					preEp.y, ep.x, ep.y, dpPos.x, dpPos.y });
+			if (yErrorBarType != ErrorBarType.BOTH)
 				break;
 		case MINUS:
-			preEp = new Point(predp_xpos,
-				yAxis.getValuePosition(predp.getYValue() - predp.getYMinusError(), false));
-			ep = new Point(dp_xpos,
-				yAxis.getValuePosition(dp.getYValue() - dp.getYMinusError(), false));
-			graphics.fillPolygon(new int[]{predpPos.x, predpPos.y,
-					preEp.x, preEp.y, ep.x, ep.y, dpPos.x, dpPos.y});
+			preEp = new Point(predp_xpos, yAxis.getValuePosition(
+					predp.getYValue() - predp.getYMinusError(), false));
+			ep = new Point(dp_xpos, yAxis.getValuePosition(
+					dp.getYValue() - dp.getYMinusError(), false));
+			graphics.fillPolygon(new int[] { predpPos.x, predpPos.y, preEp.x,
+					preEp.y, ep.x, ep.y, dpPos.x, dpPos.y });
 			break;
 		default:
 			break;
 		}
 		graphics.popState();
 		if (lighter != null)
-		    lighter.dispose();
+			lighter.dispose();
 	}
 
-	/**Draw point with the pointStyle and size of the trace;
+	/**
+	 * Draw point with the pointStyle and size of the trace;
+	 * 
 	 * @param graphics
 	 * @param pos
 	 */
-	public void drawPoint(Graphics graphics, Point pos){
-	    // Shortcut when no point requested
-	    if (pointStyle == PointStyle.NONE)
-	        return;
+	public void drawPoint(Graphics graphics, Point pos) {
+		// Shortcut when no point requested
+		if (pointStyle == PointStyle.NONE)
+			return;
 		graphics.pushState();
 		graphics.setBackgroundColor(traceColor);
-		//graphics.setForegroundColor(traceColor);
+		// graphics.setForegroundColor(traceColor);
 		graphics.setLineWidth(1);
 		graphics.setLineStyle(SWTConstants.LINE_SOLID);
 		switch (pointStyle) {
 		case POINT:
-			graphics.fillOval(new Rectangle(
-					pos.x - pointSize/2, pos.y - pointSize/2,
-					pointSize, pointSize));
+			graphics.fillOval(new Rectangle(pos.x - pointSize / 2, pos.y
+					- pointSize / 2, pointSize, pointSize));
 			break;
 		case CIRCLE:
-			graphics.drawOval(new Rectangle(
-					pos.x - pointSize/2, pos.y - pointSize/2,
-					pointSize, pointSize));
+			graphics.drawOval(new Rectangle(pos.x - pointSize / 2, pos.y
+					- pointSize / 2, pointSize, pointSize));
 			break;
 		case TRIANGLE:
-			graphics.drawPolygon(new int[]{pos.x-pointSize/2, pos.y + pointSize/2,
-					pos.x, pos.y - pointSize/2, pos.x + pointSize/2, pos.y + pointSize/2});
+			graphics.drawPolygon(new int[] { pos.x - pointSize / 2,
+					pos.y + pointSize / 2, pos.x, pos.y - pointSize / 2,
+					pos.x + pointSize / 2, pos.y + pointSize / 2 });
 			break;
 		case FILLED_TRIANGLE:
-			graphics.fillPolygon(new int[]{pos.x-pointSize/2, pos.y + pointSize/2,
-					pos.x, pos.y - pointSize/2, pos.x + pointSize/2, pos.y + pointSize/2});
+			graphics.fillPolygon(new int[] { pos.x - pointSize / 2,
+					pos.y + pointSize / 2, pos.x, pos.y - pointSize / 2,
+					pos.x + pointSize / 2, pos.y + pointSize / 2 });
 			break;
 		case SQUARE:
-			graphics.drawRectangle(new Rectangle(
-					pos.x - pointSize/2, pos.y - pointSize/2,
-					pointSize, pointSize));
+			graphics.drawRectangle(new Rectangle(pos.x - pointSize / 2, pos.y
+					- pointSize / 2, pointSize, pointSize));
 			break;
 		case FILLED_SQUARE:
-			graphics.fillRectangle(new Rectangle(
-					pos.x - pointSize/2, pos.y - pointSize/2,
-					pointSize, pointSize));
+			graphics.fillRectangle(new Rectangle(pos.x - pointSize / 2, pos.y
+					- pointSize / 2, pointSize, pointSize));
 			break;
 		case BAR:
-			graphics.drawLine(pos.x, pos.y - pointSize/2,
-					pos.x, pos.y + pointSize/2);
+			graphics.drawLine(pos.x, pos.y - pointSize / 2, pos.x, pos.y
+					+ pointSize / 2);
 			break;
 		case CROSS:
-			graphics.drawLine(pos.x, pos.y - pointSize/2,
-					pos.x, pos.y + pointSize/2);
-			graphics.drawLine(pos.x - pointSize/2, pos.y,
-					pos.x + pointSize/2, pos.y);
+			graphics.drawLine(pos.x, pos.y - pointSize / 2, pos.x, pos.y
+					+ pointSize / 2);
+			graphics.drawLine(pos.x - pointSize / 2, pos.y, pos.x + pointSize
+					/ 2, pos.y);
 			break;
 		case XCROSS:
-			graphics.drawLine(pos.x - pointSize/2, pos.y - pointSize/2,
-					pos.x + pointSize/2, pos.y + pointSize/2);
-			graphics.drawLine(pos.x + pointSize/2 , pos.y - pointSize/2,
-					pos.x - pointSize/2, pos.y + pointSize/2);
+			graphics.drawLine(pos.x - pointSize / 2, pos.y - pointSize / 2,
+					pos.x + pointSize / 2, pos.y + pointSize / 2);
+			graphics.drawLine(pos.x + pointSize / 2, pos.y - pointSize / 2,
+					pos.x - pointSize / 2, pos.y + pointSize / 2);
 			break;
 		case DIAMOND:
-			graphics.drawPolyline(new int[]{
-				pos.x, pos.y - pointSize/2,
-				pos.x - pointSize/2, pos.y,
-				pos.x, pos.y + pointSize/2,
-				pos.x + pointSize/2, pos.y,
-				pos.x, pos.y - pointSize/2});
+			graphics.drawPolyline(new int[] { pos.x, pos.y - pointSize / 2,
+					pos.x - pointSize / 2, pos.y, pos.x, pos.y + pointSize / 2,
+					pos.x + pointSize / 2, pos.y, pos.x, pos.y - pointSize / 2 });
 			break;
 		case FILLED_DIAMOND:
-			graphics.fillPolygon(new int[]{
-				pos.x, pos.y - pointSize/2,
-				pos.x - pointSize/2, pos.y,
-				pos.x, pos.y + pointSize/2,
-				pos.x + pointSize/2, pos.y});
+			graphics.fillPolygon(new int[] { pos.x, pos.y - pointSize / 2,
+					pos.x - pointSize / 2, pos.y, pos.x, pos.y + pointSize / 2,
+					pos.x + pointSize / 2, pos.y });
 			break;
 		default:
 			break;
@@ -400,12 +418,14 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		graphics.popState();
 	}
 
-	/**Draw line with the line style and line width of the trace.
+	/**
+	 * Draw line with the line style and line width of the trace.
+	 * 
 	 * @param graphics
 	 * @param p1
 	 * @param p2
 	 */
-	public void drawLine(Graphics graphics, Point p1, Point p2){
+	public void drawLine(Graphics graphics, Point p1, Point p2) {
 		graphics.pushState();
 		graphics.setLineWidth(lineWidth);
 		switch (traceType) {
@@ -414,8 +434,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			graphics.drawLine(p1, p2);
 			break;
 		case BAR:
-		    if (use_advanced_graphics)
-		        graphics.setAlpha(areaAlpha);
+			if (use_advanced_graphics)
+				graphics.setAlpha(areaAlpha);
 			graphics.setLineStyle(SWTConstants.LINE_SOLID);
 			graphics.drawLine(p1, p2);
 			break;
@@ -427,24 +447,22 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			int basey;
 			switch (baseLine) {
 			case NEGATIVE_INFINITY:
-				basey = yAxis.getValuePosition(yAxis.getRange().getLower(), false);
+				basey = yAxis.getValuePosition(yAxis.getRange().getLower(),
+						false);
 				break;
 			case POSITIVE_INFINITY:
-				basey = yAxis.getValuePosition(yAxis.getRange().getUpper(), false);
+				basey = yAxis.getValuePosition(yAxis.getRange().getUpper(),
+						false);
 				break;
 			default:
 				basey = yAxis.getValuePosition(0, false);
 				break;
 			}
 			if (use_advanced_graphics)
-			    graphics.setAlpha(areaAlpha);
+				graphics.setAlpha(areaAlpha);
 			graphics.setBackgroundColor(traceColor);
-			graphics.fillPolygon(new int[]{
-					p1.x, p1.y,
-					p1.x, basey,
-					p2.x, basey,
-					p2.x, p2.y
-			});
+			graphics.fillPolygon(new int[] { p1.x, p1.y, p1.x, basey, p2.x,
+					basey, p2.x, p2.y });
 			break;
 		case STEP_HORIZONTALLY:
 			graphics.setLineStyle(SWTConstants.LINE_SOLID);
@@ -468,257 +486,287 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		super.paintFigure(graphics);
 		graphics.pushState();
 		if (use_advanced_graphics)
-		    graphics.setAntialias(antiAliasing? SWT.ON : SWT.OFF);
+			graphics.setAntialias(antiAliasing ? SWT.ON : SWT.OFF);
 		graphics.setForegroundColor(traceColor);
 		graphics.setLineWidth(lineWidth);
 		ISample predp = null;
 		boolean predpInRange = false;
 		Point dpPos = null;
 		hotSampleist.clear();
-		if(traceDataProvider == null)
-			throw new RuntimeException("No DataProvider defined for trace: " + name); //$NON-NLS-1$
+		if (traceDataProvider == null)
+			throw new RuntimeException(
+					"No DataProvider defined for trace: " + name); //$NON-NLS-1$
 		// Lock data provider to prevent changes while painting
-		synchronized (traceDataProvider)
-        {
-    		if(traceDataProvider.getSize()>0){
-    		    // Is only a sub-set of the trace data visible?
-    			final int startIndex, endIndex;
-    			if(traceDataProvider.isChronological()){
-    			    final Range indexRange = getIndexRangeOnXAxis();
-    				if(indexRange == null){
-    				    startIndex = 0;
-    					endIndex = -1;
-    				}else{
-    					startIndex = (int) indexRange.getLower();
-    					endIndex = (int) indexRange.getUpper();
-    				}
-    			}
-    			else
-    			{   // Cannot optimize range, use all data points
-    			    startIndex = 0;
-                    endIndex = traceDataProvider.getSize()-1;
-    			}
-    			for (int i=startIndex; i<=endIndex; i++)
-    			{
-    			    ISample dp = traceDataProvider.getSample(i);
-                    final boolean dpInXRange = xAxis.getRange().inRange(dp.getXValue());
-    				// Mark 'NaN' samples on X axis
-    				final boolean valueIsNaN = Double.isNaN(dp.getYValue());
-                    if (dpInXRange  &&  valueIsNaN)
-                    {
-    					Point markPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-    							yAxis.getValuePosition(xAxis.getTickLablesSide() == LabelSide.Primary?
-    									yAxis.getRange().getLower() : yAxis.getRange().getUpper(), false));
-    					graphics.setBackgroundColor(traceColor);
-    					graphics.fillRectangle(markPos.x -MARKER_SIZE/2, markPos.y - MARKER_SIZE/2, MARKER_SIZE, MARKER_SIZE);
-    					Sample nanSample = new Sample(dp.getXValue(),xAxis.getTickLablesSide() == LabelSide.Primary?
-    							yAxis.getRange().getLower() : yAxis.getRange().getUpper(),
-    							dp.getYPlusError(), dp.getYMinusError(),
-    							Double.NaN, dp.getXMinusError(), dp.getInfo());
-    					hotSampleist.add(nanSample);
-    				}
-    				// Is data point in the plot area?
-                    boolean dpInRange = dpInXRange &&
-                                        yAxis.getRange().inRange(dp.getYValue());
-    				//draw point
-    				if(dpInRange){
-    					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-    							yAxis.getValuePosition(dp.getYValue(), false));
-    					hotSampleist.add(dp);
-    					drawPoint(graphics, dpPos);
-    					if(errorBarEnabled && !drawYErrorInArea)
-    						drawErrorBar(graphics, dpPos, dp);
-    				}
-    				if(traceType == TraceType.POINT && !drawYErrorInArea)
-    					continue; // no need to draw line
+		synchronized (traceDataProvider) {
+			if (traceDataProvider.getSize() > 0) {
+				// Is only a sub-set of the trace data visible?
+				final int startIndex, endIndex;
+				if (traceDataProvider.isChronological()) {
+					final Range indexRange = getIndexRangeOnXAxis();
+					if (indexRange == null) {
+						startIndex = 0;
+						endIndex = -1;
+					} else {
+						startIndex = (int) indexRange.getLower();
+						endIndex = (int) indexRange.getUpper();
+					}
+				} else { // Cannot optimize range, use all data points
+					startIndex = 0;
+					endIndex = traceDataProvider.getSize() - 1;
+				}
+				for (int i = startIndex; i <= endIndex; i++) {
+					ISample dp = traceDataProvider.getSample(i);
+					final boolean dpInXRange = xAxis.getRange().inRange(
+							dp.getXValue());
+					// Mark 'NaN' samples on X axis
+					final boolean valueIsNaN = Double.isNaN(dp.getYValue());
+					if (dpInXRange && valueIsNaN) {
+						Point markPos = new Point(
+								xAxis.getValuePosition(dp.getXValue(), false),
+								yAxis.getValuePosition(
+										xAxis.getTickLablesSide() == LabelSide.Primary ? yAxis
+												.getRange().getLower() : yAxis
+												.getRange().getUpper(), false));
+						graphics.setBackgroundColor(traceColor);
+						graphics.fillRectangle(markPos.x - MARKER_SIZE / 2,
+								markPos.y - MARKER_SIZE / 2, MARKER_SIZE,
+								MARKER_SIZE);
+						Sample nanSample = new Sample(
+								dp.getXValue(),
+								xAxis.getTickLablesSide() == LabelSide.Primary ? yAxis
+										.getRange().getLower() : yAxis
+										.getRange().getUpper(),
+								dp.getYPlusError(), dp.getYMinusError(),
+								Double.NaN, dp.getXMinusError(), dp.getInfo());
+						hotSampleist.add(nanSample);
+					}
+					// Is data point in the plot area?
+					boolean dpInRange = dpInXRange
+							&& yAxis.getRange().inRange(dp.getYValue());
+					// draw point
+					if (dpInRange) {
+						dpPos = new Point(xAxis.getValuePosition(
+								dp.getXValue(), false), yAxis.getValuePosition(
+								dp.getYValue(), false));
+						hotSampleist.add(dp);
+						drawPoint(graphics, dpPos);
+						if (errorBarEnabled && !drawYErrorInArea)
+							drawErrorBar(graphics, dpPos, dp);
+					}
+					if (traceType == TraceType.POINT && !drawYErrorInArea)
+						continue; // no need to draw line
 
-    				//draw line
-    				if(traceType == TraceType.BAR){
-    					switch (baseLine) {
-    					case NEGATIVE_INFINITY:
-    						predp = new Sample(dp.getXValue(), yAxis.getRange().getLower());
-    						break;
-    					case POSITIVE_INFINITY:
-    						predp = new Sample(dp.getXValue(), yAxis.getRange().getUpper());
-    						break;
-    					default:
-    						predp = new Sample(dp.getXValue(), 0);
-    						break;
-    					}
-    					predpInRange = xAxis.getRange().inRange(predp.getXValue()) && yAxis.getRange().inRange(predp.getYValue());
-    				}
-    				if(predp == null)
-    				{   // No previous data point from which to draw a line
-    					predp = dp;
-    					predpInRange = dpInRange;
-    					continue;
-    				}
+					// draw line
+					if (traceType == TraceType.BAR) {
+						switch (baseLine) {
+						case NEGATIVE_INFINITY:
+							predp = new Sample(dp.getXValue(), yAxis.getRange()
+									.getLower());
+							break;
+						case POSITIVE_INFINITY:
+							predp = new Sample(dp.getXValue(), yAxis.getRange()
+									.getUpper());
+							break;
+						default:
+							predp = new Sample(dp.getXValue(), 0);
+							break;
+						}
+						predpInRange = xAxis.getRange().inRange(
+								predp.getXValue())
+								&& yAxis.getRange().inRange(predp.getYValue());
+					}
+					if (predp == null) { // No previous data point from which to
+											// draw a line
+						predp = dp;
+						predpInRange = dpInRange;
+						continue;
+					}
 
-    				// Save original dp info because handling of NaN or
-    				// axis intersections might patch it
-    				final ISample origin_dp = dp;
-    				final boolean origin_dpInRange = dpInRange;
+					// Save original dp info because handling of NaN or
+					// axis intersections might patch it
+					final ISample origin_dp = dp;
+					final boolean origin_dpInRange = dpInRange;
 
-    				// In 'STEP' modes, if there was a value, now there is none,
-    				// continue that last value until the NaN location
-    				if (valueIsNaN  &&  !Double.isNaN(predp.getYValue()) &&
-                        (traceType == TraceType.STEP_HORIZONTALLY  ||
-                         traceType == TraceType.STEP_VERTICALLY))
-                    {   // Patch 'y' of dp, re-compute dpInRange for new 'y'
-    				    dp = new Sample(dp.getXValue(), predp.getYValue());
-    				    dpInRange = yAxis.getRange().inRange(dp.getYValue());
-                    }
+					// In 'STEP' modes, if there was a value, now there is none,
+					// continue that last value until the NaN location
+					if (valueIsNaN
+							&& !Double.isNaN(predp.getYValue())
+							&& (traceType == TraceType.STEP_HORIZONTALLY || traceType == TraceType.STEP_VERTICALLY)) { // Patch
+																														// 'y'
+																														// of
+																														// dp,
+																														// re-compute
+																														// dpInRange
+																														// for
+																														// new
+																														// 'y'
+						dp = new Sample(dp.getXValue(), predp.getYValue());
+						dpInRange = yAxis.getRange().inRange(dp.getYValue());
+					}
 
-    				if(traceType != TraceType.AREA)
-    				{
-    				    if(!predpInRange && !dpInRange){ //both are out of plot area
-    						ISample[] dpTuple = getIntersection(predp, dp);
-    						if(dpTuple[0] == null || dpTuple[1] == null){ // no intersection with plot area
-    							predp = origin_dp;
-    							predpInRange = origin_dpInRange;
-    							continue;
-    						}else{
-    							predp = dpTuple[0];
-    							dp = dpTuple[1];
-    						}
-    					}else if(!predpInRange || !dpInRange){ // one in and one out
-    						//calculate the intersection point with the boundary of plot area.
-    						if(!predpInRange){
-    							predp = getIntersection(predp, dp)[0];
-    							if(predp == null){ // no intersection
-    								predp = origin_dp;
-    								predpInRange = origin_dpInRange;
-    								continue;
-    							}
-    						}else{
-    							dp = getIntersection(predp, dp)[0];
-    							if(dp == null){ // no intersection
-    								predp = origin_dp;
-    								predpInRange = origin_dpInRange;
-    								continue;
-    							}
-    						}
-    					}
-    				}
+					if (traceType != TraceType.AREA) {
+						if (!predpInRange && !dpInRange) { // both are out of
+															// plot area
+							ISample[] dpTuple = getIntersection(predp, dp);
+							if (dpTuple[0] == null || dpTuple[1] == null) { // no
+																			// intersection
+																			// with
+																			// plot
+																			// area
+								predp = origin_dp;
+								predpInRange = origin_dpInRange;
+								continue;
+							} else {
+								predp = dpTuple[0];
+								dp = dpTuple[1];
+							}
+						} else if (!predpInRange || !dpInRange) { // one in and
+																	// one out
+							// calculate the intersection point with the
+							// boundary of plot area.
+							if (!predpInRange) {
+								predp = getIntersection(predp, dp)[0];
+								if (predp == null) { // no intersection
+									predp = origin_dp;
+									predpInRange = origin_dpInRange;
+									continue;
+								}
+							} else {
+								dp = getIntersection(predp, dp)[0];
+								if (dp == null) { // no intersection
+									predp = origin_dp;
+									predpInRange = origin_dpInRange;
+									continue;
+								}
+							}
+						}
+					}
 
-    				final Point predpPos = new Point(xAxis.getValuePosition(predp.getXValue(), false),
-    								yAxis.getValuePosition(predp.getYValue(), false));
-    				dpPos = new Point(xAxis.getValuePosition(dp.getXValue(), false),
-    								yAxis.getValuePosition(dp.getYValue(), false));
+					final Point predpPos = new Point(xAxis.getValuePosition(
+							predp.getXValue(), false), yAxis.getValuePosition(
+							predp.getYValue(), false));
+					dpPos = new Point(xAxis.getValuePosition(dp.getXValue(),
+							false), yAxis.getValuePosition(dp.getYValue(),
+							false));
 
-    				if(!dpPos.equals(predpPos)){
-    					if(errorBarEnabled && drawYErrorInArea && traceType!=TraceType.BAR)
-    						drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
-    					drawLine(graphics, predpPos, dpPos);
-    				}
+					if (!dpPos.equals(predpPos)) {
+						if (errorBarEnabled && drawYErrorInArea
+								&& traceType != TraceType.BAR)
+							drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
+						drawLine(graphics, predpPos, dpPos);
+					}
 
-    				predp = origin_dp;
-    				predpInRange = origin_dpInRange;
-    			}
-    		}
-        }
+					predp = origin_dp;
+					predpInRange = origin_dpInRange;
+				}
+			}
+		}
 		graphics.popState();
 	}
 
-
-	/** Compute axes intersection considering the 'TraceType'
-	 *  @param dp1 'Start' point of line
-	 *  @param dp2 'End' point of line
-	 *  @return The intersection points with the axes when draw the line between the two
-	 * data points. The index 0 of the result is the first intersection point. index 1 is the second one.
+	/**
+	 * Compute axes intersection considering the 'TraceType'
+	 * 
+	 * @param dp1
+	 *            'Start' point of line
+	 * @param dp2
+	 *            'End' point of line
+	 * @return The intersection points with the axes when draw the line between
+	 *         the two data points. The index 0 of the result is the first
+	 *         intersection point. index 1 is the second one.
 	 */
-	private ISample[] getIntersection(final ISample dp1, final ISample dp2)
-	{
-		if (traceType == TraceType.STEP_HORIZONTALLY)
-		{
+	private ISample[] getIntersection(final ISample dp1, final ISample dp2) {
+		if (traceType == TraceType.STEP_HORIZONTALLY) {
 			final ISample[] result = new Sample[2];
 			int count = 0;
 			// Data point between dp1 and dp2 using horizontal steps:
-			//            dp2
-			//             |
+			// dp2
+			// |
 			// dp1--------dp
 			final ISample dp = new Sample(dp2.getXValue(), dp1.getYValue());
-			// Check intersections of horizontal  dp1------dp section
+			// Check intersections of horizontal dp1------dp section
 			final ISample iy[] = getStraightLineIntersection(dp1, dp);
 			// Intersects both y axes?
-            if (iy[1] != null)
-			    return iy;
-            // Intersects one y axis?
-			if(iy[0] != null)
+			if (iy[1] != null)
+				return iy;
+			// Intersects one y axis?
+			if (iy[0] != null)
 				result[count++] = iy[0];
-			// Check intersections of vertical  dp/dp2 section with x axes
+			// Check intersections of vertical dp/dp2 section with x axes
 			final ISample ix[] = getStraightLineIntersection(dp, dp2);
 			// Intersects both x axes?
 			if (ix[1] != null)
-			    return ix;
+				return ix;
 			// Intersects one x axis?
 			if (ix[0] != null)
 				result[count++] = ix[0];
 			return result;
 		}
-		if (traceType == TraceType.STEP_VERTICALLY)
-		{
+		if (traceType == TraceType.STEP_VERTICALLY) {
 			final ISample[] result = new Sample[2];
-	         int count = 0;
-            // Data point between dp1 and dp2 using vertical steps:
-            // dp---------dp2
-            //  |
-            // dp1
+			int count = 0;
+			// Data point between dp1 and dp2 using vertical steps:
+			// dp---------dp2
+			// |
+			// dp1
 			final ISample dp = new Sample(dp1.getXValue(), dp2.getYValue());
 			// Check intersections of vertical dp1/dp section
 			final ISample ix[] = getStraightLineIntersection(dp1, dp);
 			// Intersects both X axes?
 			if (ix[1] != null)
-			    return ix;
+				return ix;
 			// Intersects one X axis?
 			if (ix[0] != null)
 				result[count++] = ix[0];
 			// Check intersection of horizontal dp----dp2 section with Y axes
 			final ISample iy[] = getStraightLineIntersection(dp, dp2);
-            // Intersects both y axes?
-            if (iy[1] != null)
-                return iy;
-            // Intersects one y axis?
-            if (iy[0] != null)
+			// Intersects both y axes?
+			if (iy[1] != null)
+				return iy;
+			// Intersects one y axis?
+			if (iy[0] != null)
 				result[count++] = iy[0];
 			return result;
 		}
 		return getStraightLineIntersection(dp1, dp2);
 	}
 
-
-	/** Compute intersection of straight line with axes,
-	 *  no correction for 'TraceType'.
-     *  @param dp1 'Start' point of line
-     *  @param dp2 'End' point of line
-	 *  @return The intersection points between the line,
-	 *  which is the straight line between the two data points, and the axes.
-	 *  Result could be { null, null }, { point1, null } or { point1, point2 }.
+	/**
+	 * Compute intersection of straight line with axes, no correction for
+	 * 'TraceType'.
+	 * 
+	 * @param dp1
+	 *            'Start' point of line
+	 * @param dp2
+	 *            'End' point of line
+	 * @return The intersection points between the line, which is the straight
+	 *         line between the two data points, and the axes. Result could be {
+	 *         null, null }, { point1, null } or { point1, point2 }.
 	 */
-	private ISample[] getStraightLineIntersection(final ISample dp1, final ISample dp2){
+	private ISample[] getStraightLineIntersection(final ISample dp1,
+			final ISample dp2) {
 		final double x1 = dp1.getXValue();
 		final double y1 = dp1.getYValue();
 		final double x2 = dp2.getXValue();
 		final double y2 = dp2.getYValue();
 		final double dx = x2 - x1;
 		final double dy = y2 - y1;
-        final ISample[] dpTuple = new Sample[2];
-        int count = 0; // number of valid dbTuple entries
+		final ISample[] dpTuple = new Sample[2];
+		int count = 0; // number of valid dbTuple entries
 		double x, y;
 
-		if (dy != 0.0)
-		{   // Intersection with lower xAxis
-    		final double ymin = yAxis.getRange().getLower();
-    		x = (ymin-y1)*dx/dy + x1;
-    		y = ymin;
-    		if(evalDP(x, y, dp1, dp2))
-    			dpTuple[count++] = new Sample(x, y);
-            // Intersection with upper xAxis
-            final double ymax = yAxis.getRange().getUpper();
-            x = (ymax-y1)*dx/dy+x1;
-            y = ymax;
-            if(evalDP(x, y, dp1, dp2))
-                dpTuple[count++] =  new Sample(x, y);
+		if (dy != 0.0) { // Intersection with lower xAxis
+			final double ymin = yAxis.getRange().getLower();
+			x = (ymin - y1) * dx / dy + x1;
+			y = ymin;
+			if (evalDP(x, y, dp1, dp2))
+				dpTuple[count++] = new Sample(x, y);
+			// Intersection with upper xAxis
+			final double ymax = yAxis.getRange().getUpper();
+			x = (ymax - y1) * dx / dy + x1;
+			y = ymax;
+			if (evalDP(x, y, dp1, dp2))
+				dpTuple[count++] = new Sample(x, y);
 		}
 		// A line that runs diagonally through the plot,
 		// hitting for example the lower left as well as upper right corners
@@ -726,68 +774,69 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		// Return only the X axes hits, since Y axes hits are actually the
 		// same points.
 		if (count == 2)
-		    return dpTuple;
-		if (dx != 0.0)
-		{   // Intersection with left yAxis
-		    final double xmin = xAxis.getRange().getLower();
-    		x = xmin;
-    		y = (xmin-x1)*dy/dx+y1;
-    		if(evalDP(x, y, dp1, dp2))
-    			dpTuple[count++] = 	new Sample(x, y);
-            // Intersection with right yAxis
-            final double xmax = xAxis.getRange().getUpper();
-            x = xmax;
-            y = (xmax-x1)*dy/dx + y1;
-            if(dx != 0 && evalDP(x, y, dp1, dp2))
-                dpTuple[count++] =  new Sample(x, y);
+			return dpTuple;
+		if (dx != 0.0) { // Intersection with left yAxis
+			final double xmin = xAxis.getRange().getLower();
+			x = xmin;
+			y = (xmin - x1) * dy / dx + y1;
+			if (evalDP(x, y, dp1, dp2))
+				dpTuple[count++] = new Sample(x, y);
+			// Intersection with right yAxis
+			final double xmax = xAxis.getRange().getUpper();
+			x = xmax;
+			y = (xmax - x1) * dy / dx + y1;
+			if (dx != 0 && evalDP(x, y, dp1, dp2))
+				dpTuple[count++] = new Sample(x, y);
 		}
 		return dpTuple;
 	}
 
-	/** Sanity check:
-	 *  Point x/y was computed to be an axis intersection, but that can fail
-	 *  because of rounding errors or for samples with NaN, Infinity.
-	 *  Is it in the plot area?
-	 *  Is it between the start/end points.
-	 *  @param x
-	 *  @param y
-	 *  @param dp1
-	 *  @param dp2
-	 *  @return true if the point (x,y) is between dp1 and dp2
-	 *          BUT not equal to either
-	 *          AND within the x/y axes. false otherwise
+	/**
+	 * Sanity check: Point x/y was computed to be an axis intersection, but that
+	 * can fail because of rounding errors or for samples with NaN, Infinity. Is
+	 * it in the plot area? Is it between the start/end points.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param dp1
+	 * @param dp2
+	 * @return true if the point (x,y) is between dp1 and dp2 BUT not equal to
+	 *         either AND within the x/y axes. false otherwise
 	 */
-	private boolean evalDP(final double x, final double y, final ISample dp1, final ISample dp2){
-	    // First check axis limits
-	    if (!xAxis.getRange().inRange(x)  ||   !yAxis.getRange().inRange(y))
-	        return false;
-	    // Check if dp is between dp1 and dp2.
-	    // Could this be done without constructing 2 new Ranges?
-		if (! new Range(dp1.getXValue(), dp2.getXValue()).inRange(x)  ||
-		    ! new Range(dp1.getYValue(), dp2.getYValue()).inRange(y))
-		    return false;
+	private boolean evalDP(final double x, final double y, final ISample dp1,
+			final ISample dp2) {
+		// First check axis limits
+		if (!xAxis.getRange().inRange(x) || !yAxis.getRange().inRange(y))
+			return false;
+		// Check if dp is between dp1 and dp2.
+		// Could this be done without constructing 2 new Ranges?
+		if (!new Range(dp1.getXValue(), dp2.getXValue()).inRange(x)
+				|| !new Range(dp1.getYValue(), dp2.getYValue()).inRange(y))
+			return false;
 		// TODO why the ==dp1,2 test?
-        final ISample dp = new Sample(x, y);
-		if(dp.equals(dp1) || dp.equals(dp2))
+		final ISample dp = new Sample(x, y);
+		if (dp.equals(dp1) || dp.equals(dp2))
 			return false;
 		return true;
 	}
 
 	/**
-	 * @param axis the xAxis to set
+	 * @param axis
+	 *            the xAxis to set
 	 */
 	public void setXAxis(Axis axis) {
-		if(xAxis == axis)
+		if (xAxis == axis)
 			return;
-		if(xAxis != null){
+		if (xAxis != null) {
 			xAxis.removeListenr(this);
 			xAxis.removeTrace(this);
 		}
 
-		/*if(traceDataProvider != null){
-			traceDataProvider.removeDataProviderListener(xAxis);
-			traceDataProvider.addDataProviderListener(axis);
-		}		*/
+		/*
+		 * if(traceDataProvider != null){
+		 * traceDataProvider.removeDataProviderListener(xAxis);
+		 * traceDataProvider.addDataProviderListener(axis); }
+		 */
 		xAxis = axis;
 		xAxis.addTrace(this);
 		xAxis.addListener(this);
@@ -802,48 +851,65 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 
 	/**
-	 * @param axis the yAxis to set
+	 * @param axis
+	 *            the yAxis to set
 	 */
 	public void setYAxis(Axis axis) {
-		if(yAxis == axis)
+
+		Axis old = yAxis;
+
+		if (yAxis == axis) {
+			System.out.println("Trace.setYAxis() sameAxes");
 			return;
+		} else {
+			System.out.println("Trace.setYAxis()");
+		}
 
 		xyGraph.getLegendMap().get(yAxis).removeTrace(this);
-		if(xyGraph.getLegendMap().get(yAxis).getTraceList().size() <=0){
+		if (xyGraph.getLegendMap().get(yAxis).getTraceList().size() <= 0) {
 			xyGraph.remove(xyGraph.getLegendMap().get(yAxis));
 			xyGraph.getLegendMap().remove(yAxis);
 		}
-		if(xyGraph.getLegendMap().containsKey(axis))
+		if (xyGraph.getLegendMap().containsKey(axis))
 			xyGraph.getLegendMap().get(axis).addTrace(this);
-		else{
+		else {
 			xyGraph.getLegendMap().put(axis, new Legend(xyGraph));
 			xyGraph.getLegendMap().get(axis).addTrace(this);
 			xyGraph.add(xyGraph.getLegendMap().get(axis));
 		}
-		if(yAxis != null){
+
+		if (yAxis != null) {
 			yAxis.removeListenr(this);
 			yAxis.removeTrace(this);
 		}
-		/*if(traceDataProvider != null){
-			traceDataProvider.removeDataProviderListener(yAxis);
-			traceDataProvider.addDataProviderListener(axis);
-		}		*/
+		/*
+		 * if(traceDataProvider != null){
+		 * traceDataProvider.removeDataProviderListener(yAxis);
+		 * traceDataProvider.addDataProviderListener(axis); }
+		 */
 		yAxis = axis;
 		yAxis.addTrace(this);
 		yAxis.addListener(this);
 
+		fireYAxisChanged(old, yAxis);
 
 		xyGraph.repaint();
 	}
 
+	private void fireYAxisChanged(Axis oldName, Axis newName) {
+		System.out.println("Trace.fireYAxisChanged()");
+		for (ITraceListener listener : listeners)
+			listener.traceYAxisChanged(this, oldName, newName);
+	}
+
 	/**
-	 * @param traceDataProvider the traceDataProvider to set
+	 * @param traceDataProvider
+	 *            the traceDataProvider to set
 	 */
-	public void setDataProvider(
-			IDataProvider traceDataProvider) {
+	public void setDataProvider(IDataProvider traceDataProvider) {
 		traceDataProvider.addDataProviderListener(this);
-	//	traceDataProvider.addDataProviderListener(xAxis);
-	//	traceDataProvider.addDataProviderListener(yAxis);
+		// traceDataProvider.addDataProviderListener(xAxis);
+		// traceDataProvider.addDataProviderListener(yAxis);
 		this.traceDataProvider = traceDataProvider;
 	}
 
@@ -854,14 +920,27 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return traceType;
 	}
 
-	/** @param traceColor Desired trace color */
-	public void setTraceColor(final Color traceColor)
-	{
+	/**
+	 * @param traceColor
+	 *            Desired trace color
+	 */
+	public void setTraceColor(final Color traceColor) {
+		Color old = this.traceColor;
 		this.traceColor = traceColor;
-		if(!errorBarColorSetFlag)
+		if (!errorBarColorSetFlag)
 			errorBarColor = traceColor;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
+		fireTraceColorChanged(old, this.traceColor);
+	}
+
+	private void fireTraceColorChanged(Color old, Color newColor) {
+
+		if (old == newColor)
+			return;
+
+		for (ITraceListener listener : listeners)
+			listener.traceColorChanged(this, old, newColor);
 	}
 
 	/**
@@ -872,76 +951,110 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 
 	/**
-	 * @param traceType the traceType to set
+	 * @param traceType
+	 *            the traceType to set
 	 */
 	public void setTraceType(TraceType traceType) {
+		TraceType old = this.traceType;
 		this.traceType = traceType;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
+
+		fireTraceTypeChanged(old, this.traceType);
+	}
+
+	private void fireTraceTypeChanged(TraceType old, TraceType newTraceType) {
+
+		if (old == newTraceType)
+			return;
+
+		for (ITraceListener listener : listeners)
+			listener.traceTypeChanged(this, old, newTraceType);
 	}
 
 	/**
-	 * @param baseLine the baseLine to set
+	 * @param baseLine
+	 *            the baseLine to set
 	 */
 	public void setBaseLine(BaseLine baseLine) {
 		this.baseLine = baseLine;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param pointStyle the pointStyle to set
+	 * @param pointStyle
+	 *            the pointStyle to set
 	 */
 	public void setPointStyle(PointStyle pointStyle) {
 		this.pointStyle = pointStyle;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param lineWidth the lineWidth to set
+	 * @param lineWidth
+	 *            the lineWidth to set
 	 */
 	public void setLineWidth(int lineWidth) {
 		this.lineWidth = lineWidth;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param pointSize the pointSize to set
+	 * @param pointSize
+	 *            the pointSize to set
 	 */
 	public void setPointSize(int pointSize) {
 		this.pointSize = pointSize;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param areaAlpha the areaAlpha to set
+	 * @param areaAlpha
+	 *            the areaAlpha to set
 	 */
 	public void setAreaAlpha(int areaAlpha) {
 		this.areaAlpha = areaAlpha;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param antiAliasing the antiAliasing to set
+	 * @param antiAliasing
+	 *            the antiAliasing to set
 	 */
 	public void setAntiAliasing(boolean antiAliasing) {
 		this.antiAliasing = antiAliasing;
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
 	}
 
 	/**
-	 * @param name the name of the trace to set
+	 * @param name
+	 *            the name of the trace to set
 	 */
 	public void setName(String name) {
+		String oldName = this.name;
 		this.name = name;
 		revalidate();
-		if(xyGraph != null)
+		if (xyGraph != null)
 			xyGraph.repaint();
+
+		fireTraceNameChanged(oldName, this.name);
+
+	}
+
+	private void fireTraceNameChanged(String oldName, String newName) {
+		// TODO Auto-generated method stub
+		if (((oldName == null) && (newName == null))
+				|| ((oldName != null) && oldName.equals(newName)))
+			return;
+
+		for (ITraceListener listener : listeners)
+			listener.traceNameChanged(this, oldName, newName);
 	}
 
 	/**
@@ -977,98 +1090,108 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return name;
 	}
 
-    public void dataChanged(IDataProvider dataProvider) {
-		//if the axis has been repainted, it will cause the trace to be repainted autoly,
-		//the trace doesn't have to be repainted again.
+	public void dataChanged(IDataProvider dataProvider) {
+		// if the axis has been repainted, it will cause the trace to be
+		// repainted autoly,
+		// the trace doesn't have to be repainted again.
 		boolean xRepainted = xAxis.performAutoScale(false);
 		boolean yRepainted = yAxis.performAutoScale(false);
-		if( !xRepainted && !yRepainted )
+		if (!xRepainted && !yRepainted)
 			repaint();
 	}
 
-	/**Get the corresponding sample index range based on the range of xAxis.
-	 * This will help trace to draw only the part of data confined in xAxis.
-	 * So it may also provides the first data out of the range to make the line could be drawn
-	 * between inside data and outside data.
-	 * <b>This method only works for chronological data,
-	 * which means the data is naturally sorted on xAxis.</b>
+	/**
+	 * Get the corresponding sample index range based on the range of xAxis.
+	 * This will help trace to draw only the part of data confined in xAxis. So
+	 * it may also provides the first data out of the range to make the line
+	 * could be drawn between inside data and outside data. <b>This method only
+	 * works for chronological data, which means the data is naturally sorted on
+	 * xAxis.</b>
+	 * 
 	 * @return the Range of the index.
 	 */
 	private Range getIndexRangeOnXAxis() {
 		Range axisRange = xAxis.getRange();
-		if(traceDataProvider.getSize() <=0)
+		if (traceDataProvider.getSize() <= 0)
 			return null;
-		double min = axisRange.getLower() > axisRange.getUpper()? axisRange.getUpper():axisRange.getLower();
-		double max = axisRange.getUpper() > axisRange.getLower()? axisRange.getUpper():axisRange.getLower();
-		
-		if(min> traceDataProvider.getSample(traceDataProvider.getSize()-1).getXValue()
-				|| max<traceDataProvider.getSample(0).getXValue())
+		double min = axisRange.getLower() > axisRange.getUpper() ? axisRange
+				.getUpper() : axisRange.getLower();
+		double max = axisRange.getUpper() > axisRange.getLower() ? axisRange
+				.getUpper() : axisRange.getLower();
+
+		if (min > traceDataProvider.getSample(traceDataProvider.getSize() - 1)
+				.getXValue()
+				|| max < traceDataProvider.getSample(0).getXValue())
 			return null;
 
 		int lowIndex = 0;
-		int highIndex = traceDataProvider.getSize()-1;
-		if(min>traceDataProvider.getSample(0).getXValue())
-				lowIndex = nearBinarySearchX(min, true);
-		if(max<traceDataProvider.getSample(highIndex).getXValue())
-				highIndex = nearBinarySearchX(max, false);
+		int highIndex = traceDataProvider.getSize() - 1;
+		if (min > traceDataProvider.getSample(0).getXValue())
+			lowIndex = nearBinarySearchX(min, true);
+		if (max < traceDataProvider.getSample(highIndex).getXValue())
+			highIndex = nearBinarySearchX(max, false);
 		return new Range(lowIndex, highIndex);
 	}
 
-
-	// It will return the index on the closest left(if left is true) or right of the data
+	// It will return the index on the closest left(if left is true) or right of
+	// the data
 	// Like public version, but without range checks.
-    private int nearBinarySearchX(double key, boolean left) {
-	int low = 0;
-	int high = traceDataProvider.getSize() - 1;
+	private int nearBinarySearchX(double key, boolean left) {
+		int low = 0;
+		int high = traceDataProvider.getSize() - 1;
 
-	while (low <= high) {
-	    int mid = (low + high) >>> 1;
-	    double midVal = traceDataProvider.getSample(mid).getXValue();
+		while (low <= high) {
+			int mid = (low + high) >>> 1;
+			double midVal = traceDataProvider.getSample(mid).getXValue();
 
-            int cmp;
-            if (midVal < key) {
-                cmp = -1;   // Neither val is NaN, thisVal is smaller
-            } else if (midVal > key) {
-                cmp = 1;    // Neither val is NaN, thisVal is larger
-            } else {
-                long midBits = Double.doubleToLongBits(midVal);
-                long keyBits = Double.doubleToLongBits(key);
-                cmp = (midBits == keyBits ?  0 : // Values are equal
-                       (midBits < keyBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
-                        1));                     // (0.0, -0.0) or (NaN, !NaN)
-            }
+			int cmp;
+			if (midVal < key) {
+				cmp = -1; // Neither val is NaN, thisVal is smaller
+			} else if (midVal > key) {
+				cmp = 1; // Neither val is NaN, thisVal is larger
+			} else {
+				long midBits = Double.doubleToLongBits(midVal);
+				long keyBits = Double.doubleToLongBits(key);
+				cmp = (midBits == keyBits ? 0 : // Values are equal
+						(midBits < keyBits ? -1 : // (-0.0, 0.0) or (!NaN, NaN)
+								1)); // (0.0, -0.0) or (NaN, !NaN)
+			}
 
-	    if (cmp < 0){
-	    	if(mid < traceDataProvider.getSize()-1 && key < traceDataProvider.getSample(mid+1).getXValue() ){
-	    		if(left)
-	    			return mid;
-	    		else
-	    			return mid+1;
-	    	}
-	    	low = mid + 1;
-	    }
+			if (cmp < 0) {
+				if (mid < traceDataProvider.getSize() - 1
+						&& key < traceDataProvider.getSample(mid + 1)
+								.getXValue()) {
+					if (left)
+						return mid;
+					else
+						return mid + 1;
+				}
+				low = mid + 1;
+			}
 
-	    else if (cmp > 0){
-	    	if(mid>0 && key > traceDataProvider.getSample(mid-1).getXValue())
-	    		if(left)
-	    			return mid-1;
-	    		else
-	    			return mid;
-	    	high = mid - 1;
-	    }
+			else if (cmp > 0) {
+				if (mid > 0
+						&& key > traceDataProvider.getSample(mid - 1)
+								.getXValue())
+					if (left)
+						return mid - 1;
+					else
+						return mid;
+				high = mid - 1;
+			}
 
-	    else
-		return mid; // key found
+			else
+				return mid; // key found
+		}
+		return -(low + 1); // key not found.
 	}
-	return -(low + 1);  // key not found.
-    }
 
-    public void axisRevalidated(Axis axis) {
+	public void axisRevalidated(Axis axis) {
 		repaint();
 	}
 
-    public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
-		//do nothing
+	public void axisRangeChanged(Axis axis, Range old_range, Range new_range) {
+		// do nothing
 	}
 
 	/**
@@ -1079,57 +1202,63 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 
 	/**
-	 * @param errorBarEnabled the errorBarEnabled to set
+	 * @param errorBarEnabled
+	 *            the errorBarEnabled to set
 	 */
 	public void setErrorBarEnabled(boolean errorBarEnabled) {
 		this.errorBarEnabled = errorBarEnabled;
 	}
 
 	/**
-	 * @param errorBarType the yErrorBarType to set
+	 * @param errorBarType
+	 *            the yErrorBarType to set
 	 */
 	public void setYErrorBarType(ErrorBarType errorBarType) {
 		yErrorBarType = errorBarType;
 	}
 
 	/**
-	 * @param errorBarType the xErrorBarType to set
+	 * @param errorBarType
+	 *            the xErrorBarType to set
 	 */
 	public void setXErrorBarType(ErrorBarType errorBarType) {
 		xErrorBarType = errorBarType;
 	}
 
 	/**
-	 * @param drawYErrorInArea the drawYErrorArea to set
+	 * @param drawYErrorInArea
+	 *            the drawYErrorArea to set
 	 */
 	public void setDrawYErrorInArea(boolean drawYErrorInArea) {
 		this.drawYErrorInArea = drawYErrorInArea;
 	}
 
 	/**
-	 * @param errorBarCapWidth the errorBarCapWidth to set
+	 * @param errorBarCapWidth
+	 *            the errorBarCapWidth to set
 	 */
 	public void setErrorBarCapWidth(int errorBarCapWidth) {
 		this.errorBarCapWidth = errorBarCapWidth;
 	}
 
-	/** @param errorBarColor Desired color for error bars, or <code>null</code>
-	 *                       to use trace color
+	/**
+	 * @param errorBarColor
+	 *            Desired color for error bars, or <code>null</code> to use
+	 *            trace color
 	 */
-	public void setErrorBarColor(final Color errorBarColor)
-	{
+	public void setErrorBarColor(final Color errorBarColor) {
 		this.errorBarColor = errorBarColor;
 		errorBarColorSetFlag = true;
 	}
 
-
-	/**Hot Sample is the sample on the trace which has been drawn in plot area.
+	/**
+	 * Hot Sample is the sample on the trace which has been drawn in plot area.
+	 * 
 	 * @return the hotPointList
 	 */
 	public List<ISample> getHotSampleList() {
 		return hotSampleist;
 	}
-
 
 	/**
 	 * @return the baseLine
@@ -1138,14 +1267,12 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return baseLine;
 	}
 
-
 	/**
 	 * @return the pointStyle
 	 */
 	public PointStyle getPointStyle() {
 		return pointStyle;
 	}
-
 
 	/**
 	 * @return the lineWidth
@@ -1154,14 +1281,12 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return lineWidth;
 	}
 
-
 	/**
 	 * @return the antiAliasing
 	 */
 	public boolean isAntiAliasing() {
 		return antiAliasing;
 	}
-
 
 	/**
 	 * @return the errorBarEnabled
@@ -1170,14 +1295,12 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return errorBarEnabled;
 	}
 
-
 	/**
 	 * @return the yErrorBarType
 	 */
 	public ErrorBarType getYErrorBarType() {
 		return yErrorBarType;
 	}
-
 
 	/**
 	 * @return the xErrorBarType
@@ -1186,7 +1309,6 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return xErrorBarType;
 	}
 
-
 	/**
 	 * @return the errorBarCapWidth
 	 */
@@ -1194,13 +1316,10 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return errorBarCapWidth;
 	}
 
-
 	/** @return Color used for error bars or 'area' */
-	public Color getErrorBarColor()
-	{
+	public Color getErrorBarColor() {
 		return errorBarColor;
 	}
-
 
 	/**
 	 * @return the drawYErrorInArea
@@ -1209,14 +1328,13 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return drawYErrorInArea;
 	}
 
-
 	/**
-	 * @param xyGraph the xyGraph to set
+	 * @param xyGraph
+	 *            the xyGraph to set
 	 */
 	public void setXYGraph(XYGraph xyGraph) {
 		this.xyGraph = xyGraph;
 	}
-
 
 	/**
 	 * @return the xyGraph
@@ -1225,5 +1343,26 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 		return xyGraph;
 	}
 
+	public void axisForegroundColorChanged(Axis axis, Color oldColor,
+			Color newColor) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
+			boolean newAutoScale) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

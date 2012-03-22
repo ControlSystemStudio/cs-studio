@@ -14,7 +14,7 @@ import java.util.List;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.TreeManipulator;
+import org.csstudio.scan.ui.scantree.model.RemovalInfo;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -34,21 +34,17 @@ import org.eclipse.ui.actions.ActionFactory;
 public class CutOperation extends AbstractOperation
 {
     final private ScanEditor editor;
-    final private List<ScanCommand> commands;
     final private List<ScanCommand> to_remove;
-    private List<TreeManipulator.RemovalInfo> removals = null;
+    private List<RemovalInfo> removals = null;
 
     /** Initialize
      *  @param editor Editor that submitted this operation
-     *  @param commands Scan commands
-     *  @param command Command to remove
+     *  @param to_remove Commands to remove
      */
-    public CutOperation(final ScanEditor editor, final List<ScanCommand> commands,
-            final List<ScanCommand> to_remove)
+    public CutOperation(final ScanEditor editor, final List<ScanCommand> to_remove)
     {
         super(ActionFactory.CUT.getId());
         this.editor = editor;
-        this.commands = commands;
         this.to_remove = to_remove;
     }
 
@@ -75,10 +71,12 @@ public class CutOperation extends AbstractOperation
             //
             // Similarly, removed items are remembered in reverse
             // so that the undo can simply undo each removed item.
-            removals = new ArrayList<TreeManipulator.RemovalInfo>();
+            removals = new ArrayList<RemovalInfo>();
             for (int i=to_remove.size()-1;  i>=0;  --i)
-                removals.add(0, TreeManipulator.remove(commands, to_remove.get(i)));
-            editor.refresh();
+            {
+                final ScanCommand command = to_remove.get(i);
+                removals.add(0, editor.getModel().remove(command));
+            }
 
             // Format as XML
             final ByteArrayOutputStream buf = new ByteArrayOutputStream();
@@ -108,9 +106,8 @@ public class CutOperation extends AbstractOperation
             throw new ExecutionException("Noting to undo for 'cut'");
         try
         {
-            for (TreeManipulator.RemovalInfo removal : removals)
-                removal.undo(commands);
-            editor.refresh();
+            for (RemovalInfo removal : removals)
+                removal.undo();
         }
         catch (Exception ex)
         {

@@ -2,6 +2,51 @@
 #
 #  softIoc -s -d simulation.db
 
+# Simulate beam on/off
+record(calc, "beam_sim")
+{
+    field(CALC, "RNDM > 0.2")
+    field(SCAN, "1 second")
+    field(FLNK, "beam_on")
+}
+
+record(bi, "beam_on")
+{
+    field(INP,  "beam_sim")
+    field(ZNAM, "Beam On")
+    field(ONAM, "Beam Off")
+}
+
+# Shutter, received neutrons
+record(bi, "shutter")
+{
+    field(ZNAM, "Closed")
+    field(ONAM, "Open")
+    field(INP,  "0")
+    field(PINI, "YES")
+}
+
+# Simulate accumulated neutrons
+record(calc, "neutrons")
+{
+    field(INPA, "beam_on")
+    field(INPB, "shutter")
+    field(INPC, "neutrons")
+    field(CALC, "(A&B)?C+2*RNDM:C")
+    field(SCAN, ".1 second")
+}
+
+# Scan 'active'?
+record(bi, "active")
+{
+    field(DESC, "Take data?")
+    field(INP,  "0")
+    field(PINI, "YES")
+    field(ZNAM, "Idle")
+    field(ONAM, "Scanning")
+}
+
+# X, Y motor
 record(ai, "motor_x")
 {
     field(INP,  "0")
@@ -14,6 +59,7 @@ record(ai, "motor_y")
     field(PINI, "YES")
 }
 
+# Other 'slow' device with readback
 record(ai, "setpoint")
 {
     field(INP,  "0")

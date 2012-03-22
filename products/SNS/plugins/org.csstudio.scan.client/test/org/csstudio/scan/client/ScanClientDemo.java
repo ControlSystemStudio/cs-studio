@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.csstudio.scan.client.ScanServerConnector;
 import org.csstudio.scan.command.CommandSequence;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.server.ScanInfo;
@@ -72,7 +71,7 @@ public class ScanClientDemo
         {
             final ScanInfo info = server.getScanInfo(id);
             System.out.println(info);
-            if (info.isDone())
+            if (info.getState().isDone())
                 break;
             Thread.sleep(100);
         }
@@ -122,12 +121,12 @@ public class ScanClientDemo
         {
             final ScanInfo info = server.getScanInfo(id);
             System.out.println(info);
-            if (info.isDone())
+            if (info.getState().isDone())
                 break;
             Thread.sleep(100);
         }
         dumpInfos(server);
-        
+
         ScanServerConnector.disconnect(server);
     }
 
@@ -160,7 +159,7 @@ public class ScanClientDemo
         dumpInfos(server);
         info = server.getScanInfo(id);
         assertEquals(ScanState.Aborted, info.getState());
-        
+
         ScanServerConnector.disconnect(server);
     }
 }

@@ -17,11 +17,9 @@ import org.csstudio.opibuilder.model.ConnectionModel;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Connection;
 import org.eclipse.draw2d.ConnectionRouter;
-import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Locator;
+import org.eclipse.draw2d.MidpointLocator;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.ConnectionEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
@@ -40,7 +38,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 
-	private final static int MOVE_HANDLE_SIZE = 8;
+//	private final static int MOVE_HANDLE_SIZE = 8;
 	
 	private ConnectionRouter originalRouter;
 	private Object originalConstraint;
@@ -52,8 +50,9 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 		if (points.size() < 4)
 			return handles;
 		for (int i = 1; i < points.size() - 2; i++) {
-			handles.add(new BendpointMoveHandle(getConnectionEditPart(), i - 1,
-					new MiddlePointLocator(getConnection(), i)) {
+			handles.add(new BendpointMoveHandle(getConnectionEditPart(), i - 1, 
+					new MidpointLocator(getConnection(), i)){
+//					new MiddlePointLocator(getConnection(), i)) {
 				
 				@Override
 				protected Color getBorderColor() {
@@ -77,11 +76,10 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 	}
 
 	private Command getMoveBendpointCommand(BendpointRequest request) {
-		PointList oldPoints = getNewPoints(request);
-		
+		PointList newPoints = getNewPoints(request);
 		return new SetWidgetPropertyCommand(
 				(AbstractWidgetModel) getConnectionEditPart().getModel(),
-				ConnectionModel.PROP_POINTS, oldPoints);
+				ConnectionModel.PROP_POINTS, newPoints);
 	}
 
 	/**Get new Points based on bendpoint move request.
@@ -89,13 +87,13 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 	 * @return
 	 */
 	private PointList getNewPoints(BendpointRequest request) {
-		PointList oldPoints = getConnection().getPoints().getCopy();
+		PointList newPoints = getConnection().getPoints().getCopy();
 		int aIndex = request.getIndex()+1;
-		Point oldA = oldPoints.getPoint(aIndex);
-		Point oldB = oldPoints.getPoint(aIndex+1);
-		Point newM = request.getLocation();
+		Point oldA = newPoints.getPoint(aIndex);
+		Point oldB = newPoints.getPoint(aIndex+1);
+		Point newM = request.getLocation().getCopy();
 		Point newA, newB;
-		getConnection().translateToAbsolute(newM);
+		getConnection().translateToRelative(newM);
 		
 		if(oldA.x == oldB.x){	//hozitontal move
 			int dx = newM.x - oldA.x;
@@ -106,11 +104,11 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 			newA = oldA.getTranslated(0, dy);
 			newB = oldB.getTranslated(0, dy);
 		}
-		oldPoints.setPoint(newA, aIndex);
-		oldPoints.setPoint(newB, aIndex+1);		
-		oldPoints.removePoint(0);
-		oldPoints.removePoint(oldPoints.size()-1);
-		return oldPoints;
+		newPoints.setPoint(newA, aIndex);
+		newPoints.setPoint(newB, aIndex+1);		
+		newPoints.removePoint(0);
+		newPoints.removePoint(newPoints.size()-1);
+		return newPoints;
 	}
 	
 	@Override
@@ -128,7 +126,6 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 		}
 		if(originalConstraint == null)
 			originalConstraint = getConnection().getRoutingConstraint();
-		
 		getConnection().setRoutingConstraint(getNewPoints(request));
 	}
 	
@@ -175,28 +172,30 @@ public class ManhattanBendpointEditPolicy extends SelectionHandlesEditPolicy {
 		return (ConnectionEditPart) getHost();
 	}
 
-	private final static class MiddlePointLocator implements Locator {
-
-		private Connection connection; 
-		int index; //index of start point
-
-		public MiddlePointLocator(Connection connection, int i) {
-			this.connection = connection;
-			this.index = i;
-		}
-
-		@Override
-		public void relocate(IFigure target) {
-			if(connection.getPoints().size() <= index +1)
-				return;
-			Point a = connection.getPoints().getPoint(index);
-			Point b = connection.getPoints().getPoint(index+1);
-			int x = (a.x + b.x) / 2;
-			int y = (a.y + b.y) / 2;
-			target.setBounds(new Rectangle(x - MOVE_HANDLE_SIZE / 2, y
-					- MOVE_HANDLE_SIZE / 2, MOVE_HANDLE_SIZE, MOVE_HANDLE_SIZE));
-		}
-
-	}
+//	private final static class MiddlePointLocator implements Locator {
+//
+//		private Connection connection; 
+//		int index; //index of start point
+//
+//		public MiddlePointLocator(Connection connection, int i) {
+//			this.connection = connection;
+//			this.index = i;
+//		}
+//
+//		@Override
+//		public void relocate(IFigure target) {
+//			if(connection.getPoints().size() <= index +1)
+//				return;
+//			Point a = connection.getPoints().getPoint(index);
+//			Point b = connection.getPoints().getPoint(index+1);
+//			connection.translateToAbsolute(a);
+//			connection.translateToAbsolute(b);
+//			int x = (a.x + b.x) / 2;
+//			int y = (a.y + b.y) / 2;
+//			target.setBounds(new Rectangle(x - MOVE_HANDLE_SIZE / 2, y
+//					- MOVE_HANDLE_SIZE / 2, MOVE_HANDLE_SIZE, MOVE_HANDLE_SIZE));
+//		}
+//
+//	}
 
 }

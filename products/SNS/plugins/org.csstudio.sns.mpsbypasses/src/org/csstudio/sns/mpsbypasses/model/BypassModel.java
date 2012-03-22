@@ -13,12 +13,13 @@ import org.csstudio.sns.mpsbypasses.Preferences;
 import org.csstudio.sns.mpsbypasses.modes.MachineMode;
 
 /** Model of all the bypass info
- * 
+ *
  *  <p>Meant to be thread-safe
- * 
+ *
  *  @author Delphy Armstrong - Original MPSBypassModel
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BypassModel implements BypassListener
 {
 	/** Listeners */
@@ -26,7 +27,7 @@ public class BypassModel implements BypassListener
 
 	/** Currently selected machine mode */
 	private MachineMode machine_mode = MachineMode.Site;
-	
+
 	/** All bypasses for the selected machine mode */
 	private Bypass[] mode_bypasses = new Bypass[0];
 
@@ -38,10 +39,10 @@ public class BypassModel implements BypassListener
 
 	/** Filter: Which request type to show */
 	private RequestState request_filter = RequestState.All;
-	
+
 	/** Counts of bypass states, computed from <code>mode_bypasses</code> */
 	private int bypassed, bypassable, not_bypassable, disconnected, error;
-	
+
 	private boolean running = false;
 
 
@@ -51,7 +52,7 @@ public class BypassModel implements BypassListener
 	{
 		updateCounts();
 	}
-	
+
 	/** @param listener Listener to add */
     public void addListener(final BypassModelListener listener)
     {
@@ -95,7 +96,7 @@ public class BypassModel implements BypassListener
     {
     	return mode_bypasses.length;
     }
-    
+
     /** @return Count */
 	public synchronized int getBypassed()
     {
@@ -127,12 +128,12 @@ public class BypassModel implements BypassListener
     }
 
 	/** Select the machine mode for which to show bypasses.
-	 * 
+	 *
 	 *  <p>This is a long running operation because it reads from the RDB.
-	 *  
+	 *
 	 *  <p>Can be called at any time.
 	 *  If model was already started, it will be stopped.
-	 *  
+	 *
 	 *  @param mode
 	 *  @see BypassModelListener#modelLoaded(BypassModel)
 	 */
@@ -146,12 +147,12 @@ public class BypassModel implements BypassListener
             mode_bypasses = new Bypass[] { new Bypass("Reading Bypass Info", mode.toString()) };
 			filtered_bypasses = mode_bypasses;
     		updateCounts();
-            
+
     		// Notify listeners
     		for (BypassModelListener listener : listeners)
     			listener.bypassesChanged();
         }
-		
+
 		Exception error = null;
 		RDBUtil rdb = null;
 		try
@@ -183,7 +184,7 @@ public class BypassModel implements BypassListener
 				listener.modelLoaded(this, error);
 			return;
 		}
-		
+
 		updateCounts();
 		filter();
 
@@ -222,7 +223,7 @@ public class BypassModel implements BypassListener
 			final boolean state_ok = desired_state == BypassState.All  ||  bypass.getState() == desired_state;
 			if (!state_ok)
 				continue;
-			
+
 			final boolean request_ok;
 			switch (desired_request)
 			{
@@ -261,12 +262,12 @@ public class BypassModel implements BypassListener
 		}
 
 		filter();
-		
+
 		// Notify listeners
 		for (BypassModelListener listener : listeners)
 			listener.bypassesChanged();
     }
-	
+
 	/** @return Currently active bypass state filter
 	 *  @see #setFilter(BypassState, RequestState)
 	 */
@@ -282,9 +283,9 @@ public class BypassModel implements BypassListener
 	{
 		return request_filter;
 	}
-	
+
 	/** Read bypass info from RDB
-	 * 
+	 *
 	 *  @param connection RDB connection
 	 *  @param mode {@link MachineMode}
 	 *  @return {@link Bypass} array
@@ -293,27 +294,27 @@ public class BypassModel implements BypassListener
 	private Bypass[] readBypassInfo(final Connection connection, final MachineMode mode) throws Exception
     {
 		final RequestLookup requestors = new RequestLookup(connection);
-		
+
 		String rdb_mode = mode.name();
-		
+
 		// if the machMode is Site, tell the RDB it's Tgt and don't add the 2nd input of "Y"
 		if (mode == MachineMode.Site)
 			rdb_mode = "Tgt";
-		
+
 		String sql = "{ ? = call epics.epics_mps_pkg.mps_signals_to_audit(?";
 		if(mode != MachineMode.Site)
 			sql=sql+",?) }";
 		else
 			sql=sql+") }";
 		final CallableStatement procedure = connection.prepareCall(sql);
-		
+
 		// Request the array of the MPS Mode Mask Table, based on the input Machine Mode
 		procedure.registerOutParameter(1, Types.ARRAY,"EPICS.MPS_MODE_MASK_TAB");
 		procedure.setString(2, rdb_mode);
 		if(mode != MachineMode.Site)
 			procedure.setString(3, "Y");
 		procedure.execute();
-		
+
 		// Store the retrieved MPS Mode Mask Table array
 		final List<Bypass> bypasses = new ArrayList<Bypass>();
 		final Object[] result = (Object[]) procedure.getArray(1).getArray();
@@ -328,7 +329,7 @@ public class BypassModel implements BypassListener
 			final Object sig_id_obj = attributes[0];
 			if (sig_id_obj == null)
 				continue;
-			
+
 			// The 'signal ID' will be 'Ring_Vac:SGV_AB:FPL_Ring_mm'
 			// Get device ID 'Ring_Vac:SGV_AB'
 			final String signal_id = sig_id_obj.toString();
@@ -341,7 +342,7 @@ public class BypassModel implements BypassListener
 
 			// Get request info
 			final Request request = requestors.getRequestor(device_id);
-			
+
 			// For a signal ID 'Ring_Vac:SGV_AB:FPL_Ring_mm',
 			// the base name of the bypass PVs is
 			// 'Ring_Vac:SGV_AB:FPL_Ring',
@@ -357,7 +358,7 @@ public class BypassModel implements BypassListener
 			// System.out.println(bypass);
 		}
 		procedure.close();
-		
+
 		return bypasses.toArray(new Bypass[bypasses.size()]);
     }
 

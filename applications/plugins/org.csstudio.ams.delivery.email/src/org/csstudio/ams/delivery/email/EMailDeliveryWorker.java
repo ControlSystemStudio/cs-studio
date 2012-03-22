@@ -27,8 +27,8 @@ package org.csstudio.ams.delivery.email;
 
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
-import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.util.jms.JmsAsyncConsumer;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 10.12.2011
@@ -72,7 +70,7 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     public EMailDeliveryWorker() {
         setWorkerName(this.getClass().getSimpleName());
         emailProps = new EMailWorkerProperties();
-        messageQueue = new OutgoingEMailQueue(emailProps);
+        messageQueue = new OutgoingEMailQueue(this, emailProps);
         mailDevice = new EMailDevice(emailProps);
         running = true;
         checkState = false;
@@ -88,9 +86,9 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
         LOG.info(workerName + " is running.");
                 
         while(running) {
-            synchronized (messageQueue) {
+            synchronized (this) {
                 try {
-                    messageQueue.wait();
+                    this.wait();
                     checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
@@ -187,16 +185,16 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public void stopWorking() {
         running = false;
-        synchronized (messageQueue) {
-            messageQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
     }
 
     @Override
     public boolean isWorking() {
         checkState = true;
-        synchronized (messageQueue) {
-            messageQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
         Object lock = new Object();
         synchronized (lock) {

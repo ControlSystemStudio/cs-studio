@@ -26,6 +26,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.part.ViewPart;
 
 /** Eclipse View that displays the {@link GUI}
@@ -67,10 +68,11 @@ public class ScanMonitorView extends ViewPart
 
         // Toolbar actions (duplicating context menu actions)
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
-        toolbar.add(new InfoAction(parent.getShell(), model));
-        toolbar.add(new ResumeAction(model, null));
-        toolbar.add(new PauseAction(model, null));
-        toolbar.add(new RemoveCompletedAction(model));
+        final Shell shell = parent.getShell();
+		toolbar.add(new InfoAction(shell, model));
+        toolbar.add(new ResumeAction(shell, model, null));
+        toolbar.add(new PauseAction(shell, model, null));
+        toolbar.add(new RemoveCompletedAction(shell, model));
     }
 
     /** {@inheritDoc} */

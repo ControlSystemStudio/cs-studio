@@ -30,7 +30,6 @@
       <plugin id="javax.servlet"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>
-      <plugin id="org.csstudio.common.log4j" fragment="true"/>
       <plugin id="org.csstudio.dal"/>
       <plugin id="org.csstudio.dal.epics"/>
       <plugin id="org.csstudio.data"/>

@@ -22,11 +22,6 @@
    </url>
 
    <includes
-         id="org.csstudio.nsls2.basic.applications.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
          id="org.csstudio.opibuilder.feature"
          version="0.0.0"/>
 
@@ -43,7 +38,16 @@
          version="0.0.0"/>
 
    <includes
+         id="org.csstudio.nsls2.basic.applications.feature"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
          id="org.csstudio.display.multichannelviewer.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.olog.feature"
          version="0.0.0"/>
 
 </feature>

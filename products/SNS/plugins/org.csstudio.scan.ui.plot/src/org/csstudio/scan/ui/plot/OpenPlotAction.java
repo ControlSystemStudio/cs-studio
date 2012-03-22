@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.plot;
 
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbench;
@@ -49,7 +50,7 @@ public class OpenPlotAction extends Action
         {
             final IWorkbenchPage page = window.getActivePage();
             final String secondary = ScanPlotView.getNextViewID();
-            final ScanPlotView view = (ScanPlotView) page.showView(ScanPlotView.ID, secondary, IWorkbenchPage.VIEW_ACTIVATE);
+            final ScanPlotView view = (ScanPlotView) page.showView(ScanUIActivator.ID_SCAN_PLOT_VIEW, secondary, IWorkbenchPage.VIEW_ACTIVATE);
             view.selectScan(info.getName(), info.getId());
         }
         catch (Exception ex)

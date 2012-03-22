@@ -13,7 +13,7 @@ import java.beans.IntrospectionException;
 import org.csstudio.swt.widgets.figureparts.RoundScale;
 import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
 import org.csstudio.swt.widgets.introspection.MeterIntrospector;
-import org.csstudio.swt.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.FigureListener;
@@ -205,7 +205,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 				M = Math.max(FigureUtilities.getTextWidth(
 						scale.format(scale.getRange().getLower()), scale.getFont()),
 						FigureUtilities.getTextWidth(
-						scale.format(scale.getRange().getLower()), scale.getFont()))/2;
+						scale.format(scale.getRange().getUpper()), scale.getFont()))/2;
 			
 			int h = area.height;
 			int w = area.width;			
@@ -260,11 +260,11 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 						valuePosition +=8;
 				}
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
+						PointsUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
+						PointsUtil.rotate(needlePoints.getPoint(1), valuePosition, center), 1);
 				needlePoints.setPoint(
-						RotationUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);				
+						PointsUtil.rotate(needlePoints.getPoint(2), valuePosition, center),2);				
 				needle.setPoints(needlePoints);			
 				
 			}

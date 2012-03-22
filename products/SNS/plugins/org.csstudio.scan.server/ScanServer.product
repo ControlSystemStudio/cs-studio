@@ -7,10 +7,9 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console</programArgs>
       <vmArgs>-Djava.awt.headless=true
--Xms64m
--Xmx256m</vmArgs>
+-Xms10m
+-Xmx1024m</vmArgs>
       <vmArgsMac>-d32 -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -32,6 +31,7 @@
       <plugin id="org.csstudio.java"/>
       <plugin id="org.csstudio.logging"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
+      <plugin id="org.csstudio.platform.libs.epics.linux" fragment="true"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
       <plugin id="org.csstudio.scan"/>
       <plugin id="org.csstudio.scan.custom"/>

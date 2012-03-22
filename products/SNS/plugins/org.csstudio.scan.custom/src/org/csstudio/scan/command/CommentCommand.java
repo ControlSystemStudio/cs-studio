@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -30,8 +30,8 @@ public class CommentCommand extends ScanCommand
     {
         new ScanCommandProperty("comment", "Comment", String.class),
     };
-    
-    private String comment;
+
+    private volatile String comment;
 
     /** Initialize with example comment */
     public CommentCommand()
@@ -65,25 +65,24 @@ public class CommentCommand extends ScanCommand
     {
         this.comment = comment;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void writeXML(final PrintStream out, final int level)
     {
         writeIndent(out, level);
-        // Note that the 'comment' is written as the text of the
-        // command node itself, not within another embedded node
-        // like '<text/>'
-        out.println("<comment>" + comment + "</comment>");
+        out.println("<comment><address>" + getAddress() + "</address>" +
+        		    "<text>" + comment + "</text></comment>");
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
     {
-        setComment(element.getTextContent());
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
+        setComment(DOMHelper.getSubelementString(element, "text", ""));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

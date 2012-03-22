@@ -17,11 +17,12 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Delphy Armstrong - Original MPSBypassGUI
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ELogAction extends SendToElogActionHelper
 {
 	final private Shell shell;
 	final private BypassModel model;
-	
+
 	/** Initialize
 	 *  @param shell
 	 *  @param model

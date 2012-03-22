@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -47,8 +47,6 @@ abstract public class ScanSample implements Serializable
 	final private Date timestamp;
 	final private long serial;
 
-	// TODO Does each Scan Sample need the device name?
-	//      Should the device name only be kept in the logger?
     /** Initialize
      *  @param device_name Name of device that provided the sample
      *  @param timestamp Time stamp
@@ -85,7 +83,7 @@ abstract public class ScanSample implements Serializable
 	 *  @return Value of the sample
 	 */
 	abstract public Object getValue();
-	
+
 	@Override
 	public String toString()
 	{

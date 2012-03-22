@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -25,6 +26,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.SnapToGeometry;
@@ -44,7 +46,9 @@ import org.eclipse.ui.IActionFilter;
  */
 public class DisplayEditpart extends AbstractContainerEditpart {
 
-	private ControlListener zoomListener;
+	private ControlListener zoomListener, scaleListener;
+	
+	private org.eclipse.swt.graphics.Point originSize;
 	
 	@Override
 	protected void createEditPolicies() {
@@ -60,6 +64,32 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 	public void activate() {
 		super.activate();
 		initProperties();
+		
+		if(getExecutionMode() == ExecutionMode.RUN_MODE && 
+				getWidgetModel().getDisplayScaleData().isAutoScaleWidgets()){
+			originSize = new org.eclipse.swt.graphics.Point(
+					getWidgetModel().getWidth(), getWidgetModel().getHeight());
+			scaleListener = new ControlAdapter() {
+				@Override
+				public void controlResized(ControlEvent e) {
+					org.eclipse.swt.graphics.Point size = 
+							((FigureCanvas)getViewer().getControl()).getSize();
+					double widthRatio = size.x /(double)originSize.x;
+					double heightRatio = size.y/(double)originSize.y;
+					getWidgetModel().scale(widthRatio, heightRatio);
+//					oldSize = size;					
+				}
+			};
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {
+				
+				@Override
+				public void run() {
+					scaleListener.controlResized(null);					
+				}
+			});
+			getViewer().getControl().addControlListener(scaleListener);
+		}
+		
 		if(getExecutionMode() == ExecutionMode.RUN_MODE && getWidgetModel().isAutoZoomToFitAll()){
 			zoomListener = new ControlAdapter() {
 					@Override
@@ -87,9 +117,13 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		if(zoomListener != null){
 			//recover zoom
 			((ScalableFreeformRootEditPart)getRoot()).getZoomManager().setZoom(1.0);
-			getViewer().getControl().removeControlListener(zoomListener);
-			
+			getViewer().getControl().removeControlListener(zoomListener);	
 		}
+		
+		if(scaleListener != null){
+			getViewer().getControl().removeControlListener(scaleListener);
+		}
+		
 		super.deactivate();
 		
 	}
@@ -230,6 +264,20 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			
 		};
 		return super.getAdapter(key);
+	}
+	
+	@Override
+	public EditPart getWidget(String name) throws Exception {
+		try {
+			return super.getWidget(name);
+		} catch (Exception e) {
+			//search from connection widgets
+			for(ConnectionModel conn : getWidgetModel().getConnectionList()){
+				if(conn.getName().equals(name))
+					return (EditPart) getViewer().getEditPartRegistry().get(conn);
+			}
+			throw e;
+		}		
 	}
 	
 }

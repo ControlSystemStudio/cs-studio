@@ -16,6 +16,9 @@
 package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.LogCommand;
@@ -42,6 +45,7 @@ public class LoopCommandHeadlessTest
         final DeviceContext context = new DeviceContext();
         context.addPVDevice(new DeviceInfo("loc://counter", "counter", true, true));
         context.addPVDevice(new DeviceInfo("loc://other", "other", true, true));
+        context.addPVDevice(new DeviceInfo("loc://other2", "other2", true, true));
         return context;
     }
 
@@ -92,8 +96,15 @@ public class LoopCommandHeadlessTest
         final LoopCommandImpl loop2 = new LoopCommandImpl(
             new LoopCommand("counter", 1.0, 5.0, 1.0,
                 new SetCommand("other", 1.0),
-                new SetCommand("other", 2.0)));
+                new SetCommand("other2", 2.0)));
         assertEquals(10, loop2.getWorkUnits());
+
+        final String[] names = loop2.getDeviceNames();
+        assertEquals(3, names.length);
+        Arrays.sort(names);
+        assertTrue(Arrays.binarySearch(names, "counter") >= 0);
+        assertTrue(Arrays.binarySearch(names, "other") >= 0);
+        assertTrue(Arrays.binarySearch(names, "other2") >= 0);
 
         final Scan scan = new Scan("Loop Test", devices, loop1, loop2);
         assertEquals(0, scan.getScanInfo().getPerformedWorkUnits());

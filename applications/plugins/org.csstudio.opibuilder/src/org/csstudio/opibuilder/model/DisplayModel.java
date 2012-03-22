@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.datadefinition.DisplayScaleData;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComplexDataProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.VersionProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
@@ -67,6 +69,12 @@ public class DisplayModel extends AbstractContainerModel {
 	 * zoom operation will not work.
 	 */
 	public static final String PROP_AUTO_ZOOM_TO_FIT_ALL = "auto_zoom_to_fit_all"; //$NON-NLS-1$
+	
+	/**
+	 * Automatically scale all widgets when window resizes.
+	 */
+	public static final String PROP_AUTO_SCALE_WIDGETS = "auto_scale_widgets"; //$NON-NLS-1$
+
 
 	private GraphicalViewer viewer;
 
@@ -94,6 +102,10 @@ public class DisplayModel extends AbstractContainerModel {
 				"Show Edit Range", WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_AUTO_ZOOM_TO_FIT_ALL,
 				"Auto Zoom to Fit All", WidgetPropertyCategory.Behavior, false));
+		addProperty(new ComplexDataProperty(
+				PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets (at Runtime)", 
+				WidgetPropertyCategory.Behavior, new DisplayScaleData(), "Scale Widgets as windows resizes"));
+	
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON,
 				"Show Close Button", WidgetPropertyCategory.Display, true));
 		Version version = OPIBuilderPlugin.getDefault().getBundle()
@@ -114,7 +126,15 @@ public class DisplayModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Behavior, false));
 		setPropertyDescription(PROP_COLOR_FOREGROUND, "Grid Color");
 		setPropertyValue(PROP_NAME, ""); //$NON-NLS-1$
+		removeProperty(PROP_SCALE_OPTIONS);
 
+	}
+	
+	/**
+	 * @return true if Children should be auto scaled when this container is resized.
+	 */
+	public DisplayScaleData getDisplayScaleData(){
+		return (DisplayScaleData)getPropertyValue(PROP_AUTO_SCALE_WIDGETS);
 	}
 
 	public boolean isShowGrid() {
@@ -238,4 +258,22 @@ public class DisplayModel extends AbstractContainerModel {
 		return null;
 	}
 
+	
+	@Override
+	public void scale(double widthRatio, double heightRatio) {
+		int minWidth = getDisplayScaleData().getMinimumWidth();
+		if(minWidth < 0){
+			minWidth = getWidth();
+		}
+		int minHeight = getDisplayScaleData().getMinimumHeight();
+		if(minHeight < 0){
+			minHeight = getHeight();
+		}		
+		if(getWidth() *widthRatio < minWidth)
+			widthRatio = minWidth/(double)getWidth();
+		if(getHeight()*heightRatio < minHeight)
+			heightRatio = minHeight/(double)getHeight();
+		for(AbstractWidgetModel child : getChildren())
+			child.scale(widthRatio, heightRatio);
+	}
 }

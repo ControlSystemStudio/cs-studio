@@ -8,15 +8,20 @@
 package org.csstudio.swt.xygraph.figures;
 
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.rmi.CORBA.Tie;
+
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.undo.ZoomCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
 import org.csstudio.swt.xygraph.util.Log10;
@@ -39,8 +44,63 @@ import org.eclipse.swt.widgets.Display;
  * XY-Graph Figure.
  * @author Xihui Chen
  * @author Kay Kasemir (performStagger)
+ * @author Laurent PHILIPPE (property change support)
  */
 public class XYGraph extends Figure{
+	
+	/**
+	 * Add property change support to XYGraph
+	 * Use for inform listener of xyGraphMem property changed
+	 * @author L.PHILIPPE (GANIL)
+	 */
+	private PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
+
+	
+	@Override
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(listener);
+	}
+
+	@Override
+	public void addPropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		changeSupport.addPropertyChangeListener(property, listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(listener);
+	}
+
+	@Override
+	public void removePropertyChangeListener(String property,
+			PropertyChangeListener listener) {
+		changeSupport.removePropertyChangeListener(property, listener);
+	}
+	
+	public void fireConfigChanged() {
+		changeSupport.firePropertyChange("config", null, this);
+	}
+
+
+	/**
+	 * Save the Graph settings
+	 * Send a property changed event when changed
+	 * @author L.PHILIPPE (GANIL)
+	 */
+	private XYGraphMemento xyGraphMem;
+	
+	public XYGraphMemento getXyGraphMem() {
+		return xyGraphMem;
+	}
+
+	public void setXyGraphMem(XYGraphMemento xyGraphMem) {
+		XYGraphMemento old = this.xyGraphMem;
+		this.xyGraphMem = xyGraphMem;
+		changeSupport.firePropertyChange("xyGraphMem", old, this.xyGraphMem);
+	
+		System.out.println("**** XYGraph.setXyGraphMem() ****");
+	}
 
 	private static final int GAP = 2;
 //	public final static Color WHITE_COLOR = ColorConstants.white;
@@ -78,9 +138,17 @@ public class XYGraph extends Figure{
 	 *  can crash.
 	 */
 	private String title = "";
+
+
+
 	private Color titleColor;
+
 	private Label titleLabel;
 
+	//ADD BECAUSE OF SWT invalid Thread acess on getTitleColor()
+	private FontData titleFontData;
+	private RGB titleColorRgb; 
+	
 	private List<Axis> xAxisList;
 	private List<Axis> yAxisList;
 	private PlotArea plotArea;
@@ -92,6 +160,7 @@ public class XYGraph extends Figure{
 	private OperationsManager operationsManager;
 
 	private ZoomType zoomType;
+
 
 	/**
 	 * Constructor.
@@ -421,6 +490,7 @@ public class XYGraph extends Figure{
 	 */
 	public void setTitleFont(Font titleFont) {
 		titleLabel.setFont(titleFont);
+		titleFontData = titleFont.getFontData()[0];
 	}
 
 	/**
@@ -429,6 +499,12 @@ public class XYGraph extends Figure{
 	public Font getTitleFont(){
 		return titleLabel.getFont();
 	}
+	
+	
+
+	public FontData getTitleFontData() {
+		return titleFontData;
+	}
 
 	/**
 	 * @param titleColor the titleColor to set
@@ -436,6 +512,7 @@ public class XYGraph extends Figure{
 	public void setTitleColor(Color titleColor) {
 		this.titleColor = titleColor;
 		titleLabel.setForegroundColor(titleColor);
+		this.titleColorRgb = titleColor.getRGB();
 	}
 
 	/**
@@ -488,6 +565,11 @@ public class XYGraph extends Figure{
 		if(titleColor == null)
 			return getForegroundColor();
 		return titleColor;
+	}
+	
+	
+	public RGB getTitleColorRgb() {
+		return titleColorRgb;
 	}
 
 	/**

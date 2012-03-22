@@ -813,8 +813,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	 *            the value.
 	 * @param forceFire
 	 *            If true, the property will be set again even if the new value
-	 *            is same as old value. If false and the new value is same as
-	 *            the old value, it will be ignored.
+	 *            is same as old value. If false, only property value will be set 
+	 *            and no listener will be fired.
 	 */
 	public void setPropertyValue(String prop_id, Object value, boolean forceFire) {
 		getWidgetModel().setPropertyValue(prop_id, value, forceFire);

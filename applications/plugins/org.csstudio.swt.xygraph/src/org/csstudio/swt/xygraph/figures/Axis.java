@@ -52,14 +52,30 @@ public class Axis extends LinearScale{
 //	private static final Color GRAY_COLOR = XYGraphMediaFactory.getInstance().getColor(
 //			XYGraphMediaFactory.COLOR_GRAY);
 
+    
+    
     private String title;
 
-    final private List<Trace> traceList = new ArrayList<Trace>();
+    @Override
+	public void setFont(Font font) {
+		// TODO Auto-generated method stub
+		super.setFont(font);
+		this.scaleFontData = getFont().getFontData()[0];
+	}
+
+
+
+	final private List<Trace> traceList = new ArrayList<Trace>();
 
 	private XYGraph xyGraph;
 	private Grid grid;
 
 	private Font titleFont;
+	//title FontData : Add because of SWT illegal thread access
+		private FontData titleFontData;
+	
+		//title FontData : Add because of SWT illegal thread access
+			private FontData scaleFontData;
 
 	private boolean autoScale = false;
 
@@ -85,6 +101,19 @@ public class Axis extends LinearScale{
 	private Range startRange;
 	private Cursor grabbing;
 	private Color revertBackColor;
+
+	private RGB colorRGB;
+	private RGB majorGridColorRGB;
+
+	
+
+	public FontData getTitleFontData() {
+		return titleFontData;
+	}
+
+	public FontData getScaleFontData() {
+		return scaleFontData;
+	}
 
 	/**Constructor
 	 * @param title title of the axis
@@ -151,11 +180,26 @@ public class Axis extends LinearScale{
 		revalidate();
 	}
 	@Override
-	public void setForegroundColor(final Color color) {
+	public void setForegroundColor(final Color color) {	
+		Color oldColor = getForegroundColor();
 		super.setForegroundColor(color);
+		colorRGB = color.getRGB();
 		if(xyGraph != null)
 			xyGraph.repaint();
+		fireAxisForegroundColorChanged(oldColor, color);
 	}
+	
+	
+	public RGB getForegroundColorRGB(){
+		return colorRGB;
+	}
+	
+	private void fireAxisForegroundColorChanged(Color oldColor,
+			Color newColor) {
+		for(IAxisListener listener : listeners)
+			listener.axisForegroundColorChanged(this, oldColor, newColor);	
+	}
+	
 	@Override
 	public void setBackgroundColor(Color bg) {
 		RGB backRGB = bg.getRGB();
@@ -363,10 +407,19 @@ public class Axis extends LinearScale{
 	 * @param title the title to set
 	 */
 	public void setTitle(final String title) {
+		
+		String oldTitle = this.title;
 		this.title = title;
 		if(xyGraph != null)
 			xyGraph.repaint();
+		fireAxisTitleChanged(oldTitle, title);
 	}
+	
+	private void fireAxisTitleChanged(String oldTitle, String newTitle) {
+		for(IAxisListener listener : listeners)
+			listener.axisTitleChanged(this, oldTitle, newTitle);
+	}
+
 
 	/**
 	 * @return the title
@@ -386,8 +439,18 @@ public class Axis extends LinearScale{
 	 * @param autoScale the autoScale to set
 	 */
 	public void setAutoScale(final boolean autoScale) {
+	
+		boolean oldAutoScale = this.autoScale;
 		this.autoScale = autoScale;
 		performAutoScale(false);
+		fireAxisAutoScaleChanged(oldAutoScale, this.autoScale);
+	}
+
+	private void fireAxisAutoScaleChanged(boolean oldAutoScale,
+			boolean newAutoScale) {
+		for(IAxisListener listener : listeners)
+			listener.axisAutoScaleChanged(this, oldAutoScale, newAutoScale);
+		
 	}
 
 	/**
@@ -437,8 +500,15 @@ public class Axis extends LinearScale{
 	 */
 	public void setMajorGridColor(final Color majorGridColor) {
 		this.majorGridColor = majorGridColor;
+		this.majorGridColorRGB = majorGridColor.getRGB();
 		if(xyGraph != null)
 			xyGraph.repaint();
+	}
+
+	
+	
+	public RGB getMajorGridColorRGB() {
+		return majorGridColorRGB;
 	}
 
 	/**
@@ -465,6 +535,7 @@ public class Axis extends LinearScale{
 	 */
 	public void setTitleFont(final Font titleFont) {
 		this.titleFont = titleFont;
+		this.titleFontData = titleFont.getFontData()[0];
 		repaint();
 	}
 
@@ -666,6 +737,26 @@ public class Axis extends LinearScale{
 	public Grid getGrid() {
 		return grid;
 	}
+
+
+
+	@Override
+	public void setLogScale(boolean enabled) throws IllegalStateException {
+		// TODO Auto-generated method stub
+		boolean old = isLogScaleEnabled();
+		super.setLogScale(enabled);
+		fireAxisLogScaleChanged(old, logScaleEnabled);
+	}
+	
+	private void fireAxisLogScaleChanged(boolean old, boolean logScale) {
+		
+		if(old == logScale)
+			return;
+		
+		for(IAxisListener listener : listeners)
+			listener.axisLogScaleChanged(this, old, logScale);
+	}
+
 
 
 	/** Listener to mouse events, performs panning and some zooms

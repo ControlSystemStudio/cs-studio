@@ -11,8 +11,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.csstudio.opibuilder.commands.ConnectionDeleteCommand;
+import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editpolicies.ManhattanBendpointEditPolicy;
 import org.csstudio.opibuilder.model.ConnectionModel;
+import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.eclipse.draw2d.ConnectionRouter;
 import org.eclipse.draw2d.IFigure;
@@ -31,6 +33,7 @@ import org.eclipse.gef.editpolicies.ConnectionEndpointEditPolicy;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.requests.ReconnectRequest;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 
 /**
@@ -94,12 +97,33 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 			getWidgetModel().getProperty(ConnectionModel.PROP_POINTS)
 					.addPropertyChangeListener(new PropertyChangeListener() {
 						@Override
-						public void propertyChange(PropertyChangeEvent evt) {
-							if(((PointList)evt.getOldValue()).size() != 
-									((PointList)evt.getNewValue()).size())
-								updateRouter(getConnectionFigure());
-							else
-								refreshBendpoints(getConnectionFigure());
+						public void propertyChange(final PropertyChangeEvent evt) {
+							Runnable runnable = new Runnable() {
+								
+								@Override
+								public void run() {
+									if(((PointList)evt.getOldValue()).size() != 
+											((PointList)evt.getNewValue()).size())
+										updateRouter(getConnectionFigure());
+									else
+										refreshBendpoints(getConnectionFigure());
+								}
+							};
+							//It should update at the same rate as other widget at run time
+							if(getExecutionMode() == ExecutionMode.RUN_MODE){
+								Display display = getViewer().getControl().getDisplay();
+								WidgetIgnorableUITask task = new WidgetIgnorableUITask(
+										getWidgetModel().getProperty(ConnectionModel.PROP_POINTS),
+										runnable, display);
+									
+								GUIRefreshThread.getInstance(
+										getExecutionMode() == ExecutionMode.RUN_MODE)
+										.addIgnorableTask(task);
+							}else
+								runnable.run();
+							
+							
+							
 						}
 					});
 
@@ -374,4 +398,8 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
 		return super.getAdapter(key);
 	}
 
+	public void setPropertyValue(String propID, Object value){
+		getWidgetModel().setPropertyValue(propID, value);
+	}
+	
 }

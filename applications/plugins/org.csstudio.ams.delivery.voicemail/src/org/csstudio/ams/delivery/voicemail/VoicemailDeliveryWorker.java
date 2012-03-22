@@ -29,8 +29,8 @@ import java.util.List;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.delivery.device.DeviceException;
-import org.csstudio.ams.delivery.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
+import org.csstudio.ams.delivery.util.jms.JmsAsyncConsumer;
 import org.csstudio.ams.delivery.voicemail.isdn.VoicemailDevice;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.platform.utility.jms.JmsSimpleProducer;
@@ -65,7 +65,7 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
 
     public VoicemailDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
-        messageQueue = new OutgoingVoicemailQueue();
+        messageQueue = new OutgoingVoicemailQueue(this);
         running = initJms();
         if (running) {
             try {
@@ -87,9 +87,9 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
         LOG.info(workerName + " is running.");
 
         while(running) {
-            synchronized (messageQueue) {
+            synchronized (this) {
                 try {
-                    messageQueue.wait();
+                    this.wait();
                     checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
@@ -120,8 +120,8 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public void stopWorking() {
         running = false;
-        synchronized (messageQueue) {
-            messageQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
     }
     
@@ -131,8 +131,8 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
     @Override
     public boolean isWorking() {
         checkState = true;
-        synchronized (messageQueue) {
-            messageQueue.notify();
+        synchronized (this) {
+            this.notify();
         }
         Object lock = new Object();
         synchronized (lock) {

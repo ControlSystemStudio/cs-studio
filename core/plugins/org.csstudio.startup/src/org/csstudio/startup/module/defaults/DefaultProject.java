@@ -77,23 +77,10 @@ public class DefaultProject implements ProjectExtPoint
     public Object closeProjects(Display display, IApplicationContext context,
             Map<String, Object> parameters) throws Exception
     {
-        final IProject projects[] = (IProject[]) parameters.get(PROJECTS);
-        if (projects != null)
-        {
-            for (IProject project : projects)
-            {
-                try
-                {
-                    project.close(new NullProgressMonitor());
-                }
-                catch (CoreException ex)
-                {
-                    MessageDialog.openError(null, Messages.Error,
-                            NLS.bind(Messages.CloseProjectErrorFmt,
-                                    project.getName(), ex.getMessage()));
-                }
-            }
-        }
+        // Could close all projects in (IProject[]) parameters.get(PROJECTS),
+        // but since this method is called _after_ WorkbenchAdvisor#preShutdown()
+        // that will result in "exited with unsaved changes" warning on the
+        // following CSS startup
         return null;
     }
 }

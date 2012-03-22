@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
     <noisePV>sim://noise</noisePV>
@@ -10,39 +9,26 @@
   <show_ruler>false</show_ruler>
   <height>600</height>
   <name>Linking Container</name>
-  <snap_to_geometry>true</snap_to_geometry>
   <show_grid>false</show_grid>
-  <background_color>
-    <color red="240" green="240" blue="240" />
-  </background_color>
-  <foreground_color>
-    <color red="192" green="192" blue="192" />
-  </foreground_color>
-  <widget_type>Display</widget_type>
-  <show_close_button>true</show_close_button>
   <width>800</width>
   <rules />
-  <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
-  <actions hook="false" />
-  <y>0</y>
-  <x>0</x>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
+  <actions hook="false" hook_all="false" />
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>69</height>
     <name>Label_6</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Linking container can be used to embed another OPI or a group in another OPI in it. It is very useful by using it properly. For example, it can be used for animation by loading different content with a rule or script. Combined with different macros, you can show different PVs with same OPI.</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -50,194 +36,111 @@
     <width>745</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <horizontal_alignment>0</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>106</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>86</height>
     <name>Label_8</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="128" green="0" blue="64" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Linking  Container</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>295</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>43</height>
     <name>Label_6</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Examples</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>49</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>44</height>
     <name>Label_9</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="135" green="181" blue="255" />
     </background_color>
     <foreground_color>
       <color red="29" green="40" blue="184" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Best OPI Yet (BOY)</text>
     <font>
       <fontdata fontName="Arial" height="18" style="1" />
     </font>
     <width>451</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>6</y>
-    <tooltip />
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>16</height>
     <name>Label_5</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Introduction</text>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <width>76</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>97</y>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>352</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>149</height>
+    <opi_file>1_1_Rectangle_Ellipse.opi</opi_file>
     <width>185</width>
     <border_style>2</border_style>
     <rules />
-    <scripts />
-    <zoom_to_fit>true</zoom_to_fit>
-    <height>149</height>
-    <border_width>1</border_width>
-    <name>Linking Container</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <actions hook="false" hook_all="false" />
     <y>221</y>
-    <actions hook="false" />
-    <opi_file>1_1_Rectangle_Ellipse.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>323</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <scripts />
+    <zoom_to_fit>false</zoom_to_fit>
+    <height>49</height>
+    <name>Linking Container_1</name>
+    <opi_file>DynamicSymbols/DyanmicSymbol.opi</opi_file>
     <group_name>1</group_name>
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
     <width>219</width>
     <border_style>3</border_style>
     <rules>
@@ -248,87 +151,46 @@ $(pv_value)</tooltip>
         <pv trig="true">sim://ramp(0,5,1,0.1)</pv>
       </rule>
     </rules>
-    <scripts />
-    <zoom_to_fit>false</zoom_to_fit>
-    <height>49</height>
-    <border_width>1</border_width>
-    <name>Linking Container_1</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <actions hook="false" hook_all="false" />
     <y>231</y>
-    <actions hook="false" />
-    <opi_file>DynamicSymbols/DyanmicSymbol.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>48</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
     <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
     <rules />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>565</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>28</height>
     <name>Label_7</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Example 1: Dynamic Symbol</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -336,32 +198,20 @@ $(pv_value)</tooltip>
     <width>220</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>194</y>
-    <tooltip />
     <x>48</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>34</height>
     <name>Label_8</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Example 3: Use linking container as a thumbnail</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -369,60 +219,30 @@ $(pv_value)</tooltip>
     <width>382</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>181</y>
-    <tooltip />
     <x>323</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <fill_level>0.0</fill_level>
-    <line_color>
-      <color red="128" green="0" blue="255" />
-    </line_color>
     <scripts />
     <height>149</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Rectangle</name>
     <transparent>true</transparent>
-    <pv_name />
     <background_color>
       <color red="0" green="0" blue="255" />
     </background_color>
     <foreground_color>
       <color red="255" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Rectangle</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <line_style>0</line_style>
     <width>185</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <line_width>0</line_width>
-    <horizontal_fill>true</horizontal_fill>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>1_1_Rectangle_Ellipse.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
     <y>221</y>
@@ -430,83 +250,38 @@ $(pv_value)</tooltip>
     <x>323</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>149</height>
+    <name>Linking Container_2</name>
+    <opi_file>2_1_LED.opi</opi_file>
     <width>185</width>
     <border_style>2</border_style>
     <rules />
-    <scripts />
-    <zoom_to_fit>true</zoom_to_fit>
-    <height>149</height>
-    <border_width>1</border_width>
-    <name>Linking Container_2</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <actions hook="true" hook_all="false" />
     <y>221</y>
-    <actions hook="true" />
-    <opi_file>2_1_LED.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>520</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <fill_level>0.0</fill_level>
-    <line_color>
-      <color red="128" green="0" blue="255" />
-    </line_color>
     <scripts />
     <height>149</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_1</name>
     <transparent>true</transparent>
-    <pv_name />
     <background_color>
       <color red="0" green="0" blue="255" />
     </background_color>
     <foreground_color>
       <color red="255" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Rectangle</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <line_style>0</line_style>
     <width>185</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <line_width>0</line_width>
-    <horizontal_fill>true</horizontal_fill>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>2_1_LED.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
     <y>221</y>
@@ -515,65 +290,41 @@ $(pv_value)</tooltip>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
     <scripts />
     <height>24</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
-    <pv_name />
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
     <text>Next</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>81</width>
-    <push_action_index>0</push_action_index>
-    <border_style>0</border_style>
-    <image />
     <rules />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
     <y>565</y>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>4_2_2_LinkingContainer.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
-    <tooltip />
     <x>711</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-    <visible>true</visible>
-    <vertical_alignment>1</vertical_alignment>
-    <auto_size>false</auto_size>
     <scripts />
     <height>34</height>
     <name>Label_9</name>
-    <transparent>false</transparent>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
-    <widget_type>Label</widget_type>
-    <enabled>true</enabled>
     <text>Example 2: Use Macros</text>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -581,202 +332,106 @@ $(pv_value)</tooltip>
     <width>224</width>
     <border_style>1</border_style>
     <rules />
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <horizontal_alignment>1</horizontal_alignment>
-    <actions hook="false" />
+    <actions hook="false" hook_all="false" />
     <y>299</y>
-    <tooltip />
     <x>46</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
       <name>Sam</name>
       <inputPV>sim://noise</inputPV>
     </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>219</width>
-    <border_style>3</border_style>
-    <rules />
     <scripts />
     <zoom_to_fit>false</zoom_to_fit>
     <height>50</height>
-    <border_width>1</border_width>
     <name>Linking Container_3</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>340</y>
-    <actions hook="false" />
     <opi_file>DynamicSymbols/macro.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
+    <width>219</width>
+    <border_style>3</border_style>
+    <rules />
+    <actions hook="false" hook_all="false" />
+    <y>340</y>
     <x>48</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
       <name>Lisa</name>
       <inputPV>sim://ramp</inputPV>
     </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>219</width>
-    <border_style>3</border_style>
-    <rules />
     <scripts />
     <zoom_to_fit>false</zoom_to_fit>
     <height>50</height>
-    <border_width>1</border_width>
     <name>Linking Container_4</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>397</y>
-    <actions hook="false" />
     <opi_file>DynamicSymbols/macro.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
+    <width>219</width>
+    <border_style>3</border_style>
+    <rules />
+    <actions hook="false" hook_all="false" />
+    <y>397</y>
     <x>48</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
     <macros>
       <include_parent_macros>true</include_parent_macros>
       <name>Bob</name>
       <inputPV>sim://sine</inputPV>
     </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>219</width>
-    <border_style>3</border_style>
-    <rules />
     <scripts />
     <zoom_to_fit>false</zoom_to_fit>
     <height>50</height>
-    <border_width>1</border_width>
     <name>Linking Container_5</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>456</y>
-    <actions hook="false" />
     <opi_file>DynamicSymbols/macro.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
+    <width>219</width>
+    <border_style>3</border_style>
+    <rules />
+    <actions hook="false" hook_all="false" />
+    <y>456</y>
     <x>48</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>149</height>
+    <name>Linking Container_6</name>
+    <opi_file>1_2_Image.opi</opi_file>
     <width>185</width>
     <border_style>2</border_style>
     <rules />
-    <scripts />
-    <zoom_to_fit>true</zoom_to_fit>
-    <height>149</height>
-    <border_width>1</border_width>
-    <name>Linking Container_6</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <actions hook="false" hook_all="false" />
     <y>384</y>
-    <actions hook="false" />
-    <opi_file>1_2_Image.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>323</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <fill_level>0.0</fill_level>
-    <line_color>
-      <color red="128" green="0" blue="255" />
-    </line_color>
     <scripts />
     <height>149</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_2</name>
     <transparent>true</transparent>
-    <pv_name />
     <background_color>
       <color red="0" green="0" blue="255" />
     </background_color>
     <foreground_color>
       <color red="255" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Rectangle</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <line_style>0</line_style>
     <width>185</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <line_width>0</line_width>
-    <horizontal_fill>true</horizontal_fill>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>1_2_Image.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
     <y>384</y>
@@ -784,83 +439,38 @@ $(pv_value)</tooltip>
     <x>323</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
-    <group_name />
-    <enabled>true</enabled>
-    <widget_type>Linking Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
+    <scripts />
+    <height>149</height>
+    <name>Linking Container_7</name>
+    <opi_file>2_3_Gauge_Meter.opi</opi_file>
     <width>185</width>
     <border_style>2</border_style>
     <rules />
-    <scripts />
-    <zoom_to_fit>true</zoom_to_fit>
-    <height>149</height>
-    <border_width>1</border_width>
-    <name>Linking Container_7</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <actions hook="true" hook_all="false" />
     <y>384</y>
-    <actions hook="true" />
-    <opi_file>2_3_Gauge_Meter.opi</opi_file>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
     <x>520</x>
-    <tooltip />
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <fill_level>0.0</fill_level>
-    <line_color>
-      <color red="128" green="0" blue="255" />
-    </line_color>
     <scripts />
     <height>149</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle_3</name>
     <transparent>true</transparent>
-    <pv_name />
     <background_color>
       <color red="0" green="0" blue="255" />
     </background_color>
     <foreground_color>
       <color red="255" green="0" blue="0" />
     </foreground_color>
-    <widget_type>Rectangle</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <line_style>0</line_style>
     <width>185</width>
-    <border_style>0</border_style>
     <rules />
-    <border_width>1</border_width>
-    <line_width>0</line_width>
-    <horizontal_fill>true</horizontal_fill>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="true">
+    <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>2_3_Gauge_Meter.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
-        <replace>true</replace>
-        <description />
+        <replace>1</replace>
+        <description></description>
       </action>
     </actions>
     <y>384</y>
@@ -868,47 +478,31 @@ $(pv_value)</tooltip>
     <x>520</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
-    <enabled>true</enabled>
-    <widget_type>Grouping Container</widget_type>
-    <macros>
-      <include_parent_macros>true</include_parent_macros>
-    </macros>
-    <visible>true</visible>
-    <font>
-      <opifont.name>Default</opifont.name>
-    </font>
-    <width>185</width>
-    <border_style>0</border_style>
-    <rules />
-    <lock_children>true</lock_children>
     <scripts />
     <height>44</height>
-    <border_width>1</border_width>
     <name>widgets/LinkingContainer.html</name>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
+    <scale_options>
+      <width_scalable>false</width_scalable>
+      <height_scalable>false</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
-    <y>549</y>
-    <actions hook="true">
+    <width>185</width>
+    <rules />
+    <lock_children>true</lock_children>
+    <actions hook="true" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/openHelp.js</path>
+        <scriptText><![CDATA[importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+]]></scriptText>
+        <embedded>false</embedded>
         <description>Open Help</description>
       </action>
     </actions>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
+    <y>549</y>
     <x>287</x>
-    <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
-      <visible>true</visible>
-      <vertical_alignment>1</vertical_alignment>
-      <auto_size>false</auto_size>
       <scripts />
       <height>22</height>
       <name>Label_28</name>
@@ -919,106 +513,52 @@ $(pv_value)</tooltip>
       <foreground_color>
         <color red="0" green="0" blue="253" />
       </foreground_color>
-      <widget_type>Label</widget_type>
-      <enabled>true</enabled>
       <text>See Online Help</text>
       <font>
         <fontdata fontName="Arial" height="12" style="1" />
       </font>
       <width>135</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <horizontal_alignment>1</horizontal_alignment>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>11</y>
-      <tooltip />
       <x>41</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.polyline" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
-      <fill_arrow>true</fill_arrow>
-      <arrow_length>20</arrow_length>
-      <visible>true</visible>
-      <fill_level>0.0</fill_level>
-      <rotation_angle>0.0</rotation_angle>
       <scripts />
-      <arrows>0</arrows>
       <height>1</height>
-      <anti_alias>true</anti_alias>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Polyline</name>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>true</height_scalable>
+        <keep_wh_ratio>true</keep_wh_ratio>
+      </scale_options>
       <points>
         <point x="49" y="32" />
         <point x="168" y="32" />
       </points>
-      <transparent>false</transparent>
-      <pv_name />
       <background_color>
         <color red="0" green="0" blue="255" />
       </background_color>
       <foreground_color>
         <color red="255" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Polyline</widget_type>
-      <enabled>true</enabled>
-      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
-      <line_style>0</line_style>
       <width>120</width>
-      <border_style>0</border_style>
       <rules />
-      <border_width>1</border_width>
       <line_width>1</line_width>
-      <horizontal_fill>true</horizontal_fill>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
+      <actions hook="false" hook_all="false" />
       <y>32</y>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
       <x>49</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-      <crop_right>0</crop_right>
-      <crop_left>0</crop_left>
-      <visible>true</visible>
-      <auto_size>true</auto_size>
       <scripts />
       <height>44</height>
       <stretch_to_fit>true</stretch_to_fit>
-      <name>Image</name>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
-      <widget_type>Image</widget_type>
-      <enabled>true</enabled>
-      <font>
-        <opifont.name>Default</opifont.name>
-      </font>
       <width>42</width>
-      <no_animation>false</no_animation>
-      <crop_top>0</crop_top>
-      <border_style>0</border_style>
       <rules />
-      <crop_bottom>0</crop_bottom>
-      <border_width>1</border_width>
       <image_file>../pictures/onlineHelp.gif</image_file>
-      <border_color>
-        <color red="0" green="128" blue="255" />
-      </border_color>
-      <actions hook="false" />
-      <y>0</y>
-      <tooltip />
+      <actions hook="false" hook_all="false" />
       <x>8</x>
     </widget>
   </widget>

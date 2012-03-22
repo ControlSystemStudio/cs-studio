@@ -59,7 +59,9 @@ public class ConsoleCommands implements CommandProvider
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
         buf.append("\tscans           - List all scans\n");
-        buf.append("\tdevices         - List all devices\n");
+        buf.append("\tinfo            - Scan server info\n");
+        buf.append("\tdevices         - List default devices\n");
+        buf.append("\tdevices ID      - List devices used by scan with given ID\n");
         buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
         buf.append("\tpause           - Pause current scan\n");
         buf.append("\tresume          - Resume paused scan\n");
@@ -100,19 +102,44 @@ public class ConsoleCommands implements CommandProvider
     }
 
 
-    /** 'devices' command */
-    public Object _devices(final CommandInterpreter intp)
+    /** 'info' command */
+    public Object _info(final CommandInterpreter intp)
     {
         try
         {
-            final DeviceInfo[] infos = server.getDeviceInfos();
-            for (DeviceInfo info : infos)
-                intp.println(info);
+        	intp.println(server.getInfo());
         }
         catch (RemoteException ex)
         {
             intp.printStackTrace(ex);
         }
+        return null;
+    }
+
+
+    /** 'devices' command */
+    public Object _devices(final CommandInterpreter intp)
+    {
+        final long id;
+
+        final String arg = intp.nextArgument();
+        try
+        {
+            if (arg == null)
+                id = -1;
+            else
+                id = Long.parseLong(arg.trim());
+
+            final DeviceInfo[] infos = server.getDeviceInfos(id);
+            for (DeviceInfo info : infos)
+                intp.println(info);
+        }
+        catch (Throwable ex)
+        {
+            intp.printStackTrace(ex);
+            return null;
+        }
+
         return null;
     }
 
@@ -137,11 +164,11 @@ public class ConsoleCommands implements CommandProvider
             {
                 final List<ScanSample> line = sheet.getSamples();
                 for (ScanSample sample : line)
-                    System.out.print(sample + "  ");
-                System.out.println();
+                	intp.print(sample + "  ");
+                intp.println();
             }
             // Dump scan info
-            System.out.println(server.getScanInfo(id));
+            intp.println(server.getScanInfo(id));
         }
         catch (Throwable ex)
         {

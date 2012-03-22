@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * The scan engine idea is based on the "ScanEngine" developed
+ * by the Software Services Group (SSG),  Advanced Photon Source,
+ * Argonne National Laboratory,
+ * Copyright (c) 2011 , UChicago Argonne, LLC.
+ *
+ * This implementation, however, contains no SSG "ScanEngine" source code
+ * and is not endorsed by the SSG authors.
+ ******************************************************************************/
 package org.csstudio.scan.command;
 
 import java.util.ArrayList;
@@ -7,10 +22,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /** Factory for creating scan commands.
- * 
+ *
  *  <p>{@link ScanCommand}s are used in two different
  *  scenarios.
- *  
+ *
  *  <p>Within Eclipse, scan commands are contributed via
  *  extension points.
  *  The code that needs a command does not necessarily have
@@ -18,29 +33,29 @@ import org.w3c.dom.Node;
  *  The extension point registry can create instances of commands
  *  that are contributed by other plugins, even if we do not have
  *  a dependency on that plugin and thus no access to its class loader.
- *  
+ *
  *  <p>On the other hand, we also want to provide access to the scan system
  *  outside of Eclipse, for example from jython scripts or other
  *  Java-aware tools like Matlab.
  *  Such code need to have access to all the desired ScanCommand types via
  *  their classpath, so that a plain class loader can create
  *  instances.
- *  
+ *
  *  <p>This is the base implementation that creates {@link ScanCommand}s
  *  via the class loader.
  *  Eclipse-aware code uses a derived version which utilizes
  *  the registry.
- *   
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class SimpleScanCommandFactory
 {
     /** Create a {@link ScanCommand} for a command ID
-     * 
+     *
      *  <p>This is the basic implementation that does NOT use the Eclipse registry.
      *  Eclipse code should use the derived {@link ScanCommandFactory}
-     * 
+     *
      *  @param id ID of the command
      *  @return ScanCommand
      *  @throws Exception on error
@@ -61,7 +76,7 @@ public class SimpleScanCommandFactory
             throw new Exception("Unknown command type '" + id + "'");
         }
     }
-    
+
     /** Read a list of commands (and possible sub-commands like loop bodies)
      *  @param node Node and siblings that contain commands
      *  @return List of {@link ScanCommand}s
@@ -78,9 +93,9 @@ public class SimpleScanCommandFactory
         }
         return commands;
     }
-    
+
     /** Read a ScanCommand from an XML element.
-     * 
+     *
      *  @param element XML element. Name of the element determines the ScanCommand
      *  @return {@link ScanCommand}
      *  @throws Exception on error: Unknown command, missing command-specific detail

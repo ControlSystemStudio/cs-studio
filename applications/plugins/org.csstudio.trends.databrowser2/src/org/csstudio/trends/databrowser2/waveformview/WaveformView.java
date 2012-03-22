@@ -91,7 +91,7 @@ public class WaveformView extends DataBrowserAwareView
             {
                 if (color != null)
                     color.dispose();
-                
+
                 // Be ignorant of any change of the current model after
                 // this view is disposed.
                 if (model != null)
@@ -204,14 +204,14 @@ public class WaveformView extends DataBrowserAwareView
     	if (old_model != model) {
     		if (old_model != null)
     			old_model.removeListener(this);
-    		
+
     		if (model != null)
     			model.addListener(this);
     	}
     	update(old_model != model);
     }
-    
-    /** Update combo box of this view. 
+
+    /** Update combo box of this view.
      * @param model_changed set true if the model was changed
      */
     private void update(final boolean model_changed)
@@ -321,7 +321,7 @@ public class WaveformView extends DataBrowserAwareView
         timestamp.setText(""); //$NON-NLS-1$
         status.setText(""); //$NON-NLS-1$
     }
-    
+
     /** {@inheritDoc} */
 	@Override
 	public void itemAdded(ModelItem item) {
@@ -374,4 +374,10 @@ public class WaveformView extends DataBrowserAwareView
 
 	@Override
 	public void scrollEnabled(boolean scroll_enabled) {}
+
+	@Override
+	public void changedAnnotations() {}
+
+	@Override
+	public void changedXYGraphConfig() {}
 }

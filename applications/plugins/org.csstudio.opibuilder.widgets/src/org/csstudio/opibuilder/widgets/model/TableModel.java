@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
@@ -75,7 +76,7 @@ public class TableModel extends AbstractWidgetModel {
 		
 		StringTableProperty headersProperty = new StringTableProperty(
 				PROP_COLUMN_HEADERS, "Column Headers",WidgetPropertyCategory.Display,
-				new String[0][0], new String[]{"Column Title", "Column Width"});
+				new String[0][0], new String[]{"Column Title", "Column Width", "Editable(yes/no)"});
 		
 		addProperty(headersProperty);
 		
@@ -106,7 +107,7 @@ public class TableModel extends AbstractWidgetModel {
 
 	}
 
-	private void updateContentPropertyTitles() {
+	public void updateContentPropertyTitles() {
 
 		String[] headers = getColumnHeaders();
 		int c = getColumnsCount();
@@ -127,6 +128,19 @@ public class TableModel extends AbstractWidgetModel {
 	
 	public boolean isEditable(){
 		return (Boolean)getPropertyValue(PROP_EDITABLE);
+	}
+	
+	public boolean[] isColumnEditable(){
+		String[][] headers = (String[][]) getPropertyValue(PROP_COLUMN_HEADERS);
+		boolean[] r = new boolean[headers.length];
+		if(headers.length ==0 || headers[0].length <3){
+			Arrays.fill(r, true);
+			return r;
+		}
+		for(int i=0; i<headers.length; i++){
+			r[i] = headers[i][2].equals("no")?false:true; //$NON-NLS-1$
+		}
+		return r;			
 	}
 	
 	public String[] getColumnHeaders(){

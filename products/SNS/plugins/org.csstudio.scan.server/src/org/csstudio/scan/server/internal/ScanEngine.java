@@ -148,4 +148,21 @@ public class ScanEngine
             }
         }
     }
+
+    /** Remove the oldest completed scan
+     *  @return <code>true</code> if a scan could be removed
+     */
+    public boolean removeOldestCompletedScan()
+    {
+        synchronized (scan_queue)
+        {
+        	for (ScanQueueItem item : scan_queue)
+        		if (item.isDone())
+        		{
+        			scan_queue.remove(item);
+        			return true;
+        		}
+        }
+        return false;
+    }
 }

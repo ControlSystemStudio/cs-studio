@@ -15,14 +15,13 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.scan.server.app.Preferences;
+import org.csstudio.scan.Preferences;
+import org.csstudio.scan.server.internal.PathStreamTool;
 
 /** Context that maintains {@link Device}s: Create, start, get, stop.
  *
@@ -42,16 +41,7 @@ public class DeviceContext
     public static DeviceContext getDefault() throws Exception
     {
     	final String path = Preferences.getBeamlineConfigPath();
-        final InputStream config_stream;
-        // Absolute file system path?
-        if (path.startsWith("platform:"))
-        {   // Path within platform, for example
-            // platform:/plugin/org.csstudio.scan/....
-            final URL url = new URL(path);
-            config_stream = url.openStream();
-        }
-        else
-        	config_stream = new FileInputStream(path);
+        final InputStream config_stream = PathStreamTool.openStream(path);
         final DeviceInfo[] infos = BeamlineDeviceInfoReader.read(config_stream);
 
         // Create context with those devices

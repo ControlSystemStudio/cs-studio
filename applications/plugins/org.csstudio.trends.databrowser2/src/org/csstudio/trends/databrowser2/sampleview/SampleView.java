@@ -11,6 +11,7 @@ import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.ISeverity;
 import org.csstudio.data.values.IValue;
+import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
@@ -364,4 +365,16 @@ public class SampleView extends DataBrowserAwareView
 
 	@Override
 	public void scrollEnabled(boolean scroll_enabled) {}
+
+	@Override
+	public void changedAnnotations() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void changedXYGraphConfig() {
+		// TODO Auto-generated method stub
+		
+	}
 }

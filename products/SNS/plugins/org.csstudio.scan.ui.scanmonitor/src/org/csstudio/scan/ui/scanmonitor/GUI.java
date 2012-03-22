@@ -21,6 +21,7 @@ import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
 import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.plot.OpenPlotAction;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
@@ -28,6 +29,7 @@ import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
+import org.csstudio.scan.ui.scanmonitor.actions.ShowDevicesAction;
 import org.csstudio.scan.ui.scantree.OpenScanTreeAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -37,6 +39,8 @@ import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -45,11 +49,15 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -64,15 +72,19 @@ public class GUI implements ScanInfoModelListener
     /** {@link TableViewer} for {@link ScanInfoModelContentProvider} */
     private TableViewer table_viewer;
 
+	private Bar mem_info;
+
     /** Initialize
      *  @param parent Parent component
      *  @param model Model to display
      */
     public GUI(final Composite parent, final ScanInfoModel model)
     {
-        createComponents(parent);
-        createContextMenu();
         this.model = model;
+
+        createComponents(parent);
+        hookActions();
+        createContextMenu();
         table_viewer.setInput(model);
         model.addListener(this);
     }
@@ -84,13 +96,18 @@ public class GUI implements ScanInfoModelListener
     {
         final Display display = parent.getDisplay();
 
+        parent.setLayout(new GridLayout(2, false));
+
         // Note: TableColumnLayout requires that table is only child element!
+        final Composite table_box = new Composite(parent, 0);
+        table_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
+
         // If more components are added, the table will need to be wrapped
         // into its own Composite.
         final TableColumnLayout table_layout = new TableColumnLayout();
-        parent.setLayout(table_layout);
+        table_box.setLayout(table_layout);
 
-        table_viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        table_viewer = new TableViewer(table_box, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -184,6 +201,21 @@ public class GUI implements ScanInfoModelListener
                 */
             }
         });
+        createColumn(table_viewer, table_layout, Messages.Runtime, 65, 5, new CellLabelProvider()
+        {
+            @Override
+            public String getToolTipText(final Object element)
+            {
+                return Messages.Runtime_TT;
+            }
+
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final ScanInfo info = (ScanInfo) cell.getElement();
+                cell.setText(info.getRuntimeText());
+            }
+        });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
         {
             @Override
@@ -242,8 +274,8 @@ public class GUI implements ScanInfoModelListener
                 final GC gc = event.gc;
                 final TableItem item = (TableItem) event.item;
                 final ScanInfo info = (ScanInfo) item.getData();
-                Color foreground = gc.getForeground();
-                Color background = gc.getBackground();
+                final Color foreground = gc.getForeground();
+                final Color background = gc.getBackground();
                 gc.setForeground(getStateColor(display, info));
                 gc.setBackground(display.getSystemColor(SWT.COLOR_GRAY));
                 final int width = (perc_col.getColumn().getWidth() - 1) * info.getPercentage() / 100;
@@ -256,6 +288,14 @@ public class GUI implements ScanInfoModelListener
 
         ColumnViewerToolTipSupport.enableFor(table_viewer);
         table_viewer.setContentProvider(new ScanInfoModelContentProvider());
+
+        Label l = new Label(parent, 0);
+        l.setText(Messages.MemInfo);
+        l.setLayoutData(new GridData());
+
+        mem_info = new Bar(parent, 0);
+        mem_info.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        mem_info.setToolTipText(Messages.MemInfoTT);
     }
 
     /** @param display Display
@@ -295,9 +335,36 @@ public class GUI implements ScanInfoModelListener
         return view_col;
     }
 
+    /** Connect actions to GUI */
+    private void hookActions()
+    {
+        // Double-click on scan opens editor
+        table_viewer.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(final DoubleClickEvent event)
+            {
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
+                    return;
+                new OpenScanTreeAction(info).run();
+            }
+        });
+    }
+
+    /** @return Currently selected {@link ScanInfo} or <code>null</code> */
+    private ScanInfo getSelectedScan()
+    {
+        final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
+        if (selection.isEmpty())
+            return null;
+        return (ScanInfo) selection.getFirstElement();
+    }
+
     /** Add context menu to table */
     private void createContextMenu()
     {
+        final Shell shell = table_viewer.getControl().getShell();
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
@@ -305,30 +372,30 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void menuAboutToShow(final IMenuManager manager)
             {
-                final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
-                if (selection.isEmpty())
+                final ScanInfo info = getSelectedScan();
+                if (info == null)
                     return;
-                final ScanInfo info = (ScanInfo) selection.getFirstElement();
                 if (info.getState() == ScanState.Paused)
                 {
-                    manager.add(new ResumeAction(model, info));
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new ResumeAction(shell, model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else if (info.getState() == ScanState.Running)
                 {
-                    manager.add(new PauseAction(model, info));
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new PauseAction(shell, model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else if (info.getState() == ScanState.Idle)
                 {
-                    manager.add(new AbortAction(model, info));
+                    manager.add(new AbortAction(shell, model, info));
                 }
                 else
-                    manager.add(new RemoveAction(model, info));
+                    manager.add(new RemoveAction(shell, model, info));
                 manager.add(new Separator());
-                manager.add(new RemoveCompletedAction(model));
+                manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
                 manager.add(new OpenPlotAction(info));
+                manager.add(new ShowDevicesAction(shell, model, info));
                 manager.add(new OpenScanTreeAction(info));
             }
         });
@@ -338,7 +405,26 @@ public class GUI implements ScanInfoModelListener
         table.setMenu(menu);
     }
 
-    /** @see ScanInfoModelListener */
+	/** @see ScanInfoModelListener */
+    @Override
+    public void scanServerUpdate(final ScanServerInfo server_info)
+    {
+    	if (mem_info.isDisposed())
+    		return;
+    	mem_info.getDisplay().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (mem_info.isDisposed())
+                    return;
+                mem_info.update(server_info.getMemoryInfo(),
+                			server_info.getMemoryPercentage());
+            }
+        });
+    }
+
+	/** @see ScanInfoModelListener */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {

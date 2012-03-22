@@ -44,6 +44,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
     private final int monitorMask;
     private volatile Channel channel;
     private volatile ExceptionHandler connectionExceptionHandler;
+    private volatile boolean needsMonitor;
 
     public JCAChannelHandler(String channelName, Context context, int monitorMask) {
         super(channelName);
@@ -77,6 +78,7 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         try {
             // Give the listener right away so that no event gets lost
             channel = context.createChannel(getChannelName(), connectionListener);
+            needsMonitor = true;
         } catch (CAException ex) {
             handler.handleException(ex);
         }
@@ -104,11 +106,15 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
             });
         }
 
-        // Start the monitor
-        if (vTypeFactory.isArray()) {
-            channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
-        } else {
-            channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
+        // Start the monitor only if the channel was (re)created, and
+        // not because a disconnection/reconnection
+        if (needsMonitor) {
+            if (vTypeFactory.isArray()) {
+                channel.addMonitor(vTypeFactory.getEpicsValueType(), channel.getElementCount(), monitorMask, monitorListener);
+            } else {
+                channel.addMonitor(vTypeFactory.getEpicsValueType(), 1, monitorMask, monitorListener);
+            }
+            needsMonitor = false;
         }
 
         // Flush the entire context (it's the best we can do)

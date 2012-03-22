@@ -23,21 +23,30 @@ import org.csstudio.scan.device.DeviceInfo;
 @SuppressWarnings("nls")
 public class ScanCommandProperty
 {
+    // Tag names for XML and device IDs
+    final public static String TAG_ADDRESS = "address";
+    final public static String TAG_DEVICE = "device";
+    final public static String TAG_VALUE = "value";
+    final public static String TAG_READBACK = "readback";
+    final public static String TAG_WAIT = "wait";
+    final public static String TAG_TOLERANCE = "tolerance";
+    final public static String TAG_TIMEOUT = "timeout";
+
     // Properties used by multiple commands
     final public static ScanCommandProperty DEVICE_NAME =
             new ScanCommandProperty("device_name", "Device Name", DeviceInfo.class);
 
     final public static ScanCommandProperty READBACK =
-            new ScanCommandProperty("readback", "Readback Device", DeviceInfo.class);
+            new ScanCommandProperty(TAG_READBACK, "Readback Device", DeviceInfo.class);
 
     final public static ScanCommandProperty WAIT =
-            new ScanCommandProperty("wait", "Wait for readback", Boolean.class);
+            new ScanCommandProperty(TAG_WAIT, "Wait for readback", Boolean.class);
 
     final public static ScanCommandProperty TOLERANCE =
-            new ScanCommandProperty("tolerance", "Tolerance", Double.class);
+            new ScanCommandProperty(TAG_TOLERANCE, "Tolerance", Double.class);
 
     final public static ScanCommandProperty TIMEOUT =
-            new ScanCommandProperty("timeout", "Time out (seconds; 0 to disable)", Double.class);
+            new ScanCommandProperty(TAG_TIMEOUT, "Time out (seconds; 0 to disable)", Double.class);
 
 
     final private String name, id;
