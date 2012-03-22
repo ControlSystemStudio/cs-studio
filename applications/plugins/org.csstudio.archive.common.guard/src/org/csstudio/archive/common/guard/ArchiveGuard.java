@@ -23,7 +23,7 @@ public class ArchiveGuard {
 		gapFinder.retrieveSamplesInIntervals(start, end);
 		gapFinder.removeEmptyPvLists();
 		gapFinder.removeSmallAvgPvLists(20);
-		gapFinder.removeSmallWithoutMaxAvgPvLists(20, 40);
+		gapFinder.removeSmallWithoutMaxAvgPvLists(20, 20);
 		// eval.printLostHourSamples(listOfPvIntervals);
 		Map<TimeInstant, List<String>> aggregateGapsForRange = gapFinder
 				.getAggregatedGapsForRange();

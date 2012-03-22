@@ -19,7 +19,7 @@ public class ArchiveGuardApplication  implements IApplication {
 		LOG.info("Guard START");
 		ArchiveGuard guard = new ArchiveGuard();
 		guard.checkArchiveDbForGaps();
-		guard.compareArchiveDbWithLog();
+//		guard.compareArchiveDbWithLog();
         return null;
 	}
 
