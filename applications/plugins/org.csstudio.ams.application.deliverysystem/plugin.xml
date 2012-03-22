@@ -23,6 +23,11 @@
             id="org.csstudio.ams.application.deliverysystem.ListWorker"
             label="List Delivery Worker">
       </command>
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.Restart"
+            id="org.csstudio.ams.application.deliverysystem.Restart"
+            label="Restart">
+      </command>
    </extension>
    <extension
          id="AmsDeliveryProduct"

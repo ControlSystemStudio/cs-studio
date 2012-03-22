@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -27,6 +27,7 @@ package org.csstudio.ams.application.deliverysystem.management;
 
 import java.util.Arrays;
 import java.util.List;
+
 import org.csstudio.ams.application.deliverysystem.Activator;
 import org.csstudio.ams.application.deliverysystem.RemotelyManageable;
 import org.csstudio.platform.management.CommandParameters;
@@ -41,9 +42,9 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author mmoeller
  * @version 1.0
- * @since 10.12.2011
+ * @since 22.03.2012
  */
-public class Stop implements IManagementCommand {
+public class Restart implements IManagementCommand {
     
     private static RemotelyManageable remoteObject = null;
     
@@ -51,14 +52,11 @@ public class Stop implements IManagementCommand {
         remoteObject = o;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public CommandResult execute(CommandParameters parameters) {
         
         if (remoteObject != null) {
-            remoteObject.setRestart(false);
+            remoteObject.setRestart(true);
         }
         
         CommandResult result = null;
@@ -99,7 +97,7 @@ public class Stop implements IManagementCommand {
         
         if(thisHandle != null) {
 
-            result = CommandResult.createMessageResult("OK: [0] - Stopping DeliverySystem...");
+            result = CommandResult.createMessageResult("OK: [0] - Restarting DeliverySystem...");
             thisHandle.destroy();
         } else {
             result = CommandResult.createFailureResult("ERROR: [1] - Cannot get the application entry from the service.");
