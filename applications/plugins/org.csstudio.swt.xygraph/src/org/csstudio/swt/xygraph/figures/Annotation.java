@@ -442,7 +442,9 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	public void setFont(Font f) {
 		// TODO Auto-generated method stub
 		super.setFont(f);
-		this.fontData = getFont().getFontData()[0];
+		
+		if(f != null)
+			this.fontData = getFont().getFontData()[0];
 	}
 
 	public FontData getFontData() {
@@ -517,7 +519,10 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	 */
 	public void setAnnotationColor(Color annotationColor) {
 		this.annotationColor = annotationColor;
-		this.annotationColorRGB = annotationColor.getRGB();
+		
+		if(annotationColor != null)
+			this.annotationColorRGB = annotationColor.getRGB();
+		
 		infoLabel.setForegroundColor(annotationColor);
 		pointer.setForegroundColor(annotationColor);
 	}
