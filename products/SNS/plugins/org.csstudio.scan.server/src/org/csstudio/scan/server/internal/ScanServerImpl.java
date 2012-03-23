@@ -347,8 +347,17 @@ public class ScanServerImpl implements ScanServer
     @Override
     public void abort(final long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
-        scan_engine.abortScan(scan);
+    	if (id >= 0)
+    	{
+	        final Scan scan = findScan(id);
+	        scan_engine.abortScan(scan);
+    	}
+        else
+        {
+            final List<Scan> scans = scan_engine.getScans();
+            for (Scan scan : scans)
+    	        scan_engine.abortScan(scan);
+        }
     }
 
     /** {@inheritDoc} */

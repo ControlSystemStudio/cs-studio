@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
 import org.csstudio.scan.ui.scanmonitor.actions.InfoAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
@@ -72,6 +73,7 @@ public class ScanMonitorView extends ViewPart
 		toolbar.add(new InfoAction(shell, model));
         toolbar.add(new ResumeAction(shell, model, null));
         toolbar.add(new PauseAction(shell, model, null));
+        toolbar.add(new AbortAction(shell, model, null));
         toolbar.add(new RemoveCompletedAction(shell, model));
     }
 

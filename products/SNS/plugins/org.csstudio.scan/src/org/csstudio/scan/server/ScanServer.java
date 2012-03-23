@@ -164,6 +164,7 @@ public interface ScanServer extends Remote
 
     /** Ask server to abort a scan
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *            -1 to abort all scans
      *  @throws RemoteException on error in remote access
      */
     public void abort(long id) throws RemoteException;

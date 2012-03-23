@@ -40,6 +40,6 @@ public class AbortAction extends AbstractGUIAction
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().abort(info.getId());
+        model.getServer().abort(info == null ? -1 : info.getId());
     }
 }
