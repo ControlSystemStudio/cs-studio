@@ -52,7 +52,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements
 				"username:", getFieldEditorParent());
 		addField(usernameField);
 		passwordField = new PasswordFieldEditor(PreferenceConstants.Password,
-				"user password:", getFieldEditorParent(), Activator.PLUGIN_ID);
+				"user password:", getFieldEditorParent(), org.csstudio.utility.olog.Activator.PLUGIN_ID);
 		addField(passwordField);
 		enableAuthenticationFields();
 	}
