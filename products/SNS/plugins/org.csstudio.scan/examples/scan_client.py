@@ -155,17 +155,23 @@ class ScanClient(object):
         except:
             self.server = ScanServerConnector.connect()
 
-    def submit(self, name, command_sequence):
+    def submit(self, name, commands):
         """
         Submit a CommandSequence to the server for execution
         
         @param name  Name of the scan
-        @param command_sequence  CommandSequence
+        @param commands  CommandSequence or string with XML text
           
         @return Scan ID
         """
         self.checkServer()
-        self.id = self.server.submitScan(name, command_sequence.getXML())
+        if isinstance(commands, str):
+            xml = commands
+        elif isinstance(commands, CommandSequence):
+            xml = commands.getXML()
+        else:
+            raise Exception('Expecting CommandSequence or XML-text')
+        self.id = self.server.submitScan(name, xml)
         return self.id
 
     def getScanInfo(self, id=-1):
