@@ -123,7 +123,7 @@ public class SmsDeliveryWorkerCheck extends AbstractCheckProcessor
                 
                 if(message instanceof MapMessage)
                 {
-                    mapMessage = (MapMessage)message;
+                    mapMessage = (MapMessage) message;
                     result = messageHelper.getAnswerFromSmsDeliveryWorker(mapMessage, messageContent);
                     if(result == CheckResult.NONE)
                     {

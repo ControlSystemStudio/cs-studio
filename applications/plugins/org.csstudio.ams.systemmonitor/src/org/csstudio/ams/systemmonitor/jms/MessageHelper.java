@@ -30,6 +30,7 @@ import java.util.Hashtable;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.csstudio.ams.systemmonitor.check.CheckResult;
+import org.csstudio.ams.systemmonitor.message.CheckMessage;
 import org.csstudio.ams.systemmonitor.status.MonitorStatusEntry;
 import org.csstudio.ams.systemmonitor.util.Environment;
 
@@ -37,24 +38,22 @@ import org.csstudio.ams.systemmonitor.util.Environment;
  * @author Markus Moeller
  *
  */
-public class MessageHelper
-{
+public class MessageHelper {
     private Hashtable<String, String> message;
     private SimpleDateFormat dateFormat;
     private String errorText;
         
-    public MessageHelper()
-    {
+    public MessageHelper() {
         message = new Hashtable<String, String>();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         errorText = "undefined";
     }
 
-    public Hashtable<String, String> getNewCheckMessage(MessageType type, MonitorStatusEntry currentStatusEntry)
-    {
-        message.clear();
+    public Hashtable<String, String> getNewCheckMessage(MessageType type,
+                                                        MonitorStatusEntry currentStatusEntry) {
         
-        message.put("TYPE", "event");
+        message.clear();
+        message.put("TYPE", "check");
         message.put("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
         message.put("CLASS", currentStatusEntry.getCheckId());
         message.put("NAME", "AMS_SYSTEM_CHECK");
@@ -68,51 +67,44 @@ public class MessageHelper
         return message;
     }
     
-    public boolean isAmsAnswer(Hashtable<String, String> content, MapMessage mapMessage)
-    {
-        Hashtable<String, String> receivedMessageContent = null;
+    public boolean isAmsAnswer(Hashtable<String, String> content, CheckMessage inMessage) {
+        
         String value = null;
         boolean amsAnswer = false;
         
-        receivedMessageContent = extractContent(mapMessage);
-        if(receivedMessageContent.containsKey("CLASS") && content.containsKey("CLASS"))
-        {
-            value = receivedMessageContent.get("CLASS");
-            
-            amsAnswer = (content.get("CLASS").compareTo(value) == 0);
+        if (!inMessage.containsKey("TYPE")) {
+            return false;
         }
-        else
-        {
+        
+        if (inMessage.getValue("TYPE").compareToIgnoreCase("check") != 0) {
+            return false;
+        }
+        
+        if(inMessage.containsKey("CLASS") && content.containsKey("CLASS")) {
+            value = inMessage.getValue("CLASS");
+            amsAnswer = (content.get("CLASS").compareTo(value) == 0);
+        } else {
             amsAnswer = false;
         }
         
-        if(receivedMessageContent.containsKey("NAME") && amsAnswer)
-        {
-            value = receivedMessageContent.get("NAME");
+        if(inMessage.containsKey("NAME") && amsAnswer) {
+            value = inMessage.getValue("NAME");
             amsAnswer = (value.compareTo("AMS_SYSTEM_CHECK") == 0);
-        }
-        else
-        {
+        } else {
             amsAnswer = false;
         }
 
-        if(receivedMessageContent.containsKey("APPLICATION-ID") && amsAnswer)
-        {
-            value = receivedMessageContent.get("APPLICATION-ID");
+        if(inMessage.containsKey("APPLICATION-ID") && amsAnswer) {
+            value = inMessage.getValue("APPLICATION-ID");
             amsAnswer = (value.compareTo("AmsSystemMonitor") == 0);
-        }
-        else
-        {
+        } else {
             amsAnswer = false;
         }
         
-        if(receivedMessageContent.containsKey("DESTINATION") && amsAnswer)
-        {
-            value = receivedMessageContent.get("DESTINATION");
+        if(inMessage.containsKey("DESTINATION") && amsAnswer) {
+            value = inMessage.getValue("DESTINATION");
             amsAnswer = (value.compareTo("System") == 0);
-        }
-        else
-        {
+        }  else {
             amsAnswer = false;
         }
 
@@ -166,8 +158,8 @@ public class MessageHelper
         return success;
     }
     
-    public boolean isAnswerFromSmsDeliveryWorker(Hashtable<String, String> content)
-    {
+    public boolean isAnswerFromSmsDeliveryWorker(Hashtable<String, String> content) {
+        
         String value;
         boolean success = false;
         
@@ -178,31 +170,23 @@ public class MessageHelper
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
-        if(content.isEmpty() == false)
-        {            
-            if(content.containsKey("NAME"))
-            {
+        if(content.isEmpty() == false) {            
+            if(content.containsKey("NAME")) {
                 value = content.get("NAME");
                 success = (value.compareTo("AMS_SYSTEM_CHECK_ANSWER") == 0);
             }
 
-            if(content.containsKey("APPLICATION-ID") && success)
-            {
+            if(content.containsKey("APPLICATION-ID") && success) {
                 value = content.get("APPLICATION-ID");
                 success = (value.compareTo("SmsDeliveryWorker") == 0);
-            }
-            else
-            {
+            } else {
                 success = false;
             }
             
-            if(content.containsKey("DESTINATION") && success)
-            {
+            if(content.containsKey("DESTINATION") && success) {
                 value = content.get("DESTINATION");
                 success = (value.compareTo("AmsSystemMonitor") == 0);
-            }
-            else
-            {
+            } else {
                 success = false;
             }
         }
@@ -210,8 +194,9 @@ public class MessageHelper
         return success;
     }
 
-    public CheckResult getAnswerFromSmsDeliveryWorker(MapMessage mapMsg, Hashtable<String, String> sentMessage)
-    {
+    public CheckResult getAnswerFromSmsDeliveryWorker(MapMessage mapMsg,
+                                                      Hashtable<String, String> sentMessage) {
+        
         Hashtable<String, String> answer = null;
         CheckResult result = CheckResult.NONE;
         String value = null;
@@ -219,8 +204,7 @@ public class MessageHelper
         
         answer = extractContent(mapMsg);
         
-        if(isAnswerFromSmsDeliveryWorker(answer) == false)
-        {
+        if(isAnswerFromSmsDeliveryWorker(answer) == false) {
             return CheckResult.NONE;
         }
         
@@ -231,54 +215,37 @@ public class MessageHelper
         //  DESTINATION = AmsSystemMonitor
         //  TEXT = OK | ERROR
         
-        if(answer.isEmpty() == false)
-        {
-            if(answer.containsKey("CLASS") && sentMessage.containsKey("CLASS"))
-            {
+        if(answer.isEmpty() == false) {
+            if(answer.containsKey("CLASS") && sentMessage.containsKey("CLASS")) {
                 value = answer.get("CLASS");
-                
                 success = (sentMessage.get("CLASS").compareTo(value) == 0);
-            }
-            else
-            {
+            } else {
                 success = false;
             }
 
-            if(success == false)
-            {
+            if(success == false) {
                 return CheckResult.NONE;
             }
                         
-            if(answer.containsKey("VALUE") && success)
-            {
+            if(answer.containsKey("VALUE") && success) {
                 value = answer.get("VALUE");
-                if(value.compareToIgnoreCase("OK") == 0)
-                {
+                if(value.compareToIgnoreCase("OK") == 0) {
                     result = CheckResult.OK;
                     success = true;
-                }
-                else if(value.compareToIgnoreCase("WARN") == 0)
-                {
+                } else if(value.compareToIgnoreCase("WARN") == 0) {
                     result = CheckResult.WARN;
                     success = true;
-                }
-                else if(value.compareToIgnoreCase("ERROR") == 0)
-                {
+                } else if(value.compareToIgnoreCase("ERROR") == 0) {
                     result = CheckResult.ERROR;
                     success = true;
                 }
-            }
-            else
-            {
+            } else {
                 success = false;
             }
             
-            if(answer.containsKey("TEXT") && success)
-            {
+            if(answer.containsKey("TEXT") && success) {
                 errorText = answer.get("TEXT");
-            }
-            else
-            {
+            } else {
                 errorText = "Undefined";
             }
         }
