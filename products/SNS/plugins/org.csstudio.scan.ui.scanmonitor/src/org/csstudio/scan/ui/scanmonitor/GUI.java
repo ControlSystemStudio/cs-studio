@@ -107,7 +107,7 @@ public class GUI implements ScanInfoModelListener
         final TableColumnLayout table_layout = new TableColumnLayout();
         table_box.setLayout(table_layout);
 
-        table_viewer = new TableViewer(table_box, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        table_viewer = new TableViewer(table_box, SWT.SINGLE | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -439,7 +439,8 @@ public class GUI implements ScanInfoModelListener
                 if (table.isDisposed())
                     return;
                 // Received update -> enable table and display info
-                table.setEnabled(true);
+                if (! table.getEnabled())
+                	table.setEnabled(true);
                 table_viewer.refresh();
             }
         });
