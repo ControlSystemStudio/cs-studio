@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -48,6 +49,12 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
     }
 
     @Override
+    public void scanServerUpdate(final ScanServerInfo server_info)
+    {
+        System.out.println("\n-- Scan Info: " + server_info);
+    }
+
+	@Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
         System.out.println("\n-- Scan Update --");

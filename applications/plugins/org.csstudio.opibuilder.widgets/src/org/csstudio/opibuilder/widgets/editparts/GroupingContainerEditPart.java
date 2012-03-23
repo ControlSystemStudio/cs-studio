@@ -21,6 +21,7 @@ import org.csstudio.swt.widgets.figures.GroupingContainerFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.ui.IActionFilter;
 
 /**The Editpart Controller for a Grouping Container
  * @author Xihui Chen
@@ -180,6 +181,21 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 				child.setHeight((int) (child.getHeight()*(1+ratio)));
 			}				
 		}
+	}
+	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+		if (adapter == IActionFilter.class)
+			return new BaseEditPartActionFilter(){
+			@Override
+			public boolean testAttribute(Object target, String name,
+					String value) {
+				if (name.equals("allowAutoSize") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
+					return true;				
+				return super.testAttribute(target, name, value);
+			}
+		};
+		return super.getAdapter(adapter);
 	}
 	
 	

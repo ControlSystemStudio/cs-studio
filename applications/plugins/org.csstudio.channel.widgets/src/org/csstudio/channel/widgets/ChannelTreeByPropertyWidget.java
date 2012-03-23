@@ -50,13 +50,14 @@ implements ConfigurableWidget, ISelectionProvider {
 		super(parent, style);
 		
 		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 5;
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
 		
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		errorBar.setMarginBottom(5);
 		
 		addPropertyChangeListener(new PropertyChangeListener() {
 			

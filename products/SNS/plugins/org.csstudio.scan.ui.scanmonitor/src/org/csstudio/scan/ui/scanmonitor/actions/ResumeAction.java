@@ -19,6 +19,7 @@ import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that resumes a paused scan
  *  @author Kay Kasemir
@@ -26,12 +27,13 @@ import org.csstudio.scan.ui.scanmonitor.Messages;
 public class ResumeAction extends AbstractGUIAction
 {
     /** Initialize
+     *  @param shell Parent shell
      *  @param model
      *  @param info
      */
-    public ResumeAction(final ScanInfoModel model, final ScanInfo info)
+    public ResumeAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
     {
-        super(model, info, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
+        super(shell, model, info, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */

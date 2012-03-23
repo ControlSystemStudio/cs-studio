@@ -102,6 +102,20 @@ public class ModelListenerHeadlessTest
             System.out.println("Scrolling turned " + (scroll_enabled ? "on" : "off"));
             ++changes;
         }
+
+
+
+		@Override
+		public void changedAnnotations() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void changedXYGraphConfig() {
+			// TODO Auto-generated method stub
+
+		}
     };
 
     /** Test if listener is invoked as expected */
@@ -169,7 +183,7 @@ public class ModelListenerHeadlessTest
         assertEquals(8, changes);
         item.setVisible(false);
         assertEquals(8, changes);
-        
+
         // Change waveform index
         item.setWaveformIndex(1);
         assertEquals(9, changes);

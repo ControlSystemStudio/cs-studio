@@ -347,6 +347,15 @@
       </widget>
       <widget
             category="Others"
+            description="A container with a moveble sash inside."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.SashContainerEditPart"
+            icon="icons/SashContainer.png"
+            model_class="org.csstudio.opibuilder.widgets.model.SashContainerModel"
+            name="Sash Container"
+            typeId="org.csstudio.opibuilder.widgets.sashContainer">
+      </widget>
+      <widget
+            category="Others"
             description="A widget that allows embedding webpage in OPI. "
             editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
             icon="icons/web_browser.png"
@@ -368,7 +377,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.createGroup"
+            id="org.csstudio.opibuilder.widgets.allwidgets"
             objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.CreateGroupAction"
@@ -379,6 +388,15 @@
                menubarPath="group"
                tooltip="Create a group container which contains all the selected widgets.">
          </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.FillParentContainerAction"
+               enablesFor="1"
+               icon="icons/fillParent.png"
+               id="org.csstudio.opibuilder.widgets.fillParentContainer"
+               label="Fill Parent Container"
+               menubarPath="edit"
+               tooltip="Resize the widget to fill its parent.">
+         </action>
          <visibility>
             <objectState
                   name="executionMode"
@@ -388,7 +406,7 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.removeGroup"
+            id="org.csstudio.opibuilder.widgets.groupingcontainer"
             objectClass="org.csstudio.opibuilder.widgets.editparts.GroupingContainerEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.LockUnlockChildrenAction"
@@ -426,7 +444,7 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.tabactions"
+            id="org.csstudio.opibuilder.widgets.tabcontainer"
             objectClass="org.csstudio.opibuilder.widgets.editparts.TabEditPart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.AddTabBeforeAction"
@@ -498,7 +516,7 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.reloadOPI"
+            id="org.csstudio.opibuilder.widgets.linkingcontainer"
             objectClass="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.ReloadOPIAction"
@@ -512,7 +530,7 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.widgets.performAutoSize"
+            id="org.csstudio.opibuilder.widgets.allcontainers"
             objectClass="org.csstudio.opibuilder.editparts.AbstractContainerEditpart">
          <action
                class="org.csstudio.opibuilder.widgets.actions.PerformAutoSizeAction"
@@ -525,8 +543,8 @@
          </action>
          <visibility>
             <objectState
-                  name="executionMode"
-                  value="EDIT_MODE">
+                  name="allowAutoSize"
+                  value="TRUE">
             </objectState>
          </visibility>
       </objectContribution>

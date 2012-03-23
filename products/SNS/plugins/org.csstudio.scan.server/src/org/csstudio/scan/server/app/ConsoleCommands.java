@@ -59,6 +59,7 @@ public class ConsoleCommands implements CommandProvider
         final StringBuilder buf = new StringBuilder();
         buf.append("---ScanServer commands---\n");
         buf.append("\tscans           - List all scans\n");
+        buf.append("\tinfo            - Scan server info\n");
         buf.append("\tdevices         - List default devices\n");
         buf.append("\tdevices ID      - List devices used by scan with given ID\n");
         buf.append("\tdata  ID        - Dump log data for scan with given ID\n");
@@ -92,6 +93,21 @@ public class ConsoleCommands implements CommandProvider
             else
                 for (int i=infos.size()-1; i>=0; --i)
                     intp.println(infos.get(i).toString());
+        }
+        catch (RemoteException ex)
+        {
+            intp.printStackTrace(ex);
+        }
+        return null;
+    }
+
+
+    /** 'info' command */
+    public Object _info(final CommandInterpreter intp)
+    {
+        try
+        {
+        	intp.println(server.getInfo());
         }
         catch (RemoteException ex)
         {
@@ -148,11 +164,11 @@ public class ConsoleCommands implements CommandProvider
             {
                 final List<ScanSample> line = sheet.getSamples();
                 for (ScanSample sample : line)
-                    System.out.print(sample + "  ");
-                System.out.println();
+                	intp.print(sample + "  ");
+                intp.println();
             }
             // Dump scan info
-            System.out.println(server.getScanInfo(id));
+            intp.println(server.getScanInfo(id));
         }
         catch (Throwable ex)
         {

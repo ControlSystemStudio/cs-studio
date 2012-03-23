@@ -103,7 +103,7 @@ public class DisplayModel extends AbstractContainerModel {
 		addProperty(new BooleanProperty(PROP_AUTO_ZOOM_TO_FIT_ALL,
 				"Auto Zoom to Fit All", WidgetPropertyCategory.Behavior, false));
 		addProperty(new ComplexDataProperty(
-				PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets", 
+				PROP_AUTO_SCALE_WIDGETS, "Auto Scale Widgets (at Runtime)", 
 				WidgetPropertyCategory.Behavior, new DisplayScaleData(), "Scale Widgets as windows resizes"));
 	
 		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON,

@@ -23,6 +23,7 @@ import org.csstudio.scan.command.XMLCommandWriter;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanUIActivator;
 import org.csstudio.scan.ui.scantree.gui.EmptyEditorInput;
@@ -480,7 +481,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         });
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
+    @Override
+    public void scanServerUpdate(final ScanServerInfo server_info)
+    {
+	    // Ignore
+    }
+
+	/** {@inheritDoc} */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {

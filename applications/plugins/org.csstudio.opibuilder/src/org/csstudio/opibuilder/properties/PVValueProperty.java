@@ -54,7 +54,7 @@ public class PVValueProperty extends AbstractWidgetProperty {
 	        final ISeverity severity = ValueFactory.createOKSeverity();
 			acceptableValue = ValueFactory.createLongValue(
 					TimestampFactory.now(), severity, severity.toString(),
-					null, Quality.Original, new long[]{(Long)value});
+					null, Quality.Original, new long[]{(value instanceof Integer? ((Integer)value).longValue():(Long)value)});
 		}
 
 		return acceptableValue;

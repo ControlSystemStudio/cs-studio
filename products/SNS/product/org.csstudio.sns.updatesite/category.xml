@@ -1,38 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.sns.feature.eclipse_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.eclipse" version="3.1.0.qualifier">
-      <category name="css_infrastructure"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.core_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.core" version="3.1.0.qualifier">
-      <category name="css_infrastructure"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.basiccore_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.basiccore" version="3.1.0.qualifier">
-      <category name="css_infrastructure"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.snscore_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.snscore" version="3.1.0.qualifier">
-      <category name="css_infrastructure"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.repository_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.repository" version="3.1.0.qualifier">
-      <category name="css_infrastructure"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.applications_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.applications" version="3.1.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
-   <feature url="features/org.csstudio.sns.feature.snsapps_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.snsapps" version="3.1.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
    <feature url="features/org.csstudio.sns.feature.optional_3.1.0.qualifier.jar" id="org.csstudio.sns.feature.optional" version="3.1.0.qualifier">
-      <category name="css_applications"/>
+      <category name="additions"/>
    </feature>
-   <feature url="features/org.csstudio.opibuilder.feature_3.1.0.qualifier.jar" id="org.csstudio.opibuilder.feature" version="3.1.0.qualifier">
-      <category name="css_applications"/>
+   <feature url="features/org.csstudio.scan.ui.feature_1.0.0.qualifier.jar" id="org.csstudio.scan.ui.feature" version="1.0.0.qualifier">
+      <category name="additions"/>
    </feature>
-   <feature url="features/org.csstudio.alarm.beast.ui.feature_3.1.0.qualifier.jar" id="org.csstudio.alarm.beast.ui.feature" version="3.1.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
-   <feature url="features/org.csstudio.trends.databrowser2.feature_3.1.0.qualifier.jar" id="org.csstudio.trends.databrowser2.feature" version="3.1.0.qualifier">
-      <category name="css_applications"/>
-   </feature>
-   <category-def name="css_infrastructure" label="CSS Infrastructure"/>
-   <category-def name="css_applications" label="CSS Applications"/>
+   <category-def name="additions" label="Optional SNS Components"/>
 </site>

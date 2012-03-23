@@ -38,6 +38,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.PlatformUI;
@@ -179,6 +180,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				getWidgetModel().addChild(child, false); //don't change model's parent.
 			}
 			getWidgetModel().setBackgroundColor(loadTarget.getBackgroundColor());
+			getWidgetModel().setDisplayModel(tempDisplayModel);
 			//tempDisplayModel.removeAllChildren();
 		} catch (Exception e) {
 			LabelModel loadingErrorLabel = new LabelModel();
@@ -197,8 +199,15 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				layout();				
-				getWidgetModel().scaleChildren();
+				layout();
+				if(//getExecutionMode() == ExecutionMode.RUN_MODE && 
+						!getWidgetModel().isAutoFit() && !getWidgetModel().isAutoSize()){					
+					Rectangle childrenRange = GeometryUtil.getChildrenRange(LinkingContainerEditpart.this);
+					getWidgetModel().setChildrenGeoSize(new Dimension(
+						childrenRange.width + childrenRange.x + figure.getInsets().left + figure.getInsets().right-1,
+						childrenRange.height +childrenRange.y+ figure.getInsets().top + figure.getInsets().bottom-1));
+					getWidgetModel().scaleChildren();
+				}
 				((LinkingContainerFigure)getFigure()).setZoomToFitAll(getWidgetModel().isAutoFit());
 				((LinkingContainerFigure)getFigure()).updateZoom();				
 			}
@@ -256,6 +265,21 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
 			widget.setLocation(widget.getLocation().translate(tranlateSize.getNegated()));
 		}	
+	}
+	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+		if (adapter == IActionFilter.class)
+			return new BaseEditPartActionFilter(){
+			@Override
+			public boolean testAttribute(Object target, String name,
+					String value) {
+				if (name.equals("allowAutoSize") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
+					return true;				
+				return super.testAttribute(target, name, value);
+			}
+		};
+		return super.getAdapter(adapter);
 	}
 
 }

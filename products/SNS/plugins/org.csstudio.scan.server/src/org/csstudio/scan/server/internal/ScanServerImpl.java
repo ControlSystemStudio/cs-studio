@@ -33,7 +33,6 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -43,6 +42,7 @@ import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.UnknownScanException;
 
 /** Server-side implementation of the {@link ScanServer} interface
@@ -96,7 +96,7 @@ public class ScanServerImpl implements ScanServer
         }
         start_time = new Date();
 
-        final ScanServer stub = (ScanServer) UnicastRemoteObject.exportObject(this, ScanServer.RMI_SCAN_SERVER_PORT);
+        final ScanServer stub = (ScanServer) UnicastRemoteObject.exportObject(this, port+1);
         registry.rebind(ScanServer.RMI_SCAN_SERVER_NAME, stub);
     }
 
@@ -119,13 +119,10 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public String getInfo() throws RemoteException
+    public ScanServerInfo getInfo() throws RemoteException
     {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("Scan Server V").append(ScanServer.SERIAL_VERSION).append("\n");
-        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
-        buf.append("Beamline Configuration: " + Preferences.getBeamlineConfigPath()).append("\n");
-        return buf.toString();
+    	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
+    			start_time, Preferences.getBeamlineConfigPath());
     }
 
     /** {@inheritDoc} */
@@ -170,6 +167,8 @@ public class ScanServerImpl implements ScanServer
     public long submitScan(final String scan_name, final String commands_as_xml)
             throws RemoteException
     {
+    	cullScans();
+
         try
         {   // Parse received 'main' scan from XML
             final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
@@ -208,6 +207,17 @@ public class ScanServerImpl implements ScanServer
         {
             throw new ServerException("Scan Engine error while submitting scan", ex);
         }
+    }
+
+    /** If memory consumption is high, remove (one) older scan */
+	private void cullScans() throws RemoteException
+    {
+	    final double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+		while (getInfo().getMemoryPercentage() > threshold)
+	    {
+	    	if (! scan_engine.removeOldestCompletedScan())
+	    		return;
+	    }
     }
 
 	/** {@inheritDoc} */

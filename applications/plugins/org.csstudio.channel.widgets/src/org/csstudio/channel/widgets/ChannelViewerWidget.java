@@ -9,9 +9,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -25,17 +25,10 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.MenuDetectEvent;
-import org.eclipse.swt.events.MenuDetectListener;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
@@ -62,9 +55,14 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
 		this.channels = channels;
-		this.properties = new ArrayList<String>(
-				ChannelUtil.getPropertyNames(channels));
-		this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
+		if (channels != null) {
+			this.properties = new ArrayList<String>(
+					ChannelUtil.getPropertyNames(channels));
+			this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
+		} else {
+			this.properties = Collections.emptyList();
+			this.tags = Collections.emptyList();
+		}
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 
@@ -90,9 +88,6 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 	}
 
 	private void updateTable() {
-		// Clear the channel list;
-		tableViewer.setInput(channels.toArray());
-		tableViewer.setItemCount(channels.size());
 		// Remove all old columns
 		// TODO add the additional columns in the correct sorted order.
 		while (tableViewer.getTable().getColumnCount() > 2) {
@@ -110,12 +105,8 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			new TableViewerChannelPropertySorter(channelPropertyColumn,
 					propertyName);
 			TableColumn tblclmnNumericprop = channelPropertyColumn.getColumn();
-			// tcl_composite.setColumnData(tblclmnNumericprop, new
-			// ColumnPixelData(
-			// 100, true, true));
 
 			tblclmnNumericprop.setText(propertyName);
-//			tblclmnNumericprop.setWidth(100);
 		}
 		// Add a new column for each Tag
 		for (String tagName : tags) {
@@ -126,56 +117,38 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 					tagName));
 			new TableViewerChannelTagSorter(channelTagColumn, tagName);
 			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
-			// tcl_composite.setColumnData(tblclmnNumericprop, new
-			// ColumnPixelData(
-			// 100, true, true));
 			tblclmnNumericprop.setText(tagName);
-//			tblclmnNumericprop.setWidth(100);
 		}
-		// calculate column size since adding removing columns does not trigger a
-		// control resize event.
-		Rectangle area = table.getClientArea();
-		Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		ScrollBar vBar = table.getVerticalBar();
-		int width = area.width - table.computeTrim(0, 0, 0, 0).width
-				- vBar.getSize().x;
-		if (size.y > area.height + table.getHeaderHeight()) {
-			// Subtract the scrollbar width from the total column width
-			// if a vertical scrollbar will be required
-			Point vBarSize = vBar.getSize();
-			width -= vBarSize.x;
-		}
-		Point oldSize = table.getSize();
-		TableColumn[] columns;
-		if (oldSize.x > area.width) {
-			// table is getting smaller so make the columns
-			// smaller first and then resize the table to
-			// match the client area width
-			columns = table.getColumns();
-			int newWidth = area.width / columns.length >= 100 ? area.width
-					/ columns.length : 100;
-			for (TableColumn tableColumn : columns) {
-				tableColumn.setWidth(newWidth);
-			}
+		
+		resetTableLayout();
+		
+		// Clear the channel list;
+		if (channels != null) {
+			tableViewer.setInput(channels.toArray());
+			tableViewer.setItemCount(channels.size());
 		} else {
-			// table is getting bigger so make the table
-			// bigger first and then make the columns wider
-			// to match the client area width
-			columns = table.getColumns();
-			int newWidth = area.width / columns.length >= 100 ? area.width
-					/ columns.length : 100;
-			for (TableColumn tableColumn : columns) {
-				tableColumn.setWidth(newWidth);
-			}
+			tableViewer.setInput(new Object[0]);
+			tableViewer.setItemCount(0);
 		}
-		tableViewer.refresh();
-		// table.notifyListeners(0, //new Event()));
+	}
+	
+	private void resetTableLayout() {
+		int tableWidth = table.getSize().x;
+		int nColumn = table.getColumnCount();
+		int size = 100;
+		if (100 * nColumn < tableWidth) {
+			size = tableWidth / nColumn;
+		}
+		for (int i = 0; i < table.getColumnCount(); i++) {
+			table.getColumn(i).setWidth(size);
+		}
 	}
 
 	public ChannelViewerWidget(Composite parent, int style) {
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
@@ -183,61 +156,16 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
 				1, 1));
+		errorBar.setMarginBottom(5);
 
-		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION
-				| SWT.MULTI | SWT.VIRTUAL);
+		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
+				SWT.MULTI);
 		table = tableViewer.getTable();
-		table.addMenuDetectListener(new MenuDetectListener() {
-			public void menuDetected(MenuDetectEvent e) {
-			}
-		});
-		// Make the Columns stretch with the table
-		table.addControlListener(new ControlAdapter() {
-
-			@Override
-			public void controlResized(ControlEvent e) {
-				Rectangle area = table.getClientArea();
-				Point size = table.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-				ScrollBar vBar = table.getVerticalBar();
-				int width = area.width - table.computeTrim(0, 0, 0, 0).width
-						- vBar.getSize().x;
-				if (size.y > area.height + table.getHeaderHeight()) {
-					// Subtract the scrollbar width from the total column width
-					// if a vertical scrollbar will be required
-					Point vBarSize = vBar.getSize();
-					width -= vBarSize.x;
-				}
-				Point oldSize = table.getSize();
-				TableColumn[] columns;
-				if (oldSize.x > area.width) {
-					// table is getting smaller so make the columns
-					// smaller first and then resize the table to
-					// match the client area width
-					columns = table.getColumns();
-					int newWidth = area.width / columns.length >= 100 ? area.width
-							/ columns.length
-							: 100;
-					for (TableColumn tableColumn : columns) {
-						tableColumn.setWidth(newWidth);
-					}
-				} else {
-					// table is getting bigger so make the table
-					// bigger first and then make the columns wider
-					// to match the client area width
-					columns = table.getColumns();
-					int newWidth = area.width / columns.length >= 100 ? area.width
-							/ columns.length
-							: 100;
-					for (TableColumn tableColumn : columns) {
-						tableColumn.setWidth(newWidth);
-					}
-				}
-			}
-		});
+		
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
+		
 		TableViewerColumn channelNameColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		channelNameColumn.setLabelProvider(new CellLabelProvider() {
@@ -253,7 +181,6 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			}
 		};
 		TableColumn tblclmnChannelName = channelNameColumn.getColumn();
-		tblclmnChannelName.setWidth(100);
 		tblclmnChannelName.setText("Channel Name");
 
 		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
@@ -272,7 +199,6 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			}
 		};
 		TableColumn tblclmnOwner = channelOwnerColumn.getColumn();
-		tblclmnOwner.setWidth(100);
 		tblclmnOwner.setText("Owner");
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
 
@@ -318,6 +244,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 			}
 
 		});
+		resetTableLayout();
 	}
 
 	@Override
@@ -330,6 +257,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 	protected void queryCleared() {
 		this.channels = null;
 		this.errorBar.setException(null);
+		setChannels(null);
 	}
 
 	@Override

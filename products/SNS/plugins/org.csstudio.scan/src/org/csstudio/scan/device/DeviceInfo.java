@@ -72,7 +72,9 @@ public class DeviceInfo implements Serializable
 	public String toString()
 	{
         final StringBuilder buf = new StringBuilder();
-        buf.append(alias).append(" [").append(name).append("]");
+        buf.append(alias);
+        if (! alias.equals(name))
+        	buf.append(" [").append(name).append("]");
         if (log)
             buf.append(" (loggable)");
         if (scan)

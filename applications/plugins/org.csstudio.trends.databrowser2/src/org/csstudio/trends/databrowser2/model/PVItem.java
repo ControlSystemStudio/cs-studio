@@ -61,7 +61,7 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Archive data request type */
     private RequestType request_type = RequestType.OPTIMIZED;
-    
+
     /** Waveform Index */
     private int waveform_index = 0;
 
@@ -75,14 +75,16 @@ public class PVItem extends ModelItem implements PVListener
         super(name);
         this.period = period;
     }
-    
+
     /** @return Waveform index */
+    @Override
     public int getWaveformIndex()
     {
         return waveform_index;
     }
 
     /** @param index New waveform index */
+    @Override
     public void setWaveformIndex(int index)
     {
         if (index < 0)
@@ -93,7 +95,7 @@ public class PVItem extends ModelItem implements PVListener
 
         // change all the index of samples in this instance
         samples.setWaveformIndex(waveform_index);
-        
+
         fireItemLookChanged();
     }
 
@@ -285,7 +287,7 @@ public class PVItem extends ModelItem implements PVListener
         if (pv != null)
             throw new RuntimeException("Already started " + getName());
         this.scan_timer = timer;
-        
+
         pv = PVFactory.createPV(getResolvedName());
         pv.addListener(this);
         pv.start();
@@ -469,7 +471,7 @@ public class PVItem extends ModelItem implements PVListener
         }
 
         item.configureFromDocument(model, node);
-        
+
         if (Preferences.useDefaultArchives())
             item.useDefaultArchiveDataSources();
         else

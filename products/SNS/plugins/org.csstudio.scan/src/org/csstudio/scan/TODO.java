@@ -117,11 +117,13 @@ public interface TODO
      *
      *  Done Allow update of command parameters while scan is running
      *
-     *  TODO Unclear if devices will ever be anything but PVs.
+     *  Done Other scan configuration GUIs: 'Spreadsheet' table of loop variable, start/end
      *
-     *  TODO Other scan configuration GUIs.
-     *       'Spreadsheet' of loop variable, start/end?
-     *       Process block GUI?
+     *  Done 'WaitingForDevices' shows missing devices
+     *
+     *  Done Details of pre- and post scan command progress info
+     *
+     *  TODO Unclear if devices will ever be anything but PVs.
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is

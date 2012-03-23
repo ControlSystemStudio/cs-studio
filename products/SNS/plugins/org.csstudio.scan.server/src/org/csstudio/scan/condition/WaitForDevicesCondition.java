@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -21,6 +21,7 @@ import org.csstudio.scan.device.DeviceListener;
 /** {@link Condition} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WaitForDevicesCondition implements Condition, DeviceListener
 {
     final private Device[] devices;
@@ -75,4 +76,23 @@ public class WaitForDevicesCondition implements Condition, DeviceListener
 	            return false;
         return true;
     }
+
+
+    /** @return Debug representation */
+    @Override
+    public String toString()
+    {
+		final StringBuilder pending = new StringBuilder();
+	    for (Device device : devices)
+	        if (! device.isReady())
+	        {
+	        	if (pending.length() > 0)
+	        		pending.append(", ");
+	        	pending.append(device.getInfo());
+	        }
+	    if (pending.length() <= 0)
+	    	return "All devices ready";
+        return "Waiting for device " + pending.toString();
+    }
+
 }

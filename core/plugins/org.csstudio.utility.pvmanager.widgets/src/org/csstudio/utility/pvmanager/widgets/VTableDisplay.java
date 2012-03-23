@@ -56,11 +56,9 @@ public class VTableDisplay extends Composite implements ISelectionProvider {
 	 * @param parent
 	 */
 	public VTableDisplay(Composite parent) {
-		// Use no background so that image does not flicker
 		super(parent, SWT.NONE);
-		tableContainer = this; //new Composite(parent, SWT.NONE);
+		tableContainer = this;
 		tableContainer.setLayout(new FillLayout(SWT.HORIZONTAL));
-		//container.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		tableViewer = new TableViewer(tableContainer, SWT.BORDER | SWT.FULL_SELECTION);
 		table = tableViewer.getTable();

@@ -11,11 +11,11 @@ then
     # When run from within the IDE setup,
     # org.python would be under "applications"
     JYTHON=../../../../../applications/plugins/org.python/jython.jar
-elif [ -r $PLUGINS/org.python*/jython.jar ]
+elif [ -r $PLUGINS/org.python_*/jython.jar ]
 then
     # When run with an exported product,
     # jython would be one of the other plugins of the product
-    JYTHON=$PLUGINS/org.python*/jython.jar
+    JYTHON=$PLUGINS/org.python_*/jython.jar
 else
     echo "Cannot locate jython.jar"
 fi

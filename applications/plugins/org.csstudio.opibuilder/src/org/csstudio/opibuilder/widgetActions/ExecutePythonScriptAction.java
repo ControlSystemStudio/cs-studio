@@ -50,20 +50,20 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 	@Override
 	public void run() {
 		if(code == null){			
+			try {
+				ScriptStoreFactory.initPythonInterpreter();
+			} catch (Exception e) {
+				final String message = "Failed to initialize PythonInterpreter";
+	            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+				ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
+			}
 			//read file
 			IPath absolutePath = getAbsolutePath();
 			PySystemState state = new PySystemState();				
 			state.setClassLoader(JythonScriptStore.COMBINDED_CLASS_LOADER);
 			
 			//Add the path of script to python module search path
-			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
-				try {
-					ScriptStoreFactory.initPythonInterpreter();
-				} catch (Exception e) {
-					final String message = "Failed to execute Python Script: " + absolutePath;
-		            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-					ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
-				}
+			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){				
 				//If it is a workspace file.
 				if(ResourceUtil.isExistingWorkspaceFile(absolutePath)){
 					IPath folderPath = absolutePath.removeLastSegments(1);

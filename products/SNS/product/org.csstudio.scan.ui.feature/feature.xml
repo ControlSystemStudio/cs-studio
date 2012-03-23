@@ -5,17 +5,32 @@
       version="1.0.0.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      Scan System User Interface: Scan editor, monitor, ...
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright>
+      Copyright (c) 2012 Oak Ridge National Laboratory, OAK RIDGE,
+TN, USA. All rights reserved.
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      You must accept this license agreement in order to install and use this
+software.
+
+THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN &quot;../AS IS&quot;
+BASIS. 
+WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING
+BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+For details, see http://www.eclipse.org/legal/epl-v10.html
    </license>
+
+
+   <url>
+      <update label="SNS CSS Update Site" url="http://ics-web.sns.ornl.gov/css/updates/"/>
+   </url>
 
    <requires>
       <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
@@ -91,9 +106,10 @@
       <import plugin="org.eclipse.jdt.core.manipulation" version="1.4.0" match="compatible"/>
       <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
-      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.client" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.scan.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.ui.plot" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan.ui.scantree" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="3.0.1" match="greaterOrEqual"/>
@@ -102,10 +118,14 @@
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.scan.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ui.util" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -292,8 +312,7 @@
          id="org.csstudio.scan"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.scan.client"
@@ -336,5 +355,11 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.python"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

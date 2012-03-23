@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model of scan information on scan server
  *
@@ -62,11 +63,15 @@ public class ScanInfoModel
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
 
+    /** Most recent server info from <code>server</code> */
+    private volatile ScanServerInfo server_info = null;
+
     /** Are we currently connected? */
     private volatile boolean is_connected = false;
 
     /** Listeners */
     private List<ScanInfoModelListener> listeners = new CopyOnWriteArrayList<ScanInfoModelListener>();
+
 
     /** Obtain reference to the singleton instance.
      *  Must release when no longer used.
@@ -183,15 +188,24 @@ public class ScanInfoModel
     /** (Re-) connect to the server
      *  @throws Exception on error
      */
-    private synchronized void reconnect() throws Exception
+    private void reconnect() throws Exception
     {
-        if (server != null)
+    	// Only briefly synchronize.
+    	// Connection can take a long time, so do that outside of the sync block.
+    	final ScanServer old_server;
+    	synchronized (this)
         {
-            ScanServerConnector.disconnect(server);
-            server = null;
+	        old_server = server;
+	        server = null;
         }
+        if (old_server != null)
+            ScanServerConnector.disconnect(old_server);
         // Connect to server
-        server = ScanServerConnector.connect();
+        final ScanServer new_server = ScanServerConnector.connect();
+        synchronized (this)
+        {
+	        server = new_server;
+        }
     }
 
     /** @return Server
@@ -211,9 +225,17 @@ public class ScanInfoModel
     {
         try
         {
-            final List<ScanInfo> update = getServer().getScanInfos();
+            final ScanServer current_server = getServer();
+            // General server info, always inform listeners
+            server_info = current_server.getInfo();
+            for (ScanInfoModelListener listener : listeners)
+                listener.scanServerUpdate(server_info);
+
+            // List of scans. Suppress updates if there is no change
+			final List<ScanInfo> update = current_server.getScanInfos();
             if (update.equals(infos) && is_connected)
                 return;
+
             // Received new information, remember and notify listeners
             is_connected = true;
             infos = update;
@@ -251,13 +273,19 @@ public class ScanInfoModel
         }
     }
 
+    /** @return Scan Server info or <code>null</code> */
+    public ScanServerInfo getServerInfo()
+    {
+    	return server_info;
+    }
+
     /** @return Scan Server info
 	 *  @throws RemoteException on error in remote access
      */
-    public String getServerInfo() throws RemoteException
+    public String getServerInfoText() throws RemoteException
     {
     	final StringBuilder buf = new StringBuilder();
-    	buf.append(getServer().getInfo()).append("\n");
+    	buf.append(server_info).append("\n");
     	buf.append("\n");
     	buf.append("Devices:\n");
     	final DeviceInfo[] devices = getServer().getDeviceInfos(-1);
