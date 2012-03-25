@@ -86,7 +86,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            adaptable="true"
+            adaptable="false"
             id="org.csstudio.ui.menu.test.objectContribution1"
             objectClass="org.csstudio.csdata.ProcessVariable">
          <action
