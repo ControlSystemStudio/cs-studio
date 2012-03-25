@@ -40,14 +40,16 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 	}
 
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doCreateControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+	protected void doCreateControls(Composite parent,
+			TabbedPropertySheetPage tabbedPropertySheetPage) {
 		parent.setLayout(new FormLayout());
 
 		// .. create a combo and the corresponding viewer
-		CCombo combo = getWidgetFactory().createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
+		CCombo combo = getWidgetFactory().createCCombo(parent,
+				SWT.BORDER | SWT.READ_ONLY);
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
 		fd.right = new FormAttachment(50, 0);
@@ -60,8 +62,8 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 		// .. listen to changes
 		changeListener = new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IBehaviorDescription behaviorDescription = (IBehaviorDescription) ((IStructuredSelection) optionViewer.getSelection())
-						.getFirstElement();
+				IBehaviorDescription behaviorDescription = (IBehaviorDescription) ((IStructuredSelection) optionViewer
+						.getSelection()).getFirstElement();
 
 				if (behaviorDescription != null) {
 					applyPropertyChange(behaviorDescription.getBehaviorId());
@@ -74,7 +76,7 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 	}
 
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
 	protected void doRefreshControls(BehaviorProperty widgetProperty) {
@@ -100,7 +102,8 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 			assert selectedBehavior != null;
 
 			optionViewer.removeSelectionChangedListener(changeListener);
-			optionViewer.setSelection(new StructuredSelection(selectedBehavior));
+			optionViewer
+					.setSelection(new StructuredSelection(selectedBehavior));
 			optionViewer.addSelectionChangedListener(changeListener);
 
 		}
@@ -111,13 +114,16 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 		List<BehaviorDescriptor> result = new ArrayList<BehaviorDescriptor>();
 
 		// .. add empty
-		BehaviorDescriptor noneDescriptor = new BehaviorDescriptor("none", "*", "None", Collections.EMPTY_SET, null);
+		BehaviorDescriptor noneDescriptor = new BehaviorDescriptor("none", "*",
+				"None", Collections.EMPTY_SET, null);
 		result.add(noneDescriptor);
 
 		// .. add real behaviors
-		IBehaviorService service = SdsPlugin.getDefault().getBehaviourService();
-		result.addAll(service.getBehaviors(selectedWidget.getTypeID()));
-
+		if (selectedWidget != null) {
+			IBehaviorService service = SdsPlugin.getDefault()
+					.getBehaviourService();
+			result.addAll(service.getBehaviors(selectedWidget.getTypeID()));
+		}
 		return result;
 	}
 
@@ -127,7 +133,8 @@ public class BehaviorSection extends AbstractBaseSection<BehaviorProperty> {
 	 * @author Sven Wende
 	 * 
 	 */
-	private static final class BehaviorDescriptionLabelProvider extends LabelProvider {
+	private static final class BehaviorDescriptionLabelProvider extends
+			LabelProvider {
 		@Override
 		public String getText(Object element) {
 			BehaviorDescriptor d = (BehaviorDescriptor) element;

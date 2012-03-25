@@ -20,11 +20,15 @@ package org.csstudio.sds.ui.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
+import org.csstudio.dal.simple.ChannelListener;
+import org.csstudio.dal.simple.ConnectionParameters;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
@@ -70,9 +74,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.progress.UIJob;
-import org.csstudio.dal.simple.ChannelListener;
-import org.csstudio.dal.simple.ConnectionParameters;
-import org.csstudio.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -112,11 +113,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	private final HashMap<WidgetProperty, WidgetPropertyChangeListener> _propertyChangeListenersByProperty;
 
 	/**
-	 * Flag for the selection behaviour of this controller.
-	 */
-	private boolean _selectable;
-
-	/**
 	 * The execution mode (Run vs. Edit mode).
 	 */
 	private ExecutionMode _executionMode;
@@ -124,6 +120,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	private MouseMotionListener _motionListener;
 
 	private final IPropertyChangeListener _preferencesListener;
+
+	private int selected;
+
+	private List<SimpleDalListenerInfo> registeredSimpleDalListeners = new ArrayList<SimpleDalListenerInfo>();
 
 	/**
 	 * Standard constructor.
@@ -133,7 +133,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		_executionMode = ExecutionMode.EDIT_MODE;
 		_propertyChangeListenersById = new HashMap<String, WidgetPropertyChangeListener>();
 		_propertyChangeListenersByProperty = new HashMap<WidgetProperty, WidgetPropertyChangeListener>();
-		_selectable = true;
 		_preferencesListener = new PreferencesListener();
 		_outChannelListeners = new HashMap<WidgetProperty, org.csstudio.sds.model.IPropertyChangeListener>();
 	}
@@ -200,10 +199,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		updateFigureEnablementState(f);
 
 		// ... colors
-		f
-				.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
-		f
-				.setForegroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+		f.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		f.setForegroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
 
 		// ... size
 		f.setSize(model.getWidth(), model.getHeight());
@@ -232,9 +229,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 					try {
 						borderEquippedWidgetAdapter
 								.setBorderText(ChannelReferenceValidationUtil
-										.createCanonicalName(model
-												.getPrimaryPV(), model
-												.getAliases()));
+										.createCanonicalName(
+												model.getPrimaryPV(),
+												model.getAliases()));
 					} catch (ChannelReferenceValidationException e) {
 						borderEquippedWidgetAdapter.setBorderText(model
 								.getPrimaryPV());
@@ -270,7 +267,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		return f;
 	}
 
-	
 	/**
 	 * Implementors should create and return the figure here.
 	 * 
@@ -305,8 +301,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 
 		if (parent != null) {
-		    parent.setLayoutConstraint(this, refreshableFigure, bounds);
-        }
+			parent.setLayoutConstraint(this, refreshableFigure, bounds);
+		}
 	}
 
 	/**
@@ -366,7 +362,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 			_motionListener = new MouseMotionListener.Stub() {
 
 				@Override
-                public void mouseEntered(final MouseEvent me) {
+				public void mouseEntered(final MouseEvent me) {
 					// initialize cursor states
 					CursorService.getInstance().applyCursor(getCastedModel());
 
@@ -410,7 +406,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	private void registerStandardPropertyChangeHandlers() {
 		IWidgetPropertyChangeHandler visibilityHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				boolean visible = (Boolean) newValue;
 				final IFigure figure = getFigure();
@@ -439,7 +435,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		IWidgetPropertyChangeHandler fullRefreshHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				AbstractBaseEditPart.this.doRefreshVisuals(refreshableFigure);
 				return true;
@@ -475,7 +471,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		IWidgetPropertyChangeHandler borderWidthHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				if (figure instanceof IAdaptable) {
 					IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
@@ -512,7 +508,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 				if (figure instanceof IAdaptable) {
 					IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
@@ -531,7 +527,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// enabled
 		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure figure) {
 
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
@@ -549,7 +545,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// layer
 		IWidgetPropertyChangeHandler layerHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (getParent() instanceof AbstractContainerEditPart) {
 					String oldLayerName = getLayerName(oldValue);
@@ -566,7 +562,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 		IWidgetPropertyChangeHandler primaryPVHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				String pv = getCastedModel().getPrimaryPV();
 				Map<String, String> aliases = getCastedModel().getAliases();
@@ -600,7 +596,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// cursor
 		IWidgetPropertyChangeHandler actionDataHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 
 				if (newValue != null) {
@@ -616,7 +612,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// crossed
 		IWidgetPropertyChangeHandler crossedHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (refreshableFigure instanceof IAdaptable) {
 					ICrossedFigure crossedFigure = (ICrossedFigure) ((IAdaptable) refreshableFigure)
@@ -632,7 +628,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// rhombus
 		IWidgetPropertyChangeHandler rhombusHandler = new IWidgetPropertyChangeHandler() {
 			@Override
-            public boolean handleChange(final Object oldValue,
+			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				if (refreshableFigure instanceof IAdaptable) {
 					IRhombusEquippedWidget rhombusEquippedWidgetAdapter = (IRhombusEquippedWidget) ((IAdaptable) refreshableFigure)
@@ -710,9 +706,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// remove the property change listeners
 		for (WidgetProperty property : _propertyChangeListenersByProperty
 				.keySet()) {
-			property
-					.removePropertyChangeListener(_propertyChangeListenersByProperty
-							.get(property));
+			property.removePropertyChangeListener(_propertyChangeListenersByProperty
+					.get(property));
 		}
 
 		if (this._executionMode.equals(ExecutionMode.RUN_MODE)
@@ -740,7 +735,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final ConnectionAnchor getSourceConnectionAnchor(final Request arg0) {
+	public final ConnectionAnchor getSourceConnectionAnchor(final Request arg0) {
 		return createConnectionAnchor();
 	}
 
@@ -748,7 +743,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final ConnectionAnchor getTargetConnectionAnchor(final Request arg0) {
+	public final ConnectionAnchor getTargetConnectionAnchor(final Request arg0) {
 		return createConnectionAnchor();
 	}
 
@@ -756,7 +751,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final ConnectionAnchor getSourceConnectionAnchor(
+	public final ConnectionAnchor getSourceConnectionAnchor(
 			final ConnectionEditPart arg0) {
 		return new ChopboxAnchor(getFigure());
 	}
@@ -765,7 +760,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public final ConnectionAnchor getTargetConnectionAnchor(
+	public final ConnectionAnchor getTargetConnectionAnchor(
 			final ConnectionEditPart arg0) {
 
 		return new ChopboxAnchor(getFigure());
@@ -797,7 +792,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public synchronized void propertyChange(final PropertyChangeEvent evt) {
+	public synchronized void propertyChange(final PropertyChangeEvent evt) {
 		String prop = evt.getPropertyName();
 
 		if (prop.equals(AbstractWidgetModel.PROP_LIVE)) {
@@ -829,9 +824,24 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	private void disconnectFromControlSystem() {
 		Runnable r = new Runnable() {
 			@Override
-            public void run() {
+			public void run() {
 				try {
 					_semaphore.acquire();
+
+					// unregister listeners explicitly from SimpleDAL (Sven
+					// Wende: Note: usually this should not be necessary but due to bugs in
+					// SimpleDAL we have to take care of it ourselves)
+					for (SimpleDalListenerInfo info : registeredSimpleDalListeners) {
+						try {
+							getBroker().deregisterListener(info.parameters,
+									info.listener);
+						} catch (InstantiationException e) {
+							e.printStackTrace();
+						} catch (CommonException e) {
+							e.printStackTrace();
+						}
+					}
+					registeredSimpleDalListeners.clear();
 
 					_connectionStatus = ConnectionStatus.DISCONNECTING;
 
@@ -859,7 +869,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		Runnable r = new Runnable() {
 
 			@Override
-            public void run() {
+			public void run() {
 				try {
 					_semaphore.acquire();
 
@@ -880,8 +890,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 						for (WidgetProperty property : properties) {
 							if (property.isVisible()) {
 								ConnectionUtilNew.connectDynamizedProperties(
-										property, widget
-												.getAllInheritedAliases(),
+										property,
+										widget.getAllInheritedAliases(),
 										widget.isWriteAccessAllowed(),
 										AbstractBaseEditPart.this, getBroker());
 							}
@@ -911,22 +921,61 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		ExecutionService.getInstance().executeWithNormalPriority(r);
 	}
 
-	/**
-	 * Sets, if this EditPart could be selected.
-	 * 
-	 * @param selectable
-	 *            The new selection state
-	 */
-	public void setSelectable(final boolean selectable) {
-		_selectable = selectable;
+	public boolean isSelected() {
+		return getSelected() == SELECTED_PRIMARY || getSelected() == SELECTED;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Overrides default GEF implementation to circumvent an invariant check
+	 * (value==0 || isSelectable()) that tries to ensure that only 'selectable'
+	 * editparts can be 'selected'. SDS supports a special behavior for
+	 * containers (GroupingContainer, LinkingContainer) for which this invariant
+	 * may be temporarily hurt.
+	 */
+	@Override
+	public void setSelected(int value) {
+		if (getSelected() == value)
+			return;
+		selected = value;
+		fireSelectionChanged();
+	}
+
+	/**
+	 * Overides default GEF implementation. See comment for
+	 * {@link #setSelected(int)}.
+	 */
+	@Override
+	public final int getSelected() {
+		return selected;
+	}
+
+	/**
+	 * Overides default GEF implementation. See comment for
+	 * {@link #setSelected(int)}.
 	 */
 	@Override
 	public boolean isSelectable() {
-		return _selectable;
+		boolean result = false;
+
+		if (getFigure() != null && getFigure().isShowing()) {
+			if (getCastedModel().isLive()) {
+				// in run mode, widgets are always selectable
+				result = true;
+			} else {
+				if (getParent() instanceof AbstractContainerEditPart) {
+					// check that the parent container allows for child
+					// selections
+					AbstractContainerEditPart parent = (AbstractContainerEditPart) getParent();
+					result = parent.allowsChildSelection();
+				} else {
+					// fallback which should usually not apply, as all SDS
+					// widgets have a container parent
+					result = true;
+				}
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -934,7 +983,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 
 	@Override
-    public List<IProcessVariableAddress> getProcessVariableAdresses() {
+	public List<IProcessVariableAddress> getProcessVariableAdresses() {
 		return getCastedModel().getAllPvAdresses();
 	}
 
@@ -942,21 +991,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public String getName() {
-	    try {
-	        AbstractWidgetModel castedModel = getCastedModel();
-            String property = castedModel.getMainPvAdress().getProperty();
-	        return property;
-	    } catch (Exception e) {
-	        return "";
-        }
+	public String getName() {
+		try {
+			AbstractWidgetModel castedModel = getCastedModel();
+			String property = castedModel.getMainPvAdress().getProperty();
+			return property;
+		} catch (Exception e) {
+			return "";
+		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-    public String getTypeId() {
+	public String getTypeId() {
 		return IProcessVariable.TYPE_ID;
 	}
 
@@ -964,7 +1013,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public IProcessVariableAddress getPVAdress() {
+	public IProcessVariableAddress getPVAdress() {
 		return getCastedModel().getMainPvAdress();
 	}
 
@@ -972,12 +1021,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void register(final ConnectionParameters parameters,
+	public void register(final ConnectionParameters parameters,
 			final ChannelListener listener) {
 		try {
 			SimpleDALBroker broker = getBroker();
 
 			if (broker != null) {
+				// remember listeners
+				registeredSimpleDalListeners.add(new SimpleDalListenerInfo(
+						parameters, listener));
+
+				// register listeners
 				broker.registerListener(parameters, listener);
 			}
 		} catch (InstantiationException e) {
@@ -988,10 +1042,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	}
 
 	/**
-	 *{@inheritDoc}
+	 * {@inheritDoc}
 	 */
 	@Override
-    public void register(final WidgetProperty property,
+	public void register(final WidgetProperty property,
 			final org.csstudio.sds.model.IPropertyChangeListener listener) {
 		property.addPropertyChangeListener(listener);
 		_outChannelListeners.put(property, listener);
@@ -1073,8 +1127,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	protected Color getModelColor(final String propertyId) {
 		String hexOrVariable = getCastedModel().getColor(propertyId);
-		return SdsUiPlugin.getDefault().getColorAndFontService().getColor(
-				hexOrVariable);
+		return SdsUiPlugin.getDefault().getColorAndFontService()
+				.getColor(hexOrVariable);
 	}
 
 	/**
@@ -1095,7 +1149,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 	class PreferencesListener implements IPropertyChangeListener {
 		@Override
-        public void propertyChange(
+		public void propertyChange(
 				final org.eclipse.jface.util.PropertyChangeEvent event) {
 			// .. handle preference that switches write access permissions for
 			// all open displays
@@ -1121,7 +1175,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 			IWidgetPropertyChangeHandler {
 
 		@Override
-        @SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue != null;
@@ -1151,7 +1205,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 			IWidgetPropertyChangeHandler {
 
 		@Override
-        @SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		public boolean handleChange(final Object oldValue,
 				final Object newValue, final IFigure refreshableFigure) {
 			assert newValue instanceof String;
@@ -1167,5 +1221,33 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		}
 
 		protected abstract void doHandle(F figure, Font font);
+	}
+
+	/**
+	 * Keeps information for a single SimpleDAL listener that are needed to be
+	 * able to unregister that listener from SimpleDAL.
+	 * 
+	 * @author swende
+	 * 
+	 */
+	private static class SimpleDalListenerInfo {
+		private ConnectionParameters parameters;
+		private ChannelListener listener;
+
+		public SimpleDalListenerInfo(ConnectionParameters parameters,
+				ChannelListener listener) {
+			super();
+			this.parameters = parameters;
+			this.listener = listener;
+		}
+
+		public ConnectionParameters getParameters() {
+			return parameters;
+		}
+
+		public ChannelListener getListener() {
+			return listener;
+		}
+
 	}
 }
