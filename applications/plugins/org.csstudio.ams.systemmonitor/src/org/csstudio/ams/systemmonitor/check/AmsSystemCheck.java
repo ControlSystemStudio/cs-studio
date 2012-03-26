@@ -36,70 +36,88 @@ import org.csstudio.ams.systemmonitor.status.MonitorStatusEntry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-public class AmsSystemCheck extends AbstractCheckProcessor
-{
-    public AmsSystemCheck(String senderClientId, String receiverClientId, String subscriberName) throws AmsSystemMonitorException
-    {
+public class AmsSystemCheck extends AbstractCheckProcessor {
+    
+    private ClassNumberHistory classNumberHistory;
+    
+    public AmsSystemCheck(String senderClientId,
+                          String receiverClientId,
+                          String subscriberName) throws AmsSystemMonitorException {
         super(senderClientId, receiverClientId, subscriberName);
+        
+        String workspaceLocation;
+        // Retrieve the location of the workspace directory
+        try {
+            workspaceLocation = Platform.getLocation().toPortableString();
+            if(workspaceLocation.endsWith("/") == false) {
+                workspaceLocation = workspaceLocation + "/";
+            }
+        } catch(IllegalStateException ise) {
+            LOG.warn("Workspace location could not be found. Using working directory '.'");
+            workspaceLocation = "./";
+        }
+        
+        classNumberHistory = new ClassNumberHistory(workspaceLocation);
     }
 
     @Override
-    public void doCheck(MonitorStatusEntry currentStatusEntry) throws AmsSystemMonitorException
-    {
-        Hashtable<String, String> messageContent = null;
-        Message message = null;
-        MapMessage mapMessage = null;
-        Object waitObject = null;
-        long endTime = 0;
-        long currentTime = 0;
-        boolean success = false;
-
+    public void doCheck(MonitorStatusEntry currentStatusEntry) throws AmsSystemMonitorException {
+        
         LOG.info("Starting check of AMS System.");
         
         IPreferencesService pref = Platform.getPreferencesService();
-        long amsWaitTime = pref.getLong(AmsSystemMonitorActivator.PLUGIN_ID, PreferenceKeys.P_AMS_WAIT_TIME, -1, null);
-        if(amsWaitTime == -1) {
-            LOG.warn("The waiting time for the AMS system check is not valid. Using default: 30 sec.");
-            amsWaitTime = 30000;
-        }
+        long amsWaitTime = pref.getLong(AmsSystemMonitorActivator.PLUGIN_ID,
+                                        PreferenceKeys.P_AMS_WAIT_TIME,
+                                        2000L,
+                                        null);
         
-        LOG.info("Waiting time for the AMS system check: " + amsWaitTime + " ms");
+        LOG.info("Waiting time for receiving messages for the AMS system check: " + amsWaitTime + " ms");
         
-        messageContent = messageHelper.getNewCheckMessage(MessageHelper.MessageType.SYSTEM,
-                                                          currentStatusEntry);
+        Hashtable<String, String> messageContent =
+                messageHelper.getNewCheckMessage(MessageHelper.MessageType.SYSTEM);
         // checkTimeStamp = convertDateStringToLong(messageContent.get("EVENTTIME"));
             
         // Check old messages if the last check was not answered, otherwise delete all old messages
-        if(currentStatusEntry.getCheckStatus() != CheckResult.TIMEOUT) {
-            success = amsPublisher.sendMessage(messageContent);
-            if(success) {
-                LOG.info("Message sent.");
-            } else {
-                LOG.error("Message could NOT be sent.");
-                throw new AmsSystemMonitorException("Message could NOT be sent.",
-                                                    AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
-            }
+        boolean success = amsPublisher.sendMessage(messageContent);
+        if(success) {
+            LOG.info("Message sent.");
         } else {
-            LOG.info("A new message has NOT been sent. Looking for an old check message.");
+            LOG.error("Message could NOT be sent.");
+            throw new AmsSystemMonitorException("Message could NOT be sent.",
+                                                AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR);
         }
         
-        waitObject = new Object();
+        Object waitObject = new Object();
+        Message message = null;
         success = false;
-        endTime = System.currentTimeMillis() + amsWaitTime;
-        
         // Get all messages
         do {
             
+            synchronized(waitObject) {
+                try {
+                    waitObject.wait(amsWaitTime);
+                } catch(InterruptedException ie) {
+                    // Can be ignored
+                }
+            }
+
             message = amsReceiver.receive("amsSystemMonitor");
             if (message != null) {
                 
                 // Compare the incoming message with the sent message
-                LOG.info("Message received.");
+                LOG.info("Message received:");
                 
                 if (message instanceof MapMessage) {
-                    mapMessage = (MapMessage) message;
+                    MapMessage mapMessage = (MapMessage) message;
                     CheckMessage receivedMsg = MapMessageConverter.convertMapMessage(mapMessage);
-                    if(messageHelper.isAmsAnswer(messageContent, receivedMsg)) {
+                    
+                    if (messageHelper.isAmsAnswer(messageContent, receivedMsg)) {
+                        LOG.info(" It is the freshly sent message.");
+                        classNumberHistory.removeClassNumber(receivedMsg.getValue("CLASS"));
+                        success = true;
+                    } else if (classNumberHistory.containsClassNumber(receivedMsg.getValue("CLASS"))) {
+                        LOG.info(" It has been found in the history.");
+                        classNumberHistory.removeClassNumber(receivedMsg.getValue("CLASS"));
                         success = true;
                     } else {
                         LOG.warn("Received message is NOT equal.");
@@ -111,24 +129,18 @@ public class AmsSystemCheck extends AbstractCheckProcessor
                 acknowledge(message);
             }
             
-            synchronized(waitObject) {
-                try {
-                    waitObject.wait(1000);
-                } catch(InterruptedException ie) {
-                    // Can be ignored
-                }
-            }
-            
-            currentTime = System.currentTimeMillis();
+        } while ((message != null) && (success == false));
         
-        } while ((success == false) && (currentTime <= endTime));
-    
-        if(!success) {
-            
-            // Timeout?
-            if(currentTime > endTime) {
-                throw new AmsSystemMonitorException("Timeout! Sent message could not be received.", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
-            }
+        if (success) {
+            classNumberHistory.removeAll();
+        } else {
+            classNumberHistory.put(System.currentTimeMillis(), messageContent.get("CLASS"));
+        }
+
+        LOG.info("Class number history stored: {}", classNumberHistory.storeContent());
+        
+        if (!success) {
+            throw new AmsSystemMonitorException("The sent message has not been received yet. NOT really a timeout!", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
         }
     }
     

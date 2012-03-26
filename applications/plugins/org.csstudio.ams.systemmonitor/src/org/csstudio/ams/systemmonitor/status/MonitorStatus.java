@@ -36,9 +36,6 @@ import org.csstudio.ams.systemmonitor.check.CheckResult;
 @Deprecated
 public class MonitorStatus
 {
-    /** Generated serial version id */
-    private static final long serialVersionUID = -4888901552949523514L;
-
     /** Name of this status object */
     private String monitorStatusName;
 
@@ -79,10 +76,6 @@ public class MonitorStatus
         }
     }
     
-    /**
-     * 
-     * @return
-     */
     public MonitorStatusEntry getFirstHistoryEntry()
     {
         MonitorStatusEntry result = null;
@@ -95,10 +88,6 @@ public class MonitorStatus
         return result;
     }
 
-    /**
-     * 
-     * @return
-     */
     public CheckResult getCheckResultOfFirstHistoryEntry()
     {
         CheckResult prev = CheckResult.NONE;
@@ -146,19 +135,11 @@ public class MonitorStatus
         statusHistory.clear(); 
     }
     
-    /**
-     * 
-     * @return
-     */
     public long getCurrentCheckInMillis()
     {
         return currentStatus.getCheckDate();
     }
         
-    /**
-     * 
-     * @return
-     */
     public CheckResult getCurrentStatus()
     {
         return currentStatus.getCheckStatus();
@@ -181,10 +162,6 @@ public class MonitorStatus
         currentStatus.setForceCheck(c);
     }
     
-    /**
-     * 
-     * @return
-     */
     public boolean getForceCheck()
     {
         return currentStatus.isForceCheck();
@@ -199,10 +176,6 @@ public class MonitorStatus
         currentStatus.setSmsSent(sent);
     }
     
-    /**
-     * 
-     * @return
-     */
     public boolean isSmsSent()
     {
         return currentStatus.wasSmsSent();
@@ -217,29 +190,16 @@ public class MonitorStatus
         currentStatus.setErrorStatus(error);
     }
     
-    /**
-     * 
-     * @return
-     */
     public boolean isErrorFlagSet()
     {
         return currentStatus.wasErrorStatus();
     }
 
-    /**
-     * 
-     * @return
-     */
     public boolean wasNotAnswered()
     {
         return (currentStatus.getCheckId().length() == 0);
     }
     
-    /**
-     * Timestamp of an unanswered check.
-     * 
-     * @return
-     */
     public long getTimeStampOfUnansweredCheck()
     {
         return 0L; //currentStatus.getTimeStampOfUnansweredCheck();
@@ -254,11 +214,6 @@ public class MonitorStatus
         //currentStatus.setTimeStampOfUnansweredCheck(timeStamp);
     }
     
-    /**
-     * 
-     * @param timeStamp
-     * @return
-     */
     public boolean isValidAnswer(long timeStamp)
     {
         return (currentStatus.getCheckDate() == timeStamp);
@@ -275,9 +230,6 @@ public class MonitorStatus
         currentStatus = new MonitorStatusEntry(System.currentTimeMillis(), CheckResult.OK, "", false, false, false);
     }
     
-    /**
-     * @return
-     */
     @Override
     public String toString()
     {
@@ -289,10 +241,6 @@ public class MonitorStatus
         return s.toString();
     }
     
-    /**
-     * 
-     * @return
-     */
     public String toStringWithHistory()
     {
         StringBuffer s = new StringBuffer();

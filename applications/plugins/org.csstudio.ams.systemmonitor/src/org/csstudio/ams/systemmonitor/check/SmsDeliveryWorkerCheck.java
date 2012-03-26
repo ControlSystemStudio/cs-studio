@@ -50,8 +50,8 @@ public class SmsDeliveryWorkerCheck extends AbstractCheckProcessor
     }
 
     @Override
-    public void doCheck(MonitorStatusEntry statusEntry) throws AmsSystemMonitorException
-    {
+    public void doCheck(MonitorStatusEntry statusEntry) throws AmsSystemMonitorException {
+        
         Hashtable<String, String> messageContent = null;
         CheckResult result = null;
         Message message = null;
@@ -102,42 +102,32 @@ public class SmsDeliveryWorkerCheck extends AbstractCheckProcessor
         LOG.info("Start wait cycle.");
 
         // Get all messages
-        do
-        {
-            synchronized(waitObject)
-            {
-                try
-                {
+        do {
+            
+            synchronized(waitObject) {
+                try {
                     waitObject.wait(1000);
-                }
-                catch(InterruptedException ie) {
+                } catch(InterruptedException ie) {
                     // Can be ignored
                 }
             }
 
             message = amsReceiver.receive("amsSystemMonitor");
-            if(message != null)
-            {
+            if(message != null) {
                 // Compare the incoming message with the sent message
                 LOG.info("Message received.");
                 
-                if(message instanceof MapMessage)
-                {
+                if(message instanceof MapMessage) {
                     mapMessage = (MapMessage) message;
                     result = messageHelper.getAnswerFromSmsDeliveryWorker(mapMessage, messageContent);
-                    if(result == CheckResult.NONE)
-                    {
+                    if(result == CheckResult.NONE) {
                         LOG.warn("Received message is NOT a message from the SmsDeliveryWorker.");
                         LOG.warn(message.toString());
-                    }
-                    else
-                    {
+                    } else {
                         LOG.info("SmsDeliveryWorker answered: " + result);
                         LOG.info(message.toString());
                     }
-                }
-                else
-                {
+                } else {
                     LOG.warn("Message is not a MapMessage object: " + message.getClass().getName());
                 } 
                 
@@ -145,25 +135,19 @@ public class SmsDeliveryWorkerCheck extends AbstractCheckProcessor
             }
             
             currentTime = System.currentTimeMillis();
-        }
-        while((result == CheckResult.NONE) && (currentTime <= endTime));
+            
+        } while((result == CheckResult.NONE) && (currentTime <= endTime));
         
-        if(result == CheckResult.NONE)
-        {
+        if(result == CheckResult.NONE) {
             // Timeout?
-            if(currentTime > endTime)
-            {
+            if(currentTime > endTime) {
                 throw new AmsSystemMonitorException("Timeout!", AmsSystemMonitorException.ERROR_CODE_TIMEOUT);
             }
 
             throw new AmsSystemMonitorException("No response from the SmsDeliveryWorker.", AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
-        }
-        else if(result == CheckResult.ERROR)
-        {
+        } else if(result == CheckResult.ERROR) {
             throw new AmsSystemMonitorException("ERROR - " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR);
-        }
-        else if(result == CheckResult.WARN)
-        {
+        } else if(result == CheckResult.WARN) {
             throw new AmsSystemMonitorException("WARN - " + messageHelper.getErrorText(), AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN);
         }
     }

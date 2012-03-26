@@ -39,19 +39,47 @@ import org.csstudio.ams.systemmonitor.util.Environment;
  *
  */
 public class MessageHelper {
-    private Hashtable<String, String> message;
+
     private SimpleDateFormat dateFormat;
+    
     private String errorText;
         
     public MessageHelper() {
-        message = new Hashtable<String, String>();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         errorText = "undefined";
     }
 
+    private String createUniqueIdAsString() {
+        String result = null;
+        int hc;
+        result = Long.toString(Calendar.getInstance().getTime().getTime(), 16);
+        hc = Math.abs(result.hashCode());
+        result += Integer.toString(hc, 16);
+        return result;
+    }
+
+    public Hashtable<String, String> getNewCheckMessage(MessageType type) {
+
+        Hashtable<String, String> message = new Hashtable<String, String>();
+        message.clear();
+        message.put("TYPE", "check");
+        message.put("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
+        message.put("CLASS", createUniqueIdAsString());
+        message.put("NAME", "AMS_SYSTEM_CHECK");
+        message.put("APPLICATION-ID", "AmsSystemMonitor");
+        message.put("DESTINATION", type.toString());        
+        message.put("USER", Environment.getInstance().getUserName());
+        message.put("HOST", Environment.getInstance().getHostName());
+        message.put("SEVERITY", "NO_ALARM");
+        message.put("STATUS", "NO_ALARM");
+        
+        return message;
+    }
+    
     public Hashtable<String, String> getNewCheckMessage(MessageType type,
                                                         MonitorStatusEntry currentStatusEntry) {
         
+        Hashtable<String, String> message = new Hashtable<String, String>();
         message.clear();
         message.put("TYPE", "check");
         message.put("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));

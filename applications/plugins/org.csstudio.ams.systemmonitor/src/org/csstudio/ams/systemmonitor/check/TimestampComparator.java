@@ -23,49 +23,23 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.systemmonitor.message;
+package org.csstudio.ams.systemmonitor.check;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.Comparator;
 
 /**
  * @author mmoeller
  * @version 1.0
- * @since 23.03.2012
+ * @since 26.03.2012
  */
-public class CheckMessage {
-    
-    private Hashtable<String, String> content;
-    
-    public CheckMessage() {
-        content = new Hashtable<String, String>();
-    }
-    
-    public CheckMessage(Map<String, String> c) {
-        this();
-        Iterator<String> iter = c.keySet().iterator();
-        while (iter.hasNext()) {
-            String key = new String(iter.next());
-            String value = new String(c.get(key));
-            content.put(key, value);
-        }
-    }
+public class TimestampComparator implements Comparator<Long>, Serializable {
 
-    public boolean hasContent() {
-        return !content.isEmpty();
-    }
-    
-    public boolean containsKey(String key) {
-        return content.containsKey(key);
-    }
-    
-    public String getValue(String key) {
-        return content.get(key);
-    }
-    
+    private static final long serialVersionUID = 1L;
+
     @Override
-    public String toString() {
-        return content.toString();
+    public int compare(Long o1, Long o2) {
+        // Ascending order. The oldest entry(lowest timestamp) first.
+        return Long.signum(o1.longValue() - o2.longValue());
     }
 }

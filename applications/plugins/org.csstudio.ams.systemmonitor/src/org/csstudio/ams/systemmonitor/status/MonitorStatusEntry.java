@@ -227,13 +227,11 @@ public class MonitorStatusEntry implements Serializable
     /**
      * 
      */
-    public String toString()
-    {
+    @Override
+    public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         StringBuffer s = new StringBuffer();
-        
         s.append("MonitorStatusEntry{checkTime=" + dateFormat.format(new Date(checkDate)) + "(" + checkDate + "),checkId=" + checkId +"," + checkStatus + ",forceCheck=" + forceCheck + ",smsSent=" + smsSent + ",wasErrorStatus=" + wasErrorStatus + "}");
-        
         return s.toString();
     }
 }
