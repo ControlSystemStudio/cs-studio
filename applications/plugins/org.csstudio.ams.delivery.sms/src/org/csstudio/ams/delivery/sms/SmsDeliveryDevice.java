@@ -274,7 +274,7 @@ public class SmsDeliveryDevice implements Runnable,
         try {
 
             final MapMessage mapMessage = producer.createMapMessage();
-            mapMessage.setString("TYPE", "event");
+            mapMessage.setString("TYPE", "check");
             mapMessage.setString("EVENTTIME", producer.getCurrentDateAsString());
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
