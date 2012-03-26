@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Logger;
 
 import org.csstudio.dal.simple.ChannelListener;
 import org.csstudio.dal.simple.ConnectionParameters;
@@ -829,16 +830,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 					_semaphore.acquire();
 
 					// unregister listeners explicitly from SimpleDAL (Sven
-					// Wende: Note: usually this should not be necessary but due to bugs in
+					// Wende: Note: usually this should not be necessary but due
+					// to bugs in
 					// SimpleDAL we have to take care of it ourselves)
 					for (SimpleDalListenerInfo info : registeredSimpleDalListeners) {
 						try {
-							getBroker().deregisterListener(info.parameters,
-									info.listener);
-						} catch (InstantiationException e) {
-							e.printStackTrace();
-						} catch (CommonException e) {
-							e.printStackTrace();
+							SimpleDALBroker broker = getBroker();
+
+							if (broker != null) {
+								broker.deregisterListener(info.getParameters(),
+										info.getListener());
+							} else {
+								System.out.println("ss");
+							}
+						} catch (Exception e) {
+							// die silently
 						}
 					}
 					registeredSimpleDalListeners.clear();

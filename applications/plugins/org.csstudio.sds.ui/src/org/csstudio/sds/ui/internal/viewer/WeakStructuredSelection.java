@@ -1,6 +1,7 @@
 package org.csstudio.sds.ui.internal.viewer;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -14,74 +15,62 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * 
  */
 public class WeakStructuredSelection implements IStructuredSelection {
-	private WeakReference<List<Object>> weakListReference;
+	private List<WeakReference> weakList;
 
 	public WeakStructuredSelection(IStructuredSelection originalSelection) {
-		@SuppressWarnings("unchecked")
-		List<Object> originalList = originalSelection.toList();
-		weakListReference = new WeakReference<List<Object>>(originalList);
+		List originalList = originalSelection.toList();
+		if (originalList != null) {
+			weakList = new ArrayList<WeakReference>();
+
+			for (Object o : originalList) {
+				weakList.add(new WeakReference<Object>(o));
+			}
+		}
 	}
 
 	@Override
 	public boolean isEmpty() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList.isEmpty();
-		} else {
-			return true;
-		}
+		return getAlive().isEmpty();
 	}
 
 	@Override
 	public Object getFirstElement() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList.iterator().next();
-		} else {
-			return null;
-		}
+		List<Object> alive = getAlive();
+		return alive.isEmpty() ? null : alive.get(0);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public Iterator iterator() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList.iterator();
-		} else {
-			return null;
-		}
+		return getAlive().iterator();
 	}
 
 	@Override
 	public int size() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList.size();
-		} else {
-			return 0;
-		}
+		return getAlive().size();
 	}
 
 	@Override
 	public Object[] toArray() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList.toArray();
-		} else {
-			return null;
-		}
+		return getAlive().toArray();
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public List toList() {
-		List<Object> originalList = weakListReference.get();
-		if (originalList != null) {
-			return originalList;
-		} else {
-			return null;
-		}
+		return getAlive();
 	}
 
+	private List<Object> getAlive() {
+		List<Object> result = new ArrayList<Object>();
+
+		if (weakList != null) {
+			for (WeakReference<Object> wr : weakList) {
+				Object o = wr.get();
+				if (o != null) {
+					result.add(o);
+				}
+			}
+		}
+
+		return result;
+	}
 }
