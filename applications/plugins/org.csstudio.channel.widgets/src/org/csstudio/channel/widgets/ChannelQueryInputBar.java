@@ -5,6 +5,7 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.channel.widgets.util.ToolTipHelp;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -14,6 +15,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -37,17 +40,19 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 
 		ComboViewer comboViewer = new ComboViewer(this, SWT.NONE);
 		combo = comboViewer.getCombo();
-		combo.setToolTipText(
-				"Space seperated search criterias, patterns may include * and ? wildcards\r\n" +
-				"channelNamePattern\r\n" +
-				"propertyName=valuePattern1,valuePattern2 \r\n" +
-				"Tags=tagNamePattern\r\n" +
-				"Each criteria is logically ANDed, || seperated values are logically ORed\r\n");
+		ToolTipHelp tooltip = new ToolTipHelp(combo);
+		tooltip.setText(
+				"Space seperated search criterias, patterns may include * and ? wildcards\n" +
+				"channelNamePattern\n" +
+				"propertyName=valuePattern1,valuePattern2\n" +
+				"Tags=tagNamePattern\n" +
+				"Each criteria is logically ANDed, || seperated values are logically ORed");
 
 		ComboHistoryHelper name_helper = new ComboHistoryHelper(dialogSettings,
 				settingsKey, combo, 20, true) {
 			@Override
 			public void newSelection(final String queryText) {
+				setChannelQuery(null);
 				setChannelQuery(ChannelQuery.query(queryText).build());
 			}
 		};
@@ -77,6 +82,28 @@ public class ChannelQueryInputBar extends AbstractChannelQueryWidget
 					return new StructuredSelection();
 			}
 		};
+		
+		combo.addFocusListener(new FocusListener() {
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				// If focus is lost and the text is different,
+				// change the query
+				String comboText = combo.getText();
+				String queryText = "";
+				if (getChannelQuery() != null) {
+					queryText = getChannelQuery().getQuery();
+				}
+				if (!comboText.equals(queryText)) {
+					setChannelQuery(ChannelQuery.query(comboText).build());
+				}
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				// Nothing to do
+			}
+		});
 		
 		name_helper.loadSettings();
 	}

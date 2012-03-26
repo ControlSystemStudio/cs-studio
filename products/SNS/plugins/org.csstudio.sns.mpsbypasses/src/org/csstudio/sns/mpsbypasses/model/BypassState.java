@@ -1,10 +1,11 @@
 package org.csstudio.sns.mpsbypasses.model;
 
 /** Enumerations for the different MPS Bypass States
- * 
+ *
  *  @author Delphy Armstrong- original
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public enum BypassState
 {
 	/** 'All', the first enum, is the default */
@@ -14,10 +15,10 @@ public enum BypassState
 	NotBypassable("Not Bypassable"),
 	Disconnected("Disconnected"),
 	InError("In Error");
-	
+
 	/** Human-readable representation */
 	final private String label;
-	
+
 	/** Initialize
 	 *  @param label Human-readable representation
 	 */
@@ -25,7 +26,7 @@ public enum BypassState
 	{
 		this.label = label;
 	}
-	
+
 	/** @return Human-readable representation */
 	@Override
     public String toString()
@@ -34,7 +35,7 @@ public enum BypassState
 	}
 
 	/** Return the enum state of the input bypass state name
-	 * 
+	 *
 	 * @param name of the state
 	 * @return enum of the state or 'All' if name is invalid
 	 */

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.eclipse.draw2d.AbstractRouter;
 import org.eclipse.draw2d.Connection;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 
 /**
@@ -37,9 +38,13 @@ public class FixedPointsConnectionRouter extends AbstractRouter {
 		PointList connPoints = conn.getPoints().getCopy();	
 		PointList newPoints = (PointList) getConstraint(conn);
 		connPoints.removeAllPoints();
-		connPoints.addPoint(getStartPoint(conn));
+		Point startPoint = getStartPoint(conn);
+		conn.translateToRelative(startPoint);
+		connPoints.addPoint(startPoint);
 		connPoints.addAll(newPoints);
-		connPoints.addPoint(getEndPoint(conn));
+		Point endPoint = getEndPoint(conn);
+		conn.translateToRelative(endPoint);
+		connPoints.addPoint(endPoint);
 		conn.setPoints(connPoints);
 	}
 

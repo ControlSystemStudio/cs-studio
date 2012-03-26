@@ -23,6 +23,11 @@
             id="org.csstudio.ams.application.deliverysystem.ListWorker"
             label="List Delivery Worker">
       </command>
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.Restart"
+            id="org.csstudio.ams.application.deliverysystem.Restart"
+            label="Restart">
+      </command>
    </extension>
    <extension
          id="AmsDeliveryProduct"
@@ -33,6 +38,18 @@
          <property
                name="appName"
                value="AmsDeliverySystem">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="AmsJmsDeliverySystemProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.ams.application.deliverysystem.DeliverySystemApplication"
+            name="AmsJmsDeliverySystem">
+         <property
+               name="appName"
+               value="AmsJmsDeliverySystem">
          </property>
       </product>
    </extension>

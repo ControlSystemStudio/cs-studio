@@ -15,16 +15,17 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 /** Eclipse "Editor" for the MPS Bypass table
- * 
+ *
  *  <p>This editor is read-only,
  *  never gets 'dirty', nor can its content
  *  be saved.
- *  
+ *
  *  <p>It's treated as an editor to show
  *  in the central section of the workbench.
- *  
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Editor extends EditorPart
 {
 	/** Editor ID defined in plugin.xml */
@@ -32,7 +33,7 @@ public class Editor extends EditorPart
 
 	final private BypassModel model = new BypassModel();
 	private GUI gui;
-	
+
 	@Override
     public void init(final IEditorSite site, final IEditorInput input)
             throws PartInitException
@@ -43,11 +44,11 @@ public class Editor extends EditorPart
     }
 
 	@Override
-    public void createPartControl(Composite parent)
+    public void createPartControl(final Composite parent)
     {
 		try
 		{
-			gui = new GUI(parent, model);
+			gui = new GUI(parent, model, getSite());
 			gui.selectMachineMode();
 		}
 		catch (Exception ex)

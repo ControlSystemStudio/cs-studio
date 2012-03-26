@@ -254,6 +254,11 @@ deleting selected items, or adding archive data sources to PVs.
 <li>Trace Type: Click to select how the trace should be displayed: Line, markers like "Square" etc.
     The size of the lines respectively markers is controlled by the "Width".
 <li>Request: Click to select 'Optimized' vs. 'Raw Data'.
+<li>Index: Index of an element in an array (waveform record). Change this index
+    to see trend of a specified element in an array. The index is zero-based numbering.
+    The index for the first element is 0, the index for the second element is 1, ...   
+    If the index is out of range of the array, the corresponding value will be plotted as
+    NaN which shows a marker on the bottom of the plot.
 </ul>
 </p>
 
@@ -455,16 +460,16 @@ select the column and perform a text replacement of
 "[*]" with "" (nothing) to delete the min/max info.
 </p>
 
-<h3>Open Office Spreadsheets</h3>
+<h3>OpenOffice.org/LibreOffice Calc (Spreadsheets)</h3>
 <p>
 As long as the exported data file has a ".csv" suffix,
-Open Office should open the file with an "import" dialog
+OpenOffice.org/LibreOffice should open the file with an "import" dialog
 similar to MS Excel, where you select "tab" delimited columns
 as explained above.
 </p>
 <p>
 File names ending in ".dat", ".txt" etc. might only
-open in the Open Office word processor, so you have
+open in the OpenOffice.org/LibreOffice Writer (word processor), so you have
 to use the correct file suffix.
 </p>
 

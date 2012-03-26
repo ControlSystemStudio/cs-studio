@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.gui.ScanCommandTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.junit.Test;
 

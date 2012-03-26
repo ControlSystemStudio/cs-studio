@@ -28,6 +28,8 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * Annotation Figure. Annotation could be used to indicate the information for a particular
@@ -80,6 +82,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	private Axis xAxis;	
 	private Axis yAxis;	
 	private String name;
+	private FontData fontData;
+	
 	private CursorLineStyle cursorLineStyle = CursorLineStyle.NONE;
 	private Point currentPosition;
 
@@ -94,7 +98,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	private boolean showSampleInfo = true;
 	private boolean showPosition = true;
 	
-	private Color annotationColor = null;	
+	private Color annotationColor = null;
+	private RGB annotationColorRGB = null;
 	
 	private Label infoLabel;
 	//label's relative position to currentPosition
@@ -429,6 +434,21 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		this.name = name;
 		updateInfoLableText();
 	}
+	
+	
+	
+	
+	@Override
+	public void setFont(Font f) {
+		// TODO Auto-generated method stub
+		super.setFont(f);
+		this.fontData = getFont().getFontData()[0];
+	}
+
+	public FontData getFontData() {
+		return fontData;
+	}
+
 	/**
 	 * @param trace the trace to set
 	 */
@@ -497,6 +517,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	 */
 	public void setAnnotationColor(Color annotationColor) {
 		this.annotationColor = annotationColor;
+		this.annotationColorRGB = annotationColor.getRGB();
 		infoLabel.setForegroundColor(annotationColor);
 		pointer.setForegroundColor(annotationColor);
 	}
@@ -576,9 +597,20 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		if(trace == null)
 			return;
 		if(trace.getHotSampleList().contains(currentSnappedSample)){
+			if (yValue != currentSnappedSample.getYValue())
+			{	// When waveform index is changed, Y value of the 
+				// snapped sample is also changed. In that case,
+				// the position of this annotation must be updated
+				// accordingly.
+				yValue = currentSnappedSample.getYValue(); 
+			}
+			if (xValue != currentSnappedSample.getXValue())
+			{
+				xValue = currentSnappedSample.getXValue();
+			}
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));			
-		}
+		} 
 		else if(trace.getHotSampleList().size() > 0){
 			updateToDefaultPosition();	
 			pointerDragged = false;
@@ -716,6 +748,8 @@ class Pointer extends Figure{
 		private MovingAnnotationCommand command;
 		@Override
 		public void mouseDragged(MouseEvent me) {
+			//System.out.println("Annotation.Pointer.PointerDragger.mouseDragged()");
+			
 			//free
 			if(trace == null){
 				setCurrentPosition(me.getLocation(), 
@@ -793,6 +827,33 @@ class Pointer extends Figure{
 				clientArea.x, clientArea.y + clientArea.height);
 				
 	}
+}  
+
+public void axisForegroundColorChanged(Axis axis, Color oldColor,
+		Color newColor) {
+	// TODO Auto-generated method stub
+	
+}
+
+public void axisTitleChanged(Axis axis, String oldTitle, String newTitle) {
+	// TODO Auto-generated method stub
+	
+}
+
+public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
+		boolean newAutoScale) {
+	// TODO Auto-generated method stub
+	
+}
+
+public void axisLogScaleChanged(Axis axis, boolean old, boolean logScale) {
+	// TODO Auto-generated method stub
+	
+}
+
+public RGB getAnnotationColorRGB() {
+	// TODO Auto-generated method stub
+	return annotationColorRGB;
 }
 
 

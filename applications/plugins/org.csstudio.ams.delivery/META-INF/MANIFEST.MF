@@ -13,7 +13,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.ams.delivery,
  org.csstudio.ams.delivery.action,
  org.csstudio.ams.delivery.device,
- org.csstudio.ams.delivery.jms,
  org.csstudio.ams.delivery.message,
  org.csstudio.ams.delivery.queue,
- org.csstudio.ams.delivery.service
+ org.csstudio.ams.delivery.service,
+ org.csstudio.ams.delivery.util.jms

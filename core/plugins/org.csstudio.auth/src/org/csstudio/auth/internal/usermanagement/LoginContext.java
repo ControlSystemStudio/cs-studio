@@ -86,7 +86,10 @@ public final class LoginContext {
 			}
 		} else {
 			_user = null;
-        	log.log(Level.WARNING, "No login module provided. " +
+			// Changed the log level to INFO only for KEK edition as this edition
+			// does not provide login module, but users do not want to see this
+			// warning every time they start CSS.
+        	log.log(Level.INFO, "No login module provided. " +
 					"The system acts as anonymous login");
 		}
 	}

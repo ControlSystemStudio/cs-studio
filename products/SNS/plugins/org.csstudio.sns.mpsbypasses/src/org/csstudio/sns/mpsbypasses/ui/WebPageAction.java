@@ -14,10 +14,11 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 /** Action to open a web page in the Workbench's viewer
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class WebPageAction extends Action
 {
 	final private String url;
-	
+
 	/** Initialize
 	 *  @param label Label for action
 	 *  @param url Web URL to open when invoked

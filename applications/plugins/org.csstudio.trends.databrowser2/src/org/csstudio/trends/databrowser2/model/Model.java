@@ -86,12 +86,51 @@ public class Model
     final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
+
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_ANNOTATION = "annotation";
+	public static final String TAG_ANNOTATION_CURSOR_LINE_STYLE = "line_style";
+	public static final String TAG_ANNOTATION_SHOW_NAME = "show_name";
+	public static final String TAG_ANNOTATION_SHOW_POSITION = "show_position";
+	public static final String TAG_ANNOTATION_COLOR = "color";
+	public static final String TAG_ANNOTATION_FONT = "font";
+
     final public static String TAG_TIME = "time";
     final public static String TAG_VALUE = "value";
     final public static String TAG_WAVEFORM_INDEX = "waveform_index";
-    
+
+
+    /**AJOUT XYGraphMemento
+     * @author L.PHILIPPE GANIL
+     */
+    final public static String TAG_TITLE = "title";
+    final public static String TAG_TITLE_TEXT = "text";
+    final public static String TAG_TITLE_COLOR= "color";
+    final public static String TAG_TITLE_FONT ="font";
+
+    public static final String TAG_FONT = "font";
+	public static final String TAG_SCALE_FONT = "scale_font";
+
+	final public static String TAG_TIME_AXIS = "time_axis";
+
+
+	//GRID LINE
+	public static final String TAG_GRID_LINE = "grid_line";
+	public static final String TAG_SHOW_GRID_LINE = "show_grid_line";
+	public static final String TAG_DASH_GRID_LINE = "dash_grid_line";
+
+	//FORMAT
+	public static final String TAG_FORMAT = "format";
+	public static final String TAG_AUTO_FORMAT = "auto_format";
+	public static final String TAG_TIME_FORMAT = "time_format";
+	public static final String TAG_FORMAT_PATTERN = "format_pattern";
+
+
+    public static final String TAG_GRAPH_SETTINGS = "graph_settings";
+    public static final String TAG_SHOW_TITLE = "show_title";
+    public static final String TAG_SHOW_LEGEND = "show_legend";
+    public static final String TAG_SHOW_PLOT_AREA_BORDER = "show_plot_area_border";
+    public static final String TAG_TRANSPARENT = "transparent";
 
     /** Default colors for newly added item, used over when reaching the end.
      *  <p>
@@ -116,14 +155,24 @@ public class Model
 
     /** Macros */
     private IMacroTableProvider macros = null;
-    
+
     /** Listeners to model changes */
     final private ArrayList<ModelListener> listeners = new ArrayList<ModelListener>();
 
     /** Axes configurations */
     final private ArrayList<AxisConfig> axes = new ArrayList<AxisConfig>();
 
-    /** All the items in this model */
+    /**
+     * Time Axes configurations
+     * Ignore MIN-MAX part because the range is set by start & end properties
+     */
+    private  AxisConfig timeAxis;
+
+    public AxisConfig getTimeAxis() {
+		return timeAxis;
+	}
+
+	/** All the items in this model */
     final private ArrayList<ModelItem> items = new ArrayList<ModelItem>();
 
     /** 'run' flag
@@ -156,12 +205,34 @@ public class Model
     /** How should plot rescale when archived data arrives? */
     private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
+
+    /**
+     *  Manage XYGraph Configuration Settings
+     *  @author L.PHILIPPE GANIL
+     */
+	private XYGraphSettings graphSettings = new XYGraphSettings();
+
+    public XYGraphSettings getGraphSettings() {
+		return graphSettings;
+	}
+
+	public void setGraphSettings(XYGraphSettings xYGraphMem) {
+		graphSettings = xYGraphMem;
+		//fireXYGraphMemChanged(settings);
+	}
+
+	public void fireGraphConfigChanged() {
+
+		for (ModelListener listener : listeners)
+	            listener.changedXYGraphConfig();
+	}
+
     /** @param macros Macros to use in this model */
     public void setMacros(final IMacroTableProvider macros)
     {
     	this.macros = macros;
     }
-    
+
     /** Resolve macros
      *  @param text Text that might contain "$(macro)"
      *  @return Text with all macros replaced by their value
@@ -206,6 +277,22 @@ public class Model
     public AxisConfig getAxis(final int axis_index)
     {
         return axes.get(axis_index);
+    }
+
+    /**
+     *  Return the AxisConfig with the specifc name or null
+     *  @param axis_index Index of axis, 0 ... <code>getAxisCount()-1</code>
+     *  @return {@link AxisConfig}
+     */
+    public AxisConfig getAxis(final String name)
+    {
+        for(AxisConfig axis : axes){
+        	//System.err.println(axis.getName() + " == " + name + "=" + (axis.getName().equals(name)));
+        	if(axis.getName().equals(name))
+        		return axis;
+        }
+
+        return null;
     }
 
     /** Locate index of value axis
@@ -325,9 +412,9 @@ public class Model
      *  name, <code>null</code> will be returned.
      *  Now that this model may have different items with the same name,
      *  this method is not recommended to locate an item. This method
-     *  just returns an item which just happens to have the given name.  
+     *  just returns an item which just happens to have the given name.
      *  Use {@link #indexOf(ModelItem)} or {@link #getItem(int)} to locate
-     *  an item in this model.   
+     *  an item in this model.
      *  @param name
      *  @return ModelItem by that name or <code>null</code>
      */
@@ -338,7 +425,7 @@ public class Model
                 return item;
         return null;
     }
-    
+
     /** Returns the index of the specified item, or -1 if this list does not contain
      *  the item.
      *  @param item
@@ -380,12 +467,12 @@ public class Model
     	//
         // if (getItem(item.getName()) != null)
         //        throw new RuntimeException("Item " + item.getName() + " already in Model");
-    	
+
     	// But, if exactly the same instance of the given ModelItem already exists in this
     	// model, it will not be added.
     	if (items.indexOf(item) != -1)
     		throw new RuntimeException("Item " + item.getName() + " already in Model");
-    	
+
         // Assign default color
         if (item.getColor() == null)
             item.setColor(getNextItemColor());
@@ -585,6 +672,8 @@ public class Model
             return;
         background = rgb;
         // Notify listeners
+        System.out.println("**** Model.setPlotBackground() ****");
+
         for (ModelListener listener : listeners)
             listener.changedColors();
     }
@@ -592,7 +681,19 @@ public class Model
     /** @param annotations Annotations to keep in model */
     public void setAnnotations(AnnotationInfo[] annotations)
     {
+    	setAnnotations(annotations, true);
+    }
+
+    public void setAnnotations(AnnotationInfo[] annotations, boolean fireChanged) {
+		// TODO Auto-generated method stub
     	this.annotations = annotations;
+    	if(fireChanged)
+    		fireAnnotationsChanged();
+	}
+
+    protected void fireAnnotationsChanged(){
+    	for (ModelListener listener : listeners)
+            listener.changedAnnotations();
     }
 
     /** @return Annotation infos of model */
@@ -737,6 +838,8 @@ public class Model
      */
     static RGB loadColorFromDocument(final Element node, final String color_tag)
     {
+    	if (node == null)
+    		return new RGB(0, 0, 0);
         final Element color =
             DOMHelper.findFirstElementNode(node.getFirstChild(), color_tag);
         if (color == null)
@@ -766,6 +869,13 @@ public class Model
         XMLWriter.header(writer);
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
+
+        //L.PHILIPPE
+        //Save config graph settings
+        XYGraphSettingsXMLUtil XYGraphMemXML = new XYGraphSettingsXMLUtil(graphSettings);
+        XYGraphMemXML.write(writer);
+
+
         // Time axis
         XMLWriter.XML(writer, 1, TAG_SCROLL, isScrollEnabled());
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, getUpdatePeriod());
@@ -779,11 +889,19 @@ public class Model
             XMLWriter.XML(writer, 1, TAG_START, getStartTime());
             XMLWriter.XML(writer, 1, TAG_END, getEndTime());
         }
-        
+
+        // Time axis config
+        XMLWriter.start(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+        timeAxis.write(writer);
+        XMLWriter.end(writer, 1, TAG_TIME_AXIS);
+        writer.println();
+
+
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
         XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
-        
+
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);
         writer.println();
@@ -791,7 +909,7 @@ public class Model
             axis.write(writer);
         XMLWriter.end(writer, 1, TAG_AXES);
         writer.println();
-        
+
         // Annotations
         XMLWriter.start(writer, 1, TAG_ANNOTATIONS);
         writer.println();
@@ -799,7 +917,7 @@ public class Model
         	annotation.write(writer);
         XMLWriter.end(writer, 1, TAG_ANNOTATIONS);
         writer.println();
-        
+
         // PVs (Formulas)
         XMLWriter.start(writer, 1, TAG_PVLIST);
         writer.println();
@@ -811,7 +929,11 @@ public class Model
         writer.close();
     }
 
-    /** Read XML formatted Model content.
+    public void setTimeAxis(AxisConfig timeAxis) {
+		this.timeAxis = timeAxis;
+	}
+
+	/** Read XML formatted Model content.
      *  @param stream InputStream, will be closed when done.
      *  @throws Exception on error
      *  @throws RuntimeException if model was already in use
@@ -866,6 +988,15 @@ public class Model
             archive_rescale = ArchiveRescale.STAGGER;
         }
 
+        // Load Time Axe
+        Element timeAxeNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
+        if (timeAxeNode != null)
+        {
+            // Load PV items
+           Element axisNode = DOMHelper.findFirstElementNode(timeAxeNode.getFirstChild(), TAG_AXIS);
+           timeAxis = AxisConfig.fromDocument(axisNode);
+        }
+
         // Load Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)
@@ -904,7 +1035,23 @@ public class Model
             // Add to document
             annotations = infos.toArray(new AnnotationInfo[infos.size()]);
         }
-        
+
+        //ADD by Laurent PHILIPPE
+        // Load Title and graph settings
+
+        if (list != null)
+        {
+
+        	try{
+        		graphSettings = XYGraphSettingsXMLUtil.fromDocument(root_node.getFirstChild());
+
+        	}catch (Throwable ex)
+            {
+        		Activator.getLogger().log(Level.INFO, "XML error in Title or  graph settings", ex);
+            }
+            // Add to document
+        }
+
         // Backwards compatibility with previous data browser which
         // used global buffer size for all PVs
         final int buffer_size = DOMHelper.getSubelementInt(root_node, Model.TAG_LIVE_SAMPLE_BUFFER_SIZE, -1);
@@ -948,4 +1095,8 @@ public class Model
             }
         }
     }
+
+
+
+
 }

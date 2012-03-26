@@ -15,7 +15,7 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.ScanEditorContributor;
+import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -62,13 +62,12 @@ public class PasteCommandHandler extends AbstractHandler
         }
 
         // Execute the 'paste'
-        final List<ScanCommand> commands = editor.getCommands();
         final List<ScanCommand> selection = editor.getSelectedCommands();
         final ScanCommand location =
                 selection != null  &&  selection.size() > 0
                 ? selection.get(0)
                 : null;
-        editor.executeForUndo(new InsertOperation(editor, commands, location, received_commands, true));
+        editor.executeForUndo(new InsertOperation(editor, location, received_commands, true));
 
         return null;
     }

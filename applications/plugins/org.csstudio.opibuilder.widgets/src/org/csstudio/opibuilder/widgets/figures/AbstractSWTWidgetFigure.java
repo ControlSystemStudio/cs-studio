@@ -145,8 +145,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
-				if (swtWidget == null) {
-					throw new RuntimeException("getSWTWidget() returns null!");
+				if (swtWidget == null || swtWidget.isDisposed()) {
+					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
 				//newly created widget on top	
 				if(wrapComposite==null)
@@ -293,12 +293,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	protected void paintOutlineFigure(Graphics graphics){
 		// draw this so that it can be seen in the outline view
 		if (!runmode) {
+			graphics.pushState();
 			graphics.setBackgroundColor(ColorConstants.white);
 			graphics.fillRectangle(getClientArea());
 			if(getBorder() == null){
 				graphics.setForegroundColor(ColorConstants.gray);
 				graphics.drawRectangle(getBounds());
 			}
+			graphics.popState();
 		}
 	}
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.ScanEditorContributor;
+import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -29,9 +29,8 @@ public class CutCommandHandler extends AbstractHandler
         if (editor != null)
         {
             // Execute the 'cut'
-            final List<ScanCommand> commands = editor.getCommands();
             final List<ScanCommand> to_remove = editor.getSelectedCommands();
-            editor.executeForUndo(new CutOperation(editor, commands, to_remove));
+            editor.executeForUndo(new CutOperation(editor, to_remove));
         }
         return null;
     }

@@ -10,23 +10,24 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the {@link BypassModel}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class BypassModelHeadlessTest implements BypassModelListener
 {
 	final private AtomicInteger updates = new AtomicInteger(0);
-	
+
 	@Test
 	public void testBypassModel() throws Exception
 	{
 		final BypassModel model = new BypassModel();
 		model.addListener(this);
-		
+
 		// This will take some time, then call modelLoaded:
 		System.out.println("Loading RDB data...");
 		model.selectMachineMode(MachineMode.Site);
-		
+
 		// Allow model to 'run' for a while, connect to PVs and send updates
 		Thread.sleep(5000);
-		
+
 		model.stop();
 		// Should have had some updates
 		final int received = updates.get();

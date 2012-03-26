@@ -9,9 +9,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -62,9 +62,14 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 	private void setChannels(Collection<Channel> channels) {
 		Collection<Channel> oldChannels = this.channels;
 		this.channels = channels;
-		this.properties = new ArrayList<String>(
-				ChannelUtil.getPropertyNames(channels));
-		this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
+		if (channels != null) {
+			this.properties = new ArrayList<String>(
+					ChannelUtil.getPropertyNames(channels));
+			this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
+		} else {
+			this.properties = Collections.emptyList();
+			this.tags = Collections.emptyList();
+		}
 		changeSupport.firePropertyChange("channels", oldChannels, channels);
 	}
 
@@ -91,8 +96,13 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 
 	private void updateTable() {
 		// Clear the channel list;
-		tableViewer.setInput(channels.toArray());
-		tableViewer.setItemCount(channels.size());
+		if (channels != null) {
+			tableViewer.setInput(channels.toArray());
+			tableViewer.setItemCount(channels.size());
+		} else {
+			tableViewer.setInput(new Object[0]);
+			tableViewer.setItemCount(0);
+		}
 		// Remove all old columns
 		// TODO add the additional columns in the correct sorted order.
 		while (tableViewer.getTable().getColumnCount() > 2) {
@@ -176,6 +186,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		super(parent, style);
 
 		GridLayout gridLayout = new GridLayout(1, false);
+		gridLayout.verticalSpacing = 0;
 		gridLayout.marginWidth = 0;
 		gridLayout.marginHeight = 0;
 		setLayout(gridLayout);
@@ -183,6 +194,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
 				1, 1));
+		errorBar.setMarginBottom(5);
 
 		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION
 				| SWT.MULTI | SWT.VIRTUAL);
@@ -330,6 +342,7 @@ public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
 	protected void queryCleared() {
 		this.channels = null;
 		this.errorBar.setException(null);
+		setChannels(null);
 	}
 
 	@Override

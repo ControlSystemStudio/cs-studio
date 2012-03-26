@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -17,7 +17,7 @@ package org.csstudio.scan.server.app;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.Preferences;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -43,7 +43,7 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
         // Start server
-        int port = ScanServer.RMI_PORT;
+        final int port = Preferences.getServerPort();
         server = new ScanServerImpl(port);
         server.start();
         System.out.println("Scan Server running on port " + port);

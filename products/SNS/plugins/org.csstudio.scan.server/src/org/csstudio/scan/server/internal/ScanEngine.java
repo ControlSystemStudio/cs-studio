@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -21,8 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.csstudio.scan.device.DeviceContext;
 
 /** Engine that accepts {@link Scan}s, queuing them and executing
  *  them in order
@@ -76,14 +74,13 @@ public class ScanEngine
     }
 
     /** Submit a scan to the engine for execution
-     *  @param devices {@link DeviceContext} to use when executing the scan
      *  @param scan The {@link Scan}
      */
-    public void submit(final DeviceContext devices, final Scan scan)
+    public void submit(final Scan scan)
     {
         synchronized (scan_queue)
         {
-            scan_queue.add(new ScanQueueItem(executor, devices, scan));
+            scan_queue.add(new ScanQueueItem(executor, scan));
         }
     }
 
@@ -150,5 +147,22 @@ public class ScanEngine
                     iterator.remove();
             }
         }
+    }
+
+    /** Remove the oldest completed scan
+     *  @return <code>true</code> if a scan could be removed
+     */
+    public boolean removeOldestCompletedScan()
+    {
+        synchronized (scan_queue)
+        {
+        	for (ScanQueueItem item : scan_queue)
+        		if (item.isDone())
+        		{
+        			scan_queue.remove(item);
+        			return true;
+        		}
+        }
+        return false;
     }
 }

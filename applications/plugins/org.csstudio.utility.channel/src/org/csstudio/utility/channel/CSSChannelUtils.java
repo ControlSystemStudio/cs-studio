@@ -56,5 +56,27 @@ public class CSSChannelUtils {
 		} 
 		return properties;
 	}
+	
+	private static <T> boolean overlap(Collection<T> items, Collection<T> otherItems) {
+		for (T item : items) {
+			if (otherItems.contains(item))
+				return true;
+		}
+		return false;
+	}
+	
+	public static Collection<Channel> filterByOneOrMoreElements(Collection<Channel> channels,
+			Collection<String> propNames, Collection<String> tagNames) {
+		Collection<Channel> result = new HashSet<Channel>();
+		for (Channel channel : channels) {
+			if (overlap(channel.getPropertyNames(), propNames)) {
+				result.add(channel);
+			}
+			if (overlap(channel.getTagNames(), tagNames)) {
+				result.add(channel);
+			}
+		}
+		return result;
+	}
 
 }

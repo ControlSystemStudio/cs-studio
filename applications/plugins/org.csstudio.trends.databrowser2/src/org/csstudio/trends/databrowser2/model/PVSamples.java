@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.model;
 import java.util.ArrayList;
 
 import org.csstudio.data.values.IValue;
+import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.trends.databrowser2.Messages;
 
@@ -33,12 +34,46 @@ public class PVSamples extends PlotSamples
 
     /** Live samples. Should start after end of historic samples */
     final private LiveSamples live = new LiveSamples();
+
+    private ArrayList<IDataProviderListener> listeners = new ArrayList<IDataProviderListener>();
+
+    /** {@inheritDoc} */
+    @Override
+    public void addDataProviderListener(IDataProviderListener listener)
+    {
+    	synchronized (listeners)
+    	{
+    		listeners.add(listener);
+    	}
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean removeDataProviderListener(IDataProviderListener listener)
+    {
+        synchronized (listeners)
+        {
+        	return listeners.remove(listener);
+        }
+    }
     
     /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
+    public void setWaveformIndex(final int index)
     {
     	live.setWaveformIndex(index);
     	history.setWaveformIndex(index);
+    	
+    	synchronized (listeners)
+    	{
+    		for (IDataProviderListener listener : listeners)
+    		{
+    			// Notify listeners of the change of the waveform index
+    			// mainly in order to update the position of snapped
+    			// annotations. For more details, see the comment in
+    			// Annotation.dataChanged(IDataProviderListener).
+    			listener.dataChanged(this);
+    		}
+    	}
     }
 
     /** @return Maximum number of live samples in ring buffer */

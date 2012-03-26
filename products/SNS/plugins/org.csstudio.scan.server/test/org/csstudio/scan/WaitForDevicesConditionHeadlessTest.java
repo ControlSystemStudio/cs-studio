@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.scan.condition.Condition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.device.Device;
@@ -39,10 +42,16 @@ public class WaitForDevicesConditionHeadlessTest
 
         final Condition connect = new WaitForDevicesCondition(devices);
 
+        System.out.println(connect);
+        assertTrue(connect.toString().startsWith("Waiting for device "));
+
         for (Device device : devices)
             device.start();
 
         connect.await();
+
+        System.out.println(connect);
+        assertEquals("All devices ready", connect.toString());
 
         for (Device device : devices)
             device.stop();

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -37,17 +37,17 @@ public class ScanServerConnector
      */
     public static ScanServer connect() throws Exception
     {
-        String host = System.getProperty("ScanServerHost");
+        String host = System.getProperty(ScanServer.HOST_PROPERTY);
         if (host == null)
-            host = ScanServer.RMI_HOST;
+            host = ScanServer.DEFAULT_HOST;
         int port;
         try
         {
-            port = Integer.parseInt(System.getProperty("ScanServerPort"));
+            port = Integer.parseInt(System.getProperty(ScanServer.PORT_PROPERTY));
         }
         catch (Throwable ex)
         {
-            port = ScanServer.RMI_PORT;
+            port = ScanServer.DEFAULT_PORT;
         }
         return connect(host, port);
     }
@@ -67,7 +67,7 @@ public class ScanServerConnector
 
         return server;
     }
-    
+
     /** Disconnect from a scan server
      *  @param server Server to disconnect
      */

@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 
 /**The memento to hold the properties of an XYGraph, 
  * so to make the operation on XYGraph undoable.
@@ -22,6 +23,13 @@ public class XYGraphMemento {
 
 	private String Title;
 	private Font titleFont;
+	
+	/**
+	 * Add because getTitleFont send a SWTERROR if the receiver is dispose. 
+	 * It is the case when you save the plt file after ask to close CSS.
+	 */
+	private FontData titleFontData;
+	
 	private Color titleColor;
 	private Color plotAreaBackColor;
 	private boolean showTitle;
@@ -75,6 +83,11 @@ public class XYGraphMemento {
 	 */
 	public void setTitleFont(Font titleFont) {
 		this.titleFont = titleFont;
+		this.titleFontData = this.titleFont.getFontData()[0];
+	}
+	
+	public FontData getTitleFontData() {
+		return titleFontData;
 	}
 	/**
 	 * @return the titleColor

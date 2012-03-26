@@ -16,6 +16,7 @@
 package org.csstudio.scan.ui.scanmonitor.actions;
 
 import org.csstudio.scan.client.ScanInfoModel;
+import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -25,8 +26,6 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class InfoAction extends AbstractGUIAction
 {
-    final private Shell shell;
-
     /** Initialize
      *  @param shell
      *  @param model
@@ -34,8 +33,7 @@ public class InfoAction extends AbstractGUIAction
      */
     public InfoAction(final Shell shell, final ScanInfoModel model)
     {
-        super(model, null, Messages.Info, "icons/information.gif"); //$NON-NLS-1$
-        this.shell = shell;
+        super(shell, model, null, Messages.Info, Activator.getImageDescriptior("icons/information.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
@@ -43,6 +41,6 @@ public class InfoAction extends AbstractGUIAction
     protected void runModelAction() throws Exception
     {
     	MessageDialog.openInformation(shell, Messages.InfoTitle,
-    			model.getServerInfo());
+    			model.getServerInfoText());
     }
 }

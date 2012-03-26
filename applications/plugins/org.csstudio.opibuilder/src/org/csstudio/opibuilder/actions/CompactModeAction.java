@@ -59,6 +59,8 @@ public class CompactModeAction extends Action implements
 	 */
 	public CompactModeAction() {
 		setActionDefinitionId(ID);
+		setText(COMPACT_MODE);
+		setImageDescriptor(compactModeImage);
 	}
 
 	/**
@@ -120,9 +122,16 @@ public class CompactModeAction extends Action implements
 
 	public void init(IWorkbenchWindow window) {
 		
-			
+		if(WorkbenchWindowService.getInstance().getCompactModeAction(window) != null){
+			copyFrom(WorkbenchWindowService.getInstance().getCompactModeAction(window));
+			WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
+			return;
+		}
+		
 		setId(ID);
 		this.window = window;
+		//if already registered
+		
 		shell = window.getShell();
 		
 		menuBar = shell.getMenuBar();
@@ -132,17 +141,17 @@ public class CompactModeAction extends Action implements
 		
 		WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
 
-		if (WorkbenchWindowService.isInCompactMode()) {
-			inCompactMode = true;
-			WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
-			shell.setMenuBar(null);
-			setImageDescriptor(exitCompactModeImage);
-			setText(EXIT_COMPACT_MODE);
-
-		} else {
-			setText(COMPACT_MODE);
-			setImageDescriptor(compactModeImage);
-		}
+//		if (WorkbenchWindowService.isInCompactMode()) {
+//			inCompactMode = true;
+//			WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
+//			shell.setMenuBar(null);
+//			setImageDescriptor(exitCompactModeImage);
+//			setText(EXIT_COMPACT_MODE);
+//
+//		} else {
+//			setText(COMPACT_MODE);
+//			setImageDescriptor(compactModeImage);
+//		}
 	}
 
 	public void dispose() {
@@ -152,5 +161,19 @@ public class CompactModeAction extends Action implements
 	protected Menu getMenuBar() {
 		return menuBar;
 	}	
+	
+	public boolean isInCompactMode() {
+		return inCompactMode;
+	}
+	
+	public void copyFrom(CompactModeAction action){
+		this.shell=action.shell;
+		this.window=action.window;
+		this.menuBar = action.getMenuBar();
+		this.inCompactMode = action.inCompactMode;
+		this.toolbarWasInvisible=action.toolbarWasInvisible;
+		setText(action.getText());
+		setImageDescriptor(action.getImageDescriptor());
+	}
 	
 }

@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.csstudio.scan.custom;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.scan;bundle-version="1.0.0"
+ org.csstudio.scan;bundle-version="1.0.0",
+ org.junit
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.scan.command

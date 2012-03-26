@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.ScanEditorContributor;
+import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.views.properties.IPropertySource;
 

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -23,9 +23,12 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 
 /** Action that opens a scan in the tree editor
  *  @author Kay Kasemir
@@ -33,10 +36,9 @@ import org.eclipse.osgi.util.NLS;
 public class OpenScanTreeAction extends Action
 {
     final private ScanInfo info;
-    
+
     /** Initialize
-     *  @param model
-     *  @param info
+     *  @param info Scan for which to open the scan tree
      */
     public OpenScanTreeAction(final ScanInfo info)
     {
@@ -48,23 +50,40 @@ public class OpenScanTreeAction extends Action
     @Override
     public void run()
     {
-        // Use Job to submit?
-        try
+        // Use Job to read commands from server
+        final Display display = Display.getCurrent();
+        final Job job = new Job("Download Scan") //$NON-NLS-1$
         {
-            // Fetch commands from server
-            final ScanServer server = ScanServerConnector.connect();
-            final String xml_commands = server.getScanCommands(info.getId());
-            final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-            final List<ScanCommand> commands = reader.readXMLString(xml_commands);
-            ScanServerConnector.disconnect(server);
-            // Open in editor
-            final ScanEditor editor = ScanEditor.createInstance();
-            editor.setCommands(commands);
-        }
-        catch (Exception ex)
-        {
-            MessageDialog.openError(null, Messages.Error,
-                NLS.bind(Messages.OpenScanTreeErrorFmt, ex.getMessage()));
-        }
+            @Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+                try
+                {
+                    // Fetch commands from server
+                    final ScanServer server = ScanServerConnector.connect();
+                    final String xml_commands = server.getScanCommands(info.getId());
+                    final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+                    final List<ScanCommand> commands = reader.readXMLString(xml_commands);
+                    ScanServerConnector.disconnect(server);
+
+                    // Open in editor, which requires UI thread
+                    display.asyncExec(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            ScanEditor.createInstance(info, commands);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                            Messages.OpenScanTreeError, ex);
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
     }
 }

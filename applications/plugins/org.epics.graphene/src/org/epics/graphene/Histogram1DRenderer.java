@@ -47,10 +47,12 @@ public class Histogram1DRenderer {
         Color dividerColor = new Color(196, 196, 196);
         Color lineColor = new Color(140, 140, 140);
         Color histogramColor = new Color(175, 175, 175);
-
+        
         double xValueMin = hist.getMinValueRange();
         double xValueMax = hist.getMaxValueRange();
-        double[] xValueTicks = RangeUtil.ticksForRange(xValueMin, xValueMax, imageWidth / 60);
+        ValueAxis xAxis = ValueAxis.createAutoAxis(xValueMin, xValueMax, imageWidth / 60);
+        double[] xValueTicks = xAxis.getTickValues();
+        String[] xLabels = xAxis.getTickLabels();
         
         int yValueMin = hist.getMinCountRange();
         int yValueMax = hist.getMaxCountRange();
@@ -65,17 +67,11 @@ public class Histogram1DRenderer {
         } else {
             nYTicks = imageHeight / 60;
         }
-        double[] yValueTicks = RangeUtil.ticksForRange(yValueMin, yValueMax, Math.max(4, nYTicks), 1.0);
+        ValueAxis yAxis = ValueAxis.createAutoAxis(yValueMin, yValueMax, Math.max(4, nYTicks), 1.0);
+        double[] yValueTicks = yAxis.getTickValues();
+        String[] yLabels = yAxis.getTickLabels();
 
-        // Create labels
-        String[] xLabels = new String[xValueTicks.length];
-        for (int i = 0; i < xLabels.length; i++) {
-            xLabels[i] = Double.toString(xValueTicks[i]);
-        }
-        String[] yLabels = new String[yValueTicks.length];
-        for (int i = 0; i < yLabels.length; i++) {
-            yLabels[i] = Integer.toString((int) yValueTicks[i]);
-        }
+        // Labels
         Font axisFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
         graphics.setFont(axisFont);
         
@@ -135,10 +131,16 @@ public class Histogram1DRenderer {
         graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics.setColor(axisColor);
         graphics.drawLine(yAxisFromLeft, imageHeight - xAxisFromBottom, yAxisFromLeft + plotWidth, imageHeight - xAxisFromBottom);
+        int[] drawRange = new int[] {0, imageWidth};
+        
+        // Draw first and last value first, as they must be there
+        graphics.setColor(axisTextColor);
+        drawCenteredText(graphics, metrics, xLabels[0], xTicks[0], drawRange, imageHeight - margin, true, false);
+        drawCenteredText(graphics, metrics, xLabels[xLabels.length - 1], xTicks[xLabels.length - 1], drawRange, imageHeight - margin, false, false);
+        
         for (int i = 0; i < xLabels.length; i++) {
-            Rectangle2D bounds = metrics.getStringBounds(xLabels[i], graphics);
             graphics.setColor(axisTextColor);
-            graphics.drawString(xLabels[i], xTicks[i] - ((int) ((bounds.getWidth() / 2))), imageHeight - margin);
+            drawCenteredText(graphics, metrics, xLabels[i], xTicks[i], drawRange, imageHeight - margin, true, true);
             graphics.setColor(axisColor);
             graphics.drawLine(xTicks[i], imageHeight - xAxisFromBottom, xTicks[i], imageHeight - xAxisFromBottom + xAxisTickSize);
         }
@@ -186,5 +188,38 @@ public class Histogram1DRenderer {
         
         
         
+    }
+    
+    private static final int MIN = 0;
+    private static final int MAX = 1;
+    private static final int marginBetweenXLabels = 4;
+    private static void drawCenteredText(Graphics2D graphics, FontMetrics metrics, String text, int center, int[] drawRange, int y, boolean updateMin, boolean centeredOnly) {
+        // If the center is not in the range, don't draw anything
+        if (drawRange[MAX] < center || drawRange[MIN] > center)
+            return;
+        
+        double width = metrics.getStringBounds(text, graphics).getWidth();
+        // If there is no space, don't draw anything
+        if (drawRange[MAX] - drawRange[MIN] < width)
+            return;
+        
+        int targetX = center - (int) ((width / 2));
+        if (targetX < drawRange[MIN]) {
+            if (centeredOnly)
+                return;
+            targetX = drawRange[MIN];
+        } else if (targetX + width > drawRange[MAX]) {
+            if (centeredOnly)
+                return;
+            targetX = drawRange[MAX] - (int) width;
+        }
+        
+        graphics.drawString(text, targetX, y);
+        
+        if (updateMin) {
+            drawRange[MIN] = targetX + (int) width + marginBetweenXLabels;
+        } else {
+            drawRange[MAX] = targetX - marginBetweenXLabels;
+        }
     }
 }

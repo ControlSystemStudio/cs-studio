@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-plugincustomization plugin_customization.ini</programArgs>
-      <vmArgs>-Xms256m -Xmx512m -Dsmslib.at.simpinwait=10000</vmArgs>
+      <vmArgs>-Xms512m -Xmx768m -Dsmslib.at.simpinwait=10000</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -41,6 +41,7 @@
       <plugin id="org.csstudio.ams.application.deliverysystem"/>
       <plugin id="org.csstudio.ams.delivery"/>
       <plugin id="org.csstudio.ams.delivery.email"/>
+      <plugin id="org.csstudio.ams.delivery.jms"/>
       <plugin id="org.csstudio.ams.delivery.sms"/>
       <plugin id="org.csstudio.ams.delivery.voicemail"/>
       <plugin id="org.csstudio.ams.log4j" fragment="true"/>

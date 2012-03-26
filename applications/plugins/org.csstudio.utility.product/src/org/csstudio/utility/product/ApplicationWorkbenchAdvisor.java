@@ -8,6 +8,9 @@
 package org.csstudio.utility.product;
 
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
@@ -18,6 +21,7 @@ import org.eclipse.ui.ide.IDE;
 /** Tell the workbench how to behave.
  *  @author Kay Kasemir
  *  @author Xihui Chen - IDE-specific workbench images
+ *  @author Takashi Nakamoto added preShutDown() method
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 {
@@ -47,9 +51,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         // Declares all IDE-specific workbench images. This includes both "shared"
     	// images (named in {@link IDE.SharedImages}) and internal images.
         configurer.declareImage(IDE.SharedImages.IMG_OBJ_PROJECT,
-				Activator.getImageDescriptor("icons/project_open.png"), true);
+				Activator.getImageDescriptor("icons/project_open.png"), true); //$NON-NLS-1$
         configurer.declareImage(IDE.SharedImages.IMG_OBJ_PROJECT_CLOSED,
-				Activator.getImageDescriptor("icons/project_close.png"), true);
+				Activator.getImageDescriptor("icons/project_close.png"), true); //$NON-NLS-1$
     }
 
     /** @return ID of initial perspective */
@@ -65,5 +69,22 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
     	if(openDocProcessor != null)
     		openDocProcessor.catchUp(display);
     	super.eventLoopIdle(display);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean preShutdown()
+    {
+        super.preShutdown();
+        try
+        {
+            // Save workspace before exiting CSS
+            ResourcesPlugin.getWorkspace().save(true, new NullProgressMonitor());
+        }
+        catch (CoreException e)
+        {   // Shutting down anyway, no good way to handle other than print
+            e.printStackTrace();
+        }
+        return true;
     }
 }

@@ -10,12 +10,15 @@ package org.csstudio.opibuilder.converter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.opibuilder.converter.model.EdmException;
+import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.ui.PreferencesHelper;
 import org.csstudio.opibuilder.converter.writer.OpiWriter;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
@@ -59,14 +62,20 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 		convertColorFile();
 		preferenceLisener = new IPropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent event) {
-				if(event.getProperty().equals(PreferencesHelper.EDM_COLORLIST_FILE)){
-					setEDMColorListFile();
-					convertColorFile();
-				} else if(event.getProperty().equals(PreferencesHelper.OUTPUT_OPICOLOR_FILE)){
-					setOPIColorFile();
-					convertColorFile();
-				}else if(event.getProperty().equals(PreferencesHelper.FAIL_FAST))
-					setRobustParsing();
+				try {
+					if(event.getProperty().equals(PreferencesHelper.EDM_COLORLIST_FILE)){
+						setEDMColorListFile();
+						convertColorFile();
+					} else if(event.getProperty().equals(PreferencesHelper.OUTPUT_OPICOLOR_FILE)){
+						setOPIColorFile();
+						convertColorFile();
+					}else if(event.getProperty().equals(PreferencesHelper.FAIL_FAST))
+						setRobustParsing();
+				} catch (Exception e) {
+					final String message = "Failed to convert color file. ";
+		            EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
+					ConsoleService.getInstance().writeError(message + e.getMessage());
+				} 
 			}
 		};
 
@@ -82,17 +91,12 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 	}
 
 
-	private void convertColorFile(){
-		try {
+	private void convertColorFile() throws CoreException, EdmException{
 			if(opiColorFolder == null)
 				return;
 			OpiWriter.getInstance().writeColorDef(System.getProperty("edm2xml.colorsOutput"));
 			opiColorFolder.refreshLocal(IResource.DEPTH_ONE, null);
-		} catch (Exception e) {
-			final String message = "Failed to convert color file. ";
-            EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message + e.getMessage());
-		}
+		
 	}
 
 
@@ -120,11 +124,12 @@ public class EDM2OPIConverterPlugin extends AbstractUIPlugin {
 	}
 
 
-	private void setEDMColorListFile() {
+	private void setEDMColorListFile() throws EdmException {
 		IFile colorsListfile = getIFileFromIPath(
 				PreferencesHelper.getEDMColorListFilePath());
 		if(colorsListfile != null)
 			System.setProperty("edm2xml.colorsFile", colorsListfile.getLocation().toOSString());
+		EdmModel.reloadEdmColorFile();
 	}
 
 	/** @return Logger for plugin ID */

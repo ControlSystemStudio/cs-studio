@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class StringTableCellEditor extends AbstractDialogCellEditor {
 	
-	private List<String[]> data;
+	private String[][] data;
 
 	private TitlesProvider columnTitles;
 	
@@ -34,9 +34,9 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
 	protected void openDialog(Shell parentShell, String dialogTitle) {
 			
 		StringTableEditDialog dialog = 
-			new StringTableEditDialog(parentShell, data, dialogTitle, columnTitles.getTitles());
+			new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle, columnTitles.getTitles());
 		if(dialog.open() == Window.OK){
-			data = dialog.getResult();			
+			data = listToArray(dialog.getResult());			
 		}
 	}
 
@@ -47,15 +47,15 @@ public class StringTableCellEditor extends AbstractDialogCellEditor {
 
 	@Override
 	protected Object doGetValue() {
-		return listToArray(data);
+		return data;
 	}
 
 	@Override
 	protected void doSetValue(Object value) {
 		if(value == null || !(value instanceof String[][]))
-			data = new ArrayList<String[]>();
+			data = new String[0][0];
 		else
-			data = arrayToList((String[][])value);			
+			data = (String[][])value;			
 	}
 	
 	private List<String[]> arrayToList(String[][] content){

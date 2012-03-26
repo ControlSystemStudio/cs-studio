@@ -91,26 +91,42 @@ public interface TODO
      *
      *  Done Undo for Scan Tree
      *
+     *  Done Server can create PV devices for names
+     *       that are not found in predefined (aliasing) device context.
+     *
+     *  Done Scan tree editor shows predefined (alias) device names
+     *
+     *  Done Scan tree 'live' view of running scan
+     *
+     *  Done Benchmarks
+     *
+     *  Done Settings:
+     *       Server uses preferences for RMI port.
+     *       Clients use system properties to allow use outside of Eclipse,
+     *       but scan plugins set sys props from Eclipse preferences
+     *       and offer GUI.
+     *
+     *  Done Scan tree use 'virtual' viewer
+     *
+     *  Done ant build.xml to create standalone client lib
+     *
+     *  Done Support pre- and post-scan commands, configured when scan server starts,
+     *       to for example enable and disable the data acquisition.
+     *
+     *  Done Move jython.jar and /Lib into own plugin. Share with BOY.
+     *
+     *  Done Allow update of command parameters while scan is running
+     *
+     *  Done Other scan configuration GUIs: 'Spreadsheet' table of loop variable, start/end
+     *
+     *  Done 'WaitingForDevices' shows missing devices
+     *
+     *  Done Details of pre- and post scan command progress info
+     *
      *  TODO Unclear if devices will ever be anything but PVs.
-     *       If they're just PVs, one could use PVs.
-     *       If they're something else, then an API for
-     *       getting the device names _and_ underlying PVs from
-     *       server would be useful for GUI that can show them,
-     *       access other PV tools from device PVs etc.
-     *
-     *  TODO put callback? Maybe support Channel Access put-callback,
-     *       or add a wait-for-value to the set command?
-     *
-     *  TODO Other scan configuration GUIs.
-     *       'Spreadsheet' of loop variable, start/end?
-     *       Process block GUI?
      *
      *  TODO 'log' sends values to data collector, once it's
      *       clear what that data collector is
-     *
-     *  TODO Client settings (system properties for scan server host, port) via Eclipse preferences
-     *
-     *  TODO Move jython.jar and /Lib into own plugin. Share with BOY.
      *
      *  TODO RMI timeout?
      *  System.setProperty("sun.rmi.transport.tcp.responseTimeout", "10000");

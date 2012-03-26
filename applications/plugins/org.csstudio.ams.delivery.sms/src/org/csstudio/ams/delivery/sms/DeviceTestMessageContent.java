@@ -26,7 +26,8 @@
 package org.csstudio.ams.delivery.sms;
 
 import javax.jms.MapMessage;
-import org.csstudio.ams.delivery.jms.AbstractMessageContent;
+
+import org.csstudio.ams.delivery.util.jms.AbstractMessageContent;
 
 /**
  * TODO (mmoeller) : 

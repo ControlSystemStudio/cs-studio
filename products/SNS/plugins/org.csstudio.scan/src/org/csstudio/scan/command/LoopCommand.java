@@ -59,14 +59,14 @@ public class LoopCommand extends ScanCommand
         ScanCommandProperty.TIMEOUT,
     };
 
-    private String device_name;
-    private double start;
-    private double end;
-    private double stepsize;
-    private String readback = "";
-    private boolean wait = true;
-    private double tolerance = 0.1;
-    private double timeout = 0.0;
+    private volatile String device_name;
+    private volatile double start;
+    private volatile double end;
+    private volatile double stepsize;
+    private volatile String readback = "";
+    private volatile boolean wait = true;
+    private volatile double tolerance = 0.1;
+    private volatile double timeout = 0.0;
 
 	private List<ScanCommand> body;
 
@@ -74,6 +74,28 @@ public class LoopCommand extends ScanCommand
     public LoopCommand()
     {
         this("device", 0, 10, 1, new ScanCommand[0]);
+    }
+
+	/** Initialize with single command
+	 *
+	 *  <p>This constructor simplifies invocation from Matlab.
+	 *  In principle, the "ScanCommand... body" constructor
+	 *  handles loops with zero, one, many commands, i.e. all cases.
+	 *  Matlab, however, turns a single-element array into a scalar
+	 *  in a way incompatible with the var-length argument
+	 *  constructor.
+	 *
+     *  @param device_name Device to update with the loop variable
+     *  @param start Initial loop value
+     *  @param end Final loop value
+     *  @param stepsize Increment of the loop variable
+     *  @param command Single-command body
+     */
+    public LoopCommand(final String device_name, final double start,
+            final double end, final double stepsize,
+            final ScanCommand command)
+    {
+        this(device_name, start, end, stepsize, new ScanCommand[] { command });
     }
 
 	/** Initialize
@@ -112,11 +134,25 @@ public class LoopCommand extends ScanCommand
             final double end, final double stepsize,
             final List<ScanCommand> body)
     {
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
         setStepSize(stepsize);
         this.start = start;
         this.end = end;
         this.body = body;
+    }
+
+    /** Set address of loop as well as body commands
+     *  {@inheritDoc}
+     */
+    @Override
+    public long setAddress(final long address)
+    {
+        long next = super.setAddress(address);
+        for (ScanCommand command : body)
+            next = command.setAddress(next);
+        return next;
     }
 
     /** {@inheritDoc} */
@@ -126,7 +162,7 @@ public class LoopCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Device name */
+	/** @return Device name (may be "" but not <code>null</code>) */
     public String getDeviceName()
     {
         return device_name;
@@ -135,6 +171,8 @@ public class LoopCommand extends ScanCommand
     /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.device_name = device_name;
     }
 
@@ -191,7 +229,7 @@ public class LoopCommand extends ScanCommand
         this.wait = wait;
     }
 
-    /** @return Name of readback device */
+    /** @return Name of readback device (may be "" but not <code>null</code>) */
     public String getReadback()
     {
         return readback;
@@ -200,6 +238,8 @@ public class LoopCommand extends ScanCommand
     /** @param readback Name of readback device */
     public void setReadback(final String readback)
     {
+        if (readback == null)
+            throw new NullPointerException();
         this.readback = readback;
     }
 
@@ -246,6 +286,8 @@ public class LoopCommand extends ScanCommand
         writeIndent(out, level);
         out.println("<loop>");
         writeIndent(out, level+1);
+        out.println("<address>" + getAddress() + "</address>");
+        writeIndent(out, level+1);
         out.println("<device>" + device_name + "</device>");
         writeIndent(out, level+1);
         out.println("<start>" + start + "</start>");
@@ -291,14 +333,15 @@ public class LoopCommand extends ScanCommand
         final Element body_node = DOMHelper.findFirstElementNode(element.getFirstChild(), "body");
         final List<ScanCommand> body = factory.readCommands(body_node.getFirstChild());
 
-        setDeviceName(DOMHelper.getSubelementString(element, "device"));
+        setAddress(DOMHelper.getSubelementInt(element, ScanCommandProperty.TAG_ADDRESS, -1));
+        setDeviceName(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_DEVICE));
         setStart(DOMHelper.getSubelementDouble(element, "start"));
         setEnd(DOMHelper.getSubelementDouble(element, "end"));
         setStepSize(DOMHelper.getSubelementDouble(element, "step"));
-        setReadback(DOMHelper.getSubelementString(element, "readback", ""));
-        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, "wait", "true")));
-        setTolerance(DOMHelper.getSubelementDouble(element, "tolerance", 0.1));
-        setTimeout(DOMHelper.getSubelementDouble(element, "timeout", 0.0));
+        setReadback(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_READBACK, ""));
+        setWait(Boolean.parseBoolean(DOMHelper.getSubelementString(element, ScanCommandProperty.TAG_WAIT, "true")));
+        setTolerance(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TOLERANCE, 0.1));
+        setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
         setBody(body);
     }
 

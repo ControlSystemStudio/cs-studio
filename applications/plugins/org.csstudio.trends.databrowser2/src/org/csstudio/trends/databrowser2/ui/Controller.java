@@ -19,8 +19,10 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.swt.xygraph.figures.Annotation;
 import org.csstudio.swt.xygraph.figures.Axis;
+import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
+import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
@@ -37,10 +39,10 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
@@ -153,6 +155,7 @@ public class Controller implements ArchiveFetchJobListener
         checkAutoscaleAxes();
         createPlotTraces();
         createAnnotations();
+        createXYGraphSettings(); //ADD LAURENT PHILIPPE
 
         // Listen to user input from Plot UI, update model
         plot.addListener(new PlotListener()
@@ -242,34 +245,122 @@ public class Controller implements ArchiveFetchJobListener
                 }
                 else
                 {   // Received PV name
-                    final ModelItem item = model.getItem(name.getName());
-                    if (item == null)
-                    {
-                        final OperationsManager operations_manager = plot.getOperationsManager();
 
-                        // Add to first empty axis, or create new axis
-                        AxisConfig axis = model.getEmptyAxis();
-                        if (axis == null)
-                            axis = new AddAxisCommand(operations_manager, model).getAxis();
+                	// Add the given PV to the model anyway even if the same PV
+                	// exists in the model.
+                    final OperationsManager operations_manager = plot.getOperationsManager();
 
-                        // Add new PV
-                        AddModelItemCommand.forPV(shell, operations_manager,
-                                model, name.getName(), Preferences.getScanPeriod(),
-                                axis, archive);
-                        return;
-                    }
-                    if (archive == null  ||   ! (item instanceof PVItem))
-                    {   // Duplicate PV, or a formula to which we cannot add archives
-                        MessageDialog.openError(shell, Messages.Error,
-                                NLS.bind(Messages.DuplicateItemFmt, name));
-                        return;
-                    }
-                    // Add archive to existing PV
-                    if (item instanceof PVItem)
-                        new AddArchiveCommand(plot.getOperationsManager(),
-                                (PVItem) item, archive);
+                    // Add to first empty axis, or create new axis
+                    AxisConfig axis = model.getEmptyAxis();
+                    if (axis == null)
+                        axis = new AddAxisCommand(operations_manager, model).getAxis();
+
+                    // Add new PV
+                    AddModelItemCommand.forPV(shell, operations_manager,
+                            model, name.getName(), Preferences.getScanPeriod(),
+                            axis, archive);
+                    return;
                 }
             }
+
+			@Override
+			public void xyGraphConfigChanged(XYGraph newValue)
+			{
+				model.fireGraphConfigChanged();
+			}
+
+			@Override
+			public void removeAnnotationChanged(Annotation oldValue)
+			{
+				model.setAnnotations(plot.getAnnotations());
+			}
+
+			@Override
+			public void addAnnotationChanged(Annotation newValue)
+			{
+				model.setAnnotations(plot.getAnnotations());
+			}
+
+			@Override
+			public void backgroundColorChanged(Color newValue)
+			{
+				model.setPlotBackground(newValue.getRGB());
+			}
+
+
+			@Override
+			public void timeAxisForegroundColorChanged(Color oldColor,
+					Color newColor)
+			{
+				// NOP
+			}
+
+			@Override
+			public void valueAxisForegroundColorChanged(int index,
+					Color oldColor, Color newColor)
+			{
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setColor(newColor.getRGB());
+			}
+
+			@Override
+			public void valueAxisTitleChanged(int index, String oldTitle,
+					String newTitle)
+			{
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setName(newTitle);
+			}
+
+			@Override
+			public void valueAxisAutoScaleChanged(int index,
+					boolean oldAutoScale, boolean newAutoScale)
+			{
+				final AxisConfig axis = model.getAxis(index);
+	            axis.setAutoScale(newAutoScale);
+			}
+
+			@Override
+			public void traceNameChanged(int index, String oldName,
+					String newName)
+			{
+				model.getItem(index).setDisplayName(newName);
+			}
+
+			@Override
+			public void traceYAxisChanged(int index, AxisConfig oldAxis, AxisConfig newAxis)
+			{
+				ModelItem item = model.getItem(index);
+				AxisConfig c = model.getAxis(newAxis.getName());
+				item.setAxis(c);
+			}
+
+			@Override
+			public void traceTypeChanged(int index, TraceType old,
+					TraceType newTraceType)
+			{
+				//DO NOTHING
+				//The model trace type is not the same concept that graph settings traceType
+				//The model trace type gather TraceType, PointStyle, ErrorBar graph config settings
+
+				//ModelItem item = model.getItem(index);
+				//item.setTraceType(org.csstudio.trends.databrowser2.model.TraceType.newTraceType);
+			}
+
+			@Override
+			public void traceColorChanged(int index, Color old, Color newColor)
+			{
+				ModelItem item = model.getItem(index);
+				item.setColor(newColor.getRGB());
+			}
+
+			@Override
+			public void valueAxisLogScaleChanged(int index, boolean old,
+					boolean logScale)
+			{
+				final AxisConfig axis = model.getAxis(index);
+				axis.setLogScale(logScale);
+			}
+
         });
 
         model_listener = new ModelListener()
@@ -371,6 +462,24 @@ public class Controller implements ArchiveFetchJobListener
             {
                 plot.updateScrollButton(scroll_enabled);
             }
+
+            /**
+             * ADD L.PHILIPPE
+             */
+			@Override
+			public void changedAnnotations()
+			{
+				// NOP
+			}
+
+		    /**
+             * ADD L.PHILIPPE
+             */
+			@Override
+			public void changedXYGraphConfig()
+			{
+				// NOP
+			}
         };
         model.addListener(model_listener);
     }
@@ -521,13 +630,22 @@ public class Controller implements ArchiveFetchJobListener
         plot.setBackgroundColor(model.getPlotBackground());
         plot.updateScrollButton(model.isScrollEnabled());
         plot.removeAll();
+
+
+        //Time axe
+        if(model.getTimeAxis() != null)
+        	plot.updateTimeAxis( model.getTimeAxis());
+
         for (int i=0; i<model.getAxisCount(); ++i)
             plot.updateAxis(i, model.getAxis(i));
         for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem item = model.getItem(i);
-            if (item.isVisible())
-                plot.addTrace(item);
+
+            if (item.isVisible()){
+            	//System.out.println("Controller.createPlotTraces() INDEX " + i + " => " + model.getItem(i).getDisplayName());
+                plot.addTrace(item, i);
+            }
         }
     }
 
@@ -546,9 +664,29 @@ public class Controller implements ArchiveFetchJobListener
         	final Annotation annotation = new Annotation(info.getTitle(), graph.primaryXAxis, axis);
         	annotation.setValues(info.getTimestamp().toDouble() * 1000.0,
         			info.getValue());
-			graph.addAnnotation(annotation);
+
+        	//ADD Laurent PHILIPPE
+			annotation.setCursorLineStyle(info.getCursorLineStyle());
+        	annotation.setShowName(info.isShowName());
+        	annotation.setShowPosition(info.isShowPosition());
+
+        	if(info.getColor() != null)
+        		annotation.setAnnotationColor(XYGraphMediaFactory.getInstance().getColor(info.getColor()));
+
+        	if(info.getFontData() != null)
+       			annotation.setAnnotationFont(XYGraphMediaFactory.getInstance().getFont(info.getFontData()));
+
+        	graph.addAnnotation(annotation);
         }
     }
+
+
+    /**
+     * Add XYGraphMemento (Graph config settings from model to plot)
+     */
+    private void createXYGraphSettings() {
+     	plot.setGraphSettings(model.getGraphSettings());
+ 	}
 
 	/** Scroll the plot to 'now' */
     protected void performScroll()

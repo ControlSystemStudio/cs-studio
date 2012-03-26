@@ -280,8 +280,10 @@ public class AxisConfigPage {
 
 	public void applyChanges(){
 		axis.setTitle(titleText.getText());
+		
 		axis.setFont(scaleFont);
 		axis.setTitleFont(titleFont);
+		
 		axis.setForegroundColor(XYGraphMediaFactory.getInstance().getColor(
 				axisColorSelector.getColorValue()));
 		axis.setPrimarySide(primaryButton.getSelection());

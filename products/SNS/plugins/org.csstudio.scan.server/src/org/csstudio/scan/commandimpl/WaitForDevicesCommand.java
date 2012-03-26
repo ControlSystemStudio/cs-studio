@@ -1,55 +1,73 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2012 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Logger;
+import java.io.PrintStream;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.condition.Condition;
-import org.csstudio.scan.condition.WaitForDevicesCondition;
+import org.csstudio.scan.command.ScanCommandProperty;
+import org.csstudio.scan.command.SimpleScanCommandFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.ScanContext;
+import org.w3c.dom.Element;
 
 /** {@link ScanCommandImpl} that delays the scan until all {@link Device}s are 'ready'
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WaitForDevicesCommand extends ScanCommandImpl<ScanCommand>
+public class WaitForDevicesCommand extends ScanCommand
 {
-	public WaitForDevicesCommand()
+    final private Device[] devices;
+
+    public WaitForDevicesCommand(final Device[] devices)
     {
-        super(null);
+        this.devices = devices;
+    }
+
+    public Device[] getDevices()
+    {
+        return devices;
     }
 
     /** {@inheritDoc} */
-	@Override
-    public void execute(final ScanContext context) throws Exception
+    @Override
+    public ScanCommandProperty[] getProperties()
     {
-		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
-
-		final Condition ready = new WaitForDevicesCondition(context.getDevices());
-		ready.await();
-        context.workPerformed(1);
+        return new ScanCommandProperty[0];
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return "Wait for devices";
-	}
+    @Override
+    public void writeXML(final PrintStream out, final int level)
+    {
+        throw new Error("Internal command");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void readXML(final SimpleScanCommandFactory factory, final Element element)
+            throws Exception
+    {
+        throw new Error("Internal command");
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+        return "Wait for devices";
+    }
 }

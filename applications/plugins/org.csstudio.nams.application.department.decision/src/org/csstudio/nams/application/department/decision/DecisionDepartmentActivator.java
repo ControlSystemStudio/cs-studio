@@ -30,6 +30,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.nams.application.department.decision.management.Restart;
 import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
@@ -268,6 +269,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      */
     private volatile boolean _continueWorking;
 
+    private boolean restart;
+    
     /**
      * Referenz auf den Thread, welcher die JMS Nachrichten anfragt. Wird
      * genutzt um den Thread zu "interrupten". Wird nur von der Application
@@ -342,8 +345,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
     @Override
     public Object start(final IApplicationContext context)
     {
+        restart = false;
+        
         Stop.staticInject(this);
         Stop.staticInject(logger);
+        
+        Restart.staticInject(this);
+        Restart.staticInject(logger);
 
         ackMessages = new Collector();
         ackMessages.setApplication("AmsDecisionDepartment");
@@ -456,8 +464,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
         DecisionDepartmentActivator.logger.logInfoMessage(this,
                 "Decision department application successfully shuted down.");
-
-        return IApplication.EXIT_OK;
+        
+        Integer exitCode = IApplication.EXIT_OK;
+        if (this.restart) {
+            exitCode = IApplication.EXIT_RESTART;
+        }
+        return exitCode;
     }
     
     @Override
@@ -983,6 +995,26 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
         DecisionDepartmentActivator.logger .logInfoMessage(this,
                 "Start to shut down decision department application on user request...");
         this._continueWorking = false;
+        this.restart = false;
+        if (SyncronisationsAutomat.isRunning()) {
+            DecisionDepartmentActivator.logger.logInfoMessage(this, "Canceling running syncronisation...");
+            SyncronisationsAutomat.cancel();
+        }
+
+        DecisionDepartmentActivator.logger.logInfoMessage(this, "Interrupting working thread...");
+
+        this._receiverThread.interrupt();
+
+        logger.logDebugMessage(this, "DecisionDepartmentActivator.stopRemotely(): After this.stop()");
+    }
+
+    @Override
+    public synchronized void restartRemotly(final ILogger logger) {
+        
+        DecisionDepartmentActivator.logger .logInfoMessage(this,
+                "Begin to restart decision department application on user request...");
+        this._continueWorking = false;
+        this.restart = true;
         if (SyncronisationsAutomat.isRunning()) {
             DecisionDepartmentActivator.logger.logInfoMessage(this, "Canceling running syncronisation...");
             SyncronisationsAutomat.cancel();

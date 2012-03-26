@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -22,28 +22,48 @@ package org.csstudio.scan.server;
 public enum ScanState
 {
     /** Scan is waiting to be executed */
-    Idle("Idle"),
+    Idle("Idle", false, false),
 
     /** Scan is currently being executed */
-    Running("Running..."),
+    Running("Running", true, false),
 
     /** Scan was Running, currently paused */
-    Paused("Paused..."),
+    Paused("Paused", true, false),
 
     /** Scan was aborted by user */
-    Aborted("Aborted"),
+    Aborted("Aborted", false, true),
 
     /** Scan failed because of an error */
-    Failed("Failed"),
+    Failed("Failed", false, true),
 
     /** Scan ended normally, i.e. not aborted or failed */
-    Finished("Finished - OK");
+    Finished("Finished - OK", false, true);
 
     final private String name;
+    final private boolean active;
+    final private boolean done;
 
-    private ScanState(final String name)
+    private ScanState(final String name, final boolean active, final boolean done)
     {
         this.name = name;
+        this.active = active;
+        this.done = done;
+    }
+
+    /** @return <code>true</code> if this is an 'active' state,
+     *          representing a scan that's currently running (or paused)
+     */
+    public boolean isActive()
+    {
+        return active;
+    }
+
+    /** @return <code>true</code> if is a 'done' state,
+     *          representing a scan that finished one way or another
+     */
+    public boolean isDone()
+    {
+        return done;
     }
 
     /** @return Human-readable representation */

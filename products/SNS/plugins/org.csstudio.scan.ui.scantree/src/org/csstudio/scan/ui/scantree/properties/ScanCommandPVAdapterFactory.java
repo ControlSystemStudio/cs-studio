@@ -18,7 +18,7 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.ScanEditorContributor;
+import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
 import org.eclipse.core.runtime.IAdapterFactory;
 
 /** Factory for adapters from {@link ScanCommand}

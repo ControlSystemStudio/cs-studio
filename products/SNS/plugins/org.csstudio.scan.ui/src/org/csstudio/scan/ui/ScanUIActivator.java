@@ -10,14 +10,21 @@ package org.csstudio.scan.ui;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-/** Plugin activator
+/** Plugin activator (not really used as such, just holds IDs)
  *  @author Kay Kasemir
  */
-public class ScanUIActivator 
+@SuppressWarnings("nls")
+public class ScanUIActivator
 {
 	/** Plug-in ID defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.scan.ui"; //$NON-NLS-1$
-	
+    public static final String PLUGIN_ID = "org.csstudio.scan.ui";
+
+	/** ID of the Scan Monitor View */
+    public static final String ID_SCAN_MONITOR_VIEW = "org.csstudio.scan.ui.scanmonitor";
+
+    /** ID of the Scan Monitor View */
+    public static final String ID_SCAN_PLOT_VIEW = "org.csstudio.scan.ui.plot.view";
+
 	/** @param path Path to plugin image
 	 *  @return {@link ImageDescriptor}
 	 */

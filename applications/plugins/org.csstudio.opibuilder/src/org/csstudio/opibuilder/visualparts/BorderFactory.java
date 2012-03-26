@@ -57,6 +57,8 @@ public class BorderFactory {
 			return createGroupBoxBorder(text, color);
 		case TITLE_BAR:
 			return createTitleBarBorder(text, color);
+		case ROUND_RECTANGLE_BACKGROUND:
+			return createRoundRectangleBorder(width, color);
 		case NONE:			
 		default:
 			return null;
@@ -96,4 +98,10 @@ public class BorderFactory {
 		((TitleBarBorder)border.getInnerBorder()).setBackgroundColor(color);
 		return border;
 	}
+	
+	private static AbstractBorder createRoundRectangleBorder(int width, Color color){
+		RoundRectangleBackgroundBorder border = new RoundRectangleBackgroundBorder(color, width);
+		return border;
+	}
+	
 }

@@ -8,13 +8,18 @@
 package org.csstudio.scan.ui.scantree.operations;
 
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.ui.scantree.Activator;
+import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Shell;
 
 /** Operation for changing a property of a ScanCommand
  *  @author Kay Kasemir
@@ -48,6 +53,21 @@ public class PropertyChangeOperation extends AbstractOperation
         this.new_value = new_value;
     }
 
+    public long getCommandAddress()
+    {
+        return command.getAddress();
+    }
+
+    public String getProperty()
+    {
+        return property;
+    }
+
+    public Object getValue()
+    {
+        return new_value;
+    }
+
     /** {@inheritDoc} */
     @Override
     public IStatus execute(final IProgressMonitor monitor, final IAdaptable info)
@@ -61,16 +81,7 @@ public class PropertyChangeOperation extends AbstractOperation
     public IStatus redo(final IProgressMonitor monitor, final IAdaptable info)
                     throws ExecutionException
     {
-        try
-        {
-            command.setProperty(property, new_value);
-            editor.refreshCommand(command);
-        }
-        catch (Exception ex)
-        {
-            throw new ExecutionException(ex.getMessage(), ex);
-        }
-
+        changeProperty(new_value);
         return Status.OK_STATUS;
     }
 
@@ -79,16 +90,62 @@ public class PropertyChangeOperation extends AbstractOperation
     public IStatus undo(final IProgressMonitor monitor, final IAdaptable info)
             throws ExecutionException
     {
-        try
-        {
-            command.setProperty(property, old_value);
-            editor.refreshCommand(command);
-        }
-        catch (Exception ex)
-        {
-            throw new ExecutionException(ex.getMessage(), ex);
-        }
-
+        changeProperty(old_value);
         return Status.OK_STATUS;
+    }
+
+    /** Set property to desired value,
+     *  updating scan server in background Job.
+     *
+     *  @param value Desired value
+     *  @throws ExecutionException
+     */
+    private void changeProperty(final Object value) throws ExecutionException
+    {
+        final Job job = new Job(toString())
+        {
+            @Override
+            protected IStatus run(IProgressMonitor monitor)
+            {
+                // Attempt update of 'live' editor,
+                // sending change to the scan server
+                try
+                {
+                    editor.changeLiveProperty(command, property, value);
+                }
+                catch (Exception ex)
+                {
+                    return new Status(IStatus.WARNING, Activator.PLUGIN_ID, toString(), ex);
+                }
+
+                // Update local model in UI thread
+                final Shell shell = editor.getSite().getShell();
+                shell.getDisplay().asyncExec(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        try
+                        {
+                            editor.getModel().changeProperty(command, property, value);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+                        }
+                    }
+                });
+
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Change " + command.getCommandName() + " " + property
+                + " from " + old_value + " to " + new_value;
     }
 }

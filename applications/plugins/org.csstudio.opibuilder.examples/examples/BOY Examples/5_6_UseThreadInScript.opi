@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-5bc58001:133f648c5d6:-7fa6</wuid>
-  <boy_version>2.0.0.qualifier</boy_version>
+  <boy_version>3.1.0.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -24,9 +24,14 @@
   <rules />
   <show_edit_range>true</show_edit_range>
   <grid_space>4</grid_space>
+  <auto_scale_widgets>
+    <auto_scale_widgets>true</auto_scale_widgets>
+    <min_width>-1</min_width>
+    <min_height>-1</min_height>
+  </auto_scale_widgets>
   <actions hook="false" hook_all="false" />
-  <y>0</y>
-  <x>0</x>
+  <y>-1</y>
+  <x>-1</x>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
@@ -35,6 +40,11 @@
     <scripts />
     <height>86</height>
     <name>Label_8</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -60,7 +70,7 @@
     <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>17</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -69,9 +79,14 @@
     <wuid>-5bc58001:133f648c5d6:-7fa4</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button_2</name>
-    <pv_name />
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -88,7 +103,7 @@
     <width>65</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
-    <image />
+    <image></image>
     <rules />
     <pv_value />
     <toggle_button>false</toggle_button>
@@ -104,7 +119,7 @@
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>1</replace>
-        <description />
+        <description></description>
       </action>
     </actions>
     <tooltip>File IO Example</tooltip>
@@ -118,6 +133,11 @@
     <scripts />
     <height>43</height>
     <name>Label_6</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -143,7 +163,7 @@
     <actions hook="false" hook_all="false" />
     <y>49</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -154,6 +174,11 @@
     <scripts />
     <height>44</height>
     <name>Label_5</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -179,7 +204,7 @@
     <actions hook="false" hook_all="false" />
     <y>6</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>311</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -190,6 +215,11 @@
     <scripts />
     <height>18</height>
     <name>Label_9</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>true</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -215,7 +245,7 @@
     <actions hook="false" hook_all="false" />
     <y>62</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>65</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
@@ -224,9 +254,14 @@
     <wuid>-5bc58001:133f648c5d6:-7fa0</wuid>
     <scripts />
     <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Action Button</name>
-    <pv_name />
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -259,10 +294,11 @@
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>1</replace>
-        <description />
+        <description></description>
       </action>
     </actions>
-    <tooltip />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
     <x>24</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -272,16 +308,21 @@
     <auto_size>false</auto_size>
     <scripts>
       <path pathString="scripts/ThreadExample.js" checkConnect="true" sfe="true" seoe="false">
-        <pv trig="true">loc://trig1_js</pv>
-        <pv trig="false">loc://progress</pv>
+        <pv trig="true">loc://$(DID)_trig1_js</pv>
+        <pv trig="false">loc://$(DID)_progress</pv>
       </path>
       <path pathString="scripts/ThreadExample.py" checkConnect="true" sfe="true" seoe="false">
-        <pv trig="true">loc://trig1_py</pv>
-        <pv trig="false">loc://progress</pv>
+        <pv trig="true">loc://$(DID)_trig1_py</pv>
+        <pv trig="false">loc://$(DID)_progress</pv>
       </path>
     </scripts>
     <height>28</height>
     <name>Label</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -307,7 +348,7 @@
     <actions hook="false" hook_all="false" />
     <y>228</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>235</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -318,6 +359,11 @@
     <scripts />
     <height>66</height>
     <name>Label_6</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -330,7 +376,7 @@
     <enabled>true</enabled>
     <text>By default, general script code is executed in UI thread, so if you have a big loop in your script or call Thread.sleep() directly in the script, the UI will stop response until the loop finished or Thread.sleep() returned. In this case, you need to run the code in another thread instead of the UI thread.</text>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name>Default</opifont.name>
     </font>
     <width>738</width>
     <border_style>1</border_style>
@@ -343,7 +389,7 @@
     <actions hook="false" hook_all="false" />
     <y>126</y>
     <wrap_words>true</wrap_words>
-    <tooltip />
+    <tooltip></tooltip>
     <x>24</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
@@ -354,6 +400,11 @@
     <scripts />
     <height>16</height>
     <name>Label_7</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <transparent>false</transparent>
     <show_scrollbar>false</show_scrollbar>
     <background_color>
@@ -421,16 +472,21 @@ $(pv_value)</tooltip>
     <minimum>0.0</minimum>
     <wuid>-5bc58001:133f648c5d6:-7f9c</wuid>
     <show_hihi>true</show_hihi>
-    <scale_format />
+    <scale_format></scale_format>
     <show_scale>false</show_scale>
     <color_lo>
       <color red="255" green="128" blue="0" />
     </color_lo>
     <name>Progress_Bar</name>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
     <color_hi>
       <color red="255" green="128" blue="0" />
     </color_hi>
-    <pv_name>loc://progress</pv_name>
+    <pv_name>loc://$(DID)_progress</pv_name>
     <origin_ignored>true</origin_ignored>
     <foreground_color>
       <color red="0" green="0" blue="0" />
@@ -450,7 +506,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </fill_color>
     <rules />
-    <value_label_format />
+    <value_label_format></value_label_format>
     <transparent_background>true</transparent_background>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
@@ -470,9 +526,14 @@ $(pv_value)</tooltip>
     <wuid>-5bc58001:133f648c5d6:-7f9b</wuid>
     <scripts />
     <height>50</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Start_Button_JS</name>
-    <pv_name />
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -490,7 +551,7 @@ $(pv_value)</tooltip>
     <width>106</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
-    <image />
+    <image></image>
     <rules />
     <pv_value />
     <toggle_button>false</toggle_button>
@@ -501,10 +562,10 @@ $(pv_value)</tooltip>
     <y>322</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>loc://trig1_js</pv_name>
+        <pv_name>loc://$(DID)_trig1_js</pv_name>
         <value>1</value>
         <timeout>10</timeout>
-        <description />
+        <description></description>
       </action>
     </actions>
     <tooltip>$(pv_name)
@@ -517,9 +578,14 @@ $(pv_value)</tooltip>
     <wuid>-5bc58001:133f648c5d6:-7f9a</wuid>
     <scripts />
     <height>50</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Start_Button_Py</name>
-    <pv_name />
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
@@ -537,7 +603,7 @@ $(pv_value)</tooltip>
     <width>106</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
-    <image />
+    <image></image>
     <rules />
     <pv_value />
     <toggle_button>false</toggle_button>
@@ -548,10 +614,10 @@ $(pv_value)</tooltip>
     <y>322</y>
     <actions hook="false" hook_all="false">
       <action type="WRITE_PV">
-        <pv_name>loc://trig1_py</pv_name>
+        <pv_name>loc://$(DID)_trig1_py</pv_name>
         <value>1</value>
         <timeout>10</timeout>
-        <description />
+        <description></description>
       </action>
     </actions>
     <tooltip>$(pv_name)

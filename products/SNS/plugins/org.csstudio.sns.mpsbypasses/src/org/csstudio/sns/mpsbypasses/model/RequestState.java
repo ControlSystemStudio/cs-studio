@@ -1,9 +1,10 @@
 package org.csstudio.sns.mpsbypasses.model;
 
 /** Enumerations for the different MPS Bypass Requests
- * 
+ *
  *  @author Delphy Armstrong - Original MPSBypassRequested
  */
+@SuppressWarnings("nls")
 public enum RequestState
 {
 	/** First option is the default */
@@ -15,7 +16,7 @@ public enum RequestState
 
 	/** Human-readable representation */
 	final private String label;
-	
+
 	/** Initialize
 	 *  @param label Human-readable representation
 	 */
@@ -23,16 +24,16 @@ public enum RequestState
 	{
 		this.label = label;
 	}
-	
+
 	/** @return Human-readable representation */
 	@Override
     public String toString()
 	{
 		return label;
 	}
-	
+
 	/** Return the enum request value of the input request string
-	 * 
+	 *
 	 * @param name of the request state
 	 * @return enum of the request or <code>All</code>
 	 */
@@ -44,7 +45,7 @@ public enum RequestState
 				return requested;
 		return All;
 	}
-	
+
 	/** @return Request state names */
 	public static String[] getNames()
     {

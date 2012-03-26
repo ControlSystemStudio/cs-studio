@@ -68,5 +68,8 @@ public abstract class PropertySSHelper {
 
 	public abstract PropertyDescriptor getStringTablePropertyDescriptor(String prop_id,
 			String description, TitlesProvider titlesProvider);
+
+	public abstract PropertyDescriptor getComplexDataPropertyDescriptor(String prop_id,
+			String description, String dialogTitle);
 	
 }
