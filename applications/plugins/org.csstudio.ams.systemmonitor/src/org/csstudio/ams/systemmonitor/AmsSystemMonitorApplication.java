@@ -169,14 +169,13 @@ public class AmsSystemMonitorApplication implements IApplication
             amsSystemCheck.closeJms();
             
             // If the first check was not successful, we need not to do the second check
-            if(amsStatusHandler.getCurrentStatus() != CheckResult.OK)
-            {
-                // Force a modem check
-                modemStatusHandler.forceNextCheck();
-                modemStatusHandler.storeStatus();
-                smsConnectorCheck.closeJms();
-                break;
-            }
+//            if(amsStatusHandler.getCurrentStatus() != CheckResult.OK) {
+//                // Force a modem check
+//                modemStatusHandler.forceNextCheck();
+//                modemStatusHandler.storeStatus();
+//                smsConnectorCheck.closeJms();
+//                break;
+//            }
             
             this.checkSmsConnector();
             smsConnectorCheck.closeJms();
@@ -190,15 +189,14 @@ public class AmsSystemMonitorApplication implements IApplication
         return IApplication.EXIT_OK;
     }
 
-    public void checkSystem()
-    {
+    public void checkSystem() {
+        
         // First check: Message to topic ALARM produces a message to topic T_AMS_SYSTEM_MONITOR
         // Checks the DecisionDepartment, MessageMinder, Distributor
         // This check will _always_ be done!!!!
-        if(amsStatusHandler.doNextCheck())
-        {
-            try
-            {
+        if(amsStatusHandler.doNextCheck()) {
+            
+            try {
                 // Create a new current check status with the current timestamp and
                 // a copy of the status flags.
                 monitorStatusHandler.beginCurrentCheck();
@@ -212,8 +210,8 @@ public class AmsSystemMonitorApplication implements IApplication
                 
                 if(((amsStatusHandler.getPreviousStatus() == CheckResult.ERROR)
                  || (amsStatusHandler.getPreviousStatus() == CheckResult.TIMEOUT))
-                 && (amsStatusHandler.isPriviousSmsSent() == true))
-                {
+                 && (amsStatusHandler.isPriviousSmsSent() == true)) {
+                    
                     sendErrorSms("AMS switched from " + CheckResult.ERROR + " to OK.");
                 }
                 
@@ -221,54 +219,46 @@ public class AmsSystemMonitorApplication implements IApplication
                 
                 monitorStatusHandler.setCurrentStatus(CheckResult.OK);
                 monitorStatusHandler.setSmsSent(false);
-                if((monitorStatusHandler.getPreviousStatus() == CheckResult.ERROR) && (monitorStatusHandler.isPriviousSmsSent() == true))
-                {
+                if((monitorStatusHandler.getPreviousStatus() == CheckResult.ERROR)
+                    && (monitorStatusHandler.isPriviousSmsSent() == true)) {
+                    
                     sendErrorSms("AmsSystemMonitor switched from " + CheckResult.ERROR + " to OK.");
                 }
                 
                 monitorStatusHandler.resetErrorFlag();
-            }
-            catch(AmsSystemMonitorException asme)
-            {
-                if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT)
-                {
+            } catch(AmsSystemMonitorException asme) {
+                
+                if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_TIMEOUT) {
+                    
                     LOG.warn("Timeout!");
     
                     // Set current status TIMEOUT
                     amsStatusHandler.setCurrentStatus(CheckResult.TIMEOUT);
                     
                     LOG.info("Number of timeouts: " + amsStatusHandler.getNumberOfTimeouts());
-                    if(amsStatusHandler.getNumberOfTimeouts() > allowedTimeout)
-                    {
+                    if(amsStatusHandler.getNumberOfTimeouts() > allowedTimeout) {
                         amsStatusHandler.setCurrentStatus(CheckResult.ERROR);
                         amsStatusHandler.setErrorStatusSet(true);
                     }
                     
-                    if(amsStatusHandler.sendErrorSms())
-                    {
+                    if(amsStatusHandler.sendErrorSms()) {
                         sendErrorSms("AMS does NOT respond to the current check. HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         amsStatusHandler.setSmsSent(true);
-                    }
-                    else
-                    {
+                    } else {
                         LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
                     // No effect here because the check of the AMS system will _always_ be done!
                     amsStatusHandler.forceNextCheck();
-                }
-                else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR)
-                {
+                } else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SYSTEM_MONITOR) {
+                    
                     LOG.warn("AmsSystemMonitor does not work properly.");
     
                     monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
-                    if(monitorStatusHandler.sendErrorSms())
-                    {
+                    if(monitorStatusHandler.sendErrorSms()) {
                         sendErrorSms("AmsSystemMonitor could not send JMS check message. HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         monitorStatusHandler.setSmsSent(true);
-                    }
-                    else
-                    {
+                    } else {
                         LOG.info("AmsSystemMonitor does not send a SMS yet.");
                     }
                     
