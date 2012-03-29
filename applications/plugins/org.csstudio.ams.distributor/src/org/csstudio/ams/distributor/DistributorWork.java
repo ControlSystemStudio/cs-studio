@@ -298,17 +298,19 @@ public class DistributorWork extends Thread implements AmsConstants,
 					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
 					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
 
-			success = amsReceiver
-					.createRedundantSubscriber(
-							"amsSubscriberDist",
-							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR),
-							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR),
-							durable);
-
-			if (success == false) {
-				Log.log(this, Log.FATAL, "could not create amsSubscriberDist");
-				return false;
-			}
+			// The topic T_AMS_DISTRIBUTE is now used by the connection that is created in the
+			// application class. The messages are processed by the method onMessage()
+//			success = amsReceiver
+//					.createRedundantSubscriber(
+//							"amsSubscriberDist",
+//							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR),
+//							storeAct.getString(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR),
+//							durable);
+//
+//			if (success == false) {
+//				Log.log(this, Log.FATAL, "could not create amsSubscriberDist");
+//				return false;
+//			}
 
 			success = amsReceiver.createRedundantSubscriber(
 					"amsSubscriberReply",
