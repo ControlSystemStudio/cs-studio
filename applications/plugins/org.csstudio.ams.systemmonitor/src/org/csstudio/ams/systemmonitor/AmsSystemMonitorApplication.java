@@ -55,7 +55,7 @@ public class AmsSystemMonitorApplication implements IApplication
     /** Status handler for the AMS system check */
     private MonitorStatusHandler amsStatusHandler;
     
-    /** Status handler for the SmsConnector check */
+    /** Status handler for the SmsDeliveryWorker check */
     private MonitorStatusHandler modemStatusHandler;
 
     /** Status handler for the AmsSystemMonitor */
@@ -64,7 +64,7 @@ public class AmsSystemMonitorApplication implements IApplication
     /** Class that does the check of the AMS */
     private AmsSystemCheck amsSystemCheck;
 
-    /** Class that does the check of the SMS connector */
+    /** Class that does the check of the SmsDeliveryWorker */
     private SmsDeliveryWorkerCheck smsConnectorCheck;
 
     /** Simple version information */
@@ -100,7 +100,7 @@ public class AmsSystemMonitorApplication implements IApplication
             checkInterval = 1200000;
         }
         
-        modemStatusHandler = new MonitorStatusHandler("SmsConnector Status", "modemStatus.ser", checkInterval, allowedTimeout);
+        modemStatusHandler = new MonitorStatusHandler("SmsDeliveryWorker Status", "modemStatus.ser", checkInterval, allowedTimeout);
     }
     
     /* (non-Javadoc)
@@ -137,7 +137,7 @@ public class AmsSystemMonitorApplication implements IApplication
         monitorStatusHandler.beginCurrentCheck();
         try {
             amsSystemCheck = new AmsSystemCheck("AmsSystemCheckSender", "AmsSystemCheckReceiver", "AmsSystemCheck");
-            smsConnectorCheck = new SmsDeliveryWorkerCheck("AmsSmsConnectorSender", "AmsSmsConnectorReceiver", "SmsConnectorCheck");
+            smsConnectorCheck = new SmsDeliveryWorkerCheck("AmsSmsDeliveryWorkerSender", "AmsSmsDeliveryWorkerReceiver", "SmsDeliveryWorkerCheck");
             
             monitorStatusHandler.setSmsSent(false);
             monitorStatusHandler.setCurrentStatus(CheckResult.OK);
@@ -177,7 +177,7 @@ public class AmsSystemMonitorApplication implements IApplication
 //                break;
 //            }
             
-            this.checkSmsConnector();
+            this.checkSmsDeliveryWorker();
             smsConnectorCheck.closeJms();
             
             // Just one time
@@ -272,14 +272,14 @@ public class AmsSystemMonitorApplication implements IApplication
         }
     }
 
-    public void checkSmsConnector()
+    public void checkSmsDeliveryWorker()
     {
         if(modemStatusHandler.doNextCheck())
         {
             try
             {
-                // Second check: Message to topic ALARM produces a message for the SmsConnector
-                // Checks the modems the SmsConnector uses
+                // Second check: Message to topic ALARM produces a message for the SmsDeliveryWorker
+                // Checks the modems the SmsDeliveryWorker uses
                 monitorStatusHandler.beginCurrentCheck();
                 modemStatusHandler.beginCurrentCheck();
                 
@@ -292,17 +292,17 @@ public class AmsSystemMonitorApplication implements IApplication
                  || (modemStatusHandler.getPreviousStatus() == CheckResult.TIMEOUT))
                  && (modemStatusHandler.isPriviousSmsSent() == true))
                 {
-                    sendErrorSms("SmsConnector switched from " + CheckResult.ERROR + " to OK. All modems are working.");
+                    sendErrorSms("SmsDeliveryWorker switched from " + CheckResult.ERROR + " to OK. All modems are working.");
                 }
                 else if((modemStatusHandler.getPreviousStatus() == CheckResult.WARN) && (modemStatusHandler.isPriviousSmsSent() == true))
                 {
                     if((modemStatusHandler.isErrorStatusSet()))
                     {
-                        sendErrorSms("SmsConnector switched from " + CheckResult.WARN + " to OK. All modems are working.");
+                        sendErrorSms("SmsDeliveryWorker switched from " + CheckResult.WARN + " to OK. All modems are working.");
                     }
                     else
                     {
-                        sendWarnMail("SmsConnector switched from " + CheckResult.WARN + " to OK. All modems are working.");
+                        sendWarnMail("SmsDeliveryWorker switched from " + CheckResult.WARN + " to OK. All modems are working.");
                     }
                 }
                 
@@ -355,7 +355,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     
                     if(modemStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("SmsConnector does NOT respond to the current check: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
+                        sendErrorSms("SmsDeliveryWorker does NOT respond to the current check: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
@@ -367,12 +367,12 @@ public class AmsSystemMonitorApplication implements IApplication
                 }
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_ERROR)
                 {
-                    LOG.warn("SmsConnector does not work properly.");
+                    LOG.warn("SmsDeliveryWorker does not work properly.");
                     modemStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     
                     if(modemStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
+                        sendErrorSms("SmsDeliveryWorker responds a modem problem: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
@@ -384,19 +384,19 @@ public class AmsSystemMonitorApplication implements IApplication
                 }
                 else if(asme.getErrorCode() == AmsSystemMonitorException.ERROR_CODE_SMS_CONNECTOR_WARN)
                 {
-                    LOG.warn("SmsConnector does not work properly.");
+                    LOG.warn("SmsDeliveryWorker does not work properly.");
     
                     modemStatusHandler.setCurrentStatus(CheckResult.WARN);
                     
                     if(modemStatusHandler.getPreviousStatus() == CheckResult.ERROR)
                     {
-                        sendErrorSms("SmsConnector switched from " + CheckResult.ERROR + " to WARN: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
+                        sendErrorSms("SmsDeliveryWorker switched from " + CheckResult.ERROR + " to WARN: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     
                     if(modemStatusHandler.sendWarnMail())
                     {
-                        sendWarnMail("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
+                        sendWarnMail("SmsDeliveryWorker responds a modem problem: " + asme.getMessage() + " HOWTO: http://cssweb.desy.de:8085/HowToViewer?value=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else

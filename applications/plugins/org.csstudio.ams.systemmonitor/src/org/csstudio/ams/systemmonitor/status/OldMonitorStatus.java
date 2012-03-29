@@ -49,7 +49,7 @@ public class OldMonitorStatus implements Serializable
     /** Calendar object that holds the last check date */
     private GregorianCalendar currentCheckDate;
     
-    /** The last check status / answer of the SmsConnector */
+    /** The last check status / answer of the SmsDeliveryWorker */
     private CheckResult currentCheckStatus;
         
     /** Flag, that indicates if a check have to be done. Only used if a check interval is defined.*/

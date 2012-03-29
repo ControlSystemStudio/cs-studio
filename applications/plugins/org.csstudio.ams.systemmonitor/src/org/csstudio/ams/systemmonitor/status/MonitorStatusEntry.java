@@ -45,7 +45,7 @@ public class MonitorStatusEntry implements Serializable
     /** Check id of the last unanswered check. */
     private String checkId;
     
-    /** The last check status / answer of the SmsConnector */
+    /** The last check status / answer of the SmsDeliveryWorker */
     private CheckResult checkStatus;
         
     /** Flag, that indicates if a check have to be done. Only used if a check interval is defined. */
