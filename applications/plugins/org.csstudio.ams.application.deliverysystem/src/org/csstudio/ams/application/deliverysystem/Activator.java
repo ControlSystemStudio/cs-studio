@@ -67,6 +67,7 @@ public class Activator implements BundleActivator {
     public void stop(BundleContext bundleContext) throws Exception {
 	    Activator.plugin = null;
 	    Activator.context = null;
+	    _genericServiceTracker.close();
 	}
 	
     /**
