@@ -182,7 +182,7 @@ public class ScanInfo implements Serializable
                created.equals(other.created) &&
                current_commmand.equals(other.current_commmand) &&
                ((error == null  && other.error == null) ||
-                error.equals(other.error)
+                (error != null  && error.equals(other.error))
                );
     }
 
