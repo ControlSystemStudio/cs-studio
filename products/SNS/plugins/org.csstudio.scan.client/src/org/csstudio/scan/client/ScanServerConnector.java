@@ -51,12 +51,18 @@ public class ScanServerConnector
      */
     public static ScanServer connect(final String hostname, final int port) throws Exception
     {
-        final Registry registry = LocateRegistry.getRegistry(hostname, port);
-        final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
+    	try
+    	{
+	        final Registry registry = LocateRegistry.getRegistry(hostname, port);
+	        final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
 
-        Logger.getLogger(ScanServer.class.getName()).fine("Connected to " + server.getInfo());
-
-        return server;
+	        Logger.getLogger(ScanServer.class.getName()).fine("Connected to " + server.getInfo());
+	        return server;
+    	}
+    	catch (Exception ex)
+    	{
+    		throw new Exception("Cannot connect to Scan Server " + hostname + ":" + port, ex);
+    	}
     }
 
     /** Disconnect from a scan server
