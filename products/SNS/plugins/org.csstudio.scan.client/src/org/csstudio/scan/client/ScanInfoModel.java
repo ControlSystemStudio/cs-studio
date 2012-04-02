@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.Preferences;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -214,7 +215,10 @@ public class ScanInfoModel
     public synchronized ScanServer getServer() throws RemoteException
     {
         if (server == null)
-            throw new RemoteException("Not connected to Scan Server");
+            throw new RemoteException(
+        		"Not connected to Scan Server " +
+        				Preferences.getServerHost() +
+        				":" + Preferences.getServerPort());
         return server;
     }
 
