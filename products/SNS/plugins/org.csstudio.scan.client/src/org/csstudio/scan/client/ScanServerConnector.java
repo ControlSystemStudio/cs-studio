@@ -19,7 +19,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.server.ScanServer;
 
 /** Connect to a {@link ScanServer}
@@ -38,8 +38,8 @@ public class ScanServerConnector
      */
     public static ScanServer connect() throws Exception
     {
-        final String host = Preferences.getServerHost();
-        final int port = Preferences.getServerPort();
+        final String host = SystemSettings.getServerHost();
+        final int port = SystemSettings.getServerPort();
         return connect(host, port);
     }
 

@@ -22,7 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -217,8 +217,8 @@ public class ScanInfoModel
         if (server == null)
             throw new RemoteException(
         		"Not connected to Scan Server " +
-        				Preferences.getServerHost() +
-        				":" + Preferences.getServerPort());
+        				SystemSettings.getServerHost() +
+        				":" + SystemSettings.getServerPort());
         return server;
     }
 
