@@ -83,8 +83,18 @@ public class Preferences
     /** @return Memory threshold for removing older scans */
     public static double getOldScanRemovalMemoryThreshold()
     {
+        double threshold = 50.0;
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", 50.0, null);
+        if (service == null) // Run without pref service
+        	return threshold;
+		return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", threshold, null);
+    }
+
+    /** @return Memory threshold for data logger */
+    public static double getDataLoggerMemoryThreshold()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getDouble(Activator.ID, "data_logger_memory_threshold", 80.0, null);
     }
 
     /** Set system properties (which are in the end what's actually used)

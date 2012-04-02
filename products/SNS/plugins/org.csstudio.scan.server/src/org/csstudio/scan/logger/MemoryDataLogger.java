@@ -20,8 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.scan.Preferences;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.server.MemoryInfo;
 
 /** {@link DataLogger} that keeps all samples in memory
  *  so that it can provide {@link ScanData}
@@ -36,10 +38,17 @@ public class MemoryDataLogger implements DataLogger
 	/** Serial of last logged sample */
     private long last_serial = -1;
 
-	/** {@inheritDoc} */
+    final private double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+
+    /** {@inheritDoc} */
 	@Override
     public synchronized void log(final ScanSample sample)
     {
+		// Check Memory usage
+		final MemoryInfo mem = new MemoryInfo();
+		if (mem.getMemoryPercentage() > threshold)
+    		return;
+
 		List<ScanSample> samples = device_logs.get(sample.getDeviceName());
 		if (samples == null)
 		{
@@ -47,7 +56,6 @@ public class MemoryDataLogger implements DataLogger
 			device_logs.put(sample.getDeviceName(), samples);
 		}
 		samples.add(sample);
-		// TODO Check MemoryUsageInfo, drop older samples?
 		last_serial  = sample.getSerial();
     }
 

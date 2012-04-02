@@ -15,62 +15,62 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 
-import org.csstudio.scan.data.DataFormatter;
-
-/** Scan server info
+/** Memory usage info
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanServerInfo  extends MemoryInfo
+public class MemoryInfo  implements Serializable
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String version;
-    final private Date start_time;
-    final private String beamline_config;
+	final private static double MB = 1024*1024;
+
+    final private long used_mem, max_mem;
 
     /** Initialize
-     *  @param version
-     *  @param start_time
-     *  @param beamline_config
      */
-    public ScanServerInfo(final String version, final Date start_time,
-    		final String beamline_config)
+    public MemoryInfo()
     {
-	    this.version = version;
-	    this.start_time = start_time;
-	    this.beamline_config = beamline_config;
+		final MemoryUsage heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+		used_mem = heap.getUsed();
+	    max_mem = heap.getMax();
     }
 
-    /** @return Version number */
-	public String getVersion()
+	/** @return Used memory (kB) */
+	public long getUsedMem()
     {
-    	return version;
+    	return used_mem;
     }
 
-	/** @return Start time */
-	public Date getStartTime()
+	/** @return Maximum memory that server will try to use (kB) */
+	public long getMaxMem()
     {
-    	return start_time;
+    	return max_mem;
     }
 
-	/** @return Beam line configuration path */
-	public String getBeamlineConfig()
-    {
-    	return beamline_config;
-    }
+	/** @return Memory usage in percent of max: 0..100 */
+	public double getMemoryPercentage()
+	{
+		return used_mem * 100.0 / max_mem;
+	}
+
+	/** @return Memory usage in percent of max */
+    public String getMemoryInfo()
+	{
+		return String.format("%.1f MB / %.1f MB (%.1f %%)",
+				used_mem / MB, max_mem / MB, getMemoryPercentage());
+	}
 
     /** {@inheritDoc} */
     @Override
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("Scan Server ").append(version).append("\n");
-        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
-        buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");
         return buf.toString();
     }
