@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.scan.server.ScanServer;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -28,7 +25,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Preferences
+public class Preferences extends SystemSettings
 {
 	/** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
@@ -51,40 +48,21 @@ public class Preferences
         return service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
     }
 
-	/** @return Scan server host name */
-    public static String getServerHost()
-    {
-        String host = System.getProperty(ScanServer.HOST_PROPERTY);
-        if (host != null)
-            return host;
-        return ScanServer.DEFAULT_HOST;
-    }
-
-    /** @return Scan server TCP port */
-    public static int getServerPort()
-    {
-        String port = System.getProperty(ScanServer.PORT_PROPERTY);
-        if (port != null)
-        {
-            try
-            {
-                return Integer.parseInt(port.trim());
-            }
-            catch (NumberFormatException ex)
-            {
-                Logger.getLogger(Preferences.class.getName()).log(Level.WARNING,
-                        "Cannot parse scan server port", ex);
-            }
-        }
-        return ScanServer.DEFAULT_PORT;
-    }
-
-
     /** @return Memory threshold for removing older scans */
     public static double getOldScanRemovalMemoryThreshold()
     {
+        double threshold = 50.0;
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", 50.0, null);
+        if (service == null) // Run without pref service
+        	return threshold;
+		return service.getDouble(Activator.ID, "old_scan_removal_memory_threshold", threshold, null);
+    }
+
+    /** @return Memory threshold for data logger */
+    public static double getDataLoggerMemoryThreshold()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getDouble(Activator.ID, "data_logger_memory_threshold", 80.0, null);
     }
 
     /** Set system properties (which are in the end what's actually used)

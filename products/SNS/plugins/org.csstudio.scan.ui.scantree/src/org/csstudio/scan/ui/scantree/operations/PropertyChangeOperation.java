@@ -115,7 +115,8 @@ public class PropertyChangeOperation extends AbstractOperation
                 }
                 catch (Exception ex)
                 {
-                    return new Status(IStatus.WARNING, Activator.PLUGIN_ID, toString(), ex);
+                	final String operation = PropertyChangeOperation.this.toString();
+                    return new Status(IStatus.WARNING, Activator.PLUGIN_ID, operation, ex);
                 }
 
                 // Update local model in UI thread
