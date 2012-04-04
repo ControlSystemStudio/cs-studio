@@ -248,12 +248,14 @@ public class SmsDeliveryDevice implements Runnable,
     }
 
     public void announceDeviceTest(final DeviceTestMessageContent msg) {
-        if (!testStatus.isActive()) {
-            testStatus.setDeviceTestMessageContent(msg);
-        } else {
-            LOG.info("A modem check is still active. Ignoring the new modem check.");
-            return;
+        
+        // If we have an active check, reset it and force a new check
+        if (testStatus.isActive()) {
+            LOG.info("A modem check is still active. Forcing a new modem check.");
+            testStatus.reset();
         }
+
+        testStatus.setDeviceTestMessageContent(msg);
 
         final DeviceCheckWorker checkWorker = new DeviceCheckWorker(testStatus, modemInfo, readWaitingPeriod);
         final Thread checkerThread = new Thread(checkWorker);
