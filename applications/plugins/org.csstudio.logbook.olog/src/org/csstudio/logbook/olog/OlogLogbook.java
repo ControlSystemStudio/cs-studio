@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Logger;
 
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
@@ -40,6 +41,9 @@ public class OlogLogbook implements ILogbook {
 	final private OlogClient client;
 
 	private String LogbookName;
+
+	private static final Logger log = Logger.getLogger(OlogLogbook.class
+			.getCanonicalName());
 
 	public OlogLogbook(String logbookName, String user, String password)
 			throws Exception {
@@ -147,17 +151,10 @@ public class OlogLogbook implements ILogbook {
 	private int createBasicEntry(final String LogbookName, final String text)
 			throws Exception {
 		Log returnLog = null;
-		try {
-			LogBuilder lb = LogBuilder.log().description(text).level("Info")
-					.appendToLogbook(logbook(LogbookName));
-			returnLog = client.set(lb);
-			return returnLog.getId().intValue();
-		} catch (OlogException e) {
-//			ExceptionDetailsErrorDialog.openError(PlatformUI.getWorkbench().
-//	                getActiveWorkbenchWindow().getShell(), "Query failed...", e);
-			throw new Exception("Failed to create a log entry : "+e.getMessage(), e);
-		} finally {
-		}
+		LogBuilder lb = LogBuilder.log().description(text).level("Info")
+				.appendToLogbook(logbook(LogbookName));
+		returnLog = client.set(lb);
+		return returnLog.getId().intValue();
 	}
 
 	/**
@@ -179,7 +176,7 @@ public class OlogLogbook implements ILogbook {
 		try {
 			client.add(new File(fname), (long) entry_id);
 		} catch (Exception e1) {
-			System.out.println("Could not upload " + fname + " Error: " + e1);
+			log.severe("Could not upload " + fname + " Error: " + e1);
 			return;
 		}
 
