@@ -11,6 +11,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.sns.mpsbypasses.Preferences;
 import org.csstudio.sns.mpsbypasses.modes.MachineMode;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 
 /** Model of all the bypass info
  *
@@ -127,6 +130,12 @@ public class BypassModel implements BypassListener
     	return error;
     }
 
+	/** @see #selectMachineMode(IProgressMonitor, MachineMode) */
+	public void selectMachineMode(final MachineMode mode)
+	{
+		selectMachineMode(new NullProgressMonitor(), mode);
+	}
+
 	/** Select the machine mode for which to show bypasses.
 	 *
 	 *  <p>This is a long running operation because it reads from the RDB.
@@ -134,11 +143,13 @@ public class BypassModel implements BypassListener
 	 *  <p>Can be called at any time.
 	 *  If model was already started, it will be stopped.
 	 *
+	 *  @param monitor Progress monitor
 	 *  @param mode
 	 *  @see BypassModelListener#modelLoaded(BypassModel)
 	 */
-	public void selectMachineMode(final MachineMode mode)
+	public void selectMachineMode(final IProgressMonitor monitor, final MachineMode mode)
 	{
+		monitor.subTask("Clearing old information");
 		stop();
 
 		synchronized (this)
@@ -153,13 +164,14 @@ public class BypassModel implements BypassListener
     			listener.bypassesChanged();
         }
 
+		monitor.subTask("Reading bypasses from RDB");
 		Exception error = null;
 		RDBUtil rdb = null;
 		try
 		{
 			rdb = RDBUtil.connect(Preferences.getRDB_URL(),
 					Preferences.getRDB_User(), Preferences.getRDB_Password(), false);
-			final Bypass[] new_bypasses = readBypassInfo(rdb.getConnection(), mode);
+			final Bypass[] new_bypasses = readBypassInfo(monitor, rdb.getConnection(), mode);
 			synchronized (this)
             {
 				machine_mode = mode;
@@ -286,14 +298,16 @@ public class BypassModel implements BypassListener
 
 	/** Read bypass info from RDB
 	 *
+	 *  @param monitor Progress monitor
 	 *  @param connection RDB connection
 	 *  @param mode {@link MachineMode}
 	 *  @return {@link Bypass} array
 	 *  @throws Exception on error
 	 */
-	private Bypass[] readBypassInfo(final Connection connection, final MachineMode mode) throws Exception
+	private Bypass[] readBypassInfo(final IProgressMonitor monitor, final Connection connection, final MachineMode mode) throws Exception
     {
-		final RequestLookup requestors = new RequestLookup(connection);
+		monitor.subTask("Read bypass requests");
+		final RequestLookup requestors = new RequestLookup(monitor, connection);
 
 		String rdb_mode = mode.name();
 
@@ -313,6 +327,8 @@ public class BypassModel implements BypassListener
 		procedure.setString(2, rdb_mode);
 		if(mode != MachineMode.Site)
 			procedure.setString(3, "Y");
+
+		monitor.subTask("Fetching bypass details from RDB...");
 		procedure.execute();
 
 		// Store the retrieved MPS Mode Mask Table array
@@ -321,6 +337,9 @@ public class BypassModel implements BypassListener
 		// retrieve the signal id read from the RDB array for gathering bypass information
 		for (int index = 0; index < result.length; index++)
 		{
+			if (index % 100 == 0)
+				monitor.subTask(NLS.bind("Read details for {0} bypasses", index));
+
 			final Struct element = (Struct) result[index];
 			final Object[] attributes = (Object[]) element.getAttributes();
 			if (attributes.length < 1)

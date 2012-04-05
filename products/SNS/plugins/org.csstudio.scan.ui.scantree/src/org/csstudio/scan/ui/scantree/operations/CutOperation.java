@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.XMLCommandWriter;
-import org.csstudio.scan.ui.scantree.ScanEditor;
 import org.csstudio.scan.ui.scantree.model.RemovalInfo;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -33,18 +33,18 @@ import org.eclipse.ui.actions.ActionFactory;
 @SuppressWarnings("nls")
 public class CutOperation extends AbstractOperation
 {
-    final private ScanEditor editor;
+    final private ScanTreeModel model;
     final private List<ScanCommand> to_remove;
     private List<RemovalInfo> removals = null;
 
     /** Initialize
-     *  @param editor Editor that submitted this operation
+     *  @param model Model where insertions should be performed
      *  @param to_remove Commands to remove
      */
-    public CutOperation(final ScanEditor editor, final List<ScanCommand> to_remove)
+    public CutOperation(final ScanTreeModel model, final List<ScanCommand> to_remove)
     {
         super(ActionFactory.CUT.getId());
-        this.editor = editor;
+        this.model = model;
         this.to_remove = to_remove;
     }
 
@@ -75,7 +75,7 @@ public class CutOperation extends AbstractOperation
             for (int i=to_remove.size()-1;  i>=0;  --i)
             {
                 final ScanCommand command = to_remove.get(i);
-                removals.add(0, editor.getModel().remove(command));
+                removals.add(0, model.remove(command));
             }
 
             // Format as XML

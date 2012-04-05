@@ -55,6 +55,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -130,7 +132,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     /** @see #isDirty() */
     private boolean is_dirty = false;
 
-    /** @return Devices available on scan server */
+    /** @return Devices available on scan server. Set by background thread */
     private volatile DeviceInfo[] devices = null;
 
     /** ID of scan that was submitted, the 'live' scan, or -1 */
@@ -221,7 +223,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             return;
         }
 
-        fetchDevices();
         createComponents(parent);
 
         final IEditorInput input = getEditorInput();
@@ -246,30 +247,53 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
 
         scan_info.addListener(this);
         model.addListener(this);
+
+        // In background, try to get device info from server.
+        // Job keeps trying until successful, or is stoped when closing the editor.
+        final Job fetch_devices = startDeviceFetchJob();
+        parent.addDisposeListener(new DisposeListener()
+		{
+			@Override
+			public void widgetDisposed(DisposeEvent e)
+			{
+				fetch_devices.cancel();
+			}
+		});
     }
 
-    /** Read device list from server */
-    private void fetchDevices()
+    /** @return {@link Job} that reads device list from server (already started) */
+    private Job startDeviceFetchJob()
     {
         final Job job = new Job(Messages.DeviceListFetch)
         {
             @Override
-            protected IStatus run(IProgressMonitor monitor)
+            protected IStatus run(final IProgressMonitor monitor)
             {
+                final ScanServer server;
+        		try
+        		{
+        			server = scan_info.getServer();
+        		}
+        		catch (Exception ex)
+        		{
+        			// Not connected to server: Try again later
+        			schedule(10000);
+                    return Status.OK_STATUS;
+        		}
                 try
                 {
-                    final ScanServer server = scan_info.getServer();
                     devices = server.getDeviceInfos(-1);
                 }
                 catch (Exception ex)
-                {
+                {	// Connected, but still error: Give up
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                             Messages.DeviceListFetchError, ex);
-                }
+            	}
                 return Status.OK_STATUS;
             }
         };
-        job.schedule();
+        job.schedule(2000);
+        return job;
     }
 
     /** Create GUI components
