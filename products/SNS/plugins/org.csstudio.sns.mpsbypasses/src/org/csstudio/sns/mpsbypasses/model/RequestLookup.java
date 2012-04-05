@@ -1,11 +1,15 @@
 package org.csstudio.sns.mpsbypasses.model;
 
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import org.eclipse.core.runtime.IProgressMonitor;
 
 /** Bypass Request lookup: Who requested a bypass at some time?
  *  @author Delphy Armstrong - SQL in original MPSBypassModel
@@ -18,25 +22,16 @@ public class RequestLookup
 	final private Map<String, Request> requests = new HashMap<String, Request>();
 
 	/** Initialize
+ 	 *  @param monitor Progress monitor
 	 *  @param connection RDB connection
 	 *  @throws Exception on error
 	 */
-	public RequestLookup(final Connection connection) throws Exception
+	public RequestLookup(final IProgressMonitor monitor, final Connection connection) throws Exception
 	{
-		this(connection, false);
+		getRequests(monitor, connection);
 	}
 
-	/** Initialize
-	 *  @param connection RDB connection
-	 *  @param debug Display request info?
-	 *  @throws Exception on error
-	 */
-	public RequestLookup(final Connection connection, final boolean debug) throws Exception
-	{
-		getRequests(connection, debug);
-	}
-
-	private void getRequests(final Connection connection, final boolean debug) throws Exception
+	private void getRequests(final IProgressMonitor monitor, final Connection connection) throws Exception
     {
 		final PreparedStatement statement = connection.prepareStatement(
 			"SELECT d.DVC_ID, r.ADD_BN, r.ADD_DTE, e.first_nm, e.middle_nm, e.last_name" +
@@ -66,9 +61,6 @@ public class RequestLookup
 					requestor = first + " " + last + " (" + badge + ")";
 				else
 					requestor = "Badge " + badge;
-
-				if (debug)
-					System.out.println(device + " by " + requestor + " on " + date);
 				requests.put(device, new Request(requestor, date));
 			}
 		}
@@ -86,4 +78,15 @@ public class RequestLookup
 	{
 		return requests.get(device_id);
 	}
+
+	public void dump(final PrintStream out)
+    {
+		for (Entry<String, Request> entry : requests.entrySet())
+		{
+			final String device = entry.getKey();
+			final String requestor = entry.getValue().getRequestor();
+			final Date date = entry.getValue().getDate();
+			out.println(device + " by " + requestor + " on " + date);
+		}
+    }
 }
