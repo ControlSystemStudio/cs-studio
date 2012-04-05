@@ -10,7 +10,7 @@ package org.csstudio.scan.ui.scantree.operations;
 import java.util.List;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.ui.scantree.ScanEditor;
+import org.csstudio.scan.ui.scantree.model.ScanTreeModel;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.AbstractOperation;
 import org.eclipse.core.runtime.IAdaptable;
@@ -24,38 +24,39 @@ import org.eclipse.core.runtime.Status;
 @SuppressWarnings("nls")
 public class InsertOperation extends AbstractOperation
 {
-    final private ScanEditor editor;
+    final private ScanTreeModel model;
     final private List<ScanCommand> commands;
     final private ScanCommand location;
     final private List<ScanCommand> new_commands;
     final private boolean after;
 
-    /** Initialize
-     *  @param editor Editor that submitted this operation
+    /** Initialize for insertion into 'root' of tree
+     *  @param model Model where insertions should be performed
      *  @param location Where to add
      *  @param new_commands Commands to add
      */
-    public InsertOperation(final ScanEditor editor,
+    public InsertOperation(final ScanTreeModel model,
             final ScanCommand location,
             final List<ScanCommand> new_commands,
             final boolean after)
     {
-        this(editor, editor.getModel().getCommands(), location, new_commands, after);
+        this(model, model.getCommands(), location, new_commands, after);
     }
 
-    /** Initialize
-     *  @param editor Editor that submitted this operation
+    /** Initialize for insertion into sub-branch of tree
+     *  @param model Model where insertions should be performed
+     *  @param commands Commands within model
      *  @param location Where to add
      *  @param new_commands Commands to add
      */
-    public InsertOperation(final ScanEditor editor,
+    public InsertOperation(final ScanTreeModel model,
             final List<ScanCommand> commands,
             final ScanCommand location,
             final List<ScanCommand> new_commands,
             final boolean after)
     {
         super("insert");
-        this.editor = editor;
+        this.model = model;
         this.commands = commands;
         this.location = location;
         this.new_commands = new_commands;
@@ -80,10 +81,16 @@ public class InsertOperation extends AbstractOperation
             ScanCommand target = location;
             if (location == null  && commands.size() > 0)
                 target = commands.get(commands.size()-1);
+            boolean insert_after = after;
             for (ScanCommand command : new_commands)
             {
-                editor.getModel().insert(commands, target, command, after);
+                model.insert(commands, target, command, insert_after);
+                // When many items are inserted, the first item may go "before"
+                // the target.
+                // That newly inserted command then becomes the target,
+                // and everything else goes _after_ this new target.
                 target = command;
+                insert_after = true;
             }
         }
         catch (Exception ex)
@@ -102,7 +109,7 @@ public class InsertOperation extends AbstractOperation
         try
         {
             for (ScanCommand command : new_commands)
-                editor.getModel().remove(command);
+                model.remove(command);
         }
         catch (Exception ex)
         {

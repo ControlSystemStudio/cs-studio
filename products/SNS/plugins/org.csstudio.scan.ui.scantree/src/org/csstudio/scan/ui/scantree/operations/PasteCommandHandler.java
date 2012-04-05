@@ -67,7 +67,7 @@ public class PasteCommandHandler extends AbstractHandler
                 selection != null  &&  selection.size() > 0
                 ? selection.get(0)
                 : null;
-        editor.executeForUndo(new InsertOperation(editor, location, received_commands, true));
+        editor.executeForUndo(new InsertOperation(editor.getModel(), location, received_commands, true));
 
         return null;
     }

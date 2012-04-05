@@ -437,7 +437,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
 
         if (target == null)
         {
-            editor.executeForUndo(new InsertOperation(editor, null,
+            editor.executeForUndo(new InsertOperation(editor.getModel(), null,
                     dropped_commands, true));
         }
         else
@@ -450,13 +450,13 @@ public class ScanTreeGUI implements ScanTreeModelListener
                 final ScanCommand location = body.size() > 0
                         ? body.get(body.size()-1)
                         : null;
-                editor.executeForUndo(new InsertOperation(editor, body, location,
+                editor.executeForUndo(new InsertOperation(editor.getModel(), body, location,
                         dropped_commands, true));
             }
             else
             {
                 final boolean after = target.section != TreeItemInfo.Section.UPPER;
-                editor.executeForUndo(new InsertOperation(editor, target.command,
+                editor.executeForUndo(new InsertOperation(editor.getModel(), target.command,
                         dropped_commands, after));
             }
         }
