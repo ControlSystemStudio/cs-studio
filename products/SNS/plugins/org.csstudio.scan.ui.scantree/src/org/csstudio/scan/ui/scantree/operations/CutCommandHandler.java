@@ -30,7 +30,7 @@ public class CutCommandHandler extends AbstractHandler
         {
             // Execute the 'cut'
             final List<ScanCommand> to_remove = editor.getSelectedCommands();
-            editor.executeForUndo(new CutOperation(editor, to_remove));
+            editor.executeForUndo(new CutOperation(editor.getModel(), to_remove));
         }
         return null;
     }

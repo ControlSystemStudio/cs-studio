@@ -306,7 +306,7 @@ public class ScanTreeGUI implements ScanTreeModelListener
                 // Remove 'original' command that was moved to new location
                 try
                 {
-                    editor.executeForUndo(new CutOperation(editor, selection));
+                    editor.executeForUndo(new CutOperation(editor.getModel(), selection));
                 }
                 catch (Exception ex)
                 {
