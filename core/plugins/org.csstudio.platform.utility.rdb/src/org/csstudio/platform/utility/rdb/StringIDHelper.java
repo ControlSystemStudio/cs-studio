@@ -18,6 +18,7 @@ import java.sql.Statement;
  *  The find... calls keep the prepared statement open for re-use.
  *  @author Kay Kasemir
  *  @author Laurent Philippe Switch connection to readonly to MySQL load balancing
+ *  @author Lana Abadie - Readonly change not possible for PostgreSQL. Disable autocommit as needed.
  */
 @SuppressWarnings("nls")
 public class StringIDHelper
@@ -124,9 +125,9 @@ public class StringIDHelper
     public StringID find(final int id) throws Exception
     {
         final Connection tempConnection = rdb.getConnection();
-        final boolean was_readonly = tempConnection.isReadOnly();
-        if (! was_readonly)
-            tempConnection.setReadOnly(true);
+//        final boolean was_readonly = tempConnection.isReadOnly();
+//        if (! was_readonly)
+//            tempConnection.setReadOnly(true);
     	try
     	{
         	if (sel_by_id == null || connection != tempConnection)
@@ -147,8 +148,8 @@ public class StringIDHelper
     	}
     	finally
     	{
-    	    if (! was_readonly)
-    	        tempConnection.setReadOnly(false);
+//    	    if (! was_readonly)
+//    	        tempConnection.setReadOnly(false);
     	}
         return null;
     }
@@ -164,6 +165,7 @@ public class StringIDHelper
         if (entry != null)
             return entry;
         entry = new StringID(getNextID(), name);
+        rdb.getConnection().setAutoCommit(false);
         final PreparedStatement insert = rdb.getConnection().prepareStatement(
                 "INSERT INTO " + table +
                 "(" + id_column + "," + name_column + ") VALUES (?,?)");
@@ -178,18 +180,24 @@ public class StringIDHelper
             rdb.getConnection().commit();
             return entry;
         }
+        catch(Exception e)
+        {
+        	rdb.getConnection().rollback();
+        	throw e;
+        }
         finally
         {
             insert.close();
+            rdb.getConnection().setAutoCommit(true);
         }
     }
 
     private int getNextID() throws Exception
     {
         final Connection tempConnection = rdb.getConnection();
-        final boolean was_readonly = tempConnection.isReadOnly();
-        if (! was_readonly)
-            tempConnection.setReadOnly(true);
+//        final boolean was_readonly = tempConnection.isReadOnly();
+//        if (! was_readonly)
+//            tempConnection.setReadOnly(true);
     	final Statement statement = tempConnection.createStatement();
         try
         {
@@ -207,8 +215,8 @@ public class StringIDHelper
         finally
         {
             statement.close();
-            if (! was_readonly)
-                tempConnection.setReadOnly(false);
+//            if (! was_readonly)
+//                tempConnection.setReadOnly(false);
         }
     }
 }
