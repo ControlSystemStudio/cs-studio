@@ -38,8 +38,10 @@ import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.core.resources.IFile;
@@ -129,7 +131,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     /** Tree GUI */
     private ScanTreeGUI gui;
 
-    /** @see #isDirty() */
+    /** Dirty state of the editor,
+     *  updated from operations history
+     *  @see #isDirty()
+     */
     private boolean is_dirty = false;
 
     /** @return Devices available on scan server. Set by background thread */
@@ -197,6 +202,25 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     {
         undo_context = new UndoContext();
         operations.setLimit(undo_context, 50);
+        
+        // Update 'dirty' state from operations history.
+        operations.addOperationHistoryListener(new IOperationHistoryListener()
+		{
+			@Override
+			public void historyNotification(final OperationHistoryEvent event)
+			{
+				switch (event.getEventType())
+				{
+				case OperationHistoryEvent.OPERATION_ADDED:
+				case OperationHistoryEvent.OPERATION_REMOVED:
+				case OperationHistoryEvent.UNDONE:
+				case OperationHistoryEvent.REDONE:
+					// dirty == anything on the 'undo' list?
+					is_dirty = operations.canUndo(undo_context);
+					firePropertyChange(IEditorPart.PROP_DIRTY);
+				}
+			}
+		});
     }
 
     /** {@inheritDoc} */
@@ -693,7 +717,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 file.setContents(stream, IFile.FORCE, monitor);
             else
                 file.create(stream, true, monitor);
-            setDirty(false);
             clearUndoHistory();
             return true;
         }
@@ -765,41 +788,28 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         return is_dirty;
     }
 
-    /** Update the 'dirty' flag
-     *  @param dirty <code>true</code> if model changed and needs to be saved
-     */
-    protected void setDirty(final boolean dirty)
-    {
-        is_dirty = dirty;
-        firePropertyChange(IEditorPart.PROP_DIRTY);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void commandsChanged()
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandAdded(final ScanCommand command)
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandRemoved(final ScanCommand command)
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandPropertyChanged(final ScanCommand command)
     {
-        setDirty(true);
         // Update property sheet
         if (property_page != null)
             property_page.refresh();
