@@ -15,12 +15,12 @@ import org.eclipse.swt.widgets.Shell;
 /** Action to trigger debug on server
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DebugAction extends Action
 {
 	final private Shell shell;
     final private AlarmClientModel model;
 
-    @SuppressWarnings("nls")
     public DebugAction(final Shell shell, final AlarmClientModel model)
     {
         super("Debug", Activator.getImageDescriptor("icons/debug.gif"));
