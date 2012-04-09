@@ -26,10 +26,19 @@ import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
  *  every once in a while over a long run time, the connection test can be
  *  expensive for a short flurry of transactions.
  *  It can therefore be suppressed via <code>setAutoReconnect()</code>.
+ *  <p>
+ *  Note that versions 1.6.0 and earlier of this plugin defaulted
+ *  to turning auto-commit <u>off</u>.
+ *  Since 1.6.0, it uses the original JDBC default with auto-commit enabled,
+ *  so code that needs transactions is supposed to disable auto-commit for
+ *  the transaction, then commit or roll back, and re-enable auto-commit.
+ *  <p>
+ *  This change can cause problems in database dialects that consider it
+ *  an error to call <code>commit</code> without specifically disabling auto-commit.
  *
  *  @author Kay Kasemir
  *  @author Xihui Chen
- *  @author Lana Abadie (PostgreSQL)
+ *  @author Lana Abadie (PostgreSQL, autocommit)
  */
 @SuppressWarnings("nls")
 abstract public class RDBUtil
@@ -160,7 +169,8 @@ abstract public class RDBUtil
     	this.autoReconnect = autoReconnect;
     	this.dialect = dialect;
     	this.connection = do_connect(url, user, password);
-        connection.setAutoCommit(false);
+    	// Auto-commit is the default, but just to make sure:
+        connection.setAutoCommit(true);
         if(autoReconnect) {
             test_query = connection.prepareStatement(getConnectionTestQuery());
         }
