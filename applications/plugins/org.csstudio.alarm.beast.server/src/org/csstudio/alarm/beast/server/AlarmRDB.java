@@ -25,6 +25,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Alarm RDB Handler
  *  @author Kay Kasemir
+ *  @author Lana Abadie - Disable autocommit as needed.
  */
 @SuppressWarnings("nls")
 public class AlarmRDB
@@ -33,15 +34,15 @@ public class AlarmRDB
     final private AlarmServer server;
 
     /** Connection to storage for configuration/state */
-	final private RDBUtil rdb;
+    final private RDBUtil rdb;
 
-	/** RDB SQL statements */
-	final private SQL sql;
+    /** RDB SQL statements */
+    final private SQL sql;
 
     /** RDB connection. Used to check if the RDB reconnected */
     private Connection connection;
 
-	final private String root_name;
+    final private String root_name;
 
     /** Map of severities and severity IDs in RDB */
     final private SeverityMapping severity_mapping;
@@ -55,15 +56,15 @@ public class AlarmRDB
     /** Lazily (re-)created statement for updating the global alarm state of a PV */
     private PreparedStatement updateGlobalStatement;
 
-	public AlarmRDB(final AlarmServer server, final String url,
-			final String user, final String password,
-			final String schema, final String root_name) throws Exception
+    public AlarmRDB(final AlarmServer server, final String url,
+            final String user, final String password,
+            final String schema, final String root_name) throws Exception
     {
-		this.server = server;
-		rdb = RDBUtil.connect(url, user, password, true);
-		sql = new SQL(rdb, schema);
+        this.server = server;
+        rdb = RDBUtil.connect(url, user, password, true);
+        sql = new SQL(rdb, schema);
         connection = rdb.getConnection();
-		this.root_name = root_name;
+        this.root_name = root_name;
         // Disable auto-reconnect: Slightly faster, and we just connected OK.
         rdb.setAutoReconnect(false);
         try
@@ -77,10 +78,10 @@ public class AlarmRDB
         }
     }
 
-	/** Read alarm configuration
+    /** Read alarm configuration
      *  @return Root element of the alarm tree hierarchy
      *  @throws Exception on error
-	 */
+     */
     public TreeItem readConfiguration() throws Exception
     {
         final Connection conn = rdb.getConnection();
@@ -120,8 +121,8 @@ public class AlarmRDB
             sel_items_by_parent.close();
         }
 
-        // In transactional mode (Connection.setAutoCommit(true)),
-        // even SELECTs need a commit() to end the transaction.
+        // In transactional mode (Connection.setAutoCommit(false)),
+        // even SELECTs needed a commit() to end the transaction.
         // Otherwise the next 'SELECT' would get the same information.
         // Usually, there will be some alarm state updates, each committed,
         // to assert that a later readConfiguration() call will get the latest
@@ -129,7 +130,8 @@ public class AlarmRDB
         // after reading the original configuration,
         // a newly added PV will not be found in the next readConfiguration() call
         // because we would still be in the previous transaction.
-        conn.commit();
+        if (! conn.getAutoCommit())
+            conn.commit();
 
         // Re-enable auto-reconnect
         rdb.setAutoReconnect(true);
@@ -144,7 +146,7 @@ public class AlarmRDB
      *  @param sel_items_by_parent Prepared statement for fetching child elements
      *  @throws Exception on error
      */
-	private void readChildren(final TreeItem parent, final PreparedStatement sel_items_by_parent) throws Exception
+    private void readChildren(final TreeItem parent, final PreparedStatement sel_items_by_parent) throws Exception
     {
         final List<TreeItem> recurse_items = new ArrayList<TreeItem>();
 
@@ -244,7 +246,7 @@ public class AlarmRDB
 
     /** Read configuration for PV, update it from RDB
      *  @param pv AlarmPV to update
-     * 	@throws Exception on error
+     *  @throws Exception on error
      */
     public void readConfigurationUpdate(final AlarmPV pv) throws Exception
     {
@@ -281,7 +283,7 @@ public class AlarmRDB
      *  @param timestamp
      *  @throws Exception on error
      */
-	public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
+    public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
             String current_message, final SeverityLevel severity, String message,
             final String value, final ITimestamp timestamp) throws Exception
     {
@@ -298,7 +300,7 @@ public class AlarmRDB
         // the combined time spent in CPU usage and network I/O.
 
         // These are usually quick accesses to local caches,
-	    // but could fail when trying to add new values to RDB, so give detailed error
+        // but could fail when trying to add new values to RDB, so give detailed error
         final int current_severity_id;
         final int severity_id;
         final int current_message_id;
@@ -339,82 +341,117 @@ public class AlarmRDB
         // The isConnected() check in here is expensive, but what's
         // the alternative if we want convenient auto-reconnect?
         final Connection actual_connection = rdb.getConnection();
-        if (actual_connection != connection  ||  updateStateStatement == null)
-        {   // (Re-)create statement on new connection
-            connection = actual_connection;
-            updateStateStatement = null;
-            updateStateStatement = connection.prepareStatement(sql.update_pv_state);
+        actual_connection.setAutoCommit(false);
+        try
+        {
+            if (actual_connection != connection  ||  updateStateStatement == null)
+            {   // (Re-)create statement on new connection
+                connection = actual_connection;
+                updateStateStatement = null;
+                updateStateStatement = connection.prepareStatement(sql.update_pv_state);
+            }
+            // Bulk of the time is spent in execute() & commit
+            updateStateStatement.setInt(1, current_severity_id);
+            updateStateStatement.setInt(2, current_message_id);
+            updateStateStatement.setInt(3, severity_id);
+            updateStateStatement.setInt(4, message_id);
+            updateStateStatement.setString(5, value);
+            Timestamp sql_time = timestamp.toSQLTimestamp();
+            if (sql_time.getTime() == 0)
+            {    // MySQL will throw Data Truncation exception on 0 time stamps
+                sql_time = new Timestamp(new Date().getTime());
+                Activator.getLogger().log(Level.INFO,
+                        "State update for {0} corrects time stamp {1} to now",
+                        new Object[] { pv.getPathName(), timestamp });
+            }
+            updateStateStatement.setTimestamp(6, sql_time);
+            updateStateStatement.setInt(7, pv.getID());
+            updateStateStatement.execute();
+            actual_connection.commit();
         }
-        // Bulk of the time is spent in execute() & commit
-        updateStateStatement.setInt(1, current_severity_id);
-        updateStateStatement.setInt(2, current_message_id);
-        updateStateStatement.setInt(3, severity_id);
-        updateStateStatement.setInt(4, message_id);
-        updateStateStatement.setString(5, value);
-        Timestamp sql_time = timestamp.toSQLTimestamp();
-        if (sql_time.getTime() == 0)
-        {	// MySQL will throw Data Truncation exception on 0 time stamps
-        	sql_time = new Timestamp(new Date().getTime());
-        	Activator.getLogger().log(Level.INFO,
-        			"State update for {0} corrects time stamp {1} to now",
-        			new Object[] { pv.getPathName(), timestamp });
+        catch(Exception e)
+        {
+        	actual_connection.rollback();
+            throw e;
         }
-		updateStateStatement.setTimestamp(6, sql_time);
-        updateStateStatement.setInt(7, pv.getID());
-        updateStateStatement.execute();
-        connection.commit();
+        finally
+        {
+            actual_connection.setAutoCommit(true);
+        }
     }
 
-	/** Update 'global' alarm indicator in RDB
-	 *  @param pv
-	 *  @param active Is there an active 'global' alarm on the PV?
-	 *  @throws Exception on error
-	 */
-	public void writeGlobalUpdate(final AlarmPV pv, final boolean active) throws Exception
+    /** Update 'global' alarm indicator in RDB
+     *  @param pv
+     *  @param active Is there an active 'global' alarm on the PV?
+     *  @throws Exception on error
+     */
+    public void writeGlobalUpdate(final AlarmPV pv, final boolean active) throws Exception
     {
         // The isConnected() check in here is expensive, but what's
         // the alternative if we want convenient auto-reconnect?
         final Connection actual_connection = rdb.getConnection();
-        if (actual_connection != connection  ||  updateGlobalStatement == null)
-        {   // (Re-)create statement on new connection
-            connection = actual_connection;
-            updateGlobalStatement = null;
-            updateGlobalStatement = connection.prepareStatement(sql.update_global_state);
+        actual_connection.setAutoCommit(false);
+        try
+        {
+            if (actual_connection != connection  ||  updateGlobalStatement == null)
+            {   // (Re-)create statement on new connection
+                connection = actual_connection;
+                updateGlobalStatement = null;
+                updateGlobalStatement = connection.prepareStatement(sql.update_global_state);
+            }
+            updateGlobalStatement.setBoolean(1, active);
+            updateGlobalStatement.setInt(2, pv.getID());
+            updateGlobalStatement.execute();
+            actual_connection.commit();
         }
-        updateGlobalStatement.setBoolean(1, active);
-        updateGlobalStatement.setInt(2, pv.getID());
-        updateGlobalStatement.execute();
-        connection.commit();
+        catch(Exception e)
+        {
+        	actual_connection.rollback();
+            throw e;
+        }
+        finally
+        {
+            actual_connection.setAutoCommit(true);
+        }
     }
 
     /** Write updated PV enablement to RDB
      *  @param pv Alarm PV
      *  @param enabled Enabled or not?
-	 *  @throws Exception on error
+     *  @throws Exception on error
      */
-	public void writeEnablementUpdate(final AlarmPV pv, final boolean enabled) throws Exception
+    public void writeEnablementUpdate(final AlarmPV pv, final boolean enabled) throws Exception
     {
-        final Connection connection = rdb.getConnection();
-        final PreparedStatement update_enablement_statement =
-            connection.prepareStatement(sql.update_pv_enablement);
+        final Connection actual_connection = rdb.getConnection();
+
+        final PreparedStatement update_enablement_statement=
+                actual_connection.prepareStatement(sql.update_pv_enablement);
         try
         {
+            actual_connection.setAutoCommit(false);
+
             update_enablement_statement.setBoolean(1, enabled);
             update_enablement_statement.setInt(2, pv.getID());
             update_enablement_statement.execute();
-            connection.commit();
+            actual_connection.commit();
+        }
+        catch(Exception e)
+        {
+            actual_connection.rollback();
+            throw e;
         }
         finally
         {
             update_enablement_statement.close();
+            actual_connection.setAutoCommit(true);
         }
     }
 
-	/** Must be called to release resources */
+    /** Must be called to release resources */
     public void close()
     {
         // Does not specifically close all prepared statements,
         // leaves that to overall rdb.close()
-    	rdb.close();
+        rdb.close();
     }
 }
