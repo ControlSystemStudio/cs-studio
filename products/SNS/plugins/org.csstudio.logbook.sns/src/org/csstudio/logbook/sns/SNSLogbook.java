@@ -29,7 +29,7 @@ import org.csstudio.logbook.ILogbook;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** SNS logbook
- *  
+ *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
  */
@@ -68,7 +68,7 @@ public class SNSLogbook implements ILogbook
 			captions[i] = new File(filenames[i]).getName();
 		createEntry(title, text, filenames, captions);
     }
-    
+
 	/** {@inheritDoc} */
 	@Override
 	public void createEntry(final String title, final String text,
@@ -102,19 +102,18 @@ public class SNSLogbook implements ILogbook
 			addFileToElog(fname, "A", entry_id, "Full Text");
 			tmp_file.deleteOnExit();
 		}
-		rdb.getConnection().commit();
 
 		// Attach remaining files
 		for (int i=0; i<filenames.length; ++i)
 		{
-			final String caption = i < captions.length ? captions[i] : filenames[i]; 
+			final String caption = i < captions.length ? captions[i] : filenames[i];
 			addFileToElog(filenames[i], "I", entry_id, caption);
 		}
 	}
 
 	/** Create basic ELog entry with title and text, obtaining entry ID which
 	 *  would allow addition of attachments.
-	 * 
+	 *
 	 *  @param String title title of the elog entry
 	 *  @param String text text for the elog entry
 	 *  @throws Exception on error
@@ -211,7 +210,6 @@ public class SNSLogbook implements ILogbook
 				statement.setBlob(5, blob);
 			}
 			statement.executeQuery();
-			connection.commit();
 		}
 		finally
 		{
@@ -331,7 +329,7 @@ public class SNSLogbook implements ILogbook
 	}
 
 	/** Get the badge number for the user in the connection dictionary
-	 * 
+	 *
 	 *  @param user user id of person logging in.
 	 *  @return the badge number for the specified user or a default
 	 *  @throws Exception
