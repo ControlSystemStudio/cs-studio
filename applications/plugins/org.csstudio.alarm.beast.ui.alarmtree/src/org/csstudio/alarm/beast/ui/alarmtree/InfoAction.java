@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action to display model info
  *  @author Kay Kasemir
@@ -17,12 +18,14 @@ import org.eclipse.jface.dialogs.MessageDialog;
 @SuppressWarnings("nls")
 public class InfoAction extends Action
 {
+	final private Shell shell;
     final private AlarmClientModel model;
 
-    public InfoAction(final AlarmClientModel model)
+    public InfoAction(final Shell shell, final AlarmClientModel model)
     {
         super("Debug", Activator.getImageDescriptor("icons/information.gif"));
         setToolTipText("Alarm System Info");
+        this.shell = shell;
         this.model = model;
     }
 
@@ -37,8 +40,8 @@ public class InfoAction extends Action
         info.append("PV Count: " + model.getConfigTree().getLeafCount() + "\n");
         info.append("Active alarms: " + model.getActiveAlarms().length + "\n");
         info.append("Acknowledged alarms: " + model.getAcknowledgedAlarms().length + "\n");
-        
-        MessageDialog.openInformation(null, "Alarm System Information",
+
+        MessageDialog.openInformation(shell, "Alarm System Information",
                 info.toString());
     }
 }

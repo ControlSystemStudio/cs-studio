@@ -25,6 +25,7 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
@@ -91,11 +92,12 @@ public class AlarmTreeView extends ViewPart
         		toolbar.add(new SelectConfigurationAction(parent, model));
         		toolbar.add(new Separator());
         	}
+            final Shell shell = parent.getShell();
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
-            toolbar.add(new InfoAction(model));
-            toolbar.add(new DebugAction(model));
-            toolbar.add(new ConfigureItemAction(parent.getShell(), model, gui.getTreeViewer()));
+			toolbar.add(new InfoAction(shell, model));
+            toolbar.add(new DebugAction(shell, model));
+            toolbar.add(new ConfigureItemAction(shell, model, gui.getTreeViewer()));
             toolbar.add(new AcknowledgeAction(true, gui.getTreeViewer()));
             toolbar.add(new AcknowledgeAction(false, gui.getTreeViewer()));
             toolbar.add(new Separator());
