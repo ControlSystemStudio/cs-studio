@@ -27,7 +27,7 @@ import org.csstudio.sns.jms2rdb.Activator;
 
 /** Class that writes JMSLogMessages to the RDB
  *  @author Kay Kasemir
- *  @author Lana Abadie - PostgreSQL additions
+ *  @author Lana Abadie - PostgreSQL additions. Disable autocommit as needed.
  *  reviewed by Katia Danilova 08/20/08
  */
 @SuppressWarnings("nls")
@@ -84,11 +84,8 @@ public class RDBWriter
         }
 
         sql = new SQL(rdb_util, schema);
-
         final Connection connection = rdb_util.getConnection();
-        // Handle commits in code, not automatically
-        connection.setAutoCommit(false);
-
+        
         if (sql.select_next_message_id != null)
             next_message_id_statement =
                 connection.prepareStatement(sql.select_next_message_id);
@@ -156,19 +153,28 @@ public class RDBWriter
         {
             statement.close();
         }
+
+        rdb_util.getConnection().setAutoCommit(false);
         statement = connection.prepareStatement(sql.insert_property_id);
         statement.setInt(1, next_id);
         statement.setString(2, property_name);
         try
         {
         	statement.executeUpdate();
+        	rdb_util.getConnection().commit();
+        }
+        catch(Exception e)
+        {
+        	rdb_util.getConnection().rollback();
+        	throw e;
         }
         finally
         {
             statement.close();
+            rdb_util.getConnection().setAutoCommit(true);
         }
         Activator.getLogger().log(Level.WARNING,
-    		"Inserted unkown Message Property {0} as ID {1}",
+    		"Inserted previously unused Message Property {0} as ID {1}",
     		new Object[] { property_name, next_id } );
         // Add to cache
     	properties.put(property_name, Integer.valueOf(next_id));
@@ -229,6 +235,7 @@ public class RDBWriter
     public void write(final String message) throws Exception
     {
         final Connection connection = rdb_util.getConnection();
+        connection.setAutoCommit(false);
         try
         {
             final long message_id = insertMessage(JMSLogMessage.TYPE, null, "INFO");
@@ -240,6 +247,10 @@ public class RDBWriter
         {
             connection.rollback();
             throw ex;
+        }
+        finally
+        {
+        	connection.setAutoCommit(true);
         }
     }
 
@@ -255,6 +266,7 @@ public class RDBWriter
 		final String severity = map.getString(JMSLogMessage.SEVERITY);
 
         final Connection connection = rdb_util.getConnection();
+        connection.setAutoCommit(false);
         try
         {
     		final long message_id = insertMessage(type, name, severity);
@@ -277,6 +289,10 @@ public class RDBWriter
         {
             connection.rollback();
             throw ex;
+        }
+        finally
+        {
+        	connection.setAutoCommit(true);
         }
     }
 
