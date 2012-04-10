@@ -51,6 +51,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -202,7 +203,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     {
         undo_context = new UndoContext();
         operations.setLimit(undo_context, 50);
-        
+
         // Update 'dirty' state from operations history.
         operations.addOperationHistoryListener(new IOperationHistoryListener()
 		{
@@ -653,17 +654,24 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 property_id, value);
     }
 
+    /** @param file_path Complete path to a scan file
+     *  @return Scan name (basename of file)
+     */
+    public static String getScanNameFromFile(final String file_path)
+    {
+    	final IPath path = new Path(file_path);
+    	final String last = path.lastSegment();
+        final int sep = last.lastIndexOf('.');
+        if (sep > 0)
+            return last.substring(0, sep);
+        return last;
+    }
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = model.getCommands();
-
-        String name = getEditorInput().getName();
-        final int sep = name.lastIndexOf('.');
-        if (sep > 0)
-            name = name.substring(0, sep);
-
-        final String scan_name = name;
+        final String scan_name = getScanNameFromFile(getEditorInput().getName());
 
         // Use background Job to submit scan to server
         final Job job = new Job(Messages.SubmitScan)

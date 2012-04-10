@@ -27,11 +27,19 @@
       <editor
             class="org.csstudio.scan.ui.scantree.ScanEditor"
             contributorClass="org.csstudio.scan.ui.scantree.gui.ScanEditorContributor"
-            default="false"
+            default="true"
             extensions="scn"
             icon="icons/scantree.gif"
             id="org.csstudio.scan.ui.scantree.editor"
             name="%ScanTree">
+      </editor>
+      <editor
+            default="false"
+            extensions="scn"
+            icon="icons/run.png"
+            id="org.csstudio.scan.ui.scantree.submit"
+            launcher="org.csstudio.scan.ui.scantree.ScanLauncher"
+            name="%SubmitScan">
       </editor>
    </extension>
    <extension
