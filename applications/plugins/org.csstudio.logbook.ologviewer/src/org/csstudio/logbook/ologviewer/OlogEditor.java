@@ -198,7 +198,6 @@ public class OlogEditor extends EditorPart {
 		
 		ologDetailWidget = new OlogDetailWidget(parent, SWT.None);
 		ologDetailWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		ologDetailWidget.setEnabled(false);
 		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(), ologTableWidget);
 	}
 
