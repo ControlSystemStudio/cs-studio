@@ -19,6 +19,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
+import org.csstudio.scan.SimulatedDevice;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
@@ -26,6 +28,7 @@ import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.SimulationContext;
 
 /** {@link ScanCommandImpl} that sets a device to a value
  *  @author Kay Kasemir
@@ -49,6 +52,37 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         if (readback.isEmpty())
             return new String[] { command.getDeviceName() };
         return new String[] { command.getDeviceName(), readback };
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public void simulate(final SimulationContext context) throws Exception
+    {
+		final SimulatedDevice device = context.getDevice(command.getDeviceName());
+
+		// Get previous and desired values
+		final double original = ValueUtil.getDouble(device.read());
+		final double desired;
+		if (command.getValue() instanceof Number)
+			desired = ((Number) command.getValue()).doubleValue();
+		else
+			desired = Double.NaN;
+
+		// Estimate execution time
+		final double time_estimate = command.getWait()
+				? device.getChangeTimeEstimate(desired)
+				: 0.0;
+
+		// Show command
+		final StringBuilder buf = new StringBuilder();
+	    buf.append("Set '").append(command.getDeviceName()).append("' = ").append(command.getValue());
+	    command.appendConditionDetail(buf);
+	    if (! Double.isNaN(original))
+	    	buf.append(" [was ").append(original).append("]");
+    	context.logExecutionStep(buf.toString(), time_estimate);
+
+    	// Set to (simulated) new value
+    	device.write(command.getValue());
     }
 
 	/** {@inheritDoc} */

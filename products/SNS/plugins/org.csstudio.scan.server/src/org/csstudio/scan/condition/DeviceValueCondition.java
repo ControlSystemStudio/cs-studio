@@ -17,8 +17,6 @@ package org.csstudio.scan.condition;
 
 import java.util.concurrent.TimeoutException;
 
-import org.csstudio.data.values.IValue;
-import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
@@ -87,16 +85,6 @@ public class DeviceValueCondition implements DeviceListener
         this.desired_value = desired_value;
     }
 
-    /** @param value Value that may be <code>null</code>
-     *  @return double or NaN
-     */
-    private double getSafeDouble(final IValue value)
-    {
-        if (value == null)
-            return Double.NaN;
-        return ValueUtil.getDouble(value);
-    }
-
     /** Wait for value of device to reach the desired value (within tolerance)
      *  @throws TimeoutException on timeout
      *  @throws Exception on interruption or device read error
@@ -106,7 +94,7 @@ public class DeviceValueCondition implements DeviceListener
         final long end_ms = System.currentTimeMillis() + Math.round(timeout * 1000.0);
 
         // Set initial value (null if device is disconnected)
-        initial_value = getSafeDouble(device.read());
+        initial_value = device.readDouble();
 
         device.addListener(this);
         try
@@ -148,7 +136,7 @@ public class DeviceValueCondition implements DeviceListener
      */
     public boolean isConditionMet() throws Exception
     {
-        final double value = getSafeDouble(device.read());
+        final double value = device.readDouble();
         // Note that these need to fail "safe" if any of the values are NaN
         switch (comparison)
         {
@@ -182,7 +170,7 @@ public class DeviceValueCondition implements DeviceListener
             try
             {
                 if (Double.isNaN(initial_value))
-                    initial_value = getSafeDouble(device.read());
+                    initial_value = device.readDouble();
                 is_condition_met = isConditionMet();
             }
             catch (Exception ex)
