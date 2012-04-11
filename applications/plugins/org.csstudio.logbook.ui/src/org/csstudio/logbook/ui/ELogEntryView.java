@@ -7,11 +7,20 @@
  ******************************************************************************/
 package org.csstudio.logbook.ui;
 
+import javax.print.attribute.standard.Severity;
+
 import org.csstudio.apputil.ui.swt.ImageTabFolder;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.logbook.ILogbookFactory;
 import org.csstudio.logbook.LogbookFactory;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -21,6 +30,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
@@ -163,10 +173,14 @@ public class ELogEntryView extends ViewPart
         final String logbook_value = logbook.getText().trim();
         final String user_name_value = user_name.getText().trim();
         final String password_value = password.getText().trim();
-        final ILogbook log;
+        final String title_value = title.getText().trim();
+        final String text_value = text.getText().trim();
+        final String[] images = image_tabfolder.getFilenames();
+        
+        final ILogbook logbook;
         try
         {
-            log = logbook_factory.connect(logbook_value, user_name_value, password_value);
+        	logbook = logbook_factory.connect(logbook_value, user_name_value, password_value);
         }
         catch (Exception ex)
         {
@@ -174,10 +188,44 @@ public class ELogEntryView extends ViewPart
                     NLS.bind(Messages.LogEntry_ErrorCannotConnectFMT, ex.getMessage()), ex);
             return;
         }
-        try
-        {
-            log.createEntry(title.getText().trim(), text.getText().trim(), image_tabfolder.getFilenames());
-        }
+        try {
+			Job create = new Job("Creating log entry.") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					try {
+						logbook.createEntry(title_value, text_value, images);
+					} catch (final Exception e) {
+						return new Status(
+								Severity.ERROR.getValue(),
+								ID,
+								"Failed to create log entry", e);
+					}
+					return Status.OK_STATUS;
+				}
+			};
+			create.addJobChangeListener(new JobChangeAdapter() {
+				public void done(final IJobChangeEvent event) {
+					if (!event.getResult().isOK()) {
+						Display.getDefault().asyncExec(
+								new Runnable() {
+									public void run() {
+										MessageDialog.openError(
+												getSite().getShell(),
+												Messages.Error,
+												NLS.bind(
+														Messages.LogEntry_ErrorFMT,
+														event.getResult()
+																.getException()));
+
+									}
+								});
+					}
+				}
+			});
+			create.setUser(true);
+			create.schedule();
+		} 
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error,

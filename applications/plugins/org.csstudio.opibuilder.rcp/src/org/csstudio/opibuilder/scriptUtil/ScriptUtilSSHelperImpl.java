@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 
+import javax.print.attribute.standard.Severity;
+
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.opibuilder.actions.SendToElogAction;
@@ -21,7 +23,13 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -34,6 +42,8 @@ import org.eclipse.swt.widgets.FileDialog;
  */
 public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 
+	public static final String ID = "org.csstudio.opibuilder.scriptUtil.ScriptUtilSSHelper";
+	
 	@Override
 	public void writeTextFile(String filePath, boolean inWorkspace,
 			AbstractBaseEditPart widget, String text, boolean append)
@@ -144,11 +154,44 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
                 {
                     final ILogbook logbook = getLogbook_factory()
                                         .connect(logbook_name, user, password);
-                    try
-                    {
+                    try {
+						Job create = new Job("Creating log entry.") {
 
-                        logbook.createEntry(title, body, images);
-                    }
+							@Override
+							protected IStatus run(IProgressMonitor monitor) {
+								try {
+									logbook.createEntry(title, body, images);
+								} catch (final Exception e) {
+									return new Status(
+											Severity.ERROR.getValue(),
+											ID,
+											"Failed to create log entry", e);
+								}
+								return Status.OK_STATUS;
+							}
+						};
+						create.addJobChangeListener(new JobChangeAdapter() {
+							public void done(final IJobChangeEvent event) {
+								if (!event.getResult().isOK()) {
+									Display.getDefault().asyncExec(
+											new Runnable() {
+												public void run() {
+													MessageDialog
+															.openError(
+																	null,
+																	"Error",
+																	event.getResult()
+																			.getException()
+																			.getMessage());
+
+												}
+											});
+								}
+							}
+						});
+						create.setUser(true);
+						create.schedule();
+					} 
                     finally
                     {
                         logbook.close();
