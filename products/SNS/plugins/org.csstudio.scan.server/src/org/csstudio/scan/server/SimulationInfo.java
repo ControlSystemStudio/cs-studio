@@ -18,6 +18,8 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.csstudio.scan.Preferences;
+import org.csstudio.scan.server.internal.PathStreamTool;
 import org.csstudio.scan.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,7 +65,15 @@ public class SimulationInfo
     /** Default slew rate for PVs that were not specified */
     final public static double DEFAULT_SLEW_RATE = 0.05;
 
-	/** Initialize
+    /** @return Default {@link SimulationInfo}, initialized from preferences */
+    public static SimulationInfo getDefault() throws Exception
+    {
+    	final String path = Preferences.getSimulationConfigPath();
+        final InputStream config_stream = PathStreamTool.openStream(path);
+        return new SimulationInfo(config_stream);
+    }
+
+    /** Initialize
 	 *  @param config_file_name Name of XML file
 	 *  @throws Exception on error
 	 */

@@ -20,6 +20,8 @@ import org.csstudio.scan.device.SimulatedDevice;
 @SuppressWarnings("nls")
 public class SimulationContext
 {
+	final private SimulationInfo simulation_info;
+
 	final private Map<String, SimulatedDevice> devices = new HashMap<String, SimulatedDevice>();
 
 	final private PrintStream log_stream;
@@ -28,9 +30,11 @@ public class SimulationContext
 
 	/** Initialize
 	 *  @param log_stream Stream for simulation progress log
+	 *  @throws Exception on error while initializing {@link SimulationInfo}
 	 */
-	public SimulationContext(final PrintStream log_stream)
+	public SimulationContext(final PrintStream log_stream) throws Exception
 	{
+		this.simulation_info = SimulationInfo.getDefault();
 		this.log_stream = log_stream;
 	}
 
@@ -61,7 +65,7 @@ public class SimulationContext
     	SimulatedDevice device = devices.get(name);
 		if (device == null)
 		{
-			device = new SimulatedDevice(name);
+			device = new SimulatedDevice(name, simulation_info);
 			devices.put(name, device);
 		}
 	    return device;

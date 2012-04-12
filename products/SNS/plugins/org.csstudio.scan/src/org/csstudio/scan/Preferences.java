@@ -34,6 +34,13 @@ public class Preferences extends SystemSettings
     	return service.getString(Activator.ID, "beamline_config", "platform:/plugin/org.csstudio.scan/examples/beamline.xml", null);
 	}
 
+	/** @return Path to the default simulation information file */
+	public static String getSimulationConfigPath()
+	{
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	return service.getString(Activator.ID, "simulation_config", "platform:/plugin/org.csstudio.scan/examples/simulation.xml", null);
+	}
+
 	/** @return Path to the pre-scan commands */
     public static String getPreScanPath()
     {

@@ -10,7 +10,7 @@ package org.csstudio.scan.device;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.server.SimulationInfo;
 
 /** Simulated device
  *  @author Kay Kasemir
@@ -25,8 +25,7 @@ public class SimulatedDevice extends Device
 			IValue.Quality.Original,
 			new double[] { Double.NaN });;
 
-	// TODO Get actual slew rate
-	final private double slew_rate = 0.1;
+	final private double slew_rate;
 
 	/** Initialize
 	 *  @param name Name of the simulated device
@@ -34,6 +33,17 @@ public class SimulatedDevice extends Device
 	public SimulatedDevice(final String name)
     {
 		super(new DeviceInfo(name, name, true, true));
+		slew_rate = SimulationInfo.DEFAULT_SLEW_RATE;
+    }
+
+	/** Initialize
+	 *  @param name Name of the simulated device
+	 *  @param simulation_info Simulation info
+	 */
+	public SimulatedDevice(final String name, final SimulationInfo simulation_info)
+    {
+		super(new DeviceInfo(name, name, true, true));
+		slew_rate = simulation_info.getSlewRate(name);
     }
 
 	/** Estimate how long a device will need to reach a desired value

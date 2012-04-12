@@ -5,10 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan.server;
+package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 
+import org.csstudio.scan.server.SimulationInfo;
 import org.junit.Test;
 
 /** JUnit test of the {@link SimulationInfo}
