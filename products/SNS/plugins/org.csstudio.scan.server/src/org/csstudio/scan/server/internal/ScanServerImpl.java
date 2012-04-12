@@ -126,7 +126,9 @@ public class ScanServerImpl implements ScanServer
     public ScanServerInfo getInfo() throws RemoteException
     {
     	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
-    			start_time, Preferences.getBeamlineConfigPath());
+    			start_time,
+    			Preferences.getBeamlineConfigPath(),
+    			Preferences.getSimulationConfigPath());
     }
 
     /** {@inheritDoc} */
