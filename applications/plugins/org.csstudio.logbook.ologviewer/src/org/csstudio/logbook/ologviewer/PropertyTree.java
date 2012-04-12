@@ -152,14 +152,14 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if (properties.contains(evt.getPropertyName())) {
-					setInput(properties);
+					updateTree();
 				}
 			}
 		});
 	}
 	
-	private void setInput(Object input){
-		treeViewer.setInput(input);
+	private void updateTree(){
+		treeViewer.setInput(this.properties);
 	}
 
 	private class PropertyTreeContentProvider implements ITreeContentProvider {
@@ -217,7 +217,7 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 				"http://www.google.com").build());
 		properties.add(property("prop2").attribute("trac2", "www.google.com")
 				.attribute("xxx", "dsklfjsldk").build());
-		propertyTree.setInput(properties);
+		propertyTree.setProperties(properties);
 
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())

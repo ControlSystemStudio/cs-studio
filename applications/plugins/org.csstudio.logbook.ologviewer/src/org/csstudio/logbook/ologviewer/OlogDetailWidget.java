@@ -22,6 +22,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.custom.TableTree;
+import org.eclipse.jface.viewers.TableTreeViewer;
 
 public class OlogDetailWidget extends Composite {
 	private static class ContentProvider implements IStructuredContentProvider {
@@ -45,6 +47,7 @@ public class OlogDetailWidget extends Composite {
 	private Log log;
 	private TableViewer logbookTableViewer;
 	private TableViewer propertyTableViewer;
+	private PropertyTree propertyTree;
 	private Table tagTable;
 	private TableViewer tagTableViewer;
 	private TableColumn tagTableColumn;
@@ -70,7 +73,7 @@ public class OlogDetailWidget extends Composite {
 
 		text = new Text(this, SWT.BORDER | SWT.WRAP | SWT.MULTI);
 		FormData fd_text = new FormData();
-		fd_text.right = new FormAttachment(100, -200);
+		fd_text.right = new FormAttachment(100, -302);
 		fd_text.top = new FormAttachment(lblDate);
 		fd_text.bottom = new FormAttachment(100);
 		fd_text.left = new FormAttachment(0, 2);
@@ -90,7 +93,7 @@ public class OlogDetailWidget extends Composite {
 		TableViewerColumn logbookTableViewerColumn = new TableViewerColumn(
 				logbookTableViewer, SWT.LEFT);
 		logbookTableViewerColumn.getColumn().setText("Logbook:");
-		logbookTableViewerColumn.getColumn().setWidth(150);
+		logbookTableViewerColumn.getColumn().setWidth(200);
 		logbookTableViewerColumn.setLabelProvider(new CellLabelProvider() {
 
 			@Override
@@ -111,7 +114,7 @@ public class OlogDetailWidget extends Composite {
 
 		tagTableViewerColumn = new TableViewerColumn(tagTableViewer, SWT.LEFT);
 		tagTableColumn = tagTableViewerColumn.getColumn();
-		tagTableColumn.setWidth(150);
+		tagTableColumn.setWidth(200);
 		tagTableColumn.setText("Tags:");
 		tagTableViewerColumn.setLabelProvider(new CellLabelProvider() {
 			
@@ -120,32 +123,16 @@ public class OlogDetailWidget extends Composite {
 				cell.setText((String) cell.getElement());
 			}
 		});
-		tagTableViewer.refresh();
-
-		propertyTableViewer = new TableViewer(this, SWT.BORDER
-				| SWT.FULL_SELECTION);
-		propertyTable = propertyTableViewer.getTable();
-		propertyTable.setHeaderVisible(true);
-		FormData fd_propertyTable = new FormData();
-		fd_propertyTable.left = new FormAttachment(text, 2);
-		fd_propertyTable.top = new FormAttachment(tagTable, 2);
 		tagTableViewer.setContentProvider(new ContentProvider());
+		tagTableViewer.refresh();
+	
+		propertyTree = new PropertyTree(this, SWT.BORDER);
+		FormData fd_propertyTable = new FormData();
+		fd_propertyTable.top = new FormAttachment(tagTable, 4);
+		fd_propertyTable.bottom = new FormAttachment(text, 0, SWT.BOTTOM);
+		fd_propertyTable.left = new FormAttachment(text, 2);
 		fd_propertyTable.right = new FormAttachment(100, -2);
-		fd_propertyTable.bottom = new FormAttachment(100, -2);
-		propertyTable.setLayoutData(fd_propertyTable);
-		propertyTableViewer.setContentProvider(new ContentProvider());
-		TableViewerColumn propertyTableViewerColumn = new TableViewerColumn(
-				propertyTableViewer, SWT.LEFT);
-		propertyTableViewerColumn.setLabelProvider(new CellLabelProvider() {
-
-			@Override
-			public void update(ViewerCell cell) {
-				cell.setText((String) cell.getElement());
-			}
-		});
-		propertyTableViewerColumn.getColumn().setText("Properties:");
-		propertyTableViewerColumn.getColumn().setWidth(150);
-		propertyTableViewer.refresh();
+		propertyTree.setLayoutData(fd_propertyTable);
 	}
 
 	public void setLog(Log log) {
@@ -160,8 +147,9 @@ public class OlogDetailWidget extends Composite {
 				new String[log.getLogbookNames().size()]));
 		tagTableViewer.setInput(log.getTagNames().toArray(
 				new String[log.getTagNames().size()]));
-		propertyTableViewer.setInput(log.getPropertyNames().toArray(
-				new String[log.getPropertyNames().size()]));
+//		propertyTableViewer.setInput(log.getPropertyNames().toArray(
+//				new String[log.getPropertyNames().size()]));
+		propertyTree.setProperties(log.getProperties());
 		update();
 	}
 }
