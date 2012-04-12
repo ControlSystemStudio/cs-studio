@@ -25,34 +25,61 @@ import org.eclipse.ui.IStorageEditorInput;
  *
  *  @author Kay Kasemir
  */
-public class StringEditorInput implements IStorage, IStorageEditorInput
+public class StringEditorInput implements IStorageEditorInput
 {
-	final private String title;
-	final private String text;
+	final private IStorage storage;
 
+	/** Storage implementation for String */
+	private static class StringStorage implements IStorage
+	{
+		final private String name;
+		final private String text;
+
+		public StringStorage(final String name, final String text)
+        {
+			this.name = name;
+	        this.text = text;
+        }
+
+		@SuppressWarnings("rawtypes")
+        @Override
+        public Object getAdapter(Class adapter)
+        {
+	        return null;
+        }
+
+		@Override
+		public InputStream getContents() throws CoreException
+		{
+			return new ByteArrayInputStream(text.getBytes());
+		}
+
+		@Override
+		public IPath getFullPath()
+		{
+			return null;
+		}
+
+		@Override
+        public String getName()
+        {
+	        return name;
+        }
+
+		@Override
+        public boolean isReadOnly()
+        {
+			return true;
+        }
+	};
+
+	/** Initialize
+	 *  @param title Title of the editor, name of the content
+	 *  @param text String content
+	 */
 	public StringEditorInput(final String title, final String text)
 	{
-		this.title = title;
-		this.text = text;
-	}
-
-	// IStorage...
-	@Override
-	public InputStream getContents() throws CoreException
-	{
-		return new ByteArrayInputStream(text.getBytes());
-	}
-
-	@Override
-	public IPath getFullPath()
-	{
-		return null;
-	}
-
-	@Override
-	public boolean isReadOnly()
-	{
-		return true;
+		storage = new StringStorage(title, text);
 	}
 
 	// IStorageEditorInput
@@ -71,7 +98,7 @@ public class StringEditorInput implements IStorage, IStorageEditorInput
 	@Override
     public String getName()
     {
-	    return title;
+	    return storage.getName();
     }
 
 	@Override
@@ -83,7 +110,7 @@ public class StringEditorInput implements IStorage, IStorageEditorInput
 	@Override
     public String getToolTipText()
     {
-	    return title;
+	    return getName();
     }
 
 	@SuppressWarnings("rawtypes")
@@ -96,6 +123,6 @@ public class StringEditorInput implements IStorage, IStorageEditorInput
 	@Override
     public IStorage getStorage() throws CoreException
     {
-	    return this;
+	    return storage;
     }
 }
