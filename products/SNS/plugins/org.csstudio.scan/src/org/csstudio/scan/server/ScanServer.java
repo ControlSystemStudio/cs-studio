@@ -87,7 +87,7 @@ public interface ScanServer extends Remote
      *  @return {@link SimulationResult}
      *  @throws RemoteException
      */
-    public SimulationResult getScanSimulation(String commands_as_xml) throws RemoteException;
+    public SimulationResult simulateScan(String commands_as_xml) throws RemoteException;
 
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan

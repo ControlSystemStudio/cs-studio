@@ -167,7 +167,7 @@ public class ScanServerImpl implements ScanServer
 
 	/** {@inheritDoc} */
     @Override
-    public SimulationResult getScanSimulation(final String commands_as_xml)
+    public SimulationResult simulateScan(final String commands_as_xml)
             throws RemoteException
     {
         try

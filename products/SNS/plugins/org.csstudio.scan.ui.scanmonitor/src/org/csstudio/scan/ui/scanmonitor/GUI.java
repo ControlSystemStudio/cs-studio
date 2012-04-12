@@ -394,6 +394,8 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
+
+                // TODO Turn OpenPlotAction, OpenPlotAction into object contributions
                 manager.add(new OpenPlotAction(info));
                 manager.add(new ShowDevicesAction(shell, model, info));
                 manager.add(new OpenScanTreeAction(info));

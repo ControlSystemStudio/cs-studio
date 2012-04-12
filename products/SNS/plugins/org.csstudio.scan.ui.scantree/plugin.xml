@@ -61,6 +61,11 @@
             name="%ScanTree">
       </command>
       <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.SimulateScanHandler"
+            id="org.csstudio.scan.ui.scantree.simulate"
+            name="%SimulateScan">
+      </command>
+      <command
             defaultHandler="org.csstudio.scan.ui.scantree.operations.SubmitScanHandler"
             id="org.csstudio.scan.ui.scantree.submit"
             name="%SubmitScan">
@@ -131,7 +136,11 @@
       </menuContribution>
       <menuContribution
             locationURI="popup:org.csstudio.scan.ui.scantree.editor?after=edit">
-         <command commandId="org.csstudio.scan.ui.scantree.submit"
+         <command commandId="org.csstudio.scan.ui.scantree.simulate"
+               icon="icons/simulate.gif">
+         </command>
+         <command
+               commandId="org.csstudio.scan.ui.scantree.submit"
                icon="icons/run.png">
          </command>
       </menuContribution>
