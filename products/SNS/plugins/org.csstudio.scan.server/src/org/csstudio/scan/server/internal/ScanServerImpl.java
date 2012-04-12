@@ -179,15 +179,24 @@ public class ScanServerImpl implements ScanServer
             final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
             List<ScanCommandImpl<?>> scan = tool.implement(commands);
 
-            // Simulate
+            // Setup simulation log
             ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
-            PrintStream log_print = new PrintStream(log_buf);
-			final SimulationContext simulation = new SimulationContext(log_print);
+            PrintStream log_out = new PrintStream(log_buf);
+            log_out.println("Simulation:");
+            log_out.println("--------");
+
+            // Simulate
+			final SimulationContext simulation = new SimulationContext(log_out);
             simulation.simulate(scan);
-            log_print.close();
+
+            // Close log
+            log_out.println("--------");
+            log_out.println(simulation.getSimulationTime() + "   Total estimated execution time");
+            log_out.close();
+
+            // Fetch simulation log, help GC to clear copies of log
             final String log_text = log_buf.toString();
-            // Help GC to clear copies of log
-            log_print = null;
+            log_out = null;
             log_buf = null;
 
             return new SimulationResult(simulation.getSimulationSeconds(), log_text);
