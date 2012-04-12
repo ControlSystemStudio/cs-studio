@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.scan.SimulatedDevice;
+import org.csstudio.scan.device.SimulatedDevice;
 
 /** Context used for the simulation of {@link ScanCommandImpl}
  *  @author Kay Kasemir

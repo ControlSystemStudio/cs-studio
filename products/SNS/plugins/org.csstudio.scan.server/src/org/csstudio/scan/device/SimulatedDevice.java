@@ -5,12 +5,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.scan;
+package org.csstudio.scan.device;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
 
 /** Simulated device

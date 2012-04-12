@@ -37,12 +37,12 @@
 <beamline>
     <!-- There can be beam line info, we probably don't care -->
     <info>
-	    <name>BL99</name>
-	    <description>Medium-angle convoluted scattering</description>
+        <name>BL99</name>
+        <description>Medium-angle convoluted scattering</description>
     </info>
 
     <!-- Devices that are currently on the beam line -->
-	<devices>
+    <devices>
         <!-- In the future, it may be useful to define these in a hierarchy,
              for example organize devices by "section" or "component"
              of the beam line.
@@ -60,18 +60,18 @@
              see which <ioc>s need to be operational
           -->
         <device>
-	        <name>2-D Translation Table</name>
-  	        <!-- IOC that handles this device:
-  	             Name,
-  	             script that starts the soft IOC,
-  	             console port for procServ,
-  	             Channel Access server port for the soft IOC
-  	          -->
-      	    <ioc>
-            	<name>Simulation</name>
-            	<script>/home/epics/R3.14.12.2/applications/bl99/simulation/st.cmd</script>
-            	<console>4812</console>
-            	<ca>5064</ca>
+            <name>2-D Translation Table</name>
+            <!-- IOC that handles this device:
+                 Name,
+                 script that starts the soft IOC,
+                 console port for procServ,
+                 Channel Access server port for the soft IOC
+              -->
+            <ioc>
+                <name>Simulation</name>
+                <script>/home/epics/R3.14.12.2/applications/bl99/simulation/st.cmd</script>
+                <console>4812</console>
+                <ca>5064</ca>
             </ioc>
 
             <!-- PVs provided by the soft IOC that are of interest
@@ -81,16 +81,16 @@
             <pv><name>active</name><alias>active</alias><scan/></pv>
             <pv><name>neutrons</name><log/></pv>
             <pv><name>shutter</name><log/><scan/></pv>
-	        <pv><name>motor_x</name><alias>xpos</alias><log/><scan/></pv>
+            <pv><name>motor_x</name><alias>xpos</alias><log/><scan/></pv>
             <pv><name>motor_y</name><alias>ypos</alias><log/><scan/></pv>
-	    </device>
-	    
-	    <!-- In this example the 'setpoint' PV can be scanned,
-	         but the 'readback' is logged.
-	      -->
+        </device>
+        
+        <!-- In this example the 'setpoint' PV can be scanned,
+             but the 'readback' is logged.
+          -->
         <device>
             <name>Deep frying heater</name>
-			<!-- IOC without script is actually ignored -->            
+            <!-- IOC without script is actually ignored -->            
             <ioc><name>ics-bl99-dfh-ioc</name></ioc>
             <pv><name>setpoint</name><alias>setpoint</alias><scan/></pv>
             <pv><name>readback</name><alias>readback</alias><log/></pv>
@@ -104,10 +104,10 @@
         <device active="false">
             <name>Motor</name>
             <ioc>
-            	<name>motorSim</name>
-            	<script>/home/epics/R3.14.12.2/support/motor/iocBoot/iocSim/st.cmd.unix</script>
-            	<console>4813</console>
-            	<ca>5066</ca>
+                <name>motorSim</name>
+                <script>/home/epics/R3.14.12.2/support/motor/iocBoot/iocSim/st.cmd.unix</script>
+                <console>4813</console>
+                <ca>5066</ca>
             </ioc>
             <!--
             <pv><name>IOC:m1</name><alias>IOC:m1</alias><scan/></pv>

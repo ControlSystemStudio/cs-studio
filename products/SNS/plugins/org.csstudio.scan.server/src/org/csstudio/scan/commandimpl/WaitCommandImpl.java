@@ -18,10 +18,10 @@ package org.csstudio.scan.commandimpl;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.SimulatedDevice;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
