@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.BindException;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
@@ -43,6 +45,8 @@ import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
+import org.csstudio.scan.server.SimulationContext;
+import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.server.UnknownScanException;
 
 /** Server-side implementation of the {@link ScanServer} interface
@@ -161,8 +165,40 @@ public class ScanServerImpl implements ScanServer
     	return infos;
     }
 
+	/** {@inheritDoc} */
+    @Override
+    public SimulationResult getScanSimulation(final String commands_as_xml)
+            throws RemoteException
+    {
+        try
+        {   // Parse scan from XML
+            final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+            final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
-    /** {@inheritDoc} */
+            // Implement commands
+            final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
+            List<ScanCommandImpl<?>> scan = tool.implement(commands);
+
+            // Simulate
+            ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
+            PrintStream log_print = new PrintStream(log_buf);
+			final SimulationContext simulation = new SimulationContext(log_print);
+            simulation.simulate(scan);
+            log_print.close();
+            final String log_text = log_buf.toString();
+            // Help GC to clear copies of log
+            log_print = null;
+            log_buf = null;
+
+            return new SimulationResult(simulation.getSimulationSeconds(), log_text);
+        }
+        catch (Exception ex)
+        {
+            throw new ServerException("Scan Engine error while simulating scan", ex);
+        }
+    }
+
+	/** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name, final String commands_as_xml)
             throws RemoteException

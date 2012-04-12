@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
@@ -64,6 +65,6 @@ public class ScanSimulationHeadlessTest
         System.out.println(context.getSimulationTime() + "   Total estimated execution time");
 
         assertTrue(log_text.length() > 0);
-        assertTrue(context.getSimulationSeconds() > 60.0);
+        assertEquals(7*60+47, context.getSimulationSeconds(), 10);
     }
 }

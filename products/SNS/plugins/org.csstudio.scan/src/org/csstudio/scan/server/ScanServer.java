@@ -80,7 +80,14 @@ public interface ScanServer extends Remote
      *  @return Info about devices
      *  @throws RemoteException on error in remote access
      */
-    public DeviceInfo[] getDeviceInfos(final long id) throws RemoteException;
+    public DeviceInfo[] getDeviceInfos(long id) throws RemoteException;
+
+    /** Submit a scan for simulation
+     *  @param commands_as_xml Commands to simulate in XML format
+     *  @return {@link SimulationResult}
+     *  @throws RemoteException
+     */
+    public SimulationResult getScanSimulation(String commands_as_xml) throws RemoteException;
 
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
@@ -119,7 +126,7 @@ public interface ScanServer extends Remote
      *  @return Serial of last sample in scan data
      *  @see #getScanData(long)
      */
-    public long getLastScanDataSerial(final long id) throws RemoteException;
+    public long getLastScanDataSerial(long id) throws RemoteException;
 
     /** Query server for scan data
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
