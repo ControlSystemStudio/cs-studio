@@ -28,13 +28,24 @@ else:
 #MessageDialog.openWarning(
 #        None, "Type", "Type is " + delay.__class__.__name__)       
 
-id = scan(name,
-     ('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx))),
-     ('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy))),
-     WaitCommand('neutrons', Comparison.INCREASE_BY, neutrons),
-     'readback')
+
+seq = CommandSequence(
+[
+  LoopCommand('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx)),
+    LoopCommand('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy)),
+    [
+       WaitCommand('neutrons', Comparison.INCREASE_BY, neutrons),
+       LogCommand('readback')
+    ]
+    )
+  )
+]
+)
+
+id = scan.submit(name, seq);
 
 showScans()
 showPlot(name, id, 'xpos', 'ypos')
 
+# Update name of the scan
 setWidgetPV(display, "name", incrementScan(name))
