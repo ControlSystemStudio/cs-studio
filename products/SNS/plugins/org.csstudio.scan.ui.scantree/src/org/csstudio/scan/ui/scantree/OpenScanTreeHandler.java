@@ -23,35 +23,35 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.ui.ScanHandlerUtil;
+import org.eclipse.core.commands.AbstractHandler;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.Action;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.handlers.HandlerUtil;
 
-/** Action that opens a scan in the tree editor
+/** Command handler that opens a scan in the tree editor
  *  @author Kay Kasemir
  */
-public class OpenScanTreeAction extends Action
+public class OpenScanTreeHandler extends AbstractHandler
 {
-    final private ScanInfo info;
-
-    /** Initialize
-     *  @param info Scan for which to open the scan tree
-     */
-    public OpenScanTreeAction(final ScanInfo info)
-    {
-        super(Messages.OpenScanTree, Activator.getImageDescriptor("icons/scantree.gif")); //$NON-NLS-1$
-        this.info = info;
-    }
-
     /** {@inheritDoc} */
     @Override
-    public void run()
+    public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        // Use Job to read commands from server
-        final Display display = Display.getCurrent();
+		final ScanInfo info = ScanHandlerUtil.getSelectedScanInfo(event);
+		if (info == null)
+			return null;
+
+		final Shell shell = HandlerUtil.getActiveShellChecked(event);
+		final Display display = shell.getDisplay();
+
+		// Use Job to read commands from server
         final Job job = new Job("Download Scan") //$NON-NLS-1$
         {
             @Override
@@ -85,5 +85,7 @@ public class OpenScanTreeAction extends Action
             }
         };
         job.schedule();
+
+        return null;
     }
 }

@@ -23,14 +23,14 @@ import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.ui.plot.OpenPlotAction;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ResumeAction;
 import org.csstudio.scan.ui.scanmonitor.actions.ShowDevicesAction;
-import org.csstudio.scan.ui.scantree.OpenScanTreeAction;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -61,6 +61,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.IWorkbenchPartSite;
+import org.eclipse.ui.handlers.IHandlerService;
 
 /** GUI for the {@link ScanInfoModel}
  *  @author Kay Kasemir
@@ -77,22 +80,24 @@ public class GUI implements ScanInfoModelListener
     /** Initialize
      *  @param parent Parent component
      *  @param model Model to display
+     *  @param site Site or <code>null</code>
      */
-    public GUI(final Composite parent, final ScanInfoModel model)
+    public GUI(final Composite parent, final ScanInfoModel model, IWorkbenchPartSite site)
     {
         this.model = model;
 
-        createComponents(parent);
-        hookActions();
-        createContextMenu();
+        createComponents(parent, site);
+        hookActions(site);
+        createContextMenu(site);
         table_viewer.setInput(model);
         model.addListener(this);
     }
 
     /** Create GUI elements
      *  @param parent Parent component
+     *  @param site Site or <code>null</code>
      */
-    private void createComponents(final Composite parent)
+    private void createComponents(final Composite parent, final IWorkbenchPartSite site)
     {
         final Display display = parent.getDisplay();
 
@@ -296,6 +301,10 @@ public class GUI implements ScanInfoModelListener
         mem_info = new Bar(parent, 0);
         mem_info.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         mem_info.setToolTipText(Messages.MemInfoTT);
+
+        // Publish current selection
+        if (site != null)
+        	site.setSelectionProvider(table_viewer);
     }
 
     /** @param display Display
@@ -335,8 +344,11 @@ public class GUI implements ScanInfoModelListener
         return view_col;
     }
 
-    /** Connect actions to GUI */
-    private void hookActions()
+    /** Connect actions to GUI
+     *  @param site
+     */
+    @SuppressWarnings("nls")
+    private void hookActions(final IWorkbenchPartSite site)
     {
         // Double-click on scan opens editor
         table_viewer.addDoubleClickListener(new IDoubleClickListener()
@@ -344,10 +356,15 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void doubleClick(final DoubleClickEvent event)
             {
-                final ScanInfo info = getSelectedScan();
-                if (info == null)
-                    return;
-                new OpenScanTreeAction(info).run();
+                final IHandlerService handler = (IHandlerService) site.getService(IHandlerService.class);
+                try
+                {
+	                handler.executeCommand("org.csstudio.scan.ui.scantree.open", null);
+                }
+                catch (Exception ex)
+                {
+                	ExceptionDetailsErrorDialog.openError(site.getShell(), "Cannot open scan editor", ex);
+                }
             }
         });
     }
@@ -361,8 +378,10 @@ public class GUI implements ScanInfoModelListener
         return (ScanInfo) selection.getFirstElement();
     }
 
-    /** Add context menu to table */
-    private void createContextMenu()
+    /** Add context menu to table
+     *  @param site
+     */
+    private void createContextMenu(final IWorkbenchPartSite site)
     {
         final Shell shell = table_viewer.getControl().getShell();
         final MenuManager manager = new MenuManager();
@@ -394,17 +413,18 @@ public class GUI implements ScanInfoModelListener
                 manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
-
-                // TODO Turn OpenPlotAction, OpenPlotAction into object contributions
-                manager.add(new OpenPlotAction(info));
                 manager.add(new ShowDevicesAction(shell, model, info));
-                manager.add(new OpenScanTreeAction(info));
+                manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
 
         final Table table = table_viewer.getTable();
         final Menu menu = manager.createContextMenu(table);
         table.setMenu(menu);
+
+        // Allow contributions to the menu
+        if (site != null)
+        	site.registerContextMenu(manager, table_viewer);
     }
 
 	/** @see ScanInfoModelListener */

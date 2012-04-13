@@ -41,6 +41,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class SimulateScanHandler extends AbstractHandler
 {
+    /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {

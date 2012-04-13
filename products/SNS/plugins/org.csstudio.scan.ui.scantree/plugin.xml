@@ -70,6 +70,11 @@
             id="org.csstudio.scan.ui.scantree.submit"
             name="%SubmitScan">
       </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.OpenScanTreeHandler"
+            id="org.csstudio.scan.ui.scantree.open"
+            name="%OpenScanTree">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -142,6 +147,26 @@
          <command
                commandId="org.csstudio.scan.ui.scantree.submit"
                icon="icons/run.png">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.open"
+               icon="icons/scantree.gif"
+               label="%OpenScanTree"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <instanceof
+                           value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>

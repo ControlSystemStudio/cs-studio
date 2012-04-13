@@ -11,8 +11,6 @@ Require-Bundle: org.junit;bundle-version="4.8.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.client;bundle-version="1.0.0",
- org.csstudio.scan.ui;bundle-version="1.0.0",
- org.csstudio.scan.ui.plot;bundle-version="1.0.0",
- org.csstudio.scan.ui.scantree;bundle-version="1.0.0"
+ org.csstudio.scan.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
