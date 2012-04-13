@@ -405,11 +405,27 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		return ((IntensityGraphFigure)getFigure()).getDataArray();
 	}
 
+	
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof double[] || value instanceof Double[]){
+		if(value instanceof double[]){
 			((IntensityGraphFigure)getFigure()).setDataArray((double[]) value);
-		} else
+		} else if(value instanceof short[]){
+			((IntensityGraphFigure)getFigure()).setDataArray((short[]) value);
+		}else if(value instanceof byte[]){
+			((IntensityGraphFigure)getFigure()).setDataArray((byte[]) value);
+		}
+		else if(value instanceof float[]){
+			((IntensityGraphFigure)getFigure()).setDataArray((float[]) value);
+		}
+		else if(value instanceof long[]){
+			((IntensityGraphFigure)getFigure()).setDataArray((long[]) value);
+		}
+		else if(value instanceof int[]){
+			((IntensityGraphFigure)getFigure()).setDataArray((int[]) value);
+		}
+		
+		else
 			super.setValue(value);
 	}
 
