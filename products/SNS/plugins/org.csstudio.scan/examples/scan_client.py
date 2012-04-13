@@ -77,6 +77,7 @@ path = __getPluginPath__("org.csstudio.scan.client")
 if path:
     client_plugin = path
 
+
 # Now one of the possibilities should work out...
 if scan_plugin and os.path.exists(scan_plugin) and client_plugin and os.path.exists(client_plugin):
     sys.path.append(scan_plugin)
@@ -85,7 +86,13 @@ elif os.path.exists(scan_client_jar):
     sys.path.append(scan_client_jar)
 else:
     raise Exception("Scan client library not configured")
-    
+
+# When running inside Eclipse, also add Scan UI to path
+path = __getPluginPath__("org.csstudio.scan.ui")
+if path:
+    sys.path.append(path)
+
+# Example for displaying debug info:
 #from org.eclipse.jface.dialogs import MessageDialog
 # for p in sys.path:
 #    print p

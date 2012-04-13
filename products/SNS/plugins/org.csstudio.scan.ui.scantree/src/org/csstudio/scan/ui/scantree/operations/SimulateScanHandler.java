@@ -9,13 +9,17 @@ package org.csstudio.scan.ui.scantree.operations;
 
 import java.util.List;
 
+import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.command.ScanCommand;
+import org.csstudio.scan.command.XMLCommandWriter;
+import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.SimulationResult;
+import org.csstudio.scan.ui.SimulationDisplay;
 import org.csstudio.scan.ui.scantree.Activator;
 import org.csstudio.scan.ui.scantree.Messages;
 import org.csstudio.scan.ui.scantree.ScanEditor;
-import org.csstudio.scan.ui.scantree.SimulationTool;
 import org.csstudio.scan.ui.scantree.gui.ScanEditorContributor;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -33,6 +37,20 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class SimulateScanHandler extends AbstractHandler
 {
+	private SimulationResult simulate(final List<ScanCommand> commands) throws Exception
+	{
+    	final ScanInfoModel scan_info = ScanInfoModel.getInstance();
+		try
+		{
+			final ScanServer server = scan_info.getServer();
+			return server.simulateScan(XMLCommandWriter.toXMLString(commands));
+		}
+		finally
+		{
+			scan_info.release();
+		}
+	}
+
     /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
@@ -41,7 +59,7 @@ public class SimulateScanHandler extends AbstractHandler
 		final Display display = shell.getDisplay();
 
     	final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
-		final List<ScanCommand> commands = editor.getModel().getCommands();
+    	final List<ScanCommand> commands = editor.getModel().getCommands();
 
         // Use background Job to submit scan to server for simulation
         final Job job = new Job(Messages.SimulateScan)
@@ -53,7 +71,7 @@ public class SimulateScanHandler extends AbstractHandler
 				final SimulationResult simulation;
                 try
                 {
-                	simulation = SimulationTool.simulateScan(commands);
+                	simulation = simulate(commands);
                 }
                 catch (Exception ex)
                 {
@@ -69,7 +87,14 @@ public class SimulateScanHandler extends AbstractHandler
 					@Override
                     public void run()
                     {
-						SimulationTool.displaySimulation(simulation);
+						try
+						{
+							SimulationDisplay.show(simulation);
+						}
+						catch (Exception ex)
+						{
+							ExceptionDetailsErrorDialog.openError(shell, Messages.SimulateScan, ex);
+						}
                     }
                 });
 

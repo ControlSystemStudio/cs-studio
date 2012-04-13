@@ -75,6 +75,16 @@
             id="org.csstudio.scan.ui.scantree.open"
             name="%OpenScanTree">
       </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.ShowSimulationHandler"
+            id="org.csstudio.scan.ui.scantree.show_simulation"
+            name="Show Simulation Result">
+         <commandParameter
+               id="org.csstudio.scan.ui.scantree.show_simulation.log"
+               name="Simulation Log"
+               optional="false">
+         </commandParameter>
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
