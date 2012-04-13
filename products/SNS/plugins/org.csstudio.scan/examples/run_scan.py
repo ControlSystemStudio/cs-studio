@@ -7,6 +7,7 @@ Schedule scan with parameters from BOY script
 from scan_client import *
 from scan_ui import *
 
+# Fetch parameters from display
 x0 = getWidgetPVDouble(display, "x0")
 x1 = getWidgetPVDouble(display, "x1")
 dx = getWidgetPVDouble(display, "dx")
@@ -28,7 +29,7 @@ else:
 #MessageDialog.openWarning(
 #        None, "Type", "Type is " + delay.__class__.__name__)       
 
-
+# Create scan sequence
 seq = CommandSequence(
 [
   LoopCommand('xpos', min(x0, x1), max(x0, x1), max(0.1, abs(dx)),
@@ -42,8 +43,17 @@ seq = CommandSequence(
 ]
 )
 
+# Run simulation
+# TODO Make this nicer
+simu = scan.server.simulateScan(seq.getXML())
+import org.csstudio.scan.ui.SimulationDisplay as SimulationDisplay
+SimulationDisplay.show(simu)
+
+
+# Submit scan
 id = scan.submit(name, seq);
 
+# Open scan monitor and plot, configured for this scan
 showScans()
 showPlot(name, id, 'xpos', 'ypos')
 
