@@ -11,6 +11,9 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -23,9 +26,10 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.custom.TableTree;
+import org.eclipse.ui.actions.SelectionProviderAction;
 import org.eclipse.jface.viewers.TableTreeViewer;
 
-public class OlogDetailWidget extends Composite {
+public class OlogDetailWidget extends Composite implements ISelectionProvider {
 	private static class ContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			return (Object[]) inputElement;
@@ -42,16 +46,16 @@ public class OlogDetailWidget extends Composite {
 	private Label lblDateValue;
 	private Text text;
 	private Table logbookTable;
-	private Table propertyTable;
 
 	private Log log;
 	private TableViewer logbookTableViewer;
-	private TableViewer propertyTableViewer;
-	private PropertyTree propertyTree;
+	public PropertyTree propertyTree;
 	private Table tagTable;
 	private TableViewer tagTableViewer;
 	private TableColumn tagTableColumn;
 	private TableViewerColumn tagTableViewerColumn;
+	
+	private ISelectionProvider selectionProvider;
 
 	public OlogDetailWidget(Composite parent, int style) {
 		super(parent, style);
@@ -133,6 +137,8 @@ public class OlogDetailWidget extends Composite {
 		fd_propertyTable.left = new FormAttachment(text, 2);
 		fd_propertyTable.right = new FormAttachment(100, -2);
 		propertyTree.setLayoutData(fd_propertyTable);
+		
+		selectionProvider = propertyTree;
 	}
 
 	public void setLog(Log log) {
@@ -147,9 +153,28 @@ public class OlogDetailWidget extends Composite {
 				new String[log.getLogbookNames().size()]));
 		tagTableViewer.setInput(log.getTagNames().toArray(
 				new String[log.getTagNames().size()]));
-//		propertyTableViewer.setInput(log.getPropertyNames().toArray(
-//				new String[log.getPropertyNames().size()]));
 		propertyTree.setProperties(log.getProperties());
 		update();
+	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
 	}
 }

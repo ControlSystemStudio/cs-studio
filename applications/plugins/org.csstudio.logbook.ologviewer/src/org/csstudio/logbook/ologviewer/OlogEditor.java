@@ -179,26 +179,36 @@ public class OlogEditor extends EditorPart {
 				true, 2, 1));
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
 		gridLayout_1.numColumns = 2;
-		
-		ologTableWidget.addSelectionChangedListener(new ISelectionChangedListener() {
-			
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (event.getSelection() instanceof IStructuredSelection) {
-					Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
-					if (element instanceof Log) {
-						ologDetailWidget.setLog((Log) element);
+
+		ologTableWidget
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						if (event.getSelection() instanceof IStructuredSelection) {
+							Object element = ((IStructuredSelection) event
+									.getSelection()).getFirstElement();
+							if (element instanceof Log) {
+								ologDetailWidget.setLog((Log) element);
+							}
+						}
 					}
-				}
-			}
-		});
-		
+				});
+
 		label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
+				1));
+
 		ologDetailWidget = new OlogDetailWidget(parent, SWT.None);
-		ologDetailWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
-		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(), ologTableWidget);
+		ologDetailWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 2, 1));
+		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(),
+				ologTableWidget);
+		PopupMenuUtil.installPopupForView(ologDetailWidget, getSite(),
+				ologDetailWidget);
+
+		PopupMenuUtil.installPopupForView(ologDetailWidget.propertyTree.tree,
+				getSite(), ologDetailWidget.propertyTree.treeViewer);
 	}
 
 	@Override

@@ -44,8 +44,9 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 
 	protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
 			this);
-	
-	private TreeViewer treeViewer;
+
+	TreeViewer treeViewer;
+	Tree tree;
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		changeSupport.addPropertyChangeListener(listener);
@@ -84,9 +85,8 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 		fd_composite.right = new FormAttachment(100);
 		composite.setLayoutData(fd_composite);
 
-		treeViewer = new TreeViewer(composite, SWT.BORDER
-				| SWT.FULL_SELECTION);
-		Tree tree = treeViewer.getTree();
+		treeViewer = new TreeViewer(composite, SWT.BORDER | SWT.FULL_SELECTION);
+		tree = treeViewer.getTree();
 		tree.setLinesVisible(true);
 
 		TreeViewerFocusCellManager focusCellManager = new TreeViewerFocusCellManager(
@@ -133,18 +133,18 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 		treeViewer.setContentProvider(new PropertyTreeContentProvider());
 
 		selectionProvider = treeViewer;
-//		selectionProvider
-//				.addSelectionChangedListener(new ISelectionChangedListener() {
-//
-//					@Override
-//					public void selectionChanged(SelectionChangedEvent event) {
-//						ISelection selection = event.getSelection();
-//						ISelectionProvider provider = event
-//								.getSelectionProvider();
-//						Object source = event.getSource();
-//						System.out.println(event);
-//					}
-//				});
+		selectionProvider
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						ISelection selection = event.getSelection();
+						ISelectionProvider provider = event
+								.getSelectionProvider();
+						Object source = event.getSource();
+						System.out.println(event);
+					}
+				});
 		addPropertyChangeListener(new PropertyChangeListener() {
 
 			List<String> properties = Arrays.asList("properties");
@@ -157,8 +157,8 @@ public class PropertyTree extends Composite implements ISelectionProvider {
 			}
 		});
 	}
-	
-	private void updateTree(){
+
+	private void updateTree() {
 		treeViewer.setInput(this.properties);
 	}
 
