@@ -1,8 +1,7 @@
-/*
- * Copyright 2010-11 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-
 /**
  * <p align="center"><img src="doc-files/PVManagerLogo150.png"/></p>
  * <div style="float: right; margin-top: -170px" id="contents"></div>
