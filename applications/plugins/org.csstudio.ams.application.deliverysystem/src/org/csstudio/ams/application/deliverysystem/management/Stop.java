@@ -28,6 +28,7 @@ package org.csstudio.ams.application.deliverysystem.management;
 import java.util.Arrays;
 import java.util.List;
 import org.csstudio.ams.application.deliverysystem.Activator;
+import org.csstudio.ams.application.deliverysystem.RemotelyManageable;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
@@ -38,19 +39,28 @@ import org.osgi.service.application.ApplicationHandle;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 10.12.2011
  */
 public class Stop implements IManagementCommand {
     
+    private static RemotelyManageable remoteObject = null;
+    
+    public static void staticInject(RemotelyManageable o) {
+        remoteObject = o;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public CommandResult execute(CommandParameters parameters) {
+        
+        if (remoteObject != null) {
+            remoteObject.setRestart(false);
+        }
+        
         CommandResult result = null;
         ApplicationHandle thisHandle = null;
         BundleContext bundleContext = Activator.getContext();

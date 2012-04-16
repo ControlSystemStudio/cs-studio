@@ -36,4 +36,5 @@ import java.util.Collection;
  */
 public interface RemotelyManageable {
     Collection<String> listDeliveryWorker();
+    void setRestart(boolean restartApplication);
 }

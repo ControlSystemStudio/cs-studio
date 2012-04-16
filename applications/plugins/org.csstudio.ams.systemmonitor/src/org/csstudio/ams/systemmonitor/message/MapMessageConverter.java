@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,65 +23,50 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.delivery.jms;
+package org.csstudio.ams.systemmonitor.message;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
- * @since 27.12.2011
+ * @since 23.03.2012
  */
-public abstract class AbstractMessageContent {
+public class MapMessageConverter {
     
-    protected static final Logger LOG = LoggerFactory.getLogger(AbstractMessageContent.class);
-    
-    protected Hashtable<String, String> content;
-    
-    public AbstractMessageContent(MapMessage jmsMsg) {
-        content = new Hashtable<String, String>();
-        init(jmsMsg);
-    }
-    
-    private Map<String, String> init(MapMessage jmsMsg) {
-        Enumeration<?> keys = null;
+    private static final Logger LOG = LoggerFactory.getLogger(MapMessageConverter.class);
+
+    public static CheckMessage convertMapMessage(MapMessage message) {
+
+        Map<String, String> content = new Hashtable<String, String>();
+
+        Enumeration<?> mapNames;
         try {
-            keys = jmsMsg.getMapNames();
-        } catch (JMSException jmse) {
-            LOG.error("Cannot read map names from JMS message: {}", jmse.getMessage());
+            mapNames = message.getMapNames();
+        } catch (JMSException e) {
+            LOG.error("Cannot get map names from message: {}", e.getMessage());
+            mapNames = null;
         }
         
-        if (keys != null) {
-            while (keys.hasMoreElements()) {
-                String key = (String) keys.nextElement();
+        if (mapNames != null) {
+            while (mapNames.hasMoreElements()) {
+                String name = (String) mapNames.nextElement();
                 try {
-                    content.put(key, jmsMsg.getString(key));
-                } catch (JMSException jmse) {
-                    LOG.error("Cannot read value for key '{}': {}", key, jmse.getMessage());
+                    String value = message.getString(name);
+                    content.put(name, value);
+                } catch (JMSException e) {
+                    LOG.error("Cannot get value for key '{}': {}", name, e.getMessage());
                 }
             }
         }
-        
-        return content;
-    }
-    
-    public boolean containsKey(String key) {
-        return content.containsKey(key);
-    }
-    
-    public String getValue(String key) {
-        String value = null;
-        if (key != null) {
-            value = content.get(key);
-        }
-        return value;
+
+        return new CheckMessage(content);
     }
 }

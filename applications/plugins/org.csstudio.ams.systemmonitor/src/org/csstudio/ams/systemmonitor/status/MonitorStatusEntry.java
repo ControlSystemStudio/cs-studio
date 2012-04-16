@@ -45,7 +45,7 @@ public class MonitorStatusEntry implements Serializable
     /** Check id of the last unanswered check. */
     private String checkId;
     
-    /** The last check status / answer of the SmsConnector */
+    /** The last check status / answer of the SmsDeliveryWorker */
     private CheckResult checkStatus;
         
     /** Flag, that indicates if a check have to be done. Only used if a check interval is defined. */
@@ -227,13 +227,11 @@ public class MonitorStatusEntry implements Serializable
     /**
      * 
      */
-    public String toString()
-    {
+    @Override
+    public String toString() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         StringBuffer s = new StringBuffer();
-        
         s.append("MonitorStatusEntry{checkTime=" + dateFormat.format(new Date(checkDate)) + "(" + checkDate + "),checkId=" + checkId +"," + checkStatus + ",forceCheck=" + forceCheck + ",smsSent=" + smsSent + ",wasErrorStatus=" + wasErrorStatus + "}");
-        
         return s.toString();
     }
 }

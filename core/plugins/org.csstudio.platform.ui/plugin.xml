@@ -236,7 +236,7 @@
   <extension
         point="org.eclipse.ui.popupMenus">
      <objectContribution
-           adaptable="true"
+           adaptable="false"
            id="org.csstudio.platform.ui.copyPvToClipboard"
            objectClass="org.csstudio.platform.model.IProcessVariable">
         <action
@@ -247,6 +247,7 @@
         </action>
      </objectContribution>
      <objectContribution
+     		adaptable="false"
            id="IConnectorContributions"
            objectClass="org.csstudio.platform.simpledal.IConnector">
         <action

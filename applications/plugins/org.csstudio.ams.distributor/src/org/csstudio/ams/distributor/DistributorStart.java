@@ -191,6 +191,7 @@ public class DistributorStart implements IApplication,
                 final ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
                 final Connection connection = connectionFactory.createConnection();
                 receiverConnections[i] = connection;
+                receiverConnections[i].setClientID("AmsDistributorConsumerConnection");
                 final Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
                 final Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
                 final MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);

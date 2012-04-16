@@ -29,6 +29,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
+import org.csstudio.ams.application.deliverysystem.management.Restart;
+import org.csstudio.ams.application.deliverysystem.management.Stop;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -59,10 +61,13 @@ public class DeliverySystemApplication implements IApplication,
     
     private boolean running;
     
+    private boolean restart;
+    
     public DeliverySystemApplication() {
         deliveryWorker = new Hashtable<AbstractDeliveryWorker, Thread>();
         lock = new Object();
         running = true;
+        restart = false;
     }
     
     /**
@@ -144,8 +149,15 @@ public class DeliverySystemApplication implements IApplication,
             LOG.info("XMPP disconnected.");
         }
         
-	    LOG.info("Leaving application...");
-		return IApplication.EXIT_OK;
+        Integer exitCode = IApplication.EXIT_OK;
+        if (restart) {
+            LOG.info("Restarting application...");
+            exitCode = IApplication.EXIT_RESTART;
+        } else {
+            LOG.info("Leaving application...");
+        }
+        
+		return exitCode;
 	}
 
     /**
@@ -155,7 +167,9 @@ public class DeliverySystemApplication implements IApplication,
     public void bindService(final ISessionService sessionService) {
         
         ListWorker.staticInject(this);
-
+        Stop.staticInject(this);
+        Restart.staticInject(this);
+        
         String xmppServer = DeliverySystemPreference.XMPP_SERVER.getValue();
         String xmppUser = DeliverySystemPreference.XMPP_USER.getValue();
         String xmppPassword = DeliverySystemPreference.XMPP_PASSWORD.getValue();
@@ -183,12 +197,18 @@ public class DeliverySystemApplication implements IApplication,
 	@Override
     public void stop() {
 	    LOG.info("The application is forced to stop.");
+	    LOG.info("Restarting application: {}", restart);
 	    running = false;
         synchronized (lock) {
             lock.notify();
         }
 	}
 
+	@Override
+    public void setRestart(boolean restartApplication) {
+	    restart = restartApplication;
+	}
+	
     @Override
     public Collection<String> listDeliveryWorker() {
         ArrayList<String> result = new ArrayList<String>();
