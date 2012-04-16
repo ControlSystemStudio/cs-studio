@@ -60,12 +60,18 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 		{
 		case INCREASE_BY:
 			if (Double.isNaN(original))
+			{
 				original = 0.0;
+		    	device.write(original);
+			}
 			desired_value = original + command.getDesiredValue();
 			break;
 		case DECREASE_BY:
 			if (Double.isNaN(original))
+			{
 				original = 0.0;
+		    	device.write(original);
+			}
 			desired_value = original - command.getDesiredValue();
 			break;
 		default:
