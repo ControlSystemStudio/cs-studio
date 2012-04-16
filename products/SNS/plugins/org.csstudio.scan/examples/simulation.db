@@ -26,6 +26,19 @@ record(bi, "shutter")
     field(PINI, "YES")
 }
 
+# Simulate accumulated proton charge of accelerator
+# About 3.5e12 / hour
+# 3.5e12/(60*60)/2 = 4.8611e8
+record(calc, "pcharge")
+{
+    field(INPA, "beam_on")
+    field(INPB, "shutter")
+    field(INPC, "pcharge")
+    field(CALC, "(A&B)?C+4.8611e8:C")
+    field(SCAN, ".5 second")
+    field(EGU,  "pC")
+}
+
 # Simulate accumulated neutrons
 record(calc, "neutrons")
 {

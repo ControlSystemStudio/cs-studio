@@ -80,6 +80,7 @@
              -->            
             <pv><name>active</name><alias>active</alias><scan/></pv>
             <pv><name>neutrons</name><log/></pv>
+            <pv><name>pcharge</name><log/></pv>
             <pv><name>shutter</name><log/><scan/></pv>
             <pv><name>motor_x</name><alias>xpos</alias><log/><scan/></pv>
             <pv><name>motor_y</name><alias>ypos</alias><log/><scan/></pv>

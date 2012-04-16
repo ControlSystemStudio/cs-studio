@@ -28,6 +28,11 @@
                 <name>neutrons</name>
                 <slew_rate>7</slew_rate>
             </pv>
+            <!-- Proton charge: About 3.5e12 / hour = 9.7e8 / sec -->
+            <pv>
+                <name>pcharge</name>
+                <slew_rate>9.7222e+08</slew_rate>
+            </pv>
             
             <!-- Alias, if present, is preferred over pv name -->
             <pv>
