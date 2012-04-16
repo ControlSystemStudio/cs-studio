@@ -27,7 +27,7 @@ import org.eclipse.ui.IEditorLauncher;
  */
 public class ScanLauncher implements IEditorLauncher
 {
-
+    /** {@inheritDoc} */
 	@Override
 	public void open(final IPath path)
 	{

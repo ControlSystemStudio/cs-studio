@@ -22,12 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.data.values.ValueUtil;
-import org.csstudio.scan.SimulatedDevice;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;

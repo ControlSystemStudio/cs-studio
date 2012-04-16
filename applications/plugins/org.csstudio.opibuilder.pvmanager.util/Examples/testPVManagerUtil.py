@@ -9,7 +9,7 @@ if widget.getVar(s)!=None:
 
 pvName=PVUtil.getString(pvs[0])
 
-pvReader = PVManagerUtil.createDoubleArrayPVReader(pvName, 50, True)
+pvReader = PVManagerUtil.createObjectPVReader(pvName, 50, True)
 class UpdateTask(PVReaderListener):
     def pvChanged(self):
         value = pvReader.getValue()

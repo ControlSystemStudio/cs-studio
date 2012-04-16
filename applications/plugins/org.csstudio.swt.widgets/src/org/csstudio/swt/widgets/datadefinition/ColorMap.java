@@ -174,34 +174,71 @@ public class ColorMap {
 		else 
 			return "Customized";
 	}
+	
+	
 	/**Calculate the image data from source data based on the color map.
 	 * @param dataArray the source data
 	 * @param dataWidth number of columns of dataArray; This will be the width of image data.
 	 * @param dataHeight number of rows of dataArray; This will be the height of image data.
 	 * @param max the upper limit of the data in dataArray
 	 * @param min the lower limit of the data in dataArray
+	 * @param imageData the imageData to be filled. null if a new instance should be created.
+	 * @param shrink true if area size of image data is smaller than dataWidth*dataHeight. If this is true, it will use
+	 * the nearest neighbor iamge scaling algorithm as described at http://tech-algorithm.com/articles/nearest-neighbor-image-scaling/.
 	 * @return the image data. null if dataWidth or dataHeight is less than 1.
 	 */
-	public synchronized ImageData drawImage(double[] dataArray, int dataWidth, int dataHeight, double max, double min){
-		if(dataWidth <1 || dataHeight < 1 || dataWidth *dataHeight > dataArray.length || dataWidth * dataHeight < 0)
+	public ImageData drawImage(IPrimaryArrayWrapper dataArray, 
+			int dataWidth, int dataHeight, double max, double min, ImageData imageData, boolean shrink){
+		if(dataWidth <1 || dataHeight < 1 || dataWidth *dataHeight > dataArray.getSize()|| dataWidth * dataHeight < 0)
 			return null;
-		
-		ImageData imageData = new ImageData(dataWidth,dataHeight, 24, palette);	
+		if(imageData == null)
+			imageData = new ImageData(dataWidth,dataHeight, 24, palette);	
 		if(colorsLookupTable == null)
 			getColorsLookupTable();
+
 		if(autoScale){
-			for(int y = 0; y < dataHeight; y++){
-				for(int x = 0; x<dataWidth; x++){					
-					//the index of the value in the color table array	
-					int index = (int) ((dataArray[y*dataWidth + x]-min)/(max-min)*255);
-					if(index <0)
-						index = 0;
-					else if(index > 255)
-						index = 255;
-					int pixel = pixelLookupTable[index];
-					imageData.setPixel(x, y, pixel);
+			if(shrink){				
+				int height = imageData.height;
+				int width = imageData.width;
+				    // EDIT: added +1 to account for an early rounding problem
+				    int x_ratio = (int)((dataWidth<<16)/width) +1;
+				    int y_ratio = (int)((dataHeight<<16)/height) +1;
+				    //int x_ratio = (int)((w1<<16)/w2) ;
+				    //int y_ratio = (int)((h1<<16)/h2) ;
+				    int x2, y2 ;
+				    for (int i=0;i<height;i++) {
+				        for (int j=0;j<width;j++) {
+				            x2 = ((j*x_ratio)>>16) ;
+				            y2 = ((i*y_ratio)>>16) ;
+				            int index = (int) ((dataArray.get(y2 * dataWidth + x2) - min)
+									/ (max - min) * 255);
+							if (index < 0)
+								index = 0;
+							else if (index > 255)
+								index = 255;
+							int pixel = pixelLookupTable[index];
+				            imageData.setPixel(j,i,pixel); ;
+				        }                
+				    }  
+				
+					
+			}else{
+				for (int y = 0; y < dataHeight; y++) {
+					for (int x = 0; x < dataWidth; x++) {
+						// the index of the value in the color table array
+						int index = (int) ((dataArray.get(y * dataWidth + x) - min)
+								/ (max - min) * 255);
+						if (index < 0)
+							index = 0;
+						else if (index > 255)
+							index = 255;
+						int pixel = pixelLookupTable[index];
+						imageData.setPixel(x, y, pixel);
+					}
 				}
 			}
+				
+			
 			return imageData;
 		}
 		//convert map to array to simplify the calculation
@@ -221,7 +258,7 @@ public class ColorMap {
 		
 		for(int y = 0; y < dataHeight; y++){
 			for(int x = 0; x<dataWidth; x++){
-				double value = dataArray[y*dataWidth + x];	
+				double value = dataArray.get(y*dataWidth + x);	
 				int pixel = palette.getPixel(getValueRGB(colorTupleArray, keyArray, value));
 				imageData.setPixel(x, y, pixel);
 			}
@@ -230,7 +267,19 @@ public class ColorMap {
 		return imageData;
 	}
 		
-	
+	/**Calculate the image data from source data based on the color map.
+	 * @param dataArray the source data
+	 * @param dataWidth number of columns of dataArray; This will be the width of image data.
+	 * @param dataHeight number of rows of dataArray; This will be the height of image data.
+	 * @param max the upper limit of the data in dataArray
+	 * @param min the lower limit of the data in dataArray
+	 * @param imageData the imageData to be filled. null if a new instance should be created.
+	 * @return the image data. null if dataWidth or dataHeight is less than 1.
+	 */
+	public ImageData drawImage(double[] dataArray, 
+			int dataWidth, int dataHeight, double max, double min){
+		return drawImage(new DoubleArrayWrapper(dataArray), dataWidth, dataHeight, max, min, null, false);
+	}
 	/**
 	 * @param colorTupleArray
 	 * @param keyArray
@@ -312,6 +361,9 @@ public class ColorMap {
 		return colorsLookupTable;
 	}
 	
+	public PaletteData getPalette() {
+		return palette;
+	}
 	
 	
 }

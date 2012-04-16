@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
+import org.csstudio.scan.device.SimulatedDevice;
 import org.junit.Test;
 
 /** JUnit test of the {@link SimulatedDevice}s

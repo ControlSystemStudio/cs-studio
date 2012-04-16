@@ -34,14 +34,15 @@ public class Messages extends NLS
     public static String NotSaved;
     public static String OpenCommandList;
     public static String OpenProperties;
-    public static String OpenScanTree;
     public static String OpenScanTreeError;
     public static String OpenScanTreePerspective;
     public static String PauseTT;
     public static String ResumeTT;
+    public static String ScanSimulation;
     public static String ScanSubmitErrorFmt;
     public static String ScanSubmittedButNotRunningFmt;
     public static String ServerDisconnected;
+	public static String SimulateScan;
     public static String SubmitScan;
 	public static String WaitingForScanServer;
     public static String XMLCommandErrorFmt;
