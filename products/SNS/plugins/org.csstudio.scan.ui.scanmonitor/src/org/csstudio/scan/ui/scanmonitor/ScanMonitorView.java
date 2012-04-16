@@ -55,7 +55,7 @@ public class ScanMonitorView extends ViewPart
         }
 
         // Connect to view
-        new GUI(parent, model);
+        new GUI(parent, model, getSite());
 
         // Stop model when view is closed
         parent.addDisposeListener(new DisposeListener()

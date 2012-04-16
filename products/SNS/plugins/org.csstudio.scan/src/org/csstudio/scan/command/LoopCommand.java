@@ -345,6 +345,26 @@ public class LoopCommand extends ScanCommand
         setBody(body);
     }
 
+    /** @param buf If the set command uses a condition,
+     *             information about it will be appended to string builder
+     */
+    public void appendConditionDetail(final StringBuilder buf)
+    {
+    	if (wait)
+    	{
+    		buf.append(" (wait for '");
+    		if (readback.isEmpty())
+    			buf.append(device_name);
+    		else
+    			buf.append(readback);
+    		if (tolerance > 0)
+    			buf.append("' +-").append(tolerance);
+    		if (timeout > 0)
+    			buf.append(", ").append(timeout).append(" sec timeout");
+    		buf.append(")");
+    	}
+    }
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()
@@ -352,19 +372,7 @@ public class LoopCommand extends ScanCommand
         final StringBuilder buf = new StringBuilder();
         buf.append("Loop '").append(device_name).append("' = ")
             .append(start).append(" ... ").append(end).append(", step ").append(stepsize);
-        if (wait)
-        {
-            buf.append(" (wait for '");
-            if (readback.isEmpty())
-                buf.append(device_name);
-            else
-                buf.append(readback);
-            if (tolerance > 0)
-                buf.append("' +-").append(tolerance);
-            if (timeout > 0)
-                buf.append(", ").append(timeout).append(" sec timeout");
-            buf.append(")");
-        }
+	    appendConditionDetail(buf);
         return buf.toString();
 	}
 }

@@ -235,26 +235,33 @@ public class SetCommand extends ScanCommand
         setTimeout(DOMHelper.getSubelementDouble(element, ScanCommandProperty.TAG_TIMEOUT, 0.0));
     }
 
+    /** @param buf If the set command uses a condition,
+     *             information about it will be appended to string builder
+     */
+    public void appendConditionDetail(final StringBuilder buf)
+    {
+    	if (wait)
+    	{
+    		buf.append(" (wait for '");
+    		if (readback.isEmpty())
+    			buf.append(device_name);
+    		else
+    			buf.append(readback);
+    		if (tolerance > 0)
+    			buf.append("' +-").append(tolerance);
+    		if (timeout > 0)
+    			buf.append(", ").append(timeout).append(" sec timeout");
+    		buf.append(")");
+    	}
+    }
+
     /** {@inheritDoc} */
 	@Override
 	public String toString()
 	{
 	    final StringBuilder buf = new StringBuilder();
 	    buf.append("Set '").append(device_name).append("' = ").append(value);
-	    if (wait)
-	    {
-            buf.append(" (wait for '");
-	        if (readback.isEmpty())
-	            buf.append(device_name);
-	        else
-	            buf.append(readback);
-	        if (tolerance > 0)
-	            buf.append("' +-").append(tolerance);
-	        if (timeout > 0)
-	            buf.append(", ").append(timeout).append(" sec timeout");
-	        buf.append(")");
-	    }
-
+	    appendConditionDetail(buf);
 	    return buf.toString();
 	}
 }

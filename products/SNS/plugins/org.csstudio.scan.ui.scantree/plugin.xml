@@ -27,11 +27,19 @@
       <editor
             class="org.csstudio.scan.ui.scantree.ScanEditor"
             contributorClass="org.csstudio.scan.ui.scantree.gui.ScanEditorContributor"
-            default="false"
+            default="true"
             extensions="scn"
             icon="icons/scantree.gif"
             id="org.csstudio.scan.ui.scantree.editor"
             name="%ScanTree">
+      </editor>
+      <editor
+            default="false"
+            extensions="scn"
+            icon="icons/run.png"
+            id="org.csstudio.scan.ui.scantree.submit"
+            launcher="org.csstudio.scan.ui.scantree.ScanLauncher"
+            name="%SubmitScan">
       </editor>
    </extension>
    <extension
@@ -53,9 +61,29 @@
             name="%ScanTree">
       </command>
       <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.SimulateScanHandler"
+            id="org.csstudio.scan.ui.scantree.simulate"
+            name="%SimulateScan">
+      </command>
+      <command
             defaultHandler="org.csstudio.scan.ui.scantree.operations.SubmitScanHandler"
             id="org.csstudio.scan.ui.scantree.submit"
             name="%SubmitScan">
+      </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.OpenScanTreeHandler"
+            id="org.csstudio.scan.ui.scantree.open"
+            name="%OpenScanTree">
+      </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.ShowSimulationHandler"
+            id="org.csstudio.scan.ui.scantree.show_simulation"
+            name="Show Simulation Result">
+         <commandParameter
+               id="org.csstudio.scan.ui.scantree.show_simulation.log"
+               name="Simulation Log"
+               optional="false">
+         </commandParameter>
       </command>
    </extension>
    <extension
@@ -123,8 +151,32 @@
       </menuContribution>
       <menuContribution
             locationURI="popup:org.csstudio.scan.ui.scantree.editor?after=edit">
-         <command commandId="org.csstudio.scan.ui.scantree.submit"
+         <command commandId="org.csstudio.scan.ui.scantree.simulate"
+               icon="icons/simulate.gif">
+         </command>
+         <command
+               commandId="org.csstudio.scan.ui.scantree.submit"
                icon="icons/run.png">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.open"
+               icon="icons/scantree.gif"
+               label="%OpenScanTree"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <instanceof
+                           value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>

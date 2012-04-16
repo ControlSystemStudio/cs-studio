@@ -9,7 +9,8 @@ Export-Package: org.csstudio.scan,
  org.csstudio.scan.command,
  org.csstudio.scan.data,
  org.csstudio.scan.device,
- org.csstudio.scan.server
+ org.csstudio.scan.server,
+ org.csstudio.scan.util
 Require-Bundle: org.junit,
  org.eclipse.core.runtime;bundle-version="3.7.0"
 Bundle-ActivationPolicy: lazy

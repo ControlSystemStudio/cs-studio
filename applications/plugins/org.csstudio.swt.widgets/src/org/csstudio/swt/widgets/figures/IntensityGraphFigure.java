@@ -13,8 +13,15 @@ import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
 
+import org.csstudio.swt.widgets.datadefinition.ByteArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.DoubleArrayWrapper;
+import org.csstudio.swt.widgets.datadefinition.FloatArrayWrapper;
+import org.csstudio.swt.widgets.datadefinition.IPrimaryArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.swt.widgets.datadefinition.IntArrayWrapper;
+import org.csstudio.swt.widgets.datadefinition.LongArrayWrapper;
+import org.csstudio.swt.widgets.datadefinition.ShortArrayWrapper;
 import org.csstudio.swt.widgets.figureparts.ColorMapRamp;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
@@ -60,7 +67,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 				addMouseListener(zoomer);
 			}
 		}
-		private synchronized double[] cropDataArray(int left, int right, int top, int bottom){
+		private synchronized IPrimaryArrayWrapper cropDataArray(int left, int right, int top, int bottom){
 			if((left != 0 || right != 0 || top != 0 || bottom != 0) &&
 					(dataWidth - left - right) * (dataHeight - top-bottom) >0){
 				int i=0;
@@ -69,10 +76,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 				double[] result = new double[(dataWidth - left - right) * (dataHeight - top - bottom)];
 				for(int y = top; y < (dataHeight-bottom); y++){
 					for(int x = left; x<(dataWidth - right); x++){
-						result[i++] = dataArray[y*dataWidth + x];
+						result[i++] = dataArray.get(y*dataWidth + x);
 					}
 				}
-				return result;
+				return new DoubleArrayWrapper(result);
 			}else
 				return dataArray;			
 		}
@@ -89,7 +96,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 		
 		@Override
-		protected void paintClientArea(Graphics graphics) {
+		protected void paintClientArea(Graphics graphics) {	
 			super.paintClientArea(graphics);
 			if(dataArray == null)
 				return;
@@ -103,40 +110,53 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 				}
 				if(clientArea.width <0 || clientArea.height <0)
 					return;
-				if(dataWidth == 0 || dataHeight == 0){
+				if(dataWidth == 0 || dataHeight == 0 || dataArray.getSize() < dataWidth * dataHeight){
 					graphics.drawRectangle(new Rectangle(
 							clientArea.x - (yAxis.isVisible()? 1:0),
 							clientArea.y, 
 							clientArea.width-(yAxis.isVisible()? 0:1), clientArea.height - (xAxis.isVisible()? 0:1)));
+					if(dataArray.getSize() ==0)
+						graphics.drawText("No data.", clientArea.getLocation());					
+					else if(dataArray.getSize() < dataWidth * dataHeight)
+						graphics.drawText("Size of input data is smaller than dataWidth*dataHeight!",
+								clientArea.getLocation());
 					return;
-				}
-											
-				//padding with zero if the array length is not long enough
-				if(dataArray.length < dataWidth * dataHeight){
-					double[] originalData = dataArray;			
-					dataArray = new double[dataWidth*dataHeight];
-				    System.arraycopy(originalData, 0, dataArray, 0,originalData.length);
-				}
+				}										
+
 				if(dataWidth - cropLeft - cropRight < 0 || dataHeight - cropTop - cropBottom < 0)
 					return;
 				croppedDataWidth = dataWidth - cropLeft - cropRight;
 				croppedDataHeight = dataHeight - cropTop - cropBottom;
 				
-					
 				croppedDataArray = cropDataArray(cropLeft, cropRight, cropTop, cropBottom);
 				
 				fireProfileDataChanged(croppedDataArray, croppedDataWidth, croppedDataHeight);
+				boolean shrink= false;
+				if(clientArea.width*clientArea.height < croppedDataHeight * croppedDataWidth){
+					shrink = true;
+				}
+				
+				
+				if(shrink){
+					if(bufferedImageData == null || bufferedImageData.width != clientArea.width 
+							|| bufferedImageData.height !=clientArea.height){
+						bufferedImageData = new ImageData(clientArea.width, clientArea.height, 24, colorMap.getPalette());
+					}					
+				}else if(bufferedImageData == null || bufferedImageData.width != croppedDataWidth
+						|| bufferedImageData.height !=croppedDataHeight)
+					bufferedImageData = new ImageData(croppedDataWidth, croppedDataHeight, 24, colorMap.getPalette());
+
+					
 				ImageData imageData = colorMap.drawImage(croppedDataArray,
 								croppedDataWidth, croppedDataHeight,
-								max, min);
+								max, min, bufferedImageData, shrink);		
+
 				if(imageData == null)
 					return;
 				bufferedImage = new Image(Display.getCurrent(), imageData);
 				
 			}
-		
-			graphics.drawImage(bufferedImage, new Rectangle(bufferedImage.getBounds()), clientArea);
-		
+			graphics.drawImage(bufferedImage, new Rectangle(bufferedImage.getBounds()), clientArea);		
 				
 			if(armed && end != null && start != null){
 				graphics.setLineStyle(SWTConstants.LINE_DOT);
@@ -144,7 +164,9 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 				graphics.setForegroundColor(BLACK_COLOR);
 				graphics.drawRectangle(start.x, start.y, end.x - start.x, end.y - start.y);
 			}
-		
+//			System.out.println((System.nanoTime() - startTime)/1000000);
+//			startTime = System.nanoTime();
+
 		}
 		
 		private synchronized void updateTextCursor(MouseEvent me) {
@@ -160,10 +182,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 					Point dataLocation = getDataLocation(me.x, me.y);		
 					if(dataLocation == null)
 						return;
-					if((dataLocation.y)*croppedDataWidth + dataLocation.x >= croppedDataArray.length)
+					if((dataLocation.y)*croppedDataWidth + dataLocation.x >= croppedDataArray.getSize())
 						return;
 					String text = "(" + xAxis.format(xCordinate) + ", " + yAxis.format(yCordinate) + ", "+ 
-						yAxis.format(croppedDataArray[(dataLocation.y)*croppedDataWidth + dataLocation.x]) + ")";
+						yAxis.format(croppedDataArray.get((dataLocation.y)*croppedDataWidth + dataLocation.x)) + ")";
 					Dimension size = FigureUtilities.getTextExtents(
 							text, Display.getDefault().getSystemFont());
 					Image image = new Image(Display.getDefault(),
@@ -253,9 +275,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	}
 	private int dataWidth, dataHeight;
 	private int cropLeft, cropRight, cropTop, cropBottom;
-	private double[] dataArray;
+//	private double[] dataArray;
+	private IPrimaryArrayWrapper dataArray;
 	
-	private double[] croppedDataArray;
+	private IPrimaryArrayWrapper croppedDataArray;
 	private int croppedDataWidth, croppedDataHeight;
 	private double max, min;
 	
@@ -265,7 +288,6 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	private final Axis xAxis;
 	private final Axis yAxis;
 	private Range xAxisRange = null;
-
 	private Range yAxisRange = null;
 	private Rectangle originalCrop = null;
 	private final static int GAP = 3;
@@ -275,10 +297,11 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	private boolean armed;
 	
 	private boolean dataDirty;  //true if the image need to be redrawn
-	
+	private ImageData bufferedImageData;
 	private Image bufferedImage; //the buffered image 
 	private List<IProfileDataChangeLisenter> listeners; 
 	private boolean runMode; 
+//	private long startTime = System.nanoTime();
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
 	
@@ -290,13 +313,12 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 			new RGB(123,0,23));
 	
 	
-	
 	public IntensityGraphFigure() {
 		this(true);
 	}
 	public IntensityGraphFigure(boolean runMode) {
 		this.runMode = runMode;
-		dataArray = new double[0];
+		dataArray = new DoubleArrayWrapper(new double[0]);
 		max = 255;
 		min = 0;
 		dataWidth = 0;
@@ -324,22 +346,22 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	}
 
 
-	private double[] calculateXProfileData(double[] data, int dw, int dh){
+	private double[] calculateXProfileData(IPrimaryArrayWrapper data, int dw, int dh){
 		double[] output = new double[dw];
 		for(int i =0; i<dw; i++){
 			for(int j = 0; j < dh; j++)
-				output[i] += data[j*dw + i];
+				output[i] += data.get(j*dw + i);
 			output[i] /= dh;
 		}
 		return output;
 	}
 
 
-	private double[] calculateYProfileData(double[] data, int dw, int dh){
+	private double[] calculateYProfileData(IPrimaryArrayWrapper data, int dw, int dh){
 		double[] output = new double[dh];
 		for(int i =0; i<dh; i++){
 			for(int j = 0; j < dw; j++)
-				output[i] += data[i*dw + j];
+				output[i] += data.get(i*dw + j);
 			output[i] /= dw;
 		}
 		return output;
@@ -352,7 +374,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		}
 	}
 
-	private void fireProfileDataChanged(double[] data, int dw, int dh){
+	private void fireProfileDataChanged(IPrimaryArrayWrapper data, int dw, int dh){
 		if(listeners.size() <= 0)
 			return;
 		double[] xProfileData = calculateXProfileData(data, dw, dh);
@@ -404,7 +426,11 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	
 
 	public double[] getDataArray() {
-		return dataArray;
+		double[] data = new double[dataArray.getSize()];
+		for(int i=0; i<dataArray.getSize(); i++){
+			data[i]=dataArray.get(i);
+		}
+		return data;
 	}
 
 
@@ -631,16 +657,112 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	}
 
 
-	/**
-	 * @param dataArray the dataArray to set
+	/**Set the double[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
 	 */
-	public final void setDataArray(double[] dataArray) {
-		this.dataArray = dataArray;
+	public final void setDataArray(double[] data) {
+		if(dataArray instanceof DoubleArrayWrapper){
+			((DoubleArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new DoubleArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	
+	/**Set the short[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(short[] data) {
+		if(dataArray instanceof ShortArrayWrapper){
+			((ShortArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new ShortArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	/**Set the byte[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(byte[] data) {
+		if(dataArray instanceof ByteArrayWrapper){
+			((ByteArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new ByteArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	/**Set the int[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(int[] data) {
+		if(dataArray instanceof IntArrayWrapper){
+			((IntArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new IntArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	/**Set the long[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(long[] data) {
+		if(dataArray instanceof LongArrayWrapper){
+			((LongArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new LongArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	/**Set the float[] data array for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(float[] data) {
+		if(dataArray instanceof FloatArrayWrapper){
+			((FloatArrayWrapper)dataArray).setData(data);
+		}else
+			dataArray = new FloatArrayWrapper(data);
+		setDataArray(dataArray);
+	}
+	
+	
+	
+	/**Set the data array wrapper for the intensity graph. It must be called in UI thread.
+	 * Warning: for big image for example 1024*768, it may takes several milliseconds (10-50ms)
+	 *  to paint the image. If this is called too fast that exceeds the painting capability, 
+	 *  it may cause memory leaking.
+	 * @param data the dataArray to set
+	 * 
+	 */
+	public final void setDataArray(IPrimaryArrayWrapper dataWrapper){
+		dataArray = dataWrapper;
 		croppedDataArray = null;
 		dataDirty = true;
 		graphArea.repaint();
 	}
-
 
 	/**
 	 * @param dataHeight the dataHeight to set

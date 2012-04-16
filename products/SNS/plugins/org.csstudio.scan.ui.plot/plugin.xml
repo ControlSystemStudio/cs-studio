@@ -14,9 +14,16 @@
       </view>
    </extension>
    <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.scan.ui.plot.OpenPlotHandler"
+            id="org.csstudio.scan.ui.plot.openplot"
+            name="%OpenPlot">
+      </command>
+   </extension>
+   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
             locationURI="menu:scan">
          <command
                commandId="org.eclipse.ui.views.showView"
@@ -27,6 +34,23 @@
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.scan.ui.plot.view">
             </parameter>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.scan.ui.plot.openplot"
+               icon="icons/plot.gif"
+               label="%OpenPlot"
+               style="push">
+            <visibleWhen checkEnabled="false">
+               <with variable="selection">
+                  <iterate>
+                     <instanceof value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
    </extension>

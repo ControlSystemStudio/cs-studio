@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.SimulationContext;
 
 /** {@link ScanCommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
@@ -34,6 +35,13 @@ public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
     public DelayCommandImpl(final DelayCommand command)
     {
         super(command);
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public void simulate(final SimulationContext context) throws Exception
+    {
+    	context.logExecutionStep(command.toString(), command.getSeconds());
     }
 
 	/** {@inheritDoc} */

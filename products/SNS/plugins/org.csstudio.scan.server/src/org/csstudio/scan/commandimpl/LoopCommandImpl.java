@@ -21,14 +21,17 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
+import org.csstudio.scan.server.SimulationContext;
 
 /** Command that performs a loop
  *  @author Kay Kasemir
@@ -81,7 +84,73 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         return device_names.toArray(new String[device_names.size()]);
     }
 
-    /** {@inheritDoc} */
+    private double getLoopStart()
+    {
+    	return Math.min(command.getStart(), command.getEnd());
+    }
+    private double getLoopEnd()
+    {
+    	return Math.max(command.getStart(), command.getEnd());
+    }
+    private double getLoopStep()
+    {
+    	final double step  = direction * command.getStepSize();
+		// Revert direction for next iteration of the complete loop?
+		if (reverse)
+		    direction = -direction;
+		return step;
+    }
+
+	/** {@inheritDoc} */
+	@Override
+    public void simulate(final SimulationContext context) throws Exception
+    {
+		final SimulatedDevice device = context.getDevice(command.getDeviceName());
+
+		final double start = getLoopStart();
+        final double end   = getLoopEnd();
+        final double step  = getLoopStep();
+		if (step > 0)
+    		for (double value = start; value <= end; value += step)
+    			simulateStep(context, device, value);
+		else // step is < 0, so stepping down
+            for (double value = end; value >= start; value += step)
+            	simulateStep(context, device, value);
+    }
+
+	/** Simulate one step in the loop iteration
+	 *  @param context {@link SimulationContext}
+	 *  @param device {@link SimulatedDevice} that the loop modifies
+	 *  @param value Value of the loop variable for this iteration
+	 *  @throws Exception on error
+	 */
+    private void simulateStep(final SimulationContext context,
+            final SimulatedDevice device, final double value) throws Exception
+    {
+		// Get previous value
+		final double original = ValueUtil.getDouble(device.read());
+
+		// Estimate execution time
+		final double time_estimate = command.getWait()
+				? device.getChangeTimeEstimate(value)
+				: 0.0;
+
+		// Show command
+		final StringBuilder buf = new StringBuilder();
+	    buf.append("Loop '").append(command.getDeviceName()).append("' = ").append(value);
+	    command.appendConditionDetail(buf);
+	    if (! Double.isNaN(original))
+	    	buf.append(" [was ").append(original).append("]");
+	    context.logExecutionStep(buf.toString(), time_estimate);
+
+    	// Set to (simulated) new value
+    	device.write(value);
+
+        // Simulate loop body
+    	context.simulate(implementation);
+    }
+
+	/** {@inheritDoc} */
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
@@ -104,20 +173,15 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         else
             condition = null;
 
-		final double start = Math.min(command.getStart(), command.getEnd());
-        final double end   = Math.max(command.getStart(), command.getEnd());
-        final double step  = direction * command.getStepSize();
-
+		final double start = getLoopStart();
+        final double end   = getLoopEnd();
+        final double step  = getLoopStep();
 		if (step > 0)
     		for (double value = start; value <= end; value += step)
     		    executeStep(context, device, condition, readback, value);
 		else // step is < 0, so stepping down
             for (double value = end; value >= start; value += step)
                 executeStep(context, device, condition, readback, value);
-
-		// Revert direction for next iteration of the complete loop?
-		if (reverse)
-		    direction = -direction;
 	}
 
 	/** Execute one step of the loop

@@ -31,18 +31,22 @@ public class ScanServerInfo  extends MemoryInfo
     final private String version;
     final private Date start_time;
     final private String beamline_config;
+    final private String simulation_config;
 
     /** Initialize
      *  @param version
      *  @param start_time
      *  @param beamline_config
+     *  @param simulation_config
      */
     public ScanServerInfo(final String version, final Date start_time,
-    		final String beamline_config)
+    		final String beamline_config,
+    		final String simulation_config)
     {
 	    this.version = version;
 	    this.start_time = start_time;
 	    this.beamline_config = beamline_config;
+	    this.simulation_config = simulation_config;
     }
 
     /** @return Version number */
@@ -63,6 +67,12 @@ public class ScanServerInfo  extends MemoryInfo
     	return beamline_config;
     }
 
+	/** @return Simulation configuration path */
+	public String getSimulationConfig()
+	{
+		return simulation_config;
+	}
+
     /** {@inheritDoc} */
     @Override
     public String toString()
@@ -71,6 +81,7 @@ public class ScanServerInfo  extends MemoryInfo
         buf.append("Scan Server ").append(version).append("\n");
         buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
+        buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");
         return buf.toString();
     }
