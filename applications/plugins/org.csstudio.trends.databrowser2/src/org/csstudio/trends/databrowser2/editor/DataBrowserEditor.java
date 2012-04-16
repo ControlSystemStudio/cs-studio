@@ -7,9 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
-import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.logging.Level;
 
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
@@ -18,12 +17,10 @@ import org.csstudio.apputil.ui.workbench.OpenViewAction;
 import org.csstudio.email.EMailSender;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
 import org.csstudio.trends.databrowser2.exportview.ExportView;
-import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -129,7 +126,7 @@ public class DataBrowserEditor extends EditorPart
     {
     	return createInstance(new EmptyEditorInput());
     }
-    
+
     /** @return Model displayed/edited by this EditorPart */
     public Model getModel()
     {
@@ -146,7 +143,7 @@ public class DataBrowserEditor extends EditorPart
         setSite(site);
         // Update the editor's name from "Data Browser" to file name
         setPartName(input.getName());
-        
+
         if (input instanceof DataBrowserModelEditorInput)
         {
         	model = ((DataBrowserModelEditorInput)input).getModel();
@@ -219,13 +216,13 @@ public class DataBrowserEditor extends EditorPart
             public void scrollEnabled(final boolean scroll_enabled)
             {   setDirty(true);   }
 
-		
+
 			@Override
-			public void changedAnnotations() 
+			public void changedAnnotations()
 			{   setDirty(true);   }
 
 			@Override
-			public void changedXYGraphConfig() 
+			public void changedXYGraphConfig()
 			{   setDirty(true);   }
         };
         model.addListener(model_listener);
@@ -472,62 +469,42 @@ public class DataBrowserEditor extends EditorPart
         monitor.beginTask(Messages.Save, IProgressMonitor.UNKNOWN);
         try
         {
-            // Create pipes so that model can write its content to pipe,
-            // while IFile API reads other end and in turn write that to the file.
-            final PipedOutputStream out = new PipedOutputStream();
-            final InputStream in = new PipedInputStream(out);
+        	// Update model with info that's kept in plot
 
-            // Writer thread to avoid pipe deadlock
-            final Thread write_thread = new Thread(new Runnable()
-            {
-                  @Override
-                public void run()
-                  {
-                      try
-                      {
-                    	  // Update model with info that's kept in plot
-                        
-                    	  //TIME AXIS 
-                    	 Axis timeAxis = plot.getXYGraph().getXAxisList().get(0);
-                    	 AxisConfig confTime = model.getTimeAxis();
-                    
-                    	 System.out
-								.println("DataBrowserEditor.saveToFile(...).new Runnable() {...}.run() " + timeAxis.getTitle());
-                    	 
-                    	 if(confTime == null){
-                    		 confTime = new AxisConfig(timeAxis.getTitle());
-                    		 model.setTimeAxis(confTime);
-                    	 }
-                    	 
-                    	 setAxisConfig(confTime, timeAxis);
-                    	  
-                    	  
-                    	 for(int i= 0; i < model.getAxisCount(); i++){
-                    		 AxisConfig conf = model.getAxis(i);
-                    		 int axisIndex = model.getAxisIndex(conf);
-                    		 Axis axis = plot.getXYGraph().getYAxisList().get(axisIndex);
-                    	 		
-                    		 setAxisConfig(conf, axis);
-                    	 }
-                    	  
-                    	  model.setGraphSettings(plot.getGraphSettings()); 
-                    	  model.setAnnotations(plot.getAnnotations(), false);
-                          model.write(out);
-                      }
-                      catch (Exception ex)
-                      {
-                          ex.printStackTrace();
-                      }
-                  }
-            });
-            write_thread.start();
-            // IFile reads other end of pipe, writes into file
+        	//TIME AXIS
+      	  	Axis timeAxis = plot.getXYGraph().getXAxisList().get(0);
+      	  	AxisConfig confTime = model.getTimeAxis();
+      	  	if(confTime == null)
+      	  	{
+      	  		confTime = new AxisConfig(timeAxis.getTitle());
+      	  		model.setTimeAxis(confTime);
+      	  	}
+      	  	setAxisConfig(confTime, timeAxis);
+
+      	  	for (int i=0; i<model.getAxisCount(); i++)
+      	  	{
+      	  		AxisConfig conf = model.getAxis(i);
+      	  		int axisIndex = model.getAxisIndex(conf);
+      	  		Axis axis = plot.getXYGraph().getYAxisList().get(axisIndex);
+      	  		setAxisConfig(conf, axis);
+      	  	}
+
+      	  	model.setGraphSettings(plot.getGraphSettings());
+      	  	model.setAnnotations(plot.getAnnotations(), false);
+
+        	// Write model to string
+        	ByteArrayOutputStream buf = new ByteArrayOutputStream();
+
+        	model.write(buf);
+        	buf.close();
+
+        	final ByteArrayInputStream in = new ByteArrayInputStream(buf.toByteArray());
+            // Write buffer to file
             if (file.exists())
                 file.setContents(in, IResource.FORCE, monitor);
             else
                 file.create(in, true, monitor);
-            // Write thread should have finished...
-            write_thread.join();
+
             setDirty(false);
         }
         catch (Exception ex)
@@ -543,36 +520,36 @@ public class DataBrowserEditor extends EditorPart
         }
         return true;
     }
-    
-    
+
+
     /**
-     * Set AxisConfigProperties from Axis 
+     * Set AxisConfigProperties from Axis
      * @param conf
      * @param axis
      */
     private void setAxisConfig(AxisConfig conf , Axis axis){
-    	
+
     	 //Don't fire axis change event to avoid SWT Illegal Thread Access
     	 conf.setFireEvent(false);
-    		
+
     	 conf.setFontData(axis.getTitleFontData());
     	 conf.setColor(axis.getForegroundColorRGB());
     	 conf.setScaleFontData(axis.getScaleFontData());
-		 
-    	 
+
+
     	 //MIN MAX RANGE
     	 conf.setRange(axis.getRange().getLower(), axis.getRange().getUpper());
-    	 
+
 		 //GRID
 		 conf.setShowGridLine(axis.isShowMajorGrid());
 		 conf.setDashGridLine(axis.isDashGridLine());
 		 conf.setGridLineColor(axis.getMajorGridColorRGB());
-		 
+
 		 //FORMAT
 		 conf.setAutoFormat(axis.isAutoFormat());
 		 conf.setTimeFormatEnabled(axis.isDateEnabled());
 		 conf.setFormat(axis.getFormatPattern());
-		 
+
 		 conf.setFireEvent(true);
     }
 }

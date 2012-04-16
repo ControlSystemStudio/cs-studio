@@ -319,13 +319,16 @@ public class AxisConfig {
 		if (scaleFontData != null)
 			XMLWriter.XML(writer, 3, Model.TAG_SCALE_FONT, scaleFontData);
 
-		XMLWriter.start(writer, 3, Model.TAG_COLOR);
-		writer.println();
-		XMLWriter.XML(writer, 4, Model.TAG_RED, rgb.red);
-		XMLWriter.XML(writer, 4, Model.TAG_GREEN, rgb.green);
-		XMLWriter.XML(writer, 4, Model.TAG_BLUE, rgb.blue);
-		XMLWriter.end(writer, 3, Model.TAG_COLOR);
-		writer.println();
+		if (rgb != null)
+		{
+			XMLWriter.start(writer, 3, Model.TAG_COLOR);
+			writer.println();
+			XMLWriter.XML(writer, 4, Model.TAG_RED, rgb.red);
+			XMLWriter.XML(writer, 4, Model.TAG_GREEN, rgb.green);
+			XMLWriter.XML(writer, 4, Model.TAG_BLUE, rgb.blue);
+			XMLWriter.end(writer, 3, Model.TAG_COLOR);
+			writer.println();
+		}
 		XMLWriter.XML(writer, 3, Model.TAG_MIN, min);
 		XMLWriter.XML(writer, 3, Model.TAG_MAX, max);
 		XMLWriter.XML(writer, 3, Model.TAG_LOG_SCALE,
@@ -358,10 +361,7 @@ public class AxisConfig {
 		XMLWriter.end(writer, 3, Model.TAG_FORMAT);
 		writer.println();
 
-
-
 		XMLWriter.end(writer, 2, Model.TAG_AXIS);
-
 		writer.println();
 	}
 
