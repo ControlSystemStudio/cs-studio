@@ -8,10 +8,6 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public interface IteratorDouble {
-
-    public boolean hasNext();
-
-    public double next();
-    
+public enum InterpolationScheme {
+    NEAREST_NEIGHBOUR, LINEAR, CUBIC;
 }

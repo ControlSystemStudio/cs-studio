@@ -8,18 +8,24 @@ package org.epics.graphene;
  *
  * @author carcassi
  */
-public class Histogram1DRendererUpdate {
+public class LineGraphRendererUpdate {
 
     private Integer imageHeight;
     private Integer imageWidth;
+    private InterpolationScheme interpolation;
     
-    public Histogram1DRendererUpdate imageHeight(int height) {
+    public LineGraphRendererUpdate imageHeight(int height) {
         this.imageHeight = height;
         return this;
     }
     
-    public Histogram1DRendererUpdate imageWidth(int width) {
+    public LineGraphRendererUpdate imageWidth(int width) {
         this.imageWidth = width;
+        return this;
+    }
+    
+    public LineGraphRendererUpdate interpolation(InterpolationScheme scheme) {
+        this.interpolation = scheme;
         return this;
     }
     
@@ -29,6 +35,10 @@ public class Histogram1DRendererUpdate {
 
     public Integer getImageWidth() {
         return imageWidth;
+    }
+    
+    public InterpolationScheme getInterpolation() {
+        return interpolation;
     }
     
 }
