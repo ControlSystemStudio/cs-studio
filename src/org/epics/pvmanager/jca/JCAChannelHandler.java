@@ -1,5 +1,5 @@
-/*
- * Copyright 2010-11 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager.jca;
@@ -40,11 +40,13 @@ import org.epics.pvmanager.ValueCache;
  */
 public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
 
+    private static final int LARGE_ARRAY = 100000;
     private final Context context;
     private final int monitorMask;
     private volatile Channel channel;
     private volatile ExceptionHandler connectionExceptionHandler;
     private volatile boolean needsMonitor;
+    private volatile boolean largeArray = false;
 
     public JCAChannelHandler(String channelName, Context context, int monitorMask) {
         super(channelName);
@@ -77,7 +79,13 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
         connectionExceptionHandler = handler;
         try {
             // Give the listener right away so that no event gets lost
-            channel = context.createChannel(getChannelName(), connectionListener);
+	    // If it's a large array, connect using lower priority
+	    if (largeArray) {
+                channel = context.createChannel(getChannelName(), connectionListener, Channel.PRIORITY_MIN);
+		System.out.println("Connect as large");
+	    } else {
+                channel = context.createChannel(getChannelName(), connectionListener, (short) (Channel.PRIORITY_MIN + 1));
+	    }
             needsMonitor = true;
         } catch (CAException ex) {
             handler.handleException(ex);
@@ -134,6 +142,15 @@ public class JCAChannelHandler extends ChannelHandler<MonitorEvent> {
                     // Take the channel from the event so that there is no
                     // synchronization problem
                     Channel channel = (Channel) ev.getSource();
+		    
+		    // Check whether the channel is large and was opened
+		    // as large. Reconnect if does not match
+		    if (ev.isConnected() && channel.getElementCount() >= LARGE_ARRAY && !largeArray) {
+			disconnect(connectionExceptionHandler);
+			largeArray = true;
+			connect(connectionExceptionHandler);
+			return;
+		    }
                     
                     // Setup monitors on connection
                     if (ev.isConnected()) {
