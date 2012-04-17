@@ -69,8 +69,9 @@ import org.csstudio.ams.dbAccess.configdb.UserGroupUserDAO;
 import org.csstudio.ams.dbAccess.configdb.UserGroupUserTObject;
 import org.csstudio.ams.dbAccess.configdb.UserTObject;
 import org.csstudio.ams.internal.AmsPreferenceKey;
-import org.csstudio.platform.utility.jms.JmsMultipleProducer;
-import org.csstudio.platform.utility.jms.JmsRedundantReceiver;
+import org.csstudio.utility.jms.consumer.JmsRedundantConsumer;
+import org.csstudio.utility.jms.publisher.JmsMultiplePublisher;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 /*- FIXME Frage klaeren, warum das T_AMS_JMS immer in user feld steht,
@@ -90,11 +91,13 @@ public class DistributorWork extends Thread implements AmsConstants,
 	// jms internal communication
 	// --- Sender connection ---
 
-	private JmsMultipleProducer amsSender;
+	// private JmsMultipleProducer amsSender;
+	private JmsMultiplePublisher amsSender;
 
 	// --- Receiver connection ---
-	private JmsRedundantReceiver amsReceiver = null;
-
+	// private JmsRedundantReceiver amsReceiver;
+	private JmsRedundantConsumer amsReceiver;
+	
 	// jms external communication
 	private Context extContext = null;
 	private ConnectionFactory extFactory = null;
@@ -223,23 +226,16 @@ public class DistributorWork extends Thread implements AmsConstants,
 		final boolean durable = Boolean.parseBoolean(storeAct
 				.getString(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE));
 
-		final String url = storeAct
-				.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL);
-		final String factory = storeAct
-				.getString(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS);
-
-		amsSender = new JmsMultipleProducer("DistributorWorkSenderInternal",
-				url, factory);
-		if (amsSender.isConnected() == false) {
-			Log.log(Log.ERROR, "Cannot create JMS multiple producer");
-			return false;
-		}
-
-		String topicName;
-
+		try {
+            amsSender = new JmsMultiplePublisher(SharedJmsConnections.sharedSenderConnection());
+        } catch (Exception e) {
+            Log.log (Log.ERROR, "Cannot create JMS multiple producer: " + e.getMessage());
+            return false;
+        }
+		
 		/* SMS Connector */
 
-		topicName = storeAct
+		String topicName = storeAct
 				.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_SMS_CONNECTOR);
 		if (amsSender.addMessageProducer("amsPublisherSms", topicName) == false) {
 			Log.log(this, Log.ERROR, "Cannot create amsPublisherSms");
@@ -293,11 +289,12 @@ public class DistributorWork extends Thread implements AmsConstants,
 
 		try {
 
-			amsReceiver = new JmsRedundantReceiver(
-					"DistributorWorkReceiverInternal",
-					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
-					storeAct.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2));
-
+			amsReceiver = new JmsRedundantConsumer(SharedJmsConnections.sharedReceiverConnections());
+			if (!amsReceiver.isConnected()) {
+			    Log.log(this, Log.FATAL, "Cannot create redundant consumer.");
+			    return false;
+			}
+			
 			// The topic T_AMS_DISTRIBUTE is now used by the connection that is created in the
 			// application class. The messages are processed by the method onMessage()
 //			success = amsReceiver
@@ -1755,8 +1752,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 	}
 
 	private void sendChangeStatusConfirmation(final UserTObject user,
-			String txt, final String replyType, final String originator,
+			String originalText, final String replyType, final String originator,
 			final int texttype) {
+	    String txt = new String(originalText);
 		String addr = "";
 		try {
 			if (originator != null) {
@@ -1790,8 +1788,9 @@ public class DistributorWork extends Thread implements AmsConstants,
 	}
 
 	private void sendChangeGroupStatusConfirmation(final UserTObject user,
-			final UserGroupTObject group, String txt, final String replyType,
+			final UserGroupTObject group, String originalText, final String replyType,
 			final String originator, final int texttype) {
+	    String txt = new String(originalText);
 		String addr = "";
 		try {
 			if (originator != null) {

@@ -30,15 +30,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Enumeration;
-
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
@@ -47,17 +42,20 @@ import org.csstudio.ams.dbAccess.AmsConnectionFactory;
 import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.csstudio.utility.jms.IConnectionMonitor;
+import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.osgi.framework.Bundle;
 import org.remotercp.common.tracker.IGenericServiceListener;
 import org.remotercp.service.connection.session.ISessionService;
 
 public class DistributorStart implements IApplication,
+                                         IConnectionMonitor,
                                          IGenericServiceListener<ISessionService> {
 
     private static DistributorStart _instance = null;
@@ -112,6 +110,7 @@ public class DistributorStart implements IApplication,
     /**
      *
      */
+    @SuppressWarnings("null")
     @Override
     public Object start(final IApplicationContext context) throws Exception {
         
@@ -120,14 +119,24 @@ public class DistributorStart implements IApplication,
         DistributorPlugin.getDefault().addSessionServiceListener(this);
 
         DistributorPreferenceKey.showPreferences();
-        final IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
 
-        final IPreferenceStore store = AmsActivator.getDefault().getPreferenceStore();
-        final String dbType = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_TYPE);
-        final String dbCon = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION);
-        final String user = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_USER);
-        final String pwd = store.getString(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD);
-
+        final IPreferencesService ps = Platform.getPreferencesService();
+        final String dbType = ps.getString(AmsActivator.PLUGIN_ID,
+                                           AmsPreferenceKey.P_CONFIG_DATABASE_TYPE,
+                                           "",
+                                           null);
+        final String dbCon = ps.getString(AmsActivator.PLUGIN_ID,
+                                          AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION,
+                                          "", null);
+        final String user = ps.getString(AmsActivator.PLUGIN_ID,
+                                         AmsPreferenceKey.P_CONFIG_DATABASE_USER,
+                                         "",
+                                         null);
+        final String pwd = ps.getString(AmsActivator.PLUGIN_ID,
+                                        AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD,
+                                        "",
+                                        null);
+        
         ConfigDbProperties dbProp = new ConfigDbProperties(dbType, dbCon, user, pwd);
         java.sql.Connection localDatabaseConnection = null;
         java.sql.Connection cacheDatabaseConnection = null;
@@ -157,14 +166,39 @@ public class DistributorStart implements IApplication,
             // Create the cache db
             ConfigReplicator.createMemoryCacheDb(cacheDatabaseConnection, sqlFile);
 
+            // Prepare JMS connections
+            String publisherUrl = ps.getString(AmsActivator.PLUGIN_ID,
+                                               AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL,
+                                               "",
+                                               null);
+            
+            final String[] consumerURLs = new String[] {
+                    ps.getString(AmsActivator.PLUGIN_ID,
+                                 AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1,
+                                 "",
+                                 null),
+                    ps.getString(AmsActivator.PLUGIN_ID,
+                                 AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2,
+                                 "",
+                                 null)
+            };
+            
+            SharedJmsConnections.staticInjectPublisherUrlAndClientId(publisherUrl, "AmsDistributorPublisher");
+            SharedJmsConnections.staticInjectConsumerUrlAndClientId(consumerURLs[0], consumerURLs[1], "AmsDistributorConsumer");
+            
+            final ISharedConnectionHandle publisherHandle = SharedJmsConnections.sharedSenderConnection();
             // Create a JMS sender connection
-            final ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(prefs.getString(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL));
-            final Connection senderConnection = senderConnectionFactory.createConnection();
-            senderConnection.start();
+//            final ConnectionFactory senderConnectionFactory = new ActiveMQConnectionFactory(publisherUrl);
+//            final Connection senderConnection = senderConnectionFactory.createConnection();
+//            senderConnection.start();
 
             // Create a sender session and destination for the command topic
-            final Session commandSenderSession = senderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            final String commandTopicName = prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND);
+            final Session commandSenderSession = publisherHandle.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            final String commandTopicName = ps.getString(AmsActivator.PLUGIN_ID,
+                                                         AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND,
+                                                         "",
+                                                         null);
+            
             final Topic commandTopic = commandSenderSession.createTopic(commandTopicName);
             final MessageProducer commandMessageProducer = commandSenderSession.createProducer(commandTopic);
 
@@ -182,24 +216,22 @@ public class DistributorStart implements IApplication,
             final DistributorWork worker = new DistributorWork(localDatabaseConnection,
                                                                cacheDatabaseConnection,
                                                                synchronizer);
-            final String[] receiverURLs = new String[] {
-                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1),
-                    prefs.getString(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2)
-                };
-            final Connection[] receiverConnections = new Connection[receiverURLs.length];
-            for (int i = 0; i < receiverURLs.length; i++) {
-                final ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
-                final Connection connection = connectionFactory.createConnection();
-                receiverConnections[i] = connection;
-                receiverConnections[i].setClientID("AmsDistributorConsumerConnection");
-                final Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                final Topic receiveTopic = receiverSession.createTopic(prefs.getString(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR));
-                final MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);
-
-                consumer.setMessageListener(worker);
-                connection.start();
+            
+            final String distributorTopic = ps.getString(AmsActivator.PLUGIN_ID,
+                                                         AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR,
+                                                         "",
+                                                         null);
+            
+            final ISharedConnectionHandle[] consumerHandles = SharedJmsConnections.sharedReceiverConnections();
+            final Session[] consumerSessions = new Session[consumerHandles.length];
+            final MessageConsumer[] consumer = new MessageConsumer[consumerHandles.length];
+            for (int i = 0; i < consumerHandles.length; i++) {
+                consumerSessions[i] = consumerHandles[i].createSession(false, Session.AUTO_ACKNOWLEDGE);
+                final Topic receiveTopic = consumerSessions[i].createTopic(distributorTopic);
+                consumer[i] = consumerSessions[i].createConsumer(receiveTopic);
+                consumer[i].setMessageListener(worker);
             }
-
+            
             // TODO: There really should be two worker classes!
             // new Thread(worker).start();
             worker.start();
@@ -217,10 +249,24 @@ public class DistributorStart implements IApplication,
             synchronizer.stop();
             synchronizerThread.join();
 
-            for (final Connection receiverConnection : receiverConnections) {
-                receiverConnection.close();
+            // Close the JMS connections and clients
+            for (final MessageConsumer o : consumer) {
+                try {o.close();}catch(Exception e){/*Ignore Me!*/}
             }
-            senderConnection.close();
+
+            for (final Session session : consumerSessions) {
+                try {session.close();}catch(Exception e){/*Ignore Me!*/}
+            }
+            
+            for (final ISharedConnectionHandle conHandle : consumerHandles) {
+                conHandle.release();
+            }
+            
+            if (commandSenderSession != null) {
+                try {commandSenderSession.close();}catch(Exception e){/*Ignore Me!*/}
+            }
+            
+            publisherHandle.release();
         } catch (final SQLException e) {
             Log.log(this, Log.FATAL, "Could not connect to the database servers", e);
         } finally {
@@ -267,5 +313,15 @@ public class DistributorStart implements IApplication,
     @Override
     public void unbindService(final ISessionService service) {
     	// Nothing to do here
+    }
+
+    @Override
+    public void onConnected() {
+        Log.log(Log.WARN, "onConnected()");
+    }
+
+    @Override
+    public void onDisconnected() {
+        Log.log(Log.WARN, "onDisconnected()");
     }
 }
