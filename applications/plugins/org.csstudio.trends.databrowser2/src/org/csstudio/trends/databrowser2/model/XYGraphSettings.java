@@ -3,19 +3,19 @@ package org.csstudio.trends.databrowser2.model;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
+/** @author Laurent PHILIPPE (GANIL) */
 public class XYGraphSettings {
-
-	private String Title;
+	private String Title = ""; //$NON-NLS-1$
 	private FontData titleFontData;
 
 	private RGB titleColor;
 
 	//private Color plotAreaBackColor;
 
-	private boolean showTitle;
-	private boolean showLegend;
-	private boolean showPlotAreaBorder;
-	private boolean transparent;
+	private boolean showTitle = true;
+	private boolean showLegend = true;
+	private boolean showPlotAreaBorder = false;
+	private boolean transparent = false;
 
 	public String getTitle() {
 		return Title;
@@ -60,5 +60,4 @@ public class XYGraphSettings {
 	public void setTransparent(boolean transparent) {
 		this.transparent = transparent;
 	}
-
 }

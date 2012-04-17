@@ -67,7 +67,10 @@ public class Scan implements ScanContext
 
     final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
-    private volatile ScanState state = ScanState.Idle;
+    /** State of this scan
+     *  SYNC on this for access
+     */
+    private ScanState state = ScanState.Idle;
 
     private volatile String error = null;
 
@@ -284,12 +287,18 @@ public class Scan implements ScanContext
         }
         catch (InterruptedException ex)
         {
-            state = ScanState.Aborted;
+        	synchronized (this)
+        	{
+        		state = ScanState.Aborted;
+        	}
             error = "Interrupted";
         }
         catch (Exception ex)
         {
-            state = ScanState.Failed;
+        	synchronized (this)
+        	{
+        		state = ScanState.Failed;
+        	}
             error = ex.getMessage();
         }
     }
@@ -300,12 +309,17 @@ public class Scan implements ScanContext
      */
     private void execute_or_die_trying() throws Exception
     {
-        // Was scan aborted before it ever got to run?
-        if (state == ScanState.Aborted)
-            return;
-        // Otherwise expect 'Idle'
-        if (state != ScanState.Idle)
-            throw new IllegalStateException("Cannot run Scan that is " + state);
+    	synchronized (this)
+    	{
+	        // Was scan aborted before it ever got to run?
+	        if (state == ScanState.Aborted)
+	            return;
+	        // Otherwise expect 'Idle'
+	        if (state != ScanState.Idle)
+	            throw new IllegalStateException("Cannot run Scan that is " + state);
+	        state = ScanState.Running;
+    	}
+    	start_ms = System.currentTimeMillis();
 
         // Inspect all commands before executing them:
         // Add devices that are not available (via alias)
@@ -334,8 +348,6 @@ public class Scan implements ScanContext
         devices.startDevices();
 
         // Execute commands
-        state = ScanState.Running;
-        start_ms = System.currentTimeMillis();
         try
         {
             execute(new WaitForDevicesCommandImpl(new WaitForDevicesCommand(devices.getDevices())));
@@ -351,21 +363,31 @@ public class Scan implements ScanContext
                 execute(implementations);
 
                 // Successful finish
-                state = ScanState.Finished;
+                synchronized (this)
+                {
+                	state = ScanState.Finished;
+                }
             }
             finally
             {
-                // Try post-scan commands even if submitted commands ran into problem
-            	// Save the state at the end of executing 'main' commands
-                final ScanState saved_state = state;
-                final long saved_steps = work_performed.get();
-                state = ScanState.Running;
+                // Try post-scan commands even if submitted commands ran into problems or was aborted.
+            	// Save the state before going back to Running for post commands.
+            	final long saved_steps = work_performed.get();
+                final ScanState saved_state;
+                synchronized (this)
+                {
+                	saved_state = state;
+                	state = ScanState.Running;
+                }
 
                 execute(post_scan);
 
                 // Restore saved state
                 work_performed.set(saved_steps);
-                state = saved_state;
+                synchronized (this)
+                {
+                	state = saved_state;
+                }
             }
         }
         finally
@@ -383,9 +405,12 @@ public class Scan implements ScanContext
     {
         for (ScanCommandImpl<?> command : commands)
         {
-            if (state != ScanState.Running  &&
-                state != ScanState.Paused)
-                return;
+        	synchronized (this)
+        	{
+	            if (state != ScanState.Running  &&
+	                state != ScanState.Paused)
+	                return;
+        	}
             execute(command);
         }
     }
@@ -440,8 +465,9 @@ public class Scan implements ScanContext
     /** Ask for execution to stop */
     synchronized void abort()
     {
-        if (state == ScanState.Idle  ||  state == ScanState.Running  ||  state == ScanState.Paused)
+        if (! state.isDone())
             state = ScanState.Aborted;
+        notifyAll();
     }
 
     /** {@inheritDoc} */

@@ -88,6 +88,20 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
         return new String[0];
     }
 
+	/** Simulate the command
+     *
+     *  <p>Should log the execution steps in the {@link SimulationContext}
+     *
+     *  @param context {@link SimulationContext}
+     *  @throws Exception on error
+     *
+     *  @see SimulationContext#logExecutionStep(String, double)
+     */
+    public void simulate(final SimulationContext context) throws Exception
+    {
+    	context.logExecutionStep(command.toString(), 0.1);
+    }
+
 	/** Execute the command
 	 *
 	 *  <p>Should update the performed work units on the {@link ScanContext}
@@ -99,7 +113,7 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
 	 */
     abstract public void execute(ScanContext context) throws Exception;
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     @Override
     public String toString()
     {

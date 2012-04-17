@@ -1,5 +1,5 @@
-/*
- * Copyright 2010-11 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
 package org.epics.pvmanager;
@@ -8,10 +8,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,7 +79,7 @@ public abstract class DataSource {
     // The executor used by the data source to perform asynchronous operations,
     // such as connections and writes. I am current using a single thread for
     // all data sources, which can be changed if needed.
-    private static Executor exec = Executors.newSingleThreadExecutor(namedPool("PVMgr DataSource Worker "));
+    private static ExecutorService exec = Executors.newSingleThreadExecutor(namedPool("PVMgr DataSource Worker "));
     
     // Keeps track of the recipes and buffers that were opened with
     // this data source.
@@ -285,7 +282,7 @@ public abstract class DataSource {
      * Closes the DataSource and the resources associated with it.
      */
     public void close() {
-        
+        exec.shutdown();
     }
     
 }

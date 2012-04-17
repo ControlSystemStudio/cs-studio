@@ -123,12 +123,14 @@ public interface TODO
      *
      *  Done Details of pre- and post scan command progress info
      *
-     *  TODO Unclear if devices will ever be anything but PVs.
+     *  Idea Unclear if devices will ever be anything but PVs.
      *
-     *  TODO 'log' sends values to data collector, once it's
+     *  Idea 'log' sends values to data collector, once it's
      *       clear what that data collector is
      *
-     *  TODO RMI timeout?
+     *  Idea Add REST API to scan server?
+     *
+     *  Idea RMI timeout?
      *  System.setProperty("sun.rmi.transport.tcp.responseTimeout", "10000");
      *  sun.rmi.transport.connectionTimeout
      *  RMISocketFactory.setSocketFactory( new RMISocketFactory()

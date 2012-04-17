@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.internal.UIPlugin;
 
 /**The action to pop up an About WebOPI Dialog.
  * @author Xihui Chen
@@ -53,6 +54,7 @@ public class AboutWebOPIAction extends Action {
 		 * Create contents of the dialog.
 		 * @param parent
 		 */
+		@SuppressWarnings({ "restriction", "serial" })
 		@Override
 		protected Control createDialogArea(Composite parent) {
 			getShell().setText("About WebOPI");
@@ -78,6 +80,13 @@ public class AboutWebOPIAction extends Action {
 			gd_lblCompatibleWithBoy.heightHint = 20;
 			lblCompatibleWithBoy.setLayoutData(gd_lblCompatibleWithBoy);
 			lblCompatibleWithBoy.setText("Compatible with BOY " + version);
+			
+			Label rapLabel = new Label(container, SWT.NONE);
+			gd_lblCompatibleWithBoy = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+			gd_lblCompatibleWithBoy.heightHint = 20;
+			rapLabel.setLayoutData(gd_lblCompatibleWithBoy);
+			rapLabel.setText("Built on RAP " + "v" + UIPlugin. //$NON-NLS-2$
+					getDefault().getBundle().getVersion().toString());
 			
 			Link link = new Link(container, SWT.NONE);
 			GridData gd_link = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);

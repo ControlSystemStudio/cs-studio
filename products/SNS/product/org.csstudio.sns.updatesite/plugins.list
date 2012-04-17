@@ -121,3 +121,4 @@ org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.workspace/**
 org.jdom/**
+org.python/**

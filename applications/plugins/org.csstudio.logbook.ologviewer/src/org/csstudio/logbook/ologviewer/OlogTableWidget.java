@@ -48,6 +48,7 @@ public class OlogTableWidget extends Composite implements ISelectionProvider {
 
 	private Collection<Log> logs = new ArrayList<Log>();
 	private Collection<OlogTableColumnDescriptor> tableViewerColumnDescriptors;
+	private Log selectedLog;
 
 	private TableViewer tableViewer;
 	private ErrorBar errorBar;

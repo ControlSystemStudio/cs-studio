@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -21,6 +22,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LayoutListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPolicy;
 
 /**
  * The Editpart Controller for a Sash Container
@@ -123,6 +125,19 @@ public class SashContainerEditPart extends AbstractContainerEditpart {
 		return result;
 	}
 
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		installEditPolicy(EditPolicy.CONTAINER_ROLE, null);
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, null);
+		
+		//the snap feedback effect
+		installEditPolicy("Snap Feedback", null); //$NON-NLS-1$
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+			installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE, null);
+
+	}
 
 	@Override
 	public SashContainerModel getWidgetModel() {

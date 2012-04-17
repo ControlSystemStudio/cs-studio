@@ -14,6 +14,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
@@ -66,7 +67,15 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	private static final int DEFAULT_WIDTH = 200;
 
-
+	/**
+	 * The geographical size of the children.
+	 */
+	private Dimension childrenGeoSize = null;
+	
+	/**
+	 * The display Scale options of the embedded OPI.
+	 */
+	private DisplayModel displayModel = null;
 	
 	public LinkingContainerModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -149,14 +158,66 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 * Scale its children. 
 	 */
 	public void scaleChildren() {
+		if(isAutoFit())
+			return;
 		//The linking container model doesn't hold its children actually, so it 
 		// has to ask editpart to get its children.
 		LinkingContainerEditpart editpart = 
 				(LinkingContainerEditpart) getRootDisplayModel().getViewer().getEditPartRegistry().get(this);
 		Dimension size = getSize();
-		double newWidthRatio = 1+(size.width - getOriginSize().width)/(double)getOriginSize().width;
-		double newHeightRatio = 1+(size.height - getOriginSize().height)/(double)getOriginSize().height;
-		for(Object child : editpart.getChildren())
-			((AbstractBaseEditPart)child).getWidgetModel().scale(newWidthRatio, newHeightRatio);
+		double newWidthRatio = size.width/(double)getOriginSize().width;
+		double newHeightRatio = size.height/(double)getOriginSize().height;
+		boolean allowScale = true;
+		if(displayModel != null){
+			allowScale = displayModel.getDisplayScaleData().isAutoScaleWidgets();
+			if(allowScale){
+				int minWidth = displayModel.getDisplayScaleData()
+						.getMinimumWidth();
+
+				if (minWidth < 0) {
+					minWidth = displayModel.getWidth();
+				}
+				int minHeight = displayModel.getDisplayScaleData()
+						.getMinimumHeight();
+				if (minHeight < 0) {
+					minHeight = displayModel.getHeight();
+				}
+				if (getWidth() * newWidthRatio < minWidth)
+					newWidthRatio = minWidth / (double) getOriginSize().width;
+				if (getHeight() * newHeightRatio < minHeight)
+					newHeightRatio = minHeight
+							/ (double) getOriginSize().height;
+			}
+			
+		}
+		if(allowScale)
+			for(Object child : editpart.getChildren())
+				((AbstractBaseEditPart)child).getWidgetModel().scale(newWidthRatio, newHeightRatio);
+	}
+	
+	@Override
+	public Dimension getOriginSize() {
+		if(childrenGeoSize == null)			
+			return super.getOriginSize();
+		else
+			return childrenGeoSize;
+	}
+	
+	public void setChildrenGeoSize(Dimension childrenGeoSize) {
+		this.childrenGeoSize = childrenGeoSize;
+	}
+	
+	/**Set the display model of the loaded opi.
+	 * @param displayModel
+	 */
+	public void setDisplayModel(DisplayModel displayModel) {
+		this.displayModel = displayModel;
+	}
+	
+	/**
+	 * @return display model of the loaded opi. null if no opi has been loaded.
+	 */
+	public DisplayModel getDisplayModel() {
+		return displayModel;
 	}
 }

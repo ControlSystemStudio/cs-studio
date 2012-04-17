@@ -21,7 +21,7 @@ import org.csstudio.scan.ui.scanmonitor.Messages;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
-/** Action that aborts a scan
+/** Action that displays scan server info
  *  @author Kay Kasemir
  */
 public class InfoAction extends AbstractGUIAction

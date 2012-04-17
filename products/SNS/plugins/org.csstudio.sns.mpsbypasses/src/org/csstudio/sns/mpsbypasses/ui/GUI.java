@@ -214,7 +214,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 				monitor.beginTask("Loading MPS Bypass Info", IProgressMonitor.UNKNOWN);
 				try
 				{
-					model.selectMachineMode(mode);
+					model.selectMachineMode(monitor, mode);
 				}
 				catch (Exception ex)
 				{
@@ -224,6 +224,7 @@ public class GUI implements BypassModelListener, MachineModeListener, BeamModeLi
 	            return Status.OK_STATUS;
             }
 		};
+		job.setUser(true);
 		job.schedule();
 	}
 

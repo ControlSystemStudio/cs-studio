@@ -13,6 +13,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -27,6 +30,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
+import edu.msu.nscl.olog.api.Log;
+
 public class OlogEditor extends EditorPart {
 	public OlogEditor() {
 	}
@@ -35,6 +40,7 @@ public class OlogEditor extends EditorPart {
 
 	private static OlogEditor ologEditor;
 	private OlogTableWidget ologTableWidget;
+	private OlogDetailWidget ologDetailWidget;
 
 	private ComboViewer comboViewer;
 
@@ -77,6 +83,7 @@ public class OlogEditor extends EditorPart {
 
 	private final static OlogInput ologInput = new OlogInput();
 	private static Collection<OlogTableColumnDescriptor> ologTableColumnDescriptors = new ArrayList<OlogTableColumnDescriptor>();
+	private Label label;
 
 	public static OlogEditor openOlogEditorInstance() {
 		final IWorkbenchPage page = PlatformUI.getWorkbench()
@@ -172,8 +179,36 @@ public class OlogEditor extends EditorPart {
 				true, 2, 1));
 		GridLayout gridLayout_1 = (GridLayout) ologTableWidget.getLayout();
 		gridLayout_1.numColumns = 2;
-				
-		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(), ologTableWidget);
+
+		ologTableWidget
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(SelectionChangedEvent event) {
+						if (event.getSelection() instanceof IStructuredSelection) {
+							Object element = ((IStructuredSelection) event
+									.getSelection()).getFirstElement();
+							if (element instanceof Log) {
+								ologDetailWidget.setLog((Log) element);
+							}
+						}
+					}
+				});
+
+		label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2,
+				1));
+
+		ologDetailWidget = new OlogDetailWidget(parent, SWT.None);
+		ologDetailWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 2, 1));
+		PopupMenuUtil.installPopupForView(ologTableWidget, getSite(),
+				ologTableWidget);
+		PopupMenuUtil.installPopupForView(ologDetailWidget, getSite(),
+				ologDetailWidget);
+
+		PopupMenuUtil.installPopupForView(ologDetailWidget.propertyTree.tree,
+				getSite(), ologDetailWidget.propertyTree.treeViewer);
 	}
 
 	@Override

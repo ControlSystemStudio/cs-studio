@@ -17,6 +17,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Mapping from SeverityLevel to RDB severity ID
  *  @author Kay Kasemir
+ *  @author Lana Abadie - Disable autocommit as needed.
  */
 public class SeverityMapping
 {
@@ -90,14 +91,21 @@ public class SeverityMapping
             rdb.getConnection().prepareStatement(sql.insert_severity);
         try
         {
+        	rdb.getConnection().setAutoCommit(false);
             statement.setInt(1, id);
             statement.setString(2, name);
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
+        catch(Exception e)
+        {
+        	rdb.getConnection().rollback();
+        	throw e;
+        }
         finally
         {
             statement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
         return id;
     }

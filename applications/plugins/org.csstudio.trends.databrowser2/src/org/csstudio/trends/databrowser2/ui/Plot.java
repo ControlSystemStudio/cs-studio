@@ -199,22 +199,21 @@ public class Plot
 			public void axisTitleChanged(Axis axis, String oldTitle,
 					String newTitle)
 			{
-				// TODO Auto-generated method stub
+				// NOP
 			}
 
 			@Override
 			public void axisAutoScaleChanged(Axis axis, boolean oldAutoScale,
 					boolean newAutoScale)
 			{
-				// TODO Auto-generated method stub
+				// NOP
 			}
 
 			@Override
 			public void axisLogScaleChanged(Axis axis, boolean old,
 					boolean logScale)
 			{
-				// TODO Auto-generated method stub
-
+				// NOP
 			}
 		});
 
@@ -434,7 +433,7 @@ public class Plot
 
 	/**
 	 * Update configuration of axis
-	 * 
+	 *
 	 * @param axis The axis to update
 	 * @param config Desired axis configuration
 	 * @param timeAxis Update the time Axis (TRUE) or a value Axis (FALSE)
@@ -460,7 +459,7 @@ public class Plot
 			plot_changes_timeaxis = true;
 			//IGNORE RANGE because the the range is not set from time axis config but from model start/end
 		}
-		
+
 		axis.setLogScale(config.isLogScale());
 		axis.setAutoScale(config.isAutoScale());
 
@@ -468,7 +467,7 @@ public class Plot
 			plot_changes_valueaxis = false;
 		} else {
 			plot_changes_timeaxis = false;
-		}	
+		}
 
 		// GRID
 		axis.setShowMajorGrid(config.isShowGridLine());
@@ -498,7 +497,7 @@ public class Plot
 
 	/**
 	 * Add a trace to the XYChart
-	 * 
+	 *
 	 * @param item
 	 *            ModelItem for which to add a trace
 	 * @param modelIndex item index in the model

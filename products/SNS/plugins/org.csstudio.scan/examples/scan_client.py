@@ -77,6 +77,7 @@ path = __getPluginPath__("org.csstudio.scan.client")
 if path:
     client_plugin = path
 
+
 # Now one of the possibilities should work out...
 if scan_plugin and os.path.exists(scan_plugin) and client_plugin and os.path.exists(client_plugin):
     sys.path.append(scan_plugin)
@@ -85,7 +86,13 @@ elif os.path.exists(scan_client_jar):
     sys.path.append(scan_client_jar)
 else:
     raise Exception("Scan client library not configured")
-    
+
+# When running inside Eclipse, also add Scan UI to path
+path = __getPluginPath__("org.csstudio.scan.ui")
+if path:
+    sys.path.append(path)
+
+# Example for displaying debug info:
 #from org.eclipse.jface.dialogs import MessageDialog
 # for p in sys.path:
 #    print p
@@ -155,17 +162,23 @@ class ScanClient(object):
         except:
             self.server = ScanServerConnector.connect()
 
-    def submit(self, name, command_sequence):
+    def submit(self, name, commands):
         """
         Submit a CommandSequence to the server for execution
         
         @param name  Name of the scan
-        @param command_sequence  CommandSequence
+        @param commands  CommandSequence or string with XML text
           
         @return Scan ID
         """
         self.checkServer()
-        self.id = self.server.submitScan(name, command_sequence.getXML())
+        if isinstance(commands, str):
+            xml = commands
+        elif isinstance(commands, CommandSequence):
+            xml = commands.getXML()
+        else:
+            raise Exception('Expecting CommandSequence or XML-text')
+        self.id = self.server.submitScan(name, xml)
         return self.id
 
     def getScanInfo(self, id=-1):

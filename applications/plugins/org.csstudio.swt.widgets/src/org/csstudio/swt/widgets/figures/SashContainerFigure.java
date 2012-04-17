@@ -395,9 +395,16 @@ public class SashContainerFigure extends Figure implements Introspectable {
 		super.paintClientArea(graphics);
 		switch (sashStyle) {
 		case ROUNDED:
-			Rectangle[] subBounds = getSubPanelsBounds();
-			graphics.drawRoundRectangle(subBounds[0].shrink(1, 1), 6, 6);
-			graphics.drawRoundRectangle(subBounds[1].shrink(1, 1), 6, 6);
+			Rectangle clientArea = getClientArea();
+			Rectangle[] subBounds = getSubPanelsBounds();		
+			subBounds[0].translate(clientArea.getLocation());
+			subBounds[1].translate(clientArea.getLocation());
+			subBounds[0].width -=1;
+			subBounds[1].width -=1;
+			subBounds[0].height -=1;
+			subBounds[1].height -=1;
+			graphics.drawRoundRectangle(subBounds[0], 6, 6);
+			graphics.drawRoundRectangle(subBounds[1], 6, 6);
 			break;
 		default:
 			break;

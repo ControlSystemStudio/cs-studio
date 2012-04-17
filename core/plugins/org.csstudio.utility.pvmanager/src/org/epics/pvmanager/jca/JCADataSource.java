@@ -1,8 +1,7 @@
-/*
- * Copyright 2010-11 Brookhaven National Laboratory
+/**
+ * Copyright (C) 2010-12 Brookhaven National Laboratory
  * All rights reserved. Use is subject to license terms.
  */
-
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.CAException;
@@ -10,9 +9,9 @@ import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
 import gov.aps.jca.Monitor;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.epics.pvmanager.ChannelHandler;
 import org.epics.pvmanager.DataSource;
-import java.util.logging.Logger;
 import org.epics.pvmanager.data.DataTypeSupport;
 
 /**
@@ -84,6 +83,7 @@ public class JCADataSource extends DataSource {
 
     @Override
     public void close() {
+        super.close();
         ctxt.dispose();
     }
 

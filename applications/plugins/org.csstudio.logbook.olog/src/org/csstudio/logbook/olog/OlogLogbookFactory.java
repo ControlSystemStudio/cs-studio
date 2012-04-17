@@ -21,13 +21,15 @@ import edu.msu.nscl.olog.api.OlogClient;
  * 
  */
 public class OlogLogbookFactory implements ILogbookFactory {
-	final private OlogClient client = Olog.getClient();
+	// required to fetch the list of  logbooks, properties, tags
+	final private OlogClient client;
 
 	/**
 	 * @throws Exception
 	 * 
 	 */
 	public OlogLogbookFactory() throws Exception {
+		 client = Olog.getClient();
 	}
 
 	/*

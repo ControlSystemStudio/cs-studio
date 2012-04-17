@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Server Application
 Bundle-SymbolicName: org.csstudio.alarm.beast.server;singleton:=true
-Bundle-Version: 3.1.1.qualifier
+Bundle-Version: 3.1.2.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Description: BEAST Alarm Server
 Require-Bundle: org.junit4,
@@ -11,5 +11,5 @@ Require-Bundle: org.junit4,
  org.csstudio.apputil;bundle-version="3.0.1",
  org.csstudio.utility.pv,
  org.csstudio.platform.utility.rdb;bundle-version="1.0.0",
- org.csstudio.alarm.beast;bundle-version="3.1.1"
+ org.csstudio.alarm.beast;bundle-version="3.1.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

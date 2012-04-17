@@ -52,6 +52,7 @@ org.csstudio.opibuilder.converter
 org.csstudio.opibuilder.editor
 org.csstudio.opibuilder.examples
 org.csstudio.opibuilder.performanceTest
+org.csstudio.opibuilder.pvmanager.util
 org.csstudio.opibuilder.rcp
 org.csstudio.opibuilder.widgets
 org.csstudio.opibuilder.widgets.rcp

@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import java.io.Serializable;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
 import java.util.Date;
 
 import org.csstudio.scan.data.DataFormatter;
@@ -26,35 +23,30 @@ import org.csstudio.scan.data.DataFormatter;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanServerInfo  implements Serializable
+public class ScanServerInfo  extends MemoryInfo
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-	final private static double MB = 1024*1024;
-
     final private String version;
     final private Date start_time;
     final private String beamline_config;
-    final private long used_mem, max_mem;
+    final private String simulation_config;
 
     /** Initialize
      *  @param version
      *  @param start_time
      *  @param beamline_config
-     *  @param used_mem
-     *  @param max_mem
+     *  @param simulation_config
      */
     public ScanServerInfo(final String version, final Date start_time,
-    		final String beamline_config)
+    		final String beamline_config,
+    		final String simulation_config)
     {
 	    this.version = version;
 	    this.start_time = start_time;
 	    this.beamline_config = beamline_config;
-
-		final MemoryUsage heap = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-		used_mem = heap.getUsed();
-	    max_mem = heap.getMax();
+	    this.simulation_config = simulation_config;
     }
 
     /** @return Version number */
@@ -75,29 +67,10 @@ public class ScanServerInfo  implements Serializable
     	return beamline_config;
     }
 
-	/** @return Used memory (kB) */
-	public long getUsedMem()
-    {
-    	return used_mem;
-    }
-
-	/** @return Maximum memory that server will try to use (kB) */
-	public long getMaxMem()
-    {
-    	return max_mem;
-    }
-
-	/** @return Memory usage in percent of max */
-	public double getMemoryPercentage()
+	/** @return Simulation configuration path */
+	public String getSimulationConfig()
 	{
-		return used_mem * 100.0 / max_mem;
-	}
-
-	/** @return Memory usage in percent of max */
-    public String getMemoryInfo()
-	{
-		return String.format("%.1f MB / %.1f MB (%.1f %%)",
-				used_mem / MB, max_mem / MB, getMemoryPercentage());
+		return simulation_config;
 	}
 
     /** {@inheritDoc} */
@@ -108,6 +81,7 @@ public class ScanServerInfo  implements Serializable
         buf.append("Scan Server ").append(version).append("\n");
         buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
+        buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");
         return buf.toString();
     }

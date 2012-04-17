@@ -38,8 +38,10 @@ import org.csstudio.ui.util.NoResourceEditorInput;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
+import org.eclipse.core.commands.operations.IOperationHistoryListener;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.commands.operations.IUndoableOperation;
+import org.eclipse.core.commands.operations.OperationHistoryEvent;
 import org.eclipse.core.commands.operations.OperationHistoryFactory;
 import org.eclipse.core.commands.operations.UndoContext;
 import org.eclipse.core.resources.IFile;
@@ -49,12 +51,15 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -127,10 +132,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     /** Tree GUI */
     private ScanTreeGUI gui;
 
-    /** @see #isDirty() */
+    /** Dirty state of the editor,
+     *  updated from operations history
+     *  @see #isDirty()
+     */
     private boolean is_dirty = false;
 
-    /** @return Devices available on scan server */
+    /** @return Devices available on scan server. Set by background thread */
     private volatile DeviceInfo[] devices = null;
 
     /** ID of scan that was submitted, the 'live' scan, or -1 */
@@ -195,6 +203,25 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     {
         undo_context = new UndoContext();
         operations.setLimit(undo_context, 50);
+
+        // Update 'dirty' state from operations history.
+        operations.addOperationHistoryListener(new IOperationHistoryListener()
+		{
+			@Override
+			public void historyNotification(final OperationHistoryEvent event)
+			{
+				switch (event.getEventType())
+				{
+				case OperationHistoryEvent.OPERATION_ADDED:
+				case OperationHistoryEvent.OPERATION_REMOVED:
+				case OperationHistoryEvent.UNDONE:
+				case OperationHistoryEvent.REDONE:
+					// dirty == anything on the 'undo' list?
+					is_dirty = operations.canUndo(undo_context);
+					firePropertyChange(IEditorPart.PROP_DIRTY);
+				}
+			}
+		});
     }
 
     /** {@inheritDoc} */
@@ -221,7 +248,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
             return;
         }
 
-        fetchDevices();
         createComponents(parent);
 
         final IEditorInput input = getEditorInput();
@@ -246,30 +272,53 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
 
         scan_info.addListener(this);
         model.addListener(this);
+
+        // In background, try to get device info from server.
+        // Job keeps trying until successful, or is stoped when closing the editor.
+        final Job fetch_devices = startDeviceFetchJob();
+        parent.addDisposeListener(new DisposeListener()
+		{
+			@Override
+			public void widgetDisposed(DisposeEvent e)
+			{
+				fetch_devices.cancel();
+			}
+		});
     }
 
-    /** Read device list from server */
-    private void fetchDevices()
+    /** @return {@link Job} that reads device list from server (already started) */
+    private Job startDeviceFetchJob()
     {
         final Job job = new Job(Messages.DeviceListFetch)
         {
             @Override
-            protected IStatus run(IProgressMonitor monitor)
+            protected IStatus run(final IProgressMonitor monitor)
             {
+                final ScanServer server;
+        		try
+        		{
+        			server = scan_info.getServer();
+        		}
+        		catch (Exception ex)
+        		{
+        			// Not connected to server: Try again later
+        			schedule(10000);
+                    return Status.OK_STATUS;
+        		}
                 try
                 {
-                    final ScanServer server = scan_info.getServer();
                     devices = server.getDeviceInfos(-1);
                 }
                 catch (Exception ex)
-                {
+                {	// Connected, but still error: Give up
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                             Messages.DeviceListFetchError, ex);
-                }
+            	}
                 return Status.OK_STATUS;
             }
         };
-        job.schedule();
+        job.schedule(2000);
+        return job;
     }
 
     /** Create GUI components
@@ -605,17 +654,24 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 property_id, value);
     }
 
+    /** @param file_path Complete path to a scan file
+     *  @return Scan name (basename of file)
+     */
+    public static String getScanNameFromFile(final String file_path)
+    {
+    	final IPath path = new Path(file_path);
+    	final String last = path.lastSegment();
+        final int sep = last.lastIndexOf('.');
+        if (sep > 0)
+            return last.substring(0, sep);
+        return last;
+    }
+
     /** Submit scan in GUI to server */
     public void submitCurrentScan()
     {
         final List<ScanCommand> commands = model.getCommands();
-
-        String name = getEditorInput().getName();
-        final int sep = name.lastIndexOf('.');
-        if (sep > 0)
-            name = name.substring(0, sep);
-
-        final String scan_name = name;
+        final String scan_name = getScanNameFromFile(getEditorInput().getName());
 
         // Use background Job to submit scan to server
         final Job job = new Job(Messages.SubmitScan)
@@ -669,7 +725,6 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 file.setContents(stream, IFile.FORCE, monitor);
             else
                 file.create(stream, true, monitor);
-            setDirty(false);
             clearUndoHistory();
             return true;
         }
@@ -741,41 +796,28 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         return is_dirty;
     }
 
-    /** Update the 'dirty' flag
-     *  @param dirty <code>true</code> if model changed and needs to be saved
-     */
-    protected void setDirty(final boolean dirty)
-    {
-        is_dirty = dirty;
-        firePropertyChange(IEditorPart.PROP_DIRTY);
-    }
-
     /** {@inheritDoc} */
     @Override
     public void commandsChanged()
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandAdded(final ScanCommand command)
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandRemoved(final ScanCommand command)
     {
-        setDirty(true);
     }
 
     /** {@inheritDoc} */
     @Override
     public void commandPropertyChanged(final ScanCommand command)
     {
-        setDirty(true);
         // Update property sheet
         if (property_page != null)
             property_page.refresh();

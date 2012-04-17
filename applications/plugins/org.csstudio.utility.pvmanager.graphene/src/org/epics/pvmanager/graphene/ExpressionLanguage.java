@@ -34,4 +34,9 @@ public class ExpressionLanguage {
         return new Histogram1DPlot(queue, new Histogram1DFunction(queue.getFunction()), "histogram");
     }
 
+    public static LineGraphPlot lineGraphOf(SourceRateExpression<VDoubleArray> vDoubleArray) {
+        DesiredRateExpression<VDoubleArray> queue = latestValueOf(vDoubleArray);
+        return new LineGraphPlot(queue, new LineGraphFunction(queue.getFunction()), "lineGraph");
+    }
+
 }

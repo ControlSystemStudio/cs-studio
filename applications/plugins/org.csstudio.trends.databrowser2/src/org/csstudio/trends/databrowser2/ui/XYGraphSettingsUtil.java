@@ -4,7 +4,6 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.model.XYGraphSettings;
 
-
 /**
  * Utility to manage XYGraphMemento create, save and restore functions
  * These functions are used by XYGraphConfigCommand and XYGraphConfigDialog

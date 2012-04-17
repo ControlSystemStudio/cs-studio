@@ -36,7 +36,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** ArchiveWriter implementation for RDB
  *  @author Kay Kasemir
- *  @author Lana Abadie (PostgreSQL for original RDBArchive code)
+ *  @author Lana Abadie - PostgreSQL for original RDBArchive code. Disable autocommit as needed.
  *  @author Laurent Philippe (Use read-only connection when possible for MySQL load balancing)
  */
 @SuppressWarnings("nls")
@@ -125,13 +125,13 @@ public class RDBArchiveWriter implements ArchiveWriter
         sql = new SQL(rdb.getDialect(), schema);
         severities = new SeverityCache(rdb, sql);
         stati = new StatusCache(rdb, sql);
-        // Assert Auto-commit is off because this code commits as needed
-        // Note that 'reads' also need to be committed because otherwise
-        // this can happen:
-        // Program A SELECTs channel names.
-        // Program B INSERTs/UPDATEs channel names.
-        // Program A SELECTs channel names again, but doesn't see B's
-        // changes because it's still in the same transaction.
+
+        // JDBC and RDBUtil default to auto-commit being on.
+        //
+        // The batched submission of samples, however, requires
+        // auto-commit to be off, so this code assumes that
+        // auto-commit is off, then enables it briefly as needed,
+        // and otherwise commits/rolls back.
         rdb.getConnection().setAutoCommit(false);
     }
 
@@ -141,11 +141,10 @@ public class RDBArchiveWriter implements ArchiveWriter
         // Check cache
         RDBWriteChannel channel = channels.get(name);
         if (channel == null)
-        {
+        {	// Get channel information from RDB
             final Connection connection = rdb.getConnection();
-            connection.setReadOnly(true);
-
-            // Get channel information from RDB
+            // connection.setReadOnly(true);
+            connection.setAutoCommit(true);
             final PreparedStatement statement = connection.prepareStatement(sql.channel_sel_by_name);
             try
             {
@@ -155,13 +154,13 @@ public class RDBArchiveWriter implements ArchiveWriter
                     throw new Exception("Unknown channel " + name);
                 channel = new RDBWriteChannel(name, result.getInt(1));
                 result.close();
-                connection.commit();
                 channels.put(name, channel);
             }
             finally
             {
                 statement.close();
-                connection.setReadOnly(false);
+                // connection.setReadOnly(false);
+                connection.setAutoCommit(false);
             }
         }
         return channel;
@@ -175,12 +174,11 @@ public class RDBArchiveWriter implements ArchiveWriter
         final IMetaData meta = sample.getMetaData();
         if (meta != null  &&  !meta.equals(rdb_channel.getMetadata()))
         {
-            writeMetaData(rdb_channel, meta);
+        	writeMetaData(rdb_channel, meta);
             rdb.getConnection().commit();
             rdb_channel.setMetaData(meta);
         }
         batchSample(rdb_channel, sample);
-
         batched_channel.add(rdb_channel);
         batched_samples.add(sample);
     }
@@ -209,7 +207,6 @@ public class RDBArchiveWriter implements ArchiveWriter
             NumericMetaDataHelper.delete(rdb, sql, channel);
             NumericMetaDataHelper.insert(rdb, sql, channel, (INumericMetaData) meta);
         }
-        rdb.getConnection().commit();
     }
 
     /** Perform 'batched' insert for sample.
@@ -222,8 +219,12 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         final Timestamp stamp = sample.getTime().toSQLTimestamp();
         final Severity severity =
-                    severities.findOrCreate(sample.getSeverity().toString());
+                severities.findOrCreate(sample.getSeverity().toString());
         final Status status = stati.findOrCreate(sample.getStatus());
+
+        // Severity/status cache may enable auto-commit
+        if (rdb.getConnection().getAutoCommit() == true)
+        	rdb.getConnection().setAutoCommit(false);
 
         if (sample instanceof IDoubleValue)
         {

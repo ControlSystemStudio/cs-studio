@@ -2,7 +2,8 @@
 <feature
       id="org.csstudio.trends.databrowser2.opiwidget.feature"
       label="Databrowser OPI widget Feature"
-      version="3.0.0.qualifier">
+      version="3.0.0.qualifier"
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -15,6 +16,10 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
+
+   <url>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+   </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>

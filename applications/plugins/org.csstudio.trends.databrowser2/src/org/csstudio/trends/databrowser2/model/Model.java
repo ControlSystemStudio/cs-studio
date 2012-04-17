@@ -679,19 +679,20 @@ public class Model
     }
 
     /** @param annotations Annotations to keep in model */
-    public void setAnnotations(AnnotationInfo[] annotations)
+    public void setAnnotations(final AnnotationInfo[] annotations)
     {
     	setAnnotations(annotations, true);
     }
 
-    public void setAnnotations(AnnotationInfo[] annotations, boolean fireChanged) {
-		// TODO Auto-generated method stub
+    public void setAnnotations(final AnnotationInfo[] annotations, final boolean fireChanged)
+    {
     	this.annotations = annotations;
-    	if(fireChanged)
+    	if (fireChanged)
     		fireAnnotationsChanged();
 	}
 
-    protected void fireAnnotationsChanged(){
+    protected void fireAnnotationsChanged()
+    {
     	for (ModelListener listener : listeners)
             listener.changedAnnotations();
     }
@@ -988,16 +989,16 @@ public class Model
             archive_rescale = ArchiveRescale.STAGGER;
         }
 
-        // Load Time Axe
-        Element timeAxeNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
-        if (timeAxeNode != null)
+        // Load Time Axis
+        final Element timeAxisNode = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_TIME_AXIS);
+        if (timeAxisNode != null)
         {
             // Load PV items
-           Element axisNode = DOMHelper.findFirstElementNode(timeAxeNode.getFirstChild(), TAG_AXIS);
+           Element axisNode = DOMHelper.findFirstElementNode(timeAxisNode.getFirstChild(), TAG_AXIS);
            timeAxis = AxisConfig.fromDocument(axisNode);
         }
 
-        // Load Axes
+        // Load value Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
         if (list != null)
         {
@@ -1038,18 +1039,13 @@ public class Model
 
         //ADD by Laurent PHILIPPE
         // Load Title and graph settings
-
-        if (list != null)
+    	try
+    	{
+    		graphSettings = XYGraphSettingsXMLUtil.fromDocument(root_node.getFirstChild());
+    	}
+    	catch (Throwable ex)
         {
-
-        	try{
-        		graphSettings = XYGraphSettingsXMLUtil.fromDocument(root_node.getFirstChild());
-
-        	}catch (Throwable ex)
-            {
-        		Activator.getLogger().log(Level.INFO, "XML error in Title or  graph settings", ex);
-            }
-            // Add to document
+    		Activator.getLogger().log(Level.INFO, "XML error in Title or  graph settings", ex);
         }
 
         // Backwards compatibility with previous data browser which
@@ -1095,8 +1091,4 @@ public class Model
             }
         }
     }
-
-
-
-
 }

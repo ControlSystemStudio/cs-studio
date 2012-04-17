@@ -7,17 +7,61 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.figures;
 import java.beans.PropertyDescriptor;
+import java.util.Arrays;
 
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.swt.widgets.Display;
 
 
 public class IntensityGraphTest extends AbstractWidgetTest{
 
+	public static int count=0;
 	@Override
 	public Figure createTestWidget() {
-		return new IntensityGraphFigure();
+		final IntensityGraphFigure figure = new IntensityGraphFigure();
+		
+		Thread t = new Thread(new Runnable() {
+			
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					final double[] simuData = new double[1024*768];
+					int seed = count++;
+					for(int i=0; i<768; i++){
+						for(int j=0; j<1024; j++){
+							int x = j-128;
+							int y = i-128;		
+							int p = (int) Math.sqrt(x*x + y*y);
+							simuData[i*1024 + j] = Math.sin(p*2*Math.PI/256 + seed*10);		
+						}
+					}Arrays.fill(simuData, Math.random());
+					Display.getDefault().asyncExec(new Runnable() {
+						
+						public void run() {
+							System.out.println(count);
+
+							figure.setDataArray(simuData);
+							
+						}
+					});
+				}
+			}
+		});
+		t.start();
+
+		figure.setMax(1);
+		figure.setMin(-1);
+		figure.setDataHeight(768);
+		figure.setDataWidth(1024);
+		figure.setColorMap(new ColorMap(PredefinedColorMap.JET, true, true));
+		return figure;
 	}
 	
 	
@@ -65,6 +109,12 @@ public class IntensityGraphTest extends AbstractWidgetTest{
 		else if(pd.getName().equals("colorMap") && seed != null && seed instanceof Integer)
 			return new ColorMap(PredefinedColorMap.values()[(Integer)seed % 6 + 1], true, true);
 		return super.generateTestData(pd, seed);
+	}
+	
+	@Override
+	public boolean isAutoTest() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 			
 }

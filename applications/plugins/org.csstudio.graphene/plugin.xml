@@ -11,6 +11,14 @@
             name="Histogram (alpha)"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.graphene.LineGraphView"
+            icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+            id="org.csstudio.graphene.LineGraphView"
+            name="Line graph (alpha)"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -25,6 +33,16 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.graphene.HistogramView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               icon="platform:/plugin/org.csstudio.graphene/icons/histogram-16.png"
+               label="Line Graph (alpha)"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.graphene.LineGraphView">
             </parameter>
          </command>
       </menuContribution>

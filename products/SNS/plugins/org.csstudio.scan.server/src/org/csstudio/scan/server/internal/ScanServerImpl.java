@@ -15,6 +15,8 @@
  ******************************************************************************/
 package org.csstudio.scan.server.internal;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.BindException;
 import java.rmi.RemoteException;
 import java.rmi.ServerException;
@@ -43,6 +45,8 @@ import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
+import org.csstudio.scan.server.SimulationContext;
+import org.csstudio.scan.server.SimulationResult;
 import org.csstudio.scan.server.UnknownScanException;
 
 /** Server-side implementation of the {@link ScanServer} interface
@@ -122,7 +126,9 @@ public class ScanServerImpl implements ScanServer
     public ScanServerInfo getInfo() throws RemoteException
     {
     	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
-    			start_time, Preferences.getBeamlineConfigPath());
+    			start_time,
+    			Preferences.getBeamlineConfigPath(),
+    			Preferences.getSimulationConfigPath());
     }
 
     /** {@inheritDoc} */
@@ -161,8 +167,49 @@ public class ScanServerImpl implements ScanServer
     	return infos;
     }
 
+	/** {@inheritDoc} */
+    @Override
+    public SimulationResult simulateScan(final String commands_as_xml)
+            throws RemoteException
+    {
+        try
+        {   // Parse scan from XML
+            final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+            final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
-    /** {@inheritDoc} */
+            // Implement commands
+            final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
+            List<ScanCommandImpl<?>> scan = tool.implement(commands);
+
+            // Setup simulation log
+            ByteArrayOutputStream log_buf = new ByteArrayOutputStream();
+            PrintStream log_out = new PrintStream(log_buf);
+            log_out.println("Simulation:");
+            log_out.println("--------");
+
+            // Simulate
+			final SimulationContext simulation = new SimulationContext(log_out);
+            simulation.simulate(scan);
+
+            // Close log
+            log_out.println("--------");
+            log_out.println(simulation.getSimulationTime() + "   Total estimated execution time");
+            log_out.close();
+
+            // Fetch simulation log, help GC to clear copies of log
+            final String log_text = log_buf.toString();
+            log_out = null;
+            log_buf = null;
+
+            return new SimulationResult(simulation.getSimulationSeconds(), log_text);
+        }
+        catch (Exception ex)
+        {
+            throw new ServerException("Scan Engine error while simulating scan", ex);
+        }
+    }
+
+	/** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name, final String commands_as_xml)
             throws RemoteException
@@ -347,8 +394,17 @@ public class ScanServerImpl implements ScanServer
     @Override
     public void abort(final long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
-        scan_engine.abortScan(scan);
+    	if (id >= 0)
+    	{
+	        final Scan scan = findScan(id);
+	        scan_engine.abortScan(scan);
+    	}
+        else
+        {
+            final List<Scan> scans = scan_engine.getScans();
+            for (Scan scan : scans)
+    	        scan_engine.abortScan(scan);
+        }
     }
 
     /** {@inheritDoc} */

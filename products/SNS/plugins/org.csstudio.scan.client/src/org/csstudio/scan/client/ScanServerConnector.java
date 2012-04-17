@@ -19,6 +19,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.server.ScanServer;
 
 /** Connect to a {@link ScanServer}
@@ -37,18 +38,8 @@ public class ScanServerConnector
      */
     public static ScanServer connect() throws Exception
     {
-        String host = System.getProperty(ScanServer.HOST_PROPERTY);
-        if (host == null)
-            host = ScanServer.DEFAULT_HOST;
-        int port;
-        try
-        {
-            port = Integer.parseInt(System.getProperty(ScanServer.PORT_PROPERTY));
-        }
-        catch (Throwable ex)
-        {
-            port = ScanServer.DEFAULT_PORT;
-        }
+        final String host = SystemSettings.getServerHost();
+        final int port = SystemSettings.getServerPort();
         return connect(host, port);
     }
 
@@ -60,12 +51,18 @@ public class ScanServerConnector
      */
     public static ScanServer connect(final String hostname, final int port) throws Exception
     {
-        final Registry registry = LocateRegistry.getRegistry(hostname, port);
-        final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
+    	try
+    	{
+	        final Registry registry = LocateRegistry.getRegistry(hostname, port);
+	        final ScanServer server = (ScanServer) registry.lookup(ScanServer.RMI_SCAN_SERVER_NAME);
 
-        Logger.getLogger(ScanServer.class.getName()).fine("Connected to " + server.getInfo());
-
-        return server;
+	        Logger.getLogger(ScanServer.class.getName()).fine("Connected to " + server.getInfo());
+	        return server;
+    	}
+    	catch (Exception ex)
+    	{
+    		throw new Exception("Cannot connect to Scan Server " + hostname + ":" + port, ex);
+    	}
     }
 
     /** Disconnect from a scan server

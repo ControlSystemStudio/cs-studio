@@ -11,13 +11,21 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Logger;
 
 import org.csstudio.logbook.ILogbook;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.csstudio.utility.olog.Activator;
+import org.csstudio.utility.olog.PreferenceConstants;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.osgi.util.NLS;
 
 import edu.msu.nscl.olog.api.Log;
 import edu.msu.nscl.olog.api.LogBuilder;
 import edu.msu.nscl.olog.api.Olog;
 import edu.msu.nscl.olog.api.OlogClient;
+import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 import edu.msu.nscl.olog.api.OlogException;
 
 /**
@@ -34,9 +42,27 @@ public class OlogLogbook implements ILogbook {
 
 	private String LogbookName;
 
+	private static final Logger log = Logger.getLogger(OlogLogbook.class
+			.getCanonicalName());
+
 	public OlogLogbook(String logbookName, String user, String password)
 			throws Exception {
-		client = Olog.getClient();
+		if (user.isEmpty()) {
+			client = Olog.getClient();
+		} else {
+			final IPreferencesService prefs = Platform.getPreferencesService();
+			String url = prefs.getString(
+					org.csstudio.utility.olog.Activator.PLUGIN_ID,
+					PreferenceConstants.Olog_URL,
+					"https://localhost:8181/Olog/resources", null);
+			String jcrURI = prefs.getString(
+					org.csstudio.utility.olog.Activator.PLUGIN_ID,
+					PreferenceConstants.Olog_jcr_URL,
+					"http://localhost:8080/Olog/repository/olog", null);
+			client = OlogClientBuilder.serviceURL(url).jcrURI(jcrURI)
+					.withHTTPAuthentication(true).username(user)
+					.password(password).create();
+		}
 		LogbookName = logbookName;
 		/* The maximum allowed size of logbook text entry MEDIUMTEXT */
 		MAX_TEXT_SIZE = 16777215;
@@ -109,7 +135,6 @@ public class OlogLogbook implements ILogbook {
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -126,16 +151,10 @@ public class OlogLogbook implements ILogbook {
 	private int createBasicEntry(final String LogbookName, final String text)
 			throws Exception {
 		Log returnLog = null;
-		try {
-			LogBuilder lb = LogBuilder.log()
-					.description(text).level("Info").appendToLogbook(logbook(LogbookName));
-			returnLog = client.set(lb);
-			return returnLog.getId().intValue();
-		} catch (OlogException e) {
-			e.printStackTrace();
-			throw new Exception();
-		} finally {
-		}
+		LogBuilder lb = LogBuilder.log().description(text).level("Info")
+				.appendToLogbook(logbook(LogbookName));
+		returnLog = client.set(lb);
+		return returnLog.getId().intValue();
 	}
 
 	/**
@@ -157,7 +176,7 @@ public class OlogLogbook implements ILogbook {
 		try {
 			client.add(new File(fname), (long) entry_id);
 		} catch (Exception e1) {
-			System.out.println("Could not upload " + fname + " Error: " + e1);
+			log.severe("Could not upload " + fname + " Error: " + e1);
 			return;
 		}
 

@@ -19,7 +19,7 @@ public class TagCellLabelProvider extends StyledCellLabelProvider {
 	private final String tagName;
 	
 	public TagCellLabelProvider(){
-		this.tagName = "Taga";
+		this.tagName = "Timing Systems";
 	}
 
 	public TagCellLabelProvider(String tagName) {

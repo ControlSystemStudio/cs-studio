@@ -33,21 +33,22 @@ import org.eclipse.osgi.util.NLS;
 /** Alarm Configuration as stored in RDB. It is identified
  *  by rdb_url plus root_component, which means all operations
  *  with this object is related to its root_component.
- *  
+ *
  *  <p>This class can read and write the configuration which is stored in RDB.
  *
  *  <p>The AlarmClientModel combines this with JMS communication,
  *  inform listeners etc.
- *  
+ *
  *  <p>See NOTE ON SYNCHRONIZATION in AlarmClientModel
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
+ *  @author Lana Abadie - Disable autocommit as needed.
  */
 public class AlarmConfiguration
 {
     /** Connection to configuration/state snapshot. */
     final private RDBUtil rdb;
-    
+
     /** Use auto-reconnect? */
     final private boolean auto_reconnect;
 
@@ -71,33 +72,28 @@ public class AlarmConfiguration
     private HashMap<String, AlarmTreePV> pvs = new HashMap<String, AlarmTreePV>();
 
     /** Re-used statements */
-    private PreparedStatement sel_items_by_parent_statement, sel_pv_by_id_statement,
-                              update_pv_config_statement, insert_item_statement, insert_pv_statement,
-                              delete_guidance_by_id, insert_guidance,
-                              delete_displays_by_id, insert_display,
-                              delete_commands_by_id, insert_command,
-                              update_item_config_time;
+    private PreparedStatement sel_items_by_parent_statement, sel_pv_by_id_statement;
 
 
     /** Initialize
      *  @param url RDB URL
-     *  @param user	RDB user name
+     *  @param user    RDB user name
      *  @param password RDB password
      *  @param schema
      *  @param auto_reconnect
      *  @throws Exception on error
      */
     public AlarmConfiguration(final String url, final String user,
-    		final String password, final String schema, final boolean auto_reconnect) throws Exception
+            final String password, final String schema, final boolean auto_reconnect) throws Exception
     {
         // Allow auto-reconnect?
-    	this.auto_reconnect = auto_reconnect;
+        this.auto_reconnect = auto_reconnect;
         rdb = RDBUtil.connect(url, user, password, auto_reconnect);
 
         // Disable it while reading initial config. because that
         // can be 10% faster
         if (auto_reconnect)
-        	rdb.setAutoReconnect(false);
+            rdb.setAutoReconnect(false);
         sql = new SQL(rdb, schema);
         severity_mapping = new SeverityReader(rdb, sql);
         message_mapping = new MessageReader(rdb, sql);
@@ -105,58 +101,58 @@ public class AlarmConfiguration
 
         // Re-enable auto-connect if that was requested
         if (auto_reconnect)
-        	rdb.setAutoReconnect(true);
+            rdb.setAutoReconnect(true);
     }
 
     /** Initialize
      *  @param url RDB URL
-     *  @param user	RDB user name
+     *  @param user    RDB user name
      *  @param password RDB password
      *  @param schema
      *  @throws Exception on error
      */
     public AlarmConfiguration(final String url, final String user,
-    		final String password, final String schema) throws Exception
+            final String password, final String schema) throws Exception
     {
-    	this(url, user, password, schema, true);
+        this(url, user, password, schema, true);
     }
 
-    
+
     /** List all configuration 'root' element names
      *  @return Array of 'root' elements
      *  @throws Exception on error
      */
     public String[] listConfigurations() throws Exception
     {
-		final Connection connection = rdb.getConnection();
+        final Connection connection = rdb.getConnection();
         final Statement statement = connection.createStatement();
-    	final List<String> names = new ArrayList<String>();
-    	try
-    	{
-    		final ResultSet result = statement.executeQuery(sql.sel_configurations);
-    		while (result.next())
-    			names.add(result.getString(1));
-    	}
-    	finally
-    	{
-    		statement.close();
-    		connection.commit();
-    	}
-    	// Convert to plain array
+        final List<String> names = new ArrayList<String>();
+        try
+        {
+            final ResultSet result = statement.executeQuery(sql.sel_configurations);
+            while (result.next())
+                names.add(result.getString(1));
+        }
+        finally
+        {
+
+            statement.close();
+        }
+        // Convert to plain array
         return names.toArray(new String[names.size()]);
     }
 
-    
+
     /** Read configuration.
      *  @param root_name Name of root element.
      *  @param create Set <code>true</code> to create new tree if nothing found
-     *  @param monitor Progress monitor 
+     *  @param monitor Progress monitor
      */
     public void readConfiguration(final String root_name, final boolean create,
-    		final IProgressMonitor monitor) throws Exception
+            final IProgressMonitor monitor) throws Exception
     {
-    	if (auto_reconnect)
-    		rdb.setAutoReconnect(false);
+        if (auto_reconnect)
+            rdb.setAutoReconnect(false);
         final AlarmTreeRoot new_config;
         final DelayCheck monitor_update_delay = new DelayCheck(1, TimeUnit.SECONDS);
         try
@@ -166,8 +162,8 @@ public class AlarmConfiguration
         }
         finally
         {
-        	if (auto_reconnect)
-        		rdb.setAutoReconnect(true);
+            if (auto_reconnect)
+                rdb.setAutoReconnect(true);
         }
         synchronized (this)
         {
@@ -175,7 +171,7 @@ public class AlarmConfiguration
         }
     }
 
-	/** Must be called to release resources */
+    /** Must be called to release resources */
     public void close()
     {
         closeStatements();
@@ -249,7 +245,6 @@ public class AlarmConfiguration
         finally
         {
             statement.close();
-            connection.commit();
             closeStatements();
         }
     }
@@ -257,11 +252,11 @@ public class AlarmConfiguration
     /** Read configuration for child elements
      *  @param parent Parent node. Children get added to it.
      *  @param monitor Progress monitor
-     *  @param monitor_update_delay Delay for updates to monitor 
+     *  @param monitor_update_delay Delay for updates to monitor
      *  @throws Exception on error
      */
     private void readChildren(final AlarmTreeItem parent,
-    		final IProgressMonitor monitor, final DelayCheck monitor_update_delay) throws Exception
+            final IProgressMonitor monitor, final DelayCheck monitor_update_delay) throws Exception
     {
         if (sel_items_by_parent_statement == null)
             sel_items_by_parent_statement =
@@ -290,8 +285,8 @@ public class AlarmConfiguration
                 // Periodically update progress monitor
                 if (monitor_update_delay.expired())
                 {
-                	final int count = pvs.size();
-                	monitor.subTask(NLS.bind(Messages.ReadConfigProgressFmt, count));
+                    final int count = pvs.size();
+                    monitor.subTask(NLS.bind(Messages.ReadConfigProgressFmt, count));
                 }
                 config_reader.configurePVfromResult(pv, result, severity_mapping, message_mapping);
                 item = pv;
@@ -342,13 +337,14 @@ public class AlarmConfiguration
             throw new Exception("Alarm configuration element " +
                     parent.getName() + " already has sub-element" + name);
 
+        rdb.getConnection().setAutoCommit(false);
         final int id = getNextItemID();
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.insert_item);
         try
         {
             statement.setInt(1, id);
-            //if added a root, set its parent as NULL
+            // If adding a root, set its parent to NULL
             if (parent == null)
                 statement.setNull(2, Types.INTEGER);
             else
@@ -365,8 +361,9 @@ public class AlarmConfiguration
         finally
         {
             statement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
-        //if added a root...
+        // If added a root...
         if (parent == null)
             return createAlarmTreeRoot(id, name);
         return new AlarmTreeItem(parent, name, id);
@@ -406,11 +403,10 @@ public class AlarmConfiguration
         if (found != null)
             throw new Exception(name + " already under " + found.getPathName());
 
+        rdb.getConnection().setAutoCommit(false);
         final int id = getNextItemID();
-        if (insert_item_statement == null)
-        	insert_item_statement = rdb.getConnection().prepareStatement(sql.insert_item);
-        if (insert_pv_statement == null)
-        	insert_pv_statement = rdb.getConnection().prepareStatement(sql.insert_pv);
+        final PreparedStatement insert_item_statement = rdb.getConnection().prepareStatement(sql.insert_item);
+        final PreparedStatement insert_pv_statement = rdb.getConnection().prepareStatement(sql.insert_pv);
         final String description = name;
         final boolean latch = true;
         final boolean annunciate = false;
@@ -420,7 +416,7 @@ public class AlarmConfiguration
 
         try
         {
-        	//Insert the PV as an item in the alarmtree table
+            //Insert the PV as an item in the alarmtree table
             insert_item_statement.setInt(1, id);
             insert_item_statement.setInt(2, parent.getID());
             insert_item_statement.setString(3, name);
@@ -436,9 +432,15 @@ public class AlarmConfiguration
         }
         catch (SQLException ex)
         {
-			rdb.getConnection().rollback();
-			throw ex;
-		}
+            rdb.getConnection().rollback();
+            throw ex;
+        }
+        finally
+        {
+            insert_item_statement.close();
+            insert_pv_statement.close();
+            rdb.getConnection().setAutoCommit(true);
+        }
 
         final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
         pvs.put(name, pv);
@@ -457,42 +459,61 @@ public class AlarmConfiguration
             final GDCDataStructure guidance[], final GDCDataStructure displays[],
             final GDCDataStructure commands[]) throws Exception
     {
-    	// Prepare statements
-    	if (delete_guidance_by_id == null)
-    		delete_guidance_by_id = rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
-    	if (insert_guidance == null)
-    		insert_guidance = rdb.getConnection().prepareStatement(sql.insert_guidance);
-    	if (delete_displays_by_id == null)
-    		delete_displays_by_id = rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
-    	if (insert_display == null)
-    		insert_display = rdb.getConnection().prepareStatement(sql.insert_display);
-    	if (delete_commands_by_id == null)
-    		delete_commands_by_id = rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
-    	if (insert_command == null)
-    		insert_command = rdb.getConnection().prepareStatement(sql.insert_command);
-    	
-    	//update guidance, displays and commands
-    	updateGDC(item.getID(), guidance, delete_guidance_by_id, insert_guidance);
-    	updateGDC(item.getID(), displays, delete_displays_by_id, insert_display);
-    	updateGDC(item.getID(), commands, delete_commands_by_id, insert_command);
+        // Prepare statements
+        final Connection connection = rdb.getConnection();
+		final PreparedStatement    delete_guidance_by_id = connection.prepareStatement(sql.delete_guidance_by_id);
+        final PreparedStatement    insert_guidance = connection.prepareStatement(sql.insert_guidance);
+        final PreparedStatement    delete_displays_by_id = connection.prepareStatement(sql.delete_displays_by_id);
+        final PreparedStatement    insert_display = connection.prepareStatement(sql.insert_display);
+        final PreparedStatement    delete_commands_by_id = connection.prepareStatement(sql.delete_commands_by_id);
+        final PreparedStatement    insert_command = connection.prepareStatement(sql.insert_command);
 
-    	if (update_item_config_time == null)
-    		update_item_config_time =
-    			rdb.getConnection().prepareStatement(sql.update_item_config_time);
-    	try
-    	{
-    		final Timestamp config_time = new Timestamp(new Date().getTime());
-    		update_item_config_time.setTimestamp(1, config_time);
-    		update_item_config_time.setInt(2, item.getID());
-    		update_item_config_time.executeUpdate();
-    		rdb.getConnection().commit();
-    		// Update item's config time after RDB commit succeeded
+        //update guidance, displays and commands
+        connection.setAutoCommit(false);
+        try
+        {
+            updateGDC(item.getID(), guidance, delete_guidance_by_id, insert_guidance);
+            updateGDC(item.getID(), displays, delete_displays_by_id, insert_display);
+            updateGDC(item.getID(), commands, delete_commands_by_id, insert_command);
+            connection.commit();
+        }
+        catch (Exception ex)
+        {
+            connection.rollback();
+            connection.setAutoCommit(true);
+            throw ex;
+        }
+        finally
+        {
+            delete_guidance_by_id.close();
+            delete_displays_by_id.close();
+            delete_commands_by_id.close();
+
+            insert_guidance.close();
+            insert_display.close();
+            insert_command.close();
+        }
+
+        // Update item's config time after RDB commit succeeded
+        final PreparedStatement    update_item_config_time = connection.prepareStatement(sql.update_item_config_time);
+        try
+        {
+            final Timestamp config_time = new Timestamp(new Date().getTime());
+            update_item_config_time.setTimestamp(1, config_time);
+            update_item_config_time.setInt(2, item.getID());
+            update_item_config_time.executeUpdate();
+            connection.commit();
             item.setConfigTime(TimestampFactory.fromSQLTimestamp(config_time));
-    	}
+        }
         catch (SQLException ex)
         {
-            rdb.getConnection().rollback();
+            connection.rollback();
             throw ex;
+        }
+        finally
+        {
+            update_item_config_time.close();
+            connection.setAutoCommit(true);
         }
     }
 
@@ -517,8 +538,8 @@ public class AlarmConfiguration
         final GDCDataStructure commands[]) throws Exception
     {
         configureItem(pv, guidance, displays, commands);
-        if (update_pv_config_statement == null)
-        	update_pv_config_statement = rdb.getConnection().prepareStatement(sql.update_pv_config);
+        rdb.getConnection().setAutoCommit(false);
+        final PreparedStatement    update_pv_config_statement = rdb.getConnection().prepareStatement(sql.update_pv_config);
         try
         {
             update_pv_config_statement.setString(1, description);
@@ -537,6 +558,11 @@ public class AlarmConfiguration
             rdb.getConnection().rollback();
             throw ex;
         }
+        finally
+        {
+            update_pv_config_statement.close();
+            rdb.getConnection().setAutoCommit(true);
+        }
     }
 
     /** Change item's name
@@ -546,6 +572,7 @@ public class AlarmConfiguration
      */
     public void rename(final AlarmTreeItem item, final String new_name) throws Exception
     {
+        rdb.getConnection().setAutoCommit(false);
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.rename_item);
         try
@@ -563,6 +590,7 @@ public class AlarmConfiguration
         finally
         {
             statement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
     }
 
@@ -584,6 +612,7 @@ public class AlarmConfiguration
             throw new Exception(NLS.bind("Unknown alarm configuration path {0}",
                                          new_path));
         // Update parent of item (PV or component)
+        rdb.getConnection().setAutoCommit(false);
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.move_item);
         try
@@ -601,6 +630,7 @@ public class AlarmConfiguration
         finally
         {
             statement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
     }
 
@@ -644,23 +674,26 @@ public class AlarmConfiguration
                 removeSubtree(child);
         }
         // Then remove item itself
+        rdb.getConnection().setAutoCommit(false);
+
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.delete_component_by_id);
         try
         {
-        	deleteGDCWithoutCommit(item.getID());
+            deleteGDCWithoutCommit(item.getID());
             statement.setInt(1, item.getID());
             statement.executeUpdate();
             rdb.getConnection().commit();
         }
         catch (SQLException ex)
         {
-			rdb.getConnection().rollback();
-			throw ex;
+            rdb.getConnection().rollback();
+            throw ex;
         }
         finally
         {
             statement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
         item.detachFromParent();
     }
@@ -673,6 +706,8 @@ public class AlarmConfiguration
      */
     private void removePV(final AlarmTreePV pv) throws Exception
     {
+        rdb.getConnection().setAutoCommit(false);
+
         final PreparedStatement delPVStatement =
             rdb.getConnection().prepareStatement(sql.delete_pv_by_id);
         final PreparedStatement delCMPNTStatement =
@@ -680,9 +715,9 @@ public class AlarmConfiguration
 
         try
         {
-        	deleteGDCWithoutCommit(pv.getID());
+            deleteGDCWithoutCommit(pv.getID());
 
-        	delPVStatement.setInt(1, pv.getID());
+            delPVStatement.setInt(1, pv.getID());
             delPVStatement.executeUpdate();
 
             delCMPNTStatement.setInt(1, pv.getID());
@@ -692,13 +727,14 @@ public class AlarmConfiguration
         }
         catch (SQLException ex)
         {
-			rdb.getConnection().rollback();
-			throw ex;
+            rdb.getConnection().rollback();
+            throw ex;
         }
         finally
         {
             delPVStatement.close();
             delCMPNTStatement.close();
+            rdb.getConnection().setAutoCommit(true);
         }
         pvs.remove(pv.getName());
         pv.detachFromParent();
@@ -727,7 +763,6 @@ public class AlarmConfiguration
         pv.setCount(result.getInt(6));
         pv.setFilter(result.getString(7));
         config_reader.readGuidanceDisplaysCommands(pv);
-        connection.commit();
     }
 
     /**Update guidance/displays/commands in RDB by id
@@ -757,11 +792,9 @@ public class AlarmConfiguration
                     order++;
                 }
             }
-            rdb.getConnection().commit();
         }
         catch (Exception ex)
         {
-            rdb.getConnection().rollback();
             throw ex;
         }
     }
@@ -772,18 +805,24 @@ public class AlarmConfiguration
      */
     private void deleteGDCWithoutCommit(final int id) throws Exception
     {
-    	if (delete_guidance_by_id == null)
-    		delete_guidance_by_id = rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
-    	if (delete_displays_by_id == null)
-    		delete_displays_by_id = rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
-    	if (delete_commands_by_id == null)
-    		delete_commands_by_id = rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
-    	delete_guidance_by_id.setInt(1, id);
-    	delete_guidance_by_id.executeUpdate();
-    	delete_displays_by_id.setInt(1, id);
-    	delete_displays_by_id.executeUpdate();
-    	delete_commands_by_id.setInt(1, id);
-    	delete_commands_by_id.executeUpdate();
+        final PreparedStatement delete_guidance_by_id = rdb.getConnection().prepareStatement(sql.delete_guidance_by_id);
+        final PreparedStatement delete_displays_by_id = rdb.getConnection().prepareStatement(sql.delete_displays_by_id);
+        final PreparedStatement delete_commands_by_id = rdb.getConnection().prepareStatement(sql.delete_commands_by_id);
+        try
+        {
+            delete_guidance_by_id.setInt(1, id);
+            delete_guidance_by_id.executeUpdate();
+            delete_displays_by_id.setInt(1, id);
+            delete_displays_by_id.executeUpdate();
+            delete_commands_by_id.setInt(1, id);
+            delete_commands_by_id.executeUpdate();
+        }
+        finally
+        {
+            delete_guidance_by_id.close();
+            delete_displays_by_id.close();
+            delete_commands_by_id.close();
+        }
     }
 
     /** Close prepared statements that are lazily created when reading/writing config.
@@ -796,56 +835,6 @@ public class AlarmConfiguration
     {
         try
         {
-        	if (update_item_config_time != null)
-        	{
-        		update_item_config_time.close();
-        		update_item_config_time = null;
-        	}
-        	if (delete_guidance_by_id != null)
-        	{
-        		delete_guidance_by_id.close();
-        		delete_guidance_by_id = null;
-        	}
-        	if (insert_guidance != null)
-        	{
-        		insert_guidance.close();
-        		insert_guidance = null;
-        	}
-        	if (delete_displays_by_id != null)
-        	{
-        		delete_displays_by_id.close();
-        		delete_displays_by_id = null;
-        	}
-        	if (insert_display != null)
-        	{
-        		insert_display.close();
-        		insert_display = null;
-        	}
-        	if (delete_commands_by_id != null)
-        	{
-        		delete_commands_by_id.close();
-        		delete_commands_by_id = null;
-        	}
-        	if (insert_command != null)
-        	{
-        		insert_command.close();
-        		insert_command = null;
-        	}
-        	if (insert_item_statement != null)
-        	{
-        		insert_item_statement.close();
-        		insert_item_statement = null;
-        	}
-        	if (insert_pv_statement != null)
-        	{
-        		insert_pv_statement.close();
-        		insert_pv_statement = null;
-        	}
-        	if (update_pv_config_statement != null)
-        	{
-        		update_pv_config_statement.close();
-        		update_pv_config_statement = null;
-        	}
             if (sel_items_by_parent_statement != null)
             {
                 sel_items_by_parent_statement.close();
