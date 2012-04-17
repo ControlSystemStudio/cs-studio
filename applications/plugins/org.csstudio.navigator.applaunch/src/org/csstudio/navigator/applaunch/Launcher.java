@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorLauncher;
 
 /**
@@ -93,6 +94,7 @@ public class Launcher implements IEditorLauncher {
 		//Use a runnable due to the output of the command 
 		
 		//System.out.println("Launcher.launchCommand() CMD");
+		final Display display = Display.getCurrent();
 		Runnable r = new Runnable() {
 
 			@Override
@@ -100,7 +102,7 @@ public class Launcher implements IEditorLauncher {
 				// TODO Auto-generated method stub
 
 				try {
-					Process p = Runtime.getRuntime().exec(argv);
+					final Process p = Runtime.getRuntime().exec(argv);
 
 					String line;
 					BufferedReader is = new BufferedReader(
@@ -117,9 +119,17 @@ public class Launcher implements IEditorLauncher {
 					
 
 					if (p.exitValue() != 0) {
-						MessageDialog.openError(null, Messages.Error, NLS.bind(
-								Messages.LaunchErrorCmd, commandToLaunch,
-								p.exitValue()));
+						display.syncExec(new Runnable() {
+							
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								MessageDialog.openError(null, Messages.Error, NLS.bind(
+										Messages.LaunchErrorCmd, commandToLaunch,
+										p.exitValue()));
+							}
+						});
+						
 					}
 
 				} catch (IOException e1) {
