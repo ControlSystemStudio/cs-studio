@@ -64,14 +64,12 @@
             <!-- IOC that handles this device:
                  Name,
                  script that starts the soft IOC,
-                 console port for procServ,
-                 Channel Access server port for the soft IOC
+                 console port for procServ
               -->
             <ioc>
                 <name>Simulation</name>
                 <script>/home/epics/R3.14.12.2/applications/bl99/simulation/st.cmd</script>
                 <console>4812</console>
-                <ca>5064</ca>
             </ioc>
 
             <!-- PVs provided by the soft IOC that are of interest
@@ -108,7 +106,6 @@
                 <name>motorSim</name>
                 <script>/home/epics/R3.14.12.2/support/motor/iocBoot/iocSim/st.cmd.unix</script>
                 <console>4813</console>
-                <ca>5066</ca>
             </ioc>
             <!--
             <pv><name>IOC:m1</name><alias>IOC:m1</alias><scan/></pv>
