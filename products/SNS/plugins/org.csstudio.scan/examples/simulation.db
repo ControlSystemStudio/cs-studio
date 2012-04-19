@@ -29,6 +29,15 @@ record(bi, "shutter")
 # Simulate accumulated proton charge of accelerator
 # About 3.5e12 / hour
 # 3.5e12/(60*60)/2 = 4.8611e8
+#
+# Granularity for double-precision numbers is around 1e15
+# -> When number reaches 1e(8+15) = 1e24, further additions
+#    won't "work".
+#    1e24 + 4.8e8 == 1e24  because of floating point
+#
+# To reach this takes about
+# 1e24/4.8611e8/2 / 60 / 60 / 24 / 365 = 1e7 years,
+# i.e. no worries
 record(calc, "pcharge")
 {
     field(INPA, "beam_on")
