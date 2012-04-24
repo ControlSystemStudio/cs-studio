@@ -25,16 +25,16 @@
 
 package org.csstudio.ams.delivery.jms;
 
-import javax.jms.Connection;
-import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import javax.jms.Topic;
-import org.apache.activemq.ActiveMQConnectionFactory;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.csstudio.utility.jms.JmsUtilityException;
+import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
@@ -70,53 +70,42 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker {
         LOG.info(workerName + " is running.");
 
         IPreferencesService prefs = Platform.getPreferencesService();
-        //final IPreferenceStore prefs = AmsActivator.getDefault().getPreferenceStore();
 
-        String publishUrl = prefs.getString(AmsActivator.PLUGIN_ID,
-                                            AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL,
-                                            "tcp://localhost:62616",
-                                            null);
+        // Create the JMS publisher
+        ISharedConnectionHandle publisherHandle = null;
+        Session publisherSession = null;
         
-        ConnectionFactory senderConnectionFactory = null;
-        Connection senderConnection = null;
-        Connection[] receiverConnections = null;
+        ISharedConnectionHandle[] consumerHandles = null;
+        Session[] consumerSession = null;
+        MessageConsumer[] consumer = null;
         
+        String consumerTopicName = prefs.getString(AmsActivator.PLUGIN_ID,
+                                           AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR,
+                                           "T_AMS_CON_JMS",
+                                           null);
         try {
-            senderConnectionFactory = new ActiveMQConnectionFactory(publishUrl);
-            senderConnection = senderConnectionFactory.createConnection();
-            senderConnection.start();
-            final String[] receiverURLs = new String[] {
-                    prefs.getString(AmsActivator.PLUGIN_ID,
-                                    AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1,
-                                    "tcp://localhost:62616",
-                                    null),
-                    prefs.getString(AmsActivator.PLUGIN_ID,
-                                    AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2,
-                                    "tcp://localhost:64616",
-                                    null)
-                };
-            receiverConnections = new Connection[receiverURLs.length];
-            for (int i = 0; i < receiverURLs.length; i++) {
-                final ConnectionFactory connectionFactory = new ActiveMQConnectionFactory(receiverURLs[i]);
-                final Connection connection = connectionFactory.createConnection();
-                receiverConnections[i] = connection;
-                final Session receiverSession = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-                String topicName = prefs.getString(AmsActivator.PLUGIN_ID,
-                                                   AmsPreferenceKey.P_JMS_AMS_TOPIC_JMS_CONNECTOR,
-                                                   "T_AMS_CON_JMS",
-                                                   null);
-                final Topic receiveTopic = receiverSession.createTopic(topicName);
-                final MessageConsumer consumer = receiverSession.createConsumer(receiveTopic);
-    
-                // Create a new sender session for each worker because each worker will be called in its own listener thread
-                final Session senderSession = senderConnection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-    
-                jmsDevice = new JmsDevice(senderSession);
-                consumer.setMessageListener(jmsDevice);
-                connection.start();
+
+            publisherHandle = SharedJmsConnections.sharedSenderConnection();
+            publisherSession = publisherHandle.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            jmsDevice = new JmsDevice(publisherSession);
+
+            consumerHandles = SharedJmsConnections.sharedReceiverConnections();
+            consumerSession = new Session[consumerHandles.length];
+            consumer = new MessageConsumer[consumerHandles.length];
+            
+            for (int i = 0; i < consumerHandles.length; i++) {
+                consumerSession[i] = consumerHandles[i].createSession(false, Session.AUTO_ACKNOWLEDGE);
+                final Topic receiveTopic = consumerSession[i].createTopic(consumerTopicName);
+                consumer[i] = consumerSession[i].createConsumer(receiveTopic);
+                consumer[i].setMessageListener(jmsDevice);
             }
+            
         } catch (JMSException jmse) {
             LOG.error("[*** JMSException ***]: Cannot initialize {}: {}", workerName, jmse.getMessage());
+            LOG.error("Leaving worker.");
+            running = false;
+        } catch (JmsUtilityException jue) {
+            LOG.error("[*** JmsUtilityException ***]: Cannot initialize {}: {}", workerName, jue.getMessage());
             LOG.error("Leaving worker.");
             running = false;
         }
@@ -136,33 +125,36 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker {
             jmsDevice.stopDevice();
         }
         
-        if (receiverConnections != null) {
-            for (final Connection receiverConnection : receiverConnections) {
-                try {
-                    receiverConnection.stop();
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    receiverConnection.close();
-                } catch (JMSException e) {
-                    e.printStackTrace();
+        if (consumer != null) {
+            for (MessageConsumer o : consumer) {
+                if (o != null) {
+                    try {o.close();}catch(JMSException e){/* Ignore me */}
                 }
             }
         }
         
-        if (senderConnection != null) {
-            try {
-                senderConnection.stop();
-            } catch (JMSException e) {
-                e.printStackTrace();
+        if (consumerSession != null) {
+            for (Session o : consumerSession) {
+                if (o != null) {
+                    try {o.close();}catch(JMSException e){/* Ignore me */}
+                }
             }
-            try {
-                senderConnection.close();
-            } catch (JMSException e) {
-                e.printStackTrace();
+        }
+
+        if (consumerHandles != null) {
+            for (ISharedConnectionHandle o : consumerHandles) {
+                if (o != null) {
+                    o.release();
+                }
             }
+        }
+        
+        if (publisherSession != null) {
+            try {publisherSession.close();}catch(JMSException e){/* Ignore me */}
+        }
+        
+        if (publisherHandle != null) {
+            publisherHandle.release();
         }
         
         LOG.info("{} is exiting now.", workerName);

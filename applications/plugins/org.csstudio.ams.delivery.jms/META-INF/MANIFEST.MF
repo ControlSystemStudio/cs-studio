@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.ams.delivery.jms.JmsDeliveryActivator
 Bundle-Vendor: Markus Moeller <markus.moeller@desy.de>
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.jms;bundle-version="5.4.2",
+ org.csstudio.utility.jms;bundle-version="1.0.0",
  org.csstudio.ams;bundle-version="1.3.0",
  org.slf4j;bundle-version="1.6.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
