@@ -59,6 +59,7 @@
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.remote"/>
       <plugin id="org.csstudio.ui.preferences"/>
+      <plugin id="org.csstudio.utility.jms"/>
       <plugin id="org.csstudio.utility.pvmanager"/>
       <plugin id="org.csstudio.workspace"/>
       <plugin id="org.eclipse.ant.core"/>

@@ -27,15 +27,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.application.deliverysystem.management.Restart;
 import org.csstudio.ams.application.deliverysystem.management.Stop;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
+import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -78,6 +82,28 @@ public class DeliverySystemApplication implements IApplication,
 		
 	    Activator.getPlugin().addSessionServiceListener(this);
 	    
+	    IPreferencesService prefs = Platform.getPreferencesService();
+	    
+	    // FIRST read the JMS preferences and prepare the SharedJmsConnection class
+        String url1 = prefs.getString(AmsActivator.PLUGIN_ID,
+                                      AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1,
+                                      "tcp://localhost:62616",
+                                      null);
+        String url2 = prefs.getString(AmsActivator.PLUGIN_ID,
+                                      AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_2,
+                                      "tcp://localhost:64616",
+                                      null);
+        LOG.debug("JMS Consumer URL 1: {}", url1);
+        LOG.debug("JMS Consumer URL 2: {}", url2);
+        SharedJmsConnections.staticInjectConsumerUrlAndClientId(url1, url2, "AmsDeliverySystemConsumer");
+        
+        url1 = prefs.getString(AmsActivator.PLUGIN_ID,
+                               AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL,
+                               "tcp://localhost:62616",
+                               null);
+        LOG.debug("JMS Publisher URL: {}", url1);
+        SharedJmsConnections.staticInjectPublisherUrlAndClientId(url1, "AmsDeliverySystemPublisher");
+
 	    DeliveryWorkerList workerList = new DeliveryWorkerList();
 	    
         IExtensionRegistry extReg = Platform.getExtensionRegistry();
