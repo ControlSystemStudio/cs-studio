@@ -82,39 +82,23 @@ public class AsyncJmsConsumer {
         }
     }
     
-    public void addMessageListener(MessageListener listener) throws ClientConnectionException {
+    public void addMessageListener(MessageListener listener) throws JMSException {
         if (consumer != null) {
             for (MessageConsumer o : consumer) {
                 if (o != null) {
-                    try {
-                        o.setMessageListener(listener);
-                    } catch (JMSException jmse) {
-                        throw new ClientConnectionException("Cannot set message listener.", jmse);
-                    }
-                } else {
-                    throw new ClientConnectionException("Cannot set message listener because the message consumer is null.");
+                    o.setMessageListener(listener);
                 }
             }
-        } else {
-            throw new ClientConnectionException("Cannot set message listener because no message consumer are available.");
         }
     }
     
-    public void removeMessageListener() throws ClientConnectionException {
+    public void removeMessageListener() throws JMSException {
         if (consumer != null) {
             for (MessageConsumer o : consumer) {
                 if (o != null) {
-                    try {
-                        o.setMessageListener(null);
-                    } catch (JMSException jmse) {
-                        throw new ClientConnectionException("Cannot remove message listener.", jmse);
-                    }
-                } else {
-                    throw new ClientConnectionException("Cannot remove message listener because the message consumer is null.");
+                    o.setMessageListener(null);
                 }
             }
-        } else {
-            throw new ClientConnectionException("Cannot remove message listener because no message consumer are available.");
         }
     }
     

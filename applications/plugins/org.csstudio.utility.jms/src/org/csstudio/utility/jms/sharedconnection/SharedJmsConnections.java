@@ -83,7 +83,7 @@ public final class SharedJmsConnections {
 	 *             if the shared connection could not be created or started due
 	 *             to an internal error.
 	 */
-	public static ISharedConnectionHandle sharedSenderConnection()
+	public static synchronized ISharedConnectionHandle sharedSenderConnection()
 			throws JMSException, JmsUtilityException {
 	    
 	    if (publisherUrl == null) {
@@ -108,7 +108,7 @@ public final class SharedJmsConnections {
 	 *             if one of the underlying shared connections could not be
 	 *             created or started due to an internal error.
 	 */
-	public static ISharedConnectionHandle[] sharedReceiverConnections()
+	public static synchronized ISharedConnectionHandle[] sharedReceiverConnections()
 			throws JMSException, JmsUtilityException {
 		
 	    if ((consumerUrl1 == null) || (consumerUrl2 == null)) {
