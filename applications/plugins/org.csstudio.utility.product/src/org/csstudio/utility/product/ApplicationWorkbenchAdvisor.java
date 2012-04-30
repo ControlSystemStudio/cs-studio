@@ -35,6 +35,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
         return new ApplicationWorkbenchWindowAdvisor(configurer);
     }
 
+    @SuppressWarnings("nls")
     @Override
     public void initialize(final IWorkbenchConfigurer configurer)
     {

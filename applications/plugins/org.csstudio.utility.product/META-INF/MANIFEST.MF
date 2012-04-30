@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shared
 Bundle-SymbolicName: org.csstudio.utility.product;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources;bundle-version="3.6",
  org.eclipse.equinox.security;bundle-version="1.0.200",
  org.eclipse.ui;bundle-version="3.6",
  org.eclipse.ui.ide;bundle-version="3.6",
+ org.csstudio.java;bundle-version="3.1.0",
  org.csstudio.startup;bundle-version="3.0.0";visibility:=reexport,
  org.csstudio.auth;bundle-version="3.0.0",
  org.csstudio.auth.ui;bundle-version="3.0.0",
@@ -19,3 +20,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.product
+Import-Package: org.junit;version="4.8.2"
