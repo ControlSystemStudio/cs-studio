@@ -859,11 +859,8 @@ public class Trace extends Figure implements IDataProviderListener,
 		Axis old = yAxis;
 
 		if (yAxis == axis) {
-			System.out.println("Trace.setYAxis() sameAxes");
 			return;
-		} else {
-			System.out.println("Trace.setYAxis()");
-		}
+		} 
 
 		xyGraph.getLegendMap().get(yAxis).removeTrace(this);
 		if (xyGraph.getLegendMap().get(yAxis).getTraceList().size() <= 0) {
