@@ -16,7 +16,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Activator
 {
 	/** Plugin ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = "org.csstudio.utility.product";
+	final public static String PLUGIN_ID = "org.csstudio.utility.product"; //$NON-NLS-1$
 
 	/** @param path Image file path within plugin
 	 *  @return {@link ImageDescriptor}
