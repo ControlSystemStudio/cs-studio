@@ -17,7 +17,7 @@ package org.csstudio.scan.command;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.RegistryFactory;
 
 /** Implementation of the {@link SimpleScanCommandFactory} for Eclipse code
  *
@@ -45,9 +45,10 @@ public class ScanCommandFactory extends SimpleScanCommandFactory
     @Override
     public ScanCommand createCommandForID(final String id) throws Exception
     {
-        final IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(COMMAND_EXT_POINT);
+    	// Locate registered commands
+        final IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(COMMAND_EXT_POINT);
         final IConfigurationElement[] configs = point.getConfigurationElements();
-
+        // Find command with matching ID
         for (IConfigurationElement config : configs)
         {
             if (id.equals(config.getAttribute("id")))

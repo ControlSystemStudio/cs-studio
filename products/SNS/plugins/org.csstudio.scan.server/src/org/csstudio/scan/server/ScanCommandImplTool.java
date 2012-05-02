@@ -23,7 +23,8 @@ import java.util.Map;
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
 
 /** Tool that creates executable command implementations of a {@link ScanCommand}.
  *
@@ -56,7 +57,8 @@ public class ScanCommandImplTool
     private ScanCommandImplTool() throws Exception
     {
         // Locate all commands
-        final IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.csstudio.scan.server.scancommandimpl");
+    	final IExtensionRegistry registry = RegistryFactory.getRegistry();
+        final IExtensionPoint point = registry.getExtensionPoint("org.csstudio.scan.server.scancommandimpl");
         final IConfigurationElement[] configs = point.getConfigurationElements();
 
         // System.out.println("Available Scan Commands:");

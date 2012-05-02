@@ -1,12 +1,14 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.csstudio.scan.server" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.csstudio.scan.log" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.csstudio.scan.server" id="scancommandimpl" name="Scan Command Implementation"/>
+         <meta.schema plugin="org.csstudio.scan.log" id="datalog" name="Scan data log"/>
       </appinfo>
       <documentation>
-         Implementation of a ScanCommand, i.e. code for the Scan Server to execute.
+         Scan data logger, logs samples of a scan.
+
+Implementing plugins can replace the default &lt;code&gt;MemoryDataLog&lt;/code&gt; with an alternate data log.
       </documentation>
    </annotation>
 
@@ -17,8 +19,8 @@
          </appinfo>
       </annotation>
       <complexType>
-         <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="imp_factory"/>
+         <sequence>
+            <element ref="datalog"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,34 +49,22 @@
       </complexType>
    </element>
 
-   <element name="imp_factory">
+   <element name="datalog">
       <complexType>
          <attribute name="name" type="string">
             <annotation>
                <documentation>
-                  Name of this extension.
+                  Name of the data log.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="command" type="string" use="required">
+         <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  Class of the scan command for which this factory provides an implementation.
-Must be derived from org.csstudio.scan.command.ScanCommand.
+                  Implementing java class that must be based on org.csstudio.scan.log.DataLog
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.csstudio.scan.command.ScanCommand:"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="factory" type="string" use="required">
-            <annotation>
-               <documentation>
-                  Factory that provides an implementation for the command.
-Must implement org.csstudio.scan.server.ScanCommandImplFactory.
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.scan.server.ScanCommandImplFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.scan.log.DataLog"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -96,12 +86,9 @@ Must implement org.csstudio.scan.server.ScanCommandImplFactory.
       </appinfo>
       <documentation>
          &lt;pre&gt;
-&lt;extension point=&quot;org.csstudio.scan.server.scancommandimpl&quot;&gt;
-    &lt;imp_factory
-            name=&quot;Set&quot;
-            command=&quot;org.csstudio.scan.command.SetCommand&quot;
-            factory=&quot;org.csstudio.scan.commandimpl.SetCommandImplFactory&quot;&gt;
-    &lt;/imp_factory&gt;
+&lt;extension point=&quot;org.csstudio.scan.log.datalog&quot;&gt;
+  &lt;datalog name=&quot;My Data Log&quot;
+           class=&quot;org.csstudio.scan.log.mylog.MyDataLog&quot; /&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
@@ -112,7 +99,7 @@ Must implement org.csstudio.scan.server.ScanCommandImplFactory.
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         Must implement org.csstudio.scan.server.ScanCommandImplFactory
+         Must implement org.csstudio.scan.log.DataLog
       </documentation>
    </annotation>
 
@@ -121,7 +108,7 @@ Must implement org.csstudio.scan.server.ScanCommandImplFactory.
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         For example, see org.csstudio.scan.commandimpl.SetCommandImplFactory
+         For example, see org.csstudio.scan.log.MemoryDataLog
       </documentation>
    </annotation>
 

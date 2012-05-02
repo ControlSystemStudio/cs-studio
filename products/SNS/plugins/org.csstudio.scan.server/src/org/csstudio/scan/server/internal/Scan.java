@@ -90,8 +90,9 @@ public class Scan implements ScanContext
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
+     *  @throws Exception on error (cannot access log, ...)
      */
-    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations)
+    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
     {
         this(name, devices,
             Collections.<ScanCommandImpl<?>>emptyList(),
@@ -105,11 +106,12 @@ public class Scan implements ScanContext
      *  @param pre_scan Commands to execute before the 'main' section of the scan
      *  @param implementations Commands to execute in this scan
      *  @param post_scan Commands to execute before the 'main' section of the scan
+     *  @throws Exception on error (cannot access log, ...)
      */
     public Scan(final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
-            final List<ScanCommandImpl<?>> post_scan)
+            final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
         id = ids.incrementAndGet();
         this.name = name;

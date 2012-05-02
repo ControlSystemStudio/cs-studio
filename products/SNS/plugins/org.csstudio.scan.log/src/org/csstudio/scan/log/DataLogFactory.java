@@ -7,18 +7,46 @@
  ******************************************************************************/
 package org.csstudio.scan.log;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.RegistryFactory;
+
 /** Factory for scan {@link DataLog}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DataLogFactory
 {
 	/** Plugin ID defined in MANIFEST.MF */
-	@SuppressWarnings("nls")
     final public static String ID = "org.csstudio.scan.log";
 
 	/** @return {@link DataLog} */
-	public static DataLog getDataLog()
+    public static DataLog getDataLog() throws Exception
 	{
+    	// Is registry available?
+    	final IExtensionRegistry registry = RegistryFactory.getRegistry();
+    	if (registry != null)
+    	{	// Locate 'plugged' data logger
+    		final IConfigurationElement[] configs = registry.getConfigurationElementsFor("org.csstudio.scan.log.datalog");
+    		// Allow only one
+    		if (configs.length > 1)
+    		{
+    			final Logger logger = Logger.getLogger(DataLogFactory.class.getName());
+				logger.log(Level.SEVERE, "Found multiple data loggers:");
+				for (IConfigurationElement config : configs)
+					logger.log(Level.SEVERE, config.getContributor().getName() + " - " + config.getAttribute("class") + " [" + config.getAttribute("name") + "]");
+    			throw new Exception("Found multiple scan data loggers");
+    		}
+    		else if (configs.length == 1)
+    		{
+    			final DataLog log = (DataLog) configs[0].createExecutableExtension("class");
+    			return log;
+    		}
+    	}
+    	// Fall back to default logger
 		return new MemoryDataLog();
 	}
 }
