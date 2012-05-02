@@ -54,9 +54,6 @@ import org.csstudio.scan.server.ScanState;
 @SuppressWarnings("nls")
 public class Scan implements ScanContext
 {
-    /** Provides the next available <code>id</code> */
-    final private static AtomicLong ids = new AtomicLong();
-
     final private long id;
 
     final private String name;
@@ -113,12 +110,13 @@ public class Scan implements ScanContext
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
-        id = ids.incrementAndGet();
+    	id = DataLogFactory.createDataLog(name);
         this.name = name;
         this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
+        data_logger = DataLogFactory.getDataLog(id);
 
         // Assign addresses to all commands,
         // determine work units
@@ -131,7 +129,6 @@ public class Scan implements ScanContext
         }
         total_work_units = work_units;
 
-        data_logger = DataLogFactory.getDataLog();
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */

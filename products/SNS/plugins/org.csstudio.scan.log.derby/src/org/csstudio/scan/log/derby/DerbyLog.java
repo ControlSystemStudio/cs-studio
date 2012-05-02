@@ -26,6 +26,7 @@ public class DerbyLog extends RDBLog
 
 	final private static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
+	// TODO Use preference for derby config
 	private static String database_directory = DEFAULT_DATABASE_DIRECTORY;
 
 	/** @param database_directory Directory where derby stores database files */

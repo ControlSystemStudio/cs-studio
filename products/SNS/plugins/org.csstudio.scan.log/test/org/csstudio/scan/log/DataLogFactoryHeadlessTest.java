@@ -8,6 +8,7 @@
 package org.csstudio.scan.log;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -20,7 +21,9 @@ public class DataLogFactoryHeadlessTest
     @Test
 	public void testDataLogFactory() throws Exception
 	{
-		final DataLog log = DataLogFactory.getDataLog();
+    	final long scan_id =	DataLogFactory.createDataLog("test");
+		assertTrue(scan_id > 0);
+		final DataLog log = DataLogFactory.getDataLog(scan_id);
 		assertNotNull(log);
 		System.out.println("Got DataLog " + log.getClass().getName());
 	}

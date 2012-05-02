@@ -61,10 +61,10 @@ Implementing plugins can replace the default &lt;code&gt;MemoryDataLog&lt;/code&
          <attribute name="class" type="string">
             <annotation>
                <documentation>
-                  Implementing java class that must be based on org.csstudio.scan.log.DataLog
+                  Implementing java class that must be based on org.csstudio.scan.log.IDataLogFactory
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.scan.log.DataLog"/>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.scan.log.IDataLogFactory"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -88,7 +88,7 @@ Implementing plugins can replace the default &lt;code&gt;MemoryDataLog&lt;/code&
          &lt;pre&gt;
 &lt;extension point=&quot;org.csstudio.scan.log.datalog&quot;&gt;
   &lt;datalog name=&quot;My Data Log&quot;
-           class=&quot;org.csstudio.scan.log.mylog.MyDataLog&quot; /&gt;
+           class=&quot;org.csstudio.scan.log.mylog.MyDataLogFactory&quot; /&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>
@@ -99,7 +99,7 @@ Implementing plugins can replace the default &lt;code&gt;MemoryDataLog&lt;/code&
          <meta.section type="apiinfo"/>
       </appinfo>
       <documentation>
-         Must implement org.csstudio.scan.log.DataLog
+         Must implement org.csstudio.scan.log.IDataLogFactory
       </documentation>
    </annotation>
 
@@ -108,7 +108,7 @@ Implementing plugins can replace the default &lt;code&gt;MemoryDataLog&lt;/code&
          <meta.section type="implementation"/>
       </appinfo>
       <documentation>
-         For example, see org.csstudio.scan.log.MemoryDataLog
+         For example, see org.csstudio.scan.log.MemoryDataLogFactory
       </documentation>
    </annotation>
 
