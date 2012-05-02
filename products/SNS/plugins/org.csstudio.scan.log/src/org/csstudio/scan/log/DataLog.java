@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.logger;
+package org.csstudio.scan.log;
 
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
@@ -21,7 +21,7 @@ import org.csstudio.scan.data.ScanSample;
 /** Logger for {@link ScanSample}s
  *  @author Kay Kasemir
  */
-public interface DataLogger
+public interface DataLog
 {
 	/** Add a sample to the data log
 	 *  @param sample {@link ScanSample} to log

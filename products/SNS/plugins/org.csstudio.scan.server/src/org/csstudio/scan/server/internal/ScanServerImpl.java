@@ -39,7 +39,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
@@ -318,10 +318,10 @@ public class ScanServerImpl implements ScanServer
     }
 
     /** @param id Scan ID
-     *  @return {@link DataLogger} of scan or <code>null</code>
+     *  @return {@link DataLog} of scan or <code>null</code>
      *  @throws UnknownScanException if scan ID not valid
      */
-    private DataLogger getDataLogger(final long id) throws UnknownScanException
+    private DataLog getDataLog(final long id) throws UnknownScanException
     {
         final Scan scan = findScan(id);
         return scan.getDataLogger();
@@ -331,9 +331,9 @@ public class ScanServerImpl implements ScanServer
     @Override
     public long getLastScanDataSerial(final long id) throws RemoteException
     {
-        final DataLogger logger = getDataLogger(id);
-        if (logger != null)
-            return logger.getLastScanDataSerial();
+        final DataLog log = getDataLog(id);
+        if (log != null)
+            return log.getLastScanDataSerial();
         return -1;
     }
 
@@ -341,9 +341,9 @@ public class ScanServerImpl implements ScanServer
 	@Override
     public ScanData getScanData(final long id) throws RemoteException
     {
-        final DataLogger logger = getDataLogger(id);
-        if (logger != null)
-            return logger.getScanData();
+        final DataLog log = getDataLog(id);
+        if (log != null)
+            return log.getScanData();
         return null;
     }
 

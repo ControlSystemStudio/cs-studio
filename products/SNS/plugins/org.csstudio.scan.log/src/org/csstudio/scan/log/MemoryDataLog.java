@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan.logger;
+package org.csstudio.scan.log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,11 +25,13 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.server.MemoryInfo;
 
-/** {@link DataLogger} that keeps all samples in memory
- *  so that it can provide {@link ScanData}
+/** {@link DataLog} that keeps all samples in memory
+ *
+ *  <p>Stops logging when memory threshold is reached.
+ *
  *  @author Kay Kasemir
  */
-public class MemoryDataLogger implements DataLogger
+public class MemoryDataLog implements DataLog
 {
 	/** Map from device name to list of samples for that device */
 	final private Map<String, List<ScanSample>> device_logs =

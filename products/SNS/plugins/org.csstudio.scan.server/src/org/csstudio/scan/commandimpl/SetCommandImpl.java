@@ -23,9 +23,9 @@ import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
-import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.device.ValueConverter;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
@@ -124,7 +124,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 
 		// Log the value
 		final IValue value = readback.read();
-		context.logSample(ScanSampleFactory.createSample(readback.getInfo().getAlias(), value));
+		context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), value));
 
 		context.workPerformed(1);
     }

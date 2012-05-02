@@ -35,8 +35,8 @@ import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.logger.MemoryDataLogger;
+import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
@@ -80,7 +80,7 @@ public class Scan implements ScanContext
 
     final private long total_work_units;
 
-    final private MemoryDataLogger data_logger = new MemoryDataLogger();
+    final private DataLog data_logger;
 
     final private AtomicLong work_performed = new AtomicLong();
 
@@ -128,6 +128,8 @@ public class Scan implements ScanContext
         	work_units += impl.getWorkUnits();
         }
         total_work_units = work_units;
+
+        data_logger = DataLogFactory.getDataLog();
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */
@@ -244,7 +246,7 @@ public class Scan implements ScanContext
     }
 
     /** @return Data logger of this scan */
-    public DataLogger getDataLogger()
+    public DataLog getDataLogger()
     {
         return data_logger;
     }

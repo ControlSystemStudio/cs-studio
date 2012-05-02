@@ -22,6 +22,7 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
+import org.csstudio.scan.device.ValueConverter;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 
@@ -50,8 +51,8 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Logger logger = Logger.getLogger(getClass().getName());
+		logger.log(Level.FINE, "{0}", command);
 
 		final long serial = ScanSampleFactory.getNextSerial();
 		final String[] device_names = command.getDeviceNames();
@@ -63,7 +64,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 			final IValue value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}",
 					new Object[] { device.toString(), value });
-			context.logSample(ScanSampleFactory.createSample(device_name, serial, value));
+			context.logSample(ValueConverter.createSample(device_name, serial, value));
 		}
         context.workPerformed(1);
 	}

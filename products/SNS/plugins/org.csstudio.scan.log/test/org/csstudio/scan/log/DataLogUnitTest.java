@@ -13,7 +13,7 @@
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
-package org.csstudio.scan;
+package org.csstudio.scan.log;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,18 +25,15 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
-import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.logger.MemoryDataLogger;
-import org.csstudio.scan.logger.PrintDataLogger;
 import org.junit.Test;
 
-/** JUnit test of the {@link DataLogger}s
+/** JUnit test of the {@link DataLog}s
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DataLoggerUnitTest
+public class DataLogUnitTest
 {
-	private void logData(final DataLogger logger)
+	private void logData(final DataLog logger)
     {
 		for (int x=0; x<5; ++x)
 		{
@@ -48,19 +45,11 @@ public class DataLoggerUnitTest
 		}
     }
 
-	@Test
-	public void testPrintDataLogger()
-	{
-	    System.out.println("PrintDataLogger:");
-		final DataLogger logger = new PrintDataLogger();
-		logData(logger);
-	}
-
     @Test
     public void testMemoryDataLogger()
     {
         System.out.println("MemoryDataLogger:");
-        final MemoryDataLogger logger = new MemoryDataLogger();
+        final MemoryDataLog logger = new MemoryDataLog();
         assertTrue(logger.getLastScanDataSerial() < 0);
 
         logData(logger);
@@ -82,7 +71,7 @@ public class DataLoggerUnitTest
 	public void testSpreadsheet()
 	{
         System.out.println("MemoryDataLogger as Spreadsheet:");
-		final MemoryDataLogger logger = new MemoryDataLogger();
+		final MemoryDataLog logger = new MemoryDataLog();
 		logData(logger);
 		SpreadsheetScanDataIterator sheet =
 	        new SpreadsheetScanDataIterator(logger.getScanData());
