@@ -27,7 +27,7 @@ import org.csstudio.scan.data.ScanSample;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class RDBLog
+abstract public class RDBDataLog
 {
 	final protected Connection connection;
 
@@ -40,7 +40,7 @@ abstract public class RDBLog
 	/** Initialize
  	 *  @throws Exception on error
 	 */
-	public RDBLog() throws Exception
+	public RDBDataLog() throws Exception
 	{
 		connection = connect();
 	}
