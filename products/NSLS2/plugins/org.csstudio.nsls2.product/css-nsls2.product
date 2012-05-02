@@ -12,7 +12,9 @@
 
    <launcherArgs>
       <programArgs>-</programArgs>
-      <vmArgs>-Xmx128m</vmArgs>
+      <vmArgs>-Xmx1024m
+-Xms128m
+-XX:MaxPermSize=128M</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
