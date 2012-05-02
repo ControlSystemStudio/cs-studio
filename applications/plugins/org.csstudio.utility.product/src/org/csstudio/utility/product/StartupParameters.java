@@ -21,19 +21,19 @@ import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.swt.widgets.Display;
 
 /** Implementation of {@link StartupParametersExtPoint}
- * 
+ *
  *  <p>Parses command line, sets {@link Map} of startup parameters.
- *  
+ *
  *  <p>Note on Eclipse plugin class loader:
  *  Assume you create a product o.c.mysite.product,
  *  and in there you want to specify org.csstudio.utility.product.StartupParameters
  *  as startupParameters for the org.csstudio.startup.module extension point.
- *  
+ *
  *  By default, the Eclipse classloader will then attempt to load
  *  the class org.csstudio.utility.product.StartupParameters from
  *  your o.c.mysite.product bundle, because it is listed as the
  *  contributor to the org.csstudio.startup.module extension point.
- *  
+ *
  *  You must specify the fully qualified startupParameter as
  *  org.csstudio.utility.product/org.csstudio.utility.product.StartupParameters.
  *  That way the Eclipse class loader will activate the bundle org.csstudio.utility.product
@@ -234,9 +234,8 @@ public class StartupParameters implements StartupParametersExtPoint
                 "-consoleLog");
         System.out.format("  %-35s : Select workspace on command-line, no prompt\n",
                 "-data /some/workspace");
-        System.out.format("  %-35s : Create '%s' link to shared folder\n",
-                SHARE_LINK + " /path/to/some/folder",
-                Messages.Project_SharedFolderName);
+        System.out.format("  %-35s : Create links to shared folder\n",
+                SHARE_LINK + " /path/to/folder=/CSS/Share");
         System.out.format("  %-35s : Present login dialog (user, password)\n",
                 LOGIN_PROMPT);
         System.out.format("  %-35s : provide the default user in login dialog\n",

@@ -18,30 +18,22 @@ import org.csstudio.logging.LogConfigurator;
 import org.csstudio.platform.workspace.RelaunchConstants;
 import org.csstudio.startup.application.OpenDocumentEventProcessor;
 import org.csstudio.startup.module.LoginExtPoint;
-import org.csstudio.startup.module.ProjectExtPoint;
 import org.csstudio.startup.module.WorkbenchExtPoint;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 /** Example implementation of {@link WorkbenchExtPoint}
- * 
+ *
  *  <p>If StartupParameters#SHARE_LINK_PARAM
  *  and ProjectExtPoint#PROJECTS parameters are provided,
  *  a link to that shared folder will be created.
- *  
+ *
  *  <p>Uses LoginExtPoint#USERNAME and LoginExtPoint#PASSWORD
  *  to attempt authentication.
- *  
+ *
  *  <p>Runs workbench using the {@link ApplicationWorkbenchAdvisor}.
  *
  *  @see StartupParameters for startup parameters as well as class loader notes.
@@ -64,30 +56,10 @@ public class Workbench implements WorkbenchExtPoint
 		else
 			defaultCredentials = new Credentials(username, password);
     	final SecurityFacade sf = SecurityFacade.getInstance();
-		sf.setLoginCallbackHandler(new UiLoginCallbackHandler(Messages.StartupAuthenticationHelper_Login, 
-				Messages.StartupAuthenticationHelper_LoginTip, defaultCredentials));		
-		sf.authenticateApplicationUser();	
+		sf.setLoginCallbackHandler(new UiLoginCallbackHandler(Messages.StartupAuthenticationHelper_Login,
+				Messages.StartupAuthenticationHelper_LoginTip, defaultCredentials));
+		sf.authenticateApplicationUser();
 	}
-
-    /** Assert/update link to common folder.
-     *  @param project Project
-     *  @param share_link Folder to which the 'Share' entry should link
-     */
-    private static void linkSharedFolder(final IProject project, final String share_link)
-    {
-        final IFolder common = project.getFolder(new Path(Messages.Project_SharedFolderName));
-        // if (common.exists()) ...? No. Re-create in any case
-        // to assert that it has the correct link
-        try
-        {
-            common.createLink(new Path(share_link), IResource.REPLACE, new NullProgressMonitor());
-        }
-        catch (CoreException ex)
-        {
-            MessageDialog.openError(null, Messages.Project_ShareError,
-                NLS.bind(Messages.Project_ShareErrorDetail, share_link, ex.getMessage()));
-        }
-    }
 
     /** {@inheritDoc} */
 	@Override
@@ -98,17 +70,16 @@ public class Workbench implements WorkbenchExtPoint
 	}
 
 	/** {@inheritDoc} */
-	@Override
+    @Override
     public Object beforeWorkbenchCreation(final Display display, final IApplicationContext context,
     		final Map<String, Object> parameters)
 	{
-		final Object share_link = parameters.get(StartupParameters.SHARE_LINK_PARAM);
-		final Object o = parameters.get(ProjectExtPoint.PROJECTS);
-		if (share_link != null && o != null)
+		final Object option = parameters.get(StartupParameters.SHARE_LINK_PARAM);
+		if (option instanceof String)
 		{
-			final IProject[] projects = (IProject[])o;
-			if (projects.length > 0)
-				linkSharedFolder(projects[0], (String)share_link);
+			final Job job = new LinkedResourcesJob((String) option);
+			// Delay a little to allow faster startup of workbench
+			job.schedule(1000);
 		}
 		return null;
 	}
