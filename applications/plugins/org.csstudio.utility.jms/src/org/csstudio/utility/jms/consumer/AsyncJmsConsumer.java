@@ -67,7 +67,7 @@ public class AsyncJmsConsumer {
         consumer = new MessageConsumer[connectionCount];
         for(int i = 0;i < connectionCount;i++) {            
             try {
-                session[i] = handle[i].createSession(false, Session.CLIENT_ACKNOWLEDGE);
+                session[i] = handle[i].createSession(false, Session.AUTO_ACKNOWLEDGE);
                 if((durable == true) && (durableName != null)) {
                     consumer[i] = session[i]
                             .createDurableSubscriber(session[i].createTopic(topicName),

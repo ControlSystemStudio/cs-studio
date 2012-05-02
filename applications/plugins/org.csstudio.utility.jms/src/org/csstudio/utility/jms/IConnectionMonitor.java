@@ -33,11 +33,11 @@ public interface IConnectionMonitor {
 	/**
 	 * Called when the connection to the messaging system is established.
 	 */
-	void onConnected();
+	void onConnected(TransportEvent event);
 	
 	/**
 	 * Called when the connection to the messaging system is closed or
 	 * interrupted.
 	 */
-	void onDisconnected();
+	void onDisconnected(TransportEvent event);
 }

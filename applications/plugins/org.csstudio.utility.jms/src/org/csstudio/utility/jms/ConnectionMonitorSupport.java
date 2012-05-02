@@ -72,9 +72,9 @@ class ConnectionMonitorSupport {
 	/**
 	 * Calls the <code>onConnected</code> method on all listeners.
 	 * 
-	 * @see IConnectionMonitor#onConnected()
+	 * @see IConnectionMonitor#onConnected(TransportEvent event)
 	 */
-	public void fireConnectedEvent() {
+	public void fireConnectedEvent(final TransportEvent event) {
 		for (final IConnectionMonitor monitor : _monitors) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
@@ -83,7 +83,7 @@ class ConnectionMonitorSupport {
 				}
 				@Override
                 public void run() throws Exception {
-					monitor.onConnected();
+					monitor.onConnected(event);
 				}
 			});
 		}
@@ -92,9 +92,9 @@ class ConnectionMonitorSupport {
 	/**
 	 * Calls the <code>onDisconnected</code> method on all listeners.
 	 * 
-	 * @see IConnectionMonitor#onDisconnected()
+	 * @see IConnectionMonitor#onDisconnected(TransportEvent event)
 	 */
-	public void fireDisconnectedEvent() {
+	public void fireDisconnectedEvent(final TransportEvent event) {
 		for (final IConnectionMonitor monitor : _monitors) {
 			SafeRunner.run(new ISafeRunnable() {
 				@Override
@@ -103,10 +103,9 @@ class ConnectionMonitorSupport {
 				}
 				@Override
                 public void run() throws Exception {
-					monitor.onDisconnected();
+					monitor.onDisconnected(event);
 				}
 			});
 		}
 	}
-	
 }

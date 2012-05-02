@@ -225,7 +225,7 @@ class MultiConnectionReceiver implements IMessageListenerSession {
 	 * Called by the {@link ConnectionMonitor} when the state of one of the
 	 * connections used by this receiver has changed.
 	 */
-	private void onConnectionStateChanged() {
+	void onConnectionStateChanged(final TransportEvent event) {
 		boolean newAllConnectionsActive = true;
 		for (ISharedConnectionHandle connection : _connections) {
 			newAllConnectionsActive &= connection.isActive();
@@ -236,9 +236,9 @@ class MultiConnectionReceiver implements IMessageListenerSession {
 		if (newAllConnectionsActive != _allConnectionsActive) {
 			_allConnectionsActive = newAllConnectionsActive;
 			if (_allConnectionsActive) {
-				_monitorSupport.fireConnectedEvent();
+				_monitorSupport.fireConnectedEvent(event);
 			} else {
-				_monitorSupport.fireDisconnectedEvent();
+				_monitorSupport.fireDisconnectedEvent(event);
 			}
 		}
 	}
@@ -252,13 +252,13 @@ class MultiConnectionReceiver implements IMessageListenerSession {
 	private class ConnectionMonitor implements IConnectionMonitor {
 
 		@Override
-        public void onConnected() {
-			onConnectionStateChanged();
+        public void onConnected(TransportEvent event) {
+			onConnectionStateChanged(event);
 		}
 
 		@Override
-        public void onDisconnected() {
-			onConnectionStateChanged();
+        public void onDisconnected(TransportEvent event) {
+			onConnectionStateChanged(event);
 		}
 	}
 }

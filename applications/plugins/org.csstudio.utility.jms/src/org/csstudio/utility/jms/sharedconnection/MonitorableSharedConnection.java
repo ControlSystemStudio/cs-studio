@@ -32,6 +32,7 @@ import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.transport.TransportListener;
 import org.csstudio.utility.jms.IConnectionMonitor;
+import org.csstudio.utility.jms.TransportEvent;
 import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 
 /**
@@ -88,7 +89,7 @@ public class MonitorableSharedConnection {
 				// The TransportListener is not notified when the connection
 				// is started explicitly, so we fire the Connected event
 				// manually:
-				_monitorSupport.fireConnectedEvent();
+				_monitorSupport.fireConnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
 			} catch (final JMSException e) {
 				if (_connection != null) {
 					// Something went wrong, but the connection already exists.
@@ -128,7 +129,7 @@ public class MonitorableSharedConnection {
 		        // The connection's TransportListener is not notified when the
 		        // connection is closed explicitly, so we fire the Disconnected
 		        // event manually:
-		        _monitorSupport.fireDisconnectedEvent();
+		        _monitorSupport.fireDisconnectedEvent(new TransportEvent(_brokerURI, _clientId, _handleCount));
 		    }
 		}
 	}
@@ -169,6 +170,10 @@ public class MonitorableSharedConnection {
 	    return _connection;
 	}
 	
+	public synchronized String getBrokerURI() {
+	    return _brokerURI;
+	}
+	
 	public synchronized ConnectionMonitorSupport getConnectionMonitorSupport() {
 	    return _monitorSupport;
 	}
@@ -181,7 +186,7 @@ public class MonitorableSharedConnection {
 	    _interrupted = isInterrupted;
 	}
 	
-	void setClientId(String id) {
+	public synchronized void setClientId(String id) {
 	    synchronized (_connection) {
     	    if (_connection != null) {
     	        try {
@@ -193,7 +198,7 @@ public class MonitorableSharedConnection {
 	    }
 	}
 	
-	synchronized String getClientId() {
+	public synchronized String getClientId() {
 	    String clientId = null;
 	    try {
             clientId = _connection.getClientID();
@@ -203,17 +208,21 @@ public class MonitorableSharedConnection {
 	    return clientId;
 	}
 	
-	synchronized void incHandleCount() {
+	public synchronized int getHandleCount() {
+	    return _handleCount;
+	}
+	
+	public synchronized void incHandleCount() {
 	    _handleCount++;
 	}
 	
-    synchronized void decHandleCount() {
+	public synchronized void decHandleCount() {
         if (--_handleCount < 0) {
             _handleCount = 0;
         }
     }
 
-    synchronized boolean existOpenHandles() {
+	public synchronized boolean existOpenHandles() {
         return (_handleCount > 0);
     }
     
@@ -285,7 +294,6 @@ public class MonitorableSharedConnection {
 	private class ConnectionStateTracker implements TransportListener {
 
 	    protected ConnectionStateTracker() {
-	        
 	    }
 	    
 		@Override
@@ -296,22 +304,25 @@ public class MonitorableSharedConnection {
 		@Override
         public void onException(final IOException e) {
 		    setInterrupted(true);
-			// System.out.println("onException called"); // TODO: remove (for testing only)
-			getConnectionMonitorSupport().fireDisconnectedEvent();
+			getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
+			                                                                       getClientId(),
+			                                                                       getHandleCount()));
 		}
 
 		@Override
         public void transportInterupted() {
 		    setInterrupted(true);
-			// System.out.println("transportInterrupted called"); // TODO: remove (for testing only)
-			getConnectionMonitorSupport().fireDisconnectedEvent();
+			getConnectionMonitorSupport().fireDisconnectedEvent(new TransportEvent(getBrokerURI(),
+			                                                                       getClientId(),
+			                                                                       getHandleCount()));
 		}
 
 		@Override
         public void transportResumed() {
 		    setInterrupted(false);
-			// System.out.println("transportResumed called"); // TODO: remove (for testing only)
-			getConnectionMonitorSupport().fireConnectedEvent();
+			getConnectionMonitorSupport().fireConnectedEvent(new TransportEvent(getBrokerURI(),
+			                                                                    getClientId(),
+			                                                                    getHandleCount()));
 		}
 	}
 }
