@@ -32,7 +32,9 @@ import javax.jms.Topic;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
+import org.csstudio.utility.jms.IConnectionMonitor;
 import org.csstudio.utility.jms.JmsUtilityException;
+import org.csstudio.utility.jms.TransportEvent;
 import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.Platform;
@@ -45,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @since 23.02.2012
  */
-public class JmsDeliveryWorker extends AbstractDeliveryWorker {
+public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnectionMonitor {
     
     private static final Logger LOG = LoggerFactory.getLogger(JmsDeliveryActivator.class);
     
@@ -94,6 +96,7 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker {
             consumer = new MessageConsumer[consumerHandles.length];
             
             for (int i = 0; i < consumerHandles.length; i++) {
+                consumerHandles[i].addMonitor(this);
                 consumerSession[i] = consumerHandles[i].createSession(false, Session.AUTO_ACKNOWLEDGE);
                 final Topic receiveTopic = consumerSession[i].createTopic(consumerTopicName);
                 consumer[i] = consumerSession[i].createConsumer(receiveTopic);
@@ -189,5 +192,15 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker {
             }
         }
         return !workerCheckFlag;
+    }
+
+    @Override
+    public void onConnected(TransportEvent event) {
+        LOG.warn("onConnected(): {}", event);
+    }
+
+    @Override
+    public void onDisconnected(TransportEvent event) {
+        LOG.warn("onDisconnected(): {}", event);
     }
 }
