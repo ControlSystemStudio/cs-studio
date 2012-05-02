@@ -43,6 +43,7 @@ import org.csstudio.ams.dbAccess.ConfigDbProperties;
 import org.csstudio.ams.distributor.preferences.DistributorPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.utility.jms.IConnectionMonitor;
+import org.csstudio.utility.jms.TransportEvent;
 import org.csstudio.utility.jms.sharedconnection.ISharedConnectionHandle;
 import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
 import org.eclipse.core.runtime.FileLocator;
@@ -316,12 +317,12 @@ public class DistributorStart implements IApplication,
     }
 
     @Override
-    public void onConnected() {
-        Log.log(Log.WARN, "onConnected()");
+    public void onConnected(TransportEvent event) {
+        Log.log(Log.WARN, "onConnected(): " + event);
     }
 
     @Override
-    public void onDisconnected() {
-        Log.log(Log.WARN, "onDisconnected()");
+    public void onDisconnected(TransportEvent event) {
+        Log.log(Log.WARN, "onDisconnected(): " + event);
     }
 }
