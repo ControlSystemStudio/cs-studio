@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
+import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 
 import org.csstudio.java.string.StringSplitter;
@@ -15,6 +16,8 @@ import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.osgi.util.NLS;
 
 /**Run OPI from external program, such as alarm GUI, data browser...
  * @author Xihui Chen
@@ -23,7 +26,8 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 
 	/**Open OPI file.
-	 * @param path the path of the OPI file, it can be a workspace path, file system path or URL
+	 * @param path the path of the OPI file, it can be a workspace path, file system path, URL 
+	 * or a opi file in opi search path.
 	 * @param data the input macros in format of {@code "macro1 = hello", "macro2 = hello2"}
 	 * @throws Exception
 	 */
@@ -41,8 +45,13 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction {
 			            macrosInput.getMacrosMap().put(name_value[0], name_value[1]);
 			     }		     
 			}
-			RunModeService.getInstance().runOPI(
-					ResourceUtil.getPathFromString(path), TargetWindow.SAME_WINDOW, 
+			IPath originPath = ResourceUtil.getPathFromString(path);
+			if(!originPath.isAbsolute()){
+				originPath = ResourceUtil.getFileOnSearchPath(originPath, false);
+				if(originPath == null)
+					throw new FileNotFoundException(NLS.bind("File {0} doesn't exist on search path.", path));
+			}			
+			RunModeService.getInstance().runOPI(originPath, TargetWindow.SAME_WINDOW, 
 					null, macrosInput, null);
 		}
 	}

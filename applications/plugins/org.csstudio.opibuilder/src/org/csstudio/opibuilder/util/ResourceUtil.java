@@ -8,10 +8,10 @@
 package org.csstudio.opibuilder.util;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -19,14 +19,17 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.PlatformUI;
 
 /**Utility functions for resources.
  * @author Xihui Chen, Abadie Lana, Kay Kasemir
@@ -92,19 +95,21 @@ public class ResourceUtil {
 	public static boolean isExistingLocalFile(IPath path){
 		 // Not a workspace file. Try local file system
         File local_file = path.toFile();
-        // Path URL for "file:..." so that it opens as FileInputStream
+       
+//        // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
-        try
-        {
-            InputStream inputStream = new FileInputStream(local_file);
-            inputStream.close();
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
-        return true;
+        return local_file.exists();
+//        try
+//        {
+//            InputStream inputStream = new FileInputStream(local_file);
+//            inputStream.close();
+//        }
+//        catch (Exception ex)
+//        {
+//            return false;
+//        }
+//        return true;
         
 	}
 
@@ -166,15 +171,127 @@ public class ResourceUtil {
 	 *  @return <code>true</code> if considered a URL
 	 */
 	@SuppressWarnings("nls")
-    public static boolean isURL(final String url){
-		return url.contains(":/");  //$NON-NLS-1$
+    public static boolean isURL(final String urlString){
+		try {
+			new URL(urlString);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+//		return urlString.contains(":/");  //$NON-NLS-1$
 	}
 	
-	public static InputStream openURLStream(final URL url) throws IOException {
+	private static InputStream inputStream;
+	private static Object lock = new Boolean(true);
+	
+	/**Open URL stream in UI Job if runInUIJob is true.
+	 * @param url
+	 * @param runInUIJob true if this method should run as an UI Job. 
+	 * If it is true, this method must be called in UI thread.
+	 * @return
+	 * @throws Exception
+	 */
+	public static InputStream openURLStream(final URL url, boolean runInUIJob) throws Exception {
+		inputStream = null;
+		if (runInUIJob) {
+			synchronized (lock) {
+				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
+
+					public void run(IProgressMonitor monitor)
+							throws InvocationTargetException,
+							InterruptedException {
+						try {
+							monitor.beginTask("Connecting to " + url,
+									IProgressMonitor.UNKNOWN);
+							inputStream = openURLStream(url);
+						} catch (IOException e) {
+							throw new InvocationTargetException(e,
+									"Timeout while connecting to " + url);
+						} finally {
+							monitor.done();
+						}
+					}
+
+				};
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+						.run(true, false, openURLTask);
+			}
+		}else
+			return openURLStream(url);
+		return inputStream;
+	}
+	
+	/**Open URL Stream.
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream openURLStream(final URL url) throws IOException{
 		URLConnection connection = url.openConnection();
 		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
 		return connection.getInputStream();
 	}
+	
+	/**If the path is an connectable URL. .
+	 * @param path
+	 * @param runInUIJob true if this method should run as an UI Job. 
+	 * If it is true, this method must be called in UI thread.
+	 * @return
+	 */
+	public static boolean isExistingURL(final IPath path, boolean runInUIJob){
+		try {
+			InputStream s = openURLStream(new URL(path.toString()), runInUIJob);
+			if(s != null){
+				s.close();
+				return true;
+			}
+			return false;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
+	/**If the file on path is an existing file in workspace, local file system or available URL.
+	 * @param absolutePath
+	 * @param runInUIJob true if this method should run as an UI Job. 
+	 * If it is true, this method must be called in UI thread.
+	 * @return
+	 */
+	public static boolean isExsitingFile(final IPath absolutePath, boolean runInUIJob){
+		if(isExistingWorkspaceFile(absolutePath))
+			return true;
+		if(isExistingLocalFile(absolutePath))
+			return true;
+		if(isExistingURL(absolutePath, runInUIJob))
+			return true;
+		return false;
+	}
+	
+	/**Get the first existing file on search path. Search path is a BOY preference.
+	 * @param relativePath
+	 * @param runInUIJob true if this method should run as an UI Job, in which cases
+	 *  this method must be called in UI thread.	 
+	 * @return the first existing file on search path. null if search path doesn't exist or 
+	 * no such file exist on search path.
+	 */
+	public static IPath getFileOnSearchPath(final IPath relativePath, boolean runInUIJob){
+		IPath[] searchPaths;
+		try {
+			searchPaths = PreferencesHelper.getOPISearchPaths();
+			if(searchPaths == null)
+				return null;
+			for(IPath searchPath : searchPaths){
+				IPath absolutePath = searchPath.append(relativePath);
+				if(isExsitingFile(absolutePath, runInUIJob))
+					return absolutePath;			
+			}
+		} catch (Exception e) {
+			return null;
+		}
+		
+		return null;		
+	}
+	
 	
 	/**Get screenshot image from GraphicalViewer
 	 * @param viewer the GraphicalViewer
