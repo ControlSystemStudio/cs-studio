@@ -78,6 +78,8 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	private TextFigure labelFigure;
 	private List<IManualValueChangeListener> spinnerListeners;
 	
+	private boolean arrowButtonsOnLeft = true;
+	
 	private final static int BUTTON_WIDTH = 25;
 	
 	private NumericFormatType formatType;
@@ -272,16 +274,32 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	public final double getValue() {
 		return value;
 	}
+	
+	/**
+	 * @return true if arrow buttons on left side of the figure.
+	 */
+	public boolean isArrowButtonsOnLeft() {
+		return arrowButtonsOnLeft;
+	}
 
 	@Override
 	protected void layout() {
 		Rectangle clientArea = getClientArea();
-		labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
-				clientArea.width - BUTTON_WIDTH, clientArea.height));
-		buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
-				clientArea.y, BUTTON_WIDTH, clientArea.height/2));
-		buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
-				clientArea.y + clientArea.height/2, BUTTON_WIDTH, clientArea.height/2));		
+		if(arrowButtonsOnLeft){
+			labelFigure.setBounds(new Rectangle(clientArea.x+1 + BUTTON_WIDTH, clientArea.y, 
+					clientArea.width - BUTTON_WIDTH, clientArea.height));
+			buttonUp.setBounds(new Rectangle(clientArea.x,
+					clientArea.y, BUTTON_WIDTH, clientArea.height/2));
+			buttonDown.setBounds(new Rectangle(clientArea.x,
+					clientArea.y + clientArea.height/2, BUTTON_WIDTH, clientArea.height/2));
+		}else{
+			labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
+					clientArea.width - BUTTON_WIDTH, clientArea.height));
+			buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
+					clientArea.y, BUTTON_WIDTH, clientArea.height/2));
+			buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
+					clientArea.y + clientArea.height/2, BUTTON_WIDTH, clientArea.height/2));
+		}
 		super.layout();
 	}
 
@@ -316,6 +334,14 @@ public class SpinnerFigure extends Figure implements Introspectable {
 			spinnerListeners.remove(listener);
 	}
 
+	/**Set the position of arrow buttons
+	 * @param arrowButtonsOnLeft true if on left.
+	 */
+	public void setArrowButtonsOnLeft(boolean arrowButtonsOnLeft) {
+		this.arrowButtonsOnLeft = arrowButtonsOnLeft;
+		revalidate();
+	}
+	
 	/**Set the displayed value in the spinner. It may out of the range.
 	 * @param value the value to be displayed
 	 */
