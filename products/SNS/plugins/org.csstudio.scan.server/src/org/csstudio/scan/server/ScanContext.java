@@ -56,8 +56,9 @@ public interface ScanContext
     /** Log a sample, i.e. add it to the data set produced by the
 	 *  scan
 	 *  @param sample {@link ScanSample}
+	 *  @throws Exception on error
 	 */
-	public void logSample(final ScanSample sample);
+	public void logSample(final ScanSample sample) throws Exception;
 
 	/** Inform scan context that work has been performed.
 	 *  Meant to be called by {@link ScanCommandImpl}s

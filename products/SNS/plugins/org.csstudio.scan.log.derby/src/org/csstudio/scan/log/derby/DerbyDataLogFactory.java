@@ -10,25 +10,29 @@ package org.csstudio.scan.log.derby;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.IDataLogFactory;
 import org.csstudio.scan.log.MemoryDataLog;
-import org.csstudio.scan.log.MemoryDataLogFactory;
 
 /** {@link IDataLogFactory} for the {@link MemoryDataLog}
  *  @author Kay Kasemir
  */
-public class DerbyDataLogFactory
-// TODO Don't extend MemoryDataLog, use DerbyDataLog
-extends MemoryDataLogFactory
-implements IDataLogFactory
+public class DerbyDataLogFactory implements IDataLogFactory
 {
 	@Override
     public long createDataLog(final String scan_name) throws Exception
     {
-	    return super.createDataLog(scan_name);
+		final DerbyDataLogger logger = new DerbyDataLogger();
+		try
+		{
+			return logger.createScan(scan_name);
+		}
+		finally
+		{
+			logger.close();
+		}
     }
 
 	@Override
     public DataLog getDataLog(final long scan_id) throws Exception
     {
-	    return super.getDataLog(scan_id);
+	    return new DerbyDataLog(scan_id);
     }
 }

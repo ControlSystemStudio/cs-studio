@@ -128,7 +128,6 @@ public class Scan implements ScanContext
         	work_units += impl.getWorkUnits();
         }
         total_work_units = work_units;
-
     }
 
     /** @return Unique scan identifier (within JVM of the scan engine) */
@@ -272,7 +271,7 @@ public class Scan implements ScanContext
 
     /** {@inheritDoc} */
     @Override
-    public void logSample(final ScanSample sample)
+    public void logSample(final ScanSample sample) throws Exception
     {
         data_logger.log(sample);
     }
@@ -302,6 +301,8 @@ public class Scan implements ScanContext
         	}
             error = ex.getMessage();
         }
+        // Allow data logger to close resources
+        data_logger.close();
     }
 
     /** Execute all commands on the scan,

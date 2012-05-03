@@ -18,16 +18,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
-/** RDB-based sample log
+/** Base for an RDB-based sample logger
+ *
+ *  <p>Can write and read data for any scan.
+ *
+ *  <p>Derived class needs to handle connection to specific RDB.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-abstract public class RDBDataLog
+abstract public class RDBDataLogger
 {
 	final protected Connection connection;
 
@@ -40,7 +46,7 @@ abstract public class RDBDataLog
 	/** Initialize
  	 *  @throws Exception on error
 	 */
-	public RDBDataLog() throws Exception
+	public RDBDataLogger() throws Exception
 	{
 		connection = connect();
 	}
@@ -56,7 +62,7 @@ abstract public class RDBDataLog
 	 *  @return Scan ID, unique within the database
 	 *  @throws Exception on error
 	 */
-	public int createScan(final String scan_name) throws Exception
+	public long createScan(final String scan_name) throws Exception
     {
 		final PreparedStatement statement = connection.prepareStatement(
 				"INSERT INTO scans(name) VALUES (?)",
@@ -70,7 +76,7 @@ abstract public class RDBDataLog
 			{
 				if (! result.next())
 					throw new Exception("Missing new scan ID");
-				final int id = result.getInt(1);
+				final long id = result.getLong(1);
 				return id;
 			}
 			finally
@@ -165,7 +171,7 @@ abstract public class RDBDataLog
 	 *  @param sample Sample to log
 	 *  @throws Exception on error
 	 */
-    public void log(final int scan_id, final ScanSample sample) throws Exception
+    public void log(final long scan_id, final ScanSample sample) throws Exception
     {
     	final int device_id = getDevice(sample.getDeviceName());
 
@@ -173,7 +179,7 @@ abstract public class RDBDataLog
 			insert_sample_statement = connection.prepareStatement(
 					"INSERT INTO samples(scan_id, device_id, serial, timestamp, number)" +
 					" VALUES (?,?,?,?,?)");
-		insert_sample_statement.setInt(1, scan_id);
+		insert_sample_statement.setLong(1, scan_id);
 		insert_sample_statement.setInt(2, device_id);
 		insert_sample_statement.setLong(3, sample.getSerial());
 		insert_sample_statement.setTimestamp(4, new Timestamp(sample.getTimestamp().getTime()));
@@ -190,7 +196,7 @@ abstract public class RDBDataLog
      *  @return {@link ScanData}
      *  @throws Exception on error
      */
-    public ScanData getScanData(final int scan_id) throws Exception
+    public ScanData getScanData(final long scan_id) throws Exception
     {
     	final Map<String, List<ScanSample>> device_logs = new HashMap<String, List<ScanSample>>();
 
@@ -216,14 +222,14 @@ abstract public class RDBDataLog
      *  @return Samples for that scan
      *  @throws Exception on error
      */
-    private List<ScanSample> getScanSamples(final int scan_id, final String device_name) throws Exception
+    private List<ScanSample> getScanSamples(final long scan_id, final String device_name) throws Exception
     {
 		final List<ScanSample> samples = new ArrayList<ScanSample>();
 		final PreparedStatement statement = connection.prepareStatement(
 			"SELECT serial, timestamp, number FROM samples WHERE scan_id=? AND device_id=? ORDER BY serial");
 		try
 		{
-			statement.setInt(1, scan_id);
+			statement.setLong(1, scan_id);
 			statement.setInt(2, getDevice(device_name));
 			final ResultSet result = statement.executeQuery();
 			while (result.next())
@@ -247,14 +253,14 @@ abstract public class RDBDataLog
      *  @return Device names
      *  @throws SQLException on error
      */
-	private String[] getScanDevices(final int scan_id) throws SQLException
+	private String[] getScanDevices(final long scan_id) throws SQLException
     {
 		final List<String> devices = new ArrayList<String>();
 		final PreparedStatement statement = connection.prepareStatement(
 			"SELECT DISTINCT d.name FROM samples s JOIN devices d ON s.device_id = d.id  WHERE scan_id=?");
 		try
 		{
-			statement.setInt(1, scan_id);
+			statement.setLong(1, scan_id);
 			final ResultSet result = statement.executeQuery();
 			while (result.next())
 				devices.add(result.getString(1));
@@ -269,15 +275,21 @@ abstract public class RDBDataLog
 
 	/** Close database.
 	 *  Must be called to release resources.
-	 *  @throws Exception on error
 	 */
-	public void close() throws Exception
+	public void close()
 	{
-		if (insert_sample_statement != null)
+		try
 		{
-			insert_sample_statement.close();
-			insert_sample_statement = null;
+			if (insert_sample_statement != null)
+			{
+				insert_sample_statement.close();
+				insert_sample_statement = null;
+			}
+			connection.close();
 		}
-		connection.close();
+		catch (Exception ex)
+		{
+			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error closing log RDB", ex);
+		}
 	}
 }

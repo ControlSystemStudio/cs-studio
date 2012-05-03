@@ -78,6 +78,8 @@ org.csstudio.scan.client/**
 org.csstudio.scan.custom/**
 org.csstudio.scan.custom.impl/**
 org.csstudio.scan.server/**
+org.csstudio.scan.log/**
+org.csstudio.scan.log.derby/**
 org.csstudio.scan.ui/**
 org.csstudio.scan.ui.plot/**
 org.csstudio.scan.ui.scanmonitor/**

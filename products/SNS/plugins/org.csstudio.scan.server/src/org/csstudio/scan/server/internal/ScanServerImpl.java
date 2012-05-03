@@ -252,7 +252,11 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            throw new ServerException("Scan Engine error while submitting scan", ex);
+        	Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
+        	// Cannot wrap any Exception ex into RemoteExcetion because
+        	// ex may not serialize. So include the name.
+            throw new RemoteException("Scan Engine error while submitting scan: " +
+            		ex.getClass().getName() + " " + ex.getMessage());
         }
     }
 
@@ -342,9 +346,16 @@ public class ScanServerImpl implements ScanServer
     public ScanData getScanData(final long id) throws RemoteException
     {
         final DataLog log = getDataLog(id);
-        if (log != null)
+        if (log == null)
+        	return null;
+        try
+        {
             return log.getScanData();
-        return null;
+        }
+        catch (Exception ex)
+        {
+        	throw new RemoteException("Error logging data", ex);
+        }
     }
 
     /** {@inheritDoc} */

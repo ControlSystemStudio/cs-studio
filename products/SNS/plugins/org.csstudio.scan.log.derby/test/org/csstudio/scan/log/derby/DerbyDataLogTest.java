@@ -22,36 +22,36 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DerbyDataLogTest
 {
-	private static int scan_id = 1;
-	private static int device_id = 1;
+	private static long scan_id = 1;
+	private static long device_id = 1;
 
 	// To please FindBugs
-	private static void setScan(int id) { scan_id = id; }
-	private static void setDevice(int id) { device_id = id; }
+	private static void setScan(long id) { scan_id = id; }
+	private static void setDevice(long id) { device_id = id; }
 
 	@BeforeClass
 	public static void startup() throws Exception
 	{
-		DerbyDataLog.startup();
+		DerbyDataLogger.startup();
 	}
 
 	@AfterClass
 	public static void shutdown() throws Exception
 	{
-		DerbyDataLog.shutdown();
+		DerbyDataLogger.shutdown();
 	}
 
 	@Test
 	public void testDerbyLog() throws Exception
 	{
-		final DerbyDataLog log = new DerbyDataLog();
+		final DerbyDataLogger log = new DerbyDataLogger();
 		log.close();
 	}
 
     @Test
 	public void testCreateScan() throws Exception
 	{
-		final DerbyDataLog log = new DerbyDataLog();
+		final DerbyDataLogger log = new DerbyDataLogger();
 		setScan(log.createScan("Demo"));
 		log.close();
 
@@ -63,7 +63,7 @@ public class DerbyDataLogTest
 	@Test
 	public void testDeviceLookup() throws Exception
 	{
-		final DerbyDataLog log = new DerbyDataLog();
+		final DerbyDataLogger log = new DerbyDataLogger();
 		setDevice(log.getDevice("setpoint"));
 		System.out.println("Device ID: " + device_id);
 		assertTrue(device_id > 0);
@@ -75,18 +75,17 @@ public class DerbyDataLogTest
 	@Test(timeout=50000)
 	public void testSampleLogging() throws Exception
 	{
-		final DerbyDataLog log = new DerbyDataLog();
+		final DerbyDataLogger log = new DerbyDataLogger();
     	// Allows about 2500 samples/second (50000 in 20 seconds)
 		for (long serial = 1; serial < 50000; ++serial)
 			log.log(scan_id, new NumberScanSample("setpoint", new Date(), serial, 3.14 + serial * 0.01));
-
 		log.close();
 	}
 
 	@Test(timeout=10000)
 	public void testSampleRetrieval() throws Exception
 	{
-		final DerbyDataLog log = new DerbyDataLog();
+		final DerbyDataLogger log = new DerbyDataLogger();
 
 		// Fetches >30000/sec (50000 in 1.6)
 		final ScanData data = log.getScanData(scan_id);

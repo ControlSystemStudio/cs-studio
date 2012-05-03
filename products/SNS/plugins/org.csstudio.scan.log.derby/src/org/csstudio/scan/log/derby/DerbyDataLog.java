@@ -7,182 +7,74 @@
  ******************************************************************************/
 package org.csstudio.scan.log.derby;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.log.DataLog;
 
-/** Derby-based sample log
+/** Data log for Derby
+ *
+ *  <p>Uses the {@link DerbyDataLogger} for a specfic scan ID.
+ *
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public class DerbyDataLog extends RDBDataLog
+public class DerbyDataLog implements DataLog
 {
-	final private static String DEFAULT_DATABASE_DIRECTORY = "/tmp/scan_log_db";
+	final private long scan_id;
 
-	final private static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
+	private RDBDataLogger logger = null;
 
-	// TODO Use preference for derby config
-	private static String database_directory = DEFAULT_DATABASE_DIRECTORY;
-
-	/** @param database_directory Directory where derby stores database files */
-	public static void setDatabaseDirectory(final String database_directory)
-	{
-		DerbyDataLog.database_directory = database_directory;
-	}
-
-	/** Database startup
-	 *
-	 *  <p>Must be called once before accessing Derby
-	 *  @throws Exception on error
-	 */
-	public static void startup() throws InstantiationException, IllegalAccessException, Exception
-	{
-		// Path where Derby creates databases
-		System.setProperty("derby.system.home", database_directory);
-
-		// Debug options
-    	// System.setProperty("derby.language.logStatementText", "true");
-    	// System.setProperty("derby.language.logQueryPlan", "true");
-
-    	// Load driver for 'embedded' Derby RDB
-    	// newInstance is not needed the _first_ time
-    	// this is called, but after the driver had
-    	// been shut down, it will unregister then
-    	// then newInstance is required to re-start
-		Class.forName(DERBY_DRIVER).newInstance();
-
-		final DerbyDataLog database = new DerbyDataLog();
-		try
-		{
-			if (! database.haveTables())
-				database.createTables();
-		}
-		finally
-		{
-			database.close();
-		}
-	}
+	/** Serial of last logged sample */
+    private long last_serial = -1;
 
 	/** Initialize
-	 *  @throws Exception on error
+	 *  @param scan_id ID of scan for which this logger should operate
 	 */
-	public DerbyDataLog() throws Exception
+	public DerbyDataLog(final long scan_id)
     {
-		// only calls super();
+		this.scan_id = scan_id;
     }
 
-	/** Connect to Derby RDB
-	 *  @return Connection
-	 *  @throws Exception on error
-	 */
-    @Override
-    protected Connection connect() throws Exception
-    {
-		// Connect
-	    return DriverManager.getConnection("jdbc:derby:scan;create=true");
-    }
-
-	/** Check if database tables need to be created
-	 *  @return <code>true</code> if tables appear to be present
-	 *  @throws Exception on error
-	 */
-	private boolean haveTables() throws SQLException
+    /** {@inheritDoc} */
+	@Override
+	public synchronized void log(final ScanSample sample) throws Exception
 	{
-		final Statement statement = connection.createStatement();
+		if (logger == null)
+			logger = new DerbyDataLogger();
+		logger.log(scan_id, sample);
+		last_serial = sample.getSerial();
+	}
+
+    /** {@inheritDoc} */
+	@Override
+	public synchronized long getLastScanDataSerial()
+	{
+		return last_serial;
+	}
+
+    /** {@inheritDoc} */
+	@Override
+	public ScanData getScanData() throws Exception
+	{
+		final RDBDataLogger logger = new DerbyDataLogger();
 		try
 		{
-			statement.executeQuery("SELECT * FROM scans WHERE id=1");
-			return true;
-		}
-		catch (SQLException ex)
-		{
-			if ("42X05".equals(ex.getSQLState()))
-				return false;
-			throw ex;
+			return logger.getScanData(scan_id);
 		}
 		finally
 		{
-			statement.close();
+			logger.close();
 		}
 	}
 
-	/** Create database tables
-	 *  @throws Exception on error
-	 */
-	private void createTables() throws Exception
+    /** {@inheritDoc} */
+	@Override
+	public synchronized void close()
 	{
-		final Statement statement = connection.createStatement();
-		try
+		if (logger != null)
 		{
-			Logger.getLogger(getClass().getName()).info("Creating new database tables");
-
-			final BufferedReader reader = new BufferedReader(new FileReader("dbd/scanlog.dbd"));
-			StringBuilder cmd = new StringBuilder();
-
-			String line = reader.readLine();
-			while (line != null)
-			{
-				line = line.trim();
-				// Skip comments
-				if (! line.startsWith("#"))
-				{
-					if (line.endsWith(";"))
-					{	// Found end of command
-						cmd.append(line.substring(0, line.length()-1));
-						if (cmd.length() > 0)
-						{
-							final String sql = cmd.toString();
-							try
-							{
-								statement.execute(sql);
-							}
-							catch (SQLException ex)
-							{
-								Logger.getLogger(getClass().getName()).log(Level.INFO, "SQL failed: " + sql, ex);
-							}
-						}
-						cmd = new StringBuilder();
-					}
-					else
-						cmd.append(line);
-				}
-				line = reader.readLine();
-			}
-			reader.close();
+			logger.close();
+			logger = null;
+			System.out.println("Closing derby log ID " + scan_id);
 		}
-		finally
-		{
-			statement.close();
-		}
-	}
-
-	/** Shut down database.
-	 *
-	 *  <p>Must be called to release resource when Derby is no longer required.
-	 *  @throws Exception on error
-	 */
-	public static void shutdown() throws Exception
-	{
-		if (DERBY_DRIVER.contains("EmbeddedDriver"))
-		{	// Perform shutdown of embedded RDB
-			try
-			{
-				// Strange: Shutdown is initiated via connection,
-				DriverManager.getConnection("jdbc:derby:;shutdown=true");
-				// and success is reported via exception, so should not get here:
-				throw new Exception("Derby did not report shutdown");
-			}
-			catch (SQLException ex)
-			{
-				if  (! "XJ015".equals(ex.getSQLState()))
-					throw new Exception("Derby database shutdown failed", ex);
-			}
-		}
-		// else: External RDB, nothing to shut down
 	}
 }

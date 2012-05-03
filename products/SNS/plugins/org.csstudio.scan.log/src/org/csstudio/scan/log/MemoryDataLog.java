@@ -44,7 +44,7 @@ public class MemoryDataLog implements DataLog
 
     /** {@inheritDoc} */
 	@Override
-    public synchronized void log(final ScanSample sample)
+    public synchronized void log(final ScanSample sample) throws Exception
     {
 		// Check Memory usage
 		final MemoryInfo mem = new MemoryInfo();
@@ -61,17 +61,24 @@ public class MemoryDataLog implements DataLog
 		last_serial  = sample.getSerial();
     }
 
-    /** @return Serial of last sample in scan data */
+    /** {@inheritDoc} */
 	@Override
     public synchronized long getLastScanDataSerial()
 	{
 	    return last_serial;
 	}
 
-    /** @return {@link ScanData} with copy of currently logged data */
+    /** {@inheritDoc} */
 	@Override
-    public synchronized ScanData getScanData()
+    public synchronized ScanData getScanData()  throws Exception
 	{
 		return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
+	}
+
+    /** {@inheritDoc} */
+	@Override
+    public void close()
+	{
+		// NOP
 	}
 }

@@ -33,7 +33,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DataLogUnitTest
 {
-	private void logData(final DataLog logger)
+	private void logData(final DataLog logger) throws Exception
     {
 		for (int x=0; x<5; ++x)
 		{
@@ -46,7 +46,7 @@ public class DataLogUnitTest
     }
 
     @Test
-    public void testMemoryDataLogger()
+    public void testMemoryDataLogger() throws Exception
     {
         System.out.println("MemoryDataLogger:");
         final MemoryDataLog logger = new MemoryDataLog();
@@ -68,7 +68,7 @@ public class DataLogUnitTest
     }
 
 	@Test
-	public void testSpreadsheet()
+	public void testSpreadsheet() throws Exception
 	{
         System.out.println("MemoryDataLogger as Spreadsheet:");
 		final MemoryDataLog logger = new MemoryDataLog();

@@ -58,7 +58,9 @@ public class DataLogFactory
     /** {@inheritDoc} */
     public static long createDataLog(final String scan_name) throws Exception
     {
-		return getDataLogFactory().createDataLog(scan_name);
+		final long id = getDataLogFactory().createDataLog(scan_name);
+System.out.println("Derby log for " + scan_name + ": ID " + id);
+		return id;
     }
 
     /** {@inheritDoc} */
