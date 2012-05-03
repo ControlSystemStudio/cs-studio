@@ -47,8 +47,11 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	 */
 	private String[] fileExtensions;
 	
+	private boolean buildAbsolutePath;
+	
 	
 	/**File Path Property Constructor. The property value type is {@link IPath}.
+	 * It will automatically build the absolute path if it is relative path.
 	 * @param prop_id the property id which should be unique in a widget model.
 	 * @param description the description of the property,
 	 * which will be shown as the property name in property sheet.
@@ -59,9 +62,26 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	public FilePathProperty(String prop_id, String description,
 			WidgetPropertyCategory category, IPath defaultValue,
 			String[] fileExtensions) {		
+		this(prop_id, description, category, defaultValue, fileExtensions, true);
+		
+	}
+	
+	/**File Path Property Constructor. The property value type is {@link IPath}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 * @param fileExtensions the allowed file extensions in the file open dialog.
+	 * @param buildAbsolutePath true if it should automatically build the absolute path from widget model.
+	 */
+	public FilePathProperty(String prop_id, String description,
+			WidgetPropertyCategory category, IPath defaultValue,
+			String[] fileExtensions, boolean buildAbsolutePath) {		
 		super(prop_id, description, category,
 				defaultValue == null? new Path("") : defaultValue); //$NON-NLS-1$
 		this.fileExtensions = fileExtensions;
+		this.buildAbsolutePath = buildAbsolutePath;
 	}
 
 	@Override
@@ -113,7 +133,7 @@ public class FilePathProperty extends AbstractWidgetProperty {
 			String s = OPIBuilderMacroUtil.replaceMacros(
 					widgetModel, propertyValue.toString());
 			IPath path = ResourceUtil.getPathFromString(s);
-			if(!path.isAbsolute())
+			if(buildAbsolutePath && !path.isAbsolute())
 				return ResourceUtil.buildAbsolutePath(widgetModel, path);
 			else
 				return path;

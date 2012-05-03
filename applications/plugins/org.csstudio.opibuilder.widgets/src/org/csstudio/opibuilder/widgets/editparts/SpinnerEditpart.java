@@ -61,6 +61,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setPageIncrement(getWidgetModel().getPageIncrement());
 		spinner.setFormatType(getWidgetModel().getFormat());
 		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
+		spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
@@ -292,6 +293,16 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};
 			setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
+			
+			handler = new IWidgetPropertyChangeHandler() {
+
+				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+					((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
+					return false;
+				}
+			};
+			setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
+			
 
 	}
 

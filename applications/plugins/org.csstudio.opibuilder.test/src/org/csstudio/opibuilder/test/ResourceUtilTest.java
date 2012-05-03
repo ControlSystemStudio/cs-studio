@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -36,8 +37,11 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ResourceUtilTest {
     private static final String TEST_MESSAGE = "Test OK";
-    public final static IPath URL_PATH = new Path("http://ics-srv-web2.sns.ornl.gov/opi/main.opi");
-	public final static IPath LOCAL_PATH = new Path("C:\\Users\\5hz\\Desktop\\2_5_1_XY_Graph.opi");
+    public final static IPath URL_PATH = new Path("http://ics-srv-web2.sns.ornl.gov/opi");
+    public final static IPath URL_PATH2 = new Path("platform:/plugin/org.csstudio.opibuilder/");
+	public final static IPath LOCAL_PATH = new Path("C:\\Users\\5hz\\Desktop\\sis3302Channel.opi");
+	public final static IPath LOCAL_PATH2 = new Path("file:C:\\Users\\5hz\\Desktop\\sis3302Channel.opi");
+	public final static IPath WORKSCPACE_PATH = new Path("/BOY Examples/main.opi");
 
 	/** This test requires a workspace
 	 *  @throws Exception on error
@@ -113,9 +117,7 @@ public class ResourceUtilTest {
         {
             final String message = ex.getMessage();
             System.out.println(message);
-            assertTrue(message.contains("Cannot open"));
-            assertTrue(message.contains(path.toString()));
-            assertTrue(message.contains("No such file"));
+            assertTrue(ex.getCause() instanceof FileNotFoundException);            		
         }
 
         // URL to non-existing resource
@@ -130,8 +132,8 @@ public class ResourceUtilTest {
         {
             final String message = ex.getMessage();
             System.out.println(message);
-            assertTrue(message.contains("Cannot open"));
-            assertTrue(message.contains("localhost/Folder/NoSuchFile.xyz"));
+//            assertTrue(message.contains("Cannot open"));
+//            assertTrue(message.contains("localhost/Folder/NoSuchFile.xyz"));
         }
 	}
 
@@ -180,4 +182,37 @@ public class ResourceUtilTest {
 		    System.out.println(inputLine);
 		in.close();
     }
+	
+	@Test
+	@Ignore
+	public void testIsExistingWorkspaceFile(){
+		assertEquals(ResourceUtil.isExistingWorkspaceFile(WORKSCPACE_PATH), true);
+	}
+	
+	@Test
+	public void testIsExistingLocalFile() {
+		assertEquals(ResourceUtil.isExistingLocalFile(LOCAL_PATH),true);
+		assertEquals(ResourceUtil.isExistingLocalFile(LOCAL_PATH2),true);
+
+	}
+	
+	@Test 
+	public void testIsURL(){
+		assertEquals(ResourceUtil.isURL(URL_PATH.toString()), true);
+		assertEquals(ResourceUtil.isURL(LOCAL_PATH.toString()), false);
+	}
+	
+	@Test
+	public void testIsExistingURL(){
+		assertEquals(ResourceUtil.isExistingURL(URL_PATH, true), true);
+		assertEquals(ResourceUtil.isExistingURL(URL_PATH.append("main.opi"), true), true);
+		assertEquals(ResourceUtil.isExistingURL(URL_PATH.append("main2.opi"), true), false);
+	}
+	
+	@Test 
+	public void testGetFileOnSearchPath(){
+		IPath p = ResourceUtil.getFileOnSearchPath(new Path("main.opi"), true);
+		System.out.println(p);
+		assertNotNull(p);
+	}
 }

@@ -46,6 +46,13 @@
      <p>Preference key: <code>font_file</code></p>
     </li>
     
+    <li><b>OPI Search Path:  </b><p>The path which is used to search OPI files if the given OPI path is a relative path
+    and it doesn't exist on the made up absolute path neither. For example, you can put an OPI file name only for 
+    <code>Open OPI Action, Top OPIs, Schema OPI and so on</code>. If this OPI file cannot be found on relative path, it will
+    search the <code>OPI Search Path</code> and return the first one found on the search path. It supports workspace path,
+    local file system path and URL path.</p>
+      <p>Preference key: <code>opi_search_path</code></p></li>
+    
     <li><b>Top OPIs: </b><p>The OPIs which will be listed in the "Top OPIs" drop down button. If you
     want to add initial macros to the OPI, the format is like this:
     </p> 

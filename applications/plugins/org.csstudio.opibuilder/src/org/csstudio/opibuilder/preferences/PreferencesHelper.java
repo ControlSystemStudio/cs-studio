@@ -14,7 +14,6 @@ import java.util.logging.Level;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
@@ -50,10 +49,11 @@ public class PreferencesHelper {
 	public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
 	public static final String PYTHON_PATH = "python_path"; //$NON-NLS-1$
 	public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
-	public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";
-	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";
-	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";
-	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";
+	public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
+	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
+	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
+	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
+	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
 	
 //WebOPI preferences
 	
@@ -64,6 +64,7 @@ public class PreferencesHelper {
 	private static final char ROW_SEPARATOR = '|'; 
 	private static final char ITEM_SEPARATOR = ','; 
 	private static final char MACRO_SEPARATOR = '='; 
+	
 
 
 	 /** @param preferenceName Preference identifier
@@ -105,7 +106,7 @@ public class PreferencesHelper {
     	String probeOPIPath = getString(PROBE_OPI);
      	if(probeOPIPath == null || probeOPIPath.trim().isEmpty())
     		return null;
-    	return getAbsolutePathOnRepo(probeOPIPath);
+    	return getExistFileInRepoAndSearchPath(probeOPIPath);
     }
     
     /**Get the schema OPI path from preference store.
@@ -113,13 +114,9 @@ public class PreferencesHelper {
      */
     public static IPath getSchemaOPIPath(){
     	String schemaOPIPath = getString(SCHEMA_OPI);
-    	if(schemaOPIPath != null){
-    		if(ResourceUtil.isURL(schemaOPIPath))
-    			return new URLPath(schemaOPIPath);
-    		else
-    			return new Path(schemaOPIPath);
-    	}
-    	return null;
+    	if(schemaOPIPath == null || schemaOPIPath.trim().isEmpty())
+    		return null;
+    	return getExistFileInRepoAndSearchPath(schemaOPIPath);
     }
 
     public static boolean isAutoSaveBeforeRunning(){
@@ -186,7 +183,7 @@ public class PreferencesHelper {
 			for(int i= 0; i<items.length; i++){
 				if(i == 0){
 					String urlString = items[i];
-					path = getAbsolutePathOnRepo(urlString);
+					path = getExistFileInRepoAndSearchPath(urlString);
 				}
 				else{
 					String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
@@ -198,7 +195,23 @@ public class PreferencesHelper {
 				result.put(path, macrosInput);
 		}
 		return result;
-
+    }
+    
+    /**
+     * @return the OPI search paths preference. null if no such preference was set.
+     * @throws Exception
+     */
+    public static IPath[] getOPISearchPaths() throws Exception{
+    	String rawString = getString(OPI_SEARCH_PATH);
+    	if(rawString == null || rawString.trim().isEmpty())
+    		return null;
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, false);
+    	IPath[] result = new IPath[rows.length];
+    	int i=0;
+    	for(String row:rows){
+    		result[i++]=ResourceUtil.getPathFromString(row);
+    	}
+    	return result;
     }
     
     /**Get python path preferences.
@@ -276,7 +289,7 @@ public class PreferencesHelper {
     	String startOPI = getString(STARTUP_OPI);
     	if(startOPI == null || startOPI.trim().isEmpty())
     		return null;
-    	return getAbsolutePathOnRepo(startOPI);
+    	return getExistFileInRepoAndSearchPath(startOPI);
     }
     
     /**
@@ -286,7 +299,7 @@ public class PreferencesHelper {
     	String startOPI = getString(MOBILE_STARTUP_OPI);
     	if(startOPI == null || startOPI.trim().isEmpty())
     		return null;
-    	return getAbsolutePathOnRepo(startOPI);
+    	return getExistFileInRepoAndSearchPath(startOPI);
     }
 
     public static IPath getOPIRepository(){
@@ -311,6 +324,25 @@ public class PreferencesHelper {
     	if(repoPath != null)
     		opiPath = repoPath.append(opiPath);
     	return opiPath;
+	}
+	
+	protected static IPath getExistFileInRepoAndSearchPath(String pathString){
+		IPath originPath = ResourceUtil.getPathFromString(pathString);
+		IPath opiPath = originPath;
+		if(opiPath == null)
+			return null;
+    	if(opiPath.isAbsolute())
+    		return opiPath;
+    	IPath repoPath = getOPIRepository();
+    	if(repoPath != null){
+    		opiPath = repoPath.append(originPath);
+    		if(ResourceUtil.isExsitingFile(opiPath, true))
+    			return opiPath;
+    	}
+    	IPath sPath = ResourceUtil.getFileOnSearchPath(originPath, true);
+    	if(sPath == null)
+    		return opiPath;
+    	return sPath;		
 	}
 
 }
