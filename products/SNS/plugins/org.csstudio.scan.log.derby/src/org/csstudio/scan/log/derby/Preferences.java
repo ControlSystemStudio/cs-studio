@@ -32,7 +32,7 @@ public class Preferences
     	int port = 1527;
     	final IPreferencesService prefs = Platform.getPreferencesService();
 		if (prefs != null)
-			port = prefs.getInt(Activator.ID, "database_directory", port, null);
+			port = prefs.getInt(Activator.ID, "server_port", port, null);
 		return port;
 	}
 }
