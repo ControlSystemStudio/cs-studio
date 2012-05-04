@@ -205,7 +205,7 @@ public class PreferencesHelper {
     	String rawString = getString(OPI_SEARCH_PATH);
     	if(rawString == null || rawString.trim().isEmpty())
     		return null;
-    	String[] rows = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, false);
+    	String[] rows = StringSplitter.splitIgnoreInQuotes(rawString, ROW_SEPARATOR, true);
     	IPath[] result = new IPath[rows.length];
     	int i=0;
     	for(String row:rows){
