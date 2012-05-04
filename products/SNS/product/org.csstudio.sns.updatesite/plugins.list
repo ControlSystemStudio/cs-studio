@@ -82,6 +82,7 @@ org.csstudio.scan.log/**
 org.csstudio.scan.log.derby/**
 org.csstudio.scan.ui/**
 org.csstudio.scan.ui.plot/**
+org.csstudio.scan.ui.scandata/**
 org.csstudio.scan.ui.scanmonitor/**
 org.csstudio.scan.ui.scantree/**
 org.csstudio.sns.dummyAuthorization/**

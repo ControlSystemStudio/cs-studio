@@ -16,12 +16,12 @@
 package org.csstudio.scan.data;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import org.csstudio.scan.TextTable;
 
 /** Iterate over {@link ScanData} as spreadsheet
  *  @author Kay Kasemir
@@ -163,38 +163,26 @@ public class SpreadsheetScanDataIterator
      */
     public void dump(final PrintStream out)
     {
-        dump(new PrintWriter(out, true));
-    }
-
-    /** Write spreadsheet to writer
-     *  @param writer {@link Writer}
-     */
-    public void dump(final Writer writer)
-    {
-        final PrintWriter out = new PrintWriter(writer, true);
-        // Print Header
-        out.print("Time");
+    	final TextTable table = new TextTable(out);
+        // Header
+    	table.addColumn("Time");
         for (String device : getDevices())
-        {
-            out.print('\t');
-            out.print(device);
-        }
-        out.println();
+        	table.addColumn(device);
 
         // Iterate over device data in 'spreadsheet' manner
         while (hasNext())
         {
-            out.print(DataFormatter.format(getTimestamp()));
+        	table.addCell(DataFormatter.format(getTimestamp()));
             // Print current line
             for (ScanSample sample : getSamples())
             {
-                out.print('\t');
                 if (sample == null)
-                    out.print("#N/A");
+                	table.addCell("#N/A");
                 else
-                    out.print(sample.getValue());
+                    table.addCell(sample.getValue().toString());
             }
-            out.println();
         }
+
+        table.flush();
     }
 }
