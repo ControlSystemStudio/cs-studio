@@ -21,8 +21,12 @@ import org.osgi.framework.BundleContext;
  *  <p>Starts and stops embedded Derby instance
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Activator implements BundleActivator
 {
+	/** Plugin ID defined in MANIFEST.MF */
+    final public static String ID = "org.csstudio.scan.log.derby";
+
 	private static Bundle bundle = null;
 
 	// Please FindBugs about static access
