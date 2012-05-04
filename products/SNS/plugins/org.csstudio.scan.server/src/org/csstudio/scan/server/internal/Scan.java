@@ -271,6 +271,13 @@ public class Scan implements ScanContext
 
     /** {@inheritDoc} */
     @Override
+    public long getNextScanDataSerial()
+    {
+    	return data_logger.getNextScanDataSerial();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public void logSample(final ScanSample sample) throws Exception
     {
         data_logger.log(sample);

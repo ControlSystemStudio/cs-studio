@@ -32,10 +32,10 @@ SELECT serial, timestamp, number
  WHERE scan_id=9 AND device_id=1
  ORDER BY serial;
  
- SELECT serial, timestamp, number, d.name 
-  FROM samples s
-  JOIN devices d ON s.device_id = d.id
-  WHERE scan_id=4
-  ORDER BY serial; 
+SELECT serial, timestamp, number, d.name 
+ FROM samples s
+ JOIN devices d ON s.device_id = d.id
+ WHERE scan_id=1
+ ORDER BY serial; 
 
  

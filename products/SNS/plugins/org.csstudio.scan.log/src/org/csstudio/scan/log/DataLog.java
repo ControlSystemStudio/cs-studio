@@ -19,27 +19,59 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 
 /** Logger for {@link ScanSample}s
+ *
+ *  <p>Abstract base provides the sample serial handling.
+ *  Derived classes implement the actual sample storage.
+ *
  *  @author Kay Kasemir
  */
-public interface DataLog
+abstract public class DataLog
 {
-	/** Add a sample to the data log
+	/** Serial of last logged sample */
+    private long last_serial = -1;
+
+    /** @return Next unique scan sample serial */
+    public synchronized long getNextScanDataSerial()
+    {
+    	return ++last_serial;
+    }
+
+    /** Add a sample to the data log
 	 *  @param sample {@link ScanSample} to log
 	 *  @throws Exception on error
 	 *  @see #close()
 	 */
-	public void log(ScanSample sample) throws Exception;
+	public void log(final ScanSample sample) throws Exception
+	{
+		doLog(sample);
+		synchronized (this)
+		{
+			last_serial  = sample.getSerial();
+		}
+	}
 
-    /** @return Serial of last sample in scan data or -1 */
-    public long getLastScanDataSerial();
+    /** Perform actual logging of a sample.
+     *  @param sample {@link ScanSample} to log
+	 *  @throws Exception on error
+	 */
+	abstract protected void doLog(ScanSample sample) throws Exception;
+
+	/** @return Serial of last sample in scan data or -1 if nothing has been logged */
+    public synchronized long getLastScanDataSerial()
+	{
+	    return last_serial;
+	}
 
     /** @return {@link ScanData} with copy of currently logged data or <code>null</code>
 	 *  @throws Exception on error
      */
-    public ScanData getScanData() throws Exception;
+    abstract public ScanData getScanData() throws Exception;
 
     /** Should be called when done logging samples
      *  to allow logging mechanism to release resources.
      */
-	public void close();
+	public void close()
+	{
+		// NOP
+	}
 }

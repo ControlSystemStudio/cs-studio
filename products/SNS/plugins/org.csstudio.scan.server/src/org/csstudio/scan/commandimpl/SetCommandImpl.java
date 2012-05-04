@@ -124,7 +124,8 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 
 		// Log the value
 		final IValue value = readback.read();
-		context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), value));
+        final long serial = context.getNextScanDataSerial();
+		context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, value));
 
 		context.workPerformed(1);
     }

@@ -8,7 +8,6 @@
 package org.csstudio.scan.device;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.csstudio.data.values.IStringValue;
 import org.csstudio.data.values.ITimestamp;
@@ -22,27 +21,6 @@ import org.csstudio.scan.data.ScanSampleFactory;
  */
 public class ValueConverter
 {
-    /** Provides the next available <code>serial</code> */
-    final private static AtomicLong serials = new AtomicLong();
-
-    /** @return Next available serial */
-    public static long getNextSerial()
-    {
-        return serials.incrementAndGet();
-    }
-
-    /** Create ScanSample for control system value
-	 *  @param device_name Name of the device that provided the sample
-     *  @param value IValue
-	 *  @return {@link ScanSample}
-	 *  @throws IllegalArgumentException if the value type is not handled
-	 */
-	public static ScanSample createSample(final String device_name,
-			final IValue value) throws IllegalArgumentException
-	{
-		return createSample(device_name, getNextSerial(), value);
-	}
-
     /** Create ScanSample for control system value
      *  @param device_name Name of the device that provided the sample
      *  @param serial Serial to identify when the sample was taken
