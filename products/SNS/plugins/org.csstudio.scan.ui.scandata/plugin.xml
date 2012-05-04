@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.scan.ui.scandata.OpenScanData"
+            id="org.csstudio.scan.ui.scandata.open_scan_data"
+            name="%OpenScanData">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.scan.ui.scandata.open_scan_data"
+               icon="icons/scan_data.gif"
+               label="%OpenScanData"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate>
+                     <instanceof
+                           value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+  </extension>
+</plugin>

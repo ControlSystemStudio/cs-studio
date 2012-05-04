@@ -53,6 +53,9 @@ public interface ScanContext
      */
     public void execute(final ScanCommandImpl<?> command) throws Exception;
 
+    /** @return Next unique {@link ScanSample} serial */
+    public long getNextScanDataSerial();
+
     /** Log a sample, i.e. add it to the data set produced by the
 	 *  scan
 	 *  @param sample {@link ScanSample}

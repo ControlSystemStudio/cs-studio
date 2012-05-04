@@ -31,20 +31,17 @@ import org.csstudio.scan.server.MemoryInfo;
  *
  *  @author Kay Kasemir
  */
-public class MemoryDataLog implements DataLog
+public class MemoryDataLog extends DataLog
 {
 	/** Map from device name to list of samples for that device */
 	final private Map<String, List<ScanSample>> device_logs =
 			new HashMap<String, List<ScanSample>>();
 
-	/** Serial of last logged sample */
-    private long last_serial = -1;
-
     final private double threshold = Preferences.getOldScanRemovalMemoryThreshold();
 
     /** {@inheritDoc} */
 	@Override
-    public synchronized void log(final ScanSample sample) throws Exception
+    public synchronized void doLog(final ScanSample sample) throws Exception
     {
 		// Check Memory usage
 		final MemoryInfo mem = new MemoryInfo();
@@ -58,27 +55,12 @@ public class MemoryDataLog implements DataLog
 			device_logs.put(sample.getDeviceName(), samples);
 		}
 		samples.add(sample);
-		last_serial  = sample.getSerial();
     }
-
-    /** {@inheritDoc} */
-	@Override
-    public synchronized long getLastScanDataSerial()
-	{
-	    return last_serial;
-	}
 
     /** {@inheritDoc} */
 	@Override
     public synchronized ScanData getScanData()  throws Exception
 	{
 		return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
-	}
-
-    /** {@inheritDoc} */
-	@Override
-    public void close()
-	{
-		// NOP
 	}
 }

@@ -25,15 +25,20 @@ import org.csstudio.scan.server.ScanServer;
  *  <p>All samples have a time stamp
  *  and info about the device that produced the sample.
  *
- *  <p>A serial number is used to track
- *  the time line of samples that are acquired in a scan.
- *  A scan can run faster than the resolution of the time stamp.
- *  In other cases, the scan might actually be quite slow but we still
- *  want to identify samples as being taken at conceptually the same
- *  time.
- *  A serial number is used to identify which samples belong together
- *  because they were for example taken within the same iteration
- *  of a scan loop.
+ *  <p>A serial number is used to track the sequence
+ *  in which samples were acquired within a scan.
+ *  The time stamps alone can <u>not</u> dependably correlate
+ *  samples for several reasons:
+ *
+ *  <ul>
+ *  <li>Time stamps can be the actual control system time stamps.
+ *      If a value has not changed for a while, the 'old' time stamp
+ *      would reflect that.
+ *  <li>A scan can run faster than the resolution of the time stamp.
+ *  <li>Samples are meant to be logged "together", for example by one
+ *      log command within a loop, but their actual time stamps
+ *      don't reflect that.
+ *  </ul>
  *
  *  @author Kay Kasemir
  */

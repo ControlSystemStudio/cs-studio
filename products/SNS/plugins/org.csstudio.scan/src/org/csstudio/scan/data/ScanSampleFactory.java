@@ -16,7 +16,6 @@
 package org.csstudio.scan.data;
 
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicLong;
 
 /** Factory for {@link ScanSample} instances
  *  @author Kay Kasemir
@@ -24,15 +23,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @SuppressWarnings("nls")
 public class ScanSampleFactory
 {
-    /** Provides the next available <code>serial</code> */
-    final private static AtomicLong serials = new AtomicLong();
-
-    /** @return Next available serial */
-    public static long getNextSerial()
-    {
-        return serials.incrementAndGet();
-    }
-
     /** Create ScanSample for plain number or text value
 	 *  @param device_name Name of the device that provided the sample
 	 *  @param timestamp Time stamp

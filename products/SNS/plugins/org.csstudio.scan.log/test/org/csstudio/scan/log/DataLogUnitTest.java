@@ -38,7 +38,7 @@ public class DataLogUnitTest
 		for (int x=0; x<5; ++x)
 		{
 		    final Date now = new Date();
-		    final long serial = ScanSampleFactory.getNextSerial();
+		    final long serial = logger.getNextScanDataSerial();
 			logger.log(ScanSampleFactory.createSample("x", now, serial, Double.valueOf(x)));
 			for (int y=0; y<5; ++y)
 				logger.log(ScanSampleFactory.createSample("y", now, serial, Double.valueOf(y)));
@@ -49,7 +49,7 @@ public class DataLogUnitTest
     public void testMemoryDataLogger() throws Exception
     {
         System.out.println("MemoryDataLogger:");
-        final MemoryDataLog logger = new MemoryDataLog();
+        final DataLog logger = new MemoryDataLog();
         assertTrue(logger.getLastScanDataSerial() < 0);
 
         logData(logger);
@@ -71,7 +71,7 @@ public class DataLogUnitTest
 	public void testSpreadsheet() throws Exception
 	{
         System.out.println("MemoryDataLogger as Spreadsheet:");
-		final MemoryDataLog logger = new MemoryDataLog();
+		final DataLog logger = new MemoryDataLog();
 		logData(logger);
 		SpreadsheetScanDataIterator sheet =
 	        new SpreadsheetScanDataIterator(logger.getScanData());

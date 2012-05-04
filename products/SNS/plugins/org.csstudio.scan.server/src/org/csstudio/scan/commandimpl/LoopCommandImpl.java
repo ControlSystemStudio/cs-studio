@@ -207,7 +207,8 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         }
 
         // Log the device's value
-        context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), readback.read()));
+        final long serial = context.getNextScanDataSerial();
+        context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, readback.read()));
 
         // Execute loop body
     	context.execute(implementation);

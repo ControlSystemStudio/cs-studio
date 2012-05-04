@@ -17,14 +17,11 @@ import org.csstudio.scan.log.DataLog;
  *
  *  @author Kay Kasemir
  */
-public class DerbyDataLog implements DataLog
+public class DerbyDataLog extends DataLog
 {
 	final private long scan_id;
 
 	private RDBDataLogger logger = null;
-
-	/** Serial of last logged sample */
-    private long last_serial = -1;
 
 	/** Initialize
 	 *  @param scan_id ID of scan for which this logger should operate
@@ -36,19 +33,11 @@ public class DerbyDataLog implements DataLog
 
     /** {@inheritDoc} */
 	@Override
-	public synchronized void log(final ScanSample sample) throws Exception
+	public void doLog(final ScanSample sample) throws Exception
 	{
 		if (logger == null)
 			logger = new DerbyDataLogger();
 		logger.log(scan_id, sample);
-		last_serial = sample.getSerial();
-	}
-
-    /** {@inheritDoc} */
-	@Override
-	public synchronized long getLastScanDataSerial()
-	{
-		return last_serial;
 	}
 
     /** {@inheritDoc} */
@@ -74,7 +63,7 @@ public class DerbyDataLog implements DataLog
 		{
 			logger.close();
 			logger = null;
-			System.out.println("Closing derby log ID " + scan_id);
 		}
+		super.close();
 	}
 }

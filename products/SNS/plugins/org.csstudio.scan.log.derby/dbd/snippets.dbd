@@ -2,8 +2,16 @@
 --
 --  @author Kay Kasemir
 
+-- Connect to embedded instance
 -- Warning if database already exists
+-- There can be only one instance at a time for each database,
+-- so if the ScanServer is already running, this will fail.
+-- Likewise, the ScanServer will fail to start if "ij" is
+-- already running the embedded database instance!
 CONNECT 'jdbc:derby:/tmp/scan_log_db/scan;create=true';
+
+-- Connect to network data server
+CONNECT 'jdbc:derby://localhost:1527//tmp/scan_log_db/scan';
 
 DESCRIBE samples;
 
@@ -32,10 +40,10 @@ SELECT serial, timestamp, number
  WHERE scan_id=9 AND device_id=1
  ORDER BY serial;
  
- SELECT serial, timestamp, number, d.name 
-  FROM samples s
-  JOIN devices d ON s.device_id = d.id
-  WHERE scan_id=4
-  ORDER BY serial; 
+SELECT serial, timestamp, number, d.name 
+ FROM samples s
+ JOIN devices d ON s.device_id = d.id
+ WHERE scan_id=1
+ ORDER BY serial; 
 
  

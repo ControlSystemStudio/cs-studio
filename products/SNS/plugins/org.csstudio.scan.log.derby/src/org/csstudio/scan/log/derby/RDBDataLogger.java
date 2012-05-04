@@ -204,12 +204,9 @@ abstract public class RDBDataLogger
     	// organizing the retrieval by device in case
     	// that's helpful later on
     	final String[] devices = getScanDevices(scan_id);
-
     	for (String device : devices)
     	{
-    		System.out.println("Device: " + device);
-
-    		List<ScanSample> samples = getScanSamples(scan_id, device);
+    		final List<ScanSample> samples = getScanSamples(scan_id, device);
     		device_logs.put(device, samples);
     	}
 

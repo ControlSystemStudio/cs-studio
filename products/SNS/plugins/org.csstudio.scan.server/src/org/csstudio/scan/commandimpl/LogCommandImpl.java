@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.data.values.IValue;
 import org.csstudio.scan.command.LogCommand;
-import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.ValueConverter;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -54,7 +53,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 		final Logger logger = Logger.getLogger(getClass().getName());
 		logger.log(Level.FINE, "{0}", command);
 
-		final long serial = ScanSampleFactory.getNextSerial();
+		final long serial = context.getNextScanDataSerial();
 		final String[] device_names = command.getDeviceNames();
 		final int length = device_names.length;
 		for (int i=0; i<length; ++i)

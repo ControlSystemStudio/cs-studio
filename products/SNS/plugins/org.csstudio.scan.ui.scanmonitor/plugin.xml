@@ -15,7 +15,6 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
             locationURI="menu:scan?before=additions">
          <command
                commandId="org.eclipse.ui.views.showView"

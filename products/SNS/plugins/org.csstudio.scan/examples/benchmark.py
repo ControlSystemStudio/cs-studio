@@ -77,11 +77,10 @@ ms = info.getRuntimeMillisecs()
 print "Time for %d commands: %s, " % (count, info.getRuntimeText()),
 print "%f commands/second" % (1000.0*count/ms)
 print "-> Should see almost the same as the 'delay 0' commands/sec when not using readback"
+print "   for the MemoryDataLog."
+print "   The DerbyDataLog reduces it from about 30000/sec to 2000/sec"
 print
 print
-
-
-
 
 
 
@@ -105,7 +104,8 @@ ms = info.getRuntimeMillisecs()
 
 print "Time for %d commands: %s, " % (count, info.getRuntimeText()),
 print "%f commands/second" % (1000.0*count/ms)
-print "-> Should see about 4700 'set' commands/sec when using readback"
+print "-> Should see about 4700 'set' commands/sec when using readback with MemoryDataLog,"
+print "   1600 commands/sec with DerbyDataLog."
 print
 print
 
@@ -131,7 +131,8 @@ ms = info.getRuntimeMillisecs()
 
 print "Time for %d loop iteration: %s, " % (count, info.getRuntimeText()),
 print "%f iterations/second" % (1000.0*count/ms)
-print "-> Should see about 4700 'loop' iterations/sec when using readback"
+print "-> Should see about 4700 'loop' iterations/sec when using readback with MemoryDataLog,"
+print "   1600 commands/sec with DerbyDataLog."
 print
 print
 
@@ -158,7 +159,8 @@ ms = info.getRuntimeMillisecs()
 
 print "Time for %d commands: %s, " % (count, info.getRuntimeText()),
 print "%f commands/second" % (1000.0*count/ms)
-print "-> Should see about 1 command/sec because of the device's speed"
+print "-> Should see about 1 command/sec because of the device's speed,"
+print "   log mechanism does not matter."
 print
 print
 

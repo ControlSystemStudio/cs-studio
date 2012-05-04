@@ -9,6 +9,8 @@ package org.csstudio.scan.log.derby;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,24 +18,17 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.derby.drda.NetworkServerControl;
+
 /** Derby-based sample logger
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class DerbyDataLogger extends RDBDataLogger
 {
-	final private static String DEFAULT_DATABASE_DIRECTORY = "/tmp/scan_log_db";
-
 	final private static String DERBY_DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
 
-	// TODO Use preference for derby config
-	private static String database_directory = DEFAULT_DATABASE_DIRECTORY;
-
-	/** @param database_directory Directory where derby stores database files */
-	public static void setDatabaseDirectory(final String database_directory)
-	{
-		DerbyDataLogger.database_directory = database_directory;
-	}
+	private static NetworkServerControl network_server = null;
 
 	/** Database startup
 	 *
@@ -43,17 +38,27 @@ public class DerbyDataLogger extends RDBDataLogger
 	public static void startup() throws InstantiationException, IllegalAccessException, Exception
 	{
 		// Path where Derby creates databases
-		System.setProperty("derby.system.home", database_directory);
+		System.setProperty("derby.system.home", Preferences.getDatabaseDirectory());
 
 		// Debug options
     	// System.setProperty("derby.language.logStatementText", "true");
     	// System.setProperty("derby.language.logQueryPlan", "true");
+		System.setProperty("derby.drda.logConnections", "true");
+
+		// Add network data server to embedded database instance
+		// to allow connections via 'ij' for debugging.
+
+		// Simply setting a property to request the net. server "works"
+		// but causes many BundleExceptions when network server threads
+		// try to load classes while the plugin is still in the middle of startup
+		//   System.setProperty("derby.drda.startNetworkServer", "true");
+		// So it's started programmatically below.
 
     	// Load driver for 'embedded' Derby RDB
     	// newInstance is not needed the _first_ time
     	// this is called, but after the driver had
-    	// been shut down, it will unregister then
-    	// then newInstance is required to re-start
+    	// been shut down, it will unregister and
+    	// then newInstance is required to re-start.
 		Class.forName(DERBY_DRIVER).newInstance();
 
 		final DerbyDataLogger database = new DerbyDataLogger();
@@ -65,6 +70,14 @@ public class DerbyDataLogger extends RDBDataLogger
 		finally
 		{
 			database.close();
+		}
+
+		// Start network data server programmatically
+		final int port = Preferences.getServerPort();
+		if (port > 0)
+		{
+			network_server = new NetworkServerControl(InetAddress.getByName("localhost"), port);
+			network_server.start(new PrintWriter(System.out, true));
 		}
 	}
 
@@ -171,7 +184,15 @@ public class DerbyDataLogger extends RDBDataLogger
 	public static void shutdown() throws Exception
 	{
 		if (DERBY_DRIVER.contains("EmbeddedDriver"))
-		{	// Perform shutdown of embedded RDB
+		{
+			// Stop network database server
+			if (network_server != null)
+			{
+				network_server.shutdown();
+				network_server = null;
+			}
+
+			// Perform shutdown of embedded RDB
 			try
 			{
 				// Strange: Shutdown is initiated via connection,
