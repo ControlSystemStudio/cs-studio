@@ -38,6 +38,7 @@ public abstract class AbstractLayoutModel extends AbstractWidgetModel {
 		setPropertyVisible(PROP_WIDTH,false);
 		setPropertyVisible(PROP_HEIGHT,false);
 		setPropertyVisible(PROP_RULES,false);
+		setPropertyVisible(PROP_SCALE_OPTIONS, false);
 	}
 	
 	@Override
