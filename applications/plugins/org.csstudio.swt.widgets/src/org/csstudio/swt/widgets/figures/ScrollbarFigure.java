@@ -170,6 +170,8 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 			ColorConstants.white,
 			ColorConstants.button);
 	
+	private String formatPattern;
+	
 	private DecimalFormat decimalFormat;
 	
 	public ScrollbarFigure() {
@@ -293,6 +295,10 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 */
 	public double getExtent() {
 		return extent;
+	}
+	
+	public String getFormatPattern() {
+		return formatPattern;
 	}
 
 	/**
@@ -574,6 +580,11 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 		this.extent = extent;
 		revalidate();
 	}
+	
+	public void setFormatPattern(String formatPattern) {
+		this.formatPattern = formatPattern;
+		decimalFormat = new DecimalFormat(formatPattern);
+	}
 
 	/**
 	 * Sets the orientation of the ScrollBar. If <code>true</code>, the Scrollbar will have 
@@ -769,12 +780,14 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	}
 	
 	private void updateFormat(){
-		String formatPattern;
+		if(this.formatPattern != null)
+			return;
+		String tempPattern;
 		if((maximum != 0 && Math.abs(Math.log10(Math.abs(maximum))) >= ENGINEERING_LIMIT)
         		|| (minimum !=0 && Math.abs(Math.log10(Math.abs(minimum))) >= ENGINEERING_LIMIT))
-                formatPattern = DEFAULT_ENGINEERING_FORMAT;
+                tempPattern = DEFAULT_ENGINEERING_FORMAT;
         	else
-        		formatPattern = DEFAULT_DECIMAL_FORMAT;	
-		decimalFormat = new DecimalFormat(formatPattern);
+        		tempPattern = DEFAULT_DECIMAL_FORMAT;	
+		decimalFormat = new DecimalFormat(tempPattern);
 	}	
 }

@@ -287,7 +287,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 		Rectangle clientArea = getClientArea();
 		if(arrowButtonsOnLeft){
 			labelFigure.setBounds(new Rectangle(clientArea.x+1 + BUTTON_WIDTH, clientArea.y, 
-					clientArea.width - BUTTON_WIDTH, clientArea.height));
+					clientArea.width - BUTTON_WIDTH-1, clientArea.height));
 			buttonUp.setBounds(new Rectangle(clientArea.x,
 					clientArea.y, BUTTON_WIDTH, clientArea.height/2));
 			buttonDown.setBounds(new Rectangle(clientArea.x,
