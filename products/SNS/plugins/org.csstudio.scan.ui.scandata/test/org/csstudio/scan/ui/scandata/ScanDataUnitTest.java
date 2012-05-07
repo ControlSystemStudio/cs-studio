@@ -16,7 +16,7 @@ import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.scan.server.ScanInfo;
 import org.junit.Test;
 
-/**
+/** JUnit test of the {@link ScanDataModel}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -49,7 +49,7 @@ public class ScanDataUnitTest implements ScanDataModelListener
 		}
 	}
 
-
+    /** Should receive a scan data update and NOT time out */
 	@Test(timeout=10000)
 	public void testScanData() throws Exception
 	{
@@ -66,11 +66,11 @@ public class ScanDataUnitTest implements ScanDataModelListener
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
     public void updateScanData(final ScanData data)
     {
-		SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
-		sheet.dump(System.out);
+		new SpreadsheetScanDataIterator(data).dump(System.out);
 		received_data.countDown();
     }
 }

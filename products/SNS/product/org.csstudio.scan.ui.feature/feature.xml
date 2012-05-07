@@ -32,7 +32,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.python.pydev" version="2.2.2.2011082312" match="greaterOrEqual"/>
@@ -117,13 +117,14 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.junit" version="4.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.java" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.csdata" version="3.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.5.100" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.menu" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
