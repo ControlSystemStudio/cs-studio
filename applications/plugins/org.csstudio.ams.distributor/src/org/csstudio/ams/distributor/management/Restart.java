@@ -43,21 +43,21 @@ public class Restart implements IManagementCommand {
         String password = DistributorStart.getInstance().getPassword();
         
         if(param == null) {
-            return CommandResult.createFailureResult("\nParameter not available.");
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 
         if(password.length() > 0) {
-            return CommandResult.createFailureResult("\nParameter not available.");
+            return CommandResult.createFailureResult("ERROR: [1] - Parameter not available.");
         }
 
         if(password.length() > 0) {
             if(param.compareTo(password) != 0) {
-                return CommandResult.createFailureResult("\nInvalid password");
+                return CommandResult.createFailureResult("ERROR: [2] - Invalid password");
             }
         }
 
         DistributorStart.getInstance().setRestart();
 
-        return CommandResult.createMessageResult("\nRestarting application Distributor");
+        return CommandResult.createMessageResult("OK: [0] - Restarting application Distributor");
     }
 }
