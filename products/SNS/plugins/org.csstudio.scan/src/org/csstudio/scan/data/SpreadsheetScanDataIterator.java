@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.scan.TextTable;
+import org.csstudio.scan.util.TextTable;
 
 /** Iterate over {@link ScanData} as spreadsheet
  *  @author Kay Kasemir

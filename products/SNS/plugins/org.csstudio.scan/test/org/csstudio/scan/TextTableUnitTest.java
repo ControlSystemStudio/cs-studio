@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
 
+import org.csstudio.scan.util.TextTable;
 import org.junit.Test;
 
 /** JUnit test of the {@link TextTable}
