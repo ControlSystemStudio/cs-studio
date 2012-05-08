@@ -32,4 +32,14 @@
          </command>
       </menuContribution>
   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.scan.ui.scandata.ScanDataEditor"
+            default="false"
+            icon="icons/scan_data.gif"
+            id="org.csstudio.scan.ui.scandata.display"
+            name="%ScanData">
+      </editor>
+   </extension>
 </plugin>

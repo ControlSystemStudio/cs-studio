@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
  org.csstudio.scan;bundle-version="1.0.0",
  org.csstudio.scan.client;bundle-version="1.0.0",
  org.csstudio.scan.ui;bundle-version="1.0.0"

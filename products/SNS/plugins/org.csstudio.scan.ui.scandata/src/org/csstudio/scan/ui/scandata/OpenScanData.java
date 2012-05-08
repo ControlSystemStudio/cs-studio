@@ -12,26 +12,40 @@ import org.csstudio.scan.ui.ScanHandlerUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 /** Handler that displays data for selected {@link ScanInfo}
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class OpenScanData  extends AbstractHandler
 {
-	@Override
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
 		final ScanInfo scan = ScanHandlerUtil.getSelectedScanInfo(event);
 		if (scan == null)
 			return null;
 
-		final Shell shell = HandlerUtil.getActiveWorkbenchWindow(event).getShell();
-		MessageDialog.openInformation(shell, "TODO", "Should show data of scan " + scan);
+		// Open ScanDataEditor for this scan
+		final IEditorInput input = new ScanInfoEditorInput(scan);
+    	try
+        {
+    		final IWorkbench workbench = PlatformUI.getWorkbench();
+    		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    		final IWorkbenchPage page = window.getActivePage();
+	        page.openEditor(input, ScanDataEditor.ID);
+        }
+        catch (PartInitException ex)
+        {
+        	throw new ExecutionException("Cannot open scan data editor", ex);
+        }
 
-	    // TODO Open display, connect to ScanDataModel, ...
-	    return null;
+		return null;
     }
 }
