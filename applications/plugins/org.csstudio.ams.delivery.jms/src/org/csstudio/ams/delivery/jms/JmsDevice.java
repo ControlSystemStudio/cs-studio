@@ -50,13 +50,15 @@ public class JmsDevice implements IDeliveryDevice<JmsAlarmMessage>, MessageListe
     
     private final Session _session;
     private MessageProducer _producer;
-
-    public JmsDevice(final Session session) throws JMSException {
+    private JmsWorkerStatus workerStatus;
+    
+    public JmsDevice(final Session session, JmsWorkerStatus status) throws JMSException {
         if (session == null) {
-            throw new IllegalArgumentException("session was null");
+            throw new IllegalArgumentException("Session was null");
         }
         _session = session;
         _producer = _session.createProducer(null);
+        workerStatus = status;
     }
     
     @Override
@@ -71,6 +73,7 @@ public class JmsDevice implements IDeliveryDevice<JmsAlarmMessage>, MessageListe
             final Topic target = targetTopicFor(receivedMessage);
             final MapMessage outgoingMessage = _session.createMapMessage();
             copyMessageEntries(receivedMessage, outgoingMessage);
+            workerStatus.setJmsTimestamp(System.currentTimeMillis());
             LOG.info("Recieved a message, now trying to send...");
             _producer.send(target, outgoingMessage);
             LOG.info("Message succesfully sent to topic \"{}\"", target.getTopicName());

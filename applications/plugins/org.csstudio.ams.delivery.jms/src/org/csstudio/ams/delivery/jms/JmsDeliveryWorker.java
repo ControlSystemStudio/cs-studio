@@ -53,14 +53,12 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
     
     private JmsDevice jmsDevice;
     
+    private JmsWorkerStatus workerStatus;
+    
     private boolean running;
-
-    private boolean workerCheckFlag;
 
     public JmsDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
-        running = true;
-        workerCheckFlag = false;
     }
     
     /**
@@ -69,6 +67,9 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
     @Override
     public void run() {
         
+        running = true;
+        workerStatus = new JmsWorkerStatus(300000L);
+
         LOG.info(workerName + " is running.");
 
         IPreferencesService prefs = Platform.getPreferencesService();
@@ -89,7 +90,7 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
 
             publisherHandle = SharedJmsConnections.sharedSenderConnection();
             publisherSession = publisherHandle.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            jmsDevice = new JmsDevice(publisherSession);
+            jmsDevice = new JmsDevice(publisherSession, workerStatus);
 
             consumerHandles = SharedJmsConnections.sharedReceiverConnections();
             consumerSession = new Session[consumerHandles.length];
@@ -117,7 +118,6 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
             synchronized (this) {
                 try {
                     this.wait();
-                    workerCheckFlag = false;
                 } catch (InterruptedException e) {
                     LOG.warn("I have been interrupted.");
                 }
@@ -178,20 +178,12 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
      * {@inheritDoc}
      */
     @Override
-    public boolean isWorking() {
-        workerCheckFlag = true;
-        synchronized (this) {
-            this.notify();
+    public synchronized boolean isWorking() {
+        boolean isWorking = false;
+        if (workerStatus != null) {
+            isWorking = workerStatus.isOk();
         }
-        final Object localLock = new Object();
-        synchronized (localLock) {
-            try {
-                localLock.wait(250);
-            } catch (final InterruptedException e) {
-                // Ignore me
-            }
-        }
-        return !workerCheckFlag;
+        return isWorking;
     }
 
     @Override
