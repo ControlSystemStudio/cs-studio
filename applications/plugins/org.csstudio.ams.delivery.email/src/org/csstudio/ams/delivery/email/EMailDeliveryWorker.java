@@ -59,10 +59,9 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
     
     private EMailDevice mailDevice;
     
-    private boolean running;
+    private EMailWorkerStatus workerStatus;
     
-    /** This flag indicates if the thread should check its working state */
-    private boolean checkState;
+    private boolean running;
     
     /**
      * Constructor.
@@ -71,9 +70,9 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
         setWorkerName(this.getClass().getSimpleName());
         emailProps = new EMailWorkerProperties();
         messageQueue = new OutgoingEMailQueue(this, emailProps);
-        mailDevice = new EMailDevice(emailProps);
+        workerStatus = new EMailWorkerStatus();
+        mailDevice = new EMailDevice(emailProps, workerStatus);
         running = true;
-        checkState = false;
         initJms();
     }
     
@@ -89,7 +88,6 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
             synchronized (this) {
                 try {
                     this.wait();
-                    checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
@@ -192,18 +190,6 @@ public class EMailDeliveryWorker extends AbstractDeliveryWorker {
 
     @Override
     public boolean isWorking() {
-        checkState = true;
-        synchronized (this) {
-            this.notify();
-        }
-        Object lock = new Object();
-        synchronized (lock) {
-            try {
-                lock.wait(250);
-            } catch (InterruptedException e) {
-                // Ignore me
-            }
-        }
-        return !checkState;
+        return workerStatus.isOk();
     }
 }

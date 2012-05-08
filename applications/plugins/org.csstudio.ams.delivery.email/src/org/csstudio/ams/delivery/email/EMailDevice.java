@@ -55,8 +55,11 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
     
     private EMailWorkerProperties props;
     
-    public EMailDevice(EMailWorkerProperties properties) {
+    private EMailWorkerStatus workerStatus;
+    
+    public EMailDevice(EMailWorkerProperties properties, EMailWorkerStatus status) {
         props = properties;
+        workerStatus = status;
         initEmail();
     }
 
@@ -142,6 +145,8 @@ public class EMailDevice implements IDeliveryDevice<EMailAlarmMessage> {
         } else {
             message.setMessageState(State.FAILED);
         }
+        
+        workerStatus.setMailSent(success);
         
         return success;
     }
