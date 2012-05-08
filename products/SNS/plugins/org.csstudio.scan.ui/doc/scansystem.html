@@ -269,7 +269,7 @@ to track the progress of a scan and potentially pause or abort it.
 <h3>Scan Server Setup</h3>
 
 <p>The scan server is maintained by a system administrator,
-it should always be available.
+it should for example run as a Linux service and thus always be available.
 End users can submit scans to the scan server, monitor their
 progress and also abort scans, but end users will typically not
 start or stop the scan server itself.
@@ -284,6 +284,66 @@ and <code>ScanServerPort</code> for the respective settings.
 </p>
 <p>The scan server itself if configured via a plugin customization file,
 review the one included in the server for an example.
+</p>
+
+
+<h3>Network Details</h3>
+
+<p>The network communication between the scan server and clients like CSS
+is based on Java RMI and currently uses two TCP network ports:</p>
+<ol>
+<li>The port number configured via the <code>ScanServerPort</code>
+    or associated Eclipse preference is used by the RMI <u>Registry</u>.
+    Clients connect to this registry to locate the scan server
+    interface.
+</li>
+<li>The next port number, i.e. <code>ScanServerPort+1</code>,
+    is where the actual scan server binding is exported to clients.
+</li>
+</ol>
+
+
+<h3>Firewalls</h3>
+
+<p>To allow access to a scan server through firewalls, both TCP ports
+described in the previous section need to be opened for access by clients.
+Their defaults are 4810 and 4811.
+</p>
+
+
+<h3>Multi-Network Installation</h3>
+
+<p>The scan server can be executed on a host with multiple network
+interfaces, for example a host with a public network interface
+like 160.0.0.1 as well as a private network interface like 10.0.0.1.
+This does, however, require additional configuration.
+</p>
+
+<p>The scan server will by default listen to connections on all available network interfaces,
+for example on the default TCP ports 4810 and 4811.
+But when a client connects to the registry on say 10.0.0.1:4810,
+i.e. the private network interface, the registry may return
+the address 160.0.0.1:4811, i.e. the public address of the scan server
+binding, or vice versa: A client connecting to the RMI registry on the public network
+may receive the private network address of the scan server binding.
+</p>
+
+<p>One solution to this problem is to start the scan server with a Java property
+<code>java.rmi.server.hostname</code> set like this that forces it to return a
+specific host name for all client connections:
+</p>
+
+<pre>
+ScanServer -pluginCustomization .... -vmargs -Djava.rmi.server.hostname=scan_server_host
+</pre>
+
+<p>The RMI Registry will now always instruct clients to use <code>scan_server_host:4811</code>
+to connect to the scan server binding.
+Clients on the public network need to define this host name to match the public network address
+of the host (scan_server_host = 160.0.0.1),
+while clients on the private network need to define the same name to match
+the private network address of the host (scan_server_host = 10.0.0.1).
+On a Linux computer, this can be done via the file <code>/etc/hosts</code>.
 </p>
 
 
