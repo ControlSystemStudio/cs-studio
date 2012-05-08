@@ -32,6 +32,7 @@ import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPrefer
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.application.deliverysystem.management.Restart;
 import org.csstudio.ams.application.deliverysystem.management.Stop;
+import org.csstudio.ams.application.deliverysystem.util.CommonMailer;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
@@ -56,6 +57,8 @@ public class DeliverySystemApplication implements IApplication,
     
     private static Logger LOG = LoggerFactory.getLogger(DeliverySystemApplication.class);
 	
+    private final static long WORKER_WATCH_INTERVAL = 150000L;
+    
     /** The ECF service */
     private ISessionService xmppService;
 
@@ -147,9 +150,36 @@ public class DeliverySystemApplication implements IApplication,
         while (running) {
             synchronized (lock) {
                 try {
-                    lock.wait();
+                    lock.wait(WORKER_WATCH_INTERVAL);
                 } catch (InterruptedException ie) {
                     LOG.warn("Application was interrupted.");
+                }
+            }
+            
+            if (running) {
+                // Check the jms worker
+                Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
+                while (worker.hasMoreElements()) {
+                    AbstractDeliveryWorker w = worker.nextElement();
+                    if (w.getWorkerName().equals("JmsDeliveryWorker")) {
+                        if (!w.isWorking()) {
+                            LOG.warn("{} seemed not to be working.", w.getWorkerName());
+                            restartWorker(w);
+                            String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
+                            if (value != null) {
+                                if (value.trim().length() > 0) {
+                                    String[] recipients = value.split(",");
+                                    CommonMailer.sendMultiMail("smtp.desy.de",
+                                                          "ams-mks2@desy.de",
+                                                          recipients,
+                                                          "Delivery Worker wurde neu gestartet",
+                                                          "Der " + w.getWorkerName() + " wurde neu gestartet.");
+                                }
+                            }
+                        } else {
+                            LOG.debug("{} is working.", w.getWorkerName());
+                        }
+                    }
                 }
             }
         }
@@ -186,6 +216,21 @@ public class DeliverySystemApplication implements IApplication,
 		return exitCode;
 	}
 
+	private void restartWorker(AbstractDeliveryWorker worker) {
+	    Thread thread = deliveryWorker.get(worker);
+	    worker.stopWorking();
+        try {
+            thread.join(2000L);
+            thread = null;
+        } catch (InterruptedException ie) {
+            // Ignore Me!
+        }
+        thread = new Thread(worker);
+        thread.start();
+        deliveryWorker.remove(worker);
+        deliveryWorker.put(worker, thread);
+	}
+	
     /**
      * {@inheritDoc}
      */

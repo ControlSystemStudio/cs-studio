@@ -49,6 +49,9 @@ public class DeliverySystemPreference<T> extends AbstractPreference<T> {
     public static final DeliverySystemPreference<String> DELIVERY_WORKER_LIST =
             new DeliverySystemPreference<String>("deliveryWorkerList", "");
 
+    public static final DeliverySystemPreference<String> WORKER_STATUS_MAIL =
+            new DeliverySystemPreference<String>("deliveryWorkerMail", "");
+
     private DeliverySystemPreference(final String keyAsString, final T defaultValue) {
         super(keyAsString, defaultValue);
     }
