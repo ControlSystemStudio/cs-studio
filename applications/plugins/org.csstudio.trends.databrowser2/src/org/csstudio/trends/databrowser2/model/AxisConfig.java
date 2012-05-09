@@ -176,7 +176,7 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
+		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, true, false);
 	}
 
 	/**
