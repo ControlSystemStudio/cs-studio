@@ -124,7 +124,7 @@ public class AxisConfig
 	        final double min, final double max, final boolean auto_scale,
 	        final boolean log_scale)
 	{
-		this(true, name, null, null, new RGB(0, 0, 0), 0.0, 10.0, false, false,
+		this(visible, name, null, null, rgb, min, max, auto_scale, log_scale,
 		        false, true, null, true, false, ""); //$NON-NLS-1$
 	}
 
@@ -476,8 +476,21 @@ public class AxisConfig
 	/** @return Copied axis configuration. Not associated with a model */
 	public AxisConfig copy()
 	{
-		return new AxisConfig(visible, name, rgb, min, max, auto_scale,
+		final AxisConfig copy = new AxisConfig(visible, name, rgb, min, max, auto_scale,
 		        log_scale);
+
+		copy.fontData = fontData;
+		copy.scaleFontData = scaleFontData;
+
+		copy.gridLineColor = gridLineColor;
+		copy.showGridLine = showGridLine;
+		copy.dashGridLine = dashGridLine;
+
+		copy.timeFormatEnabled = timeFormatEnabled;
+		copy.autoFormat = autoFormat;
+		copy.format = format;
+
+		return copy;
 	}
 
 	public void setFireEvent(final boolean fireEvent)
