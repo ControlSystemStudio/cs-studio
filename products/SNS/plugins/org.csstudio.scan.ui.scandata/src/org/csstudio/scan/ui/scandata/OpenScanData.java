@@ -28,7 +28,7 @@ public class OpenScanData  extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-		final ScanInfo scan = ScanHandlerUtil.getSelectedScanInfo(event);
+		final ScanInfo scan = ScanHandlerUtil.getScanInfo(event);
 		if (scan == null)
 			return null;
 
