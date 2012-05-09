@@ -15,12 +15,11 @@ import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Element;
 
-/**
- * Information about configuration of an axis
- *
- * @author Kay Kasemir
+/** Information about configuration of an axis
+ *  @author Kay Kasemir
  */
-public class AxisConfig {
+public class AxisConfig
+{
 	/** Model to which this axis belongs */
 	private Model model = null;
 
@@ -48,78 +47,85 @@ public class AxisConfig {
 	/** Logarithmic scale? */
 	private boolean log_scale;
 
-	/**
-	 * Fire Event when Axis config changed ?
-	 */
-	private boolean fireEvent;
-
+	/** Fire Event when Axis config changed? */
+	private boolean fireEvent = true;
 
 	// GRID LINE
-
 	private RGB gridLineColor;
 	private boolean showGridLine;
 	private boolean dashGridLine;
-
 
 	// FORMAT
 	private boolean timeFormatEnabled;
 	private boolean autoFormat;
 	private String format;
 
-
-	public RGB getGridLineColor() {
+	public RGB getGridLineColor()
+	{
 		return gridLineColor;
 	}
 
-	public void setGridLineColor(RGB gridLineColor) {
+	public void setGridLineColor(final RGB gridLineColor)
+	{
 		this.gridLineColor = gridLineColor;
 	}
 
-	public boolean isShowGridLine() {
+	public boolean isShowGridLine()
+	{
 		return showGridLine;
 	}
 
-	public void setShowGridLine(boolean showGridLine) {
+	public void setShowGridLine(final boolean showGridLine)
+	{
 		this.showGridLine = showGridLine;
 	}
 
-	public boolean isDashGridLine() {
+	public boolean isDashGridLine()
+	{
 		return dashGridLine;
 	}
 
-	public void setDashGridLine(boolean dashGridLine) {
+	public void setDashGridLine(boolean dashGridLine)
+	{
 		this.dashGridLine = dashGridLine;
 	}
 
-	public boolean isTimeFormatEnabled() {
+	public boolean isTimeFormatEnabled()
+	{
 		return timeFormatEnabled;
 	}
 
-	public void setTimeFormatEnabled(boolean timeFormatEnabled) {
+	public void setTimeFormatEnabled(boolean timeFormatEnabled)
+	{
 		this.timeFormatEnabled = timeFormatEnabled;
 	}
 
-	public boolean isAutoFormat() {
+	public boolean isAutoFormat()
+	{
 		return autoFormat;
 	}
 
-	public void setAutoFormat(boolean autoFormat) {
+	public void setAutoFormat(boolean autoFormat)
+	{
 		this.autoFormat = autoFormat;
 	}
 
-	public String getFormat() {
+	public String getFormat()
+	{
 		return format;
 	}
 
-	public void setFormat(String format) {
+	public void setFormat(String format)
+	{
 		this.format = format;
 	}
 
 	public AxisConfig(final Boolean visible, final String name, final RGB rgb,
-			final double min, final double max, final boolean auto_scale,
-			final boolean log_scale) {
+	        final double min, final double max, final boolean auto_scale,
+	        final boolean log_scale)
+	{
 		this(true, name, null, null, new RGB(0, 0, 0), 0.0, 10.0, false, false,
-				false, true, null, true, false, ""); //$NON-NLS-1$
+		        false, true, null, true, false, ""); //$NON-NLS-1$
 	}
 
 	/**
@@ -135,10 +141,13 @@ public class AxisConfig {
 	 * @param log_scale
 	 */
 	public AxisConfig(final Boolean visible, final String name, FontData font,
-			FontData scaleFont, final RGB rgb, final double min,
-			final double max, final boolean auto_scale,
-			final boolean log_scale, final boolean showGridLine,
-			final boolean dashGridLine, final RGB gridLineColor, final boolean autoFormat, final boolean timeFormat, final String format) {
+	        FontData scaleFont, final RGB rgb, final double min,
+	        final double max, final boolean auto_scale,
+	        final boolean log_scale, final boolean showGridLine,
+	        final boolean dashGridLine, final RGB gridLineColor,
+	        final boolean autoFormat, final boolean timeFormat,
+	        final String format)
+	{
 		this.visible = visible;
 		this.name = name;
 		this.fontData = font;
@@ -154,7 +163,7 @@ public class AxisConfig {
 		this.dashGridLine = dashGridLine;
 		this.gridLineColor = gridLineColor;
 
-		//FORMAT
+		// FORMAT
 		this.autoFormat = autoFormat;
 		this.timeFormatEnabled = timeFormat;
 		this.format = format;
@@ -165,7 +174,8 @@ public class AxisConfig {
 	 *
 	 * @param name
 	 */
-	public AxisConfig(final String name) {
+	public AxisConfig(final String name)
+	{
 		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
 	}
 
@@ -173,12 +183,14 @@ public class AxisConfig {
 	 * @param model
 	 *            Model to which this item belongs
 	 */
-	void setModel(final Model model) {
+	void setModel(final Model model)
+	{
 		this.model = model;
 	}
 
 	/** @return <code>true</code> if axis should be displayed */
-	public boolean isVisible() {
+	public boolean isVisible()
+	{
 		return visible;
 	}
 
@@ -186,13 +198,15 @@ public class AxisConfig {
 	 * @param visible
 	 *            Should axis be displayed?
 	 */
-	public void setVisible(final boolean visible) {
+	public void setVisible(final boolean visible)
+	{
 		this.visible = visible;
-		if(fireEvent)fireAxisChangeEvent();
+		if (fireEvent) fireAxisChangeEvent();
 	}
 
 	/** @return Axis title */
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
@@ -200,90 +214,95 @@ public class AxisConfig {
 	 * @param name
 	 *            New axis title
 	 */
-	public void setName(final String name) {
+	public void setName(final String name)
+	{
 		this.name = name;
-		if(fireEvent)fireAxisChangeEvent();
+		if (fireEvent) fireAxisChangeEvent();
 	}
 
-	public FontData getFontData() {
+	public FontData getFontData()
+	{
 		return fontData;
 	}
 
-	public void setFontData(FontData fontData) {
+	public void setFontData(FontData fontData)
+	{
 		this.fontData = fontData;
 	}
 
-	public FontData getScaleFontData() {
+	public FontData getScaleFontData()
+	{
 		return scaleFontData;
 	}
 
-	public void setScaleFontData(FontData scaleFontData) {
+	public void setScaleFontData(FontData scaleFontData)
+	{
 		this.scaleFontData = scaleFontData;
 	}
 
 	/** @return Color */
-	public RGB getColor() {
+	public RGB getColor()
+	{
 		return rgb;
 	}
 
-
-
-	/**
-	 * @param color
-	 *            New color
-	 */
-	public void setColor(final RGB color) {
+	/** @param color New color */
+	public void setColor(final RGB color)
+	{
 		rgb = color;
-		if(fireEvent)fireAxisChangeEvent();
-
+		if (fireEvent) fireAxisChangeEvent();
 
 	}
 
 	/** @return Axis range minimum */
-	public double getMin() {
+	public double getMin()
+	{
 		return min;
 	}
 
 	/** @return Axis range maximum */
-	public double getMax() {
+	public double getMax()
+	{
 		return max;
 	}
 
-	/**
-	 * @param limit
-	 *            New axis range maximum
+	/** @param min New axis range maximum
+	 *  @param max New axis range maximum
 	 */
-	public void setRange(final double min, final double max) {
+	public void setRange(final double min, final double max)
+	{
 		// Ignore empty range
-		if (min == max)
-			return;
+		if (min == max) return;
 		// Assert min is below max
-		if (min < max) {
+		if (min < max)
+		{
 			this.min = min;
 			this.max = max;
-		} else {
+		}
+		else
+		{
 			this.min = max;
 			this.max = min;
 		}
-		if(fireEvent)fireAxisChangeEvent();
+		if (fireEvent) fireAxisChangeEvent();
 	}
 
 	/** @return Auto-scale? */
-	public boolean isAutoScale() {
+	public boolean isAutoScale()
+	{
 		return auto_scale;
 	}
 
-	/**
-	 * @param auto_scale
-	 *            Should axis auto-scale?
-	 */
-	public void setAutoScale(final boolean auto_scale) {
+	/** @param auto_scale Should axis auto-scale? */
+	public void setAutoScale(final boolean auto_scale)
+	{
 		this.auto_scale = auto_scale;
-		if(fireEvent)fireAxisChangeEvent();
+		if (fireEvent) fireAxisChangeEvent();
 	}
 
 	/** @return Logarithmic scale? */
-	public boolean isLogScale() {
+	public boolean isLogScale()
+	{
 		return log_scale;
 	}
 
@@ -291,15 +310,16 @@ public class AxisConfig {
 	 * @param log_scale
 	 *            Use logarithmic scale?
 	 */
-	public void setLogScale(final boolean log_scale) {
+	public void setLogScale(final boolean log_scale)
+	{
 		this.log_scale = log_scale;
-		if(fireEvent)fireAxisChangeEvent();
+		if (fireEvent) fireAxisChangeEvent();
 	}
 
 	/** Notify model about changes */
-	private void fireAxisChangeEvent() {
-		if (model != null)
-			model.fireAxisChangedEvent(this);
+	private void fireAxisChangeEvent()
+	{
+		if (model != null) model.fireAxisChangedEvent(this);
 	}
 
 	/**
@@ -308,16 +328,17 @@ public class AxisConfig {
 	 * @param writer
 	 *            PrintWriter
 	 */
-	public void write(final PrintWriter writer) {
+	public void write(final PrintWriter writer)
+	{
 		XMLWriter.start(writer, 2, Model.TAG_AXIS);
 		writer.println();
 		XMLWriter.XML(writer, 3, Model.TAG_NAME, name);
 
 		if (fontData != null)
-			XMLWriter.XML(writer, 3, Model.TAG_FONT, fontData);
+		    XMLWriter.XML(writer, 3, Model.TAG_FONT, fontData);
 
 		if (scaleFontData != null)
-			XMLWriter.XML(writer, 3, Model.TAG_SCALE_FONT, scaleFontData);
+		    XMLWriter.XML(writer, 3, Model.TAG_SCALE_FONT, scaleFontData);
 
 		if (rgb != null)
 		{
@@ -332,9 +353,9 @@ public class AxisConfig {
 		XMLWriter.XML(writer, 3, Model.TAG_MIN, min);
 		XMLWriter.XML(writer, 3, Model.TAG_MAX, max);
 		XMLWriter.XML(writer, 3, Model.TAG_LOG_SCALE,
-				Boolean.toString(log_scale));
+		        Boolean.toString(log_scale));
 		XMLWriter.XML(writer, 3, Model.TAG_AUTO_SCALE,
-				Boolean.toString(auto_scale));
+		        Boolean.toString(auto_scale));
 		XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(visible));
 
 		// GRID LINE
@@ -345,12 +366,12 @@ public class AxisConfig {
 		XMLWriter.XML(writer, 4, Model.TAG_DASH_GRID_LINE, dashGridLine);
 
 		if (gridLineColor != null)
-			Model.writeColor(writer, 4, Model.TAG_COLOR, gridLineColor);
+		    Model.writeColor(writer, 4, Model.TAG_COLOR, gridLineColor);
 
 		XMLWriter.end(writer, 3, Model.TAG_GRID_LINE);
 		writer.println();
 
-		//FORMAT
+		// FORMAT
 		XMLWriter.start(writer, 3, Model.TAG_FORMAT);
 		writer.println();
 
@@ -373,47 +394,52 @@ public class AxisConfig {
 	 * @throws Exception
 	 *             on error
 	 */
-	public static AxisConfig fromDocument(final Element node) throws Exception {
+	public static AxisConfig fromDocument(final Element node) throws Exception
+	{
 		final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
 
 		String fontInfo = DOMHelper.getSubelementString(node, Model.TAG_FONT);
 
 		FontData fontData = null;
-		if (fontInfo != null && !fontInfo.trim().isEmpty()) {
+		if (fontInfo != null && !fontInfo.trim().isEmpty())
+		{
 			fontData = new FontData(fontInfo);
 		}
 
 		fontInfo = DOMHelper.getSubelementString(node, Model.TAG_SCALE_FONT);
 
 		FontData scaleFontData = null;
-		if (fontInfo != null && !fontInfo.trim().isEmpty()) {
+		if (fontInfo != null && !fontInfo.trim().isEmpty())
+		{
 			scaleFontData = new FontData(fontInfo);
 		}
 
 		final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN,
-				0.0);
+		        0.0);
 		final double max = DOMHelper.getSubelementDouble(node, Model.TAG_MAX,
-				10.0);
+		        10.0);
 		final boolean auto_scale = DOMHelper.getSubelementBoolean(node,
-				Model.TAG_AUTO_SCALE, false);
+		        Model.TAG_AUTO_SCALE, false);
 		final boolean log_scale = DOMHelper.getSubelementBoolean(node,
-				Model.TAG_LOG_SCALE, false);
+		        Model.TAG_LOG_SCALE, false);
 		final boolean visible = DOMHelper.getSubelementBoolean(node,
-				Model.TAG_VISIBLE, true);
+		        Model.TAG_VISIBLE, true);
 
 		RGB rgb = Model.loadColorFromDocument(node);
-		if (rgb == null)
-			rgb = new RGB(0, 0, 0);
+		if (rgb == null) rgb = new RGB(0, 0, 0);
 
 		// GRID LINE
 		boolean showGridLine = false;
 		boolean dashGridLine = false;
 		RGB rgbGridLine = new RGB(0, 0, 0);
-		final Element gridNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_GRID_LINE);
+		final Element gridNode = DOMHelper.findFirstElementNode(
+		        node.getFirstChild(), Model.TAG_GRID_LINE);
 		if (gridNode != null)
 		{
-			showGridLine = DOMHelper.getSubelementBoolean(gridNode, Model.TAG_SHOW_GRID_LINE, showGridLine);
-			dashGridLine = DOMHelper.getSubelementBoolean(gridNode,	Model.TAG_DASH_GRID_LINE, dashGridLine);
+			showGridLine = DOMHelper.getSubelementBoolean(gridNode,
+			        Model.TAG_SHOW_GRID_LINE, showGridLine);
+			dashGridLine = DOMHelper.getSubelementBoolean(gridNode,
+			        Model.TAG_DASH_GRID_LINE, dashGridLine);
 			rgbGridLine = Model.loadColorFromDocument(gridNode);
 		}
 
@@ -421,40 +447,41 @@ public class AxisConfig {
 		boolean autoFormat = true;
 		boolean timeFormat = false;
 		String format = ""; //$NON-NLS-1$
-		final Element formatNode = DOMHelper.findFirstElementNode(node.getFirstChild(), Model.TAG_FORMAT);
+		final Element formatNode = DOMHelper.findFirstElementNode(
+		        node.getFirstChild(), Model.TAG_FORMAT);
 		if (formatNode != null)
 		{
-			autoFormat = DOMHelper.getSubelementBoolean(formatNode,	Model.TAG_AUTO_FORMAT, autoFormat);
-			timeFormat = DOMHelper.getSubelementBoolean(formatNode, Model.TAG_TIME_FORMAT, timeFormat);
-			format = DOMHelper.getSubelementString(formatNode, Model.TAG_FORMAT_PATTERN, format);
+			autoFormat = DOMHelper.getSubelementBoolean(formatNode,
+			        Model.TAG_AUTO_FORMAT, autoFormat);
+			timeFormat = DOMHelper.getSubelementBoolean(formatNode,
+			        Model.TAG_TIME_FORMAT, timeFormat);
+			format = DOMHelper.getSubelementString(formatNode,
+			        Model.TAG_FORMAT_PATTERN, format);
 		}
 
 		return new AxisConfig(visible, name, fontData, scaleFontData, rgb, min,
-				max, auto_scale, log_scale, showGridLine, dashGridLine,
-				rgbGridLine, autoFormat, timeFormat, format);
+		        max, auto_scale, log_scale, showGridLine, dashGridLine,
+		        rgbGridLine, autoFormat, timeFormat, format);
 	}
 
 	/** @return String representation for debugging */
 	@SuppressWarnings("nls")
 	@Override
-	public String toString() {
+	public String toString()
+	{
 		return "Axis '" + name + "', range " + min + " ... " + max + ", "
-				+ rgb.toString();
+		        + rgb.toString();
 	}
 
 	/** @return Copied axis configuration. Not associated with a model */
-	public AxisConfig copy() {
+	public AxisConfig copy()
+	{
 		return new AxisConfig(visible, name, rgb, min, max, auto_scale,
-				log_scale);
+		        log_scale);
 	}
 
-	public boolean isFireEvent() {
-		return fireEvent;
-	}
-
-	public void setFireEvent(boolean fireEvent) {
+	public void setFireEvent(final boolean fireEvent)
+	{
 		this.fireEvent = fireEvent;
 	}
-
-
 }

@@ -84,16 +84,8 @@ public class Plot
 	/** Button to enable/disable scrolling */
 	final private ScrollButton scroll_button;
 
-	/**
-	 * Flag to suppress XYGraph events when the plot itself changes the time
-	 * axis
-	 */
-	private boolean plot_changes_timeaxis = false;
-
-	/**
-	 * Flag to suppress XYGraph events when the plot itself changes a value axis
-	 */
-	private boolean plot_changes_valueaxis = false;
+	/** Flag to suppress XYGraph events when the plot itself changes the graph */
+	private boolean plot_changes_graph = false;
 
 	private TimeConfigButton time_config_button;
 
@@ -181,18 +173,17 @@ public class Plot
 					final Range old_range, final Range new_range)
 			{
 				// Check that it's not caused by ourself, and a real change
-				if (!plot_changes_timeaxis && !old_range.equals(new_range)
-						&& listener != null)
-					listener.timeAxisChanged((long) new_range.getLower(),
-							(long) new_range.getUpper());
+				if (plot_changes_graph  ||  old_range.equals(new_range)   ||  listener==null)
+					return;
+				listener.timeAxisChanged((long) new_range.getLower(),
+						(long) new_range.getUpper());
 			}
 
 			@Override
 			public void axisForegroundColorChanged(Axis axis, Color oldColor,
 					Color newColor)
 			{
-				// if(listener != null)
-				// listener.timeAxisForegroundColorChanged(oldColor, newColor);
+				// NOP
 			}
 
 			@Override
@@ -363,8 +354,7 @@ public class Plot
 			public void axisRangeChanged(final Axis axis,
 					final Range old_range, final Range new_range)
 			{
-				if (plot_changes_valueaxis || new_range.equals(old_range)
-						|| listener == null)
+				if (plot_changes_graph || new_range.equals(old_range)  || listener == null)
 					return;
 				listener.valueAxisChanged(index, new_range.getLower(),
 						new_range.getUpper());
@@ -374,7 +364,7 @@ public class Plot
 			public void axisForegroundColorChanged(final Axis axis, final Color oldColor,
 					final Color newColor)
 			{
-				if (newColor.equals(oldColor)  ||  listener == null)
+				if (plot_changes_graph || newColor.equals(oldColor)  ||  listener == null)
 					return;
 				listener.valueAxisForegroundColorChanged(index, oldColor, newColor);
 			}
@@ -383,7 +373,7 @@ public class Plot
 			public void axisTitleChanged(final Axis axis, final String oldTitle,
 					final String newTitle)
 			{
-				if (newTitle.equals(oldTitle) || listener == null)
+				if (plot_changes_graph || newTitle.equals(oldTitle) || listener == null)
 					return;
 				listener.valueAxisTitleChanged(index, oldTitle, newTitle);
 			}
@@ -392,7 +382,7 @@ public class Plot
 			public void axisAutoScaleChanged(final Axis axis, final boolean oldAutoScale,
 					final boolean newAutoScale)
 			{
-				if (oldAutoScale == newAutoScale || listener == null)
+				if (plot_changes_graph || oldAutoScale == newAutoScale || listener == null)
 					return;
 				listener.valueAxisAutoScaleChanged(index, oldAutoScale,	newAutoScale);
 			}
@@ -401,14 +391,15 @@ public class Plot
 			public void axisLogScaleChanged(final Axis axis, final boolean old,
 					final boolean logScale)
 			{
-				if (listener != null)
-					listener.valueAxisLogScaleChanged(index, old, logScale);
+				if (plot_changes_graph  ||  listener == null)
+					return;
+				listener.valueAxisLogScaleChanged(index, old, logScale);
 			}
 		};
 	}
 
 	/**
-	 * Update configuration of axis
+	 * Update configuration of value axis
 	 *
 	 * @param index
 	 *            Axis index. Y axes will be created as needed.
@@ -418,7 +409,7 @@ public class Plot
 	public void updateAxis(final int index, final AxisConfig config)
 	{
 		final Axis axis = getYAxis(index);
-		updateAxis(axis, config, false); //False => ValueAxis
+		updateAxis(axis, config);
 	}
 
 	/**
@@ -426,9 +417,10 @@ public class Plot
 	 * @param config
 	 *            Desired axis configuration
 	 */
-	public void updateTimeAxis(final AxisConfig config) {
+	public void updateTimeAxis(final AxisConfig config)
+	{
 		final Axis axis = xygraph.getXAxisList().get(0);
-		updateAxis(axis, config, true);
+		updateAxis(axis, config);
 	}
 
 	/**
@@ -436,51 +428,49 @@ public class Plot
 	 *
 	 * @param axis The axis to update
 	 * @param config Desired axis configuration
-	 * @param timeAxis Update the time Axis (TRUE) or a value Axis (FALSE)
 	 */
-	private void updateAxis(Axis axis, final AxisConfig config, boolean timeAxis) {
-		axis.setVisible(config.isVisible());
-		axis.setTitle(config.getName());
-
-		if (config.getFontData() != null)
-			axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(
-					config.getFontData()));
-
-		if (config.getScaleFontData() != null)
-			axis.setFont(XYGraphMediaFactory.getInstance().getFont(
-					config.getScaleFontData()));
-
-		axis.setForegroundColor(media_registry.getColor(config.getColor()));
-
-		if (timeAxis == false) {
-			plot_changes_valueaxis = true;
-			axis.setRange(config.getMin(), config.getMax());
-		} else {
-			plot_changes_timeaxis = true;
-			//IGNORE RANGE because the the range is not set from time axis config but from model start/end
+	private void updateAxis(final Axis axis, final AxisConfig config)
+	{
+		plot_changes_graph = true;
+		try
+		{
+			axis.setVisible(config.isVisible());
+			axis.setTitle(config.getName());
+	
+			if (config.getFontData() != null)
+				axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(
+						config.getFontData()));
+	
+			if (config.getScaleFontData() != null)
+				axis.setFont(XYGraphMediaFactory.getInstance().getFont(
+						config.getScaleFontData()));
+	
+			axis.setForegroundColor(media_registry.getColor(config.getColor()));
+	
+			// Ignore time axis range, it's updated by data browser
+			if (! axis.isDateEnabled())
+				axis.setRange(config.getMin(), config.getMax());
+	
+			axis.setLogScale(config.isLogScale());
+			axis.setAutoScale(config.isAutoScale());
+	
+			// GRID
+			axis.setShowMajorGrid(config.isShowGridLine());
+			axis.setDashGridLine(config.isDashGridLine());
+	
+			if (config.getGridLineColor() != null)
+				axis.setMajorGridColor(media_registry.getColor(config
+						.getGridLineColor()));
+	
+			// FORMAT
+			axis.setAutoFormat(config.isAutoFormat());
+			axis.setFormatPattern(config.getFormat());
+			axis.setDateEnabled(config.isTimeFormatEnabled());
 		}
-
-		axis.setLogScale(config.isLogScale());
-		axis.setAutoScale(config.isAutoScale());
-
-		if (timeAxis == false) {
-			plot_changes_valueaxis = false;
-		} else {
-			plot_changes_timeaxis = false;
+		finally
+		{
+			plot_changes_graph = false;
 		}
-
-		// GRID
-		axis.setShowMajorGrid(config.isShowGridLine());
-		axis.setDashGridLine(config.isDashGridLine());
-
-		if (config.getGridLineColor() != null)
-			axis.setMajorGridColor(media_registry.getColor(config
-					.getGridLineColor()));
-
-		// FORMAT
-		axis.setAutoFormat(config.isAutoFormat());
-		axis.setFormatPattern(config.getFormat());
-		axis.setDateEnabled(config.isTimeFormatEnabled());
 	}
 
 	/**
@@ -565,7 +555,6 @@ public class Plot
 
 				if (listener == null)
 					return;
-
 				listener.traceTypeChanged(index, old, newTraceType);
 			}
 
@@ -575,10 +564,8 @@ public class Plot
 
 				if (listener == null)
 					return;
-
 				listener.traceColorChanged(index, old, newColor);
 			}
-
 		};
 	}
 
@@ -734,9 +721,9 @@ public class Plot
 			@Override
 			public void run()
 			{
-				plot_changes_timeaxis = true;
+				plot_changes_graph = true;
 				xygraph.primaryXAxis.setRange(start_ms, end_ms);
-				plot_changes_timeaxis = false;
+				plot_changes_graph = false;
 			}
 		});
 	}
@@ -753,9 +740,9 @@ public class Plot
 	{
 		final double start_ms = start.toDouble() * 1000;
 		final double end_ms = end.toDouble() * 1000;
-		plot_changes_timeaxis = true;
+		plot_changes_graph = true;
 		xygraph.primaryXAxis.setRange(start_ms, end_ms);
-		plot_changes_timeaxis = false;
+		plot_changes_graph = false;
 	}
 
 	/**
@@ -850,11 +837,13 @@ public class Plot
 		return infos;
 	}
 
-	public XYGraphSettings getGraphSettings() {
+	public XYGraphSettings getGraphSettings()
+	{
 		return XYGraphSettingsUtil.createGraphSettings(plot.getXYGraph());
 	}
 
-	public void setGraphSettings(XYGraphSettings settings) {
+	public void setGraphSettings(final XYGraphSettings settings)
+	{
 		XYGraphSettingsUtil.restoreXYGraphPropsFromSettings(plot.getXYGraph(),
 				settings);
 	}
