@@ -471,6 +471,11 @@ public class DataBrowserEditor extends EditorPart
         {
         	// Update model with info that's kept in plot
 
+        	// TODO Review. Why update the model when _saving_?
+        	// The model should always have the correct info
+        	// because it's listening to the plot,
+        	// and here the data is simply written.
+
         	//TIME AXIS
       	  	Axis timeAxis = plot.getXYGraph().getXAxisList().get(0);
       	  	AxisConfig confTime = model.getTimeAxis();

@@ -436,35 +436,38 @@ public class Plot
 		{
 			axis.setVisible(config.isVisible());
 			axis.setTitle(config.getName());
-	
+
 			if (config.getFontData() != null)
 				axis.setTitleFont(XYGraphMediaFactory.getInstance().getFont(
 						config.getFontData()));
-	
+
 			if (config.getScaleFontData() != null)
 				axis.setFont(XYGraphMediaFactory.getInstance().getFont(
 						config.getScaleFontData()));
-	
+
 			axis.setForegroundColor(media_registry.getColor(config.getColor()));
-	
+
 			// Ignore time axis range, it's updated by data browser
 			if (! axis.isDateEnabled())
 				axis.setRange(config.getMin(), config.getMax());
-	
+
 			axis.setLogScale(config.isLogScale());
 			axis.setAutoScale(config.isAutoScale());
-	
+
 			// GRID
 			axis.setShowMajorGrid(config.isShowGridLine());
 			axis.setDashGridLine(config.isDashGridLine());
-	
+
 			if (config.getGridLineColor() != null)
 				axis.setMajorGridColor(media_registry.getColor(config
 						.getGridLineColor()));
-	
+
 			// FORMAT
-			axis.setAutoFormat(config.isAutoFormat());
+			// Setting the format clears auto-format,
+			// but we'd like to "remember" the format in any case,
+			// so set it and then (re-)set auto-format
 			axis.setFormatPattern(config.getFormat());
+			axis.setAutoFormat(config.isAutoFormat());
 			axis.setDateEnabled(config.isTimeFormatEnabled());
 		}
 		finally
