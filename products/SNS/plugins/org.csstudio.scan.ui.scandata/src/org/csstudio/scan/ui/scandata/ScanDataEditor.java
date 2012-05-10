@@ -10,18 +10,21 @@ package org.csstudio.scan.ui.scandata;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -39,7 +42,7 @@ import org.eclipse.ui.part.EditorPart;
 public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 {
 	/** Editor ID defined in plugin.xml */
-	final public static String ID = "org.csstudio.scan.ui.scandata.display";
+	final public static String ID = "org.csstudio.scan.ui.scandata.display"; //$NON-NLS-1$
 
 	private TableViewer table_viewer;
 	private ScanDataModel scan_data_model;
@@ -50,7 +53,7 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
             throws PartInitException
     {
 		if (! (input instanceof ScanInfoEditorInput))
-			throw new PartInitException("Expecting ScanInfoEditorInput");
+			throw new PartInitException("Expecting ScanInfoEditorInput"); //$NON-NLS-1$
     	setInput(input);
     	setSite(site);
 
@@ -74,47 +77,43 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 		final TableColumnLayout layout = new TableColumnLayout();
 		parent.setLayout(layout);
 
+		// Create table
 		table_viewer = new TableViewer(parent,
 				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.VIRTUAL);
 		final Table table = table_viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
-		TableViewerColumn column = new TableViewerColumn(table_viewer, SWT.LEFT);
-		TableColumn col = column.getColumn();
+		// Add timestamp column
+		final TableViewerColumn column = new TableViewerColumn(table_viewer, SWT.LEFT);
+		final TableColumn col = column.getColumn();
 		col.setMoveable(true);
 		col.setResizable(true);
-		col.setText("Time");
+		col.setText(Messages.Timestamp);
 		column.setLabelProvider(new CellLabelProvider()
 		{
 			@Override
-			public void update(final ViewerCell cell)
-			{
-				final ScanDataRow row = (ScanDataRow) cell.getElement();
-				cell.setText(row.getTimestamp().toString());
-			}
-		});
-		layout.setColumnData(col, new ColumnWeightData(100, 120));
+		    public String getToolTipText(Object element)
+		    {
+			    final ScanDataRow row = (ScanDataRow) element;
+			    return DataFormatter.format(row.getTimestamp());
+		    }
 
-		column = new TableViewerColumn(table_viewer, SWT.RIGHT);
-		col = column.getColumn();
-		col.setMoveable(true);
-		col.setResizable(true);
-		col.setText("Value 1");
-		column.setLabelProvider(new CellLabelProvider()
-		{
 			@Override
 			public void update(final ViewerCell cell)
 			{
-				final ScanDataRow row = (ScanDataRow) cell.getElement();
-				final ScanSample sample = row.getSample(cell.getColumnIndex()-1);
-				cell.setText(sample.toString());
+				cell.setText(getToolTipText((ScanDataRow) cell.getElement()));
 			}
 		});
-		layout.setColumnData(col, new ColumnWeightData(100, 60));
+		layout.setColumnData(col, new ColumnWeightData(10, 155));
 
+		// Enable tool tips
+		ColumnViewerToolTipSupport.enableFor(table_viewer);
+
+		// Device columns will be added in updateTableColumns
 		table_viewer.setContentProvider(new ScanDataTableContentProvider());
 
+		// Create data model that will provide updates
 		final ScanInfoEditorInput input = getScanInfoEditorInput();
 		try
 		{
@@ -122,9 +121,57 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 		}
 		catch (Exception ex)
 		{
-			ExceptionDetailsErrorDialog.openError(parent.getShell(), "Cannot obtain scan data", ex);
+			ExceptionDetailsErrorDialog.openError(parent.getShell(), "Cannot obtain scan data", ex); //$NON-NLS-1$
 		}
+
+		// Release model when editor is closed
+		parent.addDisposeListener(new DisposeListener()
+		{
+			@Override
+			public void widgetDisposed(final DisposeEvent e)
+			{
+				scan_data_model.release();
+				scan_data_model = null;
+			}
+		});
     }
+
+	/** Create table columns
+	 *  @param devices Devices that each need a table columns
+	 */
+	private void updateTableColumns(final String[] devices)
+	{
+		final Table table = table_viewer.getTable();
+		final Composite parent = table.getParent();
+
+		// Avoid flicker while the table is fundamentally updated
+		parent.setRedraw(false);
+
+		// Remove all existing device columns, leaving the timestamp column
+		for (int i=table.getColumnCount()-1;  i>0;  --i)
+			table.getColumn(i).dispose();
+
+		// Add device columns
+		final TableColumnLayout layout = (TableColumnLayout) parent.getLayout();
+
+		for (int i=0; i<devices.length; ++i)
+		{
+			final String device = devices[i];
+			final TableViewerColumn column = new TableViewerColumn(table_viewer, SWT.CENTER);
+			final TableColumn col = column.getColumn();
+			col.setMoveable(true);
+			col.setResizable(true);
+			col.setText(device);
+			column.setLabelProvider(new ScanDataLabelProvider(i));
+			layout.setColumnData(col, new ColumnWeightData(100, 35));
+		}
+
+		// Trigger re-layout
+		parent.layout();
+
+		// Update GUI
+		parent.setRedraw(true);
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -170,8 +217,12 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 		// Transform data in update thread
 		final List<ScanDataRow> rows = new ArrayList<ScanDataRow>();
 		SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+		final String[] devices = sheet.getDevices();
         while (sheet.hasNext())
-        	rows.add(new ScanDataRow(sheet.getTimestamp(), sheet.getSamples()));
+        {
+        	final ScanDataRow row = new ScanDataRow(sheet.getTimestamp(), sheet.getSamples());
+			rows.add(row);
+        }
         sheet = null;
 
 		// Update display in UI thread
@@ -185,6 +236,11 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 			{
 				if (table.isDisposed())
 					return;
+
+				// Has the data changed?
+				if (table.getColumnCount() != devices.length + 1)
+					updateTableColumns(devices);
+
 				table_viewer.setInput(rows);
 			}
 		});

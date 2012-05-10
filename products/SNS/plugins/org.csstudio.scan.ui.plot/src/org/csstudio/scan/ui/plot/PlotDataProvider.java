@@ -8,7 +8,6 @@
 package org.csstudio.scan.ui.plot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -69,8 +68,7 @@ public class PlotDataProvider implements IDataProvider
         this.last_serial = last_serial;
         // Arrange data in 'spreadsheet'
         final SpreadsheetScanDataIterator sheet =
-                new SpreadsheetScanDataIterator(scan_data,
-                        Arrays.asList(x_device, y_device));
+                new SpreadsheetScanDataIterator(scan_data, x_device, y_device);
 
         final List<SampleAdapter> new_samples = new ArrayList<SampleAdapter>();
         Range new_xrange = new Range(0, 0);

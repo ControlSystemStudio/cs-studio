@@ -30,7 +30,7 @@ import org.csstudio.scan.util.TextTable;
 public class SpreadsheetScanDataIterator
 {
     /** Device names, i.e. columns in spreadsheet */
-    final private List<String> device_names;
+    final private String[] device_names;
 
     /** Raw data for each device */
     final private List<ScanSample>[] data;
@@ -57,28 +57,18 @@ public class SpreadsheetScanDataIterator
      *  @param scan_data Scan data
      *  @param device_names Devices that must be in the scan data
      */
+    @SuppressWarnings("unchecked")
     public SpreadsheetScanDataIterator(final ScanData scan_data, final String... device_names)
     {
-        this(scan_data, Arrays.asList(device_names));
-    }
-
-    /** Initialize for specific devices
-     *  @param scan_data Scan data
-     *  @param device_names Devices that must be in the scan data
-     */
-	@SuppressWarnings("unchecked")
-    public SpreadsheetScanDataIterator(final ScanData scan_data,
-	        final List<String> device_names)
-    {
 	    this.device_names = device_names;
-        final int N = device_names.size();
+        final int N = device_names.length;
 
         data = new List[N];
         value = new ScanSample[N];
         index = new int[N];
         for (int i=0; i<N; ++i)
         {
-            data[i] = scan_data.getSamples(device_names.get(i));
+            data[i] = scan_data.getSamples(device_names[i]);
             if (data[i] == null)
                 data[i] = Collections.emptyList();
             index[i] = 0;
@@ -97,7 +87,7 @@ public class SpreadsheetScanDataIterator
 	}
 
 	/** @return Device names, i.e. spreadsheet columns */
-	public List<String> getDevices()
+	public String[] getDevices()
 	{
 	    return device_names;
 	}
@@ -106,7 +96,7 @@ public class SpreadsheetScanDataIterator
     public boolean hasNext()
 	{
         // Find oldest serial
-        final int N = device_names.size();
+        final int N = device_names.length;
 		long oldest = Long.MAX_VALUE;
 		timestamp = null;
 		for (int i=0; i<N; ++i)
@@ -136,7 +126,10 @@ public class SpreadsheetScanDataIterator
 			// Device #i has data
 			if (sample.getSerial() <= oldest)
 			{
+				// Use that as the 'value' for this line
 				value[i] = sample;
+				// Set index to the next sample, which will
+				// be used as 'value' once we reach that time slot.
 				++index[i];
 			}
 			// else: sample[i] already points to a sample
@@ -155,7 +148,8 @@ public class SpreadsheetScanDataIterator
     /** @return Samples on the current spreadsheet line */
     public ScanSample[] getSamples()
     {
-        return value;
+    	// Copy because value[] will be overridden with next line
+        return Arrays.copyOf(value, value.length);
     }
 
     /** Write spreadsheet to stream

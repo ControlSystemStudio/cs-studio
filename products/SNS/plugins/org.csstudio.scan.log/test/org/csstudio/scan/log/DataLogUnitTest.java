@@ -55,7 +55,7 @@ public class DataLogUnitTest
         logData(logger);
 
         final ScanData data = logger.getScanData();
-        assertEquals(2, data.getDevices().size());
+        assertEquals(2, data.getDevices().length);
         assertNotNull(data.getSamples("x"));
         assertNotNull(data.getSamples("y"));
         for (ScanSample sample : data.getSamples("x"))

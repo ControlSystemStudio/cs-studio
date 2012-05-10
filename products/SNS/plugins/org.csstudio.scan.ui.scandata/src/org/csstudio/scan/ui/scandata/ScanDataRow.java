@@ -9,11 +9,13 @@ package org.csstudio.scan.ui.scandata;
 
 import java.util.Date;
 
+import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanSample;
 
 /** One row of data for a table of scan samples
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanDataRow
 {
 	final private Date timestamp;
@@ -48,5 +50,19 @@ public class ScanDataRow
 	public ScanSample getSample(final int index)
     {
     	return samples[index];
+    }
+
+	/** @return Debug representation */
+    @Override
+    public String toString()
+    {
+		final StringBuilder buf = new StringBuilder();
+		buf.append(DataFormatter.format(timestamp));
+		for (ScanSample sample : samples)
+		{
+			buf.append(" ");
+			buf.append(sample);
+		}
+		return buf.toString();
     }
 }
