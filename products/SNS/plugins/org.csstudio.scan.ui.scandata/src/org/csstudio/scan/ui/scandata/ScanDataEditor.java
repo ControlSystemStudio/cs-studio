@@ -14,14 +14,23 @@ import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.layout.TableColumnLayout;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -30,7 +39,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 
 /** Eclipse "Editor" to display scan data
@@ -44,7 +55,10 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 	/** Editor ID defined in plugin.xml */
 	final public static String ID = "org.csstudio.scan.ui.scandata.display"; //$NON-NLS-1$
 
+	/** GUI */
 	private TableViewer table_viewer;
+
+	/** Model that tracks the current scan data */
 	private ScanDataModel scan_data_model;
 
 	/** {@inheritDoc} */
@@ -61,18 +75,48 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
     	setPartName(input.getName());
     }
 
+	/** @return editor input as {@link ScanInfoEditorInput} */
 	private ScanInfoEditorInput getScanInfoEditorInput()
 	{
 		return (ScanInfoEditorInput) getEditorInput();
 	}
 
-	/** Create GUI elements.
+	/** Create GUI elements, connect to model, ...
 	 * {@inheritDoc}
 	 */
 	@Override
     public void createPartControl(final Composite parent)
     {
-		// TableColumnLayout requires the table to be the only
+		createComponents(parent);
+		createContextMenu();
+
+		// Create data model that will provide updates
+		final ScanInfoEditorInput input = getScanInfoEditorInput();
+		try
+		{
+			scan_data_model = new ScanDataModel(input.getScanID(), this);
+		}
+		catch (Exception ex)
+		{
+			ExceptionDetailsErrorDialog.openError(parent.getShell(), "Cannot obtain scan data", ex); //$NON-NLS-1$
+		}
+
+		// Release model when editor is closed
+		parent.addDisposeListener(new DisposeListener()
+		{
+			@Override
+			public void widgetDisposed(final DisposeEvent e)
+			{
+				scan_data_model.release();
+				scan_data_model = null;
+			}
+		});
+    }
+
+	/** Create GUI elements */
+	private void createComponents(final Composite parent)
+    {
+	    // TableColumnLayout requires the table to be the only
 		// child of it's parent.
 		final TableColumnLayout layout = new TableColumnLayout();
 		parent.setLayout(layout);
@@ -112,30 +156,25 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 
 		// Device columns will be added in updateTableColumns
 		table_viewer.setContentProvider(new ScanDataTableContentProvider());
-
-		// Create data model that will provide updates
-		final ScanInfoEditorInput input = getScanInfoEditorInput();
-		try
-		{
-			scan_data_model = new ScanDataModel(input.getScanID(), this);
-		}
-		catch (Exception ex)
-		{
-			ExceptionDetailsErrorDialog.openError(parent.getShell(), "Cannot obtain scan data", ex); //$NON-NLS-1$
-		}
-
-		// Release model when editor is closed
-		parent.addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(final DisposeEvent e)
-			{
-				scan_data_model.release();
-				scan_data_model = null;
-			}
-		});
     }
 
+	/** Create context menu */
+	private void createContextMenu()
+	{
+		final MenuManager manager = new MenuManager();
+		// PlatformUI.getWorkbench()....?
+		final ImageDescriptor icon = getSite().getWorkbenchWindow().getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_SAVE_EDIT);
+		manager.add(new Action(Messages.ExportDataToFile, icon)
+		{
+			@Override
+            public void run()
+			{
+				doSaveAs();
+			}
+		});
+		final Table table = table_viewer.getTable();
+		table.setMenu(manager.createContextMenu(table));
+	}
 	/** Create table columns
 	 *  @param devices Devices that each need a table columns
 	 */
@@ -190,22 +229,52 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 	/** {@inheritDoc} */
 	@Override
     public boolean isSaveAsAllowed()
-    {	// Read-only, cannot save
-        return false;
+    {
+		return true;
     }
 
 	/** {@inheritDoc} */
 	@Override
     public void doSave(final IProgressMonitor monitor)
     {
-        // Should not be called
+		// Should not be called...
     }
 
-	/** {@inheritDoc} */
+    /** Prompt for file name
+     *  @return IFile for new file name or <code>null</code>
+     */
+	private IFile promptForFile()
+    {
+        final SaveAsDialog dlg = new SaveAsDialog(getSite().getShell());
+        dlg.setBlockOnOpen(true);
+        if (dlg.open() != Window.OK)
+            return null;
+
+        // The path to the new resource relative to the workspace
+        IPath path = dlg.getResult();
+        if (path == null)
+            return null;
+        // Assert it's a '.dat' file
+        final String ext = path.getFileExtension();
+        if (ext == null  ||  !ext.equals(ScanTableExport.FILE_EXTENSION))
+            path = path.removeFileExtension().addFileExtension(ScanTableExport.FILE_EXTENSION);
+        // Get the file for the new resource's path.
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        return root.getFile(path);
+    }
+
+	/** "Save As" allows export
+	 *  Also called from context menu
+	 *  {@inheritDoc}
+	 */
 	@Override
     public void doSaveAs()
     {
-	    // Should not be called
+		final IFile file = promptForFile();
+		if (file == null)
+			return;
+		final Job job = new ScanTableExport(scan_data_model.getScanData(), file);
+		job.schedule();
     }
 
 	/** Update display with newly received scan data

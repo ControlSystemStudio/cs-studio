@@ -27,6 +27,9 @@ public class ScanDataModel implements ScanInfoModelListener
 	/** Scan client */
 	final private ScanInfoModel scan_info_model;
 
+	/** Most recent scan data */
+	private ScanData scan_data = null;
+
 	/** Listener to notify about updates in the scan's data */
 	final private ScanDataModelListener listener;
 
@@ -54,6 +57,12 @@ public class ScanDataModel implements ScanInfoModelListener
 	    // Ignored
     }
 
+	/** @return most recent scan data. May be <code>null</code> */
+	public synchronized ScanData getScanData()
+	{
+		return scan_data;
+	}
+
 	/** {@inheritDoc} */
 	@Override
     public void scanUpdate(final List<ScanInfo> infos)
@@ -68,6 +77,10 @@ public class ScanDataModel implements ScanInfoModelListener
 
 			// Get data
 			final ScanData data = server.getScanData(scan_id);
+			synchronized (this)
+			{
+				scan_data = data;
+			}
 			// Update listener
 			listener.updateScanData(data);
 		}

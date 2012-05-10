@@ -16,6 +16,12 @@ public class Messages extends NLS
 {
 	private static final String BUNDLE_NAME = "org.csstudio.scan.ui.scandata.messages"; //$NON-NLS-1$
 
+	public static String DataFileExtension;
+
+	public static String ExportDataToFile;
+
+	public static String ExportFileFmt;
+
 	public static String NoSampleTT;
 
 	public static String ScanEditorTTFmt;
