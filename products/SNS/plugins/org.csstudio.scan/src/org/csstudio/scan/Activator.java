@@ -24,6 +24,6 @@ public class Activator extends Plugin
     public void start(final BundleContext context) throws Exception
     {
         super.start(context);
-        Preferences.setSystemPropertiesFromPreferences();
+        ScanSystemPreferences.setSystemPropertiesFromPreferences();
     }
 }

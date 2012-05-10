@@ -8,6 +8,8 @@
 package org.csstudio.scan.ui.scandata;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
@@ -17,8 +19,18 @@ import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 
 /** Model that monitors the data of a scan
+ *
+ *  <p>Implementation note:
+ *  Fetching the whole data for every scan update
+ *  plus then converting that to a "spreadsheet"
+ *  in the {@link ScanDataEditor}'s {@link ScanDataModelListener}
+ *  seems expensive, but causes neglegible CPU load for
+ *  scans with a few thousand rows of data and a handful
+ *  of devices, so "good enough" for now.
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ScanDataModel implements ScanInfoModelListener
 {
 	/** ID of scan that we monitor */
@@ -64,7 +76,7 @@ public class ScanDataModel implements ScanInfoModelListener
 	}
 
 	/** {@inheritDoc} */
-	@Override
+    @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
 		try
@@ -86,7 +98,7 @@ public class ScanDataModel implements ScanInfoModelListener
 		}
 		catch (Exception ex)
 		{
-
+			Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot get scan data", ex);
 		}
     }
 

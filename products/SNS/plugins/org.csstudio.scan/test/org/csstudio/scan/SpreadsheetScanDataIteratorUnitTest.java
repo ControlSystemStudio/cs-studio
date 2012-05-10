@@ -56,8 +56,8 @@ public class SpreadsheetScanDataIteratorUnitTest
         device_data.put("y", ysamples);
         final ScanData data = new ScanData(device_data);
 
-        // Dump as spreadsheet
-        new SpreadsheetScanDataIterator(data).dump(System.out);
+        // Dump as spreadsheet table
+        new SpreadsheetScanDataIterator(data).printTable(System.out);
 
         // Should have at least one line and 2 columns
         final SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
@@ -72,5 +72,8 @@ public class SpreadsheetScanDataIteratorUnitTest
         assertFalse(sheet.hasNext());
 
         assertEquals( new Date(now.getTime() + 19*1000), last_time);
+
+        // Dump as CVS
+        new SpreadsheetScanDataIterator(data).printCSV(System.out);
     }
 }

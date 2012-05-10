@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -127,8 +127,8 @@ public class ScanServerImpl implements ScanServer
     {
     	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
     			start_time,
-    			Preferences.getBeamlineConfigPath(),
-    			Preferences.getSimulationConfigPath());
+    			ScanSystemPreferences.getBeamlineConfigPath(),
+    			ScanSystemPreferences.getSimulationConfigPath());
     }
 
     /** {@inheritDoc} */
@@ -222,14 +222,14 @@ public class ScanServerImpl implements ScanServer
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
             // Read pre- and post-scan commands
-            String path = Preferences.getPreScanPath();
+            String path = ScanSystemPreferences.getPreScanPath();
             final List<ScanCommand> pre_commands;
             if (path.isEmpty())
                 pre_commands = Collections.<ScanCommand>emptyList();
             else
                 pre_commands = reader.readXMLStream(PathStreamTool.openStream(path));
 
-            path = Preferences.getPostScanPath();
+            path = ScanSystemPreferences.getPostScanPath();
             final List<ScanCommand> post_commands;
             if (path.isEmpty())
                 post_commands = Collections.<ScanCommand>emptyList();
@@ -263,7 +263,7 @@ public class ScanServerImpl implements ScanServer
     /** If memory consumption is high, remove (one) older scan */
 	private void cullScans() throws RemoteException
     {
-	    final double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+	    final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
 		while (getInfo().getMemoryPercentage() > threshold)
 	    {
 	    	if (! scan_engine.removeOldestCompletedScan())

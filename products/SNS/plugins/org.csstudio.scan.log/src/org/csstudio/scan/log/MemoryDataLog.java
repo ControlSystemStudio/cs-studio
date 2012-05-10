@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.server.MemoryInfo;
@@ -37,7 +37,7 @@ public class MemoryDataLog extends DataLog
 	final private Map<String, List<ScanSample>> device_logs =
 			new HashMap<String, List<ScanSample>>();
 
-    final private double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+    final private double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
 
     /** {@inheritDoc} */
 	@Override

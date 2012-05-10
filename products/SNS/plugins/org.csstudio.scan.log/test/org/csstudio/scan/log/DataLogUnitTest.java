@@ -75,6 +75,6 @@ public class DataLogUnitTest
 		logData(logger);
 		SpreadsheetScanDataIterator sheet =
 	        new SpreadsheetScanDataIterator(logger.getScanData());
-        sheet.dump(System.out);
+        sheet.printTable(System.out);
 	}
 }

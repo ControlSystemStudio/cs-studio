@@ -29,7 +29,12 @@ import org.csstudio.scan.util.TextTable;
 @SuppressWarnings("nls")
 public class SpreadsheetScanDataIterator
 {
-    /** Device names, i.e. columns in spreadsheet */
+	/** "Comma Separator" is actually comma,
+	 *  but could in the future be changed to '\t' or other
+	 */
+    final private static String CSV_SEPARATOR = ",";
+
+	/** Device names, i.e. columns in spreadsheet */
     final private String[] device_names;
 
     /** Raw data for each device */
@@ -152,10 +157,10 @@ public class SpreadsheetScanDataIterator
         return Arrays.copyOf(value, value.length);
     }
 
-    /** Write spreadsheet to stream
+    /** Write spreadsheet to stream with fixed-sized columns
      *  @param out {@link PrintStream}
      */
-    public void dump(final PrintStream out)
+    public void printTable(final PrintStream out)
     {
     	final TextTable table = new TextTable(out);
         // Header
@@ -178,5 +183,33 @@ public class SpreadsheetScanDataIterator
         }
 
         table.flush();
+    }
+
+    /** Write spreadsheet to stream in CVS format
+     *  @param out {@link PrintStream}
+     */
+    public void printCSV(final PrintStream out)
+    {
+        // Header
+    	out.append("Time");
+        for (String device : getDevices())
+        	out.append(CSV_SEPARATOR).append(device);
+        out.println();
+
+        // Iterate over device data in 'spreadsheet' manner
+        while (hasNext())
+        {
+        	out.append(DataFormatter.format(getTimestamp()));
+            // Print current line
+            for (ScanSample sample : getSamples())
+            {
+            	out.append(CSV_SEPARATOR);
+                if (sample == null)
+                	out.append("#N/A");
+                else
+                	out.append(DataFormatter.asString(sample));
+            }
+            out.println();
+        }
     }
 }

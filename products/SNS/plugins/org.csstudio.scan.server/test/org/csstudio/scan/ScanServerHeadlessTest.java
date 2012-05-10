@@ -187,7 +187,7 @@ public class ScanServerHeadlessTest implements Runnable
             assertTrue(devices.contains("xpos"));
             assertTrue(devices.contains("ypos"));
             assertTrue(devices.contains("readback"));
-            new SpreadsheetScanDataIterator(data).dump(System.out);
+            new SpreadsheetScanDataIterator(data).printTable(System.out);
 
             pv.stop();
         }

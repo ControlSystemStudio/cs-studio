@@ -90,7 +90,7 @@ public class DerbyDataLogTest
 		// Fetches >30000/sec (50000 in 1.6)
 		final ScanData data = log.getScanData(scan_id);
 		// Printout takes ~2.5 secs
-		new SpreadsheetScanDataIterator(data).dump(System.out);
+		new SpreadsheetScanDataIterator(data).printTable(System.out);
 
 		log.close();
 	}

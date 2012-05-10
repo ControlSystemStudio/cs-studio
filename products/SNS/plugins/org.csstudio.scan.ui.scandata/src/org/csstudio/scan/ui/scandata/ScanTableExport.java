@@ -48,7 +48,14 @@ public class ScanTableExport extends Job
 
 		// Write text to string buffer
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
-		new SpreadsheetScanDataIterator(data).dump(new PrintStream(buf));
+		final PrintStream out = new PrintStream(buf);
+		SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+		if ("csv".equals(file.getFileExtension()))
+			sheet.printCSV(out);
+        else
+        	sheet.printTable(out);
+		sheet = null;
+		out.close();
 		monitor.worked(1);
 
 		// Write buffer to file
@@ -75,5 +82,4 @@ public class ScanTableExport extends Job
 
 	    return Status.OK_STATUS;
     }
-
 }

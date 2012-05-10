@@ -8,5 +8,6 @@
     <topic label="Scan Editor" href="doc/scansystem.html#editor"/>
     <topic label="Scan Monitor" href="doc/scansystem.html#monitor"/>
     <topic label="Scan Plot" href="doc/scansystem.html#plot"/>
+    <topic label="Scan Data Display" href="doc/scansystem.html#scan_data"/>
     <topic label="Programmatic Access" href="doc/scansystem.html#programmatic"/>
 </toc>

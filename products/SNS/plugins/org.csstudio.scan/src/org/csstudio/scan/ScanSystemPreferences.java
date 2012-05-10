@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Preferences extends SystemSettings
+public class ScanSystemPreferences extends SystemSettings
 {
 	/** @return Path to the default beamline information file */
 	public static String getBeamlineConfigPath()
@@ -71,6 +71,16 @@ public class Preferences extends SystemSettings
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getDouble(Activator.ID, "data_logger_memory_threshold", 80.0, null);
     }
+
+    /** @return Scan client poll period [millisecs] */
+	public static long getScanClientPollPeriod()
+	{
+		long period = 1000;
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	if (service != null)
+    		period = service.getLong(Activator.ID, "scan_client_poll_period", period, null);
+    	return period;
+	}
 
     /** Set system properties (which are in the end what's actually used)
      *  from Eclipse preferences (which are more accessible for Eclipse tools

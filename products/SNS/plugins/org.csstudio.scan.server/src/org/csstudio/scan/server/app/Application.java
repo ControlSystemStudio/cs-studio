@@ -17,7 +17,7 @@ package org.csstudio.scan.server.app;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.internal.ScanServerImpl;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -43,7 +43,7 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
         // Start server
-        final int port = Preferences.getServerPort();
+        final int port = ScanSystemPreferences.getServerPort();
         server = new ScanServerImpl(port);
         server.start();
         System.out.println("Scan Server running on port " + port);

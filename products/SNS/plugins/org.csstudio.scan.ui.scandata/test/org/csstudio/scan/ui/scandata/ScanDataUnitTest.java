@@ -70,7 +70,7 @@ public class ScanDataUnitTest implements ScanDataModelListener
 	@Override
     public void updateScanData(final ScanData data)
     {
-		new SpreadsheetScanDataIterator(data).dump(System.out);
+		new SpreadsheetScanDataIterator(data).printTable(System.out);
 		received_data.countDown();
     }
 }

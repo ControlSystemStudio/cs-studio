@@ -306,7 +306,7 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 				if (table.isDisposed())
 					return;
 
-				// Has the data changed?
+				// Has the data layout changed, requiring new table columns?
 				if (table.getColumnCount() != devices.length + 1)
 					updateTableColumns(devices);
 
