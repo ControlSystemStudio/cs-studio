@@ -78,10 +78,10 @@ public class PlotDataProvider implements IDataProvider
 
         while (sheet.hasNext())
         {
-            final List<ScanSample> samples = sheet.getSamples();
+            final ScanSample[] samples = sheet.getSamples();
 
             // Add sample
-            final SampleAdapter sample = new SampleAdapter(samples.get(0), samples.get(1));
+            final SampleAdapter sample = new SampleAdapter(samples[0], samples[1]);
             new_samples.add(sample);
 
             // Update ranges

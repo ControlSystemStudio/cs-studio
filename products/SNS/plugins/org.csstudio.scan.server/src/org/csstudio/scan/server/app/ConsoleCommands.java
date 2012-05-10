@@ -162,7 +162,7 @@ public class ConsoleCommands implements CommandProvider
             final SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
             while (sheet.hasNext())
             {
-                final List<ScanSample> line = sheet.getSamples();
+                final ScanSample[] line = sheet.getSamples();
                 for (ScanSample sample : line)
                 	intp.print(sample + "  ");
                 intp.println();

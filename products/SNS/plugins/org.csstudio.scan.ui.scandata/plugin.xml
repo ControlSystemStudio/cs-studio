@@ -2,6 +2,13 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.csstudio.scan.ui.scandata.ScanInfoEditorInputFactory"
+            id="org.csstudio.scan.ui.scandata.inputfactory">
+      </factory>
+   </extension>
+   <extension
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.csstudio.scan.ui.scandata.OpenScanData"

@@ -55,7 +55,7 @@ public class ScanDataUnitTest implements ScanDataModelListener
 	{
 		final ScanInfo scan = findMeAScan();
 
-		final ScanDataModel model = new ScanDataModel(scan, this);
+		final ScanDataModel model = new ScanDataModel(scan.getId(), this);
 		try
 		{
 			received_data.await();

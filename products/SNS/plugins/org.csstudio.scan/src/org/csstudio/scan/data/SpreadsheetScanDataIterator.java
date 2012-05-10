@@ -153,9 +153,9 @@ public class SpreadsheetScanDataIterator
     }
 
     /** @return Samples on the current spreadsheet line */
-    public List<ScanSample> getSamples()
+    public ScanSample[] getSamples()
     {
-        return Arrays.asList(value);
+        return value;
     }
 
     /** Write spreadsheet to stream

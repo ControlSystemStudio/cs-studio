@@ -21,8 +21,8 @@ import org.csstudio.scan.server.ScanServerInfo;
  */
 public class ScanDataModel implements ScanInfoModelListener
 {
-	/** Scan that we monitor */
-	final private ScanInfo scan;
+	/** ID of scan that we monitor */
+	final private long scan_id;
 
 	/** Scan client */
 	final private ScanInfoModel scan_info_model;
@@ -32,9 +32,9 @@ public class ScanDataModel implements ScanInfoModelListener
 
 	private long last_scan_data_serial = -1;
 
-	public ScanDataModel(final ScanInfo scan, final ScanDataModelListener listener) throws Exception
+	public ScanDataModel(final long scan_id, final ScanDataModelListener listener) throws Exception
     {
-		this.scan = scan;
+		this.scan_id = scan_id;
 		scan_info_model = ScanInfoModel.getInstance();
 		this.listener = listener;
 		scan_info_model.addListener(this);
@@ -62,12 +62,12 @@ public class ScanDataModel implements ScanInfoModelListener
 		{
 			// Any change in the data?
 			final ScanServer server = scan_info_model.getServer();
-			final long serial = server.getLastScanDataSerial(scan.getId());
+			final long serial = server.getLastScanDataSerial(scan_id);
 			if (serial == last_scan_data_serial)
 				return;
 
 			// Get data
-			final ScanData data = server.getScanData(scan.getId());
+			final ScanData data = server.getScanData(scan_id);
 			// Update listener
 			listener.updateScanData(data);
 		}
