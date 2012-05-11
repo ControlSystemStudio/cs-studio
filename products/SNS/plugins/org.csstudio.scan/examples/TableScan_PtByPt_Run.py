@@ -26,7 +26,7 @@ for i in range(table.getRowCount()):
     seq.set('xpos', float(table.getCellText(i, 1)))
     seq.set('ypos', float(table.getCellText(i, 2)))
     seq.set('setpoint', float(table.getCellText(i, 3)), 'readback', 0.1, 0)
-    seq.log('readback')    
+    seq.log([ 'xpos', 'ypos', 'readback' ])    
     
 id = client.submit("Point by Point Scan " + str(widget.getVar(counter)), seq)
 
