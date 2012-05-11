@@ -23,7 +23,6 @@ import org.csstudio.scan.server.SimulationContext;
 /** {@link ScanCommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
     /** Initialize
