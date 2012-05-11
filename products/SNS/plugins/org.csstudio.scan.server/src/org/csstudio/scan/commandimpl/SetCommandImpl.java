@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
@@ -89,7 +86,6 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void execute(final ScanContext context)  throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Device device = context.getDevice(command.getDeviceName());
 
 		// Separate read-back device, or use 'set' device?
@@ -122,11 +118,13 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 		if (condition != null)
 		    condition.await();
 
-		// Log the value
-		final IValue value = readback.read();
-        final long serial = context.getNextScanDataSerial();
-		context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, value));
-
+		// Log the value?
+		if (context.isAutomaticLogMode())
+		{
+			final IValue value = readback.read();
+	        final long serial = context.getNextScanDataSerial();
+			context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, value));
+		}
 		context.workPerformed(1);
     }
 }

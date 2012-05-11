@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,15 +51,13 @@ import org.csstudio.scan.server.ScanState;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Scan implements ScanContext
+public class Scan extends ScanContext
 {
     final private long id;
 
     final private String name;
 
     final private Date created = new Date();
-
-    final private DeviceContext devices;
 
     final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
@@ -78,8 +75,6 @@ public class Scan implements ScanContext
     final private long total_work_units;
 
     final private DataLog data_logger;
-
-    final private AtomicLong work_performed = new AtomicLong();
 
     private volatile ScanCommandImpl<?> current_command = null;
 
@@ -110,9 +105,9 @@ public class Scan implements ScanContext
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
+    	super(devices);
     	id = DataLogFactory.createDataLog(name);
         this.name = name;
-        this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
@@ -247,13 +242,6 @@ public class Scan implements ScanContext
     public DataLog getDataLogger()
     {
         return data_logger;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Device getDevice(final String name) throws Exception
-    {
-        return devices.getDeviceByAlias(name);
     }
 
     /** Obtain devices used by this scan.
@@ -438,6 +426,7 @@ public class Scan implements ScanContext
         try
         {
             current_command = command;
+    		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
             command.execute(this);
         }
         catch (InterruptedException ex)
@@ -477,13 +466,6 @@ public class Scan implements ScanContext
         if (! state.isDone())
             state = ScanState.Aborted;
         notifyAll();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void workPerformed(final int work_units)
-    {
-        work_performed.addAndGet(work_units);
     }
 
     // Hash by ID

@@ -51,18 +51,14 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 	public void execute(final ScanContext context) throws Exception
 	{
 		final Logger logger = Logger.getLogger(getClass().getName());
-		logger.log(Level.FINE, "{0}", command);
-
+		// Log all devices with the same serial
 		final long serial = context.getNextScanDataSerial();
 		final String[] device_names = command.getDeviceNames();
-		final int length = device_names.length;
-		for (int i=0; i<length; ++i)
+		for (String device_name : device_names)
 		{
-			final String device_name = device_names[i];
 			final Device device = context.getDevice(device_name);
 			final IValue value = device.read();
-			logger.log(Level.FINER, "Log: {0} = {1}",
-					new Object[] { device.toString(), value });
+			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
 			context.logSample(ValueConverter.createSample(device_name, serial, value));
 		}
         context.workPerformed(1);

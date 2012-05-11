@@ -3,7 +3,14 @@
 
 <toc label="Scan System" topic="doc/scansystem.html">
     <topic label="Overview" href="doc/scansystem.html#overview"/>
-    <topic label="Commands" href="doc/scansystem.html#commands"/>
+    <topic label="Commands" href="doc/scansystem.html#commands">
+        <topic label="Set" href="doc/scansystem.html#SetCommand"/>
+        <topic label="Wait" href="doc/scansystem.html#WaitCommand"/>
+        <topic label="Loop" href="doc/scansystem.html#LoopCommand"/>
+        <topic label="Log" href="doc/scansystem.html#LogCommand"/>
+        <topic label="Log Mode" href="doc/scansystem.html#LogConfig"/>
+        <topic label="Delay" href="doc/scansystem.html#DelayCommand"/>
+    </topic>
     <topic label="Scan Server" href="doc/scansystem.html#server"/>
     <topic label="Scan Editor" href="doc/scansystem.html#editor"/>
     <topic label="Scan Monitor" href="doc/scansystem.html#monitor"/>

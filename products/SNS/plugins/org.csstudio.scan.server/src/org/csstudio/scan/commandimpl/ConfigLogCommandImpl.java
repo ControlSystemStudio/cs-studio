@@ -15,37 +15,28 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import org.csstudio.scan.command.DelayCommand;
+import org.csstudio.scan.command.ConfigLogCommand;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.SimulationContext;
 
-/** {@link ScanCommandImpl} that delays the scan for some time
+/** {@link ScanCommandImpl} that configures the log mode
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
-public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
+public class ConfigLogCommandImpl extends ScanCommandImpl<ConfigLogCommand>
 {
     /** Initialize
      *  @param command Command description
      */
-    public DelayCommandImpl(final DelayCommand command)
+    public ConfigLogCommandImpl(final ConfigLogCommand command)
     {
         super(command);
     }
 
 	/** {@inheritDoc} */
 	@Override
-    public void simulate(final SimulationContext context) throws Exception
+    public void execute(final ScanContext context)  throws Exception
     {
-    	context.logExecutionStep(command.toString(), command.getSeconds());
-    }
-
-	/** {@inheritDoc} */
-	@Override
-    public void execute(final ScanContext command_context) throws Exception
-    {
-		Thread.sleep(Math.round(command.getSeconds() * 1000));
-        command_context.workPerformed(1);
+		context.setLogMode(command.getAutomatic());
+		context.workPerformed(1);
     }
 }
