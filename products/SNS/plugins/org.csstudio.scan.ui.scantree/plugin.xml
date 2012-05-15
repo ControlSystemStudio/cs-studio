@@ -140,6 +140,8 @@
             locationURI="popup:org.csstudio.scan.ui.scantree.editor?before=edit">
          <command commandId="org.eclipse.ui.edit.undo"/>
          <command commandId="org.eclipse.ui.edit.redo"/>
+         <command commandId="org.eclipse.ui.file.save"/>
+         <command commandId="org.eclipse.ui.file.saveAs"/>
          <separator
                name="undo"
                visible="true">
