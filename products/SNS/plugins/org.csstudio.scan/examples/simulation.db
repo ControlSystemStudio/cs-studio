@@ -96,3 +96,14 @@ record(calc, "readback")
     field(SCAN, ".1 second")
     field(PREC, "2")
 }
+
+# Simulated detector signal used for "alignment" demo
+#
+# Maximum for motor_x and motor_y == 3, noisy gaussian
+record(calc, "signal")
+{
+    field(INPA, "motor_x CP")
+    field(INPB, "motor_y CP")
+    field(CALC, "EXP(-((A-2.9-RNDM/5)^2)-((B-3)^2))")
+    field(PREC, "3")
+}
