@@ -18,6 +18,7 @@ package org.csstudio.scan.server;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -89,6 +90,11 @@ abstract public class ScanContext
 
     /** @return Next unique {@link ScanSample} serial */
     abstract public long getNextScanDataSerial();
+
+    /** @return {@link ScanData} of currently logged data or <code>null</code>
+	 *  @throws Exception on error
+     */
+    abstract public ScanData getScanData() throws Exception;
 
     /** Log a sample, i.e. add it to the data set produced by the
 	 *  scan

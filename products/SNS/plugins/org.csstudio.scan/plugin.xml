@@ -28,6 +28,12 @@
             name="Loop">
       </command>
       <command
+            class="org.csstudio.scan.command.ScriptCommand"
+            icon="icons/scriptcommand.gif"
+            id="script"
+            name="Script">
+      </command>
+      <command
             class="org.csstudio.scan.command.SetCommand"
             icon="icons/setcommand.gif"
             id="set"

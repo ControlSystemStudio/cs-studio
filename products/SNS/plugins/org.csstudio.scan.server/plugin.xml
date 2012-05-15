@@ -54,6 +54,11 @@
             name="Set">
       </imp_factory>
       <imp_factory
+            command="org.csstudio.scan.command.ScriptCommand"
+            factory="org.csstudio.scan.commandimpl.ScriptCommandImplFactory"
+            name="Script">
+      </imp_factory>
+      <imp_factory
             command="org.csstudio.scan.command.WaitCommand"
             factory="org.csstudio.scan.commandimpl.WaitCommandImplFactory"
             name="Wait">

@@ -30,6 +30,7 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
@@ -263,6 +264,13 @@ public class Scan extends ScanContext
     {
     	return data_logger.getNextScanDataSerial();
     }
+
+    /** {@inheritDoc} */
+	@Override
+	public ScanData getScanData() throws Exception
+	{
+		return data_logger.getScanData();
+	}
 
     /** {@inheritDoc} */
     @Override
