@@ -15,14 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.ValueUtil;
-import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.SetCommand;
-import org.csstudio.scan.condition.DeviceValueCondition;
-import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
-import org.csstudio.scan.device.ValueConverter;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
@@ -86,45 +81,9 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void execute(final ScanContext context)  throws Exception
     {
-		final Device device = context.getDevice(command.getDeviceName());
-
-		// Separate read-back device, or use 'set' device?
-		final Device readback;
-		if (command.getReadback().isEmpty())
-		    readback = device;
-		else
-		    readback = context.getDevice(command.getReadback());
-
-		//  Wait for the device to reach the value?
-		final DeviceValueCondition condition;
-		if (command.getWait())
-		{
-		    final double desired;
-		    if (command.getValue() instanceof Number)
-		        desired = ((Number)command.getValue()).doubleValue();
-		    else
-		        throw new Exception("Value must be numeric to support 'wait'");
-
-		    condition = new DeviceValueCondition(readback, Comparison.EQUALS, desired,
-	                command.getTolerance(), command.getTimeout());
-		}
-		else
-		    condition = null;
-
-		// Perform write
-		device.write(command.getValue());
-
-		// Wait?
-		if (condition != null)
-		    condition.await();
-
-		// Log the value?
-		if (context.isAutomaticLogMode())
-		{
-			final IValue value = readback.read();
-	        final long serial = context.getNextScanDataSerial();
-			context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, value));
-		}
+		context.write(command.getDeviceName(), command.getValue(),
+				command.getReadback(), command.getWait(),
+				command.getTolerance(), command.getTimeout());
 		context.workPerformed(1);
     }
 }

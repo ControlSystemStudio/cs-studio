@@ -25,6 +25,6 @@
   </loop>
   <script>
     <address>3</address>
-    <path>find_peak.py</path>
+    <path>FindPeak</path>
   </script>
 </commands>

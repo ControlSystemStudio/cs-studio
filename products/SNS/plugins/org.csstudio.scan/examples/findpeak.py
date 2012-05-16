@@ -3,6 +3,8 @@ from math import sqrt, exp
 import sys
 
 class FindPeak(ScanScript):
+    def getDeviceNames(self):
+        return [ "fit_center" ]
     
     def gaussian(self, center, max, width, x):
         return max*exp(-(x-center)**2/(2*width**2))
@@ -32,3 +34,4 @@ class FindPeak(ScanScript):
             print i, self.gaussian(center, m, width, i)
         
         # TODO: Set PVs with result
+        context.write("fit_center", center)

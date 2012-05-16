@@ -21,22 +21,26 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 {
 	final private ScanContext context;
 
+	/** Initialize
+	 *  @param context {@link ScanContext} of the command executing the script
+	 */
 	public ScriptCommandContextImpl(final ScanContext context)
 	{
 		this.context = context;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ScanData getScanData() throws Exception
 	{
 		return context.getScanData();
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void write(final String device_name, final Object value, final String readback,
 	        final boolean wait, final double tolerance, final double timeout) throws Exception
 	{
-		// TODO Auto-generated method stub
-
+		context.write(device_name, value, readback, wait, tolerance, timeout);
 	}
 }

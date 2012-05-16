@@ -20,10 +20,6 @@ import org.csstudio.scan.data.SpreadsheetScanDataIterator;
  *  <p>Script can access the scan data that has been accumulated to far,
  *  and write to devices.
  *
- *  TODO Script needs to define
- *  <code>execute(ScriptCommandContext context)</code>
- *  TODO Have Java interface? Need jython class, or just invoke a <code>def execute(context)</code>?
- *
  *  @author Kay Kasemir
  */
 abstract public class ScriptCommandContext

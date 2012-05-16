@@ -107,3 +107,7 @@ record(calc, "signal")
     field(CALC, "EXP(-((A-2.9-RNDM/5)^2)-((B-3)^2))")
     field(PREC, "3")
 }
+
+record(ao, "fit_center")
+{
+}
