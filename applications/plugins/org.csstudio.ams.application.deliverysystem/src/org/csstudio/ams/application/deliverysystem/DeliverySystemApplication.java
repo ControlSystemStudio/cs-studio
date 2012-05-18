@@ -32,6 +32,7 @@ import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPrefer
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.application.deliverysystem.management.Restart;
 import org.csstudio.ams.application.deliverysystem.management.Stop;
+import org.csstudio.ams.application.deliverysystem.management.StopWorker;
 import org.csstudio.ams.application.deliverysystem.util.CommonMailer;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -240,6 +241,7 @@ public class DeliverySystemApplication implements IApplication,
         ListWorker.staticInject(this);
         Stop.staticInject(this);
         Restart.staticInject(this);
+        StopWorker.staticInject(this);
         
         String xmppServer = DeliverySystemPreference.XMPP_SERVER.getValue();
         String xmppUser = DeliverySystemPreference.XMPP_USER.getValue();
@@ -294,5 +296,16 @@ public class DeliverySystemApplication implements IApplication,
             }
         }
         return result;
+    }
+
+    @Override
+    public void stopDeliveryWorker() {
+        Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
+        while (worker.hasMoreElements()) {
+            AbstractDeliveryWorker o = worker.nextElement();
+            if (o != null) {
+                o.stopWorking();
+            }
+        }
     }
 }

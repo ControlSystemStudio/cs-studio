@@ -1,6 +1,6 @@
 
 /*
- * Copyright (c) 2011 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2012 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -23,17 +23,35 @@
  * $Id: DesyKrykCodeTemplates.xml,v 1.7 2010/04/20 11:43:22 bknerr Exp $
  */
 
-package org.csstudio.ams.application.deliverysystem;
+package org.csstudio.ams.application.deliverysystem.management;
 
-import java.util.Collection;
+import org.csstudio.ams.application.deliverysystem.RemotelyManageable;
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * @author mmoeller
  * @version 1.0
- * @since 19.12.2011
+ * @since 16.05.2012
  */
-public interface RemotelyManageable {
-    Collection<String> listDeliveryWorker();
-    void stopDeliveryWorker();
-    void setRestart(boolean restartApplication);
+public class StopWorker implements IManagementCommand {
+    
+    private static RemotelyManageable remoteObject = null;
+    
+    public static void staticInject(RemotelyManageable o) {
+        remoteObject = o;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CommandResult execute(CommandParameters parameters) {
+        if (remoteObject == null) {
+            return CommandResult.createFailureResult("\nCannot access the main application: Reference is null!");
+        }
+        remoteObject.stopDeliveryWorker();
+        return CommandResult.createMessageResult("Hopefully all worker have been stopped.");
+    }
 }
