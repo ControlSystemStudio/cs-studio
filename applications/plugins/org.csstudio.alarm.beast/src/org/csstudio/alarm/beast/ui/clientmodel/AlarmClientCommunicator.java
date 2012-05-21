@@ -16,13 +16,13 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.auth.security.User;
 import org.csstudio.logging.JMSLogMessage;

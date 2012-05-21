@@ -14,9 +14,9 @@ import java.util.logging.Level;
 
 import javax.jms.MapMessage;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.logging.JMSLogMessage;

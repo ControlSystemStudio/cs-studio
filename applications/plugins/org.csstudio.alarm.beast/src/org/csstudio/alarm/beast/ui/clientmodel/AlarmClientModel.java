@@ -13,7 +13,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmConfiguration;
@@ -21,19 +23,17 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
-import org.csstudio.alarm.beast.ui.Activator;
-import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 
 /** Model of alarm information for client applications.
- *  
+ *
  *  <p>Obtains alarm configuration (PVs, their hierarchy, guidance, status, ...)
  *  from RDB, then monitors JMS for changes,
  *  sends out acknowledgments or changes to JMS,
  *  signals listeners about updates, ...
- *  
+ *
  *  <p>NOTE ON SYNCHRONIZATION:
  *  <p>The model can be accessed from the GUI but also from JMS threads
  *  that received updates from the alarm server.
@@ -41,7 +41,7 @@ import org.eclipse.osgi.util.NLS;
  *  That might be easiest to implement and check, but potentially
  *  slower because concurrent access to different parts of the model
  *  are not possible.
- *  
+ *
  *  <p>When synchronizing individual pieces of the model (area, pv, ...)
  *  deadlocks are possible if elements are locked in reverse order.
  *  The following order should prevent this:
@@ -49,7 +49,7 @@ import org.eclipse.osgi.util.NLS;
  *  <li>For overall changes, lock the model.
  *  <li>For changes to the alarm tree, lock affected items from the root down.
  *  </ol>
- *  
+ *
  *  <p>Note that acknowledging an alarm tree entry will
  *  <ol>
  *  <li>Acknowledge all 'child' entries, recursing to individual PVs
@@ -57,7 +57,7 @@ import org.eclipse.osgi.util.NLS;
  *  </ol>
  *  To prevent deadlocks, an acknowledge must therefore first lock the root element,
  *  then the affected sub-elements of the alarm tree.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
