@@ -80,7 +80,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	
 	private boolean arrowButtonsOnLeft = true;
 	
-	private final static int BUTTON_WIDTH = 25;
+	private int buttonWidth = 20;
 	
 	private NumericFormatType formatType;
 	
@@ -224,6 +224,20 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	}
 	
 	/**
+	 * @return the buttonWidth
+	 */
+	public int getButtonWidth() {
+		return buttonWidth;
+	}
+
+	/**
+	 * @param buttonWidth the buttonWidth to set
+	 */
+	public void setButtonWidth(int buttonWidth) {
+		this.buttonWidth = buttonWidth;
+	}
+
+	/**
 	 * @return the formatType
 	 */
 	public NumericFormatType getFormatType() {
@@ -286,19 +300,19 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	protected void layout() {
 		Rectangle clientArea = getClientArea();
 		if(arrowButtonsOnLeft){
-			labelFigure.setBounds(new Rectangle(clientArea.x+1 + BUTTON_WIDTH, clientArea.y, 
-					clientArea.width - BUTTON_WIDTH-1, clientArea.height));
+			labelFigure.setBounds(new Rectangle(clientArea.x+1 + buttonWidth, clientArea.y, 
+					clientArea.width - buttonWidth-1, clientArea.height));
 			buttonUp.setBounds(new Rectangle(clientArea.x,
-					clientArea.y, BUTTON_WIDTH, clientArea.height/2));
+					clientArea.y, buttonWidth, clientArea.height/2));
 			buttonDown.setBounds(new Rectangle(clientArea.x,
-					clientArea.y + clientArea.height/2, BUTTON_WIDTH, clientArea.height/2));
+					clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
 		}else{
 			labelFigure.setBounds(new Rectangle(clientArea.x, clientArea.y, 
-					clientArea.width - BUTTON_WIDTH, clientArea.height));
-			buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
-					clientArea.y, BUTTON_WIDTH, clientArea.height/2));
-			buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - BUTTON_WIDTH,
-					clientArea.y + clientArea.height/2, BUTTON_WIDTH, clientArea.height/2));
+					clientArea.width - buttonWidth, clientArea.height));
+			buttonUp.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+					clientArea.y, buttonWidth, clientArea.height/2));
+			buttonDown.setBounds(new Rectangle(clientArea.x + clientArea.width - buttonWidth,
+					clientArea.y + clientArea.height/2, buttonWidth, clientArea.height/2));
 		}
 		super.layout();
 	}

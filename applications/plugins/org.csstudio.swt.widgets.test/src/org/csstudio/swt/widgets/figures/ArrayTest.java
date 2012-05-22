@@ -15,7 +15,7 @@ public class ArrayTest extends AbstractWidgetTest{
 	public Figure createTestWidget() {
 		ArrayFigure figure = new ArrayFigure();
 		figure.setHorizontal(false);
-		figure.setShowIndexSpinner(false);
+		figure.setShowSpinner(false);
 //		figure.setShowScrollbar(false);
 		return figure;
 	}

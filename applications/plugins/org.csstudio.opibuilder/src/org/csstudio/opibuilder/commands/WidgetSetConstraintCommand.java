@@ -29,7 +29,7 @@ public class WidgetSetConstraintCommand extends Command {
 
 	public WidgetSetConstraintCommand(AbstractWidgetModel widgetModel, 
 			ChangeBoundsRequest req, Rectangle newBounds) {
-		if (widgetModel == null || req == null || newBounds == null)
+		if (widgetModel == null || newBounds == null)
 			throw new IllegalArgumentException();
 		this.widget = widgetModel;
 		this.newBounds = newBounds;
