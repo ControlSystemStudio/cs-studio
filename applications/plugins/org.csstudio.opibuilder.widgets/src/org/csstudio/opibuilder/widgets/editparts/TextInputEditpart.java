@@ -91,6 +91,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					}
 				});
 
+		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
 		return textInputFigure;
 	}
 
@@ -190,9 +191,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 						String msg = NLS
 								.bind("Failed to write value to PV {0} from widget {1}.\nIllegal input : {2} \n",
 										new String[] {
-												getPV(
-														AbstractPVWidgetModel.PROP_PVNAME)
-														.getName(),
+												getPVName(),
 												getWidgetModel().getName(),
 												text })
 								+ e.toString();
@@ -337,11 +336,6 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	protected void performDirectEdit() {
 		new LabelEditManager(this, new LabelCellEditorLocator(
 				(Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
-	}
-
-	@Override
-	protected int getUpdateSuppressTime() {
-		return -1;
 	}
 	
 	/**If the text has spaces in the string and the PV is numeric array type,
