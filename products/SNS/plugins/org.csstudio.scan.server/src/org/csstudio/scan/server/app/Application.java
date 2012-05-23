@@ -16,6 +16,7 @@
 package org.csstudio.scan.server.app;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.scan.ScanSystemPreferences;
@@ -45,28 +46,35 @@ public class Application implements IApplication
     public Object start(final IApplicationContext context) throws Exception
     {
     	final Logger log = Logger.getLogger(getClass().getName());
-        // Display config info
-        final String version = (String)
-            context.getBrandingBundle().getHeaders().get("Bundle-Version");
-        log.info(context.getBrandingName() + " " + version);
+    	try
+    	{
+	        // Display config info
+	        final String version = (String)
+	            context.getBrandingBundle().getHeaders().get("Bundle-Version");
+	        log.info(context.getBrandingName() + " " + version);
 
+	        // Start server
+	        final int port = ScanSystemPreferences.getServerPort();
+	        server = new ScanServerImpl(port);
+	        server.start();
+	        log.info("Scan Server running on ports " + port + " (RMI Registry) and " + (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface)");
 
-        // Start server
-        final int port = ScanSystemPreferences.getServerPort();
-        server = new ScanServerImpl(port);
-        server.start();
-        log.info("Scan Server running on ports " + port + " (RMI Registry) and " + (port + 1) + " (" + ScanServer.RMI_SCAN_SERVER_NAME + " interface)");
+	        // Register console commands
+	        ConsoleCommands commands = new ConsoleCommands(server);
+	        final BundleContext bundle_context = context.getBrandingBundle().getBundleContext();
+	        bundle_context.registerService(CommandProvider.class.getName(), commands, null);
 
-        // Register console commands
-        ConsoleCommands commands = new ConsoleCommands(server);
-        final BundleContext bundle_context = context.getBrandingBundle().getBundleContext();
-        bundle_context.registerService(CommandProvider.class.getName(), commands, null);
+	        // Keep running...
+	        run.await();
 
-        // Keep running...
-        run.await();
-
-        // Release commands
-        commands = null;
+	        // Release commands
+	        commands = null;
+    	}
+    	catch (Exception ex)
+    	{
+    		log.log(Level.SEVERE, "Exiting on error", ex);
+    		return Integer.valueOf(-1);
+    	}
 
         return EXIT_OK;
     }
