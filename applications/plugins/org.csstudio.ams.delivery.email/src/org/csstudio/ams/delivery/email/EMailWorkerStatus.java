@@ -41,7 +41,7 @@ public class EMailWorkerStatus implements IWorkerStatus {
         mailSent = true;
     }
     
-    public void setMailSent(boolean sent) {
+    public synchronized void setMailSent(boolean sent) {
         mailSent = sent;
     }
     
@@ -50,7 +50,6 @@ public class EMailWorkerStatus implements IWorkerStatus {
      */
     @Override
     public boolean isOk() {
-        // TODO Auto-generated method stub
         return mailSent;
     }
 }
