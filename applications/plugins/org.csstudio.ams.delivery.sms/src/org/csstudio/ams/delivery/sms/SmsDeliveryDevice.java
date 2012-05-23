@@ -94,16 +94,22 @@ public class SmsDeliveryDevice implements Runnable,
     /** Status information of the current modem test */
     private ModemTestStatus testStatus;
 
+    private SmsWorkerStatus workerStatus;
+    
     /** Reading period (in ms) for the modem */
     private long readWaitingPeriod;
     
     private boolean working;
 
-    public SmsDeliveryDevice(final ModemInfoContainer deviceInfo, final JmsProperties jms, final long readInterval) {
+    public SmsDeliveryDevice(final ModemInfoContainer deviceInfo,
+                             final JmsProperties jms,
+                             final long readInterval,
+                             final SmsWorkerStatus status) {
         modemService = null;
         modemInfo = deviceInfo;
         deviceLock = new Object();
         jmsProps = jms;
+        workerStatus = status;
         listener = Collections.synchronizedList(new ArrayList<DeviceListener>());
         testStatus = new ModemTestStatus();
         readWaitingPeriod = readInterval;
@@ -244,6 +250,8 @@ public class SmsDeliveryDevice implements Runnable,
             LOG.error("[*** {} ***]: Could not send message: {}", e.getClass().getSimpleName(), e.getMessage());
         }
 
+        workerStatus.setSmsSent(success);
+        
         return success;
     }
 

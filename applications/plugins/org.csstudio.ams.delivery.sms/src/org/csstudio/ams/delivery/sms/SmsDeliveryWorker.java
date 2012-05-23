@@ -77,10 +77,10 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
     private final SmsDeliveryDevice smsDevice;
 
     private final ModemInfoContainer modemInfo;
+    
+    private SmsWorkerStatus workerStatus;
 
     private boolean running;
-
-    private boolean workerCheckFlag;
 
     /**
      * Constructor.
@@ -115,9 +115,12 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                           null);
         LOG.info("readWaitingPeriod: {}", readWaitingPeriod);
 
+        workerStatus = new SmsWorkerStatus();
+        
         smsDevice = new SmsDeliveryDevice(modemInfo,
                                           new JmsProperties(factoryClass, url, topic),
-                                          readWaitingPeriod);
+                                          readWaitingPeriod,
+                                          workerStatus);
         smsDevice.addDeviceListener(this);
         Thread smsDeviceThread = new Thread(smsDevice);
         smsDeviceThread.setName("SMS Device Thread");
@@ -125,7 +128,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
         smsDeviceThread.start();
 
         running = true;
-        workerCheckFlag = false;
     }
 
     /**
@@ -142,7 +144,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                     if (outgoingQueue.isEmpty() && incomingQueue.isEmpty()) {
                         this.wait();
                     } 
-                    workerCheckFlag = false;
                 } catch (final InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
@@ -440,18 +441,6 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
 
     @Override
     public boolean isWorking() {
-        workerCheckFlag = true;
-        synchronized (this) {
-            this.notify();
-        }
-        final Object localLock = new Object();
-        synchronized (localLock) {
-            try {
-                localLock.wait(250);
-            } catch (final InterruptedException e) {
-                // Ignore me
-            }
-        }
-        return !workerCheckFlag;
+        return workerStatus.isOk();
     }
 }
