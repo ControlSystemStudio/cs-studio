@@ -58,24 +58,23 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
     
     private VoicemailDevice device;
     
+    private VoicemailWorkerStatus workerStatus;
+    
     private boolean running;
-
-    /** This flag indicates if the thread should check its working state */
-    private boolean checkState;
 
     public VoicemailDeliveryWorker() {
         workerName = this.getClass().getSimpleName();
         messageQueue = new OutgoingVoicemailQueue(this);
         running = initJms();
+        workerStatus = new VoicemailWorkerStatus();
         if (running) {
             try {
-                device = new VoicemailDevice();
+                device = new VoicemailDevice(workerStatus);
             } catch (DeviceException e) {
                 LOG.error("Cannot initialize the device: ISDN-Modem: {}", e.getMessage());
                 running = false;
             }
         }
-        checkState = false;
     }
     
     /**
@@ -90,7 +89,6 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
             synchronized (this) {
                 try {
                     this.wait();
-                    checkState = false;
                 } catch (InterruptedException ie) {
                     LOG.error("I have been interrupted.");
                 }
@@ -130,19 +128,7 @@ public class VoicemailDeliveryWorker extends AbstractDeliveryWorker {
      */
     @Override
     public boolean isWorking() {
-        checkState = true;
-        synchronized (this) {
-            this.notify();
-        }
-        Object lock = new Object();
-        synchronized (lock) {
-            try {
-                lock.wait(250);
-            } catch (InterruptedException e) {
-                // Ignore me
-            }
-        }
-        return !checkState;
+        return workerStatus.isOk();
     }
     
     private boolean initJms() {

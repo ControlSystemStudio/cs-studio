@@ -31,6 +31,7 @@ import org.csstudio.ams.delivery.device.DeviceException;
 import org.csstudio.ams.delivery.device.IDeliveryDevice;
 import org.csstudio.ams.delivery.message.BaseAlarmMessage.State;
 import org.csstudio.ams.delivery.voicemail.VoicemailAlarmMessage;
+import org.csstudio.ams.delivery.voicemail.VoicemailWorkerStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +49,10 @@ public class VoicemailDevice implements IDeliveryDevice<VoicemailAlarmMessage> {
     /** The class that makes the telephone calls */
     private CallCenter callCenter;
 
-    public VoicemailDevice() throws DeviceException {
+    private VoicemailWorkerStatus workerStatus;
+    
+    public VoicemailDevice(VoicemailWorkerStatus status) throws DeviceException {
+        workerStatus = status;
         try {
             callCenter = new CallCenter();
         } catch (CallCenterException e) {
@@ -71,6 +75,7 @@ public class VoicemailDevice implements IDeliveryDevice<VoicemailAlarmMessage> {
             LOG.error("[*** CallCenterException ***]: {}", e.getMessage());
             message.setMessageState(State.FAILED);
         }
+        workerStatus.setMadeCall(success);
         return success;
     }
 
