@@ -67,7 +67,9 @@ public enum BorderStyle {
 	
     GROUP_BOX("Group Box Style"),
     
-    ROUND_RECTANGLE_BACKGROUND ("Round Rectangle Background");
+    ROUND_RECTANGLE_BACKGROUND ("Round Rectangle Background"),
+    
+    EMPTY("Empty");
    
 	
 	private String description;
