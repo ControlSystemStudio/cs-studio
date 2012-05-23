@@ -60,14 +60,14 @@ public class Application implements IApplication
         catch (final Exception ex)
         {
         	System.out.println(ex.getMessage() + "\n" + parser.getHelp());
-        	return IApplication.EXIT_OK;
+        	return Integer.valueOf(-2);
         }
         if (help_opt.get())
         {
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        
+
         // Initialize logging
         LogConfigurator.configureFromPreferences();
 
@@ -96,6 +96,7 @@ public class Application implements IApplication
         catch (Throwable ex)
         {
             ex.printStackTrace();
+        	return Integer.valueOf(-1);
         }
         return IApplication.EXIT_OK;
     }
