@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,12 +30,13 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
+import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.logger.DataLogger;
-import org.csstudio.scan.logger.MemoryDataLogger;
+import org.csstudio.scan.log.DataLog;
+import org.csstudio.scan.log.DataLogFactory;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
@@ -52,18 +52,13 @@ import org.csstudio.scan.server.ScanState;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Scan implements ScanContext
+public class Scan extends ScanContext
 {
-    /** Provides the next available <code>id</code> */
-    final private static AtomicLong ids = new AtomicLong();
-
     final private long id;
 
     final private String name;
 
     final private Date created = new Date();
-
-    final private DeviceContext devices;
 
     final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
@@ -80,9 +75,7 @@ public class Scan implements ScanContext
 
     final private long total_work_units;
 
-    final private MemoryDataLogger data_logger = new MemoryDataLogger();
-
-    final private AtomicLong work_performed = new AtomicLong();
+    final private DataLog data_logger;
 
     private volatile ScanCommandImpl<?> current_command = null;
 
@@ -90,8 +83,9 @@ public class Scan implements ScanContext
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
+     *  @throws Exception on error (cannot access log, ...)
      */
-    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations)
+    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
     {
         this(name, devices,
             Collections.<ScanCommandImpl<?>>emptyList(),
@@ -105,18 +99,20 @@ public class Scan implements ScanContext
      *  @param pre_scan Commands to execute before the 'main' section of the scan
      *  @param implementations Commands to execute in this scan
      *  @param post_scan Commands to execute before the 'main' section of the scan
+     *  @throws Exception on error (cannot access log, ...)
      */
     public Scan(final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
-            final List<ScanCommandImpl<?>> post_scan)
+            final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
-        id = ids.incrementAndGet();
+    	super(devices);
+    	id = DataLogFactory.createDataLog(name);
         this.name = name;
-        this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
+        data_logger = DataLogFactory.getDataLog(id);
 
         // Assign addresses to all commands,
         // determine work units
@@ -244,16 +240,9 @@ public class Scan implements ScanContext
     }
 
     /** @return Data logger of this scan */
-    public DataLogger getDataLogger()
+    public DataLog getDataLogger()
     {
         return data_logger;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Device getDevice(final String name) throws Exception
-    {
-        return devices.getDeviceByAlias(name);
     }
 
     /** Obtain devices used by this scan.
@@ -271,7 +260,21 @@ public class Scan implements ScanContext
 
     /** {@inheritDoc} */
     @Override
-    public void logSample(final ScanSample sample)
+    public long getNextScanDataSerial()
+    {
+    	return data_logger.getNextScanDataSerial();
+    }
+
+    /** {@inheritDoc} */
+	@Override
+	public ScanData getScanData() throws Exception
+	{
+		return data_logger.getScanData();
+	}
+
+    /** {@inheritDoc} */
+    @Override
+    public void logSample(final ScanSample sample) throws Exception
     {
         data_logger.log(sample);
     }
@@ -301,6 +304,8 @@ public class Scan implements ScanContext
         	}
             error = ex.getMessage();
         }
+        // Allow data logger to close resources
+        data_logger.close();
     }
 
     /** Execute all commands on the scan,
@@ -429,6 +434,7 @@ public class Scan implements ScanContext
         try
         {
             current_command = command;
+    		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
             command.execute(this);
         }
         catch (InterruptedException ex)
@@ -468,13 +474,6 @@ public class Scan implements ScanContext
         if (! state.isDone())
             state = ScanState.Aborted;
         notifyAll();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void workPerformed(final int work_units)
-    {
-        work_performed.addAndGet(work_units);
     }
 
     // Hash by ID

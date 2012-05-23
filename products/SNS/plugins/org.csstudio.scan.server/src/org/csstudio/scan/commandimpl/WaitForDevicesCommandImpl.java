@@ -15,8 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Logger;
-
 import org.csstudio.scan.condition.Condition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -25,7 +23,6 @@ import org.csstudio.scan.server.ScanContext;
 /** Implementation of the {@link WaitForDevicesCommand}
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCommand>
 {
 	private volatile Condition condition = null;
@@ -39,8 +36,6 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).fine("Waiting for devices");
-
 		condition = new WaitForDevicesCondition(command.getDevices());
 		condition.await();
 		condition = null;

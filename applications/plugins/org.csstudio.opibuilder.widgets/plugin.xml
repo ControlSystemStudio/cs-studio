@@ -364,7 +364,7 @@
             typeId="org.csstudio.opibuilder.widgets.webbrowser">
       </widget>
       <widget
-            category="Layout"
+            category="Others"
             description="A virtual widget for automatically layoutting widgets in a container in grids."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.GridLayoutEditpart"
             icon="icons/grid.gif"

@@ -71,7 +71,7 @@ public class ArchiveConfigApplication implements IApplication
         final StringOption  rdb_schema = new StringOption(parser,
                 "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
         parser.addEclipseParameters();
-        
+
         try
         {
             parser.parse(args);
@@ -79,9 +79,9 @@ public class ArchiveConfigApplication implements IApplication
         catch (final Exception ex)
         {
             System.err.println(ex.getMessage());
-            return IApplication.EXIT_OK;
+            return Integer.valueOf(-2);
         }
-        
+
         if (help.get())
         {
             System.out.println(parser.getHelp());
@@ -93,7 +93,7 @@ public class ArchiveConfigApplication implements IApplication
             System.err.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        
+
         LogConfigurator.configureFromPreferences();
 
         try
@@ -186,11 +186,12 @@ public class ArchiveConfigApplication implements IApplication
                 {
                 	importer.close();
                 }
-            }	
+            }
         }
         catch (final Exception ex)
         {
         	Logger.getLogger(Activator.ID).log(Level.SEVERE, "Exception", ex);
+            return Integer.valueOf(-1);
         }
         return IApplication.EXIT_OK;
 	}

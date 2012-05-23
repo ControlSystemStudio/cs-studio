@@ -196,8 +196,8 @@ class ScanClient(object):
         """
         Print scan data
         
-        @param id Scan ID, defaulting to the last submitted scan
-        @param devices One or more device names. Default: All devices in scan.
+        @param id: Scan ID, defaulting to the last submitted scan
+        @param devices: One or more device names. Default: All devices in scan.
         """
         self.checkServer()
         if id == -1:
@@ -213,7 +213,7 @@ class ScanClient(object):
         """
         Wait until a submitted scan has finished
         
-        @param id Scan ID, defaulting to the last submitted scan
+        @param id: Scan ID, defaulting to the last submitted scan
         """
         while True:
             info = self.getScanInfo(id)
@@ -239,22 +239,27 @@ class ScanNd(ScanClient):
     * Names of device to log in addition to loop'ed devices
     * Basic ScanCommand to perform: SetCommand, WaitCommand, ...
     
+    All the devices used in loops, mentioned as device names or
+    accessed in specific SetCommands will be logged in the innermost loop.
+    
     Examples:
     
-    # Scan 'xpos' from 1 to 10, stepping 1
+    # Scan 'xpos' from 1 to 10, stepping 1. xpos will be logged.
     scan('My first one', ('xpos', 1, 10) )
-    # Scan name is optional
+    
+    # Scan name is optional. Loop of xpos from 1 to 10.
     scan( ('xpos', 1, 10) )
 
-    # Log the 'readback' (xpos is logged automatically)
+    # Log the 'readback' together with 'xpos' from the loop.
     scan( ('xpos', 1, 10), 'readback')
     
     # Scan 'xpos' from 1 to 10, stepping 1,
     # inside that looping 'ypos' from 1 to 5 by 0.2,
-    # logging 'readback'
+    # logging 'readback' with 'xpos' and 'ypos'.
     scan('XY Example', ('xpos', 1, 10), ('ypos', 1, 5, 0.2), 'readback')
 
     # Scan 'xpos' and 'ypos', set something to '1' and then '3' (with readback)
+    # Will log 'xpos', 'ypos', 'setpoint', 'readback'
     scan('XY Example', ('xpos', 1, 10), ('ypos', 1, 5, 0.2),
          SetCommand('setpoint', 1, 'readback'),
          SetCommand('setpoint', 3, 'readback'))
@@ -263,7 +268,7 @@ class ScanNd(ScanClient):
     def __init__(self):
         ScanClient.__init__(self)
 
-    def _decodeScan(self, parms):
+    def _decodeLoop(self, parms):
         """ Check for 
                 ('device', start, end, step)
              or 
@@ -278,6 +283,49 @@ class ScanNd(ScanClient):
         else:
             raise Exception('Scan parameters should be (''device'', start, end, step), not %s' % str(parms)) 
     
+    def _decodeScan(self, log, args):
+        """ Recursively build commands from scan arguments
+            @param log: Devices to log so far while going down the argument list
+            @param args: Remaining scan arguments 
+            @return List of commands
+        """
+        if len(args) <= 0:
+            # Reached innermost layer, no arguments left.
+            # Log what needs to be logged. May be nothing.
+            if len(log) <= 0:
+                return []
+            # Remove duplicate device names from list,
+            # but preserve the list order
+            cleaned_log = []
+            for device in log:
+                if device not in cleaned_log:
+                    cleaned_log.append(device)
+            return [ LogCommand(cleaned_log) ]
+        
+        # Analyze next argument
+        arg = args.pop(0)
+        if isinstance(arg, str):
+            # Remember device to log, move on
+            log.append(arg)
+            return self._decodeScan(log, args)
+        elif isinstance(arg, tuple):
+            # Loop specification
+            scan = self._decodeLoop(arg)
+            # Remember loop variable for log
+            log.append(scan[0])
+            # Create loop with remaining arguments as body
+            return [ LoopCommand(scan[0], scan[1], scan[2], scan[3], self._decodeScan(log, args)) ]
+        elif isinstance(arg, ScanCommand):
+            if isinstance(arg, SetCommand):
+                # Log device affected by 'set'
+                log.append(arg.getDeviceName())
+            # Create list of commands
+            cmds = [ arg ]
+            cmds.extend(self._decodeScan(log, args))
+            return cmds
+        else:
+            raise Exception('Cannot handle scan parameter of type %s' % arg.__class__.__name__)
+   
     def __call__(self, *args):
         """ N-dimensional scan command.
             @return ID of scan that was scheduled on the scan server
@@ -291,27 +339,11 @@ class ScanNd(ScanClient):
             args.pop(0)
         else:
             name = "Scan"
-
-        # Work backwards, starting with 'inner' loop
-        cmds = []
-        while len(args) > 0:
-            arg = args.pop()
-            if isinstance(arg, tuple):
-                scan = self._decodeScan(arg)
-                cmds = [ LoopCommand(scan[0], scan[1], scan[2], scan[3], cmds) ]
-            elif isinstance(arg, ScanCommand):
-                cmds.insert(0, arg)
-            elif isinstance(arg, str):
-                # If the 'current' command is already a log command, extend it
-                if len(cmds) > 0  and  isinstance(cmds[len(cmds)-1], LogCommand):
-                    log = cmds[len(cmds)-1]
-                    devices = list(log.getDeviceNames())
-                    devices.insert(0, arg)
-                    log.setDeviceNames(devices)
-                else:
-                    cmds.insert(0, LogCommand(arg))
-            else:
-                raise Exception('Cannot handle scan parameter of type %s' % arg.__class__.__name__)
+            
+        # End result, overall scan
+        cmds = self._decodeScan([], args)
+        if len(cmds) <= 0:
+            raise Exception('Empty scan')
 
         seq = CommandSequence(cmds)
         id = self.submit(name, seq)

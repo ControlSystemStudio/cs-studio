@@ -13,7 +13,7 @@ import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.Scan;
@@ -29,7 +29,7 @@ public class SetCommandImplHeadlessTest
 {
     private DeviceContext devices;
     private ScanContext context;
-    private DataLogger data_logger;
+    private DataLog data_logger;
 
     @Before
     public void setup() throws Exception

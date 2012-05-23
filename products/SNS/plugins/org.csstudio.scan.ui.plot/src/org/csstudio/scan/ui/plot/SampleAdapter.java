@@ -34,14 +34,14 @@ public class SampleAdapter implements ISample
     @Override
     public double getXValue()
     {
-        return DataFormatter.toDouble(x);
+        return DataFormatter.asDouble(x);
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYValue()
     {
-        return DataFormatter.toDouble(y);
+        return DataFormatter.asDouble(y);
     }
 
     /** {@inheritDoc} */

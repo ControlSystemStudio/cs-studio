@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.internal.PathStreamTool;
 
 /** Context that maintains {@link Device}s: Create, start, get, stop.
@@ -40,7 +40,7 @@ public class DeviceContext
     /** @return Default {@link DeviceContext}, initialized from preferences */
     public static DeviceContext getDefault() throws Exception
     {
-    	final String path = Preferences.getBeamlineConfigPath();
+    	final String path = ScanSystemPreferences.getBeamlineConfigPath();
         final InputStream config_stream = PathStreamTool.openStream(path);
         final DeviceInfo[] infos = BeamlineDeviceInfoReader.read(config_stream);
 

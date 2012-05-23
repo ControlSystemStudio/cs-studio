@@ -131,7 +131,7 @@ public class ScanHeadlessTest
 
         // Dump data
         final ScanData data = scan.getDataLogger().getScanData();
-        new SpreadsheetScanDataIterator(data).dump(System.out);
+        new SpreadsheetScanDataIterator(data).printTable(System.out);
         assertTrue(data.getSamples("xpos").size() > 1);
         assertTrue(data.getSamples("ypos").size() > 1);
     }

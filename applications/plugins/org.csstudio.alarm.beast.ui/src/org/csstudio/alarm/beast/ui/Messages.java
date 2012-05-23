@@ -30,10 +30,6 @@ public class Messages extends NLS
     public static String AddComponentDialog_SubComponentTT;
     public static String AddComponentDialog_Type;
     public static String AddComponentTT;
-    public static String AlarmClientModel_NotInitialized;
-    public static String AlarmClientModel_ReadingConfiguration;
-    public static String AlarmClientModel_ReadingRDB;
-    public static String AlarmClientModel_WaitingForJMSFmt;
     public static String AlarmComponent;
     public static String AlarmCurrentMessage;
     public static String AlarmCurrentSeverity;
@@ -122,7 +118,6 @@ public class Messages extends NLS
     public static String Preferences_Readonly;
     public static String Preferences_RestartMessage;
     public static String Preferences_RootComponent;
-    public static String ReadConfigJobName;
     public static String RelatedDisplayErrorFmt;
     public static String RelatedDisplayHTTP_Error;
     public static String RemovalErrorFmt;

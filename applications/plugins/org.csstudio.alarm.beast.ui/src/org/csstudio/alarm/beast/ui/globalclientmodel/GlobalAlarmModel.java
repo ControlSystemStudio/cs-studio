@@ -21,7 +21,6 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Activator;
-import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -178,7 +177,7 @@ public class GlobalAlarmModel
      */
     void readConfiguration(final IProgressMonitor monitor)
     {
-        monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
+        monitor.beginTask(org.csstudio.alarm.beast.Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
         // Arrange for JMS updates to be queued
         synchronized (this)
         {
@@ -189,7 +188,7 @@ public class GlobalAlarmModel
         int wait = 0;
         while (! communicator.isConnected())
         {
-            monitor.subTask(NLS.bind(Messages.AlarmClientModel_WaitingForJMSFmt, ++wait));
+            monitor.subTask(NLS.bind(org.csstudio.alarm.beast.Messages.AlarmClientModel_WaitingForJMSFmt, ++wait));
             try
             {
                 Thread.sleep(1000);

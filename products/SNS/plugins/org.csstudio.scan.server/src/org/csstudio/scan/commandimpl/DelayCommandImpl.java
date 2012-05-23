@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
@@ -26,7 +23,6 @@ import org.csstudio.scan.server.SimulationContext;
 /** {@link ScanCommandImpl} that delays the scan for some time
  *  @author Kay Kasemir
  */
-@SuppressWarnings("nls")
 public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
     /** Initialize
@@ -48,7 +44,6 @@ public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 	@Override
     public void execute(final ScanContext command_context) throws Exception
     {
-        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		Thread.sleep(Math.round(command.getSeconds() * 1000));
         command_context.workPerformed(1);
     }

@@ -4,12 +4,12 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
+ *
  * The scan engine idea is based on the "ScanEngine" developed
  * by the Software Services Group (SSG),  Advanced Photon Source,
  * Argonne National Laboratory,
  * Copyright (c) 2011 , UChicago Argonne, LLC.
- * 
+ *
  * This implementation, however, contains no SSG "ScanEngine" source code
  * and is not endorsed by the SSG authors.
  ******************************************************************************/
@@ -24,10 +24,10 @@ import java.util.Set;
 import org.csstudio.scan.server.ScanServer;
 
 /** Data set taken by a scan.
- * 
+ *
  *  <p>The data in a scan is organized by device.
  *  For each device, a list of samples can be obtained.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanData implements Serializable
@@ -37,7 +37,7 @@ public class ScanData implements Serializable
 
     /** Map from device name to list of samples for that device */
     final private Map<String, List<ScanSample>> device_logs;
-    
+
     /** Initialize
      *  @param device_logs Map from device name to list of samples for that device
      */
@@ -45,14 +45,14 @@ public class ScanData implements Serializable
     {
         this.device_logs = device_logs;
     }
-    
+
     /** @return Names of devices for which there are samples */
-    public List<String> getDevices()
+    public String[] getDevices()
     {
         final Set<String> names = device_logs.keySet();
         final String[] name_array = names.toArray(new String[names.size()]);
         Arrays.sort(name_array);
-        return Arrays.asList(name_array);
+        return name_array;
     }
 
     /** @param device_name Name of a device

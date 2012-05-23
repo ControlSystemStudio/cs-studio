@@ -114,7 +114,9 @@ public class Application implements IApplication
     @Override
     public Object start(IApplicationContext context) throws Exception
     {
-        System.out.println("Alarm Config Tool");
+        final String version = (String)
+                context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        System.out.println("Alarm Config Tool " + version);
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
@@ -123,29 +125,39 @@ public class Application implements IApplication
         if (error != null)
         {
             System.err.println(error);
-            return EXIT_OK;
+            return Integer.valueOf(-2);
         }
 
         // Configure logging
         LogConfigurator.configureFromPreferences();
 
         // Perform selected action
-        switch (mode)
+        try
         {
-        case LIST:
-            listConfigs();
-            break;
-        case CONVERT_ALH:
-            convertAlh();
-            break;
-        default:
-            importExport();
+	        switch (mode)
+	        {
+	        case LIST:
+	            listConfigs();
+	            break;
+	        case CONVERT_ALH:
+	            convertAlh();
+	            break;
+	        default:
+	            importExport();
+	        }
+        }
+        catch (Exception ex)
+        {
+        	ex.printStackTrace();
+        	return Integer.valueOf(-1);
         }
         return EXIT_OK;
     }
 
-    /** Dump available configuration names */
-    private void listConfigs()
+    /** Dump available configuration names
+     *  @throws Exception on error
+     */
+    private void listConfigs() throws Exception
     {
         // Connect to configuration database
         final AlarmConfiguration config;
@@ -168,8 +180,7 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-            System.err.println("Error listing alarm configurations: " +
-                    ex.getMessage());
+            throw new Exception("Error listing alarm configurations", ex);
         }
         finally
         {
@@ -177,8 +188,10 @@ public class Application implements IApplication
         }
     }
 
-    /** Convert ALH config file to alarm system XML file */
-    private void convertAlh()
+    /** Convert ALH config file to alarm system XML file
+     *  @throws Exception on error
+     */
+    private void convertAlh() throws Exception
     {
         try
         {
@@ -195,12 +208,14 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-            ex.printStackTrace();
+        	throw new Exception("Error while converting ALH config file", ex);
         }
     }
 
-    /** Run based on settings */
-    private void importExport()
+    /** Run based on settings
+     *  @throws Exception on error
+     */
+    private void importExport() throws Exception
     {
         // Connect to configuration database
         final AlarmConfiguration config;
@@ -215,7 +230,7 @@ public class Application implements IApplication
 				{
 					System.out.println(name);
 				}
-				
+
 				@Override
 				public void subTask(final String name)
 				{
@@ -230,9 +245,7 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-            System.err.println("Error connecting to alarm config database: " +
-                    ex.getMessage());
-            return;
+        	throw new Exception("Error connecting to alarm config database", ex);
         }
 
         try
@@ -269,12 +282,8 @@ public class Application implements IApplication
                 }
                 break;
             default:
-                throw new Exception("Mode " + mode.name());
+                throw new Exception("Unknown mode " + mode.name());
             }
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
         }
         finally
         {

@@ -88,7 +88,14 @@ public class AlarmConfiguration
     {
         // Allow auto-reconnect?
         this.auto_reconnect = auto_reconnect;
-        rdb = RDBUtil.connect(url, user, password, auto_reconnect);
+        try
+        {
+        	rdb = RDBUtil.connect(url, user, password, auto_reconnect);
+        }
+        catch (Exception ex)
+        {
+        	throw new Exception(NLS.bind(Messages.DatabaseConnectionErrorFmt, ex.getMessage()), ex);
+        }
 
         // Disable it while reading initial config. because that
         // can be 10% faster

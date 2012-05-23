@@ -449,7 +449,10 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 		return dataWidth;
 	}
 
-
+	public GraphArea getGraphArea() {
+		return graphArea;
+	}
+	
 	/**
 	 * @return the two dimension insets (cropped_width, cropped_height) of graph area
 	 */

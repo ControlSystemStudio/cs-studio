@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
@@ -144,6 +145,7 @@ public class ScanInfoModel
     /** Start model, i.e. connect to server, poll, ... */
     private void start() throws Exception
     {
+    	final long poll_period = ScanSystemPreferences.getScanClientPollPeriod();
         poller = new Thread(new Runnable()
         {
             @Override
@@ -165,7 +167,7 @@ public class ScanInfoModel
                     try
                     {
                         poll();
-                        Thread.sleep(1000);
+                        Thread.sleep(poll_period);
                     }
                     catch (InterruptedException ex)
                     {

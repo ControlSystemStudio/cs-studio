@@ -40,7 +40,7 @@ public class PlotDataModel implements Runnable
     private volatile long selected_scan_id = -1;
 
     /** Devices in current scan */
-    private volatile List<String> devices = null;
+    private volatile String[] devices = null;
 
     /** Device used for 'X' axis */
     private volatile String x_axis_device = null;
@@ -200,7 +200,7 @@ public class PlotDataModel implements Runnable
     }
 
     /** @return Devices used by currently selected Scan */
-    public List<String> getDevices()
+    public String[] getDevices()
     {
         return devices;
     }

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Derby-based scan log
+Bundle-SymbolicName: org.csstudio.scan.log.derby;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.csstudio.scan;bundle-version="1.0.0",
+ org.csstudio.scan.log;bundle-version="1.0.0"
+Import-Package: org.junit;version="4.8.2"
+Bundle-ClassPath: lib/derby.jar,
+ lib/derbynet.jar,
+ .
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.scan.log.derby.Activator

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.server.internal.PathStreamTool;
 import org.csstudio.scan.util.XMLUtil;
 import org.w3c.dom.Document;
@@ -68,7 +68,7 @@ public class SimulationInfo
     /** @return Default {@link SimulationInfo}, initialized from preferences */
     public static SimulationInfo getDefault() throws Exception
     {
-    	final String path = Preferences.getSimulationConfigPath();
+    	final String path = ScanSystemPreferences.getSimulationConfigPath();
         final InputStream config_stream = PathStreamTool.openStream(path);
         return new SimulationInfo(config_stream);
     }

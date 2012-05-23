@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.scan.command.CommandSequence;
@@ -182,10 +183,11 @@ public class ScanServerHeadlessTest implements Runnable
             System.out.println("Logged data:");
             final ScanData data = server.getScanData(id);
             System.out.println("Devices: " + data.getDevices());
-            assertTrue(data.getDevices().contains("xpos"));
-            assertTrue(data.getDevices().contains("ypos"));
-            assertTrue(data.getDevices().contains("readback"));
-            new SpreadsheetScanDataIterator(data).dump(System.out);
+            final List<String> devices = Arrays.asList(data.getDevices());
+            assertTrue(devices.contains("xpos"));
+            assertTrue(devices.contains("ypos"));
+            assertTrue(devices.contains("readback"));
+            new SpreadsheetScanDataIterator(data).printTable(System.out);
 
             pv.stop();
         }

@@ -41,7 +41,7 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 	protected void configureProperties() {
 		addProperty(new FilePathProperty(PROP_PATH, "File Path",
 				WidgetPropertyCategory.Basic, new Path(""),
-				new String[] { "opi" }));
+				new String[] { "opi" }, false)); //$NON-NLS-1$
 		addProperty(new MacrosProperty(PROP_MACROS, "Macros",
 				WidgetPropertyCategory.Basic, new MacrosInput(
 						new LinkedHashMap<String, String>(), true)));
@@ -53,20 +53,25 @@ public abstract class AbstractOpenOPIAction extends AbstractWidgetAction {
 		IPath absolutePath = getPath();
 		if (!getPath().isAbsolute()) {
 			absolutePath = ResourceUtil.buildAbsolutePath(getWidgetModel(),
-					getPath());
+					getPath());		
+			if(!ResourceUtil.isExsitingFile(absolutePath, true)){
+				//search from OPI search path
+				absolutePath = ResourceUtil.getFileOnSearchPath(getPath(), true);
+			}
 		}
 		if (absolutePath == null)
 			try {
 				throw new FileNotFoundException(
 						NLS.bind(
-								"The file {0} does not exist or the file is not an OPI file in the workspace.",
+								"The file {0} does not exist.",
 								getPath().toString()));
 			} catch (FileNotFoundException e) {
 				MessageDialog.openError(Display.getDefault().getActiveShell(),
 						"File Open Error", e.getMessage());
 				ConsoleService.getInstance().writeError(e.toString());
 				return;
-			}		
+			}
+		
 		openOPI(absolutePath);
 		
 	}

@@ -41,6 +41,7 @@ public class SpinnerModel extends LabelModel {
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$	
 	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
 	public static final String PROP_PRECISION_FROM_PV = "precision_from_pv";	//$NON-NLS-1$
+	public static final String PROP_BUTTONS_ON_LEFT= "buttons_on_left";	//$NON-NLS-1$
 
 
 
@@ -70,6 +71,8 @@ public class SpinnerModel extends LabelModel {
 		pvModel = true;
 		super.configureProperties();		
 		removeProperty(LabelModel.PROP_AUTOSIZE);
+		removeProperty(LabelModel.PROP_SHOW_SCROLLBAR);
+		removeProperty(LabelModel.PROP_WRAP_WORDS);
 		setPropertyVisible(LabelModel.PROP_TEXT, false);
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
@@ -83,7 +86,7 @@ public class SpinnerModel extends LabelModel {
 		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
 				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
 		
-		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
+		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits from PV",
 				WidgetPropertyCategory.Behavior, true));
 		
 		addProperty(new ComboProperty(PROP_FORMAT, "Format", 
@@ -93,6 +96,9 @@ public class SpinnerModel extends LabelModel {
 				WidgetPropertyCategory.Display, 3, 0, 100));
 		addProperty(new BooleanProperty(PROP_PRECISION_FROM_PV, "Precision from PV", 
 				WidgetPropertyCategory.Display, false));
+		addProperty(new BooleanProperty(PROP_BUTTONS_ON_LEFT, "Buttons on Left", 
+				WidgetPropertyCategory.Display, false));
+		
 
 
 	}	
@@ -137,6 +143,10 @@ public class SpinnerModel extends LabelModel {
 	
 	public boolean isPrecisionFromPV(){
 		return (Boolean) getProperty(PROP_PRECISION_FROM_PV).getPropertyValue();
+	}
+	
+	public boolean isButtonsOnLeft(){
+		return (Boolean)getPropertyValue(PROP_BUTTONS_ON_LEFT);
 	}
 		
 	@Override

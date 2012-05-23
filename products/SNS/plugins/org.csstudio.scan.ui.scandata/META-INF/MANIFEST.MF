@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan data display
+Bundle-SymbolicName: org.csstudio.scan.ui.scandata;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.ui,
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.csstudio.ui.util;bundle-version="3.1.0",
+ org.csstudio.scan;bundle-version="1.0.0",
+ org.csstudio.scan.client;bundle-version="1.0.0",
+ org.csstudio.scan.ui;bundle-version="1.0.0"
+Import-Package: org.junit;version="4.8.2"

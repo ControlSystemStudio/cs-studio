@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan System Log support
+Bundle-SymbolicName: org.csstudio.scan.log;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.scan;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.csstudio.scan.log
+Import-Package: org.junit;version="4.8.2"

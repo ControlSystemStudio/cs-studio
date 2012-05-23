@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import java.util.List;
-
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 
 /** Toolbar actions to select a device for the 'X' or 'Y' axis
@@ -55,8 +53,8 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
             }
         };
     }
-    
-    /** Initialize 
+
+    /** Initialize
      *  @param model
      *  @param label
      *  @param tooltip
@@ -74,9 +72,9 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
     @Override
     public String[] getOptions()
     {
-        final List<String> devices = model.getDevices();
+        final String[] devices = model.getDevices();
         if (devices == null)
             return new String[0];
-        return devices.toArray(new String[devices.size()]);
+        return devices;
     }
 }

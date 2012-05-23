@@ -8,6 +8,8 @@
 package org.csstudio.scan.ui.scantree.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +31,16 @@ public class CommandsInfo
 {
     /** Singleton instance */
     private static CommandsInfo instance = null;
-    
+
     /** Default instances for each available command */
     final private ScanCommand[] commands;
-    
+
     /** Icon for each command, indexed by name of command class */
     final private ImageRegistry registry = new ImageRegistry();
-    
+
     /** GUI name for each command, indexed by command class */
     final private Map<Class<?>, String> command_names = new HashMap<Class<?>, String>();
-    
+
     /** @return Singleton instance
      *  @throws Exception on error creating the initial instance
      */
@@ -48,7 +50,7 @@ public class CommandsInfo
             instance = new CommandsInfo();
         return instance;
     }
-    
+
     /** Initialize from extension point registry */
     private CommandsInfo() throws Exception
     {
@@ -62,17 +64,26 @@ public class CommandsInfo
             final String plugin_id = config.getContributor().getName();
             final String name = config.getAttribute("name");
             final String icon_path = config.getAttribute("icon");
-            
+
             // Instantiate command
             final ScanCommand command = (ScanCommand) config.createExecutableExtension("class");
             commands.add(command);
-            
+
             command_names.put(command.getClass(), name);
 
             // Get icon
             final ImageDescriptor icon = AbstractUIPlugin.imageDescriptorFromPlugin(plugin_id, icon_path);
             registry.put(command.getClass().getName(), icon);
         }
+        // Sort by command class name to get predicatable order
+        Collections.sort(commands, new Comparator<ScanCommand>()
+		{
+			@Override
+            public int compare(final ScanCommand cmd1, final ScanCommand cmd2)
+            {
+	            return cmd1.getCommandName().compareTo(cmd2.getCommandName());
+            }
+		});
         this.commands = commands.toArray(new ScanCommand[commands.size()]);
     }
 
