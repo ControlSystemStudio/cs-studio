@@ -49,7 +49,7 @@ public class StopWorker implements IManagementCommand {
     @Override
     public CommandResult execute(CommandParameters parameters) {
         if (remoteObject == null) {
-            return CommandResult.createFailureResult("\nCannot access the main application: Reference is null!");
+            return CommandResult.createMessageResult("\nThis command is deactivated.");
         }
         remoteObject.stopDeliveryWorker();
         return CommandResult.createMessageResult("Hopefully all worker have been stopped.");
