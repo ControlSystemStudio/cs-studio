@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+     Array
+    </title>
+  </head>
+  <body>
+
+    <h2>
+      Array
+    </h2>
+    
+    <p>Array widget is a container widget that could contain an array of other widgets.
+     It can be used to display/write a PV with array data, for example, waveform or compress PV.
+    </p>
+    <img src="img/ArrayWidget.gif"  alt="Tabbed Container">
+    <h3>Operations</h3>
+    <p>In edit mode, dragging and dropping a widget to an empty array widget will create an array of this widget.
+    Modifing the property of any child will apply to all other children.
+    Array index can be changed by spinner and scrollbar.
+    </p>
+    
+    <h3>Special Properties</h3>
+    <ul>
+    <li>Array Length (array_length). Length of the array. Only visible if PV name is empty, otherwise, it will
+    be determined by the PV array length.</li>
+    <li>Data Type (data_type). Data type of the array, which is the returned data type when calling
+    <code>widget.getValue()</code> in script. Only visible if PV name is empty, otherwise, it will
+    be determined by the PV data type.</li>
+    
+    
+	<li>Horizontal (horizontal). Yes if children widgets should be arranged in horizontal direction. 
+	No for vertical direction.</li>
+	<li>Show Spinner (show_spinner). Show the index spinner.</li>
+	
+	<li>Spinner Width (spinner_width). Width of the spinner in pixels.</li>
+	<li>Show Scrollbar (show_scrollbar). Show the scrollbar.</li>
+	
+    </ul>
+    <h3>See Also</h3>
+   <ul>
+   	<li><a href="ContainerWidgets.html">Properties Common to All Container Widgets</a></li>
+   <li><a href="PVWidgets.html">Properties Common to All PV Widgets</a></li>
+   <li><a href="../Widget Properties.html">Properties Common to All Widgets</a></li>
+   </ul>
+    <h3>Special Methods</h3>
+    <HR>
+		 <A NAME="getIndex()"><!-- --></A><H4>
+		getIndex</H4>
+		<PRE>
+public int <B>getIndex</B>(AbstractBaseEditPart child)</PRE>
+		<DL>
+		<DD>Get the array index on the child widget.
+		<P>
+		<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>child</CODE> - the child widget.</DL>
+</DD>
+		<DD><DL>
+		
+		<DT><B>Returns:</B><DD>the array index on the child widget. -1 if the 
+	  child is not an array element or it is not a child of the array widget.</DL>
+		</DD>
+		</DL>
+<HR>
+   
+    
+<br>
+
+</body>
+</html>

@@ -253,7 +253,10 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 				try {
 					childModel.setPropertyVisibleAndSavable(propId, false, false);
 				} catch (NonExistPropertyException e) {					
-				}
+				}						
+		}
+		if (childModel.getProperty(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE) != null) {
+			childModel.setPropertyValue(IPVWidgetModel.PROP_BORDER_ALARMSENSITIVE, false);
 		}
 		if (getExecutionMode() == ExecutionMode.RUN_MODE && result instanceof IPVWidgetEditpart) {			
 			((IPVWidgetEditpart) result).addSetPVValueListener(new ISetPVValueListener() {

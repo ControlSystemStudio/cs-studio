@@ -23,6 +23,7 @@ import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalEditPart;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
@@ -131,6 +132,26 @@ public class ArrayLayoutEditPolicy extends WidgetXYLayoutEditPolicy {
 		resize.add(c);
 
 		return resize.unwrap();
+	}
+	
+	/* Override super method because array widget only allows adding one child.
+	 * (non-Javadoc)
+	 * @see org.eclipse.gef.editpolicies.ConstrainedLayoutEditPolicy#getAddCommand(org.eclipse.gef.Request)
+	 */
+	protected Command getAddCommand(Request generic) {
+		ChangeBoundsRequest request = (ChangeBoundsRequest) generic;
+		List<?> editParts = request.getEditParts();
+		CompoundCommand command = new CompoundCommand();
+		command.setDebugLabel("Add in ConstrainedLayoutEditPolicy");//$NON-NLS-1$
+		GraphicalEditPart child;
+		if(editParts.size()>0){
+			child = (GraphicalEditPart) editParts.get(0);
+			command.add(createAddCommand(
+					request,
+					child,
+					translateToModelConstraint(getConstraintFor(request, child))));
+		}
+		return command.unwrap();
 	}
 
 
