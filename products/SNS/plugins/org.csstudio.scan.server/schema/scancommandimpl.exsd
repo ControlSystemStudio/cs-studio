@@ -59,7 +59,7 @@
          <attribute name="command" type="string" use="required">
             <annotation>
                <documentation>
-                  Class of the scan command for which this factory provides an implemantation.
+                  Class of the scan command for which this factory provides an implementation.
 Must be derived from org.csstudio.scan.command.ScanCommand.
                </documentation>
                <appinfo>

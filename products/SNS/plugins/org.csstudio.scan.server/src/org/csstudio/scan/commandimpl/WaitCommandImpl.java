@@ -15,9 +15,6 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
@@ -95,7 +92,6 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 	@Override
     public void execute(final ScanContext context) throws Exception
     {
-		Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
         final Device device = context.getDevice(command.getDeviceName());
 
         final DeviceValueCondition condition =

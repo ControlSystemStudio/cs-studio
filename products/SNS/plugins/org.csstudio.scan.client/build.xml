@@ -36,12 +36,13 @@
     <target name="compile" depends="prepare">
     	<!-- org.csstudio.scan, excluding Eclipse-only code -->
         <javac srcdir="../org.csstudio.scan/src" destdir="${classes}"
-               excludes="**/Activator.java, **/Preferences.java, **/ScanCommandFactory.java"
+               excludes="**/Activator.java, **/ScanSystemPreferences.java, **/ScanCommandFactory.java"
                includeantruntime="true" deprecation="on" debug="on">
             <classpath><path refid="build.classpath"/></classpath>
         </javac>
         <!-- org.csstudio.scan.client -->
         <javac srcdir="src" destdir="${classes}"
+               excludes="**/ScanInfoModel.java"
                includeantruntime="true" deprecation="on" debug="on">
             <classpath>
             	<path refid="build.classpath"/>

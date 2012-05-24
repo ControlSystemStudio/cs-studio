@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
@@ -39,7 +39,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
-import org.csstudio.scan.logger.DataLogger;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
@@ -127,8 +127,8 @@ public class ScanServerImpl implements ScanServer
     {
     	return new ScanServerInfo("V" + ScanServer.SERIAL_VERSION,
     			start_time,
-    			Preferences.getBeamlineConfigPath(),
-    			Preferences.getSimulationConfigPath());
+    			ScanSystemPreferences.getBeamlineConfigPath(),
+    			ScanSystemPreferences.getSimulationConfigPath());
     }
 
     /** {@inheritDoc} */
@@ -222,14 +222,14 @@ public class ScanServerImpl implements ScanServer
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
             // Read pre- and post-scan commands
-            String path = Preferences.getPreScanPath();
+            String path = ScanSystemPreferences.getPreScanPath();
             final List<ScanCommand> pre_commands;
             if (path.isEmpty())
                 pre_commands = Collections.<ScanCommand>emptyList();
             else
                 pre_commands = reader.readXMLStream(PathStreamTool.openStream(path));
 
-            path = Preferences.getPostScanPath();
+            path = ScanSystemPreferences.getPostScanPath();
             final List<ScanCommand> post_commands;
             if (path.isEmpty())
                 post_commands = Collections.<ScanCommand>emptyList();
@@ -252,14 +252,18 @@ public class ScanServerImpl implements ScanServer
         }
         catch (Exception ex)
         {
-            throw new ServerException("Scan Engine error while submitting scan", ex);
+        	Logger.getLogger(getClass().getName()).log(Level.WARNING, "Scan submission failed", ex);
+        	// Cannot wrap any Exception ex into RemoteExcetion because
+        	// ex may not serialize. So include the name.
+            throw new RemoteException("Scan Engine error while submitting scan: " +
+            		ex.getClass().getName() + " " + ex.getMessage());
         }
     }
 
     /** If memory consumption is high, remove (one) older scan */
 	private void cullScans() throws RemoteException
     {
-	    final double threshold = Preferences.getOldScanRemovalMemoryThreshold();
+	    final double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
 		while (getInfo().getMemoryPercentage() > threshold)
 	    {
 	    	if (! scan_engine.removeOldestCompletedScan())
@@ -318,10 +322,10 @@ public class ScanServerImpl implements ScanServer
     }
 
     /** @param id Scan ID
-     *  @return {@link DataLogger} of scan or <code>null</code>
+     *  @return {@link DataLog} of scan or <code>null</code>
      *  @throws UnknownScanException if scan ID not valid
      */
-    private DataLogger getDataLogger(final long id) throws UnknownScanException
+    private DataLog getDataLog(final long id) throws UnknownScanException
     {
         final Scan scan = findScan(id);
         return scan.getDataLogger();
@@ -331,9 +335,9 @@ public class ScanServerImpl implements ScanServer
     @Override
     public long getLastScanDataSerial(final long id) throws RemoteException
     {
-        final DataLogger logger = getDataLogger(id);
-        if (logger != null)
-            return logger.getLastScanDataSerial();
+        final DataLog log = getDataLog(id);
+        if (log != null)
+            return log.getLastScanDataSerial();
         return -1;
     }
 
@@ -341,10 +345,17 @@ public class ScanServerImpl implements ScanServer
 	@Override
     public ScanData getScanData(final long id) throws RemoteException
     {
-        final DataLogger logger = getDataLogger(id);
-        if (logger != null)
-            return logger.getScanData();
-        return null;
+        final DataLog log = getDataLog(id);
+        if (log == null)
+        	return null;
+        try
+        {
+            return log.getScanData();
+        }
+        catch (Exception ex)
+        {
+        	throw new RemoteException("Error logging data", ex);
+        }
     }
 
     /** {@inheritDoc} */

@@ -4,6 +4,12 @@
    <extension-point id="command" name="Scan Command" schema="schema/command.exsd"/>
    <extension point="org.csstudio.scan.command">
       <command
+            class="org.csstudio.scan.command.ConfigLogCommand"
+            icon="icons/configcommand.gif"
+            id="config_log"
+            name="Log Configuration">
+      </command>
+      <command
             class="org.csstudio.scan.command.DelayCommand"
             icon="icons/delaycommand.gif"
             id="delay"
@@ -20,6 +26,12 @@
             icon="icons/loopcommand.gif"
             id="loop"
             name="Loop">
+      </command>
+      <command
+            class="org.csstudio.scan.command.ScriptCommand"
+            icon="icons/scriptcommand.gif"
+            id="script"
+            name="Script">
       </command>
       <command
             class="org.csstudio.scan.command.SetCommand"

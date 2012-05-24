@@ -11,6 +11,10 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -364,8 +368,26 @@ public class OPIColorDialog extends HelpTrayDialog {
 		@Override
 		public void run() {
 			MediaService.getInstance().reloadColorFile();
-			preDefinedColorsViewer.setInput(
-					MediaService.getInstance().getAllPredefinedColors());
+			Job job = new Job("Update Colors viewser") {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					Display.getDefault().asyncExec(new Runnable() {
+						
+						@Override
+						public void run() {
+							if(!preDefinedColorsViewer.getControl().isDisposed())
+							preDefinedColorsViewer.setInput(MediaService.getInstance()
+									.getAllPredefinedColors());
+						}
+					});
+					
+					monitor.done();
+					return Status.OK_STATUS;
+				}
+			};
+			job.schedule();
+			
 		}
 
 		

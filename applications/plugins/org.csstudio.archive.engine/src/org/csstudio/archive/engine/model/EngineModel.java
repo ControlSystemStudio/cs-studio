@@ -31,8 +31,10 @@ import org.csstudio.data.values.ValueFactory;
  */
 public class EngineModel
 {
-    /** Version code. See also webroot/version.html */
-    final public static String VERSION = "3.1.0"; //$NON-NLS-1$
+    /** Version code. See also webroot/version.html
+     *  The Application startup code updates this to the plugin version
+     */
+    public static String VERSION = "?.?.?"; //$NON-NLS-1$
 
     /** Name of this model */
     private String name = "Archive Engine";  //$NON-NLS-1$

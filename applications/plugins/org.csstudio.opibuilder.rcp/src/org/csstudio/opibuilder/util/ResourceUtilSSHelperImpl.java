@@ -10,9 +10,7 @@ package org.csstudio.opibuilder.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 import org.csstudio.ui.util.NoResourceEditorInput;
@@ -24,15 +22,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -42,8 +37,8 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
 
-	private static InputStream inputStream;
-	private static Object lock = new Boolean(true);
+
+
 	
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#pathToInputStream(org.eclipse.core.runtime.IPath, boolean)
@@ -82,37 +77,11 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
         }
 
-        // Must be a URL
-        final URL url = new URL(urlString);
-        inputStream = null;
-        
-		if (runInUIJob) {
-			synchronized (lock) {
-				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
-
-					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException,
-							InterruptedException {
-						try {
-							monitor.beginTask("Connecting to " + url,
-									IProgressMonitor.UNKNOWN);
-							inputStream = ResourceUtil.openURLStream(url);
-						} catch (IOException e) {
-							throw new InvocationTargetException(e,
-									"Timeout while connecting to " + url);
-						} finally {
-							monitor.done();
-						}
-					}
-
-				};
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.run(true, false, openURLTask);
-			}
-		}else
-			return ResourceUtil.openURLStream(url);
+        // Must be an URL
+        final URL url = new URL(urlString);        
+		
+		return ResourceUtil.openURLStream(url, runInUIJob);
        
-		return inputStream;        
 	}
 
 	/* (non-Javadoc)

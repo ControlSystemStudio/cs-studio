@@ -45,12 +45,21 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
 			new WorkspaceFileFieldEditor(PreferencesHelper.FONT_FILE, 
 				"Font File: ", new String[]{"def"}, parent);//$NON-NLS-2$
 		addField(fontEditor);			
-					
+		
+		StringFieldEditor opiSearchPathEditor = 
+				new StringFieldEditor(PreferencesHelper.OPI_SEARCH_PATH, "OPI Search Path", parent);
+		opiSearchPathEditor.getTextControl(parent).setToolTipText(
+					"The path to search OPI files.");
+			addField(opiSearchPathEditor);	
+		
 		StringFieldEditor topOPIsEditor = 
 			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);
 		topOPIsEditor.getTextControl(parent).setToolTipText(
 				"The OPIs appeared in top opi button on toolbar");
 		addField(topOPIsEditor);	
+		
+		
+		
 		
 		WorkspaceFileFieldEditor probeOPIEditor =
 			new WorkspaceFileFieldEditor(PreferencesHelper.PROBE_OPI, 

@@ -36,7 +36,7 @@ seq = CommandSequence(
     LoopCommand('ypos', min(y0, y1), max(y0, y1), toggle * max(0.1, abs(dy)),
     [
        WaitCommand('neutrons', Comparison.INCREASE_BY, neutrons),
-       LogCommand('readback')
+       LogCommand([ 'xpos', 'ypos', 'readback' ])
     ]
     )
   )
@@ -45,10 +45,9 @@ seq = CommandSequence(
 
 # Run simulation
 # TODO Make this nicer
-simu = scan.server.simulateScan(seq.getXML())
-import org.csstudio.scan.ui.SimulationDisplay as SimulationDisplay
-SimulationDisplay.show(simu)
-
+#simu = scan.server.simulateScan(seq.getXML())
+#import org.csstudio.scan.ui.SimulationDisplay as SimulationDisplay
+#SimulationDisplay.show(simu)
 
 # Submit scan
 id = scan.submit(name, seq);

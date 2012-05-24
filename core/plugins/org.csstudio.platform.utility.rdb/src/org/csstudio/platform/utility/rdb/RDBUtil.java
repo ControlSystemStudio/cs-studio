@@ -45,6 +45,7 @@ abstract public class RDBUtil
 {
     /** Start of MySQL URL */
     private static final String JDBC_MYSQL = "jdbc:mysql://";
+    private static final String JDBC_MYSQL_REPLICATION = "jdbc:mysql:replication://";
 
     /** Start of PostgreSQL URL */
     private static final String JDBC_POSTGRESQL = "jdbc:postgresql://";
@@ -142,7 +143,7 @@ abstract public class RDBUtil
             final String user, final String password, final boolean autoReconnect) throws Exception
     {
         Activator.getLogger().log(Level.FINE, "RDBUtil connects to {0}", url);
-        if (url.startsWith(JDBC_MYSQL))
+        if (url.startsWith(JDBC_MYSQL) || url.startsWith(JDBC_MYSQL_REPLICATION))
             return new MySQL_RDB(url, user, password, autoReconnect);
         else if (url.startsWith(JDBC_ORACLE))
             return new OracleRDB(url, user, password, autoReconnect);

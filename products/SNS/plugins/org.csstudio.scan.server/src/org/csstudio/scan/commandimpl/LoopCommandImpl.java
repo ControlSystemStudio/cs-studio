@@ -18,16 +18,14 @@ package org.csstudio.scan.commandimpl;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
-import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
+import org.csstudio.scan.device.ValueConverter;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -154,7 +152,6 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 	@Override
 	public void execute(final ScanContext context) throws Exception
 	{
-        Logger.getLogger(getClass().getName()).log(Level.FINE, "{0}", command);
 		final Device device = context.getDevice(command.getDeviceName());
 
 	      // Separate read-back device, or use 'set' device?
@@ -206,8 +203,12 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             condition.await();
         }
 
-        // Log the device's value
-        context.logSample(ScanSampleFactory.createSample(readback.getInfo().getAlias(), readback.read()));
+        // Log the device's value?
+        if (context.isAutomaticLogMode())
+        {
+	        final long serial = context.getNextScanDataSerial();
+	        context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, readback.read()));
+        }
 
         // Execute loop body
     	context.execute(implementation);

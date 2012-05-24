@@ -8,7 +8,7 @@
 package org.csstudio.scan.ui;
 
 import org.csstudio.scan.Activator;
-import org.csstudio.scan.Preferences;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -59,7 +59,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     @Override
     public boolean performOk()
     {
-        Preferences.setSystemPropertiesFromPreferences();
+        ScanSystemPreferences.setSystemPropertiesFromPreferences();
         return super.performOk();
     }
 }

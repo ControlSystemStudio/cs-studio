@@ -91,7 +91,7 @@ public class Application implements IApplication
         final String args[] =
             (String []) context.getArguments().get("application.args");
         if (!getSettings(args))
-            return EXIT_OK;
+            return Integer.valueOf(-2);
 
         // Initialize logging
         LogConfigurator.configureFromPreferences();
@@ -99,6 +99,7 @@ public class Application implements IApplication
         // Setup groups, channels, writer
         // This is all single-threaded!
         final Logger logger = Activator.getLogger();
+        EngineModel.VERSION =  (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
@@ -167,6 +168,7 @@ public class Application implements IApplication
         catch (Exception ex)
         {
             logger.log(Level.SEVERE, "Unhandled Main Loop Error", ex);
+            return Integer.valueOf(-1);
         }
 
         return EXIT_OK;

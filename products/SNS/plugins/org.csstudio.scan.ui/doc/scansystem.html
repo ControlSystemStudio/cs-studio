@@ -59,7 +59,7 @@ What follows is a description of all available commands.
 </p>
 
 
-<h3><img alt="set" src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</h3>
+<h3><a name="SetCommand"><img alt="set" src="../../org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</a></h3>
 <p>This command sets a device to a desired value.
 </p>
 <p>In addition to sending the desired value to the device,
@@ -92,7 +92,7 @@ that is a value within 0.9 and 1.0.
 </p>
 
 
-<h3><img alt="wait" src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</h3>
+<h3><a name="WaitCommand"><img alt="wait" src="../../org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</a></h3>
 <p>This command waits for a device to reach a desired value.
 </p>
 <p>The Set command described above already contains similar functionality,
@@ -140,7 +140,7 @@ wait command, the value would have to grow to at least
 </p>
 
 
-<h3><img alt="loop" src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</h3>
+<h3><a name="LoopCommand"><img alt="loop" src="../../org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</a></h3>
 <p>This command changes a device from a start to an end value.
 It is at the core of most scans.
 </p>
@@ -194,7 +194,7 @@ the alternating scan will be faster and reduce wear on the motors.
 </p>
 
 
-<h3><img alt="log" src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</h3>
+<h3><a name="LogCommand"><img alt="log" src="../../org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</a></h3>
 <p>Send values of devices to the log.
 </p>
 <p>Parameters:</p>
@@ -206,14 +206,77 @@ the alternating scan will be faster and reduce wear on the motors.
 will send the current value of the "ypos" and "readback"
 devices to the log.
 </p>
-<p>Note that Loop, Set and Wait commands will automatically
-log the value of the device which they <u>read</u>.
-By default, this is the device to which the Loop and Set command
-write, unless a separate read-back device is specified. 
+<p>All devices listed in the same log command will be logged with the same "serial number" identifier
+to make it obvious that they were taken at the same time, even though their underlying time stamps
+obtained from the control system may differ because a value could for example have changed some time ago
+and was not modified since.
 </p>
 
 
-<h3><img alt="delay" src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</h3>
+<h3><a name="LogConfig"><img alt="log" src="../../org.csstudio.scan/icons/configcommand.gif"/>&nbsp;Log Mode Configuration</a></h3>
+<p>This command can change the log mode.
+</p>
+<p>Parameters:</p>
+<ul>
+<li>Log automatically: yes or no</li>
+</ul>
+<p>Example:
+<code>Log Mode: automatically</code>
+changes the default, on-demand mode of logging to the automatic log mode.
+</p>
+<p>In the default, on-demand log mode, you can log the current value
+of devices as desired by adding <a href="#LogCommand">Log Commands</a> to the scan.
+You control exactly which device is logged and when.
+Below is an example scan and the resulting log.
+Note that there is one line of data for each iteration of the nested loop.
+</p>
+
+<img alt="on-demand logging" src="log_demand.png" width="412" height="322"/>
+
+<p>When enabling the automatic log mode,
+commands that modify the values of devices will automatically
+log the value. For example, the <a href="#SetCommand">Set</a>
+and <a href="#LoopCommand">Loop</a> Commands will write
+the value of their associated device after they set and optionally
+waited for them to reach the desired value.
+In automatic logging mode, you only need to add specific <a href="#LogCommand">Log</a> commands
+to your scan if you want to log additional devices which are not directly
+modified by the scan, for example temperature sensors or other read-back values.
+</p>
+
+<p>The automatic log mode may appear more convenient than the
+on-demand mode, but consider the following example scan and
+the resulting data as viewed in a table:
+</p>
+
+<img alt="automatic logging" src="log_auto.png" width="440" height="334"/>
+
+<p>When the outer loop sets the "xpos" to 1, that is logged automatically,
+but at that time we have not, yet logged a value for anything else, so
+the initial table line in the data log only shows "xpos".
+When a few milliseconds the inner loop sets the "ypos" to 1, that is also logged,
+and now the data log shows the previous value for "xpos" with the "ypos", but
+no "readback", yet.
+About a second later, the "readback" is logged specifically, and finally
+we see all of "xpos", "ypos" and "readback" in the log.
+</p>
+
+<p>Similarly, consider the log around 10:51:20.02.
+At this time, the outer loop advances "xpos" to 2 and then the inner loop
+reserts "ypos" to 1. These events happen at virtually the same time,
+but since the two loops log them automatically with their exact time stamp,
+they appear as two different events in the log table.
+</p>
+
+<p>In summary, the default, on-demand log mode is usually most straight-forward to use.
+It results in a compact data log that contains exactly what you want to see,
+for example one line of data within the inner loop of a nested scan.
+The automatic loop can provide more detail because it logs each change
+right away when a set or loop command modifies a device.
+</p>
+
+
+<h3><a name="DelayCommand"><img alt="delay" src="../../org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</a></h3>
 <p>This command simply delays the scan for a configurable
 number of seconds.
 </p>
@@ -269,7 +332,7 @@ to track the progress of a scan and potentially pause or abort it.
 <h3>Scan Server Setup</h3>
 
 <p>The scan server is maintained by a system administrator,
-it should always be available.
+it should for example run as a Linux service and thus always be available.
 End users can submit scans to the scan server, monitor their
 progress and also abort scans, but end users will typically not
 start or stop the scan server itself.
@@ -284,6 +347,66 @@ and <code>ScanServerPort</code> for the respective settings.
 </p>
 <p>The scan server itself if configured via a plugin customization file,
 review the one included in the server for an example.
+</p>
+
+
+<h3>Network Details</h3>
+
+<p>The network communication between the scan server and clients like CSS
+is based on Java RMI and currently uses two TCP network ports:</p>
+<ol>
+<li>The port number configured via the <code>ScanServerPort</code>
+    or associated Eclipse preference is used by the RMI <u>Registry</u>.
+    Clients connect to this registry to locate the scan server
+    interface.
+</li>
+<li>The next port number, i.e. <code>ScanServerPort+1</code>,
+    is where the actual scan server binding is exported to clients.
+</li>
+</ol>
+
+
+<h3>Firewalls</h3>
+
+<p>To allow access to a scan server through firewalls, both TCP ports
+described in the previous section need to be opened for access by clients.
+Their defaults are 4810 and 4811.
+</p>
+
+
+<h3>Multi-Network Installation</h3>
+
+<p>The scan server can be executed on a host with multiple network
+interfaces, for example a host with a public network interface
+like 160.0.0.1 as well as a private network interface like 10.0.0.1.
+This does, however, require additional configuration.
+</p>
+
+<p>The scan server will by default listen to connections on all available network interfaces,
+for example on the default TCP ports 4810 and 4811.
+But when a client connects to the registry on say 10.0.0.1:4810,
+i.e. the private network interface, the registry may return
+the address 160.0.0.1:4811, i.e. the public address of the scan server
+binding, or vice versa: A client connecting to the RMI registry on the public network
+may receive the private network address of the scan server binding.
+</p>
+
+<p>One solution to this problem is to start the scan server with a Java property
+<code>java.rmi.server.hostname</code> set like this that forces it to return a
+specific host name for all client connections:
+</p>
+
+<pre>
+ScanServer -pluginCustomization .... -vmargs -Djava.rmi.server.hostname=scan_server_host
+</pre>
+
+<p>The RMI Registry will now always instruct clients to use <code>scan_server_host:4811</code>
+to connect to the scan server binding.
+Clients on the public network need to define this host name to match the public network address
+of the host (scan_server_host = 160.0.0.1),
+while clients on the private network need to define the same name to match
+the private network address of the host (scan_server_host = 10.0.0.1).
+On a Linux computer, this can be done via the file <code>/etc/hosts</code>.
 </p>
 
 
@@ -325,7 +448,7 @@ or the toolbar button <img alt="Run" src="../icons/run.png"/>.
 <p>The Scan Monitor displays the current state of the Scan Server.
 </p>
 
-<img alt="Scan Monitor" src="scan_monitor.png" width="80%"/>
+<img alt="Scan Monitor" src="scan_monitor.png"/>
 
 <p>Access the scan monitor via the menu <code>CSS/Scan/Scan Monitor</code>
 </p>
@@ -353,7 +476,7 @@ and to remove completed scans from the server, i.e. scans that have either finis
 Data for devices that are "logged" is accessible to the plot.
 </p>
 
-<img alt="Scan Plot" src="scan_plot.png" width="80%"/>
+<img alt="Scan Plot" src="scan_plot.png"/>
 
 <p>Access the scan plotmonitor via the menu <code>CSS/Scan/Scan Plot</code>
 </p>
@@ -364,6 +487,30 @@ Data for devices that are "logged" is accessible to the plot.
 <li>X Axis: Select the device to display on the X axis.</li>
 <li>Y Axis: Select the device to display on the X axis.</li>
 </ul>
+
+
+<h2><a name="scan_data">Scan Data Display</a></h2> 
+<p>The Scan Data Display can be used to track the progress of a scan
+similar to the plot, but it displays the data as a table.
+</p>
+
+<img alt="Scan Data Display" src="scan_data.png"/>
+
+<p>Open the data display from the <a href="#monitor">Scan Monitor</a>
+by right-clicking on the desired scan and selecting <code>Open Scan Data Display</code>.
+</p> 
+
+<p>You can save the displayed data to a file via the menu <code>File/Save As</code>
+or via the context menu of the data display table.
+</p>
+
+<p>The format of the generated file depends on the file extension:
+</p>
+<ul>
+<li>File name ending in ".csv": A comma-separated file is created.</li>
+<li>Other file name endings, for example ".dat": A text file with fixed-sized columns is created.</li>
+</ul>
+
 
 
 <h2><a name="programmatic">Programmatic Access</a></h2>

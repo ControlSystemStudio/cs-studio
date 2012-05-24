@@ -27,7 +27,7 @@ public class OpenPlotHandler extends AbstractHandler
 	@Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-		final ScanInfo info = ScanHandlerUtil.getSelectedScanInfo(event);
+		final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
 		if (info == null)
 			return null;
 

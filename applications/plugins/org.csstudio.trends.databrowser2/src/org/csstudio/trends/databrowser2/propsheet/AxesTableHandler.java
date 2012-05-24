@@ -8,7 +8,6 @@
 package org.csstudio.trends.databrowser2.propsheet;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
-import org.csstudio.swt.xygraph.undo.XYGraphMemento;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -86,17 +85,11 @@ public class AxesTableHandler implements ILazyContentProvider
         public void changedItemDataConfig(PVItem item)   { /* NOP */ }
         @Override
         public void scrollEnabled(boolean scrollEnabled) { /* NOP */ }
-	
+
 		@Override
-		public void changedAnnotations() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void changedAnnotations()                 { /* NOP */ }
 		@Override
-		public void changedXYGraphConfig() {
-			// TODO Auto-generated method stub
-			
-		}
+		public void changedXYGraphConfig()               { /* NOP */ }
     };
 
     /** Initialize
