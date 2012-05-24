@@ -29,8 +29,6 @@ import java.util.Vector;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (mmoeller) :
- *
  * @author mmoeller
  * @version 1.0
  * @since 22.08.2011
@@ -56,14 +54,14 @@ public interface IPersistenceHandler {
      *
      * @param content
      */
-    void writeMessageContent(@Nonnull ArchiveMessage content);
+    boolean writeMessageContent(@Nonnull ArchiveMessage content);
 
     /**
      * Writes the message content
      *
      * @param messages - The vector containing all messages that have to be written
      */
-    void writeMessages(@Nonnull Vector<ArchiveMessage> messages);
+    int writeMessages(@Nonnull Vector<ArchiveMessage> messages);
 
     /**
      * Reads the serialized message and deletes it on in the persistence layer
