@@ -188,15 +188,22 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
 
                 storeMe = this.getMessagesToArchive();
-
+                int number = storeMe.size();
+                
                 success = writerService.writeMessage(storeMe);
                 if(!success) {
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    persistenceService.writeMessages(storeMe);
-                    LOG.warn("Could not store the message in the database. Message is written on disk.");
+                    LOG.warn("Could not store the message in the database. Try to write message(s) on disk.");
+                    int result = persistenceService.writeMessages(storeMe);
+                    if (result == number) {
+                        collector.addStoredMessages(number);
+                    } else {
+                        LOG.error("Could not store the message on disk.");
+                    }
+                } else {
+                    collector.addStoredMessages(number);
                 }
                 
-                collector.addStoredMessages(storeMe.size());
                 storeMe.clear();
                 storeMe = null;
                 
