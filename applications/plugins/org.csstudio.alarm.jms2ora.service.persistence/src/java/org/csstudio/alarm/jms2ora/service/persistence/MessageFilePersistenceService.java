@@ -68,18 +68,19 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
      * {@inheritDoc}
      */
     @Override
-    public void writeMessageContent(final ArchiveMessage content) {
+    public boolean writeMessageContent(final ArchiveMessage content) {
         Vector<ArchiveMessage> message = new Vector<ArchiveMessage>();
         message.add(content);
-        fileHandler.writeMessagesToFile(message);
+        int result = fileHandler.writeMessagesToFile(message);
+        return (result >= 0);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void writeMessages(final Vector<ArchiveMessage> messages) {
-        fileHandler.writeMessagesToFile(messages);
+    public int writeMessages(final Vector<ArchiveMessage> messages) {
+        return fileHandler.writeMessagesToFile(messages);
     }
 
     /**

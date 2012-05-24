@@ -258,15 +258,15 @@ public class MessageFileHandler implements FilenameFilter {
      *
      * @param content - The MessageContent object that have to be stored on disk.
      */
-    public void writeMessagesToFile(final Vector<ArchiveMessage> content) {
+    public int writeMessagesToFile(final Vector<ArchiveMessage> content) {
 
         if (content.isEmpty()) {
-            return;
+            return 0;
         }
         
         if(dataDirectories.existsDataDirectory() == false) {
             LOG.warn("Object folder does not exist. Message cannot be stored.");
-            return;
+            return -1;
         }
 
         final GregorianCalendar cal = new GregorianCalendar();
@@ -300,6 +300,8 @@ public class MessageFileHandler implements FilenameFilter {
                 fos = null;
             }
         }
+        count--;
+        return count;
     }
 
     public ArchiveMessage readMessageContent(final String fileName) {
