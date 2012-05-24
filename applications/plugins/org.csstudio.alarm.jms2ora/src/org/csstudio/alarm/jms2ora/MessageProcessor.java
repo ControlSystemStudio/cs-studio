@@ -114,17 +114,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      */
     public MessageProcessor(long sleepingTime, int storageWaitTime) throws ServiceNotAvailableException {
 
-        collector = new StatisticCollector();
-        messageConverter = new MessageConverter(this, collector);
-        
-        timeBetweenStorage = storageWaitTime;
-        msgProcessorSleepingTime = sleepingTime;
-        
-        nextStorageTime = new LocalTime();
-        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
-
-        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
-
         try {
             writerService = Jms2OraActivator.getDefault().getMessageWriterService();
             if (writerService.isServiceReady()) {
@@ -137,13 +126,25 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             LOG.error(e.getMessage());
             throw new ServiceNotAvailableException("Database writer service not available: " + e.getMessage());
         }
-
+        
         try {
             persistenceService = Jms2OraActivator.getDefault().getPersistenceWriterService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error(e.getMessage());
             throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
         }
+        
+        collector = new StatisticCollector();
+        messageConverter = new MessageConverter(this, collector);
+        
+        timeBetweenStorage = storageWaitTime;
+        msgProcessorSleepingTime = sleepingTime;
+        
+        nextStorageTime = new LocalTime();
+        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
+
+        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
+
 
         running = true;
         stoppedClean = false;
