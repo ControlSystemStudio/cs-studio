@@ -34,8 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 27.12.2011
@@ -71,6 +69,15 @@ public abstract class AbstractMessageContent {
         }
         
         return content;
+    }
+    
+    @Override
+    public String toString() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("AbstractMessageContent {\n");
+        buffer.append(" " + content.toString());
+        buffer.append("}");
+        return buffer.toString();
     }
     
     public boolean containsKey(String key) {
