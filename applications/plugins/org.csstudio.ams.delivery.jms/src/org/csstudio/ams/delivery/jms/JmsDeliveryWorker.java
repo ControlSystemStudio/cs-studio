@@ -66,9 +66,9 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
      */
     @Override
     public void run() {
-        
-        running = true;
+
         workerStatus = new JmsWorkerStatus(300000L);
+        running = true;
 
         LOG.info(workerName + " is running.");
 
@@ -103,7 +103,6 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
                 consumer[i] = consumerSession[i].createConsumer(receiveTopic);
                 consumer[i].setMessageListener(jmsDevice);
             }
-            
         } catch (JMSException jmse) {
             LOG.error("[*** JMSException ***]: Cannot initialize {}: {}", workerName, jmse.getMessage());
             LOG.error("Leaving worker.");
