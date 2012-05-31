@@ -35,15 +35,12 @@ import org.csstudio.ams.delivery.status.IWorkerStatus;
  */
 public class JmsWorkerStatus implements IWorkerStatus, IJmsStatus {
     
-//    private ISharedConnectionHandle[] consumerHandle;
     private long jmsTimestamp;
     private long invalidateTime;
     
-//    public JmsWorkerStatus(ISharedConnectionHandle[] consumer, long maxTime) {
       public JmsWorkerStatus(long maxTime) {
-        jmsTimestamp = 0L;
+        jmsTimestamp = System.currentTimeMillis();
         invalidateTime = maxTime;
-//        consumerHandle = consumer;
     }
     
     @Override
@@ -63,15 +60,6 @@ public class JmsWorkerStatus implements IWorkerStatus, IJmsStatus {
         if (System.currentTimeMillis() >= time) {
             isOk = false;
         }
-//        if (!isOk) {
-//            if (consumerHandle != null) {
-//                boolean temp = true;
-//                for (ISharedConnectionHandle o : consumerHandle) {
-//                    temp = temp && o.isActive();
-//                }
-//                isOk = temp;
-//            }
-//        }
         return isOk;
     }
 }
