@@ -40,7 +40,7 @@ public class ContainerHighlightEditPolicy extends GraphicalEditPolicy {
 	}
 
 	private IFigure getContainerFigure(){
-		return ((GraphicalEditPart)getHost()).getFigure();
+		return ((GraphicalEditPart)getHost()).getContentPane();
 	}
 	
 	private void setContainerBackground(Color c){

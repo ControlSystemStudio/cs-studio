@@ -59,7 +59,7 @@ public class ConnectionHandler {
 	
 	private PVConnectionListener pvConnectionListener;
 	
-	private AbstractBaseEditPart editPart;
+	protected AbstractBaseEditPart editPart;
 	
 	/**
 	 * @param editpart the widget editpart to be handled.

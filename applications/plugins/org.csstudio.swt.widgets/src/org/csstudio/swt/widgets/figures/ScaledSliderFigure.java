@@ -745,7 +745,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			Dimension markerSize;
 			
 			if(scale != null) {
-				scaleSize = scale.getPreferredSize(area.width, -1);
+				scaleSize = new Dimension(area.width, 0);
+				if(scale.isVisible())
+					scaleSize = scale.getPreferredSize(area.width, -1);
 				scale.setBounds(new Rectangle(area.x, 
 						area.y + area.height/2 + Thumb.LENGTH/2 + GAP_BTW_THUMB_SCALE, 
 						scaleSize.width, scaleSize.height));					
@@ -824,7 +826,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			Dimension markerSize;
 			
 			if(scale != null) {
-				scaleSize = scale.getPreferredSize(-1, area.height);
+				scaleSize = new Dimension(0, area.height);
+				if(scale.isVisible())
+					scaleSize = scale.getPreferredSize(-1, area.height);
 				scale.setBounds(new Rectangle(area.x + area.width/2 + Thumb.LENGTH/2 + GAP_BTW_THUMB_SCALE, 
 						area.y, 
 						scaleSize.width, scaleSize.height));					

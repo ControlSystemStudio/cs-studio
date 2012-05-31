@@ -7,9 +7,11 @@
    </configIni>
 
    <launcherArgs>
+      <programArgs>--launcher.suppressErrors</programArgs>
       <vmArgs>-Xmx256m
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
--Dorg.apache.commons.logging.simplelog.defaultlog=fatal</vmArgs>
+-Dorg.apache.commons.logging.simplelog.defaultlog=fatal
+-Declipse.exitdata=</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 

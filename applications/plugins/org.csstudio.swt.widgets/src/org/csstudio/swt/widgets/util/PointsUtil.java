@@ -216,4 +216,43 @@ public final class PointsUtil {
 		}	
 	}
 
+	/**Scale the bound size of a point list.
+	 * @param points the points to be scaled.
+	 * @param width the new width.
+	 * @param height the new height
+	 * @return the points after scaled. If no scale is needed, return the input points.
+	 */
+	public static PointList scalePointsBySize(final PointList points, final int width, final int height){
+		int targetW = Math.max(1, width);
+		int targetH = Math.max(1, height);
+		double oldW = points.getBounds().width;
+		double oldH = points.getBounds().height;
+		double topLeftX = points.getBounds().x;
+		double topLeftY = points.getBounds().y;
+
+		if (oldW != targetW || oldH != targetH) {
+			PointList newPoints = new PointList();
+			for (int i = 0; i < points.size(); i++) {
+				int x = points.getPoint(i).x;
+				int y = points.getPoint(i).y;
+
+				Point newPoint = new Point(x, y);
+				if (oldW > 0 && oldH > 0) {
+					double oldRelX = (x - topLeftX) / oldW;
+					double oldRelY = (y - topLeftY) / oldH;
+
+					double newX = topLeftX + (oldRelX * targetW);
+					double newY = topLeftY + (oldRelY * targetH);
+					int roundedX = (int) Math.round(newX);
+					int roundedY = (int) Math.round(newY);
+					newPoint = new Point(roundedX, roundedY);
+				}
+
+				newPoints.addPoint(newPoint);
+			}
+			return newPoints;
+		}
+		return points;
+	}
+	
 }

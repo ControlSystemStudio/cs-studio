@@ -237,6 +237,18 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 		SingleSourceHelper.rapActivateBaseEditPart(this);
 	}
 
+	/**
+	 * Subclass should do the activate things in this method.
+	 */
+	protected void doActivate() {
+	}
+
+	/**
+	 * Subclass should do the deActivate things in this method.
+	 */
+	protected void doDeActivate() {
+	}
+	
 	protected void addToConnectionHandler(String pvName, PV pv) {
 		if (connectionHandler == null)
 			connectionHandler = createConnectionHandler();
@@ -968,5 +980,26 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 	@Override
 	public String toString() {
 		return getWidgetModel().getName();
+	}
+	
+	/**The value of the widget that is in representing.
+	 * It is not the value of the attached PV even though they are equals in most cases.
+	 * The value type is specified by the widget, for example, boolean for boolean widget,
+	 * double for meter and gauge.
+	 * @return 	The value of the widget.
+	 */
+	public Object getValue(){
+		return null;
+	}
+	
+	
+	/**Set the value of the widget. This only takes effect on the visual presentation of the widget and
+	 * will not write the value to the PV attached to this widget.
+	 * @param value the value to be set. It must be the compatible type for the widget.
+	 *  For example, a boolean widget only accept boolean or number.
+	 * @throws RuntimeException if the value is not an acceptable type.
+	 */	
+	public void setValue(Object value){
+		throw new RuntimeException("widget.setValue() does not accept " + value.getClass().getSimpleName());
 	}
 }

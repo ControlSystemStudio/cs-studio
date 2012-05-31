@@ -483,12 +483,14 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 						scaleSize.width, scaleSize.height));
 					scaleSize.height +=ADDITIONAL_MARGIN;
 				}else{
-					scaleSize = scale.getPreferredSize(area.width+2*scale.getMargin(), -1);
+//					scaleSize = scale.getPreferredSize(area.width+2*scale.getMargin(), -1);
+					scaleSize.width=area.width+2*scale.getMargin();
+					scaleSize.height=0;
 					scale.setBounds(new Rectangle(area.x - scale.getMargin(), 
 							area.y + area.height - scaleSize.height, 
 							scaleSize.width, scaleSize.height));
 					scaleSize.width = 0;
-					scaleSize.height = 0;
+//					scaleSize.height = 0;
 				}
 									
 			}
@@ -564,11 +566,12 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 						scaleSize.width, scaleSize.height));
 					scaleSize.width += ADDITIONAL_MARGIN;
 				}else{
-					scaleSize = scale.getPreferredSize(-1, area.height+2*scale.getMargin());
+//					scaleSize = scale.getPreferredSize(-1, area.height+2*scale.getMargin());
+					scaleSize.width = 0;
+					scaleSize.height = area.height+2*scale.getMargin();
 					scale.setBounds(new Rectangle(area.x, 
 						area.y-scale.getMargin(), 
 						scaleSize.width, scaleSize.height));
-					scaleSize.width = 0;
 					scaleSize.height = 0;
 				}
 									
