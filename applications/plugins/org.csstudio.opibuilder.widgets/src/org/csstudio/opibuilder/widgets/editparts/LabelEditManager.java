@@ -10,9 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.swt.widgets.figures.TextFigure;
-import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -137,15 +135,13 @@ private void disposeScaledFont() {
 protected void initCellEditor() {
 	// update text
 	TextFigure label = (TextFigure) getEditPart().getAdapter(TextFigure.class);
-	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
+//	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
 	getCellEditor().setValue(label.getText());
 	if(label.isOpaque()){
 		getCellEditor().getControl().setBackground(
-			CustomMediaFactory.getInstance().getColor(
-					labelModel.getBackgroundColor()));	
+					label.getBackgroundColor());	
 	}
-	getCellEditor().getControl().setForeground(
-		CustomMediaFactory.getInstance().getColor(labelModel.getForegroundColor()));
+	getCellEditor().getControl().setForeground(label.getForegroundColor());
 	// update font
 	ZoomManager zoomMgr = (ZoomManager)getEditPart().getViewer()
 			.getProperty(ZoomManager.class.toString());

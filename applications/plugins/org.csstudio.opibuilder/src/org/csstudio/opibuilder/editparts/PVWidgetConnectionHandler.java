@@ -17,18 +17,19 @@ import org.csstudio.utility.pv.PV;
  *
  */
 public class PVWidgetConnectionHandler extends ConnectionHandler{
-
-	private AbstractPVWidgetEditPart editPart;
 	
-	public PVWidgetConnectionHandler(AbstractPVWidgetEditPart editpart) {
+	
+	/**
+	 * @param editpart the editpart must implemented {@link IPVWidgetEditpart}
+	 */
+	public PVWidgetConnectionHandler(AbstractBaseEditPart editpart) {
 		super(editpart);
-		this.editPart = editpart;
 	}
-	
+
 	@Override
 	protected void markWidgetAsDisconnected(PV pv) {
 		super.markWidgetAsDisconnected(pv);
-		final PV controlPV = editPart.getControlPV();
+		final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
 		if(controlPV != null && controlPV == pv){
 		UIBundlingThread.getInstance().addRunnable(
 				editPart.getRoot().getViewer().getControl().getDisplay(), 
@@ -46,7 +47,7 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
 		if(isConnected())
 			return;
 		super.widgetConnectionRecovered(pv);
-		final PV controlPV = editPart.getControlPV();
+		final PV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
 		if(controlPV != null && controlPV == pv){
 		UIBundlingThread.getInstance().addRunnable(
 				editPart.getRoot().getViewer().getControl().getDisplay(), 

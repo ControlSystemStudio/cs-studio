@@ -311,6 +311,15 @@
       </widget>
       <widget
             category="Others"
+            description="A container that could contains an array of other widgets."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ArrayEditPart"
+            icon="icons/array.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ArrayModel"
+            name="Array"
+            typeId="org.csstudio.opibuilder.widgets.array">
+      </widget>
+      <widget
+            category="Others"
             description="A table widget which works like a spread sheet."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.TableEditPart"
             icon="icons/table.gif"
@@ -649,6 +658,10 @@
       <graphicalFeedbackFactory
             class="org.csstudio.opibuilder.widgets.feedback.MeterFeedbackFactory"
             typeId="org.csstudio.opibuilder.widgets.meter">
+      </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.ArrayFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.array">
       </graphicalFeedbackFactory>
    </extension>
 

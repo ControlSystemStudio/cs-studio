@@ -11,11 +11,13 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
+import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GroupBoxBorder;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.SchemeBorder.Scheme;
+import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -59,10 +61,32 @@ public class BorderFactory {
 			return createTitleBarBorder(text, color);
 		case ROUND_RECTANGLE_BACKGROUND:
 			return createRoundRectangleBorder(width, color);
+		case EMPTY:
+			return createEmptyBorder(width);
 		case NONE:			
 		default:
 			return null;
 		}
+	}
+	
+	/**
+	 * Creates an empty border.
+	 * @param width width of the border.
+	 * @return AbstractBorder The requested Border
+	 */
+	private static AbstractBorder createEmptyBorder(final int width) {
+		if (width>0) {
+			return new AbstractBorder() {
+
+				public Insets getInsets(IFigure figure) {
+					return new Insets(width);
+				}
+
+				public void paint(IFigure figure, Graphics graphics, Insets insets) {
+				}
+			};	
+		}
+		return null;
 	}
 	
 	/**

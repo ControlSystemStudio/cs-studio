@@ -27,6 +27,7 @@ import java.beans.IntrospectionException;
 import org.csstudio.swt.widgets.figureparts.PolarPoint;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -382,6 +383,12 @@ public final class PolylineFigure extends Polyline implements HandleBounds, Intr
 	
 	@Override
 	public void setBounds(Rectangle rect) {
+		PointList points = getPoints();
+		int oldX = getLocation().x;
+		int oldY = getLocation().y;
+		points.translate(rect.x - oldX, rect.y - oldY);		
+		
+		setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
 		super.setBounds(rect);
 		//figure should be forced to be moved since the bounds of a polyline might be unchanged.
 		fireFigureMoved();

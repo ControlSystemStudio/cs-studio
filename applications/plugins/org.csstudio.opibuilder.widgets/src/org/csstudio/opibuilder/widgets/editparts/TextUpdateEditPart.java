@@ -13,6 +13,7 @@ import org.csstudio.data.values.ILongValue;
 import org.csstudio.data.values.INumericMetaData;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Format;
+import org.csstudio.data.values.ValueFactory;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -371,7 +372,14 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		((TextFigure)getFigure()).setText(value.toString());
+		String text;
+		if(value instanceof Number)
+			text = formatValue(ValueFactory.createDoubleValue(
+					null, ValueFactory.createOKSeverity(), null, null, null, new double[]{((Number)value).doubleValue()}), 
+					AbstractPVWidgetModel.PROP_PVVALUE, getFigure());
+		else 
+			text = value.toString();
+		((TextFigure)getFigure()).setText(text);
 	}
 
 	@SuppressWarnings("rawtypes")
