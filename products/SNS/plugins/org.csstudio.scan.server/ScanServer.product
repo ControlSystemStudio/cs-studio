@@ -7,9 +7,11 @@
    </configIni>
 
    <launcherArgs>
+      <programArgs>--launcher.suppressErrors</programArgs>
       <vmArgs>-Djava.awt.headless=true
 -Xms10m
--Xmx1024m</vmArgs>
+-Xmx1024m
+-Declipse.exitdata=</vmArgs>
       <vmArgsMac>-d32 -XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
