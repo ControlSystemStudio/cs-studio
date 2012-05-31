@@ -159,7 +159,7 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
             publisherHandle.release();
         }
         
-        LOG.info("{} is exiting now.", workerName);
+        LOG.info("{} is leaving.", workerName);
     }
     
     /**
