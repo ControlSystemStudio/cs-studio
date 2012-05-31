@@ -181,6 +181,7 @@ public class ArchiveConfigApplication implements IApplication
                 {	// Print message
                 	System.out.println(ex.getMessage());
                 	// Other exceptions result in a full stack trace
+                    return Integer.valueOf(-1);
                 }
                 finally
                 {
