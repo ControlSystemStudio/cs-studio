@@ -31,7 +31,9 @@ import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.application.deliverysystem.internal.DeliverySystemPreference;
 import org.csstudio.ams.application.deliverysystem.management.ListWorker;
 import org.csstudio.ams.application.deliverysystem.management.Restart;
+import org.csstudio.ams.application.deliverysystem.management.RestartWorker;
 import org.csstudio.ams.application.deliverysystem.management.Stop;
+import org.csstudio.ams.application.deliverysystem.management.StopWorker;
 import org.csstudio.ams.application.deliverysystem.util.CommonMailer;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
@@ -57,7 +59,8 @@ public class DeliverySystemApplication implements IApplication,
     
     private static Logger LOG = LoggerFactory.getLogger(DeliverySystemApplication.class);
 	
-    private final static long WORKER_WATCH_INTERVAL = 150000L;
+    // 6 minutes
+    private final static long WORKER_WATCH_INTERVAL = 360000L;
     
     /** The ECF service */
     private ISessionService xmppService;
@@ -107,47 +110,13 @@ public class DeliverySystemApplication implements IApplication,
         LOG.debug("JMS Publisher URL: {}", url1);
         SharedJmsConnections.staticInjectPublisherUrlAndClientId(url1, "AmsDeliverySystemPublisher");
 
-	    DeliveryWorkerList workerList = new DeliveryWorkerList();
-	    
-        IExtensionRegistry extReg = Platform.getExtensionRegistry();
-        IConfigurationElement[] confElements = extReg
-                .getConfigurationElementsFor("org.csstudio.ams.delivery.DeliveryWorker");
-        
-        if(confElements.length > 0) {
-
-            LOG.info("I've found {} implementations in the extension registry.", confElements.length);
-            if (workerList.isEmpty()) {
-                LOG.warn("... but no delivery worker is defined in the configuration file. Leaving application.");
-                running = false;
-            }
-
-            for (int i = 0; i < confElements.length; i++) {
-                
-                String className = confElements[i].getAttribute("class");
-                if (workerList.containsWorker(className)) {
-                    try {
-                        
-                        AbstractDeliveryWorker worker =
-                                (AbstractDeliveryWorker) confElements[i]
-                                        .createExecutableExtension("class");
-                        Thread thread = new Thread(worker);
-                        thread.start();
-                        deliveryWorker.put(worker, thread);
-                    } catch (CoreException ce) {
-                        LOG.error("*** CoreException *** : ", ce);
-                        running = false;
-                    }
-                }
-            }
-        } else {
-            LOG.warn("No extension elements found.");
-            running = false;
-        }
+        running = startDeliveryWorker();
 	    
         context.applicationRunning();
         LOG.info("Initialization finished. Start working.");
         
         while (running) {
+            
             synchronized (lock) {
                 try {
                     lock.wait(WORKER_WATCH_INTERVAL);
@@ -156,27 +125,44 @@ public class DeliverySystemApplication implements IApplication,
                 }
             }
             
+            boolean restartWorker = false;
+            String badWorker = null;
             if (running) {
-                // Check the jms worker
+                
+                // Check all delivery worker
                 Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
                 while (worker.hasMoreElements()) {
                     AbstractDeliveryWorker w = worker.nextElement();
                     if (!w.isWorking()) {
-                        LOG.warn("{} seemed not to be working.", w.getWorkerName());
-                        restartWorker(w);
-                        String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
-                        if (value != null) {
-                            if (value.trim().length() > 0) {
-                                String[] recipients = value.split(",");
-                                CommonMailer.sendMultiMail("smtp.desy.de",
-                                                      "ams-mks2@desy.de",
-                                                      recipients,
-                                                      "Delivery Worker wurde neu gestartet",
-                                                      "Der " + w.getWorkerName() + " wurde neu gestartet.");
-                            }
+                        badWorker = w.getWorkerName();
+                        LOG.warn("{} seemed not to be working.", badWorker);
+                        restartWorker = true;
+                        break;
+                    }
+                    LOG.debug("{} is working.", w.getWorkerName());
+                }
+                
+                // Now stop and restart ALL workers to avoid problems with the shared JMS connections 
+                if (restartWorker) {
+                    stopDeliveryWorker();
+                    String[] recipients = null;
+                    String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
+                    if (value != null) {
+                        if (value.trim().length() > 0) {
+                            recipients = value.split(",");
                         }
+                    }
+                    if (startDeliveryWorker()) {
+                        CommonMailer.sendMultiMail("smtp.desy.de",
+                                                   "ams-mks2@desy.de",
+                                                   recipients,
+                                                   "Delivery Worker wurden neu gestartet",
+                                                   "Alle Delivery Worker wurden neu gestartet.\nGrund: Der "
+                                                   + badWorker + " lief nicht.");
                     } else {
-                        LOG.debug("{} is working.", w.getWorkerName());
+                        running = false;
+                        restart = true;
+                        LOG.error("Cannot restart the delievery worker. Restart the application.");
                     }
                 }
             }
@@ -214,19 +200,49 @@ public class DeliverySystemApplication implements IApplication,
 		return exitCode;
 	}
 
-	private void restartWorker(AbstractDeliveryWorker worker) {
-	    Thread thread = deliveryWorker.get(worker);
-	    worker.stopWorking();
-        try {
-            thread.join(4000L);
-            thread = null;
-        } catch (InterruptedException ie) {
-            // Ignore Me!
+	private boolean startDeliveryWorker() {
+	    
+	    boolean success = true;
+	    
+	    DeliveryWorkerList workerList = new DeliveryWorkerList();
+        
+        IExtensionRegistry extReg = Platform.getExtensionRegistry();
+        IConfigurationElement[] confElements = extReg
+                .getConfigurationElementsFor("org.csstudio.ams.delivery.DeliveryWorker");
+        
+        if(confElements.length > 0) {
+
+            LOG.info("I've found {} implementations in the extension registry.", confElements.length);
+            if (workerList.isEmpty()) {
+                LOG.warn("... but no delivery worker is defined in the configuration file. Leaving application.");
+                return false;
+            }
+
+            for (int i = 0; i < confElements.length; i++) {
+                
+                String className = confElements[i].getAttribute("class");
+                if (workerList.containsWorker(className)) {
+                    try {
+                        AbstractDeliveryWorker worker =
+                                (AbstractDeliveryWorker) confElements[i]
+                                        .createExecutableExtension("class");
+                        Thread thread = new Thread(worker);
+                        thread.start();
+                        deliveryWorker.put(worker, thread);
+                        LOG.info("Worker has been started: {}", worker.getWorkerName());
+                    } catch (CoreException ce) {
+                        LOG.error("*** CoreException *** : ", ce);
+                        success = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            LOG.warn("No extension elements found.");
+            success = false;
         }
-        thread = new Thread(worker);
-        thread.start();
-        deliveryWorker.remove(worker);
-        deliveryWorker.put(worker, thread);
+        
+        return success;
 	}
 	
     /**
@@ -235,10 +251,17 @@ public class DeliverySystemApplication implements IApplication,
     @Override
     public void bindService(final ISessionService sessionService) {
         
-        ListWorker.staticInject(this);
         Stop.staticInject(this);
         Restart.staticInject(this);
-        // StopWorker.staticInject(this);
+
+        ListWorker.staticInject(this);
+        if (DeliverySystemPreference.ENABLE_WORKER_STOP.getValue()) {
+            StopWorker.staticInject(this);
+        }
+        
+        if (DeliverySystemPreference.ENABLE_WORKER_RESTART.getValue()) {
+            RestartWorker.staticInject(this);
+        }
         
         String xmppServer = DeliverySystemPreference.XMPP_SERVER.getValue();
         String xmppUser = DeliverySystemPreference.XMPP_USER.getValue();
@@ -296,13 +319,28 @@ public class DeliverySystemApplication implements IApplication,
     }
 
     @Override
+    public void restartDeliveryWorker() {
+        stopDeliveryWorker();
+        startDeliveryWorker();
+    }
+    
+    @Override
     public void stopDeliveryWorker() {
         Enumeration<AbstractDeliveryWorker> worker = deliveryWorker.keys();
         while (worker.hasMoreElements()) {
             AbstractDeliveryWorker o = worker.nextElement();
+            Thread thread = deliveryWorker.get(o);
             if (o != null) {
                 o.stopWorking();
+                try {
+                    thread.join(4000L);
+                    thread = null;
+                } catch (InterruptedException ie) {
+                    // Ignore Me!
+                }
+                o = null;
             }
         }
+        deliveryWorker.clear();
     }
 }

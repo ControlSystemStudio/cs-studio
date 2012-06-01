@@ -69,9 +69,13 @@ public class CommonMailer {
         }
         
         for(String s : to) {
-            if(sendMail(mailhost, from, s, subject, text) == false) {
-                // Increment the counter if it failed to send a mail
-                result++;
+            if (s != null) {
+                if (s.trim().length() > 0) {
+                    if(sendMail(mailhost, from, s, subject, text) == false) {
+                        // Increment the counter if it failed to send a mail
+                        result++;
+                    }
+                }
             }
         }
         

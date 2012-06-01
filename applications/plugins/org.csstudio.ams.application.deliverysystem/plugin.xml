@@ -33,6 +33,11 @@
             id="org.csstudio.ams.application.deliverysystem.StopWorker"
             label="Stop Delivery Worker">
       </command>
+      <command
+            class="org.csstudio.ams.application.deliverysystem.management.RestartWorker"
+            id="org.csstudio.ams.application.deliverysystem.RestartWorker"
+            label="Restart Delivery Worker">
+      </command>
    </extension>
    <extension
          id="AmsDeliveryProduct"
