@@ -14,7 +14,7 @@ public class WebOPIConstants{
 
     public static final String MAIN_SERVELET_NAME = "/w";//$NON-NLS-1$
 
-    public static final String STANDALONE_SERVELET_NAME = "/s";//$NON-NLS-1$
+    public static final String STANDALONE_SERVELET_NAME = "/ws";//$NON-NLS-1$
 
 	public static final String OPI_PARAMETER = "opi"; //$NON-NLS-1$	
 	

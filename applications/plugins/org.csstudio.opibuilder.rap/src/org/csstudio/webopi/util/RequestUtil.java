@@ -32,6 +32,10 @@ public class RequestUtil {
 		String mode = request.getParameter("startup"); //$NON-NLS-1$
 		 if(mode!=null && mode.equals(WebOPIConstants.SIMPLE_ENTRY_POINT)) //$NON-NLS-1$
 			 return true;	
+		 String s = request.getServletPath();
+		if(s.equals(WebOPIConstants.MOBILE_S_SERVELET_NAME) 
+				|| s.equals(WebOPIConstants.STANDALONE_SERVELET_NAME))
+			return true;
 		 return false;
 	}
 	
