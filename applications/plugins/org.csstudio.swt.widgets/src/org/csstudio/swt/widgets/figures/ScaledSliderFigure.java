@@ -278,6 +278,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	public boolean isHorizontal() {
 		return horizontal;
 	}
+	
+	//override this to avoid revalidate the whole FigureCanvas.
+	@Override
+	public void revalidate() {
+		invalidate();
+		getUpdateManager().addInvalidFigure(this);
+	}
 
 	@Override
 	public boolean isOpaque() {
