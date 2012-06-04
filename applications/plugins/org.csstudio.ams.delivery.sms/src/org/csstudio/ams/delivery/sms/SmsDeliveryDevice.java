@@ -167,23 +167,6 @@ public class SmsDeliveryDevice implements Runnable,
         return modemService;
     }
 
-//    public void process(final AGateway gateway, final MessageTypes msgType, final InboundMessage msg) {
-//
-//        final Object[] param = { msg.getText(), msg.getOriginator(), gateway.getGatewayId() };
-//        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
-//
-//        final IncomingSmsMessage inMsg = new IncomingSmsMessage(msg);
-//        for (final DeviceListener o : listener) {
-//            o.onIncomingMessage(new DeviceObject(this, inMsg));
-//        }
-//
-//        if (deleteMessage(msg)) {
-//            LOG.info("Message has been deleted.");
-//        } else {
-//            LOG.warn("Message CANNOT be deleted.");
-//        }
-//    }
-
     public void setInboundMessageListener(final IInboundMessageNotification notification) {
         modemService.setInboundMessageNotification(notification);
     }
@@ -331,14 +314,19 @@ public class SmsDeliveryDevice implements Runnable,
 
     @Override
     public int readMessages(final Collection<InboundMessage> msgList) {
-
         int read = 0;
         try {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Try to read messages from GSM modems.");
+            }
             read = modemService.readMessages(msgList, MessageClasses.ALL);
+            workerStatus.setLastPollingTime(System.currentTimeMillis());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Number of messages: {}", read);
+            }
         } catch (final Exception e) {
             LOG.error("[*** " + e.getClass().getSimpleName() + " ***]: " + e.getMessage());
         }
-
         return read;
     }
 

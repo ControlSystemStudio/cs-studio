@@ -25,6 +25,7 @@
 
 package org.csstudio.ams.delivery.sms;
 
+import org.csstudio.ams.delivery.status.IDeviceStatus;
 import org.csstudio.ams.delivery.status.IWorkerStatus;
 
 /**
@@ -32,17 +33,31 @@ import org.csstudio.ams.delivery.status.IWorkerStatus;
  * @version 1.0
  * @since 23.05.2012
  */
-public class SmsWorkerStatus implements IWorkerStatus {
-    
-    private boolean smsSent;
+public class SmsWorkerStatus implements IWorkerStatus, IDeviceStatus {
 
-    public SmsWorkerStatus() {
+    private long pollingTime;
+    private boolean smsSent;
+    private long maxPollingDiff;
+    
+    public SmsWorkerStatus(long diff) {
         // The default value has to be set to true!
         smsSent = true;
+        pollingTime = System.currentTimeMillis();
+        maxPollingDiff = diff;
     }
     
     public synchronized void setSmsSent(boolean sent) {
         smsSent = sent;
+    }
+    
+    @Override
+    public synchronized void setLastPollingTime(long time) {
+        pollingTime = time;
+    }
+    
+    @Override
+    public synchronized long getLastPollingTime() {
+        return pollingTime;
     }
 
     /**
@@ -50,6 +65,9 @@ public class SmsWorkerStatus implements IWorkerStatus {
      */
     @Override
     public boolean isOk() {
-        return smsSent;
+        if (!smsSent) {
+            return false;
+        }
+        return ((System.currentTimeMillis() - pollingTime) < maxPollingDiff);
     }
 }

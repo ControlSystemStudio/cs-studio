@@ -115,7 +115,15 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                                           null);
         LOG.info("readWaitingPeriod: {}", readWaitingPeriod);
 
-        workerStatus = new SmsWorkerStatus();
+        // value = minutes
+        long maxPollingTime = prefs.getLong(SmsDeliveryActivator.PLUGIN_ID,
+                                            SmsConnectorPreferenceKey.P_MODEM_MAX_POLLING_TIME,
+                                            10,
+                                            null);
+        maxPollingTime *= 60000L;
+        LOG.info("maxPollingTime: {}", maxPollingTime);
+
+        workerStatus = new SmsWorkerStatus(maxPollingTime);
         
         smsDevice = new SmsDeliveryDevice(modemInfo,
                                           new JmsProperties(factoryClass, url, topic),
