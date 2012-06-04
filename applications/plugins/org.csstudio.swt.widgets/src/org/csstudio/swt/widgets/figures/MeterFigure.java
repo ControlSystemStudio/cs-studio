@@ -58,6 +58,9 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 	
 	public MeterFigure() {
 		super();
+		//TODO, remove this if clip is supported by RAP
+		if(SWT.getPlatform().startsWith("rap"))//$NON-NLS-1$
+			ramp.setVisible(false);
 		setTransparent(false);
 		scale.setScaleLineVisible(false);
 		
@@ -96,7 +99,15 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		
 		super.setBounds(rect);
 	}
-	
+	@Override
+	public void setShowMarkers(boolean showMarkers) {
+		super.setShowMarkers(showMarkers);		
+		//TODO: this should be removed if RAP supports clip
+		if(SWT.getPlatform().startsWith("rap"))//$NON-NLS-1$
+			ramp.setVisible(false);
+		else
+			ramp.setVisible(showMarkers);	
+	}
 	
 	@Override
 	public void setValue(double value) {
