@@ -26,10 +26,12 @@ import java.beans.IntrospectionException;
 
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
+import org.csstudio.swt.widgets.util.PointsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polygon;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.swt.SWT;
@@ -168,6 +170,13 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 	 */
 	@Override
 	public void setBounds(final Rectangle rect) {
+		PointList points = getPoints();
+		int oldX = getLocation().x;
+		int oldY = getLocation().y;
+		points.translate(rect.x - oldX, rect.y - oldY);		
+		
+		setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
+		
 		invalidate();
 		fireFigureMoved();
 		repaint();

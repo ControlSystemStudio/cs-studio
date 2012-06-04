@@ -118,37 +118,13 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	public void setSize(final int width, final int height) {
 		if(getSize().width == width && getSize().height == height)
 			return;
-		int targetW = Math.max(1, width);
-		int targetH = Math.max(1, height);
-		PointList pointList = getPoints();
-		double oldW = pointList.getBounds().width;
-		double oldH = pointList.getBounds().height;
-		double topLeftX = pointList.getBounds().x;
-		double topLeftY = pointList.getBounds().y;
 
-		if (oldW != targetW || oldH != targetH) {
-			PointList newPoints = new PointList();
-			for (int i = 0; i < pointList.size(); i++) {
-				int x = pointList.getPoint(i).x;
-				int y = pointList.getPoint(i).y;
+		PointList newPoints = PointsUtil.scalePointsBySize(getPoints(), width, height);
 
-				Point newPoint = new Point(x, y);
-				if (oldW > 0 && oldH > 0) {
-					double oldRelX = (x - topLeftX) / oldW;
-					double oldRelY = (y - topLeftY) / oldH;
-
-					double newX = topLeftX + (oldRelX * targetW);
-					double newY = topLeftY + (oldRelY * targetH);
-					long roundedX = Math.round(newX);
-					long roundedY = Math.round(newY);
-					newPoint = new Point(roundedX, roundedY);
-				}
-
-				newPoints.addPoint(newPoint);
-			}
-			setPoints(newPoints, true);
-		}
+		setPoints(newPoints, true);		
 	}
+	
+	
 
 	/**
 	 * {@inheritDoc}

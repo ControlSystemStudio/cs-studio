@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.model;
 
+import java.util.Arrays;
+
+import org.csstudio.opibuilder.model.IWidgetInfoProvider;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
@@ -142,4 +145,19 @@ public class TextInputModel extends TextUpdateModel {
 		return (Boolean)getPropertyValue(PROP_MULTILINE_INPUT);
 	}
 	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+		if(adapter == IWidgetInfoProvider.class)
+			return new IWidgetInfoProvider() {
+				
+				@Override
+				public Object getInfo(String key) {
+					//get the propID that should be unique when it is put in an array
+					if(key.equals(ArrayModel.ARRAY_UNIQUEPROP_ID)) //$NON-NLS-1$
+						return Arrays.asList(PROP_TEXT);
+					return null;
+				}
+			};
+		return super.getAdapter(adapter);
+	}
 }

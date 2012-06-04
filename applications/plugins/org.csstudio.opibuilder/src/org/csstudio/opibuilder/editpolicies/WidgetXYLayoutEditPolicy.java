@@ -216,9 +216,9 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		IGraphicalFeedbackFactory feedbackFactory =
 			WidgetsService.getInstance().getWidgetFeedbackFactory(typeId);
 
-		WidgetCreateCommand widgetCreateCommand = new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(),
-					(AbstractContainerModel)getHost().getModel(),
-					(Rectangle)getConstraintFor(request), false, true);
+		Command widgetCreateCommand = createWidgetCreateCommand(request);
+		if(widgetCreateCommand == null)
+			return null;
 		if(feedbackFactory != null){
 			CompoundCommand compoundCommand = new CompoundCommand();
 			compoundCommand.add(widgetCreateCommand);
@@ -230,6 +230,16 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		}else
 			return widgetCreateCommand;
 	}
+
+	protected Command createWidgetCreateCommand(
+			CreateRequest request) {
+		WidgetCreateCommand widgetCreateCommand = new WidgetCreateCommand((AbstractWidgetModel)request.getNewObject(),
+					(AbstractContainerModel)getHost().getModel(),
+					(Rectangle)getConstraintFor(request), false, true);
+		return widgetCreateCommand;
+	}
+	
+
 
 
 	/**
