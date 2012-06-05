@@ -51,6 +51,8 @@ org.csstudio.logbook.ui/**
 org.csstudio.logging/**
 org.csstudio.logging.ui/**
 org.csstudio.navigator.applaunch/**
+org.csstudio.ndarray/**
+org.csstudio.numjy/**
 org.csstudio.openfile/**
 org.csstudio.opibuilder/**
 org.csstudio.opibuilder.adl2boy/**

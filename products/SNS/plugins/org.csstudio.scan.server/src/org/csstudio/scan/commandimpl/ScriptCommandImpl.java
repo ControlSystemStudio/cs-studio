@@ -24,6 +24,10 @@ import org.csstudio.scan.server.ScanContext;
 import org.python.core.PyException;
 
 /** {@link ScanCommandImpl} that executes a script
+ *
+ *  <p>Loads python code in constructor to allow early
+ *  failure for basic Python syntax errors.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -39,7 +43,14 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
     {
         super(command);
         jython = new JythonSupport();
-        script_object = jython.loadClass(ScanScript.class, command.getScript());
+        try
+        {
+            script_object = jython.loadClass(ScanScript.class, command.getScript());
+        }
+        catch (PyException ex)
+        {
+            throw new Exception(JythonSupport.getExceptionMessage(ex), ex);
+        }
     }
 
     /** @return Device (alias) names used by the command */
@@ -60,7 +71,7 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
         }
         catch (PyException ex)
         {
-        	new Exception(command.getScript() + ":" + jython.getExceptionMessage(ex), ex);
+        	new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
         }
 
 		context.workPerformed(1);
