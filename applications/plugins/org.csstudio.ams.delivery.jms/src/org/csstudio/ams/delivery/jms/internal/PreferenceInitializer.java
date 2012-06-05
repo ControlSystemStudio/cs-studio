@@ -35,5 +35,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		node.put(JmsDeliveryPreferenceKey.P_XMPP_SERVER, "server.where.ever");
 		node.put(JmsDeliveryPreferenceKey.P_XMPP_USER, "anonymous");
 		node.put(JmsDeliveryPreferenceKey.P_XMPP_PASSWORD, "anonymous");
+	    node.put(JmsDeliveryPreferenceKey.P_MAX_ALLOWED_RECEIVING_DIFF, "300000");
 	}
 }

@@ -31,4 +31,5 @@ public class JmsDeliveryPreferenceKey {
 	public static final String P_XMPP_SERVER = "xmppServer";
 	public static final String P_XMPP_USER = "xmppUser";
 	public static final String P_XMPP_PASSWORD = "xmppPassword";
+	public static final String P_MAX_ALLOWED_RECEIVING_DIFF = "maxAllowedReceivingTimeDiff";
 }

@@ -31,6 +31,7 @@ import javax.jms.Session;
 import javax.jms.Topic;
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
+import org.csstudio.ams.delivery.jms.internal.JmsDeliveryPreferenceKey;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.utility.jms.IConnectionMonitor;
 import org.csstudio.utility.jms.JmsUtilityException;
@@ -67,12 +68,17 @@ public class JmsDeliveryWorker extends AbstractDeliveryWorker implements IConnec
     @Override
     public void run() {
 
-        workerStatus = new JmsWorkerStatus(300000L);
-        running = true;
-
         LOG.info(workerName + " is running.");
 
         IPreferencesService prefs = Platform.getPreferencesService();
+        
+        long maxReceivDiff = prefs.getLong(JmsDeliveryActivator.PLUGIN_ID,
+                                           JmsDeliveryPreferenceKey.P_MAX_ALLOWED_RECEIVING_DIFF,
+                                           300000L,
+                                           null);
+        LOG.info("Max. time diff for JMS receiving: {}", maxReceivDiff);
+        workerStatus = new JmsWorkerStatus(maxReceivDiff);
+        running = true;
 
         // Create the JMS publisher
         ISharedConnectionHandle publisherHandle = null;
