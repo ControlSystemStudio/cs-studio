@@ -86,7 +86,7 @@ class JMSConsumer implements Consumer {
 				try {
 					final Message message = this.consumer.receive();
 					if (message != null) {
-						this.logger.logInfoMessage(this, "Recieved message from topic "
+						this.logger.logInfoMessage(this, "Recieved message from "
 						        + message.getJMSDestination() + ": "
 								+ message.toString());
 						this.messageQueue.put(message);
