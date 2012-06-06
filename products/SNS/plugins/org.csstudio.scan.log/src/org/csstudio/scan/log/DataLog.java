@@ -37,6 +37,13 @@ abstract public class DataLog
     }
 
     /** Add a sample to the data log
+     *
+     *  <p>Both the sample's name and its serial
+     *  identify a unique sample.
+     *  It is an error to log a sample with the same
+     *  name and serial twice within a scan.
+     *  The specific behavior will depend on the implementation.
+     *
 	 *  @param sample {@link ScanSample} to log
 	 *  @throws Exception on error
 	 *  @see #close()

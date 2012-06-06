@@ -7,6 +7,12 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.net.URL;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 import org.python.core.PyException;
 import org.python.core.PyObject;
 import org.python.core.PyString;
@@ -19,16 +25,52 @@ import org.python.util.PythonInterpreter;
 @SuppressWarnings("nls")
 public class JythonSupport
 {
+    private static boolean initialized = false;
+    private static String std_lib_path;
+    private static String numjy_path;
+    private static String scan_path;
+
 	final private PythonInterpreter interpreter;
 
-	public JythonSupport()
+	/** Perform static, one-time initialization
+	 *  @throws Exception on error
+	 */
+	private static synchronized void init() throws Exception
 	{
+	    if (!initialized)
+	    {
+	        // Locate org.python/jython.jar/Lib to Python path
+	        Bundle bundle = Platform.getBundle("org.python");
+	        URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
+	        std_lib_path = FileLocator.resolve(url).getPath() + "/Lib";
+
+	        bundle = Platform.getBundle("org.csstudio.numjy");
+	        url = FileLocator.find(bundle, new Path("jython"), null);
+	        numjy_path = FileLocator.resolve(url).getPath();
+
+	        bundle = Platform.getBundle("org.csstudio.scan");
+	        url = FileLocator.find(bundle, new Path("examples"), null);
+	        scan_path = FileLocator.resolve(url).getPath();
+
+	        initialized = true;
+	    }
+	}
+
+    /** Initialize
+     *  @throws Exception on error
+     */
+	public JythonSupport() throws Exception
+	{
+	    init();
 		// TODO Configure Jython in ScanContext so one is shared for this scan?
 		final PySystemState state = new PySystemState();
 
-		// TODO Preference for Script Path
-		final String path = "/Kram/MerurialRepos/cs-studio-3.1/products/SNS/plugins/org.csstudio.scan/examples";
-		state.path.append(new PyString(path));
+		// Path to Python standard lib, numjy, scan system
+		state.path.append(new PyString(std_lib_path));
+        state.path.append(new PyString(numjy_path));
+        state.path.append(new PyString(scan_path));
+
+		// TODO Preferences for more Script Paths?
 
     	interpreter = new PythonInterpreter(null, state);
 	}
@@ -62,7 +104,7 @@ public class JythonSupport
 	 *  @param ex Python exception
 	 *  @return Message with info about python exception
 	 */
-    public String getExceptionMessage(final PyException ex)
+    public static String getExceptionMessage(final PyException ex)
     {
     	final StringBuilder buf = new StringBuilder();
     	if (ex.value instanceof PyString)

@@ -146,6 +146,7 @@ public class NDArray
     /** Create from plain Java array data, determine type from data
      *  @param data Data, for example <code>double[]</code> or <code>int[][][]</code>
      *  @return NDArray for given data
+     *  @throws IllegalArgumentException for unhandled data type
      */
     public static NDArray create(final Object data)
     {
@@ -156,6 +157,7 @@ public class NDArray
      *  @param data Data, for example <code>double[]</code> or <code>int[][][]</code>
      *  @param type Data type
      *  @return NDArray for given data
+     *  @throws IllegalArgumentException for unhandled data type
      */
     public static NDArray create(final Object data, final NDType type)
     {
