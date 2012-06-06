@@ -27,6 +27,8 @@ public class JythonSupport
 {
     private static boolean initialized = false;
     private static String std_lib_path;
+    private static String numjy_path;
+    private static String scan_path;
 
 	final private PythonInterpreter interpreter;
 
@@ -37,10 +39,18 @@ public class JythonSupport
 	{
 	    if (!initialized)
 	    {
-	        // Add org.python/jython.jar/Lib to Python path
-	        final Bundle bundle = Platform.getBundle("org.python");
-	        final URL fileURL = FileLocator.find(bundle, new Path("jython.jar"), null);
-	        std_lib_path = FileLocator.resolve(fileURL).getPath() + "/Lib";
+	        // Locate org.python/jython.jar/Lib to Python path
+	        Bundle bundle = Platform.getBundle("org.python");
+	        URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
+	        std_lib_path = FileLocator.resolve(url).getPath() + "/Lib";
+
+	        bundle = Platform.getBundle("org.csstudio.numjy");
+	        url = FileLocator.find(bundle, new Path("jython"), null);
+	        numjy_path = FileLocator.resolve(url).getPath();
+
+	        bundle = Platform.getBundle("org.csstudio.scan");
+	        url = FileLocator.find(bundle, new Path("examples"), null);
+	        scan_path = FileLocator.resolve(url).getPath();
 
 	        initialized = true;
 	    }
@@ -55,16 +65,12 @@ public class JythonSupport
 		// TODO Configure Jython in ScanContext so one is shared for this scan?
 		final PySystemState state = new PySystemState();
 
-		// TODO org.python/jython.jar/Lib
+		// Path to Python standard lib, numjy, scan system
 		state.path.append(new PyString(std_lib_path));
-		// TODO Preferences for Script Path?
-		// TODO Use bundle locations?
-		// Scan System
-		String path = "/Kram/MerurialRepos/cs-studio-3.1/products/SNS/plugins/org.csstudio.scan/examples";
-		state.path.append(new PyString(path));
-		// NumJy
-		path = "/Kram/MerurialRepos/cs-studio-3.1/applications/plugins/org.csstudio.numjy/jython";
-        state.path.append(new PyString(path));
+        state.path.append(new PyString(numjy_path));
+        state.path.append(new PyString(scan_path));
+
+		// TODO Preferences for more Script Paths?
 
     	interpreter = new PythonInterpreter(null, state);
 	}

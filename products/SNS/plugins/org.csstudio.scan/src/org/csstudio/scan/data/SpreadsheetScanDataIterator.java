@@ -24,6 +24,9 @@ import java.util.List;
 import org.csstudio.scan.util.TextTable;
 
 /** Iterate over {@link ScanData} as spreadsheet
+ *
+ *  <p>{@link ScanSample} serials are used to correlate samples.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
