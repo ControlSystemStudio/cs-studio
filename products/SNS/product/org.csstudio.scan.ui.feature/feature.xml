@@ -127,6 +127,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
