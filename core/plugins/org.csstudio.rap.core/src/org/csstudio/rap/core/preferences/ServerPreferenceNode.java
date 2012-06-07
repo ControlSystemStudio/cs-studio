@@ -2,7 +2,6 @@ package org.csstudio.rap.core.preferences;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -35,6 +34,8 @@ import org.osgi.service.prefs.Preferences;
 @SuppressWarnings({ "restriction", "unchecked", "rawtypes" })
 public class ServerPreferenceNode implements IEclipsePreferences {
 
+	private static final String SERVER_PREFERENCE_PROPERTY = "org.csstudio.rap.preference"; //$NON-NLS-1$
+	private static final String SERVER_PREFERENCE_FILE_NAME = "css_rap.ini"; //$NON-NLS-1$
 	private static final String PATH_SEPARATOR = "/"; //$NON-NLS-1$
 	private static final String DOUBLE_PATH_SEPARATOR = "//"; //$NON-NLS-1$
 	private static final String TRUE = "true"; //$NON-NLS-1$
@@ -367,30 +368,65 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 		checkRemoved();
 		return properties.keys();
 	}
-
+	
+	
 	protected void load() {
 
-		try {			
-			//The directory where the war file is placed. 
-			//On Tomcat, it is $(CATALINA.HOME)/webapps
-			//In Eclipse, it is Eclipse installation directory 
-			 String userDir = System.getProperty("user.dir"); //$NON-NLS-1$
-			 if(userDir == null || userDir.trim().isEmpty()){
-				 RAPCorePlugin.getLogger().log(Level.WARNING,
-							"System property user.dir is not set, " +
-							"user.home will be used for loading css_rap.ini");
-				 userDir = System.getProperty("user.home") ;//$NON-NLS-1$
-			 }
-			 
-			 Properties properties = loadProperties(userDir + "/css_rap.ini"); //$NON-NLS-1$
+		try {
+			// The directory where the war file is placed.
+			// On Tomcat, it is $(CATALINA.HOME)/webapps
+			// In Eclipse, it is source location of this plugin
 
-			 //Cannot use context since it doesn't exist if no UI created.
-//			ServletContext sc = RWT.getRequest().getSession()
-//					.getServletContext();
-//			String realPath = sc.getRealPath("/"); //$NON-NLS-1$
-//			Properties properties = loadProperties(realPath
-//					+ "plugin_customization.ini"); //$NON-NLS-1$
-		
+			Properties properties = new Properties();
+			String propDir = System.getProperty(SERVER_PREFERENCE_PROPERTY); //$NON-NLS-1$
+
+			try { //try property "css.rap.preference"
+				if(propDir == null || propDir.trim().isEmpty())
+					throw new IOException();
+				properties = loadProperties(propDir); //$NON-NLS-1$
+			} catch (IOException e1) {
+				String message;
+				if (propDir == null || propDir.trim().isEmpty())
+					message = NLS
+							.bind("System property {0} is not set, try user.home.", //$NON-NLS-1$
+									SERVER_PREFERENCE_PROPERTY);
+				else
+					message = NLS
+							.bind("Preference file is not found at {0}, try user.home.", //$NON-NLS-1$
+									propDir);
+				RAPCorePlugin.getLogger().log(Level.WARNING, message);
+					
+//				IPath iniPath = null;
+//				try { //try war file folder
+//					String path = ServerPreferenceNode.class
+//							.getProtectionDomain().getCodeSource()
+//							.getLocation().getPath();
+//					String decodedPath = URLDecoder.decode(path, "UTF-8"); //$NON-NLS-1$
+//					iniPath = new Path(decodedPath).removeLastSegments(3)
+//							.append(SERVER_PREFERENCE_FILE_NAME);
+//					System.out.println(iniPath);
+//					properties = loadProperties(iniPath.toOSString()); //$NON-NLS-1$
+//				} catch (IOException e) {
+//					RAPCorePlugin
+//							.getLogger()
+//							.log(Level.WARNING,
+//									NLS.bind(
+//											"RAP CSS configuration file is not found at war folder {0}, try user.home",
+//											iniPath));
+					//try "user.home"
+					propDir = System.getProperty("user.home");//$NON-NLS-1$
+					properties = loadProperties(new Path(propDir).append(SERVER_PREFERENCE_FILE_NAME).toOSString());
+//				}
+
+			}
+
+			// Cannot use context since it doesn't exist if no UI created.
+			// ServletContext sc = RWT.getRequest().getSession()
+			// .getServletContext();
+			//			String realPath = sc.getRealPath("/"); //$NON-NLS-1$
+			// Properties properties = loadProperties(realPath
+			//					+ "plugin_customization.ini"); //$NON-NLS-1$
+
 			applyDefaults(properties);
 		} catch (Exception e) {
 			RAPCorePlugin.getLogger().log(Level.SEVERE,
@@ -399,20 +435,12 @@ public class ServerPreferenceNode implements IEclipsePreferences {
 
 	}
 
-	private Properties loadProperties(String filename) {
+	private Properties loadProperties(String filename) throws IOException {
 		Properties result = new Properties();
 		InputStream input = null;
 		try {
 			input = new BufferedInputStream(new FileInputStream(filename));
 			result.load(input);
-		} catch (FileNotFoundException e) {
-			RAPCorePlugin.getLogger().log(Level.WARNING,
-					NLS.bind(
-							"RAP CSS configuration file is not found: {0}",
-							filename)); 
-		} catch (IOException e) {
-			String message = NLS.bind(PrefsMessages.preferences_loadException, filename);
-			RAPCorePlugin.getLogger().log(Level.SEVERE, message);
 		} finally {
 			if (input != null)
 				try {

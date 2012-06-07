@@ -212,7 +212,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 					UIBundlingThread.getInstance().addRunnable(new Runnable() {
 						public void run() {
 							for (PV pv : pvArray)
-								if (pv != null)
+								if (pv != null && !pv.isRunning())
 									try {
 										pv.start();
 									} catch (Exception e) {

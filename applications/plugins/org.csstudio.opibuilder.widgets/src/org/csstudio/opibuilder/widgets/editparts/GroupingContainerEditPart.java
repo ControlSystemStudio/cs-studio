@@ -190,8 +190,8 @@ public class GroupingContainerEditPart extends AbstractContainerEditpart {
 			@Override
 			public boolean testAttribute(Object target, String name,
 					String value) {
-				if (name.equals("allowAutoSize") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$						
-					return true;				
+				if (name.equals("allowAutoSize") && value.equals("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$	
+					return getExecutionMode()==ExecutionMode.EDIT_MODE;					
 				return super.testAttribute(target, name, value);
 			}
 		};

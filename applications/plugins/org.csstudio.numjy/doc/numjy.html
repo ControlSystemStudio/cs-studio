@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <link rel="stylesheet" href="basic.css" type="text/css"></link>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <title>NumJy</title>
+</head>
+<body>
+
+<h1>NumJy</h1>
+<p>
+NumJy is a limited implementation of NumPy, the numeric package for Python,
+for Jython, i.e. the Java-based version of Python.
+It allows Jython code to handle multi-dimensional arrays in a syntax similar to NumPy.
+</p>
+
+<ul>
+<li>All Jython/NumJY code should function when executed under Python/NumPy</li>
+<li>... but not all Python/NumPy functionality is supported in Jython/NumJY</li>
+</ul>
+
+
+<h1><a name="basics">NumJy Basics</a></h1>
+
+
+<h2><a name="import">Import</a></h2>
+
+<p>To access NumJy, import it similar to NumPy, but using 'numjy' instead of 'numpy':</p>
+
+<pre>
+from numjy import *
+</pre>
+
+<p>When running unter Python, this will actually import the original NumPy.
+Under Jython, it imports the NumJy packages that emulate a subset of NumPy.
+</p>
+
+
+<h2><a name="data_types">Data Types</a></h2>
+
+<table>
+<thead>
+<tr><th>Type</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>float, float64</td><td>64-bit floating point</td></tr>
+<tr><td>float32</td><td>32-bit floating point</td></tr>
+<tr><td>int, int64</td><td>64-bit integer</td></tr>
+<tr><td>int32</td><td>32-bit integer</td></tr>
+<tr><td>int16</td><td>16-bit integer</td></tr>
+<tr><td>int8</td><td>8-bit integer</td></tr>
+<tr><td>bool</td><td>Boolean (True, False), stored as 8-bit integer</td></tr>
+</tbody>
+</table>
+
+<p>These serve as type identifiers when selecting a particular data type, for example:
+</p>
+<pre>
+a = linspace(1, 10, 20, dtype=float32)
+</pre>
+
+
+<h2><a name="create_arrays">Creating Arrays</a></h2>
+
+<p>You can convert Python arrays or lists into NumJy arrays with
+the <code>array</code> command:
+</p>
+
+<pre>
+array([ 1, 2, 3, 4])
+array([ 1.0, 2.0, 3.0, 4.0 ])
+array([ [ 1, 2], [3, 4] ])
+</pre>
+
+<p>There are commands to create specific arrays:
+</p>
+
+<pre>
+>>> zeros( (2, 3) )
+array([ 
+  [ 0.0, 0.0, 0.0 ], 
+  [ 0.0, 0.0, 0.0 ]
+])
+>>> linspace(2, 10, 5) 
+array([ 2.0, 4.0, 6.0, 8.0, 10.0 ])
+>>> arange(1, 5, 0.5)
+array([ 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5 ])
+</pre>
+
+<p>For details, refer to their help:</p>
+
+<pre>
+>>> help(array)
+>>> help(arange)
+>>> help(linspace)
+</pre>
+
+
+<h2><a name="reshaping">Reshaping Arrays</a></h2>
+
+<p>All arrays are internally stored as a flat list,
+but they are presented in a multi-dimensional shape.
+</p>
+<p>Arrays can be viewed in a different shape as long
+as their overall size remains the same:
+</p>
+
+<pre>
+>>> # 1-D array
+>>> arange(6)  
+array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
+>>> arange(6).shape        
+(6,)
+
+>>> # Change shape to 2x3
+>>> arange(6).reshape(2, 3)
+array([ 
+  [ 0.0, 1.0, 2.0 ], 
+  [ 3.0, 4.0, 5.0 ]
+])
+>>> arange(6).reshape(2,3).shape
+(2, 3)
+
+>>> # Change shape to 3x2
+>>> arange(6).reshape(3, 2)
+array([ 
+  [ 0.0, 1.0 ], 
+  [ 2.0, 3.0 ], 
+  [ 4.0, 5.0 ]
+])
+
+>>> # Error when trying to change the overall size
+>>> arange(6).reshape(7)   
+...IllegalArgumentException: Cannot change shape from [6] to [7]
+</pre>
+
+<p>The number of dimensions is also known as 'rank' of the array.
+A basic 1-dimensional array has rank 1. Re-shaped to 2x3 or 3x2
+it has a rank of 2:
+</p>
+
+<pre>
+>>> arange(6).ndim 
+1
+>>> arange(6).reshape(3, 2).ndim
+2
+</pre>
+
+<h2><a name="indexing">Indexing</a></h2>
+
+<p>NumJy array elements are accessed just like other Python arrays via
+square brackets, using as many index elements as required by the dimensions
+of the array:
+</p>
+
+<pre>
+>>> arange(6)[0]                
+0.0
+>>> arange(6)[5]
+5.0
+
+>>> arange(6)[-1]
+5.0
+
+>>> arange(6).reshape(2,3)[1,1]
+4.0
+</pre>
+
+<p>Note how negative indices reference elements from the 'end' of
+their respective dimension.
+For the example with 6 elements, numbered 0 to 5, the index -1 references
+the same element as the index 5.
+</p>
+
+
+<h2><a name="views">Views</a></h2>
+
+<p>Operations like <code>reshape()</code>, <code>transpose()</code> 
+or the slicing described in the following section create a new view of the original array.
+To preserve memory as well as to allow certain operations on the data,
+the underlying data is not copied!
+</p>
+
+<p>Example: Changing the reshaped view 'b' of 'a' also affects corresponding elements in 'a':</p>
+
+<pre>
+>>> a=arange(6)
+>>> b=a.reshape(2, 3)
+>>> b
+array([ 
+  [ 0.0, 1.0, 2.0 ], 
+  [ 3.0, 4.0, 5.0 ]
+])
+>>> b[1,2]=666
+>>> b
+array([ 
+  [ 0.0, 1.0, 2.0 ], 
+  [ 3.0, 4.0, 666.0 ]
+])
+>>> a
+array([ 0.0, 1.0, 2.0, 3.0, 4.0, 666.0 ])
+</pre>
+
+
+<p>The original array is available as the 'base':</p>
+
+<pre>
+>>> b = arange(6).reshape(2, 3)
+>>> b
+array([ 
+  [ 0.0, 1.0, 2.0 ], 
+  [ 3.0, 4.0, 5.0 ]
+])
+>>> b.base
+array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
+</pre>
+
+
+<p>If necessary, it is possible to create a copy which will then no longer be assiciated
+with any 'base':</p>
+
+<pre>
+>>> b = copy(a.reshape(2, 3))
+>>> b = a.reshape(2, 3).copy()
+>>> b.base is None
+True
+</pre>
+
+
+
+<h2><a name="slicing">Slicing</a></h2>
+
+<p>NumJy supports the basic slicing operations of NumPy.
+When accessing a 1-dimensional array, the result is a sub-section of the original array:
+</p>
+
+<pre>
+>>> arange(6)
+array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
+
+>>> # Use start:stop slice
+>>> arange(6)[2:4]
+array([ 2.0, 3.0 ])
+
+>>> # Use start:stop:step slice
+>>> arange(6)[1:5:2]
+array([ 1.0, 3.0 ])
+
+>>> # start:...
+>>> arange(6)[1:]
+array([ 1.0, 2.0, 3.0, 4.0, 5.0 ])
+
+>>> # ...stop
+>>> arange(6)[:3]
+array([ 0.0, 1.0, 2.0 ])
+
+>>> # Specify stop relative to length
+>>> arange(6)[:-1]
+array([ 0.0, 1.0, 2.0, 3.0, 4.0 ])
+
+>>> # Specify step
+>>> arange(6)[::2]
+array([ 0.0, 2.0, 4.0 ])
+</pre>
+
+<p>The result is a view of the original array.
+Changing the slice will also update the original array:
+</p>
+
+<pre>
+>>> orig = arange(6)
+>>> sub = orig[2:4]
+>>> sub[1] = 666
+>>> sub
+array([ 2.0, 666.0 ])
+>>> orig
+array([ 0.0, 1.0, 2.0, 666.0, 4.0, 5.0 ])
+</pre>
+
+
+<p>When accessing multi-dimensional arrays, use one start:stop:step slice
+per dimension. When fewer indices are provided, the missing indices default
+to the complete axis:
+</p>
+
+<pre>
+>>> orig=arange(6).reshape(2, 3)
+>>> orig
+array([ 
+  [ 0.0, 1.0, 2.0 ], 
+  [ 3.0, 4.0, 5.0 ]
+])
+>>> # Using only [1] is the same as [1, :]
+>>> row1 = orig[1]
+>>> row1
+array([ 3.0, 4.0, 5.0 ])
+>>> # Access column
+>>> col2 = orig[:, 2]
+>>> col2
+array([ 2.0, 5.0 ])
+</pre>
+
+<p>Note how the <code>col2</code> in the above example is not a strict column of shape 2x1.
+Instead, it is a 1-D array with 2 elements.
+In the example, the index <code>2</code> was used to select just one element of the second axis.
+When using a plain index to access a individual element on an axis, that axis is 'collapsed'
+and removed from the result.
+</p>
+
+<p>To force NumPy/NumJy to keep that single-element axis, specify a complete slice,
+even if the slice addresses only a single element:
+</p>
+
+<pre>
+>>> orig[:, 2:3:1]
+array([ 
+  [ 2.0 ], 
+  [ 5.0 ]
+])
+</pre>
+
+
+<p>Since slicing creates a view into the original array, it is possible to assign
+data to N-dimensional slices, but the array shapes must match:
+</p>
+
+<pre>
+>>> # Create 2x3  array
+>>> orig = arange(6).reshape(2, 3)
+>>> # In all rows, update every other column with a 2x2 data
+>>> orig[:, ::2] = array([ [ 40, 42], [ 43, 45 ]])
+>>> orig
+array([ 
+  [ 40.0, 1.0, 42.0 ], 
+  [ 43.0, 4.0, 45.0 ]
+])
+</pre>
+
+
+
+<h1><a name="math">Math Support</a></h1>
+
+<h2><a name="broadcasting">Broadcasting</a></h2>
+
+<p>Math operations in NumJy and NumPy are fundamentally element-by-element.
+When for example adding two vectors, their elements are added:
+</p>
+
+<pre>
+>>> arange(6)  
+array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
+>>> arange(6) + arange(6)
+array([ 0.0, 2.0, 4.0, 6.0, 8.0, 10.0 ])
+</pre>
+
+<p>It is also possible to add scalars to all elements of an array:
+</p>
+
+<pre>
+>>> arange(6) + 10 
+array([ 10.0, 11.0, 12.0, 13.0, 14.0, 15.0 ])
+</pre>
+
+<p>When operating on two NumJy/NumPy arrays, their shapes must be compatible
+according to the broadcasting rule:
+</p>
+
+<blockquote>
+The size of the <u>trailing</u> axes for both arrays in an operation
+must either be the same, or one of them must be one.
+</blockquote>
+
+<p>For example, these arrays are all compatible to the shape 10x5x3:
+</p>
+
+<ul>
+<li>10x5x3: All dimensions match.</li>
+<li>5x3: Trailing dimensions match.</li>
+<li>1x3, 5x1, 1x1: Trailing dimensions are either 1 or match.</li>
+</ul>
+
+<p>The resulting array will combine all dimensions as in the following
+example, which could represent a 10x5 image where each pixel in turn has 3 RGB
+values:
+</p>
+
+<pre>
+Image dimension  : 10 x 5 x 3
+Operand dimension:          3
+Result           : 10 x 5 x 3
+</pre>
+
+<p>The elements of the smaller array are applied to the trailing dimensions
+of the bigger array. Dimensions of size 1 are 'broadcast' over all element
+of the corresponding dimension in the other array.
+</p>
+
+<p>Examples:
+</p>
+
+<pre>
+>>> # Apply array of shape ( 1 ) to all elements of ( 2, 2 )
+>>> array([                                
+...   [ 1.0, 2.0 ],                        
+...   [ 3.0, 4.0 ] ] ) + array( [ 10 ] )   
+array([ 
+  [ 11.0, 12.0 ], 
+  [ 13.0, 14.0 ]
+])
+
+>>> # Apply 'column' array of shape ( 2, 1 ) to columns of ( 2, 2 )
+>>> array([         
+...   [ 1.0, 2.0 ], 
+...   [ 3.0, 4.0 ] ] ) + array( [ [ 10 ],
+...                               [ 20 ] ])
+array([ 
+  [ 11.0, 12.0 ], 
+  [ 23.0, 24.0 ]
+])
+</pre>
+
+
+<p>
+For a longer explanation, see
+<a href="http://www.scipy.org/EricsBroadcastingDoc">http://www.scipy.org/EricsBroadcastingDoc</a>
+</p>
+
+
+<h2><a name="operators">Operators</a></h2>
+
+<p>Basic add, substract, ... operation between arrays, returning an
+array with 'broadcast' shape:
+</p>
+
+<table>
+<thead>
+<tr><th>Operator</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-a</code></td><td>Compute element-wise negative</td></tr>
+<tr><td><code>a + b</code></td><td>Add elements of arrays a, b</td></tr>
+<tr><td><code>a - b</code></td><td>Subtract ...</td></tr>
+<tr><td><code>a * b</code></td><td>Multiply ...</td></tr>
+<tr><td><code>a / b</code></td><td>Divide ... Division by 0 results in 0, NaN, Infinity or big numbers, depending on the data type.</td></tr>
+<tr><td><code>a ** b</code></td><td>Element-wise exponentiation, raise a to b's power</td></tr>
+<tr><td><code>a += b</code></td><td>Increment elements of array a by elements of b</td></tr>
+<tr><td><code>a -= b</code></td><td>Subtract ...</td></tr>
+<tr><td><code>a *= b</code></td><td>Multiply ...</td></tr>
+<tr><td><code>a /= b</code></td><td>Divide ...</td></tr>
+<tr><td><code>a **= b</code></td><td>Raise to b's power</td></tr>
+<tr><td><code>a &gt; b</code></td><td>True/False if corresponding array elements are greater than, ...</td></tr>
+<tr><td><code>a &gt;= b</code></td><td>... greater or equal ...</td></tr>
+<tr><td><code>a &lt; b</code></td><td>... less than ...</td></tr>
+<tr><td><code>a &lt;= b</code></td><td>... greater or equal ...</td></tr>
+<tr><td><code>a == b</code></td><td>... equal ...</td></tr>
+<tr><td><code>a != b</code></td><td>... not equal ...</td></tr>
+</tbody>
+</table>
+
+
+<h2><a name="functions">Functions</a></h2>
+
+<p>Functions that operate on each array element,
+returning an array of same shape as their input:
+</p>
+
+<table>
+<thead>
+<tr><th>Operator</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>abs(a)</code></td><td>Compute element-wise absolute values</td></tr>
+<tr><td><code>exp(a)</code></td><td>... exponential ...</td></tr>
+<tr><td><code>log(a)</code></td><td>... logarithm ...</td></tr>
+<tr><td><code>log10(a)</code></td><td>... logarithm (base 10) ...</td></tr>
+<tr><td><code>sqrt(a)</code></td><td>... square root ...</td></tr>
+</tbody>
+</table>
+
+<p>Functions that operate on two arrays,
+returning an array with 'broadcast' shape:
+</p>
+
+<table>
+<thead>
+<tr><th>Operator</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>pow(a, b)</code></td><td>Same as <code>a ** b</code></td></tr>
+</tbody>
+</table>
+
+<p>Functions that return a scalar:</p>
+
+<table>
+<thead>
+<tr><th>Operator</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td><code>any(a)</code></td><td>Return <code>True</code> if any element is non-zero</td></tr>
+<tr><td><code>all(a)</code></td><td>Return <code>True</code> if all elements are non-zero</td></tr>
+<tr><td><code>min(a)</code></td><td>Minimum element</td></tr>
+<tr><td><code>max(a)</code></td><td>Maximum element</td></tr>
+<tr><td><code>sum(a)</code></td><td>Sum over all elements</td></tr>
+</tbody>
+</table>
+
+
+<h2><a name="mat_ops">Matrix Operations</a></h2>
+
+<p>While the normal array multiplication is element-by-element as described
+before and <u>not</u> in the matrix sense, there are matrix type operations.
+They are limited to arrays of certain shapes.
+</p>
+
+<pre>
+>>> # 2-D matrix, 1-D vector
+>>> mat = array( [ [ 1, 2 ], [ 3, 4 ] ])
+>>> vec = array( [ 10, 20 ] )
+
+>>> # Transpose a matrix
+>>> transpose(mat)
+array([ 
+  [ 1.0, 3.0 ], 
+  [ 2.0, 4.0 ]
+])
+
+>>> # .. shortcut
+>>> mat.T
+array([ 
+  [ 1.0, 3.0 ], 
+  [ 2.0, 4.0 ]
+])
+
+>>> # Matrix 'dot' product
+>>> dot(mat, vec)
+array([ 50.0, 110.0 ])
+
+>>> dot(mat, mat)
+array([ 
+  [ 7.0, 10.0 ], 
+  [ 15.0, 22.0 ]
+])
+</pre>
+
+<p>Example for computing rotation:</p>
+
+<pre>
+from math import cos, sin, radians
+
+angle = radians(90)
+
+rotate = array( [ [ cos(angle), -sin(angle) ], [ sin(angle), cos(angle) ] ] )
+vec = array( [ 1, 0 ])
+
+# Results in [ 0, 1 ]
+result = dot(rotate, vec) 
+</pre>
+
+</body>
+</html>

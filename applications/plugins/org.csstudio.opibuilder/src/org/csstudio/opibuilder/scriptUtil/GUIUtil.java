@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
+import org.csstudio.opibuilder.util.DisplayUtils;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.window.Window;
@@ -53,8 +54,7 @@ public class GUIUtil {
 	 * @return true if user has clicked the YES button. False otherwise.
 	 */
 	public static boolean openConfirmDialog(final String dialogMessage){
-		MessageBox mb = new MessageBox(Display.getCurrent()
-				.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
+		MessageBox mb = new MessageBox(DisplayUtils.getDefaultShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
 				| SWT.CANCEL);
 		mb.setMessage(dialogMessage);
 		mb.setText("Confirm Dialog");

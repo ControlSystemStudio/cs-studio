@@ -7,9 +7,15 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.util.Date;
+
+import org.csstudio.ndarray.NDArray;
 import org.csstudio.scan.command.ScriptCommandContext;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.server.ScanContext;
+import org.epics.util.array.IteratorNumber;
 
 /** Implementation of the {@link ScriptCommandContext}
  *
@@ -34,6 +40,38 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 	public ScanData getScanData() throws Exception
 	{
 		return context.getScanData();
+	}
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("nls")
+    @Override
+	public void logData(final String device, final Object obj) throws Exception
+    {
+        // Check received data
+        final NDArray data;
+        if (obj instanceof NDArray)
+            data = (NDArray) obj;
+        else
+        {
+            try
+            {
+                data = NDArray.create(obj);
+            }
+            catch (IllegalArgumentException ex)
+            {
+                throw new Exception("Cannot log data of type " + obj.getClass().getName(), ex);
+            }
+        }
+        // Log the data
+        final Date timestamp = new Date();
+        final IteratorNumber iter = data.getIterator();
+        long serial = 0;
+        while (iter.hasNext())
+        {
+            final ScanSample sample =
+                ScanSampleFactory.createSample(device, timestamp , serial++, iter.nextDouble());
+            context.logSample(sample);
+        }
 	}
 
 	/** {@inheritDoc} */

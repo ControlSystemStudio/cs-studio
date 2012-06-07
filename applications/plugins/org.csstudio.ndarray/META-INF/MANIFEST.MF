@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: N-Dimensional Array
+Bundle-Description: N-Dimensional Array and related math routines
+Bundle-SymbolicName: org.csstudio.ndarray
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit;bundle-version="4.0.0",
+ org.python;bundle-version="2.5.2"
+Bundle-ClassPath: lib/util.jar,
+ .
+Export-Package: org.csstudio.ndarray,
+ org.epics.util.array,
+ org.epics.util.exceptions,
+ org.epics.util.time
