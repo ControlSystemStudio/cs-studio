@@ -34,6 +34,16 @@
 
     <!-- Compile Java sources -->
     <target name="compile" depends="prepare">
+        <!-- org.epics.util -->
+        <javac srcdir="../../../../core/plugins/org.epics.util/src" destdir="${classes}"
+               includeantruntime="true" deprecation="on" debug="on">
+            <classpath><path refid="build.classpath"/></classpath>
+        </javac>
+        <!-- org.csstudio.ndarray -->
+        <javac srcdir="../../../../applications/plugins/org.csstudio.ndarray/src" destdir="${classes}"
+               includeantruntime="true" deprecation="on" debug="on">
+            <classpath><path refid="build.classpath"/></classpath>
+        </javac>
     	<!-- org.csstudio.scan, excluding Eclipse-only code -->
         <javac srcdir="../org.csstudio.scan/src" destdir="${classes}"
                excludes="**/Activator.java, **/ScanSystemPreferences.java, **/ScanCommandFactory.java"
