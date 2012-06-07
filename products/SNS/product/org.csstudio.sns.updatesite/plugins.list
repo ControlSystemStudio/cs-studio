@@ -125,5 +125,6 @@ org.csstudio.utility.pvmanager.ui/**
 org.csstudio.utility.speech/**
 org.csstudio.utility.sysmon/**
 org.csstudio.workspace/**
+org.epics.util/**
 org.jdom/**
 org.python/**

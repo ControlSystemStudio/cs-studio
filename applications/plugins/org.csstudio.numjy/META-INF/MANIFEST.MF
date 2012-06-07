@@ -6,4 +6,5 @@ Bundle-SymbolicName: org.csstudio.numjy;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.eclipse.help;bundle-version="3.5.100";resolution:=optional
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100";resolution:=optional,
+ org.csstudio.ndarray;bundle-version="1.0.0"
