@@ -35,7 +35,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VImage {
+public interface VImage extends VType {
     /**
      * Height of the image in pixels.
      *

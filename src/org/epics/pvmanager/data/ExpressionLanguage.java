@@ -18,9 +18,12 @@ import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
 import org.epics.pvmanager.expression.Expressions;
 import org.epics.pvmanager.expression.SourceRateExpressionImpl;
 import org.epics.pvmanager.expression.SourceRateExpressionList;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeStamp;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.array.ListNumber;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.Timestamp;
 
 /**
  * PVManager expression language support for EPICS types.
@@ -39,9 +42,11 @@ public class ExpressionLanguage {
      * Expects a numeric scalar (VDouble or VInt) and converts it to
      * a VDouble.
      * 
+     * @deprecated use {@link #vNumber(java.lang.String) }
      * @param expression an expression that returns a numeric scalar
      * @return a new expression
      */
+    @Deprecated
     public static SourceRateExpression<VDouble> vDoubleOf(SourceRateExpression<?> expression) {
         return new SourceRateExpressionImpl<VDouble>(expression, new ConverterVDoubleFunction(expression.getFunction()), expression.getName());
     }
@@ -50,11 +55,46 @@ public class ExpressionLanguage {
      * Expects a numeric array (VDoubleArray, VFloatArray, VIntArray, VShortArray
      * or VByteArray) and converts it to a VDoubleArray.
      * 
+     * @deprecated use {@link #vNumberArray(java.lang.String) }
      * @param expression an expression that returns a numeric array
      * @return a new expression
      */
+    @Deprecated
     public static SourceRateExpression<VDoubleArray> vDoubleArrayOf(SourceRateExpression<?> expression) {
         return new SourceRateExpressionImpl<VDoubleArray>(expression, new ConverterVDoubleArrayFunction(expression.getFunction()), expression.getName());
+    }
+    
+    
+    public static DesiredRateExpression<VDoubleArray>
+            vDoubleArrayOf(DesiredRateExpressionList<? extends VNumber> expressions) {
+        // TODO - there should be a common function to extract the list of functions
+        List<Function<? extends VNumber>> functions = new ArrayList<Function<? extends VNumber>>();
+        for (DesiredRateExpression<? extends VNumber> expression : expressions.getDesiredRateExpressions()) {
+            functions.add(expression.getFunction());
+        }
+        VNumbersToVDoubleArrayConverter converter =
+                new VNumbersToVDoubleArrayConverter(functions);
+        return new DesiredRateExpressionImpl<VDoubleArray>(expressions, converter, "syncArray");
+    }
+
+    /**
+     * A channel with the given name of type VNumber.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VNumber, Number> vNumber(String name) {
+        return channel(name, VNumber.class, Number.class);
+    }
+
+    /**
+     * A channel with the given name of type VNumberArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VNumberArray, ListNumber> vNumberArray(String name) {
+        return channel(name, VNumberArray.class, ListNumber.class);
     }
 
     /**
@@ -168,12 +208,22 @@ public class ExpressionLanguage {
     }
 
     /**
+     * A channel with the given name that returns any of the value type.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VType, Object> vType(String name) {
+        return channel(name, VType.class, Object.class);
+    }
+
+    /**
      * A list of constant expressions of type VDouble.
      */
     public static DesiredRateExpressionList<VDouble> vDoubleConstants(List<Double> values) {
         DesiredRateExpressionList<VDouble> list = new DesiredRateExpressionListImpl<VDouble>();
         for (Double value : values) {
-            list.and(constant(ValueFactory.newVDouble(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null, null, null, null, null, null, null, null, null)));
+            list.and(constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone())));
         }
         return list;
     }
@@ -184,7 +234,7 @@ public class ExpressionLanguage {
     public static DesiredRateExpressionList<VInt> vIntConstants(List<Integer> values) {
         DesiredRateExpressionList<VInt> list = new DesiredRateExpressionListImpl<VInt>();
         for (Integer value : values) {
-            list.and(constant(ValueFactory.newVInt(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null, null, null, null, null, null, null, null, null)));
+            list.and(constant(newVInt(value, alarmNone(), timeNow(), displayNone())));
         }
         return list;
     }
@@ -249,7 +299,7 @@ public class ExpressionLanguage {
      */
     public static DesiredRateExpression<VMultiDouble>
             synchronizedArrayOf(TimeDuration tolerance, SourceRateExpressionList<VDouble> expressions) {
-        return synchronizedArrayOf(tolerance, tolerance.multiplyBy(10), expressions);
+        return synchronizedArrayOf(tolerance, tolerance.multipliedBy(10), expressions);
     }
 
     /**
@@ -264,8 +314,8 @@ public class ExpressionLanguage {
      */
     public static DesiredRateExpression<VMultiDouble>
             synchronizedArrayOf(TimeDuration tolerance, TimeDuration cacheDepth, SourceRateExpressionList<VDouble> expressions) {
-        if (cacheDepth.equals(TimeDuration.ms(0)))
-            throw new IllegalArgumentException("Distance between samples must be non-zero");
+        if (cacheDepth.equals(TimeDuration.ofMillis(0)) && cacheDepth.getSec() > 0)
+            throw new IllegalArgumentException("Distance between samples must be non-zero and positive");
         List<String> names = new ArrayList<String>();
         List<Function<List<VDouble>>> collectors = new ArrayList<Function<List<VDouble>>>();
         DesiredRateExpressionList<List<VDouble>> desiredRateExpressions = new DesiredRateExpressionListImpl<List<VDouble>>();
@@ -280,6 +330,37 @@ public class ExpressionLanguage {
         return new DesiredRateExpressionImpl<VMultiDouble>(desiredRateExpressions,
                 (Function<VMultiDouble>) aggregator, "syncArray");
     }
+
+    /**
+     * A synchronized array from the given expression.
+     *
+     * @param tolerance maximum time difference between samples
+     * @param expressions the expressions from which to reconstruct the array
+     * @return an expression for the array
+     */
+    @Deprecated
+    public static DesiredRateExpression<VMultiDouble>
+            synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration tolerance, SourceRateExpressionList<VDouble> expressions) {
+        return synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration.asTimeDuration(tolerance), expressions);
+    }
+
+    /**
+     * A synchronized array from the given expression.
+     *
+     * @param tolerance maximum time difference between samples in the
+     * reconstructed array
+     * @param cacheDepth maximum time difference between samples in the caches
+     * used to reconstruct the array
+     * @param expressions the expressions from which to reconstruct the array
+     * @return an expression for the array
+     */
+    @Deprecated
+    public static DesiredRateExpression<VMultiDouble>
+            synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration tolerance, org.epics.pvmanager.util.TimeDuration cacheDepth, SourceRateExpressionList<VDouble> expressions) {
+        return synchronizedArrayOf(org.epics.pvmanager.util.TimeDuration.asTimeDuration(tolerance),
+                org.epics.pvmanager.util.TimeDuration.asTimeDuration(cacheDepth), expressions);
+    }
+
 
     /**
      * A column for an aggregated vTable.

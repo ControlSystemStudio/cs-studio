@@ -92,7 +92,7 @@ public class DisplayBuilder {
     }
     
     public Display build() {
-        return ValueFactory.newVDouble(null, null, null, null, null, lowerDisplayLimit,
+        return ValueFactory.newDisplay(lowerDisplayLimit,
                 lowerAlarmLimit, lowerWarningLimit, units, format, upperWarningLimit,
                 upperAlarmLimit, upperDisplayLimit, lowerCtrlLimit, upperCtrlLimit);
     }

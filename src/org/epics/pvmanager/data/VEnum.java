@@ -13,7 +13,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VEnum extends Scalar<String>, Enum, Alarm, Time {
+public interface VEnum extends Scalar<String>, Enum, Alarm, Time, VType {
 
     /**
      * Return the index of the value in the list of labels.

@@ -6,7 +6,7 @@ package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
 import java.util.List;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * Immutable VMultiDouble implementation.
@@ -19,11 +19,11 @@ class IVMultiDouble extends IVNumeric implements VMultiDouble {
 
     IVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
             AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
+            Timestamp timestamp, Integer timeUserTag, boolean timeValid, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        super(alarmSeverity, alarmStatus, timeStamp, timeUserTag, timeValid, lowerDisplayLimit, lowerCtrlLimit,
+        super(alarmSeverity, alarmStatus, timestamp, timeUserTag, timeValid, lowerDisplayLimit, lowerCtrlLimit,
                 lowerAlarmLimit, lowerWarningLimit, units, format, upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
         this.values = values;
     }

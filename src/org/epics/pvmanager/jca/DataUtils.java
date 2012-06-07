@@ -61,7 +61,7 @@ class DataUtils {
      * of seconds for 20 years, 5 of which leap years. It does _not_ count the
      * number of leap seconds (which should have been 15).
      */
-    private static long TS_EPOCH_SEC_PAST_1970=631152000; //7305*86400;
+    static long TS_EPOCH_SEC_PAST_1970=631152000; //7305*86400;
 
     /**
      * Converts a JCA timestamp to a pvmanager timestamp.
@@ -71,6 +71,19 @@ class DataUtils {
      */
     static org.epics.pvmanager.util.TimeStamp fromEpics(gov.aps.jca.dbr.TimeStamp epicsTimeStamp) {
         return org.epics.pvmanager.util.TimeStamp.time(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, (int) epicsTimeStamp.nsec());
+    }
+    
+    /**
+     * Converts a JCA timestamp to an epics.util timestamp.
+     * 
+     * @param epicsTimeStamp the epics timestamp
+     * @return a new epics.util timestamp
+     */
+    static org.epics.util.time.Timestamp timestampOf(gov.aps.jca.dbr.TimeStamp epicsTimeStamp) {
+        if (epicsTimeStamp == null)
+            return null;
+        
+        return org.epics.util.time.Timestamp.of(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, (int) epicsTimeStamp.nsec());
     }
 
     /**

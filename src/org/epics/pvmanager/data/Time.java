@@ -5,6 +5,7 @@
 package org.epics.pvmanager.data;
 
 import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * Time information.
@@ -15,13 +16,25 @@ public interface Time {
 
     /**
      * The timestamp of the value, typically indicating when it was
-     * generated. Never null. If never connected, it returns the
+     * generated. If never connected, it returns the
+     * time when it was last determined that no connection was made.
+     * 
+     * @deprecated the use of {@link TimeStamp} is being discontinued in favor
+     * of {@link Timestamp}: use {@link #getTimestamp() } instead
+     * @return the timestamp
+     */
+    @Deprecated
+    TimeStamp getTimeStamp();
+    
+    /**
+     * The timestamp of the value, typically indicating when it was
+     * generated. If never connected, it returns the
      * time when it was last determined that no connection was made.
      * 
      * @return the timestamp
      */
-    TimeStamp getTimeStamp();
-
+    Timestamp getTimestamp();
+    
     /**
      * Returns a user defined tag, that can be used to store extra
      * time information, such as beam shot.

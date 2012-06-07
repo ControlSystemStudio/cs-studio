@@ -4,12 +4,17 @@
  */
 package org.epics.pvmanager.data;
 
+import org.epics.util.array.ListShort;
+
 /**
  * Short array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */
-public interface VShortArray extends Array<Integer>, Alarm, Time, Display {
+public interface VShortArray extends Array<Integer>, VNumberArray, VType {
     @Override
     short[] getArray();
+    
+    @Override
+    ListShort getData();
 }

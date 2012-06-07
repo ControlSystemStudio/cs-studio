@@ -11,8 +11,10 @@ import org.epics.pvmanager.DataSource;
  *
  * @author carcassi
  */
+@Deprecated
 public class JCASupport {
 
+    @Deprecated
     public static DataSource jca() {
         return JCADataSource.INSTANCE;
     }

@@ -95,8 +95,8 @@ public class Executors {
             Thread t = new Thread(group, r,
                                   namePrefix + threadNumber.getAndIncrement(),
                                   0);
-            if (t.isDaemon())
-                t.setDaemon(false);
+            if (!t.isDaemon())
+                t.setDaemon(true);
             if (t.getPriority() != Thread.NORM_PRIORITY)
                 t.setPriority(Thread.NORM_PRIORITY);
             return t;

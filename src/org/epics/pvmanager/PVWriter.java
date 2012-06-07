@@ -7,7 +7,7 @@ package org.epics.pvmanager;
 /**
  * An object representing a writable PV. The write payload is specified by the generic type,
  * and is changed is returned by {@link #write(java.lang.Object)}. Changes in
- * values are notified through the {@link PVValueChangeListener}. Listeners
+ * values are notified through the {@link PVWriterListener}. Listeners
  * can be registered from any thread. The value can only be accessed on the
  * thread on which the listeners is called.
  *

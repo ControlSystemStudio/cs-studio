@@ -10,6 +10,7 @@ package org.epics.pvmanager.util;
  *
  * @author carcassi
  */
+@Deprecated
 public class TimeInterval {
 
     private final TimeStamp start;

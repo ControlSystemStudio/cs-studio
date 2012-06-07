@@ -47,7 +47,7 @@ public abstract class DataSource {
     }
 
     // Keeps track of the currently created channels
-    private Map<String, ChannelHandler<?>> usedChannels = new ConcurrentHashMap<String, ChannelHandler<?>>();
+    private Map<String, ChannelHandler> usedChannels = new ConcurrentHashMap<String, ChannelHandler>();
 
     /**
      * Returns a channel from the given name, either cached or it
@@ -56,8 +56,8 @@ public abstract class DataSource {
      * @param channelName name of a channel
      * @return a new or cached handler
      */
-    ChannelHandler<?> channel(String channelName) {
-        ChannelHandler<?> channel = usedChannels.get(channelName);
+    ChannelHandler channel(String channelName) {
+        ChannelHandler channel = usedChannels.get(channelName);
         if (channel == null) {
             channel = createChannel(channelName);
             if (channel == null)
@@ -74,7 +74,7 @@ public abstract class DataSource {
      * @param channelName the name for a new channel
      * @return a new handler
      */
-    protected abstract ChannelHandler<?> createChannel(String channelName);
+    protected abstract ChannelHandler createChannel(String channelName);
 
     // The executor used by the data source to perform asynchronous operations,
     // such as connections and writes. I am current using a single thread for
@@ -100,7 +100,7 @@ public abstract class DataSource {
             final Collector<?> collector = collEntry.getKey();
             for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
                 String channelName = entry.getKey();
-                final ChannelHandler<?> channelHandler = channel(channelName);
+                final ChannelHandler channelHandler = channel(channelName);
                 if (channelHandler == null)
                     throw new ReadFailException();
                 final ValueCache cache = entry.getValue();
@@ -137,7 +137,7 @@ public abstract class DataSource {
             Collector<?> collector = collEntry.getKey();
             for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
                 String channelName = entry.getKey();
-                ChannelHandler<?> channelHandler = usedChannels.get(channelName);
+                ChannelHandler channelHandler = usedChannels.get(channelName);
                 if (channelHandler == null) {
                     log.log(Level.WARNING, "Channel {0} should have been connected, but is not found during disconnection. Ignoring it.", channelName);
                 }
@@ -234,7 +234,7 @@ public abstract class DataSource {
         
         final WritePlanner planner = new WritePlanner();
         for (Map.Entry<String, WriteCache<?>> entry : writeBuffer.getWriteCaches().entrySet()) {
-            ChannelHandler<?> channel = channel(entry.getKey());
+            ChannelHandler channel = channel(entry.getKey());
             planner.addChannel(channel, entry.getValue().getValue(), entry.getValue().getPrecedingChannels());
         }
 
@@ -274,7 +274,7 @@ public abstract class DataSource {
      * 
      * @return an unmodifiable collection
      */
-    public Map<String, ChannelHandler<?>> getChannels() {
+    public Map<String, ChannelHandler> getChannels() {
         return Collections.unmodifiableMap(usedChannels);
     }
 
