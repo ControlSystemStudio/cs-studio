@@ -8,6 +8,7 @@
 package org.csstudio.apputil.args;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /** Argument parser.
  *  <p>
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  *  final String args[] =
  *          (String []) context.getArguments().get("application.args");
  *  </pre>
- *  
+ *
  *  @see BooleanOption
  *  @see IntegerOption
  *  @see StringOption
@@ -31,22 +32,25 @@ public class ArgParser
 {
     /** Allow extra params or consider that an error? */
     final private boolean allow_extra_parameters;
-    
+
     /** All the allowed options */
-    final private ArrayList<Option> options = new ArrayList<Option>();
-    
+    final private List<Option> options = new ArrayList<Option>();
+
+    /** Options that are allowed, but not displayed in the help */
+    final private List<Option> ignored_options = new ArrayList<Option>();
+
     /** Extra parameters, non-options */
-    final private ArrayList<String> extra = new ArrayList<String>();
-    
+    final private List<String> extra = new ArrayList<String>();
+
     /** Initialize, allowing only registered Options */
     public ArgParser()
     {
         this(false);
     }
-    
+
     /** Initialize Parser.
      *  Next step is to add <code>Option</code>s.
-     *  
+     *
      *  @param allow_extra_parameters Allow extra parameters, or is
      *         any argument that does not match a registered Option
      *         an error?
@@ -59,7 +63,7 @@ public class ArgParser
     }
 
     /** Add options handled by Eclipse
-     * 
+     *
      *  <p>This adds the "pluginCustomization" and "data"
      *  options.
      *  The code that calls the parser will not use them,
@@ -75,14 +79,21 @@ public class ArgParser
         new StringOption(this, "-data",
         		"/home/fred/Workspace",
         		"Eclipse workspace location", null);
-        // NOTE:
         // On OS X, the application will have a file
         // WhateverAppName.app/Contents/Info.plist
         // that includes a default option "-showlocation",
         // which the parser will see but not understand.
-        // Solution for now: Remove that from Info.plist
+        ignore(new BooleanOption(this, "-showlocation", "Show location in window title"));
+        // Option used by command-line tools to suppress the launcher's error GUI
+        ignore(new BooleanOption(this, "--launcher.suppressErrors", "Suppress launcher's error dialog"));
     }
-    
+
+    /** Add an option that is allowed, but not displayed in the help */
+    public void ignore(final Option option)
+    {
+        ignored_options.add(option);
+    }
+
     /** Parse given list of arguments.
      *  <p>
      *  All arguments that start with "-" with be checked against the
@@ -131,6 +142,8 @@ public class ArgParser
         buf.append("Options:\n");
         for (Option option : options)
         {
+            if (ignored_options.contains(option))
+                continue;
             buf.append(String.format("  %-30s: %s\n",
                                      option.getOption() + " " + option.getArgument(),
                                      option.getInfo()));
