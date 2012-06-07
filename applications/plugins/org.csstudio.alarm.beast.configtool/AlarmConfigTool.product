@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AlarmConfigTool" id="org.csstudio.alarm.beast.configtool.product" application="org.csstudio.alarm.beast.configtool.application" version="3.1.0" useFeatures="false" includeLaunchers="true">
+<product name="AlarmConfigTool" id="org.csstudio.alarm.beast.configtool.product" application="org.csstudio.alarm.beast.configtool.application" version="3.1.2" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
