@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author carcassi
  */
-public interface VExtendedAlarm {
+public interface VExtendedAlarm extends VType {
     
     /**
      * A single alarm condition that can be on or off.

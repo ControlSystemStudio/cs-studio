@@ -95,7 +95,6 @@ public abstract class TypeSupport<T> {
      * 
      * @param type type to check support for
      * @param typeSupportFamily the family in which to look for
-     * @param typeSupportFamily
      * @return true if supported
      * @throws RuntimeException if multiple conflicting support is found 
      */

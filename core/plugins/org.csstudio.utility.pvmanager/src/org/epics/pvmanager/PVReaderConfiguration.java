@@ -7,7 +7,7 @@ package org.epics.pvmanager;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import java.util.concurrent.Executor;
 import org.epics.pvmanager.util.Executors;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * An expression used to set the final parameters on how the pv expression
@@ -41,6 +41,20 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         super.timeout(timeout, timeoutMessage);
         return this;
     }
+
+    @Override
+    @Deprecated
+    public PVReaderConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout) {
+        super.timeout(timeout);
+        return this;
+    }
+
+    @Override
+    @Deprecated
+    public PVReaderConfiguration<T> timeout(org.epics.pvmanager.util.TimeDuration timeout, String timeoutMessage) {
+        super.timeout(timeout, timeoutMessage);
+        return this;
+    }
     
     
     
@@ -70,19 +84,19 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         this.exceptionHandler = ExceptionHandler.safeHandler(exceptionHandler);
         return this;
     }
-
+    
     /**
      * Sets the rate of scan of the expression and creates the actual {@link PVReader}
      * object that can be monitored through listeners.
      * 
-     * @param period the minimum time distance (i.e. the maximum rate) at which notifications should be sent
+     * @param period the minimum time distance (i.e. the maximum rate) between two different notifications
      * @return the PVReader
      */
-    public PVReader<T> every(TimeDuration period) {
+    public PVReader<T> maxRate(TimeDuration rate) {
         //int scanPeriodMs = (int) (period.getNanoSec() / 1000000);
         
-        if (period.getNanoSec() < 5000000) {
-            throw new IllegalArgumentException("Current implementation limits the rate to >5ms or <200Hz (requested " + (period.getNanoSec() / 1000000) + "ms)");
+        if (rate.getSec() < 0 && rate.getNanoSec() < 5000000) {
+            throw new IllegalArgumentException("Current implementation limits the rate to >5ms or <200Hz (requested " + rate + "s)");
         }
 
         checkDataSourceAndThreadSwitch();
@@ -97,7 +111,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         }
         Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
         Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(), notificationExecutor, dataRecipe.getExceptionHandler());
-        notifier.startScan(period);
+        notifier.startScan(rate);
         if (timeout != null) {
             if (timeoutMessage == null)
                 timeoutMessage = "Read timeout";
@@ -111,5 +125,17 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
         PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);
         notifier.setPvRecipe(recipe);
         return pv;
+    }
+
+    /**
+     * Sets the rate of scan of the expression and creates the actual {@link PVReader}
+     * object that can be monitored through listeners.
+     * 
+     * @param period the minimum time distance (i.e. the maximum rate) at which notifications should be sent
+     * @return the PVReader
+     */
+    @Deprecated
+    public PVReader<T> every(org.epics.pvmanager.util.TimeDuration period) {
+        return maxRate(org.epics.pvmanager.util.TimeDuration.asTimeDuration(period));
     }
 }

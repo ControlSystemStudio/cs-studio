@@ -46,7 +46,7 @@ public class DataSourceContentProvider implements IStructuredContentProvider {
 	}
 	
 	private void addChannels(List<DataSourceChannel> channels, String dataSourceName, DataSource dataSource) {
-		for (ChannelHandler<?> channelHandler : dataSource.getChannels().values()) {
+		for (ChannelHandler channelHandler : dataSource.getChannels().values()) {
 			channels.add(new DataSourceChannel(dataSourceName, channelHandler));
 		}
 	}

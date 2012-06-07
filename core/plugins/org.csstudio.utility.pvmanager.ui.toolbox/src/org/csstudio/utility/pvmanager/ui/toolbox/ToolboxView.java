@@ -233,7 +233,7 @@ public class ToolboxView extends ViewPart {
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
 				int count = 0;
-				for (ChannelHandler<?> channel : source.getChannels().values()) {
+				for (ChannelHandler channel : source.getChannels().values()) {
 					if (channel.isConnected())
 						count++;
 				}
@@ -253,7 +253,7 @@ public class ToolboxView extends ViewPart {
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
 				int count = 0;
-				for (ChannelHandler<?> channel : source.getChannels().values()) {
+				for (ChannelHandler channel : source.getChannels().values()) {
 					count += channel.getUsageCounter();
 				}
 				cell.setText(Integer.toString(count));
@@ -272,7 +272,7 @@ public class ToolboxView extends ViewPart {
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
 				int count = 0;
-				for (ChannelHandler<?> channel : source.getChannels().values()) {
+				for (ChannelHandler channel : source.getChannels().values()) {
 					count += channel.getReadUsageCounter();
 				}
 				cell.setText(Integer.toString(count));
@@ -291,7 +291,7 @@ public class ToolboxView extends ViewPart {
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
 				int count = 0;
-				for (ChannelHandler<?> channel : source.getChannels().values()) {
+				for (ChannelHandler channel : source.getChannels().values()) {
 					count += channel.getWriteUsageCounter();
 				}
 				cell.setText(Integer.toString(count));

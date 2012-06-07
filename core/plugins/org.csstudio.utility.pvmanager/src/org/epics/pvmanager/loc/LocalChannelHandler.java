@@ -4,22 +4,19 @@
  */
 package org.epics.pvmanager.loc;
 
-import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.Collector;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.ValueCache;
+import org.epics.pvmanager.*;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
-import org.epics.pvmanager.data.ValueFactory;
 import org.epics.pvmanager.util.TimeStamp;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Implementation for channels of a {@link LocalDataSource}.
  *
  * @author carcassi
  */
-class LocalChannelHandler extends ChannelHandler<Object> {
+class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     
     private final Object initialValue;
 
@@ -34,13 +31,14 @@ class LocalChannelHandler extends ChannelHandler<Object> {
     }
 
     @Override
-    public void connect(ExceptionHandler handler) {
+    public void connect() {
+        processConnection(new Object());
         if (initialValue != null)
-            processValue(initialValue);
+            processMessage(initialValue);
     }
 
     @Override
-    public void disconnect(ExceptionHandler handler) {
+    public void disconnect() {
         // Nothing to be done
     }
 
@@ -71,12 +69,11 @@ class LocalChannelHandler extends ChannelHandler<Object> {
     private Object wrapValue(Object value) {
         if (value instanceof Number) {
             // Special support for numbers
-            return ValueFactory.newVDouble(((Number) value).doubleValue(),
-                    AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null, null, null,
-                    null, null, null, null, null, null, null, null);
+            return newVDouble(((Number) value).doubleValue(), alarmNone(), newTime(Timestamp.now()),
+                    displayNone());
         } else if (value instanceof String) {
             // Special support for strings
-            return ValueFactory.newVString(((String) value),
+            return newVString(((String) value),
                     AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null);
         }
         return value;
@@ -86,20 +83,11 @@ class LocalChannelHandler extends ChannelHandler<Object> {
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
             newValue = wrapValue(newValue);
-            processValue(newValue);
+            processMessage(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
             callback.channelWritten(ex);
         }
-    }
-
-    @Override
-    public boolean updateCache(Object event, ValueCache<?> cache) {
-        Object oldValue = cache.getValue();
-        cache.setValue(event);
-        if ((event == oldValue) || (event != null && event.equals(oldValue)))
-            return false;
-        return true;
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * Object responsible to notify the PVReader of changes on the appropriate thread.
@@ -150,7 +150,7 @@ class Notifier<T> {
                     stopScan();
                 }
             }
-        }, 0, duration.getNanoSec(), TimeUnit.NANOSECONDS);
+        }, 0, duration.toNanosLong(), TimeUnit.NANOSECONDS);
     }
     
     void timeout(TimeDuration timeout, final String timeoutMessage) {
@@ -163,7 +163,7 @@ class Notifier<T> {
                     exceptionHandler.handleException(new TimeoutException(timeoutMessage));
                 }
             }
-        }, timeout.getNanoSec(), TimeUnit.NANOSECONDS);
+        }, timeout.toNanosLong(), TimeUnit.NANOSECONDS);
     }
     
     void stopScan() {

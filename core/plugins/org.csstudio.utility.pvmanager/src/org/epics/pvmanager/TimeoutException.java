@@ -12,7 +12,7 @@ package org.epics.pvmanager;
  */
 public class TimeoutException extends RuntimeException {
 
-    public TimeoutException(String message) {
+    TimeoutException(String message) {
         super(message);
     }
     

@@ -8,7 +8,7 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VStringArray extends Array<String>, Alarm, Time {
+public interface VStringArray extends Array<String>, Alarm, Time, VType {
     @Override
     String[] getArray();
 }
