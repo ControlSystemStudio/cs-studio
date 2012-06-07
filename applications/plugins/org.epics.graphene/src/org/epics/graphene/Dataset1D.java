@@ -4,17 +4,19 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.array.CollectionNumber;
+
 /**
  *
  * @author carcassi
  */
 public interface Dataset1D {
     
-    public IteratorDouble getValues();
+    public CollectionNumber getValues();
     
-    public double getMinValue();
+    public Number getMinValue();
     
-    public double getMaxValue();
+    public Number getMaxValue();
     
     public void update(Dataset1DUpdate update);
 }

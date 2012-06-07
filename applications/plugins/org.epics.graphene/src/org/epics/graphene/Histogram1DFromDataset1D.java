@@ -4,6 +4,9 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.array.IteratorDouble;
+import org.epics.util.array.IteratorNumber;
+
 /**
  *
  * @author carcassi
@@ -79,15 +82,15 @@ class Histogram1DFromDataset1D implements Histogram1D {
     }
     
     public void setDataset(Dataset1D dataset) {
-        IteratorDouble values = dataset.getValues();
+        IteratorNumber values = dataset.getValues().iterator();
         if (autoValueRange) {
-            this.minValueRange = dataset.getMinValue();
-            this.maxValueRange = dataset.getMaxValue();
+            this.minValueRange = dataset.getMinValue().doubleValue();
+            this.maxValueRange = dataset.getMaxValue().doubleValue();
             binValueBoundary = RangeUtil.createBins(minValueRange, maxValueRange, nBins);
         }
         binCount = new int[nBins];
         while (values.hasNext()) {
-            addValueToBin(values.next());
+            addValueToBin(values.nextDouble());
         }
 
         autoBinRange();
