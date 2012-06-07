@@ -42,7 +42,7 @@ public class ArchiveLocationUnitTest {
 
     @Test
     public void testPathAssembly() throws DataPathNotFoundException {
-        final ArchiveLocation al = new ArchiveLocation(SDDS_LOCATION, true);
+        final ArchiveLocation al = new ArchiveLocation(SDDS_LOCATION);
         final long _1995_2_15 = new DateTime(0L).plusYears(25).plusMonths(1).plusDays(14).getMillis();
         final long _2000_8_5 = new DateTime(0L).plusYears(30).plusMonths(7).plusDays(4).getMillis();
 
@@ -56,7 +56,7 @@ public class ArchiveLocationUnitTest {
 
     @Test
     public void testCornerCases() throws DataPathNotFoundException {
-        final ArchiveLocation al = new ArchiveLocation(SDDS_LOCATION, true);
+        final ArchiveLocation al = new ArchiveLocation(SDDS_LOCATION);
         String[] allPaths = al.getAllPaths(0, 0);
         Assert.assertTrue(allPaths.length == 0);
 
