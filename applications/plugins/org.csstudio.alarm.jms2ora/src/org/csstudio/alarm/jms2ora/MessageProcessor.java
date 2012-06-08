@@ -181,8 +181,24 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         LOG.info("Started " + VersionInfo.getAll());
         LOG.info("Waiting for messages...");
 
-        while(running) {
+        // First look for stored messages on disk
+        Vector<ArchiveMessage> old = persistenceService.readMessagesFromFile();
+        if (old.size() > 0) {
+            LOG.info("I've found some messages on disk.");
+            success = writerService.writeMessage(old);
+            if (!success) {
+                LOG.warn("Could not store the message into the database. Try to re-write message(s) on disk.");
+                int result = persistenceService.writeMessages(old);
+                if (result == old.size()) {
+                    LOG.info("OK, messages written.");
+                } else {
+                    LOG.error("ERROR, ERROR, ERROR");
+                }
+            }
+        }
 
+        while(running) {
+            
             final LocalTime now = new LocalTime();
 
             if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
@@ -193,7 +209,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 success = writerService.writeMessage(storeMe);
                 if(!success) {
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    LOG.warn("Could not store the message in the database. Try to write message(s) on disk.");
+                    LOG.warn("Could not store the message into the database. Try to write message(s) on disk.");
                     int result = persistenceService.writeMessages(storeMe);
                     if (result == number) {
                         collector.addStoredMessages(number);
