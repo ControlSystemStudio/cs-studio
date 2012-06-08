@@ -13,6 +13,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.csstudio.apputil.time.PeriodFormat;
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.config.EngineConfig;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -27,7 +28,7 @@ public class XMLImport extends DefaultHandler
 {
     /** XML tag */
     final static String TAG_ENGINECONFIG = "engineconfig";
-    
+
     /** XML tag */
     final private static String TAG_GROUP = "group";
 
@@ -54,13 +55,13 @@ public class XMLImport extends DefaultHandler
 
     /** Replace existing engine configuration? */
     final private boolean replace;
-    
+
     /** Steal channels that currently belong to a different engine? */
     final private boolean steal_channels;
 
     /** Connection to RDB archive */
     final private RDBArchiveConfig config;
-    
+
     /** Accumulator for characters within a tag */
     final private StringBuffer accumulator = new StringBuffer();
 
@@ -69,7 +70,7 @@ public class XMLImport extends DefaultHandler
     {
         /** Looking for the initial element */
         NEED_FIRST_ELEMENT,
-    	
+
     	/** Reading all the initial parameters */
         PREAMBLE,
 
@@ -100,10 +101,10 @@ public class XMLImport extends DefaultHandler
 
     /** Engine */
     private EngineConfig engine;
-    
+
     /** Current archive group */
     private RDBGroupConfig group;
-    
+
     /** Initialize
      *  @param rdb_url
      *  @param rdb_user
@@ -127,7 +128,7 @@ public class XMLImport extends DefaultHandler
 	 *  @param engine_name
 	 *  @param description
 	 *  @param engine_url
-	 *  @throws Exception 
+	 *  @throws Exception
 	 */
     public void parse(final InputStream stream, final String engine_name, final String description,
 			final String engine_url) throws Exception, XMLImportException
@@ -214,10 +215,10 @@ public class XMLImport extends DefaultHandler
                     System.out.println("Import '" + engine.getName()
                             + "', Group '" + name + "'");
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
                     throw new SAXException("Error adding group " + name + " :"
-                            + e.getMessage());
+                            + ex.getMessage(), ex);
                 }
                 name = null;
             }
@@ -229,7 +230,18 @@ public class XMLImport extends DefaultHandler
         else if (element.equals(TAG_PERIOD))
         {
             checkStateForTag(State.CHANNEL, element);
-            period = PeriodFormat.parseSeconds(accumulator.toString());
+            final String time_spec = accumulator.toString().trim();
+            try
+            {
+                if (time_spec.contains(":"))
+                    period = SecondsParser.parseSeconds(time_spec);
+                else
+                    period = PeriodFormat.parseSeconds(accumulator.toString());
+            }
+            catch (Exception ex)
+            {
+                throw new SAXException("Invalid 'period' for channel " + name, ex);
+            }
         }
         else if (element.equals(TAG_MONITOR))
         {
@@ -244,7 +256,7 @@ public class XMLImport extends DefaultHandler
                 }
                 catch (NumberFormatException ex)
                 {
-                    throw new SAXException("Invalid monitor 'delta' for channel " + name);
+                    throw new SAXException("Invalid monitor 'delta' for channel " + name, ex);
                 }
             }
             monitor = true;
@@ -326,7 +338,7 @@ public class XMLImport extends DefaultHandler
         }
         // else: Ignore the unknown element
     }
-    
+
     /** Check if we are in the correct state
      *  @param expected Expected state
      *  @param tag Current tag
