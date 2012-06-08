@@ -583,7 +583,7 @@
     <extension
           point="org.eclipse.ui.popupMenus">
        <objectContribution
-             adaptable="true"
+             adaptable="false"
              id="Contribs.OpenDefaultDisplayAction"
              objectClass="org.csstudio.platform.model.IProcessVariable">
           <menu

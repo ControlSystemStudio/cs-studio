@@ -114,17 +114,6 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
      */
     public MessageProcessor(long sleepingTime, int storageWaitTime) throws ServiceNotAvailableException {
 
-        collector = new StatisticCollector();
-        messageConverter = new MessageConverter(this, collector);
-        
-        timeBetweenStorage = storageWaitTime;
-        msgProcessorSleepingTime = sleepingTime;
-        
-        nextStorageTime = new LocalTime();
-        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
-
-        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
-
         try {
             writerService = Jms2OraActivator.getDefault().getMessageWriterService();
             if (writerService.isServiceReady()) {
@@ -137,13 +126,25 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             LOG.error(e.getMessage());
             throw new ServiceNotAvailableException("Database writer service not available: " + e.getMessage());
         }
-
+        
         try {
             persistenceService = Jms2OraActivator.getDefault().getPersistenceWriterService();
         } catch (final OsgiServiceUnavailableException e) {
             LOG.error(e.getMessage());
             throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
         }
+        
+        collector = new StatisticCollector();
+        messageConverter = new MessageConverter(this, collector);
+        
+        timeBetweenStorage = storageWaitTime;
+        msgProcessorSleepingTime = sleepingTime;
+        
+        nextStorageTime = new LocalTime();
+        nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
+
+        archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
+
 
         running = true;
         stoppedClean = false;
@@ -180,22 +181,45 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
         LOG.info("Started " + VersionInfo.getAll());
         LOG.info("Waiting for messages...");
 
-        while(running) {
+        // First look for stored messages on disk
+        Vector<ArchiveMessage> old = persistenceService.readMessagesFromFile();
+        if (old.size() > 0) {
+            LOG.info("I've found some messages on disk.");
+            success = writerService.writeMessage(old);
+            if (!success) {
+                LOG.warn("Could not store the message into the database. Try to re-write message(s) on disk.");
+                int result = persistenceService.writeMessages(old);
+                if (result == old.size()) {
+                    LOG.info("OK, messages written.");
+                } else {
+                    LOG.error("ERROR, ERROR, ERROR");
+                }
+            }
+        }
 
+        while(running) {
+            
             final LocalTime now = new LocalTime();
 
             if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
 
                 storeMe = this.getMessagesToArchive();
-
+                int number = storeMe.size();
+                
                 success = writerService.writeMessage(storeMe);
                 if(!success) {
                     // Store the message in a file, if it was not possible to write it to the DB.
-                    persistenceService.writeMessages(storeMe);
-                    LOG.warn("Could not store the message in the database. Message is written on disk.");
+                    LOG.warn("Could not store the message into the database. Try to write message(s) on disk.");
+                    int result = persistenceService.writeMessages(storeMe);
+                    if (result == number) {
+                        collector.addStoredMessages(number);
+                    } else {
+                        LOG.error("Could not store the message on disk.");
+                    }
+                } else {
+                    collector.addStoredMessages(number);
                 }
                 
-                collector.addStoredMessages(storeMe.size());
                 storeMe.clear();
                 storeMe = null;
                 

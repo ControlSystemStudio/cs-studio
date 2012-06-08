@@ -33,8 +33,6 @@ import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 19.12.2011
