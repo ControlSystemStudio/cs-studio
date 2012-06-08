@@ -25,7 +25,6 @@
 package org.csstudio.alarm.jms2ora.service.persistence;
 
 import java.util.Vector;
-
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
 
@@ -89,5 +88,13 @@ public class MessageFilePersistenceService implements IPersistenceHandler {
     @Override
     public ArchiveMessage readMessageContent(final String name) {
         return fileHandler.readMessageContent(name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Vector<ArchiveMessage> readMessagesFromFile() {
+        return fileHandler.readMessagesFromFile();
     }
 }
