@@ -25,7 +25,6 @@
 package org.csstudio.alarm.jms2ora.service;
 
 import java.util.Vector;
-
 import javax.annotation.Nonnull;
 
 /**
@@ -71,4 +70,11 @@ public interface IPersistenceHandler {
      */
     @Nonnull
     ArchiveMessage readMessageContent(@Nonnull String name);
+    
+    /**
+     * Reads all serialized messages
+     * 
+     * @return The collection containing all read messages.
+     */
+    Vector<ArchiveMessage> readMessagesFromFile();
 }
