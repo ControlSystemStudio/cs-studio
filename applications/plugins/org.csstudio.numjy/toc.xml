@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="NumJy" topic="doc/numjy.html">
+    <topic label="Overview" href="doc/numjy.html"/>
+    <topic label="Basics" href="doc/numjy.html#basics">
+        <topic label="Import" href="doc/numjy.html#import"/>
+        <topic label="Data Types" href="doc/numjy.html#data_types"/>
+        <topic label="Creating Arrays" href="doc/numjy.html#create_arrays"/>
+        <topic label="Reshaping Arrays" href="doc/numjy.html#reshaping"/>
+        <topic label="Indexing" href="doc/numjy.html#indexing"/>
+        <topic label="Views" href="doc/numjy.html#views"/>
+        <topic label="Slicing" href="doc/numjy.html#slicing"/>
+    </topic>
+    <topic label="Math Support" href="doc/numjy.html#math">
+        <topic label="Broadcasting" href="doc/numjy.html#broadcasting"/>
+        <topic label="Operators" href="doc/numjy.html#operators"/>
+        <topic label="Functions" href="doc/numjy.html#functions"/>
+        <topic label="Matrix Operations" href="doc/numjy.html#mat_ops"/>
+    </topic>
+</toc>

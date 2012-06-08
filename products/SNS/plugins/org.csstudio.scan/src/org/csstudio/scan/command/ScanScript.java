@@ -9,7 +9,7 @@ package org.csstudio.scan.command;
 
 /** Base for Jython scripts that are executed by {@link ScriptCommand}
  *
- *  TODO Document 'naming standard' for file and class names
+ *  Example:
  *  <pre>
  *  class MyScript(ScanScript):
  *      def getDeviceNames(self):
@@ -20,12 +20,27 @@ package org.csstudio.scan.command;
  *       context.write("result1", x[0])
  *       context.write("result2", y[0])
  *  </pre>
+ *
+ *  <p>Script that defines class <code>MyScript</code> must
+ *  be stored in file named <code>myscript.py</code>,
+ *  i.e. using lower case version of the class name.
+ *
+ *  <p>All script classes must derive from {@link ScanScript}.
  *  @author Kay Kasemir
  */
 public class ScanScript
 {
-    /** List device names to which the scan should connect,
-     *  allowing the script to then 'write' to them.
+    /** Scan scripts that intend to access devices
+     *  need to list their names.
+     *  This allows the scan system to connect to the
+     *  required devices before starting the scan.
+     *
+     *  <p>The default implementation returns an
+     *  empty list, meaning that the script cannot
+     *  access any 'live' devices.
+     *  Only data that the scan has logged by the time
+     *  when the script is invoked will be available.
+     *
      *  @return Device (alias) names used by the script
      */
     public String[] getDeviceNames()
@@ -33,7 +48,8 @@ public class ScanScript
         return new String[0];
     }
 
-	/** Will be invoked by scan server to execute the script
+	/** The <code>run</code> is invoked by the scan server
+	 *  to execute the script
 	 *  @param context Access to logged data, devices, ...
 	 */
 	public void run(final ScriptCommandContext context)

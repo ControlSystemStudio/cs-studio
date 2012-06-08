@@ -2,36 +2,38 @@ from org.csstudio.scan.command import ScanScript
 from math import sqrt, exp
 import sys
 
+from numjy import *
+
 class FindPeak(ScanScript):
     def getDeviceNames(self):
         return [ "fit_center" ]
     
-    def gaussian(self, center, max, width, x):
-        return max*exp(-(x-center)**2/(2*width**2))
-    
     def run(self, context):
-        print "Running FindPeak.run!"
-        print sys.path
         
-        [x, y] = context.getData("xpos", "signal")
+        # TODO Create Jython wrapper for Java ScanScript so that
+        #      context.getData right away returns ndarray?
+        data = array(context.getData("xpos", "signal"))
+        x = data[0]
+        y = data[1]
         
         # Determine centroid
-        # center = sum( x[i]*y[i] ) / sum(y)
-        sum_xy = sum([i*j for i, j in zip(x, y)])
-        sum_y = sum(y)
-        center = sum_xy / sum_y
-
+        center = sum(x * y) / sum(y)
+        print "Center: ", center
+        
         m = max(y)
         print "Max: ", m
         
-        # width = sqrt( abs(sum((center-x)**2*y)/sum_y) )
-        
-        sum_width = sum([ (center-i)**2 * j for i, j in zip(x, y) ])
-        width = sqrt( abs(sum_width) )
+        width = sqrt( abs(sum((center-x)**2*y)/sum(y)) )
         print "Width: ", width
-
-        for i in x:
-            print i, self.gaussian(center, m, width, i)
         
-        # TODO: Set PVs with result
+        fit = m*exp(-(x-center)**2/(2*width**2))
+        print fit
+        
+        # Put 'fit' into context
+        context.logData("fit", fit.nda)
+        
+        # Set PVs with result
         context.write("fit_center", center)
+        
+        # TODO Send signal to plot [x, y], [x, fit]
+

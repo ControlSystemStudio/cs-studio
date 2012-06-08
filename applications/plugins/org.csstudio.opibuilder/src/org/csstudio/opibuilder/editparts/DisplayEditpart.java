@@ -49,7 +49,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 
 	private ControlListener zoomListener, scaleListener;
 	
-	private org.eclipse.swt.graphics.Point originSize;
+	private org.eclipse.swt.graphics.Point originSize, oldSize;
 	
 	@Override
 	protected void createEditPolicies() {
@@ -71,15 +71,23 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 				getWidgetModel().getDisplayScaleData().isAutoScaleWidgets()){
 			originSize = new org.eclipse.swt.graphics.Point(
 					getWidgetModel().getWidth(), getWidgetModel().getHeight());
+			oldSize=originSize;
 			scaleListener = new ControlAdapter() {
 				@Override
 				public void controlResized(ControlEvent e) {
 					if(getViewer() == null || getViewer().getControl().isDisposed())
 						return;
 					org.eclipse.swt.graphics.Point size = 
-							((FigureCanvas)getViewer().getControl()).getSize();
+							getViewer().getControl().getSize();
+					if(size.equals(oldSize))
+						return;
+					//In RAP, each revalidate will enlarge the shell by 1000, see  
+					//org.eclipse.rwt.internal.textsize.TextSizeRecalculation.enlargeShell(Shell shell)
+					if(OPIBuilderPlugin.isRAP() && (size.x - oldSize.x) == 1000 && (size.y - oldSize.y) == 1000)
+						return;
 					double widthRatio = size.x /(double)originSize.x;
 					double heightRatio = size.y/(double)originSize.y;
+					oldSize = size;
 					getWidgetModel().scale(widthRatio, heightRatio);
 //					oldSize = size;					
 				}

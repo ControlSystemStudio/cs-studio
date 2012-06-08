@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.client.AlarmConfiguration;
 import org.csstudio.alarm.beast.client.AlarmConfigurationLoader;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
@@ -33,10 +34,11 @@ public class Application implements IApplication
     private String root;
     private enum Mode
     {
-        LIST, MODIFY, IMPORT, EXPORT, CONVERT_ALH
+        LIST, MODIFY, DELETE, IMPORT, EXPORT, CONVERT_ALH
     }
     private Mode mode;
     private String filename;
+    private String path;
 
     /** Parse arguments, set member variables */
     private String checkArguments(String[] args)
@@ -62,6 +64,8 @@ public class Application implements IApplication
                 "Modify existing config with imported XML file");
         final BooleanOption do_import = new BooleanOption(parser, "-import",
                 "Import XML config file (replace existing config)");
+        final StringOption do_delete = new StringOption(parser, "-delete",
+                "Component to delete (must use full path /root/area/system/element)", "");
         final BooleanOption convert_alh = new BooleanOption(parser, "-alh",
                 "Convert ALH config into XML config file");
         final StringOption file = new StringOption(parser, "-file",
@@ -92,6 +96,13 @@ public class Application implements IApplication
         if (root.get().isEmpty())
             return "Missing configuration root name\n" + parser.getHelp();
         this.root = root.get();
+
+        if (do_delete.get().length() > 0)
+        {
+            mode = Mode.DELETE;
+            path = do_delete.get();
+            return null;
+        }
 
         if (file.get().isEmpty())
             return "Missing file name\n" + parser.getHelp();
@@ -281,6 +292,15 @@ public class Application implements IApplication
                     new AlarmConfigurationLoader(config).load(filename);
                 }
                 break;
+            case DELETE:
+                {
+                    final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
+                    if (item == null)
+                        throw new Exception("Cannot locate item with path " + path);
+                    System.out.println("Deleting existing RDB configuration for '" + path + "'");
+                    config.remove(item);
+                }
+            break;
             default:
                 throw new Exception("Unknown mode " + mode.name());
             }

@@ -17,7 +17,7 @@ import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 
 /** Context in which a {@link ScriptCommand}'s script is executed
  *
- *  <p>Script can access the scan data that has been accumulated to far,
+ *  <p>Script can access the scan data that has been collected to far,
  *  and write to devices.
  *
  *  @author Kay Kasemir
@@ -31,9 +31,12 @@ abstract public class ScriptCommandContext
 
     /** Get data for devices.
      *
-     *  <p>Data will be interpolated onto matching time stamps
-     *  via 'staircase' interpolation, holding a value
-     *  until it changes.
+     *  <p>Data will be interpolated onto matching serial numbers
+     *  via 'staircase' interpolation, holding a value until it changes.
+     *
+     *  @param devices Names of devices for which to get logged data
+     *  @return 2D array: result[0][...] has data for first device,
+     *                    result[1][...] has data for second device and so on
 	 *  @throws Exception on error
      */
     public double[][] getData(final String... devices) throws Exception
@@ -61,6 +64,27 @@ abstract public class ScriptCommandContext
     	}
     	return result;
     }
+
+    /** Add data for a device to the log.
+     *
+     *  <p>The data will typically be the result of a computation
+     *  performed in the {@link ScriptCommand}, and it is added to
+     *  the log to allow plotting or later analysis
+     *
+     *  <p>Supported data is
+     *  <ul>
+     *  <li>NDArray</li>
+     *  <li>Anything that NDArray.create(Object) can read: double[], int[], ...
+     *  </ul>
+     *
+     *  <p>The data will be logged as a flat array of samples with
+     *  serial numbers equal to the array index.
+     *
+     *  @param device Device name
+     *  @param data Data to log for the device
+     *  @throws Exception on error
+     */
+    abstract public void logData(final String device, final Object data) throws Exception;
 
     /** Write to device, waiting for readback with default tolerance and timeout
      *  @param device_name Name of device and readback
