@@ -38,6 +38,7 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.ui.IActionFilter;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -156,6 +157,8 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			}
 			DisplayModel tempDisplayModel = new DisplayModel();
 			tempDisplayModel.setOpiFilePath(path);
+			tempDisplayModel.setViewer((GraphicalViewer) getViewer());
+			tempDisplayModel.setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel,
 					getViewer().getControl().getDisplay());
