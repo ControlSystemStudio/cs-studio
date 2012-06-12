@@ -226,7 +226,7 @@ class ScanClient(object):
             sheet = SpreadsheetScanDataIterator(data, devices)
         else:
             sheet = SpreadsheetScanDataIterator(data)
-        sheet.dump(System.out)
+        sheet.printTable(System.out)
             
     def waitUntilDone(self, id=-1):
         """
