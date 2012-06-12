@@ -66,7 +66,7 @@ public class MessageHelper {
         message.put("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
         message.put("CLASS", createUniqueIdAsString());
         message.put("NAME", "AMS_SYSTEM_CHECK");
-        message.put("APPLICATION-ID", "AmsSystemMonitor");
+        message.put("APPLICATION-ID", "AmsMonitor");
         message.put("DESTINATION", type.toString());        
         message.put("USER", Environment.getInstance().getUserName());
         message.put("HOST", Environment.getInstance().getHostName());
@@ -85,7 +85,7 @@ public class MessageHelper {
         message.put("EVENTTIME", dateFormat.format(Calendar.getInstance().getTime()));
         message.put("CLASS", currentStatusEntry.getCheckId());
         message.put("NAME", "AMS_SYSTEM_CHECK");
-        message.put("APPLICATION-ID", "AmsSystemMonitor");
+        message.put("APPLICATION-ID", "AmsMonitor");
         message.put("DESTINATION", type.toString());        
         message.put("USER", Environment.getInstance().getUserName());
         message.put("HOST", Environment.getInstance().getHostName());
@@ -124,7 +124,7 @@ public class MessageHelper {
 
         if(inMessage.containsKey("APPLICATION-ID") && amsAnswer) {
             value = inMessage.getValue("APPLICATION-ID");
-            amsAnswer = (value.compareTo("AmsSystemMonitor") == 0);
+            amsAnswer = (value.compareTo("AmsMonitor") == 0);
         } else {
             amsAnswer = false;
         }
@@ -175,7 +175,7 @@ public class MessageHelper {
             if(answer.containsKey("DESTINATION") && success)
             {
                 value = answer.get("DESTINATION");
-                success = (value.compareTo("AmsSystemMonitor") == 0);
+                success = (value.compareTo("AmsMonitor") == 0);
             }
             else
             {
@@ -213,7 +213,7 @@ public class MessageHelper {
             
             if(content.containsKey("DESTINATION") && success) {
                 value = content.get("DESTINATION");
-                success = (value.compareTo("AmsSystemMonitor") == 0);
+                success = (value.compareTo("AmsMonitor") == 0);
             } else {
                 success = false;
             }
