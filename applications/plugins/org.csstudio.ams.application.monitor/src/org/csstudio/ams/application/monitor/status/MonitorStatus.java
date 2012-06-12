@@ -57,6 +57,8 @@ public class MonitorStatus implements Serializable {
     public MonitorStatus(int maxError, int maxWarn) {
         messageMemory = new MessageMemory<AbstractCheckMessage>();
         checkStatusHistory = new CheckStatusInfoHistory();
+        // Create a dummy check info
+//        checkStatusHistory.addCheckStatusInfo(new CheckStatusInfo(CheckStatus.OK, ErrorReason.UNDEFINED));
         notificationState = new NotificationState();
         maxAllowedError = maxError;
         maxAllowedWarn = maxWarn;

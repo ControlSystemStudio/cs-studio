@@ -59,8 +59,11 @@ public class AmsMonitorPreference<T> extends AbstractPreference<T> {
     public static final AmsMonitorPreference<String> JMS_CONSUMER_TOPIC_MONITOR =
             new AmsMonitorPreference<String>("jmsConsumerTopicMonitor", "T_AMS_SYSTEM_MONITOR");
 
-    public static final AmsMonitorPreference<Long> CHECK_PROCESSOR_WAIT_TIME =
-            new AmsMonitorPreference<Long>("checkProcessorWaitTime", 10L);
+    public static final AmsMonitorPreference<Long> AMS_CHECK_WAIT_TIME =
+            new AmsMonitorPreference<Long>("amsCheckWaitTime", 10L);
+
+    public static final AmsMonitorPreference<Long> DELIVERY_WORKER_CHECK_WAIT_TIME =
+            new AmsMonitorPreference<Long>("deliveryWorkerCheckWaitTime", 90L);
 
     public static final AmsMonitorPreference<Integer> MAX_ALLOWED_WORKER_ERROR =
             new AmsMonitorPreference<Integer>("maxAllowedWorkerError", 3);

@@ -66,7 +66,7 @@ public class AmsCheckProcessor extends AbstractCheckProcessor implements Message
         super(LOG, ws, subscriberName, interval);
         
         messageQueue = new Vector<AmsAnswerMessage>();
-        waitTime = AmsMonitorPreference.CHECK_PROCESSOR_WAIT_TIME.getValue();
+        waitTime = AmsMonitorPreference.AMS_CHECK_WAIT_TIME.getValue();
 
         // Assume that the wait time has to be converted to ms
         waitTime *= 1000L;

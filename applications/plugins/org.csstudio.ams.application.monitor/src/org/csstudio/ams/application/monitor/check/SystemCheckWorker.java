@@ -43,7 +43,8 @@ public class SystemCheckWorker extends Thread {
     
     private static final Logger LOG = LoggerFactory.getLogger(SystemCheckWorker.class);
     
-    private static final long MAX_THREAD_WAITTIME = 60000L;
+    // TODO: Hier darf keine Konstante stehen!!!! Das beiﬂt sich mit dem EIntrag in der Plugin customization.
+    private static final long MAX_THREAD_WAITTIME = 240000L;
     
     private ISessionService xmppService;
     
@@ -111,9 +112,11 @@ public class SystemCheckWorker extends Thread {
         
         JmsSubscriptionCleaner cleaner = null;
 
+        String monitorTopic = AmsMonitorPreference.JMS_CONSUMER_TOPIC_MONITOR.getValue();
+        
         if (amsCheckProcessor.hasBeenStarted()) {
             if (amsCheckProcessor.getCurrentCheckStatusInfo().getCheckStatus() == CheckStatus.OK) {
-                cleaner = new JmsSubscriptionCleaner();
+                cleaner = new JmsSubscriptionCleaner(monitorTopic);
                 if (cleaner.destroySubscription("AmsSystemCheck")) {
                     LOG.info("Subscription for AmsSystemCheck destroyed.");
                 }
@@ -123,7 +126,7 @@ public class SystemCheckWorker extends Thread {
         if (smsCheckProcessor.hasBeenStarted()) {
             if (smsCheckProcessor.getCurrentCheckStatusInfo().getCheckStatus() == CheckStatus.OK) {
                 if (cleaner == null) {
-                    cleaner = new JmsSubscriptionCleaner();
+                    cleaner = new JmsSubscriptionCleaner(monitorTopic);
                 }
                 if (cleaner.destroySubscription("SmsDeliveryWorkerCheck")) {
                     LOG.info("Subscription for SmsDeliveryWorkerCheck destroyed.");

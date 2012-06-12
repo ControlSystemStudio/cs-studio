@@ -57,7 +57,9 @@ public class JmsSubscriptionCleaner {
     
     private MBeanServerConnection mbsc;
     
-    public JmsSubscriptionCleaner() {
+    private String monitorTopic;
+    
+    public JmsSubscriptionCleaner(String topicName) {
         
         String jmxHost1 = AmsMonitorPreference.JMX_HOST_1.getValue();
         int jmxPort1 = AmsMonitorPreference.JMX_PORT_1.getValue();
@@ -76,6 +78,8 @@ public class JmsSubscriptionCleaner {
         if (jmxHost2.length() > 0) {
             jmsUrls[1] = "service:jmx:rmi:///jndi/rmi://" + jmxHost2 + ":" + jmxPort2 + "/jmxrmi";
         }
+        
+        monitorTopic = topicName;
     }
     
     public boolean destroySubscription(String name) {
@@ -103,7 +107,7 @@ public class JmsSubscriptionCleaner {
             mbsc = jmxc.getMBeanServerConnection();
             
             //Set<ObjectName> names = mbsc.queryNames(new ObjectName("org.apache.activemq:*,Type=Subscription,persistentMode=Durable,destinationName=" + jmsAmsTopicMonitor), null);
-            Set<ObjectName> names = mbsc.queryNames(new ObjectName("org.apache.activemq:*,Type=Subscription"), null);
+            Set<ObjectName> names = mbsc.queryNames(new ObjectName("org.apache.activemq:*,Type=Subscription,persistentMode=Durable,destinationName=" + monitorTopic), null);
             for (ObjectName on : names) {
                 LOG.debug(on.toString());
                 if (hasDestroyMethod(on) && isMonitorSubscription(on, name)) {
@@ -164,6 +168,13 @@ public class JmsSubscriptionCleaner {
             value = name.getKeyProperty("subscriptionID");
             if (value == null) {
                 value = "";
+            } else {
+                String active = name.getKeyProperty("active");
+                if (active != null) {
+                    if (active.equalsIgnoreCase("false")) {
+                        value = "";
+                    }
+                }
             }
         }
         return (value.contains(subscriptionId));

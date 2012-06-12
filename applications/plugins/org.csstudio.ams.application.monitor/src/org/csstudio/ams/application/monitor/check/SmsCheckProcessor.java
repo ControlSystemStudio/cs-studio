@@ -66,7 +66,7 @@ public class SmsCheckProcessor extends AbstractCheckProcessor implements Message
         super(LOG, ws, subscriberName, interval);
         
         messageQueue = new Vector<DeliveryWorkerAnswerMessage>();
-        waitTime = AmsMonitorPreference.CHECK_PROCESSOR_WAIT_TIME.getValue();
+        waitTime = AmsMonitorPreference.DELIVERY_WORKER_CHECK_WAIT_TIME.getValue();
 
         // Assume that the wait time has to be converted to ms
         waitTime *= 1000L;
@@ -182,7 +182,7 @@ public class SmsCheckProcessor extends AbstractCheckProcessor implements Message
     public synchronized void onMessage(Message message) {
         MapMessage mm = (MapMessage) message;
         DeliveryWorkerAnswerMessage dwam = messageConverter.convertToDeliveryWorkerAnswerMessage(mm);
-        LOG.debug("{}", dwam.toString());
+        LOG.info("{}", dwam.toString());
         if (dwam.isValid()) {
             messageQueue.add(dwam);
             LOG.info("Received message has been stored in message queue.");

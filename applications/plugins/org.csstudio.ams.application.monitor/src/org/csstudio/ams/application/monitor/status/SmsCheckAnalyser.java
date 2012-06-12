@@ -154,21 +154,51 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
     }
     
    private void handleDeviceError() {
-       logger.error("SmsDeliveryWorker has got some problems.");
+       
+       logger.error("GSM modems have got some problems.");
+       
+       if (checkProcessor.previousCheckWasRestarted() && !checkProcessor.wasErrorSent()) {
+           CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
+           MonitorMessageSender.sendErrorSms(csi.getErrorReason().getAlarmMessage());
+           checkProcessor.setErrorSent(true);
+       }
+
        if (checkProcessor.currentCheckIsWarn()) {
            if (checkProcessor.reachedWarnCount() && !checkProcessor.wasWarnSent()) {
                MonitorMessageSender.sendWarnMail("AMS: WARN: SmsDeliveryWorker responds a warn message: "
                                                  + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
                checkProcessor.setWarnSent(true);
            } else {
-               logger.info("AmsMonitor does not send notification yet.");
+               logger.info("AmsMonitor does not send warn notification yet.");
            }
-       } else if (checkProcessor.currentCheckIsError()
-                  && checkProcessor.reachedErrorCount()
-                  && !checkProcessor.wasErrorSent()) {
-           MonitorMessageSender.sendErrorSms("AMS: ERROR: SmsDeliveryWorker responds an error message: "
-                                             + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
-           checkProcessor.setErrorSent(true);
+       }
+       
+       if (checkProcessor.currentCheckIsError()) {
+           
+           if (checkProcessor.reachedErrorCount()) {
+                  
+               logger.error("Number of allowed errors reached. AmsDeliverySystem will be restarted.");
+               if (restartDeliverySystem()) {
+                   logger.info("AmsDeliverySystem has been restarted.");
+                   checkProcessor.getCurrentCheckStatusInfo().setCheckStatus(CheckStatus.RESTARTED);
+                   checkProcessor.getCurrentCheckStatusInfo().setErrorReason(ErrorReason.DELIVERY_DEVICE);
+               } else {
+                   logger.error("AmsDeliverySystem could NOT be restarted.");
+               }
+
+               if (!checkProcessor.wasErrorSent()) {
+                   if (!checkProcessor.currentCheckIsRestarted()) {
+                       // CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
+                       MonitorMessageSender.sendErrorSms("AMS: ERROR: SmsDeliveryWorker responds an error message: "
+                                                         + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
+                       checkProcessor.setErrorSent(true);
+                   } else {
+                       logger.info("Alarm notification will not be sent yet.");
+                   }
+               } else {
+                   logger.info("Alarm notification was sent before.");
+               }
+           }
        } else {
            logger.info("AmsMonitor does not send notification yet.");
        }
