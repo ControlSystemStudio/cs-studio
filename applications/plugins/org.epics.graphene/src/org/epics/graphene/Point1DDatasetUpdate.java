@@ -14,29 +14,29 @@ import org.epics.util.array.ListNumber;
  *
  * @author carcassi
  */
-public class Dataset1DUpdate {
+public class Point1DDatasetUpdate {
     
     protected Collection<IteratorNumber> newData = new ArrayList<IteratorNumber>();
     protected boolean clear;
     
-    public Dataset1DUpdate addData(IteratorNumber data) {
+    public Point1DDatasetUpdate addData(IteratorNumber data) {
         newData.add(data);
         return this;
     }
     
-    public Dataset1DUpdate addData(double[] data) {
+    public Point1DDatasetUpdate addData(double[] data) {
         return addData(Iterators.arrayIterator(data));
     }
     
-    public Dataset1DUpdate addData(ListNumber data) {
+    public Point1DDatasetUpdate addData(ListNumber data) {
         return addData(data.iterator());
     }
     
-    public Dataset1DUpdate addData(double data) {
+    public Point1DDatasetUpdate addData(double data) {
         return addData(Iterators.arrayIterator(new double[] {data}));
     }
     
-    public Dataset1DUpdate clearData() {
+    public Point1DDatasetUpdate clearData() {
         clear = true;
         newData.clear();
         return this;

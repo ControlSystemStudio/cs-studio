@@ -10,7 +10,7 @@ import org.epics.util.array.CollectionNumber;
  *
  * @author carcassi
  */
-public interface Dataset1D {
+public interface Point1DDataset {
     
     public CollectionNumber getValues();
     
@@ -18,5 +18,5 @@ public interface Dataset1D {
     
     public Number getMaxValue();
     
-    public void update(Dataset1DUpdate update);
+    public void update(Point1DDatasetUpdate update);
 }

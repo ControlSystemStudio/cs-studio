@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.awt.geom.Path2D.Double;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -54,7 +55,7 @@ public class LineGraphRenderer {
         }
     }
 
-    public void draw(Graphics2D g, OrderedDataset2D data) {
+    public void draw(Graphics2D g, Point2DDataset data) {
         int dataCount = data.getCount();
         double startX = data.getXMinValue();
         double startY = data.getYMinValue();
@@ -92,9 +93,11 @@ public class LineGraphRenderer {
         // Scale data
         double[] scaledX = new double[dataCount];
         double[] scaledY = new double[dataCount];
+        ListNumber xValues = data.getXValues();
+        ListNumber yValues = data.getYValues();
         for (int i = 0; i < scaledY.length; i++) {
-            scaledX[i] = xStartGraph + NumberUtil.scale(data.getXValue(i), startX, endX, plotWidth);
-            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(data.getYValue(i), startY, endY, plotHeight);
+            scaledX[i] = xStartGraph + NumberUtil.scale(xValues.getDouble(i), startX, endX, plotWidth);
+            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(yValues.getDouble(i), startY, endY, plotHeight);
         }
         
         // Draw reference lines
