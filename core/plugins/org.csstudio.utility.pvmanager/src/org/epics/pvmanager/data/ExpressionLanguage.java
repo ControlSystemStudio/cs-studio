@@ -21,6 +21,8 @@ import org.epics.pvmanager.expression.SourceRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ValueFactory.*;
 import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.array.ListDouble;
+import org.epics.util.array.ListInt;
 import org.epics.util.array.ListNumber;
 import org.epics.util.time.TimeDuration;
 import org.epics.util.time.Timestamp;
@@ -76,6 +78,20 @@ public class ExpressionLanguage {
                 new VNumbersToVDoubleArrayConverter(functions);
         return new DesiredRateExpressionImpl<VDoubleArray>(expressions, converter, "syncArray");
     }
+    
+    //
+    // Channel expressions
+    //
+
+    /**
+     * A channel with the given name that returns any of the value type.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VType, Object> vType(String name) {
+        return channel(name, VType.class, Object.class);
+    }
 
     /**
      * A channel with the given name of type VNumber.
@@ -88,16 +104,6 @@ public class ExpressionLanguage {
     }
 
     /**
-     * A channel with the given name of type VNumberArray.
-     *
-     * @param name the channel name; can't be null
-     * @return an expression representing the channel
-     */
-    public static ChannelExpression<VNumberArray, ListNumber> vNumberArray(String name) {
-        return channel(name, VNumberArray.class, ListNumber.class);
-    }
-
-    /**
      * A channel with the given name of type VDouble.
      *
      * @param name the channel name; can't be null
@@ -105,6 +111,26 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VDouble, Double> vDouble(String name) {
         return channel(name, VDouble.class, Double.class);
+    }
+
+    /**
+     * A channel with the given name of type VInt.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VInt, Integer> vInt(String name) {
+        return channel(name, VInt.class, Integer.class);
+    }
+
+    /**
+     * A channel with the given name of type VNumberArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static ChannelExpression<VNumberArray, ListNumber> vNumberArray(String name) {
+        return channel(name, VNumberArray.class, ListNumber.class);
     }
 
     /**
@@ -125,16 +151,6 @@ public class ExpressionLanguage {
      */
     public static ChannelExpression<VDoubleArray, float[]> vDoubleArray(String name) {
         return channel(name, VDoubleArray.class, float[].class);
-    }
-
-    /**
-     * A channel with the given name of type VInt.
-     *
-     * @param name the channel name; can't be null
-     * @return an expression representing the channel
-     */
-    public static ChannelExpression<VInt, Integer> vInt(String name) {
-        return channel(name, VInt.class, Integer.class);
     }
 
     /**
@@ -206,15 +222,33 @@ public class ExpressionLanguage {
     public static ChannelExpressionList<VDouble, Double> vDoubles(List<String> names) {
         return channels(names, VDouble.class, Double.class);
     }
-
-    /**
-     * A channel with the given name that returns any of the value type.
-     *
-     * @param name the channel name; can't be null
-     * @return an expression representing the channel
-     */
-    public static ChannelExpression<VType, Object> vType(String name) {
-        return channel(name, VType.class, Object.class);
+    
+    //
+    // Constant expressions
+    //
+    
+    public static DesiredRateExpression<VDouble> vConst(double value) {
+        return constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone()));
+    }
+    
+    public static DesiredRateExpression<VInt> vConst(int value) {
+        return constant(newVInt(value, alarmNone(), newTime(Timestamp.now()), displayNone()));
+    }
+    
+    public static DesiredRateExpression<VDoubleArray> vConst(double... values) {
+        return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+    }
+    
+    public static DesiredRateExpression<VDoubleArray> vConst(ListDouble values) {
+        return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+    }
+    
+    public static DesiredRateExpression<VIntArray> vConst(int... values) {
+        return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
+    }
+    
+    public static DesiredRateExpression<VIntArray> vConst(ListInt values) {
+        return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
 
     /**
