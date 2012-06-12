@@ -11,13 +11,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -26,6 +30,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraphRendererUpdate;
 import org.epics.pvmanager.PVManager;
@@ -39,11 +44,12 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 
-public class Line2DPlotWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider {
+public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
+		implements ISelectionProvider, ConfigurableWidget {
 
 	private VImageDisplay imageDisplay;
 	private LineGraphPlot plot;
-	private ErrorBar errorBar;	
+	private ErrorBar errorBar;
 
 	private AbstractSelectionProviderWrapper selectionProvider;
 
@@ -92,7 +98,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget implement
 				// Nothing to do
 			}
 		});
-		
+
 		this.addPropertyChangeListener(new PropertyChangeListener() {
 
 			@Override
@@ -103,6 +109,14 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget implement
 
 	}
 
+	
+
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		imageDisplay.setMenu(menu);
+	}
+	
 	@Override
 	protected void queryCleared() {
 		imageDisplay.setVImage(null);
@@ -210,28 +224,63 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget implement
 		});
 	}
 
+	private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
 	
 	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		// TODO Auto-generated method stub
-		
+	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+		PropertyChangeListener propListener = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if ("channelQuery".equals(event.getPropertyName()))
+					listener.selectionChanged(new SelectionChangedEvent(Line2DPlotWidget.this, getSelection()));
+			}
+		};
+		listenerMap.put(listener, propListener);
+		addPropertyChangeListener(propListener);
 	}
 
 	@Override
 	public ISelection getSelection() {
-		// TODO Auto-generated method stub
-		return null;
+		return new StructuredSelection(new Line2DPlotSelection(getChannelQuery(), this));
 	}
 
 	@Override
 	public void removeSelectionChangedListener(
 			ISelectionChangedListener listener) {
+		removePropertyChangeListener(listenerMap.remove(listener));
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+	
+	@Override
+	public boolean isConfigurable() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setConfigurable(boolean configurable) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void setSelection(ISelection selection) {
+	public void openConfigurationDialog() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isConfigurationDialogOpen() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void configurationDialogClosed() {
 		// TODO Auto-generated method stub
 		
 	}
