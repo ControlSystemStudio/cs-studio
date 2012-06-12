@@ -17,7 +17,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.pv,
  org.csstudio.utility.channel;bundle-version="1.0.0",
  org.csstudio.csdata;bundle-version="3.0.1",
- org.epics.util;bundle-version="0.1.0"
+ org.epics.util;bundle-version="0.1.0",
+ org.csstudio.utility.pvmanager.graphene;bundle-version="1.0.0",
+ org.epics.graphene;bundle-version="1.0.0"
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy
