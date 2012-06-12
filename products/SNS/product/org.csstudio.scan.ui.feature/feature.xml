@@ -129,6 +129,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
       <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
