@@ -106,6 +106,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="com.ibm.icu" version="3.4.4" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.core.runtime" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.0" match="greaterOrEqual"/>
       <import plugin="org.python" version="2.5.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.scan" version="1.0.0" match="greaterOrEqual"/>
@@ -127,7 +128,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.ndarray" version="1.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -373,6 +373,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.numjy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.epics.util"
          download-size="0"
          install-size="0"
          version="0.0.0"

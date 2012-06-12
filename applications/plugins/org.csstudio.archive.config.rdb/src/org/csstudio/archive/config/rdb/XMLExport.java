@@ -9,6 +9,7 @@ package org.csstudio.archive.config.rdb;
 
 import java.io.PrintStream;
 
+import org.csstudio.apputil.time.SecondsParser;
 import org.csstudio.archive.config.ArchiveConfig;
 import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.EngineConfig;
@@ -24,10 +25,10 @@ public class XMLExport
 {
 	/** Export configuration
 	 *  @param out {@link PrintStream}
-	 *  @param rdb_url 
-	 *  @param rdb_user 
-	 *  @param rdb_password 
-	 *  @param rdb_schema 
+	 *  @param rdb_url
+	 *  @param rdb_user
+	 *  @param rdb_password
+	 *  @param rdb_schema
      *  @param engine_name Name of engine configuration
 	 *  @throws Exception on error
      */
@@ -77,7 +78,7 @@ public class XMLExport
         out.print("      <channel>");
         out.print("<name>" + channel.getName() + "</name>");
         final SampleMode mode = channel.getSampleMode();
-        out.print("<period>" + mode.getPeriod() + "</period>");
+        out.print("<period>" + SecondsParser.formatSeconds(mode.getPeriod()) + "</period>");
         if (mode.isMonitor())
         {
             if (mode.getDelta() != 0.0)

@@ -18,6 +18,7 @@ scan=[
         LoopCommand('ypos', 1, 5, -1,[
             SetCommand('setpoint', 2, 'readback', true, 0.1, 0.0)
             SetCommand('setpoint', 2.5, 'readback', true, 0.1, 0.0)
+            LogCommand({ 'xpos', 'ypos', 'readback' })
       ])
     ])
 ];

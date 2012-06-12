@@ -14,9 +14,9 @@ function table = scan_decode_spreadsheet(sheet)
 table = [];
 while sheet.hasNext()
     samples = sheet.getSamples();
-    row = zeros(1, samples.size());
-    for i=1:samples.size()
-        s = samples.get(i-1);
+    row = zeros(1, length(samples));
+    for i=1:length(samples)
+        s = samples(i);
         if length(s) > 0
             row(i) = s.getValue();
         else

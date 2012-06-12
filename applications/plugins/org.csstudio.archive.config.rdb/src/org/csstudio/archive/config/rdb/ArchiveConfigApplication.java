@@ -70,6 +70,8 @@ public class ArchiveConfigApplication implements IApplication
                 "-rdb_password", "password", "RDB Password", RDBArchivePreferences.getPassword());
         final StringOption  rdb_schema = new StringOption(parser,
                 "-rdb_schema", "schema", "RDB schema (table prefix), ending in '.'", RDBArchivePreferences.getSchema());
+        final BooleanOption version = new BooleanOption(parser,
+                "-version", "show version info");
         parser.addEclipseParameters();
 
         try
@@ -87,6 +89,14 @@ public class ArchiveConfigApplication implements IApplication
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
+
+        if (version.get())
+        {
+            System.out.println(context.getBrandingName() + " " +
+                    context.getBrandingBundle().getHeaders().get("Bundle-Version"));
+            return IApplication.EXIT_OK;
+        }
+
         if (!list.get() && engine_name.get().length() <= 0)
         {
             System.err.println("Missing option " + engine_name.getOption());

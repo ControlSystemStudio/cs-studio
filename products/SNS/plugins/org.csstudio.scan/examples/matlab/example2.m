@@ -33,6 +33,7 @@ seq = CommandSequence();
 for i = 1:N
     seq.set('xpos', x(i));
     seq.set('ypos', y(i));
+    seq.log({ 'xpos', 'ypos' });
 end
 seq.dump();
 
@@ -43,7 +44,7 @@ id = server.submitScan('Matlab Scan', seq.getXML());
 %% Wait for scan to finish
 while 1
     info = server.getScanInfo(id)
-    scandata=server.getScanData(id);
+    scandata = server.getScanData(id);
     scandata.getDevices();
     
     sheet = SpreadsheetScanDataIterator(scandata, { 'xpos', 'ypos' });
