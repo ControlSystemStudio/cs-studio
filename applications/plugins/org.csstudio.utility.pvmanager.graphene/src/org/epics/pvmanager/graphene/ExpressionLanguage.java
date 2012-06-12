@@ -5,16 +5,15 @@
 
 package org.epics.pvmanager.graphene;
 
-import org.epics.pvmanager.data.*;
 import java.util.List;
 import org.epics.pvmanager.BasicTypeSupport;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.DesiredRateExpressionList;
-import org.epics.pvmanager.expression.SourceRateExpression;
-import org.epics.pvmanager.expression.SourceRateExpressionList;
 import static org.epics.pvmanager.ExpressionLanguage.*;
-import org.epics.pvmanager.expression.DesiredRateExpressionImpl;
+import org.epics.pvmanager.data.DataTypeSupport;
+import org.epics.pvmanager.data.VNumber;
+import org.epics.pvmanager.data.VNumberArray;
+import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.expression.DesiredRateExpressionListImpl;
+import org.epics.pvmanager.expression.SourceRateExpression;
 
 /**
  *
@@ -35,25 +34,20 @@ public class ExpressionLanguage {
         return new Histogram1DPlot(queue, new Histogram1DFunction(queue.getFunction()), "histogram");
     }
 
-    public static LineGraphPlot lineGraphOf(SourceRateExpression<? extends VNumberArray> vDoubleArray) {
-        DesiredRateExpression<? extends VNumberArray> queue = latestValueOf(vDoubleArray);
-        return new LineGraphPlot(queue, new LineGraphFunction(queue.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> vDoubleArray) {
+        return new LineGraphPlot(vDoubleArray, new LineGraphFunction(vDoubleArray.getFunction()), "lineGraph");
     }
 
-    public static LineGraphPlot lineGraphOf(SourceRateExpression<? extends VNumberArray> yArray,
-            SourceRateExpression<? extends VNumber> xInitialOffset,
-            SourceRateExpression<? extends VNumber> xIncrementSize) {
-        DesiredRateExpression<? extends VNumberArray> yCache = latestValueOf(yArray);
-        DesiredRateExpression<? extends VNumber> xInitialOffsetCache = latestValueOf(xInitialOffset);
-        DesiredRateExpression<? extends VNumber> xIncrementSizeCache = latestValueOf(xIncrementSize);
-        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(yCache).and(xInitialOffsetCache).and(xIncrementSizeCache),
-                new LineGraphFunction(yCache.getFunction(), xInitialOffsetCache.getFunction(), xIncrementSizeCache.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> yArray,
+            DesiredRateExpression<? extends VNumber> xInitialOffset,
+            DesiredRateExpression<? extends VNumber> xIncrementSize) {
+        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(yArray).and(xInitialOffset).and(xIncrementSize),
+                new LineGraphFunction(yArray.getFunction(), xInitialOffset.getFunction(), xIncrementSize.getFunction()), "lineGraph");
     }
 
-    public static LineGraphPlot lineGraphOf(SourceRateExpression<? extends VNumberArray> xVDoubleArray, SourceRateExpression<? extends VNumberArray> yVDoubleArray) {
-        DesiredRateExpression<? extends VNumberArray> yQueue = latestValueOf(yVDoubleArray);
-        DesiredRateExpression<? extends VNumberArray> xQueue = latestValueOf(xVDoubleArray);
-        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(xQueue).and(yQueue), new LineGraphFunction(xQueue.getFunction(), yQueue.getFunction()), "lineGraph");
+    public static LineGraphPlot lineGraphOf(DesiredRateExpression<? extends VNumberArray> xVDoubleArray, DesiredRateExpression<? extends VNumberArray> yVDoubleArray) {
+        return new LineGraphPlot(new DesiredRateExpressionListImpl<Object>().and(xVDoubleArray).and(yVDoubleArray),
+                new LineGraphFunction(xVDoubleArray.getFunction(), yVDoubleArray.getFunction()), "lineGraph");
     }
 
 }

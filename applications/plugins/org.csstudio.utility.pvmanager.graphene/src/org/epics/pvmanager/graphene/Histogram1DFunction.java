@@ -21,7 +21,7 @@ import org.epics.pvmanager.data.ValueUtil;
 class Histogram1DFunction extends Function<VImage> {
     
     private Function<? extends List<? extends VNumber>> argument;
-    private Dataset1D dataset = new Dataset1DArray(1000000);
+    private Point1DDataset dataset = new Point1DCircularBuffer(1000000);
     private Histogram1D histogram = Histograms.createHistogram(dataset);
     private Histogram1DRenderer renderer = new Histogram1DRenderer(300, 200);
     private VImage previousImage;
@@ -49,7 +49,7 @@ class Histogram1DFunction extends Function<VImage> {
             return previousImage;
         
         // Update the dataset
-        Dataset1DUpdate update = new Dataset1DUpdate();
+        Point1DDatasetUpdate update = new Point1DDatasetUpdate();
         for (VNumber vNumber : newData) {
             update.addData(vNumber.getValue().doubleValue());
         }
