@@ -256,7 +256,11 @@ public class SmsDeliveryDevice implements Runnable,
         checkerThread.start();
     }
 
-    public void sendTestAnswer(final String checkId, final String text, final String severity, final String value) {
+    public void sendTestAnswer(final String checkId,
+                               final String text,
+                               final String severity,
+                               final String status,
+                               final String value) {
 
         final JmsSimpleProducer producer = new JmsSimpleProducer("SmsDeliveryDevice@"
                                                            + Environment.getInstance().getHostName(),
@@ -271,14 +275,15 @@ public class SmsDeliveryDevice implements Runnable,
             mapMessage.setString("EVENTTIME", producer.getCurrentDateAsString());
             mapMessage.setString("TEXT", text);
             mapMessage.setString("SEVERITY", severity);
+            mapMessage.setString("STATUS", status);
             mapMessage.setString("VALUE", value);
             mapMessage.setString("CLASS", checkId);
             mapMessage.setString("HOST", Environment.getInstance().getHostName());
             mapMessage.setString("USER", Environment.getInstance().getUserName());
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
             mapMessage.setString("APPLICATION-ID", "SmsDeliveryWorker");
-            mapMessage.setString("DESTINATION", "AmsSystemMonitor");
-
+            mapMessage.setString("DESTINATION", "AmsMonitor");
+            
             producer.sendMessage(mapMessage);
         } catch(final JMSException jmse) {
             LOG.error("Answer message could NOT be sent: {}", jmse.getMessage());
@@ -603,7 +608,11 @@ public class SmsDeliveryDevice implements Runnable,
                 modemTestStatus.setActive(true);
                 modemTestStatus.setTimeOut(System.currentTimeMillis() + 120000); // 2 minutes
             } else {
-                sendTestAnswer(modemTestStatus.getCheckId(), "No modem could send the test SMS.", "MAJOR", "ERROR");
+                sendTestAnswer(modemTestStatus.getCheckId(),
+                               "No modem could send the test SMS.",
+                               "MAJOR",
+                               "HIHI",
+                               "ERROR");
                 modemTestStatus.reset();
             }
         }
@@ -625,7 +634,11 @@ public class SmsDeliveryDevice implements Runnable,
                     getLogger().debug("Bad gateways after moving: " + modemTestStatus.getBadModemCount());
                     if(modemTestStatus.getBadModemCount() == deviceInfo.getModemCount()) {
                         getLogger().error("No modem is working properly.");
-                        sendTestAnswer(modemTestStatus.getCheckId(), "No modem is working properly.", "MAJOR", "ERROR");
+                        sendTestAnswer(modemTestStatus.getCheckId(),
+                                       "No modem is working properly.",
+                                       "MAJOR",
+                                       "HIHI",
+                                       "ERROR");
                     } else {
                         String list = "";
                         for(final String name : modemTestStatus.getBadModems()) {
@@ -633,7 +646,11 @@ public class SmsDeliveryDevice implements Runnable,
                         }
 
                         getLogger().warn("Modems not working properly: " + list);
-                        sendTestAnswer(modemTestStatus.getCheckId(), "Modems not working properly: " + list, "MINOR", "WARN");
+                        sendTestAnswer(modemTestStatus.getCheckId(),
+                                       "Modems not working properly: " + list,
+                                       "MINOR",
+                                       "HIGH",
+                                       "WARN");
                     }
 
                     getLogger().info("Reset current test.");
@@ -663,6 +680,7 @@ public class SmsDeliveryDevice implements Runnable,
                                     sendTestAnswer(modemTestStatus.getCheckId(),
                                                              "All modems are working fine.",
                                                              "NO_ALARM",
+                                                             "NO_ALARM",
                                                              "OK");
                                 } else {
                                     String list = "";
@@ -674,6 +692,7 @@ public class SmsDeliveryDevice implements Runnable,
                                     sendTestAnswer(modemTestStatus.getCheckId(),
                                                              "Modems not working properly: " + list,
                                                              "MINOR",
+                                                             "HIGH",
                                                              "WARN");
                                 }
 
