@@ -44,6 +44,7 @@ org.csstudio.display.pvtable/**
 org.csstudio.display.rdbtable/**
 org.csstudio.email/**
 org.csstudio.email.ui/**
+org.csstudio.imagej/**
 org.csstudio.java/**
 org.csstudio.logbook/**
 org.csstudio.logbook.sns/**
