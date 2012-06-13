@@ -38,19 +38,19 @@ public enum ErrorReason {
     UNDEFINED(0, "undefined", "undefined"),
     
     /** The error was caused by the SystemMonitor itself */
-    AMS_MONITOR(1, "AmsMonitor", "AMS-Monitor: Fehler beim Überprüfen des AMS."),
+    AMS_MONITOR(1, "AmsMonitor", "AMS-Monitor: The check of AMS is not possible."),
     
     /** The error was caused by the AMS (no answer from the AMS) */
-    AMS(2, "AMS", "AMS-Monitor: Das AMS reagiert nicht auf die Test-Nachricht."),
+    AMS(2, "AMS", "AMS-Monitor: AMS does not respond to the current check."),
     
     /** The error was caused by the SmsDeliveryWorker (no answer from the SmsDeliveryWorker) */
-    SMS_DELIVERY_WORKER(4, "SmsDeliveryWorker", "AMS-Monitor: Der SMS DeliveryWorker reagiert nicht auf die Test-Nachricht."),
+    SMS_DELIVERY_WORKER(4, "SmsDeliveryWorker", "SmsDeliveryWorker does not respond to the current check."),
     
     /** The error was caused by the delivery device */
-    DELIVERY_DEVICE(8, "Modem", "AMS-Monitor: Die GSM-Modems melden einen Fehler: "),
+    DELIVERY_DEVICE(8, "Modem", "SmsDeliveryWorker: The GSM modems respond an error: "),
 
     /** The error was caused by the JMS methods (sending, receiving, etc.) */
-    JMS(16, "JMS", "AMS-Monitor: JMS-Fehler: Nachricht kann nicht versendet werden.");
+    JMS(16, "JMS", "AMS-Monitor: JMS-Error: Message cannot be sent.");
     
     /**
      * The error number is not really used at the moment. May be in the future...

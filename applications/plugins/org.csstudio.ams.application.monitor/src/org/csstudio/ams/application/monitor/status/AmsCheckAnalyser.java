@@ -76,8 +76,8 @@ public class AmsCheckAnalyser implements ICheckAnalyser {
                 CommonMailer.sendMultiMail("smtp.desy.de",
                                       "ams-monitor@desy.de",
                                       recipients,
-                                      "AMS wurde neu gestartet.",
-                                      dateFormat.format(Calendar.getInstance().getTime()) + ": AMS wurde neu gestartet.");
+                                      "AMS has been restarted.",
+                                      dateFormat.format(Calendar.getInstance().getTime()) + ": AMS has been restarted.");
             }
             return;
         }

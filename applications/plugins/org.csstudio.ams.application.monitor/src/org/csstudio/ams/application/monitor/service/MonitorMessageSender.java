@@ -52,7 +52,7 @@ public class MonitorMessageSender {
         success = true;
         
         LOG.debug("Try to send SMS: " + text);
-        String mailText = "TEST " + text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
 
         String server = AmsMonitorPreference.ALARM_MAIL_SERVER.getValue();
         String from = AmsMonitorPreference.ALARM_MAIL_SENDER.getValue();
@@ -105,11 +105,11 @@ public class MonitorMessageSender {
         
         LOG.debug("Try to send mail: " + text);
 
-        String mailText = "TEST " + text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
+        String mailText = text + " [" + dateFormat.format(Calendar.getInstance().getTime()) + "]";
         
         String server = AmsMonitorPreference.ALARM_MAIL_SERVER.getValue();
         String from = AmsMonitorPreference.ALARM_MAIL_SENDER.getValue();
-        String subject = "TEST " + AmsMonitorPreference.ALARM_MAIL_SUBJECT.getValue();
+        String subject = AmsMonitorPreference.ALARM_MAIL_SUBJECT.getValue();
         String amsGroup = AmsMonitorPreference.ALARM_AMS_GROUP.getValue();
         
         String to = "";

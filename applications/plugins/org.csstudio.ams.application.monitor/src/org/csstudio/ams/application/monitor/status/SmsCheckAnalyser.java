@@ -87,8 +87,8 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
                 CommonMailer.sendMultiMail("smtp.desy.de",
                                       "ams-monitor@desy.de",
                                       recipients,
-                                      "AmsDeliverySystem wurde neu gestartet.",
-                                      dateFormat.format(Calendar.getInstance().getTime()) + ": AmsDeliverySystem wurde neu gestartet.");
+                                      "AmsDeliverySystem has been restarted",
+                                      dateFormat.format(Calendar.getInstance().getTime()) + ": has been restarted.");
             }
 
             return;
@@ -165,7 +165,7 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
 
        if (checkProcessor.currentCheckIsWarn()) {
            if (checkProcessor.reachedWarnCount() && !checkProcessor.wasWarnSent()) {
-               MonitorMessageSender.sendWarnMail("AMS: WARN: SmsDeliveryWorker responds a warn message: "
+               MonitorMessageSender.sendWarnMail("SmsDeliveryWorker: WARN: "
                                                  + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
                checkProcessor.setWarnSent(true);
            } else {
@@ -189,7 +189,7 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
                if (!checkProcessor.wasErrorSent()) {
                    if (!checkProcessor.currentCheckIsRestarted()) {
                        // CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
-                       MonitorMessageSender.sendErrorSms("AMS: ERROR: SmsDeliveryWorker responds an error message: "
+                       MonitorMessageSender.sendErrorSms("SmsDeliveryWorker: ERROR: "
                                                          + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
                        checkProcessor.setErrorSent(true);
                    } else {
