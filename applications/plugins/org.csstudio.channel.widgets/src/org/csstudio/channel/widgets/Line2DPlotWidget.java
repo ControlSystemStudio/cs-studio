@@ -1,10 +1,13 @@
 package org.csstudio.channel.widgets;
 
+import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelQuery;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
 
 import java.beans.PropertyChangeEvent;
@@ -16,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -50,8 +54,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	private VImageDisplay imageDisplay;
 	private LineGraphPlot plot;
 	private ErrorBar errorBar;
-
-	private AbstractSelectionProviderWrapper selectionProvider;
 
 	public Line2DPlotWidget(Composite parent, int style) {
 		super(parent, style);
@@ -103,32 +105,33 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
+				System.out.println(evt.getPropertyName());
 
 			}
 		});
 
 	}
 
-	
-
 	@Override
 	public void setMenu(Menu menu) {
 		super.setMenu(menu);
 		imageDisplay.setMenu(menu);
 	}
-	
+
 	@Override
 	protected void queryCleared() {
+		setYChannelNames(null);
+		setxChannelNames(null);
+
 		imageDisplay.setVImage(null);
 		setLastError(null);
 	}
 
 	private Result result;
 
-	@Override
-	protected void queryExecuted(Result result) {
+	private List<String> getResultChannels(Result result) {
 		if (result == null)
-			return;
+			return null;
 
 		setLastError(result.exception);
 		this.result = result;
@@ -154,26 +157,152 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		}
 
 		final List<String> finalChannels = channelNames;
+		return finalChannels;
+	}
 
-		if (finalChannels == null || !finalChannels.isEmpty()) {
+	@Override
+	protected void queryExecuted(Result result) {
+		List<String> finalChannels = getResultChannels(result);
+		if (finalChannels != null && !finalChannels.isEmpty()) {
 			setYChannelNames(finalChannels);
+		} else if (finalChannels == null) {
+			// assumes the entered string to be an waveform pv
+			setyWaveformChannelName(getChannelQuery().getQuery());
 		}
 	}
 
-	private void setYChannelNames(List<String> finalChannels) {
-		this.yChannelNames = finalChannels;
+	private PVReader<VImage> pv;
+	// Y values
+	private Collection<String> yChannelNames;
+	private String yWaveformChannelName;
+
+	// X values
+	private ChannelQuery xChannelQuery;
+	private Collection<String> xChannelNames;
+	private String xWaveformChannelName;
+
+	public Collection<String> getxChannelNames() {
+		return xChannelNames;
+	}
+
+	public void setxChannelNames(Collection<String> xChannelNames) {
+		if (this.xChannelNames != null
+				&& this.xChannelNames.equals(xChannelNames)) {
+			return;
+		}
+		this.xWaveformChannelName = null;
+		this.xChannelNames = xChannelNames;
+		reconnect();
+	}
+
+	public String getxWaveformChannelName() {
+		return xWaveformChannelName;
+	}
+
+	public void setxWaveformChannelName(String xWaveformChannelName) {
+		if (this.xWaveformChannelName != null
+				&& this.xWaveformChannelName.equals(xWaveformChannelName)) {
+			return;
+		}
+
+		this.xChannelNames = null;
+		this.xWaveformChannelName = xWaveformChannelName;
+		reconnect();
+	}
+
+	public Collection<String> getYChannelNames(List<String> finalChannels) {
+		return this.yChannelNames;
+	}
+
+	public void setYChannelNames(List<String> yChannelNames) {
+		if (this.yChannelNames != null
+				&& this.yChannelNames.equals(yChannelNames)) {
+			return;
+		}
+		this.yWaveformChannelName = null;
+		this.yChannelNames = yChannelNames;
+		reconnect();
+	}
+
+	public String getyWaveformChannelName() {
+		return yWaveformChannelName;
+	}
+
+	public void setyWaveformChannelName(String yWaveformChannelName) {
+		if (this.yWaveformChannelName != null
+				&& this.yWaveformChannelName.equals(yWaveformChannelName)) {
+			return;
+		}
+		this.yChannelNames = null;
+		this.yWaveformChannelName = yWaveformChannelName;
+		reconnect();
+	}
+
+	public ChannelQuery getXChannelQuery() {
+		return xChannelQuery;
+	}
+
+	public void setXChannelQuery(ChannelQuery xChannelQuery) {
+		// If new query is the same, don't change -- you would re-trigger the
+		// query for nothing
+		if (getXChannelQuery() != null
+				&& getXChannelQuery().equals(xChannelQuery))
+			return;
+
+		ChannelQuery oldValue = getXChannelQuery();
+		if (oldValue != null) {
+			oldValue.removeChannelQueryListener(xQueryListener);
+		}
+		xChannelQueryCleared();
+		if (xChannelQuery != null) {
+			xChannelQuery.execute(xQueryListener);
+		}
+
+		if (getXChannelQuery() == null && xChannelQuery == null)
+			return;
+
+		ChannelQuery oldXValue = this.xChannelQuery;
+		this.xChannelQuery = xChannelQuery;
+		changeSupport.firePropertyChange("xChannelQuery", oldXValue,
+				xChannelQuery);
+	}
+
+	private final ChannelQueryListener xQueryListener = new ChannelQueryListener() {
+
+		@Override
+		public void queryExecuted(final Result result) {
+			SWTUtil.swtThread().execute(new Runnable() {
+
+				@Override
+				public void run() {
+					xChannelQueryExecuted(result);
+				}
+
+			});
+
+		}
+	};
+
+	private void xChannelQueryExecuted(Result result) {
+		List<String> finalChannels = getResultChannels(result);
+		if (finalChannels != null && !finalChannels.isEmpty()) {
+			setxChannelNames(finalChannels);
+		}else if (finalChannels == null) {
+			// assumes the entered string to be an waveform pv
+			setxWaveformChannelName(getXChannelQuery().getQuery());
+		}
+	}
+
+	private void xChannelQueryCleared() {
+		setxChannelNames(null);
+		imageDisplay.setVImage(null);
+		setLastError(null);
 		reconnect();
 	}
 
 	private void setLastError(Exception lastException) {
 		errorBar.setException(lastException);
 	}
-
-	private PVReader<VImage> pv;
-	// Y values
-	private Collection<String> yChannelNames;
-	// X values
-	private Collection<String> xChannelNames;
 
 	private void reconnect() {
 		if (pv != null) {
@@ -182,15 +311,37 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			plot = null;
 		}
 
-		if (yChannelNames == null || yChannelNames.isEmpty()) {
+		if ((yChannelNames == null || yChannelNames.isEmpty())
+				&& yWaveformChannelName == null) {
 			return;
 		}
 
+		DesiredRateExpression<VDoubleArray> yValueExpression = null;
+		// Determine the expression for the y values.
 		if (yChannelNames != null && !yChannelNames.isEmpty()) {
-			ChannelExpressionList<VNumber, VNumber> channels = channels(
-					yChannelNames, VNumber.class, VNumber.class);
-			DesiredRateExpression<VDoubleArray> testChannels = vDoubleArrayOf(latestValueOf(channels));
-			plot = ExpressionLanguage.lineGraphOf(testChannels);
+			yValueExpression = vDoubleArrayOf(latestValueOf(channels(
+					yChannelNames, VNumber.class, VNumber.class)));
+		} else if (yWaveformChannelName != null) {
+			// create a plot using the yWavefor
+			yValueExpression = latestValueOf(vDoubleArrayOf(channel(yWaveformChannelName)));
+		}
+
+		DesiredRateExpression<VDoubleArray> xValueExpression = null;
+		// Determine the expression for the x values.
+		if (xChannelNames != null && !yChannelNames.isEmpty()) {
+			xValueExpression = vDoubleArrayOf(latestValueOf(channels(
+					yChannelNames, VNumber.class, VNumber.class)));
+		} else if (xWaveformChannelName != null) {
+			xValueExpression = latestValueOf(vDoubleArrayOf(channel(xWaveformChannelName)));
+		}
+
+		if (xValueExpression == null) {
+			// create a simple plot using the yExpression alone
+			plot = ExpressionLanguage.lineGraphOf(yValueExpression);
+		} else {
+			// create a graph using both the expressions
+			plot = ExpressionLanguage.lineGraphOf(xValueExpression,
+					yValueExpression);
 		}
 
 		if (plot == null) {
@@ -225,14 +376,16 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	}
 
 	private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
-	
+
 	@Override
-	public void addSelectionChangedListener(final ISelectionChangedListener listener) {
+	public void addSelectionChangedListener(
+			final ISelectionChangedListener listener) {
 		PropertyChangeListener propListener = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if ("channelQuery".equals(event.getPropertyName()))
-					listener.selectionChanged(new SelectionChangedEvent(Line2DPlotWidget.this, getSelection()));
+					listener.selectionChanged(new SelectionChangedEvent(
+							Line2DPlotWidget.this, getSelection()));
 			}
 		};
 		listenerMap.put(listener, propListener);
@@ -241,7 +394,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 	@Override
 	public ISelection getSelection() {
-		return new StructuredSelection(new Line2DPlotSelection(getChannelQuery(), this));
+		return new StructuredSelection(new Line2DPlotSelection(
+				getChannelQuery(), this));
 	}
 
 	@Override
@@ -254,34 +408,37 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	public void setSelection(ISelection selection) {
 		throw new UnsupportedOperationException("Not implemented yet");
 	}
-	
+
+	private boolean configurable = true;
+
+	private Line2DPlotConfigurationDialog dialog;
+
 	@Override
 	public boolean isConfigurable() {
-		// TODO Auto-generated method stub
-		return false;
+		return configurable;
 	}
 
 	@Override
 	public void setConfigurable(boolean configurable) {
-		// TODO Auto-generated method stub
-		
+		this.configurable = configurable;
 	}
 
 	@Override
 	public void openConfigurationDialog() {
-		// TODO Auto-generated method stub
-		
+		if (dialog != null)
+			return;
+		dialog = new Line2DPlotConfigurationDialog(this);
+		dialog.open();
 	}
 
 	@Override
 	public boolean isConfigurationDialogOpen() {
-		// TODO Auto-generated method stub
-		return false;
+		return dialog != null;
 	}
 
 	@Override
 	public void configurationDialogClosed() {
-		// TODO Auto-generated method stub
-		
+		dialog = null;
 	}
+
 }
