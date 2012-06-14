@@ -43,19 +43,20 @@ public class SystemCheckWorker extends Thread {
     
     private static final Logger LOG = LoggerFactory.getLogger(SystemCheckWorker.class);
     
-    // TODO: Hier darf keine Konstante stehen!!!! Das beiﬂt sich mit dem EIntrag in der Plugin customization.
+    // TODO: Hier darf keine Konstante stehen!!!!
+    //       Das beiﬂt sich mit dem Eintrag in der Plugin customization.
     private static final long MAX_THREAD_WAITTIME = 240000L;
     
     private ISessionService xmppService;
     
     private AmsCheckProcessor amsCheckProcessor;
     
-    private SmsCheckProcessor smsCheckProcessor;
+    private NewSmsCheckProcessor smsCheckProcessor;
     
     public SystemCheckWorker(ISessionService xmpp, String ws) {
         amsCheckProcessor = new AmsCheckProcessor("AmsSystemCheck", ws);
         long interval = AmsMonitorPreference.SMS_CHECK_INTERVAL.getValue();
-        smsCheckProcessor = new SmsCheckProcessor("SmsDeliveryWorkerCheck", ws, interval);
+        smsCheckProcessor = new NewSmsCheckProcessor("SmsDeliveryWorkerCheck", ws, interval);
         xmppService = xmpp;
     }
     

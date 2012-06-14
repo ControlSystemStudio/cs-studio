@@ -27,9 +27,8 @@ package org.csstudio.ams.application.monitor.status;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import org.csstudio.ams.application.monitor.IRemoteService;
-import org.csstudio.ams.application.monitor.check.SmsCheckProcessor;
+import org.csstudio.ams.application.monitor.check.NewSmsCheckProcessor;
 import org.csstudio.ams.application.monitor.internal.AmsMonitorPreference;
 import org.csstudio.ams.application.monitor.service.MonitorMessageSender;
 import org.csstudio.ams.application.monitor.service.XmppRemoteService;
@@ -45,10 +44,10 @@ import org.slf4j.Logger;
 public class SmsCheckAnalyser implements ICheckAnalyser {
 
     private Logger logger;
-    private SmsCheckProcessor checkProcessor;
+    private NewSmsCheckProcessor checkProcessor;
     private ISessionService xmppService;
 
-    public SmsCheckAnalyser(SmsCheckProcessor o, Logger l, ISessionService service) {
+    public SmsCheckAnalyser(NewSmsCheckProcessor o, Logger l, ISessionService service) {
         checkProcessor = o;
         logger = l;
         xmppService = service;
@@ -88,7 +87,7 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
                                       "ams-monitor@desy.de",
                                       recipients,
                                       "AmsDeliverySystem has been restarted",
-                                      dateFormat.format(Calendar.getInstance().getTime()) + ": has been restarted.");
+                                      dateFormat.format(Calendar.getInstance().getTime()) + ": AmsDeliverySystem has been restarted.");
             }
 
             return;
@@ -159,7 +158,7 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
        
        if (checkProcessor.previousCheckWasRestarted() && !checkProcessor.wasErrorSent()) {
            CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
-           MonitorMessageSender.sendErrorSms(csi.getErrorReason().getAlarmMessage());
+           MonitorMessageSender.sendErrorSms(csi.getErrorReason().getAlarmMessage() + csi.getErrorText());
            checkProcessor.setErrorSent(true);
        }
 
@@ -188,9 +187,9 @@ public class SmsCheckAnalyser implements ICheckAnalyser {
 
                if (!checkProcessor.wasErrorSent()) {
                    if (!checkProcessor.currentCheckIsRestarted()) {
-                       // CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
-                       MonitorMessageSender.sendErrorSms("SmsDeliveryWorker: ERROR: "
-                                                         + checkProcessor.getCurrentCheckStatusInfo().getErrorText());
+                       CheckStatusInfo csi = checkProcessor.getCurrentCheckStatusInfo();
+                       MonitorMessageSender.sendErrorSms(csi.getErrorReason().getAlarmMessage()
+                                                         + csi.getErrorText());
                        checkProcessor.setErrorSent(true);
                    } else {
                        logger.info("Alarm notification will not be sent yet.");
