@@ -4,12 +4,17 @@
  */
 package org.epics.pvmanager.data;
 
+import org.epics.util.array.ListByte;
+
 /**
  * Byte array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */
-public interface VByteArray extends Array<Integer>, Alarm, Time, Display {
+public interface VByteArray extends Array<Integer>, VNumberArray, VType {
     @Override
     byte[] getArray();
+    
+    @Override
+    ListByte getData();
 }

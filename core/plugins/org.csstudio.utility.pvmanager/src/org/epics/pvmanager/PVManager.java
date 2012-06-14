@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * {@link PVReader}, {@link PVWriter} and {@link PV } from an read or write expression.
  * <p>
  * <b>NotificationExecutor</b> - This is used for all notifications.
- * By default this uses {@link ExpressionLanguage#localThread()} so that
+ * By default this uses {@link org.epics.pvmanager.util.Executors#localThread()} so that
  * the notification are done on whatever current thread needs to notify.
  * This means that new read notifications are run on threads managed by
  * the ReadScannerExecutorService, write notifications are run on threads
@@ -33,7 +33,7 @@ import java.util.concurrent.ScheduledExecutorService;
  * submitted here is the calculation of the corresponding {@link WriteExpression}
  * and submission to the {@link DataSource}. The DataSource itself typically
  * has asynchronous work, which is executed in the DataSource specific threads.
- * Changing this to {@link ExpressionLanguage#localThread()} will make that preparation
+ * Changing this to {@link org.epics.pvmanager.util.Executors#localThread()} will make that preparation
  * task on the thread that calls {@link PVWriter#write(java.lang.Object) } but
  * it will not transform the call in a synchronous call.
  * <p>
@@ -127,8 +127,8 @@ public class PVManager {
     
     /**
      * Both reads and writes the given expression, and returns an object to configure the parameters
-     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.SourceRateExpression) }
-     * and {@link #write(org.epics.pvmanager.WriteExpression) ) at the same time.
+     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.expression.SourceRateExpression) }
+     * and {@link #write(org.epics.pvmanager.expression.WriteExpression) } at the same time.
      *
      * @param <R> type of the read payload
      * @param <W> type of the write payload
@@ -141,8 +141,8 @@ public class PVManager {
     
     /**
      * Both reads and writes the given expression, and returns an object to configure the parameters
-     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.SourceRateExpression) }
-     * and {@link #write(org.epics.pvmanager.WriteExpression) ) at the same time.
+     * for the both read and write. It's similar to use both {@link #read(org.epics.pvmanager.expression.SourceRateExpression) }
+     * and {@link #write(org.epics.pvmanager.expression.WriteExpression) } at the same time.
      *
      * @param <R> type of the read payload
      * @param <W> type of the write payload

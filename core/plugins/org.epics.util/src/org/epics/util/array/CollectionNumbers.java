@@ -32,10 +32,7 @@ public class CollectionNumbers {
     }
     
     public static MinMax minMaxDouble(CollectionNumber coll) {
-        return minMaxDouble(coll.iterator());
-    }
-    
-    public static MinMax minMaxDouble(IteratorNumber iterator) {
+        IteratorNumber iterator = coll.iterator();
         if (!iterator.hasNext()) {
             return null;
         }

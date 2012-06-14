@@ -6,30 +6,37 @@ package org.epics.graphene;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import org.epics.util.array.IteratorDouble;
+import org.epics.util.array.IteratorNumber;
+import org.epics.util.array.ListNumber;
 
 /**
  *
  * @author carcassi
  */
-public class Dataset1DUpdate {
+public class Point1DDatasetUpdate {
     
-    protected Collection<IteratorDouble> newData = new ArrayList<IteratorDouble>();
+    protected Collection<IteratorNumber> newData = new ArrayList<IteratorNumber>();
     protected boolean clear;
     
-    public Dataset1DUpdate addData(IteratorDouble data) {
+    public Point1DDatasetUpdate addData(IteratorNumber data) {
         newData.add(data);
         return this;
     }
     
-    public Dataset1DUpdate addData(double[] data) {
+    public Point1DDatasetUpdate addData(double[] data) {
         return addData(Iterators.arrayIterator(data));
     }
     
-    public Dataset1DUpdate addData(double data) {
+    public Point1DDatasetUpdate addData(ListNumber data) {
+        return addData(data.iterator());
+    }
+    
+    public Point1DDatasetUpdate addData(double data) {
         return addData(Iterators.arrayIterator(new double[] {data}));
     }
     
-    public Dataset1DUpdate clearData() {
+    public Point1DDatasetUpdate clearData() {
         clear = true;
         newData.clear();
         return this;
@@ -39,7 +46,7 @@ public class Dataset1DUpdate {
         return clear;
     }
     
-    public IteratorDouble getNewData() {
+    public IteratorNumber getNewData() {
         return Iterators.combine(newData);
     }
     

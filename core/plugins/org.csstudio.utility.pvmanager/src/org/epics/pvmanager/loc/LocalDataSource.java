@@ -34,14 +34,14 @@ public final class LocalDataSource extends DataSource {
             "Syntax for local channel must be either name, name(Double) or name(String) (e.g \"foo\", \"foo(2.0)\" or \"foo(\"bar\")";
     
     @Override
-    protected ChannelHandler<?> createChannel(String channelName) {
+    protected ChannelHandler createChannel(String channelName) {
         // Parse the channel name
         List<Object> parsedTokens = FunctionParser.parsePvAndArguments(channelName);
         if (parsedTokens == null || parsedTokens.size() > 2)
             throw new IllegalArgumentException(CHANNEL_SYNTAX_ERROR_MESSAGE);
         
         // If the channel was already created, return it (no matter what the argument is)
-        ChannelHandler<?> handler = getChannels().get(parsedTokens.get(0).toString());
+        ChannelHandler handler = getChannels().get(parsedTokens.get(0).toString());
         if (handler != null)
             return handler;
         

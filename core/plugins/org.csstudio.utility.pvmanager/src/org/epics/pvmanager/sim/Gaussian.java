@@ -9,7 +9,8 @@ import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.Timestamp;
 
 /**
  * Function to simulate a signal that has a gaussian distribution. The warning
@@ -50,10 +51,9 @@ public class Gaussian extends SimFunction<VDouble> {
         }
         this.average = average;
         this.stdDev = stdDev;
-        lastValue = ValueFactory.newVDouble(average, AlarmSeverity.NONE, AlarmStatus.NONE,
-                TimeStamp.now(), null,
-                average - 4 * stdDev, average - 2 * stdDev, average - stdDev, "x", Constants.DOUBLE_FORMAT,
-                average + stdDev, average + 2 * stdDev, average + 4 * stdDev, average - 4 * stdDev, average + 4 * stdDev);
+        lastValue = newVDouble(average, alarmNone(), newTime(Timestamp.now()),
+                newDisplay(average - 4 * stdDev, average - 2 * stdDev, average - stdDev, "x", Constants.DOUBLE_FORMAT,
+                average + stdDev, average + 2 * stdDev, average + 4 * stdDev, average - 4 * stdDev, average + 4 * stdDev));
     }
 
     @Override

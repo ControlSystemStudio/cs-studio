@@ -1,7 +1,7 @@
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
+import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.epics.pvmanager.data.ExpressionLanguage.*;
 import static org.epics.pvmanager.graphene.ExpressionLanguage.lineGraphOf;
 import static org.epics.pvmanager.util.TimeDuration.hz;
 
@@ -144,7 +144,7 @@ public class LineGraphWidget extends Composite {
 			return;
 		}
 		
-		plot = lineGraphOf(vDoubleArrayOf(channel(getProcessVariable().getName())));
+		plot = lineGraphOf(latestValueOf(vNumberArray(getProcessVariable().getName())));
 		plot.update(new LineGraphRendererUpdate()
 				.imageWidth(imageDisplay.getSize().x).imageHeight(imageDisplay.getSize().y)
 				.interpolation(InterpolationScheme.LINEAR));

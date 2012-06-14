@@ -7,6 +7,7 @@ package org.epics.pvmanager.data;
 import java.text.NumberFormat;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 /**
  * Converts numeric types to VDouble.
@@ -56,6 +57,11 @@ class ConverterVDoubleFunction extends Function<VDouble> {
                 @Override
                 public TimeStamp getTimeStamp() {
                     return vInt.getTimeStamp();
+                }
+
+                @Override
+                public Timestamp getTimestamp() {
+                    return vInt.getTimestamp();
                 }
 
                 @Override

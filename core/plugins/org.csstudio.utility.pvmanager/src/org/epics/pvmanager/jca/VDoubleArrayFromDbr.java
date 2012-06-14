@@ -9,6 +9,8 @@ import gov.aps.jca.dbr.DBR_TIME_Double;
 import java.util.Collections;
 import java.util.List;
 import org.epics.pvmanager.data.VDoubleArray;
+import org.epics.util.array.ArrayDouble;
+import org.epics.util.array.ListDouble;
 
 /**
  *
@@ -23,6 +25,11 @@ class VDoubleArrayFromDbr extends VNumberMetadata<DBR_TIME_Double, DBR_CTRL_Doub
     @Override
     public double[] getArray() {
         return dbrValue.getDoubleValue();
+    }
+
+    @Override
+    public ListDouble getData() {
+        return new ArrayDouble(dbrValue.getDoubleValue());
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.awt.geom.Path2D.Double;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -20,6 +21,17 @@ public class LineGraphRenderer {
     private int width = 300;
     private int height = 200;
     private InterpolationScheme scheme = InterpolationScheme.NEAREST_NEIGHBOUR;
+    
+    private boolean rangeFromDataset = true;
+    private double startX = java.lang.Double.MIN_VALUE;
+    private double endX = java.lang.Double.MAX_VALUE;
+    private double startY = java.lang.Double.MIN_VALUE;
+    private double endY = java.lang.Double.MAX_VALUE;
+    
+    private double integratedMinX = java.lang.Double.MAX_VALUE;
+    private double integratedMinY = java.lang.Double.MAX_VALUE;
+    private double integratedMaxX = java.lang.Double.MIN_VALUE;
+    private double integratedMaxY = java.lang.Double.MIN_VALUE;
 
     public LineGraphRenderer(int width, int height) {
         this.width = width;
@@ -52,14 +64,50 @@ public class LineGraphRenderer {
         if (update.getInterpolation() != null) {
             scheme = update.getInterpolation();
         }
+        if (update.isRangeFromDataset() != null) {
+            rangeFromDataset = update.isRangeFromDataset();
+        }
+        if (update.getStartX() != null) {
+            startX = update.getStartX();
+        }
+        if (update.getStartY() != null) {
+            startY = update.getStartY();
+        }
+        if (update.getEndX() != null) {
+            endX = update.getEndX();
+        }
+        if (update.getEndY() != null) {
+            endY = update.getEndY();
+        }
+        
     }
 
-    public void draw(Graphics2D g, OrderedDataset2D data) {
+    public void draw(Graphics2D g, Point2DDataset data) {
         int dataCount = data.getCount();
-        double startX = data.getXMinValue();
-        double startY = data.getYMinValue();
-        double endX = data.getXMaxValue();
-        double endY = data.getYMaxValue();
+        
+        // Retain the integrated min/max
+        integratedMinX = Math.min(integratedMinX, data.getXMinValue());
+        integratedMinY = Math.min(integratedMinY, data.getYMinValue());
+        integratedMaxX = Math.max(integratedMaxX, data.getXMaxValue());
+        integratedMaxY = Math.max(integratedMaxY, data.getYMaxValue());
+        
+        // Determine range of the plot.
+        // If no range is set, use the one from the dataset
+        double startXPlot;
+        double startYPlot;
+        double endXPlot;
+        double endYPlot;
+        if (rangeFromDataset) {
+            startXPlot = integratedMinX;
+            startYPlot = integratedMinY;
+            endXPlot = integratedMaxX;
+            endYPlot = integratedMaxY;
+        } else {
+            startXPlot = startX;
+            startYPlot = startY;
+            endXPlot = endX;
+            endYPlot = endY;
+        }
         int margin = 3;
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -68,8 +116,8 @@ public class LineGraphRenderer {
         g.setColor(Color.BLACK);
 
         // Compute axis
-        ValueAxis xAxis = ValueAxis.createAutoAxis(data.getXMinValue(), data.getXMaxValue(), Math.max(2, width / 60));
-        ValueAxis yAxis = ValueAxis.createAutoAxis(data.getYMinValue(), data.getYMaxValue(), Math.max(2, height / 60));
+        ValueAxis xAxis = ValueAxis.createAutoAxis(startXPlot, endXPlot, Math.max(2, width / 60));
+        ValueAxis yAxis = ValueAxis.createAutoAxis(startYPlot, endYPlot, Math.max(2, height / 60));
         HorizontalAxisRenderer xAxisRenderer = new HorizontalAxisRenderer(xAxis, margin, g);
         VerticalAxisRenderer yAxisRenderer = new VerticalAxisRenderer(yAxis, margin, g);
 
@@ -86,15 +134,17 @@ public class LineGraphRenderer {
         yAxisRenderer.draw(g, 0, yStartGraph, yEndGraph, height, xStartGraph);
 
 
-        double rangeX = endX - startX;
-        double rangeY = endY - startY;
+        double rangeX = endXPlot - startXPlot;
+        double rangeY = endYPlot - startYPlot;
 
         // Scale data
         double[] scaledX = new double[dataCount];
         double[] scaledY = new double[dataCount];
+        ListNumber xValues = data.getXValues();
+        ListNumber yValues = data.getYValues();
         for (int i = 0; i < scaledY.length; i++) {
-            scaledX[i] = xStartGraph + NumberUtil.scale(data.getXValue(i), startX, endX, plotWidth);
-            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(data.getYValue(i), startY, endY, plotHeight);
+            scaledX[i] = xStartGraph + NumberUtil.scale(xValues.getDouble(i), startXPlot, endXPlot, plotWidth);
+            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(yValues.getDouble(i), startYPlot, endYPlot, plotHeight);
         }
         
         // Draw reference lines

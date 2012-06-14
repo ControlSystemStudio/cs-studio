@@ -4,12 +4,18 @@
  */
 package org.epics.pvmanager.data;
 
+import org.epics.util.array.ListDouble;
+
 /**
  * Double array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */
-public interface VDoubleArray extends Array<Double>, Alarm, Time, Display {
+public interface VDoubleArray extends Array<Double>, VNumberArray, VType {
     @Override
     double[] getArray();
+    
+    @Override
+    ListDouble getData();
+    
 }

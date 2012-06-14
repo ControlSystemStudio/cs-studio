@@ -4,16 +4,15 @@
  */
 package org.epics.pvmanager.data;
 
-import java.util.logging.Logger;
 import java.util.ArrayList;
-import java.util.Collections;
-import org.epics.pvmanager.Function;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeStamp;
 import java.util.List;
 import java.util.logging.Level;
-import static org.epics.pvmanager.TimeSupport.timestampOf;
+import java.util.logging.Logger;
+import org.epics.pvmanager.Function;
+import static org.epics.pvmanager.TimeSupport.*;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.Timestamp;
 
 /**
  * Provides an aggregator that returns a synchronized set of data by looking
@@ -37,15 +36,15 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
      */
     @SuppressWarnings("unchecked")
     public SynchronizedVDoubleAggregator(List<String> names, List<Function<List<VDouble>>> collectors, TimeDuration tolerance) {
-        if (tolerance.equals(TimeDuration.ms(0)))
-            throw new IllegalArgumentException("Tolerance between samples must be non-zero");
+        if (!tolerance.isPositive())
+            throw new IllegalArgumentException("Tolerance between samples must be non-zero and positive");
         this.tolerance = tolerance;
         this.collectors = collectors;
     }
 
     @Override
     public VMultiDouble getValue() {
-        TimeStamp reference = electReferenceTimeStamp(collectors);
+        Timestamp reference = electReferenceTimeStamp(collectors);
         if (reference == null)
             return null;
 
@@ -63,16 +62,15 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
         if (log.isLoggable(Level.FINE)) {
             log.fine(buffer.toString());
         }
-        return ValueFactory.newVMultiDouble(values, AlarmSeverity.NONE, AlarmStatus.NONE,
-                reference, null,
-                null, null, null, null, null, null, null, null, null, null);
+        return ValueFactory.newVMultiDouble(values, ValueFactory.alarmNone(),
+                ValueFactory.newTime(reference), ValueFactory.displayNone());
     }
 
-    static <T> TimeStamp electReferenceTimeStamp(List<Function<List<T>>> collectors) {
+    static <T> Timestamp electReferenceTimeStamp(List<Function<List<T>>> collectors) {
         for (Function<List<T>> collector : collectors) {
             List<T> data = collector.getValue();
             if (data.size() > 1) {
-                TimeStamp time = timestampOf(data.get(data.size() - 2));
+                Timestamp time = toTimestamp(data.get(data.size() - 2));
                 if (time != null)
                     return time;
             }
@@ -80,12 +78,12 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
         return null;
     }
 
-    static <T> T closestElement(List<T> data, TimeInterval interval, TimeStamp reference) {
+    static <T> T closestElement(List<T> data, TimeInterval interval, Timestamp reference) {
         StringBuilder buffer = new StringBuilder();
         T latest = null;
         long latestDistance = Long.MAX_VALUE;
         for (T value : data) {
-            TimeStamp newTime = timestampOf(value);
+            Timestamp newTime = toTimestamp(value);
             if (log.isLoggable(Level.FINEST)) {
                 buffer.append(newTime.getNanoSec()).append(", ");
             }
@@ -93,9 +91,9 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
             if (interval.contains(newTime)) {
                 if (latest == null) {
                     latest = value;
-                    latestDistance = newTime.durationFrom(reference).getNanoSec();
+                    latestDistance = newTime.durationBetween(reference).getNanoSec();
                 } else {
-                    long newDistance = newTime.durationFrom(reference).getNanoSec();
+                    long newDistance = newTime.durationBetween(reference).getNanoSec();
                     if (newDistance < latestDistance) {
                         latest = value;
                         latestDistance = newDistance;
@@ -104,7 +102,7 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
             }
         }
         if (log.isLoggable(Level.FINEST)) {
-            buffer.append("[").append(timestampOf(latest).getNanoSec()).append("|").append(reference.getNanoSec()).append("]");
+            buffer.append("[").append(toTimestamp(latest).getNanoSec()).append("|").append(reference.getNanoSec()).append("]");
             log.finest(buffer.toString());
         }
         return latest;

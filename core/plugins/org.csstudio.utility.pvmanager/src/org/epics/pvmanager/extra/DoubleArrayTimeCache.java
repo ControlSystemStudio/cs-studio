@@ -6,8 +6,7 @@ package org.epics.pvmanager.extra;
 
 import java.util.List;
 import org.epics.pvmanager.data.Display;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
 
 
 /**
@@ -17,18 +16,18 @@ import org.epics.pvmanager.util.TimeStamp;
 public interface DoubleArrayTimeCache {
     
     public interface Data {
-        public TimeStamp getBegin();
+        public Timestamp getBegin();
         
-        public TimeStamp getEnd();
+        public Timestamp getEnd();
         
         public int getNArrays();
         
         public double[] getArray(int index);
         
-        public TimeStamp getTimeStamp(int index);
+        public Timestamp getTimestamp(int index);
     }
     
-    public Data getData(TimeStamp begin, TimeStamp end);
+    public Data getData(Timestamp begin, Timestamp end);
     
     /**
      * Each segment of the new data ends with an array of old data.
@@ -38,7 +37,7 @@ public interface DoubleArrayTimeCache {
      * 
      * @return 
      */
-    public List<Data> newData(TimeStamp beginUpdate, TimeStamp endUpdate, TimeStamp beginNew, TimeStamp endNew);
+    public List<Data> newData(Timestamp beginUpdate, Timestamp endUpdate, Timestamp beginNew, Timestamp endNew);
     
     public Display getDisplay();
 }

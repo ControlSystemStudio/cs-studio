@@ -7,13 +7,11 @@ package org.epics.pvmanager.sim;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import org.epics.pvmanager.util.TimeDuration;
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeStamp;
-import org.epics.pvmanager.data.AlarmSeverity;
-import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
-import org.epics.pvmanager.data.ValueFactory;
+import static org.epics.pvmanager.data.ValueFactory.*;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.TimeInterval;
+import org.epics.util.time.Timestamp;
 
 /**
  * Base class for all simulated functions. It provide constant rate data generation
@@ -37,13 +35,13 @@ abstract class SimFunction<T> extends Simulation<T> {
         // The timer only accepts interval up to the millisecond.
         // For intervals shorter than that, we calculate the extra samples
         // we need to generate within each time execution.
-        super(TimeDuration.ms(Math.max((int) (secondsBeetwenSamples * 1000) / 2, 1)), classToken);
+        super(TimeDuration.ofMillis(Math.max((int) (secondsBeetwenSamples * 1000) / 2, 1)), classToken);
 
         if (secondsBeetwenSamples <= 0.0) {
             throw new IllegalArgumentException("Interval must be greater than zero (was " + secondsBeetwenSamples + ")");
         }
 
-        timeBetweenSamples = TimeDuration.nanos((long) (secondsBeetwenSamples * 1000000000));
+        timeBetweenSamples = TimeDuration.ofNanos((long) (secondsBeetwenSamples * 1000000000));
     }
 
     /**
@@ -63,7 +61,7 @@ abstract class SimFunction<T> extends Simulation<T> {
     @Override
     List<T> createValues(TimeInterval interval) {
         List<T> values = new ArrayList<T>();
-        TimeStamp newTime = lastTime.plus(timeBetweenSamples);
+        Timestamp newTime = lastTime.plus(timeBetweenSamples);
 
         while (interval.contains(newTime)) {
             lastTime = newTime;
@@ -83,9 +81,9 @@ abstract class SimFunction<T> extends Simulation<T> {
      */
     VDouble newValue(double value, VDouble oldValue) {
         if (lastTime == null)
-            lastTime = TimeStamp.now();
+            lastTime = Timestamp.now();
         
-        return ValueFactory.newVDouble(value, lastTime, oldValue);
+        return newVDouble(value, newTime(Timestamp.now()), oldValue);
     }
 
 }

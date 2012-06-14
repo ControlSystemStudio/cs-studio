@@ -24,7 +24,7 @@ public final class ArrayDouble extends ListDouble implements Serializable {
      * 
      * @param array an array
      */
-    public ArrayDouble(double[] array) {
+    public ArrayDouble(double... array) {
         this(array, true);
     }
 

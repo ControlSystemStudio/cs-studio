@@ -1,13 +1,14 @@
 package org.csstudio.channel.widgets;
 
+import static org.epics.pvmanager.ExpressionLanguage.channel;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
+import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
 import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
-import static org.epics.pvmanager.ExpressionLanguage.*;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
-import static org.epics.pvmanager.extra.ExpressionLanguage.*;
-import static org.epics.pvmanager.util.TimeDuration.*;
+import static org.epics.pvmanager.util.TimeDuration.hz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.channel.widgets.util.MementoUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.RangeListener;
 import org.csstudio.ui.util.widgets.RangeWidget;
@@ -107,7 +107,7 @@ implements ConfigurableWidget, ISelectionProvider {
 			
 			@Override
 			public void rangeChanged() {
-				parameters = parameters.with(pixelDuration(TimeDuration.nanos((long) (rangeWidget.getDistancePerPx() * 1000000000))));
+				parameters = parameters.with(pixelDuration(TimeDuration.asTimeDuration(TimeDuration.nanos((long) (rangeWidget.getDistancePerPx() * 1000000000)))));
 				if (plot != null) {
 					plot.with(parameters);
 				}
@@ -228,7 +228,7 @@ implements ConfigurableWidget, ISelectionProvider {
 		}
 		
 		// Make sure the range is consistent with the image resolution
-		rangeWidget.setDistancePerPx(parameters.getPixelDuration().getNanoSec() / 1000000000.0);
+		rangeWidget.setDistancePerPx(TimeDuration.durationOf(parameters.getPixelDuration()).getNanoSec() / 1000000000.0);
 	}
 	
 	// Reconnects the pv
@@ -334,7 +334,7 @@ implements ConfigurableWidget, ISelectionProvider {
 	}
 	
 	public TimeDuration getPixelDuration() {
-		return parameters.getPixelDuration();
+		return TimeDuration.durationOf(parameters.getPixelDuration());
 	}
 	
 	public void setPixelDuration(TimeDuration pixelDuration) {

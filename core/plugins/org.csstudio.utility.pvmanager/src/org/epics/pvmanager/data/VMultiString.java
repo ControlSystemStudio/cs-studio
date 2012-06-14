@@ -8,6 +8,6 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VMultiString extends MultiScalar<VString>, Alarm, Time {
+public interface VMultiString extends MultiScalar<VString>, Alarm, Time, VType {
 
 }

@@ -9,5 +9,5 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VString extends Scalar<String>, Alarm, Time {
+public interface VString extends Scalar<String>, Alarm, Time, VType {
 }
