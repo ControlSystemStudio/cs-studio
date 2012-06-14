@@ -4,10 +4,7 @@
  */
 package org.epics.pvmanager;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -161,21 +158,23 @@ public abstract class DataSource {
         if (!isWriteable())
             throw new WriteFailException("Data source is read only");
         
-        final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
+        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
             ChannelHandler handler = channel(channelName);
             if (handler == null)
                 throw new WriteFailException("Channel " + channelName + " does not exist");
             handlers.add(handler);
-            }
+            caches.add(writeBuffer.getWriteCaches().get(channelName));
+        }
 
         // Connect using another thread
         exec.execute(new Runnable() {
 
             @Override
             public void run() {
-                for (ChannelHandler channelHandler : handlers) {
-                    channelHandler.addWriter(exceptionHandler);
+                for (int i = 0; i < handlers.size(); i++) {
+                    handlers.get(i).addWriter(caches.get(i), exceptionHandler);
                 }
             }
         });
@@ -200,9 +199,11 @@ public abstract class DataSource {
         }
 
         registeredBuffers.remove(writeBuffer);
-        final Set<ChannelHandler> handlers = new HashSet<ChannelHandler>();
+        final List<ChannelHandler> handlers = new ArrayList<ChannelHandler>();
+        final List<WriteCache<?>> caches = new ArrayList<WriteCache<?>>();
         for (String channelName : writeBuffer.getWriteCaches().keySet()) {
             handlers.add(channel(channelName));
+            caches.add(writeBuffer.getWriteCaches().get(channelName));
         }
 
         // Connect using another thread
@@ -210,8 +211,8 @@ public abstract class DataSource {
 
             @Override
             public void run() {
-                for (ChannelHandler channelHandler : handlers) {
-                    channelHandler.removeWrite(exceptionHandler);
+                for (int i = 0; i < handlers.size(); i++) {
+                    handlers.get(i).removeWrite(caches.get(i), exceptionHandler);
                 }
             }
         });

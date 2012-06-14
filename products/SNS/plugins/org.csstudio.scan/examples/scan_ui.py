@@ -12,6 +12,7 @@ can only be used within CSS BOY scripts.
 import re
 from org.eclipse.ui import PlatformUI
 from org.csstudio.opibuilder.scriptUtil import PVUtil
+from org.csstudio.scan.ui import SimulationDisplay
 
 def getWidgetPVDouble(display, widget):
     """Fetch value of a widget's PV
@@ -22,7 +23,6 @@ def getWidgetPVDouble(display, widget):
     pv = display.getWidget(widget).getPV()
     return PVUtil.getDouble(pv);
 
-
 def getWidgetPVLong(display, widget):
     """Fetch value of a widget's PV
        @param display BOY Display
@@ -32,6 +32,13 @@ def getWidgetPVLong(display, widget):
     pv = display.getWidget(widget).getPV()
     return PVUtil.getLong(pv);
 
+def getWidgetPVBool(display, widget):
+    """Fetch value of a widget's PV
+       @param display BOY Display
+       @param widget Widget name
+       @return Value of that PV as boolean
+    """
+    return getWidgetPVLong(display, widget) != 0
 
 def getWidgetPVString(display, widget):
     """Fetch value of a widget's PV
@@ -81,6 +88,9 @@ def showScans():
     """ Display Scan Monitor"""
     __showView__("org.csstudio.scan.ui.scanmonitor")
 
+def showSimulation(simu):
+    """ Display Scan Simulation"""
+    SimulationDisplay.show(simu)
 
 def showPlot(*args):
     """ Display Scan Plot for a given scan

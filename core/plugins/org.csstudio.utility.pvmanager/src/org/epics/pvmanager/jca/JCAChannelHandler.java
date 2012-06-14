@@ -130,7 +130,7 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
                             processMessage(getLastMessagePayload());
                         }
                     } catch (Exception ex) {
-                        notifyAllReaders(ex);
+                        reportExceptionToAllReadersAndWriters(ex);
                     }
                 }
             }
