@@ -24,7 +24,7 @@ class DelayedConnectionErrorChannel extends MultiplexedChannelHandler<Object, Ob
 
             @Override
             public void run() {
-                notifyAllReaders(new RuntimeException("Connection error"));
+                reportExceptionToAllReadersAndWriters(new RuntimeException("Connection error"));
             }
         }, 1, TimeUnit.SECONDS);
     }

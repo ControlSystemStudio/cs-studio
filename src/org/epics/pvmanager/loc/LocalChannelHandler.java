@@ -49,9 +49,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void addWriter(ExceptionHandler handler) {
+    protected synchronized void addWriter(WriteCache<?> cache, ExceptionHandler handler) {
         // Override for test visibility purposes
-        super.addWriter(handler);
+        super.addWriter(cache, handler);
     }
 
     @Override
@@ -61,9 +61,9 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     }
 
     @Override
-    protected synchronized void removeWrite(ExceptionHandler exceptionHandler) {
+    protected synchronized void removeWrite(WriteCache<?> cache, ExceptionHandler exceptionHandler) {
         // Override for test visibility purposes
-        super.removeWrite(exceptionHandler);
+        super.removeWrite(cache, exceptionHandler);
     }
     
     private Object wrapValue(Object value) {

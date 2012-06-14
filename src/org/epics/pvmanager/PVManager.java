@@ -48,7 +48,8 @@ public class PVManager {
 
     private static volatile Executor defaultNotificationExecutor = org.epics.pvmanager.util.Executors.localThread();
     private static volatile DataSource defaultDataSource = null;
-    private static final ScheduledExecutorService workerPool = Executors.newSingleThreadScheduledExecutor(org.epics.pvmanager.util.Executors.namedPool("PVMgr Worker "));
+    private static final ScheduledExecutorService workerPool = Executors.newScheduledThreadPool(Math.max(1, Runtime.getRuntime().availableProcessors() - 1),
+            org.epics.pvmanager.util.Executors.namedPool("PVMgr Worker "));
     private static ScheduledExecutorService readScannerExecutorService = workerPool;
     private static ScheduledExecutorService asyncWriteExecutor = workerPool;
 
