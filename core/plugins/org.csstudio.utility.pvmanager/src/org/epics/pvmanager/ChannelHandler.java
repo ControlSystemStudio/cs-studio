@@ -81,14 +81,14 @@ public abstract class ChannelHandler {
      * 
      * @param handler to be notified in case of errors
      */
-    protected abstract void addWriter(ExceptionHandler handler);
+    protected abstract void addWriter(WriteCache<?> cache, ExceptionHandler handler);
 
     /**
      * Used by the data source to conclude writes to the channel managed by this handler.
      * 
      * @param exceptionHandler to be notified in case of errors
      */
-    protected abstract void removeWrite(ExceptionHandler exceptionHandler);
+    protected abstract void removeWrite(WriteCache<?> cache, ExceptionHandler exceptionHandler);
 
     /**
      * Implements a write operation. Write the newValues to the channel

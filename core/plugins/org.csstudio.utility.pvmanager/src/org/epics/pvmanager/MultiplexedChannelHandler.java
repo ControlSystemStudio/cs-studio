@@ -27,7 +27,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private MessagePayload lastMessage;
     private ConnectionPayload connectionPayload;
     private Map<Collector<?>, MonitorHandler> monitors = new ConcurrentHashMap<Collector<?>, MonitorHandler>();
-    private List<ExceptionHandler> writeExceptionHandlers = new ArrayList<ExceptionHandler>();
+    private Map<WriteCache<?>, ExceptionHandler> writeCaches = new ConcurrentHashMap<WriteCache<?>, ExceptionHandler>();
 
     private class MonitorHandler {
 
@@ -73,13 +73,16 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     }
     
     /**
-     * Notifies all readers of an error condition.
+     * Notifies all readers and writers of an error condition.
      * 
      * @param ex the exception to notify
      */
-    protected synchronized final void notifyAllReaders(Exception ex) {
+    protected synchronized final void reportExceptionToAllReadersAndWriters(Exception ex) {
         for (MonitorHandler monitor : monitors.values()) {
             monitor.exceptionHandler.handleException(ex);
+        }
+        for (ExceptionHandler exHandler : writeCaches.values()) {
+            exHandler.handleException(ex);
         }
     }
 
@@ -222,13 +225,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     protected synchronized void removeMonitor(Collector<?> collector) {
         monitors.remove(collector);
         readUsageCounter--;
-        guardedDisconnect(new ExceptionHandler() {
-
-            @Override
-            public void handleException(Exception ex) {
-                log.log(Level.WARNING, "Couldn't disconnect channel " + getChannelName(), ex);
-            }
-        });
+        guardedDisconnect();
     }
     
     /**
@@ -238,9 +235,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * @param handler to be notified in case of errors
      */
     @Override
-    protected synchronized void addWriter(ExceptionHandler handler) {
+    protected synchronized void addWriter(WriteCache<?> cache, ExceptionHandler handler) {
         writeUsageCounter++;
-        guardedConnect(handler);
+        writeCaches.put(cache, handler);
+        guardedConnect();
     }
 
     /**
@@ -249,9 +247,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * @param exceptionHandler to be notified in case of errors
      */
     @Override
-    protected synchronized void removeWrite(ExceptionHandler exceptionHandler) {
+    protected synchronized void removeWrite(WriteCache<?> cache, ExceptionHandler exceptionHandler) {
         writeUsageCounter--;
-        guardedDisconnect(exceptionHandler);
+        writeCaches.remove(cache);
+        guardedDisconnect();
     }
 
     /**
@@ -269,39 +268,26 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         }
     }
 
-    private void guardedConnect(final ExceptionHandler handler) {
-        if (getUsageCounter() == 1) {
-            try {
-                connect();
-            } catch(RuntimeException ex) {
-                notifyAllReaders(ex);
-                if (handler != null)
-                    handler.handleException(ex);
-            }
-        }
-    }
-
     private void guardedConnect() {
         if (getUsageCounter() == 1) {
             try {
                 connect();
             } catch(RuntimeException ex) {
-                notifyAllReaders(ex);
+                reportExceptionToAllReadersAndWriters(ex);
             }
         }
     }
 
-    private void guardedDisconnect(final ExceptionHandler handler) {
+    private void guardedDisconnect() {
         if (getUsageCounter() == 0) {
             try {
                 disconnect();
                 lastMessage = null;
                 connectionPayload = null;
             } catch (RuntimeException ex) {
-                notifyAllReaders(ex);
-                if (handler != null)
-                    handler.handleException(ex);
-            }
+                reportExceptionToAllReadersAndWriters(ex);
+                log.log(Level.WARNING, "Couldn't disconnect channel " + getChannelName(), ex);
+           }
         }
     }
 
