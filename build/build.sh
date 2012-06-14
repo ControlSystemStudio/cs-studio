@@ -31,7 +31,7 @@ else
      wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7-201106131736/eclipse-3.7-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-indigo-linux-gtk.tar.gz
-  unzip -o eclipse-delta-pack.zip
+  unzip -o eclipse-3.7-delta-pack.zip
   cd ..
 fi
 
