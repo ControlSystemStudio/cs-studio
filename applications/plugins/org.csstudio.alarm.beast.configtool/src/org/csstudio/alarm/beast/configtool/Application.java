@@ -40,6 +40,8 @@ public class Application implements IApplication
     private String filename;
     private String path;
 
+    private boolean delete;
+
     /** Parse arguments, set member variables */
     private String checkArguments(String[] args)
     {
@@ -96,18 +98,13 @@ public class Application implements IApplication
         if (root.get().isEmpty())
             return "Missing configuration root name\n" + parser.getHelp();
         this.root = root.get();
-
-        if (do_delete.get().length() > 0)
-        {
-            mode = Mode.DELETE;
-            path = do_delete.get();
-            return null;
-        }
-
-        if (file.get().isEmpty())
-            return "Missing file name\n" + parser.getHelp();
-        this.filename = file.get();
-
+        
+		if (do_delete.get().length() > 0) 
+		{
+			delete = true;
+			path = do_delete.get();
+		}
+        
         if (do_export.get())
             mode = Mode.EXPORT;
         else if (do_modify.get())
@@ -116,8 +113,18 @@ public class Application implements IApplication
             mode = Mode.IMPORT;
         else if (convert_alh.get())
             mode = Mode.CONVERT_ALH;
+        else if (delete) 
+        {
+        	mode = Mode.DELETE;
+        	return null;
+        }
         else
             return "Specify import or export or alh conversion\n" + parser.getHelp();
+        
+        if (file.get().isEmpty())
+            return "Missing file name\n" + parser.getHelp();
+        this.filename = file.get();
+        
         return null;
     }
 
@@ -280,6 +287,14 @@ public class Application implements IApplication
                 break;
             case MODIFY:
                 {
+                	if(delete) 
+                	{
+        				final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
+        				if (item == null)
+        					throw new Exception("Cannot locate item with path " + path);
+        				System.out.println("Deleting existing RDB configuration for '" + path + "'");
+        				config.remove(item);
+                	}
                     System.out.println("Modifying configuration '" + root + "' from " + filename);
                     new AlarmConfigurationLoader(config).load(filename);
                 }
@@ -293,13 +308,13 @@ public class Application implements IApplication
                 }
                 break;
             case DELETE:
-                {
-                    final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
-                    if (item == null)
-                        throw new Exception("Cannot locate item with path " + path);
-                    System.out.println("Deleting existing RDB configuration for '" + path + "'");
-                    config.remove(item);
-                }
+	            {
+	            	final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
+					if (item == null)
+						throw new Exception("Cannot locate item with path " + path);
+					System.out.println("Deleting existing RDB configuration for '" + path + "'");
+					config.remove(item);
+	            }
             break;
             default:
                 throw new Exception("Unknown mode " + mode.name());
@@ -310,7 +325,7 @@ public class Application implements IApplication
             config.close();
         }
     }
-
+    
     /** IApplication stop */
     @Override
     public void stop()

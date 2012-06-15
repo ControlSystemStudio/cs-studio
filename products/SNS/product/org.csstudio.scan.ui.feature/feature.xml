@@ -128,6 +128,8 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.ui.help" version="3.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.7.101" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.7.0" match="greaterOrEqual"/>
+      <import plugin="org.epics.util" version="0.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.7.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -380,6 +382,20 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.epics.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ndarray"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.imagej"
          download-size="0"
          install-size="0"
          version="0.0.0"

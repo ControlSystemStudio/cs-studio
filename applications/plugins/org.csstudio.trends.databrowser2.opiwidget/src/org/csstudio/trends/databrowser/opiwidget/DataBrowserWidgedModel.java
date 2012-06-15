@@ -65,7 +65,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
 	{
 		return new ArrayList<AbstractWidgetModel>(0);
 	}
-	
+
     /** No editing of child widgets in the original sense
      *  of the {@link AbstractContainerModel}
      *  {@inheritDoc}}
@@ -75,7 +75,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
 	{
 		return false;
 	}
-    
+
     /** {@inheritDoc}} */
     @Override
     public String getTypeID()
@@ -89,7 +89,11 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     {
         addProperty(new FilePathProperty(PROP_FILENAME, Messages.FileName,
                 WidgetPropertyCategory.Basic, null,
-                new String[] { Model.FILE_EXTENSION }));
+                new String[]
+                {
+                    Model.FILE_EXTENSION,
+                    Model.FILE_EXTENSION_OLD
+                }));
         addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, Messages.ShowToolbar,
                 WidgetPropertyCategory.Display, false));
     }
@@ -110,7 +114,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         macros.putAll(macro_input.getMacrosMap());
         return new MacroTable(macros);
     }
-    
+
     /** @return Path to data browser configuration file, macros are expanded */
     public IPath getExpandedFilename()
     {

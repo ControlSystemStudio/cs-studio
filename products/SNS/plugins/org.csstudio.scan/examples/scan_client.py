@@ -161,6 +161,25 @@ class ScanClient(object):
             self.server.getInfo()
         except:
             self.server = ScanServerConnector.connect()
+            
+            
+    def simulate(self, commands):
+        """
+        Submit a CommandSequence to the server for simulation
+        
+        @param commands  CommandSequence or string with XML text
+          
+        @return Simulation info
+        """
+        self.checkServer()
+        if isinstance(commands, str):
+            xml = commands
+        elif isinstance(commands, CommandSequence):
+            xml = commands.getXML()
+        else:
+            raise Exception('Expecting CommandSequence or XML-text')
+        return self.server.simulateScan(xml)
+
 
     def submit(self, name, commands):
         """
@@ -207,7 +226,7 @@ class ScanClient(object):
             sheet = SpreadsheetScanDataIterator(data, devices)
         else:
             sheet = SpreadsheetScanDataIterator(data)
-        sheet.dump(System.out)
+        sheet.printTable(System.out)
             
     def waitUntilDone(self, id=-1):
         """

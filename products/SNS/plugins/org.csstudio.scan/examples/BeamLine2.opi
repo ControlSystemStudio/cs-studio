@@ -806,7 +806,7 @@ $(pv_value)</tooltip>
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
       <actions hook="false" hook_all="false" />
-      <y>178</y>
+      <y>148</y>
       <wrap_words>true</wrap_words>
       <tooltip></tooltip>
       <x>3</x>
@@ -861,7 +861,7 @@ $(pv_value)</tooltip>
       </border_color>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
-      <y>174</y>
+      <y>144</y>
       <tooltip>Scan Name</tooltip>
       <x>81</x>
     </widget>
@@ -1171,7 +1171,7 @@ $(pv_value)</tooltip>
       </border_color>
       <horizontal_alignment>1</horizontal_alignment>
       <actions hook="false" hook_all="false" />
-      <y>130</y>
+      <y>118</y>
       <wrap_words>true</wrap_words>
       <tooltip></tooltip>
       <x>5</x>
@@ -1226,9 +1226,52 @@ $(pv_value)</tooltip>
       </border_color>
       <horizontal_alignment>0</horizontal_alignment>
       <actions hook="false" hook_all="false" />
-      <y>126</y>
+      <y>114</y>
       <tooltip>Number of neutrons to await at each step</tooltip>
       <x>81</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <wuid>67a9726c:137e1084f12:-7f67</wuid>
+      <auto_size>true</auto_size>
+      <scripts />
+      <height>21</height>
+      <name>simu</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <scale_options>
+        <width_scalable>true</width_scalable>
+        <height_scalable>false</height_scalable>
+        <keep_wh_ratio>false</keep_wh_ratio>
+      </scale_options>
+      <pv_name>loc://simulate</pv_name>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Check Box</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>83</width>
+      <border_style>0</border_style>
+      <label>Simulate</label>
+      <rules />
+      <pv_value />
+      <bit>0</bit>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" hook_all="false" />
+      <y>180</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>5</x>
     </widget>
   </widget>
   <widget typeId="org.csstudio.trends.databrowser.opiwidget" version="1.0">

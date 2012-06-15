@@ -24,14 +24,14 @@ else
     then
       wget http://ftp.osuosl.org/pub/eclipse//technology/epp/downloads/release/indigo/R/eclipse-rcp-indigo-linux-gtk.tar.gz
     fi
-  if [[ ! -f eclipse-3.7RC4-delta-pack.zip ]]
+  if [[ ! -f eclipse-delta-pack.zip ]]
   then
 #    wget http://download.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
 #    wget http://archive.eclipse.org/eclipse/downloads/drops/S-3.7RC3-201105261708/eclipse-3.7RC3-delta-pack.zip
-     wget http://archive.eclipse.org/eclipse/downloads/drops/S-3.7RC4-201106030909/eclipse-3.7RC4-delta-pack.zip
+     wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.7-201106131736/eclipse-3.7-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-indigo-linux-gtk.tar.gz
-  unzip -o eclipse-3.7RC4-delta-pack.zip
+  unzip -o eclipse-3.7-delta-pack.zip
   cd ..
 fi
 

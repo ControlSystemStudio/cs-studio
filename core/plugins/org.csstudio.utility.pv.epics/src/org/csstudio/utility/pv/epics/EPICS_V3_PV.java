@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.csstudio.data.values.IMetaData;
 import org.csstudio.data.values.IValue;
-import org.csstudio.platform.libs.epics.EpicsPlugin;
 import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -53,9 +52,6 @@ import org.eclipse.core.runtime.PlatformObject;
 public class EPICS_V3_PV extends PlatformObject
             implements PV, ConnectionListener, MonitorListener
 {
-    // TODO Use PROPERTY event from gov.aps.jca Monitor once that's in there
-    private static final int DBE_PROPERTY = 1 << 3;
-
     /** Use plain mode?
      *  @see #EPICS_V3_PV(String, boolean)
      */
@@ -465,11 +461,8 @@ public class EPICS_V3_PV extends PlatformObject
             try
             {
                 final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-
-                //TODO: Remove this line if CAJ has been updated to support DBE_PROPERTY
-                if(!EpicsPlugin.getDefault().usePureJava())
-                	meta_subscription = channel.addMonitor(
-                			meta_type, channel.getElementCount(), DBE_PROPERTY, meta_update_listener);
+                meta_subscription = channel.addMonitor(
+                			meta_type, channel.getElementCount(), Monitor.PROPERTY, meta_update_listener);
             }
             catch (final Exception ex)
             {

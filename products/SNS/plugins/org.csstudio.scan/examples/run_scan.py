@@ -16,6 +16,8 @@ y0 = getWidgetPVDouble(display, "y0")
 y1 = getWidgetPVDouble(display, "y1")
 dy = getWidgetPVDouble(display, "dy")
 
+dy = getWidgetPVDouble(display, "dy")
+simu = getWidgetPVBool(display, "simu")
 neutrons = getWidgetPVDouble(display, "neutrons")
 
 name = getWidgetPVString(display, "name")
@@ -43,18 +45,16 @@ seq = CommandSequence(
 ]
 )
 
-# Run simulation
-# TODO Make this nicer
-#simu = scan.server.simulateScan(seq.getXML())
-#import org.csstudio.scan.ui.SimulationDisplay as SimulationDisplay
-#SimulationDisplay.show(simu)
+if simu:
+    simu = scan.simulate(seq)
+    showSimulation(simu)
+else:
+    # Submit scan
+    id = scan.submit(name, seq);
 
-# Submit scan
-id = scan.submit(name, seq);
+    # Open scan monitor and plot, configured for this scan
+    showScans()
+    showPlot(name, id, 'xpos', 'ypos')
 
-# Open scan monitor and plot, configured for this scan
-showScans()
-showPlot(name, id, 'xpos', 'ypos')
-
-# Update name of the scan
-setWidgetPV(display, "name", incrementScan(name))
+    # Update name of the scan
+    setWidgetPV(display, "name", incrementScan(name))
