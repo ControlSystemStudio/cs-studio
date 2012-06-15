@@ -53,6 +53,9 @@ public class Model
      */
     final public static String FILE_EXTENSION = "plt"; //$NON-NLS-1$
 
+    /** Previously used file extension */
+    final public static String FILE_EXTENSION_OLD = "css-plt"; //$NON-NLS-1$
+
     // XML file tags
     final public static String TAG_DATABROWSER = "databrowser";
     final public static String TAG_SCROLL = "scroll";
