@@ -88,8 +88,8 @@ public class LineGraphRenderer {
         // Retain the integrated min/max
         integratedMinX = java.lang.Double.isNaN(data.getXMinValue()) ? integratedMinX : Math.min(integratedMinX, data.getXMinValue());
         integratedMinY = java.lang.Double.isNaN(data.getYMinValue()) ? integratedMinY : Math.min(integratedMinY, data.getYMinValue());
-        integratedMaxX = java.lang.Double.isNaN(data.getXMaxValue()) ? integratedMaxX : Math.min(integratedMaxX, data.getXMaxValue());
-        integratedMaxY = java.lang.Double.isNaN(data.getYMaxValue()) ? integratedMaxY : Math.min(integratedMaxY, data.getYMaxValue());
+        integratedMaxX = java.lang.Double.isNaN(data.getXMaxValue()) ? integratedMaxX : Math.max(integratedMaxX, data.getXMaxValue());
+        integratedMaxY = java.lang.Double.isNaN(data.getYMaxValue()) ? integratedMaxY : Math.max(integratedMaxY, data.getYMaxValue());
         
         // Determine range of the plot.
         // If no range is set, use the one from the dataset
@@ -184,8 +184,13 @@ public class LineGraphRenderer {
         line.moveTo(scaledX[0], scaledY[0]);
         for (int i = 1; i < scaledY.length; i++) {
             double halfX = scaledX[i - 1] + (scaledX[i] - scaledX[i - 1]) / 2;
-            line.lineTo(halfX, scaledY[i - 1]);
-            line.lineTo(halfX, scaledY[i]);
+            if (!java.lang.Double.isNaN(scaledY[i-1])) {
+                line.lineTo(halfX, scaledY[i - 1]);
+                if (!java.lang.Double.isNaN(scaledY[i]))
+                    line.lineTo(halfX, scaledY[i]);
+            } else {
+                line.moveTo(halfX, scaledY[i]);
+            }
         }
         line.lineTo(scaledX[scaledX.length - 1], scaledY[scaledY.length - 1]);
         return line;

@@ -25,7 +25,8 @@ class HorizontalAxisRenderer {
     private String[] xLabels;
     private double[] xValueTicks;
     private int[] xTicks;
-    private Color axisColor = Color.BLACK;
+    private Color axisColor = new Color(192, 192, 192);
+    private Color axisTickColor = Color.BLACK;
     private Color axisTextColor = Color.BLACK;
     private FontMetrics metrics;
 
@@ -67,7 +68,7 @@ class HorizontalAxisRenderer {
         for (int i = 0; i < xLabels.length; i++) {
             graphics.setColor(axisTextColor);
             drawCenteredText(graphics, metrics, xLabels[i], xTicks[i], drawRange, imageHeight - bottomMargin, true, true);
-            graphics.setColor(axisColor);
+            graphics.setColor(axisTickColor);
             graphics.drawLine(xTicks[i], imageHeight - getAxisHeight(), xTicks[i], imageHeight - getAxisHeight() + tickSize);
         }
         
