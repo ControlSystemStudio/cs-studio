@@ -9,6 +9,8 @@ import gov.aps.jca.dbr.DBR_TIME_Int;
 import java.util.Collections;
 import java.util.List;
 import org.epics.pvmanager.data.VIntArray;
+import org.epics.util.array.ArrayInt;
+import org.epics.util.array.ListInt;
 
 /**
  *
@@ -28,6 +30,11 @@ class VIntArrayFromDbr extends VNumberMetadata<DBR_TIME_Int, DBR_CTRL_Double> im
     @Override
     public List<Integer> getSizes() {
         return Collections.singletonList(dbrValue.getIntValue().length);
+    }
+
+    @Override
+    public ListInt getData() {
+        return new ArrayInt(dbrValue.getIntValue());
     }
 
 }

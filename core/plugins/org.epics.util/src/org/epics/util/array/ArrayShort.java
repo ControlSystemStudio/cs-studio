@@ -25,7 +25,7 @@ public final class ArrayShort extends ListShort implements Serializable {
      * @param array an array
      */
 
-    public ArrayShort(short[] array) {
+    public ArrayShort(short... array) {
         this(array, true);
     }
     

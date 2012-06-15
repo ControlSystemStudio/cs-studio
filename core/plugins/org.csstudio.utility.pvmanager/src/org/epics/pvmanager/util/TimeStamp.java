@@ -5,6 +5,7 @@
 package org.epics.pvmanager.util;
 
 import java.util.Date;
+import org.epics.util.time.Timestamp;
 
 /**
  * Represent a time stamp at nanosecond accuracy. The time is internally stored
@@ -17,8 +18,10 @@ import java.util.Date;
  * takes into account leap seconds, all the math operations on TimeStamps do
  * not take leap seconds into account.
  *
+ * @deprecated this class is being retired in favor of {@link Timestamp}
  * @author carcassi
  */
+@Deprecated
 public class TimeStamp implements Comparable<TimeStamp> {
 
     /*
@@ -85,6 +88,10 @@ public class TimeStamp implements Comparable<TimeStamp> {
         long epicsSec = (time / 1000);
         return time(epicsSec, nanoSec);
     }
+    
+    public static TimeStamp timestampOf(Timestamp timestamp) {
+        return time(timestamp.getSec(), timestamp.getNanoSec());
+    }
 
     /**
      * Returns a new timestamp for the current instant. The timestamp is calculated
@@ -105,6 +112,25 @@ public class TimeStamp implements Comparable<TimeStamp> {
      */
     public Date asDate() {
         return new Date((unixSec)*1000+nanoSec/1000000);
+    }
+    
+    /**
+     * Converts to the epics common definition of time.
+     */
+    public Timestamp asTimestamp() {
+        return Timestamp.of(unixSec, nanoSec);
+    }
+    
+    /**
+     * Null safe way of converting to the epics common definition of time.
+     * 
+     * @param timeStamp the timeStamp to convert
+     * @return a new timestamp
+     */
+    public static Timestamp asTimestamp(TimeStamp timeStamp) {
+        if (timeStamp == null)
+            return null;
+        return timeStamp.asTimestamp();
     }
 
     @Override

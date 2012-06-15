@@ -4,6 +4,8 @@
  */
 package org.epics.graphene;
 
+import org.epics.util.array.IteratorDouble;
+
 /**
  *
  * @author carcassi
@@ -55,11 +57,11 @@ public class NumberUtil {
         if (!iterator.hasNext()) {
             return null;
         }
-        double firstValue = iterator.next();
+        double firstValue = iterator.nextDouble();
         
         double[] minMax = new double[] {firstValue, firstValue};
         while (iterator.hasNext()) {
-            double value = iterator.next();
+            double value = iterator.nextDouble();
             if (value > minMax[1])
                 minMax[1] = value;
             if (value < minMax[0])

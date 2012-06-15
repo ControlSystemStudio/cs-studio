@@ -6,13 +6,12 @@ package org.epics.pvmanager.graphene;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.epics.graphene.*;
 import org.epics.pvmanager.Function;
-import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.VImage;
+import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.ValueUtil;
 
 /**
@@ -21,15 +20,15 @@ import org.epics.pvmanager.data.ValueUtil;
  */
 class Histogram1DFunction extends Function<VImage> {
     
-    private Function<List<VDouble>> argument;
-    private Dataset1D dataset = new Dataset1DArray(1000000);
+    private Function<? extends List<? extends VNumber>> argument;
+    private Point1DDataset dataset = new Point1DCircularBuffer(1000000);
     private Histogram1D histogram = Histograms.createHistogram(dataset);
     private Histogram1DRenderer renderer = new Histogram1DRenderer(300, 200);
     private VImage previousImage;
     private List<Histogram1DUpdate> histogramUpdates = Collections.synchronizedList(new ArrayList<Histogram1DUpdate>());
     private List<Histogram1DRendererUpdate> rendererUpdates = Collections.synchronizedList(new ArrayList<Histogram1DRendererUpdate>());
 
-    public Histogram1DFunction(Function<List<VDouble>> argument) {
+    public Histogram1DFunction(Function<? extends List<? extends VNumber>> argument) {
         this.argument = argument;
     }
     
@@ -45,14 +44,14 @@ class Histogram1DFunction extends Function<VImage> {
 
     @Override
     public VImage getValue() {
-        List<VDouble> newData = argument.getValue();
+        List<? extends VNumber> newData = argument.getValue();
         if (newData.isEmpty() && previousImage != null && histogramUpdates.isEmpty() && rendererUpdates.isEmpty())
             return previousImage;
         
         // Update the dataset
-        Dataset1DUpdate update = new Dataset1DUpdate();
-        for (VDouble vDouble : newData) {
-            update.addData(vDouble.getValue());
+        Point1DDatasetUpdate update = new Point1DDatasetUpdate();
+        for (VNumber vNumber : newData) {
+            update.addData(vNumber.getValue().doubleValue());
         }
         dataset.update(update);
         

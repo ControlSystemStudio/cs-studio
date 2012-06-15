@@ -5,6 +5,8 @@
 package org.epics.pvmanager;
 
 import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
+
 
 /**
  * Strategy class that extract time information from a given type.
@@ -37,6 +39,17 @@ public abstract class TimeSupport<T> extends TypeSupport<T> {
         TimeSupport<T> support = (TimeSupport<T>) findTypeSupportFor(TimeSupport.class,
                                                                                  typeClass);
         return support.extractTimestamp(value);
+    }
+    
+    /**
+     * Extracts the TimeStamp of the value using the appropriate type support.
+     *
+     * @param <T> the type of the value
+     * @param value the value from which to extract the timestamp
+     * @return the extracted timestamp
+     */
+    public static <T> Timestamp toTimestamp(final T value) {
+        return TimeStamp.asTimestamp(timestampOf(value));
     }
     
     /**

@@ -8,7 +8,7 @@ import java.awt.Color;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * Parameters for the waterfall plot
@@ -59,7 +59,7 @@ public class WaterfallPlotParameters extends Parameters {
         defaults.put("colorScheme", ColorScheme.singleRangeGradient(Color.BLACK, Color.WHITE));
         defaults.put("adaptiveRange", false);
         defaults.put("scrollDown", false);
-        defaults.put("pixelDuration", TimeDuration.ms(10));
+        defaults.put("pixelDuration", TimeDuration.ofMillis(10));
         return new WaterfallPlotParameters(defaults);
     }
     
@@ -123,6 +123,16 @@ public class WaterfallPlotParameters extends Parameters {
      * How much time should be allocated to each line of the plot.
      * 
      * @param pixelDuration amount of time for each pixel
+     * @return a new parameter
+     */
+    public static WaterfallPlotParameters pixelDuration(org.epics.pvmanager.util.TimeDuration pixelDuration) {
+        return new WaterfallPlotParameters("pixelDuration", org.epics.pvmanager.util.TimeDuration.asTimeDuration(pixelDuration));
+    }
+
+    /**
+     * The background color for the plot.
+     * 
+     * @param rgb background color for the plot
      * @return a new parameter
      */
     public static WaterfallPlotParameters backgroundColor(int rgb) {

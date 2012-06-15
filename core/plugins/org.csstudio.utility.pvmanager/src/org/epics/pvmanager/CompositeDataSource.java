@@ -239,14 +239,14 @@ public class CompositeDataSource extends DataSource {
     
 
     @Override
-    ChannelHandler<?> channel(String channelName) {
+    ChannelHandler channel(String channelName) {
         String name = nameOf(channelName);
         String dataSource = sourceOf(channelName);
         return dataSources.get(dataSource).channel(name);
     }
     
     @Override
-    protected ChannelHandler<?> createChannel(String channelName) {
+    protected ChannelHandler createChannel(String channelName) {
         throw new UnsupportedOperationException("Composite data source can't create channels directly.");
     }
 

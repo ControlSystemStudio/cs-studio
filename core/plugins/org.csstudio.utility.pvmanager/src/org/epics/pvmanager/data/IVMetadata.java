@@ -5,6 +5,8 @@
 package org.epics.pvmanager.data;
 
 import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.Timestamp;
+
 
 /**
  * Partial implementation for numeric types.
@@ -15,15 +17,15 @@ class IVMetadata implements Alarm, Time {
     
     private final AlarmSeverity alarmSeverity;
     private final AlarmStatus alarmStatus;
-    private final TimeStamp timeStamp;
+    private final Timestamp timestamp;
     private final Integer timeUserTag;
     private final boolean timeValid;
 
     IVMetadata(AlarmSeverity alarmSeverity, AlarmStatus alarmStatus,
-            TimeStamp timeStamp, Integer timeUserTag, boolean timeValid) {
+            Timestamp timestamp, Integer timeUserTag, boolean timeValid) {
         this.alarmSeverity = alarmSeverity;
         this.alarmStatus = alarmStatus;
-        this.timeStamp = timeStamp;
+        this.timestamp = timestamp;
         this.timeUserTag = timeUserTag;
         this.timeValid = timeValid;
     }
@@ -40,7 +42,12 @@ class IVMetadata implements Alarm, Time {
 
     @Override
     public TimeStamp getTimeStamp() {
-        return timeStamp;
+        return TimeStamp.timestampOf(timestamp);
+    }
+
+    @Override
+    public Timestamp getTimestamp() {
+        return timestamp;
     }
 
     @Override

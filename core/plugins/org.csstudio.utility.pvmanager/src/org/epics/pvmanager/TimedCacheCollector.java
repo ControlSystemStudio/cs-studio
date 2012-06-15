@@ -4,13 +4,14 @@
  */
 package org.epics.pvmanager;
 
-import org.epics.pvmanager.util.TimeInterval;
-import org.epics.pvmanager.util.TimeDuration;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import org.epics.pvmanager.util.TimeStamp;
+import org.epics.util.time.TimeDuration;
+import org.epics.util.time.TimeInterval;
 
 /**
  *
@@ -53,8 +54,8 @@ class TimedCacheCollector<T> extends Collector<T> {
                 return Collections.emptyList();
 
             // period allowed time = latest - msCache / 1000
-            TimeInterval periodAllowed = cachedPeriod.before(TimeSupport.timestampOf(buffer.getLast()));
-            while (!buffer.isEmpty() && !periodAllowed.contains(TimeSupport.timestampOf(buffer.getFirst()))) {
+            TimeInterval periodAllowed = cachedPeriod.before(TimeStamp.asTimestamp(TimeSupport.timestampOf(buffer.getLast())));
+            while (!buffer.isEmpty() && !periodAllowed.contains(TimeStamp.asTimestamp(TimeSupport.timestampOf(buffer.getFirst())))) {
                 // Discard value
                 buffer.removeFirst();
             }
