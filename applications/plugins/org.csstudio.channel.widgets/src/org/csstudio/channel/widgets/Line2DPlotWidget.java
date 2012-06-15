@@ -328,9 +328,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 		DesiredRateExpression<VDoubleArray> xValueExpression = null;
 		// Determine the expression for the x values.
-		if (xChannelNames != null && !yChannelNames.isEmpty()) {
+		if (xChannelNames != null && !xChannelNames.isEmpty()) {
 			xValueExpression = vDoubleArrayOf(latestValueOf(channels(
-					yChannelNames, VNumber.class, VNumber.class)));
+					xChannelNames, VNumber.class, VNumber.class)));
 		} else if (xWaveformChannelName != null) {
 			xValueExpression = latestValueOf(vDoubleArrayOf(channel(xWaveformChannelName)));
 		}
