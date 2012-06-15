@@ -120,7 +120,7 @@ public class AxisConfig
 		this.format = format;
 	}
 
-	public AxisConfig(final Boolean visible, final String name, final RGB rgb,
+	public AxisConfig(final boolean visible, final String name, final RGB rgb,
 	        final double min, final double max, final boolean auto_scale,
 	        final boolean log_scale)
 	{
@@ -140,7 +140,7 @@ public class AxisConfig
 	 * @param auto_scale
 	 * @param log_scale
 	 */
-	public AxisConfig(final Boolean visible, final String name, FontData font,
+	public AxisConfig(final boolean visible, final String name, FontData font,
 	        FontData scaleFont, final RGB rgb, final double min,
 	        final double max, final boolean auto_scale,
 	        final boolean log_scale, final boolean showGridLine,
@@ -176,7 +176,7 @@ public class AxisConfig
 	 */
 	public AxisConfig(final String name)
 	{
-		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, true, false);
+		this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
 	}
 
 	/**
