@@ -99,8 +99,7 @@ public class CircularBuffer<T> extends AbstractCollection<T> {
 	@SuppressWarnings("unchecked")
 	public synchronized void setBufferSize(int bufferSize, boolean clear) {
 		assert bufferSize > 0;		
-		if(this.bufferSize != bufferSize){
-			this.bufferSize = bufferSize;
+		if(this.bufferSize != bufferSize){			
 			if(clear){//clear 
 				buffer = (T[]) new Object[bufferSize];
 				clear();
@@ -113,7 +112,8 @@ public class CircularBuffer<T> extends AbstractCollection<T> {
 				count = Math.min(bufferSize, count);
 				head =0;
 				tail = count%bufferSize;
-			}			
+			}	
+			this.bufferSize = bufferSize;
 		}		
 	}
 
