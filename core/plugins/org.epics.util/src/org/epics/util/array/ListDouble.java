@@ -116,4 +116,16 @@ public abstract class ListDouble implements ListNumber, CollectionDouble {
         return result;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        int i = 0;
+        for (; i < size() - 1; i++) {
+            builder.append(getDouble(i)).append(", ");
+        }
+        builder.append(getDouble(i)).append("]");
+        return builder.toString();
+    }
+    
 }
