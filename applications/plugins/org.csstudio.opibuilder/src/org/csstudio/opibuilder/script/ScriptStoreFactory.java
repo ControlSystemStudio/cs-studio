@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.swt.widgets.Display;
 import org.mozilla.javascript.Context;
 import org.osgi.framework.Bundle;
+import org.python.core.PySystemState;
 import org.python.util.PythonInterpreter;
 
 /**The factory to return the corresponding script store according to the script type.
@@ -44,6 +45,10 @@ public class ScriptStoreFactory {
 				prefPath;
     	Properties props = new Properties();
     	props.setProperty("python.path", pythonPath); //$NON-NLS-1$
+    	//Disable cachedir so jython can start fast and no cachedir fold created.
+    	//See http://www.jython.org/jythonbook/en/1.0/ModulesPackages.html#java-package-scanning
+    	//and http://wiki.python.org/jython/PackageScanning
+    	props.setProperty(PySystemState.PYTHON_CACHEDIR_SKIP, "true"); //$NON-NLS-1$
         PythonInterpreter.initialize(System.getProperties(), props,
                  new String[] {""}); //$NON-NLS-1$
 		pythonInterpreterInitialized = true;
