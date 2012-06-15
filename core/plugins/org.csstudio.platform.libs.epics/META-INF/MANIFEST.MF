@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EPICS Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.epics;singleton:=true
-Bundle-Version: 1.1.6.qualifier
+Bundle-Version: 3.1.1.qualifier
 Bundle-Activator: org.csstudio.platform.libs.epics.EpicsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime
@@ -32,7 +32,7 @@ Export-Package:
  gov.aps.jca.event,
  gov.aps.jca.jni,
  org.csstudio.platform.libs.epics
-Bundle-Vendor: DESY/ORNL/SLAC
+Bundle-Vendor: BNL/DESY/ORNL/SLAC
 Bundle-Description: EPICS Channel Access V3 Library
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 
