@@ -330,6 +330,8 @@ public class Axis extends LinearScale{
 	    // Anything to do? Autoscale not enabled nor forced?
 		if (traceList.size() <= 0  ||  !(force || autoScale))
 		    return false;
+		if(!force && xyGraph.getZoomType() != ZoomType.NONE)
+			return false;
 
 	    // Get range of data in all traces
         final Range range = getTraceDataRange();
@@ -349,7 +351,11 @@ public class Axis extends LinearScale{
 		    max = Log10.log10(max);
 		    min = Log10.log10(min);
 		}
-
+//Give extra space in plot area
+//		double extraSpace = (tempMax-tempMin)*0.05;
+//		double tempMin2 = tempMin -extraSpace;
+//		double tempMax2 = tempMax + extraSpace;
+		
 		final double thr = (max - min)*autoScaleThreshold;
 
 		//if both the changes are lower than threshold, return
@@ -362,7 +368,11 @@ public class Axis extends LinearScale{
 			if((tempMax - max) > 0)
 				tempMax += thr;
 		}
-
+	
+//		if(tempMin>tempMin2)
+//			tempMin=tempMin2;
+//		if(tempMax<tempMax2)
+//			tempMax = tempMax2;
 		// Any change at all?
 		if((Double.doubleToLongBits(tempMin) == Double.doubleToLongBits(min)
 				&& Double.doubleToLongBits(tempMax) == Double.doubleToLongBits(max)) ||
