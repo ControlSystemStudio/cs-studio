@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
+import java.util.logging.Logger;
+
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.jface.action.Action;
@@ -24,6 +26,7 @@ import org.eclipse.ui.PlatformUI;
 /** An Action for printing the current image.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class PrintAction extends Action
 {
     final private Shell shell;
@@ -48,7 +51,19 @@ public class PrintAction extends Action
 
         // Only enable if printing is supported
         final PrinterData[] printers = Printer.getPrinterList();
-        setEnabled(printers != null  &&  printers.length > 0);
+        final Logger logger = Logger.getLogger(getClass().getName());
+        if (printers != null)
+        {
+        	logger.fine("Available printers:");
+        	for (PrinterData p : printers)
+        		logger.fine("Printer: " + p.name + " (" + p.driver + ")");
+        	setEnabled(printers.length > 0);
+        }
+        else
+        {
+        	logger.fine("No available printers");
+        	setEnabled(false);
+        }
     }
 
     /** {@inheritDoc} */
@@ -58,13 +73,17 @@ public class PrintAction extends Action
         // Get snapshot. Disposed at end of printing
         snapshot = graph.getImage();
         if (snapshot == null)
+        {
+        	Logger.getLogger(getClass().getName()).fine("Cannot obtain image");
             return;
+        }
 
         // Printer GUI
         final PrintDialog dlg = new PrintDialog(shell);
         PrinterData data = dlg.open();
         if (data == null)
         {
+        	Logger.getLogger(getClass().getName()).fine("Cannot obtain printer");
             snapshot.dispose();
             return;
         }
@@ -76,7 +95,7 @@ public class PrintAction extends Action
         }
         printer = new Printer(data);
         // Print in background thread
-        final Thread print_thread = new Thread("Print Thread") //$NON-NLS-1$
+        final Thread print_thread = new Thread("Print Thread")
         {
             @Override
             public void run()
@@ -92,8 +111,11 @@ public class PrintAction extends Action
     {
         try
         {
-            if (!printer.startJob("Data Browser")) //$NON-NLS-1$
+            if (!printer.startJob("Data Browser"))
+            {
+            	Logger.getLogger(getClass().getName()).fine("Cannot start print job");
                 return;
+            }
             // Printer page info
             final Rectangle area = printer.getClientArea();
             final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
