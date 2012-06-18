@@ -114,26 +114,27 @@ public class LinearScaleTickLabels extends Figure {
         }
         
       //add min
-       
+       boolean minDateAdded =false;
         if(MIN.compareTo(firstPosition) == (minBigger? 1:-1) ) {
         	tickLabelValues.add(min);
         	if (scale.isDateEnabled()) {
                 Date date = new Date((long) MIN.doubleValue());
-                tickLabels.add(scale.format(date));
+                tickLabels.add(scale.format(date, true));
+                minDateAdded = true;
             } else {
                 tickLabels.add(scale.format(MIN.doubleValue()));
             }
         	tickLabelPositions.add(scale.getMargin());        	
         }
        
-        for (int i = digitMin; minBigger? i>=digitMax : i <= digitMax; i+=minBigger?-1:1) {        	
+        for (int i = digitMin; minBigger? i>digitMax : i <digitMax; i+=minBigger?-1:1) {        	
         	 if(Math.abs(digitMax - digitMin) > 20){//if the range is too big, skip minor ticks.
         		 BigDecimal v = pow(10,i);
         		 if(v.doubleValue() > max)
         			 break;
         		 if (scale.isDateEnabled()) {
 	                    Date date = new Date((long) v.doubleValue());
-	                    tickLabels.add(scale.format(date));
+	                    tickLabels.add(scale.format(date, i==digitMin && !minDateAdded));
 	                } else {
 	                    tickLabels.add(scale.format(v.doubleValue()));
 	                }
@@ -153,7 +154,7 @@ public class LinearScaleTickLabels extends Figure {
 	
 	                if (scale.isDateEnabled()) {
 	                    Date date = new Date((long) j.doubleValue());
-	                    tickLabels.add(scale.format(date));
+	                    tickLabels.add(scale.format(date, j==firstPosition && !minDateAdded));
 	                } else {
 	                    tickLabels.add(scale.format(j.doubleValue()));
 	                }
@@ -176,7 +177,7 @@ public class LinearScaleTickLabels extends Figure {
         	tickLabelValues.add(max);
         	if (scale.isDateEnabled()) {
                 Date date = new Date((long) max);
-                tickLabels.add(scale.format(date));
+                tickLabels.add(scale.format(date, true));
             } else {
                 tickLabels.add(scale.format(max));
             }
@@ -238,22 +239,24 @@ public class LinearScaleTickLabels extends Figure {
         
         //add min
         int r = minBigger? 1 : -1;
+        boolean minDateAdded = false;
         if(MIN.compareTo(firstPosition) == r ) {
         	tickLabelValues.add(min);
         	if (scale.isDateEnabled()) {
                 Date date = new Date((long) MIN.doubleValue());
-                tickLabels.add(scale.format(date));
+                tickLabels.add(scale.format(date, true));
+                minDateAdded = true;
             } else {
                 tickLabels.add(scale.format(MIN.doubleValue()));
             }
         	tickLabelPositions.add(scale.getMargin());        	
         }
         	
-        for (BigDecimal b = firstPosition; max >= min ? b.doubleValue() <= max : b.doubleValue() >= max; b = b
+        for (BigDecimal b = firstPosition; max >= min ? b.doubleValue() < max : b.doubleValue() >max; b = b
                 .add(tickStep)) {
             if (scale.isDateEnabled()) {
-                Date date = new Date((long) b.doubleValue());
-                tickLabels.add(scale.format(date));
+                Date date = new Date((long) b.doubleValue()); 
+                tickLabels.add(scale.format(date, b==firstPosition && !minDateAdded));
             } else {
                 tickLabels.add(scale.format(b.doubleValue()));
             }
@@ -265,18 +268,18 @@ public class LinearScaleTickLabels extends Figure {
             tickLabelPositions.add(tickLabelPosition);
         }
         
-        //add max
-        if((minBigger ? max < tickLabelValues.get(tickLabelValues.size()-1) :
-        	max > tickLabelValues.get(tickLabelValues.size()-1) )) {
+        //always add max
+//        if((minBigger ? max < tickLabelValues.get(tickLabelValues.size()-1) :
+//        	max > tickLabelValues.get(tickLabelValues.size()-1) )) {
         	tickLabelValues.add(max);
         	if (scale.isDateEnabled()) {
                 Date date = new Date((long) max);
-                tickLabels.add(scale.format(date));
+                tickLabels.add(scale.format(date, true));
             } else {
                 tickLabels.add(scale.format(max));
             }
         	tickLabelPositions.add(scale.getMargin() + length);
-        }
+//        }
         	
     }
 
@@ -475,10 +478,10 @@ public class LinearScaleTickLabels extends Figure {
         	//by default, make the least step to be minutes
         	
         	long timeStep;
-        	if(max - min < 10000) // < 10 sec, step = 1 sec
-        		timeStep = 1000l;
-        	else if(max - min < 60000) // < 1 min, step = 10 sec
-        		timeStep= 10000l;
+        	if(max-min<1000) //<1 sec, step = 10 ms
+        		timeStep=10l;
+        	else if(max - min < 600000) // < 10 min, step = 1 sec
+        		timeStep= 1000l;
         	else if (max -min < 43200000) // < 12 hour, step = 1 min
         		timeStep = 60000l;
         	else if (max - min < 604800000) // < 7 days, step = 1 hour
@@ -500,6 +503,8 @@ public class LinearScaleTickLabels extends Figure {
         		timeStep = 365l*86400000l;  
         	}
         	double temp = gridStepHint + (timeStep - gridStepHint%timeStep);       	
+        	if(minBigger)
+        		temp = -temp;
         	return new BigDecimal(temp);
         }
         	
