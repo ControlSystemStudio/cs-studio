@@ -409,6 +409,38 @@ a more powerful but also slower regular expression can be used:
 Use the "Export Samples" panel to write data into files suitable for spreadsheet
 programs or Matlab.
 </p>
+
+<h3>Options</h3>
+<p>
+By default, the export will use the time range from the plot but fetch raw data from
+the archive, not the optimized, reduced min/max/average data that is displayed in the plot. 
+You can modify the time range of the export to differ from the range of the plot, and also
+select to export either the exact data that is displayed in the plot, or request optimized
+data with a different number of "bins" from the archive.
+</p>
+<p>The format of the exported file defaults to a spreadsheet suitable for import into
+most spreadsheet programs.
+You can modify these settings:
+</p>
+<ul>
+<li>"Tabular": Instead of a table that lists the samples for all channels, you can
+               export the samples for each channel separately.
+</li>
+<li>".. with error columns": The min...max range of optimzed data is by
+              default export as "error" columns, suitable for an error-bar display.
+</li>
+<li>".. with Severity/Status": The Severity and Status of each sample is by
+              default exported, but you can omit it if not needed.
+</li>
+<li>"Default format": The number of decimal digits will be obtained from the data source.
+</li>
+<li>"Decimal format": You specify the number of decimal digits.
+</li>
+<li>"Exponential notation": Use exponential notation, where you again specify the number
+              of decimal digits.
+</li>
+</ul>
+
 <h3>Excel Spreadsheets</h3>
 <p>
 The exported data files are in a text format with TAB-delimited columns

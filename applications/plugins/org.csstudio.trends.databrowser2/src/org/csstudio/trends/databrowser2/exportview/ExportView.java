@@ -67,6 +67,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     private Text optimize;
     private Button type_matlab;
     private Button tabular;
+    private Button min_max_col;
     private Button sev_stat;
     private Button format_decimal;
     private Button format_expo;
@@ -85,11 +86,11 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         // * Samples To Export *
         // Start:  ___start_______________________________________________________________ [select]
         // End  :  ___end_________________________________________________________________ [x] Use start/end time of Plot
-        // Source: ( ) Plot  (*) Raw Archived Data  (*) Averaged Archived Data  __time__   {ghost}
+        // Source: ( ) Plot  (*) Raw Archived Data  ( ) Averaged Archived Data  __time__   {ghost}
 
         // * Format *
         // (*) Spreadsheet ( ) Matlab
-        // [x] Tabular [x] ... with Severity/Status
+        // [x] Tabular [x] ... with min/max column [x] ... with Severity/Status
         // (*) Default format  ( ) decimal notation  ( ) exponential notation _digits_ fractional digits
 
         // * Output *
@@ -186,6 +187,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 final boolean use_optimized = source_opt.getSelection();
                 optimize.setEnabled(use_optimized);
+                min_max_col.setEnabled(use_optimized &&  !type_matlab.getSelection());
                 if (use_optimized)
                     optimize.setFocus();
             }
@@ -215,7 +217,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         type_matlab.setText(Messages.ExportTypeMatlab);
         type_matlab.setToolTipText(Messages.ExportTypeMatlabTT);
 
-        // [x] Tabular [x] ... with Severity/Status
+        // [x] Tabular [x] ... with min/max column [x] ... with Severity/Status
         box = new Composite(group, 0);
         box.setLayout(new RowLayout());
         tabular = new Button(box, SWT.CHECK);
@@ -223,22 +225,28 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         tabular.setToolTipText(Messages.ExportTabularTT);
         tabular.setSelection(true);
 
+        min_max_col = new Button(box, SWT.CHECK);
+        min_max_col.setText(Messages.ExportMinMaxCol);
+        min_max_col.setToolTipText(Messages.ExportMinMaxColTT);
+        min_max_col.setSelection(true);
+        min_max_col.setEnabled(false);
+
         sev_stat = new Button(box, SWT.CHECK);
         sev_stat.setText(Messages.ExportValueInfo);
         sev_stat.setToolTipText(Messages.ExportValueInfoTT);
         sev_stat.setSelection(true);
 
-        // (*) Default format  ( ) decimal notation  ( ) exponential notation _digits_ fractional digits
+        // ( ) Default format  (*) decimal notation  ( ) exponential notation _digits_ fractional digits
         box = new Composite(group, 0);
         box.setLayout(new RowLayout());
         final Button format_default = new Button(box, SWT.RADIO);
         format_default.setText(Messages.Format_Default);
         format_default.setToolTipText(Messages.ExportFormat_DefaultTT);
-        format_default.setSelection(true);
 
         format_decimal = new Button(box, SWT.RADIO);
         format_decimal.setText(Messages.Format_Decimal);
         format_decimal.setToolTipText(Messages.ExportFormat_DecimalTT);
+        format_decimal.setSelection(true);
 
         format_expo = new Button(box, SWT.RADIO);
         format_expo.setText(Messages.Format_Exponential);
@@ -264,6 +272,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(true);
                 format_expo.setEnabled(true);
                 format_digits.setEnabled(!format_default.getSelection());
+                min_max_col.setEnabled(source_opt.getSelection());
             }
         });
         type_matlab.addSelectionListener(new SelectionAdapter()
@@ -277,6 +286,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(false);
                 format_expo.setEnabled(false);
                 format_digits.setEnabled(false);
+                min_max_col.setEnabled(false);
             }
         });
         final SelectionAdapter digit_enabler = new SelectionAdapter()
@@ -504,6 +514,8 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 formatter = new ValueWithInfoFormatter(format, precision);
             else
                 formatter = new ValueFormatter(format, precision);
+            formatter.useMinMaxColumn(source == Source.OPTIMIZED_ARCHIVE  &&
+                                      min_max_col.getSelection());
             if (tabular.getSelection())
                 export = new SpreadsheetExportJob(model, start_time, end_time, source,
                         optimize_count, formatter, filename, this);

@@ -29,7 +29,7 @@ public class ValueWithInfoFormatter extends ValueFormatter
     @Override
     public String getHeader()
     {
-        return Messages.ValueColumn + Messages.Export_Delimiter + Messages.SeverityColumn +
+        return super.getHeader() + Messages.Export_Delimiter + Messages.SeverityColumn +
             Messages.Export_Delimiter + Messages.StatusColumn;
     }
 
@@ -38,7 +38,7 @@ public class ValueWithInfoFormatter extends ValueFormatter
     public String format(final IValue value)
     {
         if (value == null)
-            return Messages.Export_NoValueMarker +
+            return super.format(value) +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker +
                 Messages.Export_Delimiter + Messages.Export_NoValueMarker;
         return super.format(value) + Messages.Export_Delimiter +

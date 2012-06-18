@@ -12,22 +12,24 @@ import java.text.NumberFormat;
 
 import org.csstudio.data.values.IDoubleValue;
 import org.csstudio.data.values.ILongValue;
+import org.csstudio.data.values.IMinMaxDoubleValue;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Format;
 import org.csstudio.trends.databrowser2.Messages;
 
 /** Format an IValue as default, decimal, ...
- * 
- *  TODO Now shows all array elements for double and long data types
+ *
+ *  Shows all array elements for double and long data types
  *  _if_ decimal or exponential format is selected
- *  Could be better overall.
- *  
+ *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class ValueFormatter
 {
     final private Format format;
     final private int precision;
+    private boolean min_max_column = false;
     private NumberFormat number_format = null;
 
     /** Initialize
@@ -50,31 +52,50 @@ public class ValueFormatter
         	{
         		// Is there a better way to get this silly format?
             	final StringBuffer pattern = new StringBuffer(10);
-                pattern.append("0."); //$NON-NLS-1$
+                pattern.append("0.");
                 for (int i=0; i<precision; ++i)
                     pattern.append('0');
-                pattern.append("E0"); //$NON-NLS-1$
+                pattern.append("E0");
                 number_format = new DecimalFormat(pattern.toString());
         	}
     	}
     }
 
+    /** @param min_max_column Display min/max info in separate column? */
+    public void useMinMaxColumn(final boolean min_max_column)
+    {
+        this.min_max_column = min_max_column;
+    }
+
     /** @return Text for column headers */
     public String getHeader()
     {
-        return Messages.ValueColumn;
+        if (min_max_column)
+            return Messages.ValueColumn +
+                   Messages.Export_Delimiter + Messages.NegErrColumn +
+                   Messages.Export_Delimiter + Messages.PosErrColumn;
+        else
+            return Messages.ValueColumn;
     }
 
     /** @return Value formatted into columns */
     public String format(final IValue value)
     {
         if (value == null)
-            return Messages.Export_NoValueMarker;
+        {
+            if (min_max_column)
+                return Messages.Export_NoValueMarker +
+                       Messages.Export_Delimiter + Messages.Export_NoValueMarker +
+                       Messages.Export_Delimiter + Messages.Export_NoValueMarker;
+            else
+                return Messages.Export_NoValueMarker;
+        }
+
+        final StringBuilder buf = new StringBuilder();
+        // Value itself
         if (number_format == null)
-        	return value.format(format, precision);
-        
-    	final StringBuilder buf = new StringBuilder();
-        if (value instanceof IDoubleValue)
+            buf.append(value.format(format, precision));
+        else if (value instanceof IDoubleValue)
         {
         	final double v[] = ((IDoubleValue) value).getValues();
         	for (int i=0; i<v.length; ++i)
@@ -96,7 +117,24 @@ public class ValueFormatter
         }
         else
         	buf.append(value.format(format, precision));
-        
+        // Optional min, max
+        if (min_max_column)
+        {
+            buf.append(Messages.Export_Delimiter);
+            if (value instanceof IMinMaxDoubleValue)
+            {   // Turn min..max into negative & positive error
+                final IMinMaxDoubleValue mmv = (IMinMaxDoubleValue) value;
+                buf.append(mmv.getValue() - mmv.getMinimum());
+                buf.append(Messages.Export_Delimiter);
+                buf.append(mmv.getMaximum() - mmv.getValue());
+            }
+            else
+            {
+                buf.append(0);
+                buf.append(Messages.Export_Delimiter);
+                buf.append(0);
+            }
+        }
         return buf.toString();
     }
 
@@ -117,7 +155,6 @@ public class ValueFormatter
     }
 
     /** @return name of format with info on 'digits' */
-    @SuppressWarnings("nls")
     private String nameWithPrecision(final String name)
     {
         return name + " (" + precision + " digits)";
