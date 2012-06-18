@@ -8,7 +8,6 @@
 package org.csstudio.trends.databrowser2.editor;
 
 import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.graphics.GC;
@@ -19,6 +18,8 @@ import org.eclipse.swt.printing.PrintDialog;
 import org.eclipse.swt.printing.Printer;
 import org.eclipse.swt.printing.PrinterData;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /** An Action for printing the current image.
  *  @author Kay Kasemir
@@ -27,10 +28,10 @@ public class PrintAction extends Action
 {
     final private Shell shell;
     final private XYGraph graph;
-    
+
     /** Snapshot of the chart at time of print command */
     private Image snapshot;
-    
+
     /** Printer */
     private Printer printer;
 
@@ -41,11 +42,15 @@ public class PrintAction extends Action
     public PrintAction(final Shell shell, final XYGraph graph)
     {
         super(Messages.PrintSnapshot,
-              Activator.getDefault().getImageDescriptor("icons/print.gif")); //$NON-NLS-1$
+            PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
         this.shell = shell;
         this.graph = graph;
+
+        // Only enable if printing is supported
+        final PrinterData[] printers = Printer.getPrinterList();
+        setEnabled(printers != null  &&  printers.length > 0);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()
@@ -54,7 +59,7 @@ public class PrintAction extends Action
         snapshot = graph.getImage();
         if (snapshot == null)
             return;
-        
+
         // Printer GUI
         final PrintDialog dlg = new PrintDialog(shell);
         PrinterData data = dlg.open();
@@ -93,7 +98,7 @@ public class PrintAction extends Action
             final Rectangle area = printer.getClientArea();
             final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
             final Point dpi = printer.getDPI();
-            
+
             // Compute layout
             final Rectangle image_rect = snapshot.getBounds();
             // Leave one inch on each border.
@@ -106,7 +111,7 @@ public class PrintAction extends Action
             final int max_height = area.height - 2*top_bottom;
             final int printed_height = Math.min(max_height,
                image_rect.height * printed_width / image_rect.width);
-            
+
             // Print one page
             printer.startPage();
             final GC gc = new GC(printer);
