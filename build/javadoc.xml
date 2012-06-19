@@ -60,6 +60,7 @@
             	
             	<exclude name="**/*.properties"/>
                 <exclude name="**/internal/**"/>
+                <exclude name="**/test/**"/>
             </fileset>
         	
             <group title="Plugin org.csstudio.csdata" packages="org.csstudio.csdata"/>
@@ -73,9 +74,9 @@
             <group title="Plugin org.csstudio.ui.help" packages="org.csstudio.ui.help"/>
             <group title="Plugin org.csstudio.ui.menu" packages="org.csstudio.ui.menu"/>
             <group title="Plugin org.csstudio.ui.preferences" packages="org.csstudio.ui.preferences"/>
-            <group title="Plugin org.csstudio.ui.util" packages="org.csstudio.ui.util:org.csstudio.ui.util.composites:org.csstudio.ui.util.dialogs:org.csstudio.ui.util.dnd:org.csstudio.ui.util.helpers:org.csstudio.ui.util.swt.stringtable:org.csstudio.ui.util.thread:org.csstudio.ui.util.widgets:org.csstudio.ui.util.wizards"/>
+            <group title="Plugin org.csstudio.ui.util" packages="org.csstudio.ui.util:org.csstudio.ui.util.composites:org.csstudio.ui.util.dialogs:org.csstudio.ui.util.dnd:org.csstudio.ui.util.helpers:org.csstudio.ui.util.swt.stringtable:org.csstudio.ui.util.thread:org.csstudio.ui.util.widgets:org.csstudio.ui.util.wizards:org.eclipse.wb.swt"/>
             <group title="Plugin org.csstudio.utility.pv" packages="org.csstudio.utility.pv"/>
-            <group title="Plugin org.csstudio.utility.pvmanager" packages="org.csstudio.utility.pvmanager:org.epics.pvmanager:org.epics.pvmanager.data:org.epics.pvmanager.expressions:org.epics.pvmanager.extra:org.epics.pvmanager.jca:org.epics.pvmanager.loc:org.epics.pvmanager.sim:org.epics.pvmanagertest:org.epics.pvmanager.util"/>
+            <group title="Plugin org.csstudio.utility.pvmanager" packages="org.csstudio.utility.pvmanager:org.epics.pvmanager:org.epics.pvmanager.data:org.epics.pvmanager.expression:org.epics.pvmanager.sim:org.epics.pvmanager.util:org.epics.pvmanager.extra:org.epics.pvmanager.jca:org.epics.pvmanager.loc"/>
 
         </javadoc>
     </target>
