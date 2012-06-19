@@ -128,7 +128,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         final Object lock = new Object();
         synchronized (lock) {
             try {
-                lock.wait(3000);
+                lock.wait(10000L);
             } catch (final InterruptedException ie) {
                 // Can be ignored
             }
@@ -585,7 +585,7 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
             service.connect(xmppUser, xmppPassword, xmppServer);
             xmppSession = service;
         } catch (final Exception e) {
-            LOG.error("XMPP login is NOT possible: {}" + e.getMessage());
+            LOG.error("XMPP login is NOT possible: {}", e.getMessage());
             xmppSession = null;
         }
     }

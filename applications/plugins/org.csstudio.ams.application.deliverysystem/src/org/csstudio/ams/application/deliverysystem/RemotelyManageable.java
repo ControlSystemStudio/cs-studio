@@ -28,12 +28,13 @@ package org.csstudio.ams.application.deliverysystem;
 import java.util.Collection;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 19.12.2011
  */
 public interface RemotelyManageable {
     Collection<String> listDeliveryWorker();
+    void stopDeliveryWorker();
+    void restartDeliveryWorker();
+    void setRestart(boolean restartApplication);
 }

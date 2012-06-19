@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.epics.name;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -80,7 +81,7 @@ public class EpicsChannelName {
         return _baseName;
     }
 
-    @Nonnull
+    @CheckForNull
     public IRecordField getField() {
         return _field;
     }
@@ -91,6 +92,10 @@ public class EpicsChannelName {
     @Override
     @Nonnull
     public String toString() {
-        return _baseName + FIELD_SEP + _field.getFieldName();
+    	if (_field != null) {
+    		return _baseName + FIELD_SEP + _field.getFieldName();
+    	} else {
+    		return _baseName;
+    	}
     }
 }

@@ -19,6 +19,7 @@ import org.csstudio.sds.ui.internal.properties.view.DynamicAspectsWizard;
 import org.csstudio.sds.ui.internal.properties.view.ModalWizardDialog;
 import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.csstudio.sds.ui.properties.IPropertyDescriptorFactory;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CompoundCommand;
@@ -253,6 +254,8 @@ public abstract class AbstractBaseSection<E extends WidgetProperty> extends Abst
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             
             Iterator<Object> it = structuredSelection.iterator();
+            
+            Assert.isNotNull(it);
             
             while (it.hasNext()) {
                 AbstractWidgetModel widget = getFromEditPart(it.next());

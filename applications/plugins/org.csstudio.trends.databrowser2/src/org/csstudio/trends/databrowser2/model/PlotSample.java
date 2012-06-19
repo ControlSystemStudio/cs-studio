@@ -39,7 +39,7 @@ public class PlotSample implements ISample
      *  @see #getInfo()
      */
     private String info;
-    
+
     /** Waveform index */
     private int waveform_index = 0;
 
@@ -74,15 +74,15 @@ public class PlotSample implements ISample
                ok_severity, ok_severity.toString(), dummy_meta,
                IValue.Quality.Original, new double[] { y }));
     }
-    
+
     /** @return Waveform index */
     public int getWaveformIndex()
     {
     	return waveform_index;
     }
-    
+
     /** @param index Waveform index to plot */
-    public void setWaveformIndex(int index)
+    public void setWaveformIndex(final int index)
     {
     	this.waveform_index = index;
     }
@@ -123,7 +123,7 @@ public class PlotSample implements ISample
         if (value.getSeverity().hasValue() && waveform_index < ValueUtil.getSize(value)){
             return ValueUtil.getDouble(value, waveform_index);
         }
-        
+
         // No numeric value or out of range. Plot shows NaN as marker.
         return Double.NaN;
     }
@@ -159,7 +159,7 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
-        
+
         // Although the behavior of getMinimum() method depends on archive
         // readers' implementation, at least, RDB and kblog archive readers
         // return the minimum value of the first element. This minimum value
@@ -179,7 +179,7 @@ public class PlotSample implements ISample
     {
         if (!(value instanceof IMinMaxDoubleValue))
             return 0;
- 
+
         // Although the behavior of getMaximum() method depends on archive
         // readers' implementation, at least, RDB and kblog archive readers
         // return the maximum value of the first element. This maximum value
@@ -188,7 +188,7 @@ public class PlotSample implements ISample
         // is not 0.
         if (waveform_index != 0)
         	return 0;
-        
+
         final IMinMaxDoubleValue minmax = (IMinMaxDoubleValue)value;
         return minmax.getMaximum() - minmax.getValue();
     }

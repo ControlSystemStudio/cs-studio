@@ -26,13 +26,11 @@
 package org.csstudio.ams.delivery.message;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 03.01.2012
  */
-public class BaseIncomingMessage {
+public abstract class BaseIncomingMessage {
     
     protected Object incomingMessage;
     
@@ -43,4 +41,6 @@ public class BaseIncomingMessage {
     public Object getOriginalMessage() {
         return incomingMessage;
     }
+    
+    public abstract boolean isTestAnswer();
 }

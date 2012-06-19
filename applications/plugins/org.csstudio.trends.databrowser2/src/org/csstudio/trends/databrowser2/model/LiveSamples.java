@@ -28,12 +28,12 @@ public class LiveSamples extends PlotSamples
     /** @param index Waveform index to show */
     synchronized public void setWaveformIndex(int index)
     {
-    	waveform_index = index;
+        waveform_index = index;
 
-    	// Change the index of all samples in this instance
-    	for (int i=0; i<samples.size(); i++) {
-    		samples.get(i).setWaveformIndex(waveform_index);
-    	}
+        // Change the index of all samples in this instance
+        for (int i=0; i<samples.size(); i++) {
+            samples.get(i).setWaveformIndex(waveform_index);
+        }
     }
     
     /** @return Maximum number of samples in ring buffer */
@@ -58,7 +58,7 @@ public class LiveSamples extends PlotSamples
     /** @param sample Sample to add to ring buffer */
     synchronized void add(final PlotSample sample)
     {
-    	sample.setWaveformIndex(waveform_index);
+        sample.setWaveformIndex(waveform_index);
         samples.add(sample);
         have_new_samples = true;
     }
