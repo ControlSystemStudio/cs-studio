@@ -15,7 +15,9 @@ import org.eclipse.draw2d.geometry.Dimension;
  */
 public class LinearScaleTickLabels extends Figure {
 
-    /** the array of tick label vales */
+    private static final int TICK_LABEL_GAP = 8;
+
+	/** the array of tick label vales */
     private ArrayList<Double> tickLabelValues;
 
     /** the array of tick label */
@@ -371,16 +373,17 @@ public class LinearScaleTickLabels extends Figure {
         int interval = tickLabelPosition - previousPosition;
         int textLength = (int) (scale.isHorizontal() ? (tickLabelSize.width/2.0 + previousTickLabelSize.width/2.0)  
         		: tickLabelSize.height);
-        boolean noLapOnPrevoius = interval > textLength;
+        boolean noLapOnPrevoius = true;
        
         boolean noLapOnEnd = true;
-        if(tickLabelPosition != tickLabelPositions.get(tickLabelPositions.size() - 1)){
+        if(tickLabelPosition != tickLabelPositions.get(tickLabelPositions.size() - 1)){ //if it is not the end tick label.
+        	noLapOnPrevoius = interval > (textLength+TICK_LABEL_GAP);
         	Dimension endTickLabelSize = FigureUtilities.getTextExtents(
         		tickLabels.get(tickLabels.size()-1), scale.getFont());
         	interval = tickLabelPositions.get(tickLabelPositions.size() - 1) - tickLabelPosition;
         	textLength = (int) (scale.isHorizontal() ? (tickLabelSize.width/2.0 + endTickLabelSize.width/2.0)
         			: tickLabelSize.height);
-        	noLapOnEnd = interval > textLength;
+        	noLapOnEnd = interval > textLength+TICK_LABEL_GAP;
         }       
         return noLapOnPrevoius && noLapOnEnd;        
     }
@@ -478,12 +481,18 @@ public class LinearScaleTickLabels extends Figure {
         	//by default, make the least step to be minutes
         	
         	long timeStep;
-        	if(max-min<1000) //<1 sec, step = 10 ms
-        		timeStep=10l;
-        	else if(max - min < 600000) // < 10 min, step = 1 sec
-        		timeStep= 1000l;
-        	else if (max -min < 43200000) // < 12 hour, step = 1 min
+        	if(max-min<10000) //<10 sec, step = 1 ms
+        		timeStep=1l;
+        	else if(max - min < 60000) // < 1 min, step = 1 sec
+        		timeStep = 1000l;
+        	else if(max - min < 600000) // < 10 min, step = 10 sec
+        		timeStep= 10000l;
+        	else if (max -min < 6400000) // < 2 hour, step = 1 min
         		timeStep = 60000l;
+        	else if (max -min < 43200000) // < 12 hour, step = 10 min
+        		timeStep = 600000l;
+        	else if (max -min < 86400000) // < 24 hour, step = 30 min
+        		timeStep = 1800000l;
         	else if (max - min < 604800000) // < 7 days, step = 1 hour
         		timeStep = 3600000l;
         	else 

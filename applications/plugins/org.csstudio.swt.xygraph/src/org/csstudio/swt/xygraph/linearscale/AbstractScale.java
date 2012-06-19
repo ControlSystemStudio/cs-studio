@@ -128,12 +128,12 @@ public abstract class AbstractScale extends Figure{
             			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
             		formatPattern =  DEFAULT_DATE_FORMAT;     
             		double length = Math.abs(max - min);            		
-	                if (length <=1000 || timeUnit == Calendar.MILLISECOND) { //less than a second
+	                if (length <=5000 || timeUnit == Calendar.MILLISECOND) { //less than five second
 	                	formatPattern = "ss.SSS";//$NON-NLS-1$
-	                } else if (length <=60000d || timeUnit == Calendar.SECOND) { //less than a minute
-	                	formatPattern = "mm:ss";//$NON-NLS-1$
-	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
+	                } else if (length <=1800000d || timeUnit == Calendar.SECOND) { //less than 30 min
 	                	formatPattern = "HH:mm:ss";//$NON-NLS-1$
+	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
+	                	formatPattern = "HH:mm";//$NON-NLS-1$
 	                } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
 	                	formatPattern = "MM-dd\nHH:mm";//$NON-NLS-1$
 	                } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
@@ -145,8 +145,11 @@ public abstract class AbstractScale extends Figure{
 	                } 
 	                autoFormat = true;
             	}
-              	if(minOrMaxDate)
-           			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj); //$NON-NLS-1$
+              	if(minOrMaxDate){
+              			if(Math.abs(max - min)<5000)
+              				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
+           			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj);
+              	}
             	return new SimpleDateFormat(formatPattern).format(obj);
             }
             
