@@ -29,7 +29,7 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the {@link LoopCommand}
@@ -73,7 +73,7 @@ public class LoopCommandHeadlessTest
             // Instead, we start and stop the devices outside
             // of the scan and only use the scan to execute
             // an individual command.
-            final Scan scan = new Scan("test", devices);
+            final ServerScanContext scan = new ServerScanContext("test", devices);
             scan.execute(loop);
             assertEquals(5.0, ValueUtil.getDouble(counter.read()), 0.1);
         }
@@ -106,7 +106,7 @@ public class LoopCommandHeadlessTest
         assertTrue(Arrays.binarySearch(names, "other") >= 0);
         assertTrue(Arrays.binarySearch(names, "other2") >= 0);
 
-        final Scan scan = new Scan("Loop Test", devices, loop1, loop2);
+        final ServerScanContext scan = new ServerScanContext("Loop Test", devices, loop1, loop2);
         assertEquals(0, scan.getScanInfo().getPerformedWorkUnits());
         scan.execute();
 
@@ -130,7 +130,7 @@ public class LoopCommandHeadlessTest
                 new LoopCommand("counter", 5.0, 1.0, -1.0,
                     new LogCommand("counter")));
             System.out.println(loop);
-            final Scan scan = new Scan("test", devices);
+            final ServerScanContext scan = new ServerScanContext("test", devices);
             scan.execute(loop);
             assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 
@@ -174,7 +174,7 @@ public class LoopCommandHeadlessTest
             // Downward loop 5, 4, 3, 2, 1
             counter.write(4.0);
             assertEquals(4.0, ValueUtil.getDouble(counter.read()), 0.1);
-            final Scan scan = new Scan("test", devices, loop);
+            final ServerScanContext scan = new ServerScanContext("test", devices, loop);
             scan.execute(loop);
             assertEquals(1.0, ValueUtil.getDouble(counter.read()), 0.1);
 

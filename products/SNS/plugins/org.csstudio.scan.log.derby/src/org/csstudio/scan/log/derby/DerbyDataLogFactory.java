@@ -10,6 +10,7 @@ package org.csstudio.scan.log.derby;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.IDataLogFactory;
 import org.csstudio.scan.log.MemoryDataLog;
+import org.csstudio.scan.server.Scan;
 
 /** {@link IDataLogFactory} for the {@link MemoryDataLog}
  *  @author Kay Kasemir
@@ -17,7 +18,7 @@ import org.csstudio.scan.log.MemoryDataLog;
 public class DerbyDataLogFactory implements IDataLogFactory
 {
 	@Override
-    public long createDataLog(final String scan_name) throws Exception
+    public Scan createDataLog(final String scan_name) throws Exception
     {
 		final DerbyDataLogger logger = new DerbyDataLogger();
 		try
@@ -31,8 +32,22 @@ public class DerbyDataLogFactory implements IDataLogFactory
     }
 
 	@Override
-    public DataLog getDataLog(final long scan_id) throws Exception
+    public Scan[] getScans() throws Exception
     {
-	    return new DerbyDataLog(scan_id);
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            return logger.getScans();
+        }
+        finally
+        {
+            logger.close();
+        }
+    }
+
+    @Override
+    public DataLog getDataLog(final Scan scan) throws Exception
+    {
+	    return new DerbyDataLog(scan.getId());
     }
 }

@@ -22,14 +22,11 @@ import java.util.Date;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanInfo implements Serializable
+public class ScanInfo extends Scan implements Serializable
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private long id;
-    final private String name;
-    final private Date created;
     final private ScanState state;
     final private String error;
     final private long runtime_ms;
@@ -54,9 +51,7 @@ public class ScanInfo implements Serializable
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
     {
-        this.id = id;
-        this.name = name;
-        this.created = created;
+        super(id, name, created);
         this.state = state;
         this.error = error;
         this.runtime_ms = runtime_ms;
@@ -64,24 +59,6 @@ public class ScanInfo implements Serializable
         this.total_work_units = total_work_units;
         this.current_address = current_address;
         this.current_commmand = current_commmand;
-    }
-
-    /** @return Unique scan identifier (within JVM of the scan engine) */
-    public long getId()
-    {
-        return id;
-    }
-
-    /** @return Name of the scan */
-    public String getName()
-    {
-        return name;
-    }
-
-    /** @return Time when scan was created on server */
-    public Date getCreated()
-    {
-        return created;
     }
 
     /** @return State of the scan */
@@ -157,9 +134,7 @@ public class ScanInfo implements Serializable
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + name.hashCode();
+        int result = super.hashCode();
         result = prime * result + state.hashCode();
         return result;
     }
@@ -173,13 +148,11 @@ public class ScanInfo implements Serializable
         if (! (obj instanceof ScanInfo))
             return false;
         final ScanInfo other = (ScanInfo) obj;
-        return id == other.id  &&
+        return getId() == other.getId()  &&
                state == other.state  &&
                runtime_ms == other.runtime_ms &&
                performed_work_units == other.performed_work_units  &&
                total_work_units == other.total_work_units  &&
-               name.equals(other.name)  &&
-               created.equals(other.created) &&
                current_commmand.equals(other.current_commmand) &&
                ((error == null  && other.error == null) ||
                 (error != null  && error.equals(other.error))
@@ -191,7 +164,7 @@ public class ScanInfo implements Serializable
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("Scan '").append(name).append("' [").append(id).append("]: ").append(state);
+        buf.append("Scan '").append(getName()).append("' [").append(getId()).append("]: ").append(state);
         if (error != null)
             buf.append(" (").append(error).append(")");
         buf.append(", ").append(getPercentage()).append("% done");

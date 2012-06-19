@@ -10,6 +10,7 @@ package org.csstudio.scan.log;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.scan.server.Scan;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.RegistryFactory;
@@ -55,17 +56,33 @@ public class DataLogFactory
     	return factory;
     }
 
-    /** {@inheritDoc} */
-    public static long createDataLog(final String scan_name) throws Exception
+    /** Create new log for a new scan
+     *  @param scan_name Name of the scan (doesn't need to be unique)
+     *  @return Scan with ID that can now and later be used to access the data log
+     *  @throws Exception on error
+     */
+    public static Scan createDataLog(final String scan_name) throws Exception
     {
-		final long id = getDataLogFactory().createDataLog(scan_name);
-System.out.println("Derby log for " + scan_name + ": ID " + id);
-		return id;
+		final Scan scan = getDataLogFactory().createDataLog(scan_name);
+		return scan;
     }
 
-    /** {@inheritDoc} */
-    public static DataLog getDataLog(final long scan_id) throws Exception
+    /** Obtain all available scans
+     *  @return Scans that have been logged
+     *  @throws Exception on error
+     */
+    public static Scan[] getScans() throws Exception
     {
-		return getDataLogFactory().getDataLog(scan_id);
+        return getDataLogFactory().getScans();
+    }
+
+    /** Get log for a scan
+     *  @param scan Scan
+     *  @return DataLog for Scan
+     *  @throws Exception on error
+     */
+    public static DataLog getDataLog(final Scan scan) throws Exception
+    {
+		return getDataLogFactory().getDataLog(scan);
     }
 }

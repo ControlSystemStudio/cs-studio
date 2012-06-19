@@ -16,7 +16,7 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +48,7 @@ public class SetCommandImplHeadlessTest
         devices.startDevices();
         new WaitForDevicesCondition(devices.getDevices()).await();
 
-        final Scan scan = new Scan("Test", devices);
+        final ServerScanContext scan = new ServerScanContext("Test", devices);
         context = scan;
         data_logger = scan.getDataLogger();
     }

@@ -26,9 +26,9 @@ import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.ValueConverter;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 
-/** Context in which the {@link ScanCommandImpl}s of a {@link Scan} are executed.
+/** Context in which the {@link ScanCommandImpl}s of a {@link ServerScanContext} are executed.
  *
  *  <ul>
  *  <li>{@link Device}s with which commands can interact.
@@ -38,7 +38,7 @@ import org.csstudio.scan.server.internal.Scan;
  *  </ul>
  *
  *  <p>Scan commands can only interact with this restricted API
- *  of the actual {@link Scan}.
+ *  of the actual {@link ServerScanContext}.
  *
  *  @author Kay Kasemir
  */

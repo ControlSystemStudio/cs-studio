@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.server.Scan;
 
 /** Base for an RDB-based sample logger
  *
@@ -62,14 +63,16 @@ abstract public class RDBDataLogger
 	 *  @return Scan ID, unique within the database
 	 *  @throws Exception on error
 	 */
-	public long createScan(final String scan_name) throws Exception
+	public Scan createScan(final String scan_name) throws Exception
     {
+	    final Date now = new Date();
 		final PreparedStatement statement = connection.prepareStatement(
-				"INSERT INTO scans(name) VALUES (?)",
+				"INSERT INTO scans(name, created) VALUES (?,?)",
 				Statement.RETURN_GENERATED_KEYS);
 		try
 		{
 			statement.setString(1, scan_name);
+			statement.setTimestamp(2, new Timestamp(now.getTime()));
 			statement.executeUpdate();
 			final ResultSet result = statement.getGeneratedKeys();
 			try
@@ -77,7 +80,7 @@ abstract public class RDBDataLogger
 				if (! result.next())
 					throw new Exception("Missing new scan ID");
 				final long id = result.getLong(1);
-				return id;
+				return new Scan(id, scan_name, now);
 			}
 			finally
 			{
@@ -88,6 +91,31 @@ abstract public class RDBDataLogger
 		{
 			statement.close();
 		}
+    }
+
+    /** Obtain all available scans
+     *  @return Scans that have been logged
+     *  @throws Exception on error
+     */
+    public Scan[] getScans() throws Exception
+    {
+        final List<Scan> scans = new ArrayList<Scan>();
+        final PreparedStatement statement = connection.prepareStatement(
+                "SELECT id, name, created FROM scans ORDER BY id");
+        try
+        {
+            final ResultSet result = statement.executeQuery();
+            while (result.next())
+                scans.add(new Scan(result.getLong(1),
+                                   result.getString(2),
+                                   result.getTimestamp(3)));
+            result.close();
+        }
+        finally
+        {
+            statement.close();
+        }
+        return scans.toArray(new Scan[scans.size()]);
     }
 
 	/** Find (or create) a device in the database

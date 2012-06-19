@@ -38,7 +38,7 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 import org.csstudio.scan.server.internal.ScanEngine;
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanEngineHeadlessTest
 {
-    private void waitForState(final Scan scan, final ScanState state) throws InterruptedException
+    private void waitForState(final ServerScanContext scan, final ScanState state) throws InterruptedException
     {
         do
         {
@@ -72,7 +72,7 @@ public class ScanEngineHeadlessTest
     {
         final DeviceContext devices = getDemoDevices();
 
-        final Scan scan_x = new Scan("Scan Motor X",
+        final ServerScanContext scan_x = new ServerScanContext("Scan Motor X",
             devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
@@ -83,7 +83,7 @@ public class ScanEngineHeadlessTest
             )
         );
 
-        final Scan scan_y = new Scan("Scan Motor Y",
+        final ServerScanContext scan_y = new ServerScanContext("Scan Motor Y",
                 devices,
             new LoopCommandImpl(
                 new LoopCommand("ypos", 1.0, 5.0, 1.0,
@@ -97,7 +97,7 @@ public class ScanEngineHeadlessTest
         engine.submit(scan_y);
 
         // List scans and their state
-        List<Scan> scans = engine.getScans();
+        List<ServerScanContext> scans = engine.getScans();
         assertEquals(2, scans.size());
 
         // Second scan should be idle.
@@ -171,7 +171,7 @@ public class ScanEngineHeadlessTest
     {
         final DeviceContext devices = getDemoDevices();
 
-        final Scan scan = new Scan("Scan Motor X",
+        final ServerScanContext scan = new ServerScanContext("Scan Motor X",
             devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
@@ -207,7 +207,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
-        final Scan scan = new Scan("Scan Motor X",
+        final ServerScanContext scan = new ServerScanContext("Scan Motor X",
                 devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),
@@ -229,7 +229,7 @@ public class ScanEngineHeadlessTest
         // Thread should not continue...
         Thread.sleep(1000);
 
-        final List<Scan> scans = engine.getScans();
+        final List<ServerScanContext> scans = engine.getScans();
         assertEquals(0, scans.size());
 
         System.out.println(scan.getScanInfo());
@@ -242,7 +242,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
-        final Scan scan = new Scan("Scan Motor X",
+        final ServerScanContext scan = new ServerScanContext("Scan Motor X",
                 devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),

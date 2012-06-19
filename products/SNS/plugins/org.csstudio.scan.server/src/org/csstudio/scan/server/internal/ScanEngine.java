@@ -22,13 +22,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** Engine that accepts {@link Scan}s, queuing them and executing
+/** Engine that accepts {@link ServerScanContext}s, queuing them and executing
  *  them in order
  *  @author Kay Kasemir
  */
 public class ScanEngine
 {
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    final private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /** All the scans handled by this engine
      *
@@ -44,7 +44,8 @@ public class ScanEngine
      */
     public void start()
     {
-        executor = Executors.newSingleThreadExecutor();
+        // TODO Read old scans
+
     }
 
     /** Stop the scan engine, aborting scans
@@ -74,9 +75,9 @@ public class ScanEngine
     }
 
     /** Submit a scan to the engine for execution
-     *  @param scan The {@link Scan}
+     *  @param scan The {@link ServerScanContext}
      */
-    public void submit(final Scan scan)
+    public void submit(final ServerScanContext scan)
     {
         synchronized (scan_queue)
         {
@@ -85,9 +86,9 @@ public class ScanEngine
     }
 
     /** @return List of scans */
-    public List<Scan> getScans()
+    public List<ServerScanContext> getScans()
     {
-        final List<Scan> scans = new ArrayList<Scan>();
+        final List<ServerScanContext> scans = new ArrayList<ServerScanContext>();
         synchronized (scan_queue)
         {
             for (ScanQueueItem item : scan_queue)
@@ -100,7 +101,7 @@ public class ScanEngine
      *  @param scan Scan
      *  @return {@link ScanQueueItem} or <code>null</code> when scan not found
      */
-    private ScanQueueItem getScanItem(final Scan scan)
+    private ScanQueueItem getScanItem(final ServerScanContext scan)
     {
         synchronized (scan_queue)
         {
@@ -112,7 +113,7 @@ public class ScanEngine
     }
 
     /** @param scan Scan to abort */
-    public void abortScan(final Scan scan)
+    public void abortScan(final ServerScanContext scan)
     {
         final ScanQueueItem item = getScanItem(scan);
         if (item != null)
@@ -120,7 +121,7 @@ public class ScanEngine
     }
 
     /** @param scan Scan to remove (if it's 'done') */
-    public void removeScan(final Scan scan)
+    public void removeScan(final ServerScanContext scan)
     {
         final ScanQueueItem item = getScanItem(scan);
         if (item == null)

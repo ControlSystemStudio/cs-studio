@@ -87,6 +87,9 @@ public class ScanServerImpl implements ScanServer
     {
         if (registry != null)
             throw new Exception("Already started");
+
+        scan_engine.start();
+
         try
         {
             registry = LocateRegistry.createRegistry(port);
@@ -119,6 +122,8 @@ public class ScanServerImpl implements ScanServer
             }
             registry = null;
         }
+
+        scan_engine.stop();
     }
 
     /** {@inheritDoc} */
@@ -139,7 +144,7 @@ public class ScanServerImpl implements ScanServer
     	Device[] devices;
     	if (id >= 0)
     	{
-    	    final Scan scan = findScan(id);
+    	    final ServerScanContext scan = findScan(id);
     		devices = scan.getDevices();
     	}
     	else
@@ -246,7 +251,7 @@ public class ScanServerImpl implements ScanServer
     		final DeviceContext devices = DeviceContext.getDefault();
 
             // Submit scan to engine for execution
-            final Scan scan = new Scan(scan_name, devices, pre_impl, main_impl, post_impl);
+            final ServerScanContext scan = new ServerScanContext(scan_name, devices, pre_impl, main_impl, post_impl);
             scan_engine.submit(scan);
             return scan.getId();
         }
@@ -268,6 +273,7 @@ public class ScanServerImpl implements ScanServer
 	    {
 	    	if (! scan_engine.removeOldestCompletedScan())
 	    		return;
+	    	System.gc();
 	    }
     }
 
@@ -275,7 +281,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public List<ScanInfo> getScanInfos() throws RemoteException
     {
-        final List<Scan> scans = scan_engine.getScans();
+        final List<ServerScanContext> scans = scan_engine.getScans();
         final List<ScanInfo> infos = new ArrayList<ScanInfo>(scans.size());
         // Build result with most recent scan first
         for (int i=scans.size()-1; i>=0; --i)
@@ -285,14 +291,14 @@ public class ScanServerImpl implements ScanServer
 
     /** Find scan by ID
      *  @param id Scan ID
-     *  @return {@link Scan}
+     *  @return {@link ServerScanContext}
      * @throws UnknownScanException if scan ID not valid
      */
-    private Scan findScan(final long id) throws UnknownScanException
+    private ServerScanContext findScan(final long id) throws UnknownScanException
     {
-        final List<Scan> scans = scan_engine.getScans();
+        final List<ServerScanContext> scans = scan_engine.getScans();
         // Linear lookup. Good enough?
-        for (Scan scan : scans)
+        for (ServerScanContext scan : scans)
             if (scan.getId() == id)
                 return scan;
         throw new UnknownScanException(id);
@@ -302,7 +308,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public ScanInfo getScanInfo(final long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
+        final ServerScanContext scan = findScan(id);
         return scan.getScanInfo();
     }
 
@@ -310,7 +316,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public String getScanCommands(long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
+        final ServerScanContext scan = findScan(id);
         try
         {
             return XMLCommandWriter.toXMLString(scan.getScanCommands());
@@ -327,7 +333,7 @@ public class ScanServerImpl implements ScanServer
      */
     private DataLog getDataLog(final long id) throws UnknownScanException
     {
-        final Scan scan = findScan(id);
+        final ServerScanContext scan = findScan(id);
         return scan.getDataLogger();
     }
 
@@ -363,7 +369,7 @@ public class ScanServerImpl implements ScanServer
     public void updateScanProperty(final long id, final long address,
             final String property_id, final Object value) throws RemoteException
     {
-        final Scan scan = findScan(id);
+        final ServerScanContext scan = findScan(id);
         scan.updateScanProperty(address, property_id, value);
     }
 
@@ -373,13 +379,13 @@ public class ScanServerImpl implements ScanServer
     {
         if (id >= 0)
         {
-            final Scan scan = findScan(id);
+            final ServerScanContext scan = findScan(id);
             scan.pause();
         }
         else
         {
-            final List<Scan> scans = scan_engine.getScans();
-            for (Scan scan : scans)
+            final List<ServerScanContext> scans = scan_engine.getScans();
+            for (ServerScanContext scan : scans)
                 scan.pause();
         }
     }
@@ -390,13 +396,13 @@ public class ScanServerImpl implements ScanServer
     {
         if (id >= 0)
         {
-            final Scan scan = findScan(id);
+            final ServerScanContext scan = findScan(id);
             scan.resume();
         }
         else
         {
-            final List<Scan> scans = scan_engine.getScans();
-            for (Scan scan : scans)
+            final List<ServerScanContext> scans = scan_engine.getScans();
+            for (ServerScanContext scan : scans)
                 scan.resume();
         }
     }
@@ -407,13 +413,13 @@ public class ScanServerImpl implements ScanServer
     {
     	if (id >= 0)
     	{
-	        final Scan scan = findScan(id);
+	        final ServerScanContext scan = findScan(id);
 	        scan_engine.abortScan(scan);
     	}
         else
         {
-            final List<Scan> scans = scan_engine.getScans();
-            for (Scan scan : scans)
+            final List<ServerScanContext> scans = scan_engine.getScans();
+            for (ServerScanContext scan : scans)
     	        scan_engine.abortScan(scan);
         }
     }
@@ -422,7 +428,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public void remove(final long id) throws RemoteException
     {
-        final Scan scan = findScan(id);
+        final ServerScanContext scan = findScan(id);
         scan_engine.removeScan(scan);
     }
 

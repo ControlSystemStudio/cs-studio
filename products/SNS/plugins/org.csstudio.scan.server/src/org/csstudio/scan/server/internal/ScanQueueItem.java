@@ -28,14 +28,14 @@ import java.util.logging.Logger;
 @SuppressWarnings("nls")
 class ScanQueueItem implements Callable<Object>
 {
-    final private Scan scan;
+    final private ServerScanContext scan;
     final private Future<Object> future;
 
     /** Initialize
      *  @param executor Executor that will call this queue item
-     *  @param scan The {@link Scan}
+     *  @param scan The {@link ServerScanContext}
      */
-    public ScanQueueItem(final ExecutorService executor, final Scan scan)
+    public ScanQueueItem(final ExecutorService executor, final ServerScanContext scan)
     {
         this.scan = scan;
         this.future = executor.submit(this);
@@ -51,7 +51,7 @@ class ScanQueueItem implements Callable<Object>
     }
 
     /** @return Scan of this queue item */
-    public Scan getScan()
+    public ServerScanContext getScan()
     {
         return scan;
     }

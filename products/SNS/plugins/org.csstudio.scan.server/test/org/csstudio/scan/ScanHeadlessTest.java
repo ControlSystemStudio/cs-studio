@@ -38,10 +38,10 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 import org.junit.Test;
 
-/** [Headless] JUnit Plug-in test of the {@link Scan}
+/** [Headless] JUnit Plug-in test of the {@link ServerScanContext}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -56,7 +56,7 @@ public class ScanHeadlessTest
         // Scan that requires 2 devices
         final LoopCommand command = new LoopCommand("motor_x", 1.0, 5.0, 1.0,
                     new LogCommand("setpoint"));
-        final Scan scan = new Scan("Scan Device Test", devices, new LoopCommandImpl(command));
+        final ServerScanContext scan = new ServerScanContext("Scan Device Test", devices, new LoopCommandImpl(command));
 
         // Execute the scan
         assertEquals(0, devices.getDevices().length);
@@ -107,7 +107,7 @@ public class ScanHeadlessTest
                 )
             );
 
-        final Scan scan = new Scan("Scan Test", devices, new LoopCommandImpl(command));
+        final ServerScanContext scan = new ServerScanContext("Scan Test", devices, new LoopCommandImpl(command));
         final List<ScanCommand> commands = scan.getScanCommands();
         assertEquals(1, commands.size());
         assertSame(command, commands.get(0));

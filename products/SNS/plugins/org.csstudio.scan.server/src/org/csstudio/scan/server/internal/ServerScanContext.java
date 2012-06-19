@@ -19,7 +19,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,12 +36,13 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 
-/** Scan
+/** Server's ScanContext
  *
  *  <p>Combines a {@link DeviceContext} with {@link ScanContextImpl}ementations
  *  and can execute them.
@@ -52,13 +52,9 @@ import org.csstudio.scan.server.ScanState;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Scan extends ScanContext
+public class ServerScanContext extends ScanContext
 {
-    final private long id;
-
-    final private String name;
-
-    final private Date created = new Date();
+    final private Scan scan;
 
     final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
 
@@ -85,7 +81,7 @@ public class Scan extends ScanContext
      *  @param implementations Commands to execute in this scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public Scan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
+    public ServerScanContext(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
     {
         this(name, devices,
             Collections.<ScanCommandImpl<?>>emptyList(),
@@ -101,18 +97,17 @@ public class Scan extends ScanContext
      *  @param post_scan Commands to execute before the 'main' section of the scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public Scan(final String name, final DeviceContext devices,
+    public ServerScanContext(final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
     	super(devices);
-    	id = DataLogFactory.createDataLog(name);
-        this.name = name;
+    	scan = DataLogFactory.createDataLog(name);
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
-        data_logger = DataLogFactory.getDataLog(id);
+        data_logger = DataLogFactory.getDataLog(scan);
 
         // Assign addresses to all commands,
         // determine work units
@@ -129,13 +124,13 @@ public class Scan extends ScanContext
     /** @return Unique scan identifier (within JVM of the scan engine) */
     public long getId()
     {
-        return id;
+        return scan.getId();
     }
 
     /** @return Scan name */
     public String getName()
     {
-        return name;
+        return scan.getName();
     }
 
     /** @return Info about current state of this scan */
@@ -158,7 +153,7 @@ public class Scan extends ScanContext
             command_name = command.toString();
         else
             command_name = "";
-        return new ScanInfo(id, name, created, state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
+        return new ScanInfo(scan.getId(), scan.getName(), scan.getCreated(), state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
     }
 
     /** @return Runtime of this scan (so far) in millisecs. 0 if not started */
@@ -480,23 +475,22 @@ public class Scan extends ScanContext
     @Override
     public int hashCode()
     {
-        final int prime = 31;
-        return prime + (int) (id ^ (id >>> 32));
+        return scan.hashCode();
     }
 
     // Compare by ID
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof Scan))
+        if (! (obj instanceof ServerScanContext))
             return false;
-        final Scan other = (Scan) obj;
-        return id == other.getId();
+        final ServerScanContext other = (ServerScanContext) obj;
+        return scan.equals(other.scan);
     }
 
 	@Override
     public String toString()
     {
-	    return "Scan " + name + " (" + id + ")";
+	    return scan.toString();
     }
 }

@@ -16,7 +16,7 @@
 package org.csstudio.scan.server;
 
 import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ServerScanContext;
 
 /** Implementation of a command
  *
@@ -27,7 +27,7 @@ import org.csstudio.scan.server.internal.Scan;
  *  A loop on the other hand will perform one unit of work per loop
  *  iteration.
  *
- *  <p>The {@link Scan} queries each command for the number of work
+ *  <p>The {@link ServerScanContext} queries each command for the number of work
  *  units that it will perform, and the command must then update
  *  the {@link ScanContext} with the number of performed work
  *  units.
