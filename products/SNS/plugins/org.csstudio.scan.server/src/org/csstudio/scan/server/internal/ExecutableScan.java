@@ -42,7 +42,7 @@ import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
 
-/** Server's ScanContext
+/** Scan that can be executed: Commands, device context, state
  *
  *  <p>Combines a {@link DeviceContext} with {@link ScanContextImpl}ementations
  *  and can execute them.
@@ -52,7 +52,7 @@ import org.csstudio.scan.server.ScanState;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ServerScanContext extends ScanContext
+public class ExecutableScan extends ScanContext
 {
     final private Scan scan;
 
@@ -71,7 +71,8 @@ public class ServerScanContext extends ScanContext
 
     final private long total_work_units;
 
-    final private DataLog data_logger;
+    /** Data logger, non-null while when executing the scan */
+    private volatile DataLog data_logger = null;
 
     private volatile ScanCommandImpl<?> current_command = null;
 
@@ -81,7 +82,7 @@ public class ServerScanContext extends ScanContext
      *  @param implementations Commands to execute in this scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public ServerScanContext(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
+    public ExecutableScan(final String name, final DeviceContext devices, ScanCommandImpl<?>... implementations) throws Exception
     {
         this(name, devices,
             Collections.<ScanCommandImpl<?>>emptyList(),
@@ -97,7 +98,7 @@ public class ServerScanContext extends ScanContext
      *  @param post_scan Commands to execute before the 'main' section of the scan
      *  @throws Exception on error (cannot access log, ...)
      */
-    public ServerScanContext(final String name, final DeviceContext devices,
+    public ExecutableScan(final String name, final DeviceContext devices,
             final List<ScanCommandImpl<?>> pre_scan,
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
@@ -107,7 +108,6 @@ public class ServerScanContext extends ScanContext
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
-        data_logger = DataLogFactory.getDataLog(scan);
 
         // Assign addresses to all commands,
         // determine work units
@@ -168,7 +168,7 @@ public class ServerScanContext extends ScanContext
         return 0;
     }
 
-  /** @return Commands executed by this scan */
+    /** @return Commands executed by this scan */
     public List<ScanCommand> getScanCommands()
     {
         // Fetch underlying commands for implementations
@@ -234,12 +234,6 @@ public class ServerScanContext extends ScanContext
         }
     }
 
-    /** @return Data logger of this scan */
-    public DataLog getDataLogger()
-    {
-        return data_logger;
-    }
-
     /** Obtain devices used by this scan.
      *
      *  <p>Note that the result can differ before and
@@ -257,20 +251,41 @@ public class ServerScanContext extends ScanContext
     @Override
     public long getNextScanDataSerial()
     {
+        if (data_logger == null)
+            return -1;
     	return data_logger.getNextScanDataSerial();
+    }
+
+    /** @return Last logged scan data serial. -1 if nothing has been logged. 0 if scan is not active */
+    public long getLastScanDataSerial()
+    {
+        if (data_logger == null)
+            return 0;
+        return data_logger.getLastScanDataSerial();
     }
 
     /** {@inheritDoc} */
 	@Override
 	public ScanData getScanData() throws Exception
 	{
-		return data_logger.getScanData();
+	    // Allow calls non-active scan where data_logger == null
+	    final DataLog logger = DataLogFactory.getDataLog(scan);
+	    try
+	    {
+	        return logger.getScanData();
+	    }
+	    finally
+	    {
+	        logger.close();
+	    }
 	}
 
     /** {@inheritDoc} */
     @Override
     public void logSample(final ScanSample sample) throws Exception
     {
+        if (data_logger == null)
+            throw new IllegalStateException("Cannot log while scan is " + state);
         data_logger.log(sample);
     }
 
@@ -281,6 +296,8 @@ public class ServerScanContext extends ScanContext
     {
         try
         {
+            // Open logger for execution of scan
+            data_logger = DataLogFactory.getDataLog(scan);
             execute_or_die_trying();
         }
         catch (InterruptedException ex)
@@ -299,8 +316,10 @@ public class ServerScanContext extends ScanContext
         	}
             error = ex.getMessage();
         }
-        // Allow data logger to close resources
-        data_logger.close();
+        // Close data logger
+        final DataLog copy = data_logger;
+        data_logger = null;
+        copy.close();
     }
 
     /** Execute all commands on the scan,
@@ -482,9 +501,9 @@ public class ServerScanContext extends ScanContext
     @Override
     public boolean equals(final Object obj)
     {
-        if (! (obj instanceof ServerScanContext))
+        if (! (obj instanceof ExecutableScan))
             return false;
-        final ServerScanContext other = (ServerScanContext) obj;
+        final ExecutableScan other = (ExecutableScan) obj;
         return scan.equals(other.scan);
     }
 

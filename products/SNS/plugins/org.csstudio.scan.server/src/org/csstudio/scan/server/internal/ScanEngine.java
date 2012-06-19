@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** Engine that accepts {@link ServerScanContext}s, queuing them and executing
+/** Engine that accepts {@link ExecutableScan}s, queuing them and executing
  *  them in order
  *  @author Kay Kasemir
  */
@@ -75,9 +75,9 @@ public class ScanEngine
     }
 
     /** Submit a scan to the engine for execution
-     *  @param scan The {@link ServerScanContext}
+     *  @param scan The {@link ExecutableScan}
      */
-    public void submit(final ServerScanContext scan)
+    public void submit(final ExecutableScan scan)
     {
         synchronized (scan_queue)
         {
@@ -86,9 +86,9 @@ public class ScanEngine
     }
 
     /** @return List of scans */
-    public List<ServerScanContext> getScans()
+    public List<ExecutableScan> getScans()
     {
-        final List<ServerScanContext> scans = new ArrayList<ServerScanContext>();
+        final List<ExecutableScan> scans = new ArrayList<ExecutableScan>();
         synchronized (scan_queue)
         {
             for (ScanQueueItem item : scan_queue)
@@ -101,7 +101,7 @@ public class ScanEngine
      *  @param scan Scan
      *  @return {@link ScanQueueItem} or <code>null</code> when scan not found
      */
-    private ScanQueueItem getScanItem(final ServerScanContext scan)
+    private ScanQueueItem getScanItem(final ExecutableScan scan)
     {
         synchronized (scan_queue)
         {
@@ -113,7 +113,7 @@ public class ScanEngine
     }
 
     /** @param scan Scan to abort */
-    public void abortScan(final ServerScanContext scan)
+    public void abortScan(final ExecutableScan scan)
     {
         final ScanQueueItem item = getScanItem(scan);
         if (item != null)
@@ -121,7 +121,7 @@ public class ScanEngine
     }
 
     /** @param scan Scan to remove (if it's 'done') */
-    public void removeScan(final ServerScanContext scan)
+    public void removeScan(final ExecutableScan scan)
     {
         final ScanQueueItem item = getScanItem(scan);
         if (item == null)

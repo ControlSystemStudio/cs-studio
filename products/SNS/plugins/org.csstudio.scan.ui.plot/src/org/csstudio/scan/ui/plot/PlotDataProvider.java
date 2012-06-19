@@ -47,9 +47,17 @@ public class PlotDataProvider implements IDataProvider
     /** Remove all samples */
     public void clear()
     {
+        clear(-1);
+    }
+
+    /** Remove all samples
+     *  @param last_serial Last sample serial when data was cleared
+     */
+    public void clear(final long last_serial)
+    {
         synchronized (this)
         {
-            last_serial = -1;
+            this.last_serial = last_serial;
             samples.clear();
             xrange = new Range(0, 0);
             yrange = new Range(0, 0);

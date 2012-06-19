@@ -13,10 +13,9 @@ import org.csstudio.scan.commandimpl.SetCommandImpl;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.DeviceContext;
-import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
-import org.csstudio.scan.server.internal.ServerScanContext;
+import org.csstudio.scan.server.internal.ExecutableScan;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,8 +27,8 @@ import org.junit.Test;
 public class SetCommandImplHeadlessTest
 {
     private DeviceContext devices;
+    private ExecutableScan scan;
     private ScanContext context;
-    private DataLog data_logger;
 
     @Before
     public void setup() throws Exception
@@ -48,9 +47,7 @@ public class SetCommandImplHeadlessTest
         devices.startDevices();
         new WaitForDevicesCondition(devices.getDevices()).await();
 
-        final ServerScanContext scan = new ServerScanContext("Test", devices);
-        context = scan;
-        data_logger = scan.getDataLogger();
+        context = scan = new ExecutableScan("Test", devices);
     }
 
     @After
@@ -82,7 +79,7 @@ public class SetCommandImplHeadlessTest
 
         System.out.println("Data logged for 'setpoint':");
         final List<ScanSample> samples =
-                data_logger.getScanData().getSamples("setpoint");
+                scan.getScanData().getSamples("setpoint");
         for (ScanSample sample : samples)
             System.out.println(sample);
         assertEquals(3, samples.size());
@@ -120,7 +117,7 @@ public class SetCommandImplHeadlessTest
 
         System.out.println("Data logged for 'readback':");
         final List<ScanSample> samples =
-                data_logger.getScanData().getSamples("readback");
+                scan.getScanData().getSamples("readback");
         for (ScanSample sample : samples)
             System.out.println(sample);
         assertEquals(3, samples.size());

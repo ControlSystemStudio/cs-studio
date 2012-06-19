@@ -26,9 +26,9 @@ import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.ValueConverter;
-import org.csstudio.scan.server.internal.ServerScanContext;
+import org.csstudio.scan.server.internal.ExecutableScan;
 
-/** Context in which the {@link ScanCommandImpl}s of a {@link ServerScanContext} are executed.
+/** Context in which the {@link ScanCommandImpl}s of a {@link ExecutableScan} are executed.
  *
  *  <ul>
  *  <li>{@link Device}s with which commands can interact.
@@ -38,7 +38,7 @@ import org.csstudio.scan.server.internal.ServerScanContext;
  *  </ul>
  *
  *  <p>Scan commands can only interact with this restricted API
- *  of the actual {@link ServerScanContext}.
+ *  of the actual {@link ExecutableScan}.
  *
  *  @author Kay Kasemir
  */
@@ -79,14 +79,14 @@ abstract public class ScanContext
             final boolean wait, final double tolerance, final double timeout) throws Exception
     {
     	final Device device = getDevice(device_name);
-    
+
     	// Separate read-back device, or use 'set' device?
     	final Device readback;
     	if (readback_name.isEmpty())
     	    readback = device;
     	else
     	    readback = getDevice(readback_name);
-    
+
     	//  Wait for the device to reach the value?
     	final DeviceValueCondition condition;
     	if (wait)
@@ -96,20 +96,20 @@ abstract public class ScanContext
     	        desired = ((Number)value).doubleValue();
     	    else
     	        throw new Exception("Value must be numeric to support 'wait'");
-    
+
     	    condition = new DeviceValueCondition(readback, Comparison.EQUALS, desired,
                     tolerance, timeout);
     	}
     	else
     	    condition = null;
-    
+
     	// Perform write
     	device.write(value);
-    
+
     	// Wait?
     	if (condition != null)
     	    condition.await();
-    
+
     	// Log the value?
     	if (isAutomaticLogMode())
     	{

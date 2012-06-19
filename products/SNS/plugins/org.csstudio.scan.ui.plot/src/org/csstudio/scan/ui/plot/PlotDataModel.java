@@ -124,7 +124,7 @@ public class PlotDataModel implements Runnable
                             devices = scan_data.getDevices();
                             // Get data for selected devices from plot
                             if (x_device == null  ||  y_device == null)
-                                plot_data.clear();
+                                plot_data.clear(last_serial);
                             else
                                 plot_data.update(last_serial, scan_data, x_device, y_device);
                         }
@@ -163,6 +163,9 @@ public class PlotDataModel implements Runnable
      */
     private void waveUpdateThread()
     {
+        // Not perfect:
+        // clear() will trigger a refresh of the display, which we need because device selection changed.
+        // It will also trigger a new data request because the serial is reset to -1. Not always necessary...
         plot_data.clear();
         synchronized (this)
         {   // Findbugs gives 'naked notify' warning. Ignore.
