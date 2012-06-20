@@ -34,10 +34,16 @@ public class LoggedScan extends Scan
         super(scan);
     }
 
+    /** @return {@link ScanState} */
+    public synchronized ScanState getScanState()
+    {
+        return ScanState.Logged;
+    }
+
     /** @return Info about this scan */
     public ScanInfo getScanInfo()
     {
-        return new ScanInfo(this, ScanState.Logged);
+        return new ScanInfo(this, getScanState());
     }
 
     /** {@inheritDoc} */

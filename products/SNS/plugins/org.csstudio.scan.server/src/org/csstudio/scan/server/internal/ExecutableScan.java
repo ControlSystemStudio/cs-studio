@@ -165,6 +165,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     }
 
     /** @return {@link ScanState} */
+    @Override
     public synchronized ScanState getScanState()
     {
         return state;

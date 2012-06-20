@@ -47,7 +47,6 @@ import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.SimulationContext;
 import org.csstudio.scan.server.SimulationResult;
-import org.csstudio.scan.server.UnknownScanException;
 
 /** Server-side implementation of the {@link ScanServer} interface
  *  that the remote client invokes.
@@ -88,7 +87,7 @@ public class ScanServerImpl implements ScanServer
         if (registry != null)
             throw new Exception("Already started");
 
-        scan_engine.start();
+        scan_engine.start(true);
 
         try
         {
@@ -144,8 +143,11 @@ public class ScanServerImpl implements ScanServer
     	Device[] devices;
     	if (id >= 0)
     	{
-    	    final ExecutableScan scan = findScan(id);
-    		devices = scan.getDevices();
+            final ExecutableScan scan = scan_engine.getExecutableScan(id);
+            if (scan != null)
+                devices = scan.getDevices();
+            else
+                devices = new Device[0];
     	}
     	else
         {
@@ -162,7 +164,7 @@ public class ScanServerImpl implements ScanServer
             }
         }
 
-    	// Turn into infos
+    	// Turn Device[] into DeviceInfo[]
     	final DeviceInfo[] infos = new DeviceInfo[devices.length];
     	for (int i = 0; i < infos.length; i++)
     	{
@@ -281,7 +283,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public List<ScanInfo> getScanInfos() throws RemoteException
     {
-        final List<ExecutableScan> scans = scan_engine.getScans();
+        final List<LoggedScan> scans = scan_engine.getScans();
         final List<ScanInfo> infos = new ArrayList<ScanInfo>(scans.size());
         // Build result with most recent scan first
         for (int i=scans.size()-1; i>=0; --i)
@@ -289,55 +291,46 @@ public class ScanServerImpl implements ScanServer
         return infos;
     }
 
-    /** Find scan by ID
-     *  @param id Scan ID
-     *  @return {@link ExecutableScan}
-     * @throws UnknownScanException if scan ID not valid
-     */
-    private ExecutableScan findScan(final long id) throws UnknownScanException
-    {
-        final List<ExecutableScan> scans = scan_engine.getScans();
-        // Linear lookup. Good enough?
-        for (ExecutableScan scan : scans)
-            if (scan.getId() == id)
-                return scan;
-        throw new UnknownScanException(id);
-    }
-
     /** {@inheritDoc} */
     @Override
     public ScanInfo getScanInfo(final long id) throws RemoteException
     {
-        final ExecutableScan scan = findScan(id);
+        final LoggedScan scan = scan_engine.getScan(id);
         return scan.getScanInfo();
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getScanCommands(long id) throws RemoteException
+    public String getScanCommands(final long id) throws RemoteException
     {
-        final ExecutableScan scan = findScan(id);
-        try
+        final ExecutableScan scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
         {
-            return XMLCommandWriter.toXMLString(scan.getScanCommands());
+            try
+            {
+                return XMLCommandWriter.toXMLString(scan.getScanCommands());
+            }
+            catch (Exception ex)
+            {
+                throw new RemoteException(ex.getMessage(), ex);
+            }
         }
-        catch (Exception ex)
-        {
-            throw new RemoteException(ex.getMessage(), ex);
-        }
+        else
+            throw new RemoteException("Commands not available for logged scan");
     }
 
     /** {@inheritDoc} */
     @Override
     public long getLastScanDataSerial(final long id) throws RemoteException
     {
-        final ExecutableScan scan = findScan(id);
-        if (scan == null)
-            return 0;
-        final DataLog log = scan.getDataLog();
-        if (log == null)
-            return 0;
-        return log.getLastScanDataSerial();
+        final ExecutableScan scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
+        {
+            final DataLog log = scan.getDataLog();
+            if (log != null)
+                return log.getLastScanDataSerial();
+        }
+        return 0;
     }
 
     /** {@inheritDoc} */
@@ -346,12 +339,12 @@ public class ScanServerImpl implements ScanServer
     {
         try
         {
-            final ExecutableScan scan = findScan(id);
+            final LoggedScan scan = scan_engine.getScan(id);
             return scan.getScanData();
         }
         catch (Exception ex)
         {
-        	throw new RemoteException("Error logging data", ex);
+        	throw new RemoteException("Error retrieving log data", ex);
         }
     }
 
@@ -360,8 +353,9 @@ public class ScanServerImpl implements ScanServer
     public void updateScanProperty(final long id, final long address,
             final String property_id, final Object value) throws RemoteException
     {
-        final ExecutableScan scan = findScan(id);
-        scan.updateScanProperty(address, property_id, value);
+        final ExecutableScan scan = scan_engine.getExecutableScan(id);
+        if (scan != null)
+            scan.updateScanProperty(address, property_id, value);
     }
 
     /** {@inheritDoc} */
@@ -370,12 +364,13 @@ public class ScanServerImpl implements ScanServer
     {
         if (id >= 0)
         {
-            final ExecutableScan scan = findScan(id);
-            scan.pause();
+            final ExecutableScan scan = scan_engine.getExecutableScan(id);
+            if (scan != null)
+                scan.pause();
         }
         else
         {
-            final List<ExecutableScan> scans = scan_engine.getScans();
+            final List<ExecutableScan> scans = scan_engine.getExecutableScans();
             for (ExecutableScan scan : scans)
                 scan.pause();
         }
@@ -387,12 +382,12 @@ public class ScanServerImpl implements ScanServer
     {
         if (id >= 0)
         {
-            final ExecutableScan scan = findScan(id);
+            final ExecutableScan scan = scan_engine.getExecutableScan(id);
             scan.resume();
         }
         else
         {
-            final List<ExecutableScan> scans = scan_engine.getScans();
+            final List<ExecutableScan> scans = scan_engine.getExecutableScans();
             for (ExecutableScan scan : scans)
                 scan.resume();
         }
@@ -404,12 +399,12 @@ public class ScanServerImpl implements ScanServer
     {
     	if (id >= 0)
     	{
-	        final ExecutableScan scan = findScan(id);
+            final ExecutableScan scan = scan_engine.getExecutableScan(id);
 	        scan.abort();
     	}
         else
         {
-            final List<ExecutableScan> scans = scan_engine.getScans();
+            final List<ExecutableScan> scans = scan_engine.getExecutableScans();
             for (ExecutableScan scan : scans)
                 scan.abort();
         }
@@ -419,7 +414,7 @@ public class ScanServerImpl implements ScanServer
     @Override
     public void remove(final long id) throws RemoteException
     {
-        final ExecutableScan scan = findScan(id);
+        final LoggedScan scan = scan_engine.getScan(id);
         scan_engine.removeScan(scan);
     }
 

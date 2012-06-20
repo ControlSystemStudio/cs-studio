@@ -22,6 +22,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.Scan;
+import org.csstudio.scan.server.UnknownScanException;
+
 /** Engine that accepts {@link ExecutableScan}s, queuing them and executing
  *  them in order
  *  @author Kay Kasemir
@@ -37,15 +41,21 @@ public class ScanEngine
      *  Scans that either Finished, Failed or were Aborted
      *  are kept around for a little while.
      */
-    final private List<ExecutableScan> scan_queue = new LinkedList<ExecutableScan>();
+    final private List<LoggedScan> scan_queue = new LinkedList<LoggedScan>();
 
     /** Start the scan engine, i.e. create thread that will process
      *  scans
+     *  @param load_existing_scans Load info about existing scans?
+     *  @throws Exception on error
      */
-    public void start()
+    public void start(final boolean load_existing_scans) throws Exception
     {
-        // TODO Read old scans
+        if (! load_existing_scans)
+            return;
 
+        final Scan[] scans = DataLogFactory.getScans();
+        for (Scan scan : scans)
+            scan_queue.add(new LoggedScan(scan));
     }
 
     /** Stop the scan engine, aborting scans
@@ -74,9 +84,9 @@ public class ScanEngine
     }
 
     /** @return List of scans */
-    public List<ExecutableScan> getScans()
+    public List<LoggedScan> getScans()
     {
-        final List<ExecutableScan> scans = new ArrayList<ExecutableScan>();
+        final List<LoggedScan> scans = new ArrayList<LoggedScan>();
         synchronized (scan_queue)
         {
             scans.addAll(scan_queue);
@@ -84,8 +94,51 @@ public class ScanEngine
         return scans;
     }
 
+    /** @return List of executable scans */
+    public List<ExecutableScan> getExecutableScans()
+    {
+        final List<ExecutableScan> scans = new ArrayList<ExecutableScan>();
+        synchronized (scan_queue)
+        {
+            for (LoggedScan scan : scan_queue)
+                if (scan instanceof ExecutableScan)
+                    scans.add((ExecutableScan) scan);
+        }
+        return scans;
+    }
+
+    /** Find scan by ID
+     *  @param id Scan ID
+     *  @return {@link ExecutableScan}
+     *  @throws UnknownScanException if scan ID not valid
+     */
+    public LoggedScan getScan(final long id) throws UnknownScanException
+    {
+        synchronized (scan_queue)
+        {
+            // Linear lookup. Good enough?
+            for (LoggedScan scan : scan_queue)
+                if (scan.getId() == id)
+                    return scan;
+        }
+        throw new UnknownScanException(id);
+    }
+
+    /** Find executable scan by ID
+     *  @param id Scan ID
+     *  @return {@link ExecutableScan} or <code>null</code> if scan is not executable
+     *  @throws UnknownScanException if scan ID not valid
+     */
+    public ExecutableScan getExecutableScan(final long id) throws UnknownScanException
+    {
+        final LoggedScan scan = getScan(id);
+        if (scan instanceof ExecutableScan)
+            return (ExecutableScan) scan;
+        return null;
+    }
+
     /** @param scan Scan to remove (if it's 'done') */
-    public void removeScan(final ExecutableScan scan)
+    public void removeScan(final LoggedScan scan)
     {
         // Only remove scans that are 'done'
         if (scan.getScanState().isDone())
@@ -102,7 +155,7 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-            final Iterator<ExecutableScan> iterator = scan_queue.iterator();
+            final Iterator<LoggedScan> iterator = scan_queue.iterator();
             while (iterator.hasNext())
             {
                 if (iterator.next().getScanState().isDone())
@@ -118,7 +171,7 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-        	for (ExecutableScan scan : scan_queue)
+        	for (LoggedScan scan : scan_queue)
         		if (scan.getScanState().isDone())
         		{
         			scan_queue.remove(scan);
