@@ -60,7 +60,7 @@ public class ScanHeadlessTest
 
         // Execute the scan
         assertEquals(0, devices.getDevices().length);
-        scan.execute();
+        scan.call();
 
         // Devices should have been added by scan as needed
         final Device[] device_infos = devices.getDevices();
@@ -123,7 +123,7 @@ public class ScanHeadlessTest
         assertEquals(ScanState.Idle, info.getState());
         assertEquals(0, info.getPercentage());
         // Execute the scan
-        scan.execute();
+        scan.call();
         // Check Finish state
         info = scan.getScanInfo();
         assertEquals(ScanState.Finished, info.getState());

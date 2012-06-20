@@ -17,9 +17,9 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -66,6 +66,17 @@ public class ScanEngineHeadlessTest
         return devices;
     }
 
+    /** @param engine
+     *  @return <code>true</code> if all scans on engine are 'done'
+     */
+    private static boolean isIdle(final ScanEngine engine)
+    {
+        for (ExecutableScan scan : engine.getScans())
+            if (!scan.getScanState().isDone())
+                return false;
+        return true;
+    }
+
     /** Test scans with pause/resume (15 secs) */
     @Test(timeout=30000)
     public void testScanEngine() throws Exception
@@ -110,7 +121,7 @@ public class ScanEngineHeadlessTest
             scans = engine.getScans();
             System.out.println(scans.get(0).getScanInfo());
             assertSame(scan_x, scans.get(0));
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             Thread.sleep(200);
         }
         while (scan_x.getScanInfo().getState() != ScanState.Running);
@@ -121,7 +132,7 @@ public class ScanEngineHeadlessTest
         for (int i=0; i<4; ++i)
         {
             System.out.println(scan_x.getScanInfo());
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             assertEquals(ScanState.Paused, scan_x.getScanInfo().getState());
             Thread.sleep(200);
         }
@@ -142,7 +153,7 @@ public class ScanEngineHeadlessTest
                 assertTrue(info.getCurrentAddress() == 1  ||
                            info.getCurrentAddress() == 2);
             assertSame(scan_x, scans.get(0));
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             Thread.sleep(200);
         }
         while (scan_x.getScanInfo().getState() != ScanState.Finished);
@@ -156,7 +167,7 @@ public class ScanEngineHeadlessTest
             assertSame(scan_y, scans.get(1));
             Thread.sleep(200);
         }
-        while (! engine.isIdle());
+        while (! isIdle(engine));
 
         System.out.println(scan_x.getScanInfo());
         System.out.println(scan_y.getScanInfo());
@@ -187,16 +198,16 @@ public class ScanEngineHeadlessTest
         waitForState(scan, ScanState.Finished);
 
         // Submit same scan again, which causes error
-        engine.submit(scan);
-
-        // Wait for failure...
-        waitForState(scan, ScanState.Failed);
-
-        final String error = scan.getScanInfo().getError();
-        assertNotNull(error);
-        System.out.println("Received expected error: " + error);
-        assertTrue(error.toLowerCase().contains("cannot"));
-        assertTrue(error.toLowerCase().contains("finished"));
+        try
+        {
+            engine.submit(scan);
+            fail("Submit scan twice?");
+        }
+        catch (IllegalStateException ex)
+        {
+            System.out.println("Received expected error: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("submitted"));
+        }
 
         engine.stop();
     }
@@ -259,7 +270,7 @@ public class ScanEngineHeadlessTest
         // Allow it to do a little work
         Thread.sleep(1000);
 
-        engine.abortScan(scan);
+        scan.abort();
 
         // Thread should not continue...
         Thread.sleep(1000);

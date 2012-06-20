@@ -37,7 +37,7 @@ public class ScanEngine
      *  Scans that either Finished, Failed or were Aborted
      *  are kept around for a little while.
      */
-    final private List<ScanQueueItem> scan_queue = new LinkedList<ScanQueueItem>();
+    final private List<ExecutableScan> scan_queue = new LinkedList<ExecutableScan>();
 
     /** Start the scan engine, i.e. create thread that will process
      *  scans
@@ -60,28 +60,16 @@ public class ScanEngine
         }
     }
 
-    /** @return <code>true</code> if the engine is idle, i.e. all
-     *          there is currently no active scan
-     */
-    public boolean isIdle()
-    {
-        synchronized (scan_queue)
-        {
-            for (ScanQueueItem item : scan_queue)
-                if (! item.isDone())
-                    return false;
-        }
-        return true;
-    }
-
     /** Submit a scan to the engine for execution
      *  @param scan The {@link ExecutableScan}
+     *  @throws IllegalStateException if scan had been submitted before
      */
     public void submit(final ExecutableScan scan)
     {
+        scan.submit(executor);
         synchronized (scan_queue)
         {
-            scan_queue.add(new ScanQueueItem(executor, scan));
+            scan_queue.add(scan);
         }
     }
 
@@ -91,47 +79,20 @@ public class ScanEngine
         final List<ExecutableScan> scans = new ArrayList<ExecutableScan>();
         synchronized (scan_queue)
         {
-            for (ScanQueueItem item : scan_queue)
-                scans.add(item.getScan());
+            scans.addAll(scan_queue);
         }
         return scans;
-    }
-
-    /** Locate scan queue item
-     *  @param scan Scan
-     *  @return {@link ScanQueueItem} or <code>null</code> when scan not found
-     */
-    private ScanQueueItem getScanItem(final ExecutableScan scan)
-    {
-        synchronized (scan_queue)
-        {
-            for (ScanQueueItem item : scan_queue)
-                if (item.getScan() == scan) // Really exact scan, not equals() !
-                    return item;
-        }
-        return null;
-    }
-
-    /** @param scan Scan to abort */
-    public void abortScan(final ExecutableScan scan)
-    {
-        final ScanQueueItem item = getScanItem(scan);
-        if (item != null)
-            item.abort();
     }
 
     /** @param scan Scan to remove (if it's 'done') */
     public void removeScan(final ExecutableScan scan)
     {
-        final ScanQueueItem item = getScanItem(scan);
-        if (item == null)
-            return;
         // Only remove scans that are 'done'
-        if (item.isDone())
+        if (scan.getScanState().isDone())
         {
             synchronized (scan_queue)
             {
-                scan_queue.remove(item);
+                scan_queue.remove(scan);
             }
         }
     }
@@ -141,10 +102,10 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-            final Iterator<ScanQueueItem> iterator = scan_queue.iterator();
+            final Iterator<ExecutableScan> iterator = scan_queue.iterator();
             while (iterator.hasNext())
             {
-                if (iterator.next().isDone())
+                if (iterator.next().getScanState().isDone())
                     iterator.remove();
             }
         }
@@ -157,10 +118,10 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-        	for (ScanQueueItem item : scan_queue)
-        		if (item.isDone())
+        	for (ExecutableScan scan : scan_queue)
+        		if (scan.getScanState().isDone())
         		{
-        			scan_queue.remove(item);
+        			scan_queue.remove(scan);
         			return true;
         		}
         }

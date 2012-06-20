@@ -39,6 +39,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanInfo;
@@ -331,9 +332,12 @@ public class ScanServerImpl implements ScanServer
     public long getLastScanDataSerial(final long id) throws RemoteException
     {
         final ExecutableScan scan = findScan(id);
-        if (scan != null)
-            return scan.getLastScanDataSerial();
-        return 0;
+        if (scan == null)
+            return 0;
+        final DataLog log = scan.getDataLog();
+        if (log == null)
+            return 0;
+        return log.getLastScanDataSerial();
     }
 
     /** {@inheritDoc} */
@@ -401,13 +405,13 @@ public class ScanServerImpl implements ScanServer
     	if (id >= 0)
     	{
 	        final ExecutableScan scan = findScan(id);
-	        scan_engine.abortScan(scan);
+	        scan.abort();
     	}
         else
         {
             final List<ExecutableScan> scans = scan_engine.getScans();
             for (ExecutableScan scan : scans)
-    	        scan_engine.abortScan(scan);
+                scan.abort();
         }
     }
 
