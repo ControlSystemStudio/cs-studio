@@ -21,6 +21,7 @@ import org.csstudio.opibuilder.scriptUtil.FileUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -411,6 +412,7 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 							Display.getCurrent().getActiveShell(), startPath,
 							"Select a script file", new String[] {
 									ScriptService.JS, ScriptService.PY });
+					rsd.setSelectedResource(new Path("./")); //$NON-NLS-1$
 					if (rsd.open() == Window.OK) {
 						if (rsd.getSelectedResource() != null) {
 							path = rsd.getSelectedResource();

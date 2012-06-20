@@ -134,7 +134,13 @@ public final class FilePathCellEditor extends AbstractDialogCellEditor {
 		if (_onlyWorkSpace) {
 			RelativePathSelectionDialog rsd = new RelativePathSelectionDialog(
 					parentShell, widgetModel.getRootDisplayModel().getOpiFilePath().removeLastSegments(1), "Select a resource", _fileExtensions);
-			rsd.setSelectedResource(_path);
+			if(_path!=null && !_path.isEmpty())
+				rsd.setSelectedResource(_path);
+			else{
+				//select current path
+				rsd.setSelectedResource(new Path("./"));//$NON-NLS-1$				
+			}
+			
 			if (rsd.open() == Window.OK) {
 				if (rsd.getSelectedResource() != null) {
 					_path = rsd.getSelectedResource();
