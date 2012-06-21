@@ -415,13 +415,29 @@ public class ScanServerImpl implements ScanServer
     public void remove(final long id) throws RemoteException
     {
         final LoggedScan scan = scan_engine.getScan(id);
-        scan_engine.removeScan(scan);
+        try
+        {
+            scan_engine.removeScan(scan);
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing scan", ex);
+            throw new RemoteException("Error removing scan", ex);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeCompletedScans() throws RemoteException
     {
-        scan_engine.removeCompletedScans();
+        try
+        {
+            scan_engine.removeCompletedScans();
+        }
+        catch (Exception ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Error removing completed scans", ex);
+            throw new RemoteException("Error removing completed scans", ex);
+        }
     }
 }

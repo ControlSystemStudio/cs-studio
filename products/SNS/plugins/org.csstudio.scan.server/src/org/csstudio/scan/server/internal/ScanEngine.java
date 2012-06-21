@@ -137,12 +137,15 @@ public class ScanEngine
         return null;
     }
 
-    /** @param scan Scan to remove (if it's 'done') */
-    public void removeScan(final LoggedScan scan)
+    /** @param scan Scan to remove (if it's 'done')
+     *  @throws Exception on error
+     */
+    public void removeScan(final LoggedScan scan) throws Exception
     {
         // Only remove scans that are 'done'
         if (scan.getScanState().isDone())
         {
+            DataLogFactory.deleteDataLog(scan);
             synchronized (scan_queue)
             {
                 scan_queue.remove(scan);
@@ -150,16 +153,22 @@ public class ScanEngine
         }
     }
 
-    /** Remove completed scans */
-    public void removeCompletedScans()
+    /** Remove completed scans
+     *  @throws Exception on error
+     */
+    public void removeCompletedScans() throws Exception
     {
         synchronized (scan_queue)
         {
             final Iterator<LoggedScan> iterator = scan_queue.iterator();
             while (iterator.hasNext())
             {
-                if (iterator.next().getScanState().isDone())
+                final LoggedScan scan = iterator.next();
+                if (scan.getScanState().isDone())
+                {
+                    DataLogFactory.deleteDataLog(scan);
                     iterator.remove();
+                }
             }
         }
     }
