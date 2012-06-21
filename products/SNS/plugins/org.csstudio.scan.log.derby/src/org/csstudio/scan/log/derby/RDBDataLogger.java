@@ -93,6 +93,35 @@ abstract public class RDBDataLogger
 		}
     }
 
+    /** Locate scan
+     *  @param id Scan ID
+     *  @return Scan for ID or <code>null</code>
+     *  @throws Exception on error
+     */
+    public Scan getScan(final long id) throws Exception
+    {
+        final Scan scan;
+        final PreparedStatement statement = connection.prepareStatement(
+                "SELECT id, name, created FROM scans WHERE id=?");
+        try
+        {
+            statement.setLong(1, id);
+            final ResultSet result = statement.executeQuery();
+            if (result.next())
+                scan = new Scan(result.getLong(1),
+                                result.getString(2),
+                                result.getTimestamp(3));
+            else
+                scan = null;
+            result.close();
+        }
+        finally
+        {
+            statement.close();
+        }
+        return scan;
+    }
+
     /** Obtain all available scans
      *  @return Scans that have been logged
      *  @throws Exception on error
@@ -296,6 +325,52 @@ abstract public class RDBDataLogger
 			statement.close();
 		}
 		return devices.toArray(new String[devices.size()]);
+    }
+
+    /** Delete logged data for a scan
+     *  @param scan_id ID of the scan
+     *  @throws SQLException on error
+     */
+    public void deleteDataLog(final long scan_id) throws SQLException
+    {
+        connection.setAutoCommit(false);
+        try
+        {
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM samples WHERE scan_id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            statement = connection.prepareStatement(
+                    "DELETE FROM scans WHERE id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            connection.commit();
+        }
+        catch (SQLException ex)
+        {
+            connection.rollback();
+            throw ex;
+        }
+        finally
+        {
+            connection.setAutoCommit(true);
+        }
     }
 
 	/** Close database.

@@ -17,6 +17,7 @@ import org.csstudio.scan.server.Scan;
  */
 public class DerbyDataLogFactory implements IDataLogFactory
 {
+    /** {@inheritDoc} */
 	@Override
     public Scan createDataLog(final String scan_name) throws Exception
     {
@@ -31,6 +32,7 @@ public class DerbyDataLogFactory implements IDataLogFactory
 		}
     }
 
+    /** {@inheritDoc} */
 	@Override
     public Scan[] getScans() throws Exception
     {
@@ -45,9 +47,35 @@ public class DerbyDataLogFactory implements IDataLogFactory
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public DataLog getDataLog(final Scan scan) throws Exception
     {
-	    return new DerbyDataLog(scan.getId());
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            if (logger.getScan(scan.getId()) != null)
+                return new DerbyDataLog(scan.getId());
+        }
+        finally
+        {
+            logger.close();
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void deleteDataLog(final Scan scan) throws Exception
+    {
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            logger.deleteDataLog(scan.getId());
+        }
+        finally
+        {
+            logger.close();
+        }
     }
 }

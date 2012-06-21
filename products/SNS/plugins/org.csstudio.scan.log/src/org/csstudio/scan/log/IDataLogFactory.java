@@ -29,9 +29,18 @@ public interface IDataLogFactory
     public Scan[] getScans() throws Exception;
 
 	/** Get log for a scan
+	 *
+	 *  <p>Caller needs to <code>close()</code>
 	 *  @param scan Scan
-	 *  @return DataLog for Scan
+	 *  @return DataLog for Scan, or <code>null</code> if there is none
 	 *  @throws Exception on error
+	 *  @see DataLog#close()
 	 */
     public DataLog getDataLog(final Scan scan) throws Exception;
+
+    /** Delete logged data for a scan
+     *  @param scan Scan
+     *  @throws Exception on error
+     */
+    public void deleteDataLog(final Scan scan) throws Exception;
 }
