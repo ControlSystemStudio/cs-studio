@@ -8,14 +8,12 @@ public class Line2DPlotView extends AbstractChannelQueryView<Line2DPlotWidget> {
 
 	@Override
 	public void saveWidgetState(Line2DPlotWidget widget, IMemento memento) {
-		// TODO Auto-generated method stub
-		
+		widget.saveState(memento);
 	}
 
 	@Override
 	public void loadWidgetState(Line2DPlotWidget widget, IMemento memento) {
-		// TODO Auto-generated method stub
-		
+		widget.loadState(memento);
 	}
 
 	@Override

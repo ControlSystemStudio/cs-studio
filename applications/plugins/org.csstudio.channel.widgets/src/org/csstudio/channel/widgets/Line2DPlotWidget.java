@@ -4,16 +4,22 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.ExpressionLanguage.channels;
 import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleArrayOf;
+import static org.epics.pvmanager.data.ExpressionLanguage.vNumber;
+import static org.epics.pvmanager.data.ExpressionLanguage.vDoubleOf;
 import static org.epics.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
-import gov.bnl.channelfinder.api.ChannelQueryListener;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
+import gov.bnl.channelfinder.api.ChannelQueryListener;
+import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.Property;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +41,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IMemento;
 import org.epics.graphene.InterpolationScheme;
 import org.epics.graphene.LineGraphRendererUpdate;
 import org.epics.pvmanager.PVManager;
@@ -43,10 +50,10 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VDoubleArray;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.data.VNumber;
-import org.epics.pvmanager.expression.ChannelExpressionList;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
+import org.epics.pvmanager.util.TimeDuration;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
@@ -105,7 +112,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
-				System.out.println(evt.getPropertyName());
+				// System.out.println(evt.getPropertyName());
 
 			}
 		});
@@ -121,7 +128,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	@Override
 	protected void queryCleared() {
 		setYChannelNames(null);
-		setxChannelNames(null);
+		// setxChannelNames(null);
 
 		imageDisplay.setVImage(null);
 		setLastError(null);
@@ -144,6 +151,24 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				try {
 					List<Channel> sortedChannels = new ArrayList<Channel>(
 							channels);
+
+					Collections.sort(sortedChannels, new Comparator<Channel>() {
+						@Override
+						public int compare(Channel o1, Channel o2) {
+							return findProperty(o1).compareTo(findProperty(o2));
+						}
+
+						public Double findProperty(Channel channel) {
+							for (Property property : channel.getProperties()) {
+								if (property.getName()
+										.equals(getSortProperty())) {
+									return Double.parseDouble(property
+											.getValue());
+								}
+							}
+							return null;
+						}
+					});
 					channels = sortedChannels;
 				} catch (Exception e) {
 					// Leave unsorted
@@ -165,6 +190,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		List<String> finalChannels = getResultChannels(result);
 		if (finalChannels != null && !finalChannels.isEmpty()) {
 			setYChannelNames(finalChannels);
+			setProperties(ChannelUtil.getPropertyNames(result.channels));
 		} else if (finalChannels == null) {
 			// assumes the entered string to be an waveform pv
 			setyWaveformChannelName(getChannelQuery().getQuery());
@@ -176,10 +202,37 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	private Collection<String> yChannelNames;
 	private String yWaveformChannelName;
 
+	private enum YAxis {
+		CHANNELQUERY, WAVEFORM
+	}
+
+	private YAxis yOrdering = YAxis.CHANNELQUERY;
+
 	// X values
 	private ChannelQuery xChannelQuery;
 	private Collection<String> xChannelNames;
 	private String xWaveformChannelName;
+
+	private String sortProperty;
+	private Collection<String> properties;
+
+	private String offset;
+	private String increment;
+
+	public enum XAxis {
+		INDEX, CHANNELQUERY, PROPERTY, OFFSET_INCREMENT
+	}
+
+	private XAxis xOrdering = XAxis.INDEX;
+
+	public void setxOrdering(XAxis xAxis) {
+		this.xOrdering = xAxis;
+		reconnect();
+	}
+
+	public XAxis getxOrdering() {
+		return xOrdering;
+	}
 
 	public Collection<String> getxChannelNames() {
 		return xChannelNames;
@@ -190,8 +243,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				&& this.xChannelNames.equals(xChannelNames)) {
 			return;
 		}
-		this.xWaveformChannelName = null;
 		this.xChannelNames = xChannelNames;
+		this.xWaveformChannelName = null;
 		reconnect();
 	}
 
@@ -204,9 +257,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				&& this.xWaveformChannelName.equals(xWaveformChannelName)) {
 			return;
 		}
-
-		this.xChannelNames = null;
 		this.xWaveformChannelName = xWaveformChannelName;
+		this.xChannelNames = null;
 		reconnect();
 	}
 
@@ -219,8 +271,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				&& this.yChannelNames.equals(yChannelNames)) {
 			return;
 		}
-		this.yWaveformChannelName = null;
 		this.yChannelNames = yChannelNames;
+		this.yOrdering = YAxis.CHANNELQUERY;
 		reconnect();
 	}
 
@@ -233,8 +285,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				&& this.yWaveformChannelName.equals(yWaveformChannelName)) {
 			return;
 		}
-		this.yChannelNames = null;
 		this.yWaveformChannelName = yWaveformChannelName;
+		this.yOrdering = YAxis.WAVEFORM;
 		reconnect();
 	}
 
@@ -246,8 +298,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		// If new query is the same, don't change -- you would re-trigger the
 		// query for nothing
 		if (getXChannelQuery() != null
-				&& getXChannelQuery().equals(xChannelQuery))
+				&& getXChannelQuery().equals(xChannelQuery)) {
 			return;
+		}
 
 		ChannelQuery oldValue = getXChannelQuery();
 		if (oldValue != null) {
@@ -263,8 +316,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 		ChannelQuery oldXValue = this.xChannelQuery;
 		this.xChannelQuery = xChannelQuery;
-		changeSupport.firePropertyChange("xChannelQuery", oldXValue,
-				xChannelQuery);
 	}
 
 	private final ChannelQueryListener xQueryListener = new ChannelQueryListener() {
@@ -287,7 +338,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		List<String> finalChannels = getResultChannels(result);
 		if (finalChannels != null && !finalChannels.isEmpty()) {
 			setxChannelNames(finalChannels);
-		}else if (finalChannels == null) {
+		} else if (finalChannels == null) {
 			// assumes the entered string to be an waveform pv
 			setxWaveformChannelName(getXChannelQuery().getQuery());
 		}
@@ -297,7 +348,50 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		setxChannelNames(null);
 		imageDisplay.setVImage(null);
 		setLastError(null);
-		reconnect();
+		// reconnect();
+	}
+
+	public String getSortProperty() {
+		return sortProperty;
+	}
+
+	public void setSortProperty(String sortProperty) {
+		if (sortProperty != null) {
+			this.sortProperty = sortProperty;
+			reconnect();
+		}
+	}
+
+	public Collection<String> getProperties() {
+		if (this.properties == null)
+			return Collections.emptyList();
+		return properties;
+	}
+
+	private void setProperties(Collection<String> properties) {
+		this.properties = properties;
+	}
+
+	public String getOffset() {
+		return offset;
+	}
+
+	public void setOffset(String offset) {
+		if (offset != null && !offset.isEmpty()) {
+			this.offset = offset;
+			reconnect();
+		}
+	}
+
+	public String getIncrement() {
+		return increment;
+	}
+
+	public void setIncrement(String increment) {
+		if (increment != null && !increment.isEmpty()) {
+			this.increment = increment;
+			reconnect();
+		}
 	}
 
 	private void setLastError(Exception lastException) {
@@ -318,38 +412,55 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 		DesiredRateExpression<VDoubleArray> yValueExpression = null;
 		// Determine the expression for the y values.
-		if (yChannelNames != null && !yChannelNames.isEmpty()) {
-			yValueExpression = vDoubleArrayOf(latestValueOf(channels(
-					yChannelNames, VNumber.class, VNumber.class)));
-		} else if (yWaveformChannelName != null) {
+		if (yOrdering.equals(YAxis.CHANNELQUERY)) {
+			if (yChannelNames != null)
+				yValueExpression = vDoubleArrayOf(latestValueOf(channels(
+						yChannelNames, VNumber.class, VNumber.class)));
+		} else if (yOrdering.equals(YAxis.WAVEFORM)) {
 			// create a plot using the yWavefor
-			yValueExpression = latestValueOf(vDoubleArrayOf(channel(yWaveformChannelName)));
+			if (yWaveformChannelName != null && !yWaveformChannelName.isEmpty())
+				yValueExpression = latestValueOf(vDoubleArrayOf(channel(yWaveformChannelName)));
 		}
 
-		DesiredRateExpression<VDoubleArray> xValueExpression = null;
-		// Determine the expression for the x values.
-		if (xChannelNames != null && !xChannelNames.isEmpty()) {
-			xValueExpression = vDoubleArrayOf(latestValueOf(channels(
-					xChannelNames, VNumber.class, VNumber.class)));
-		} else if (xWaveformChannelName != null) {
-			xValueExpression = latestValueOf(vDoubleArrayOf(channel(xWaveformChannelName)));
+		if (yValueExpression != null) {
+			DesiredRateExpression<VDoubleArray> xValueExpression = null;
+			// Determine the expression for the x values.
+			switch (xOrdering) {
+			case INDEX:
+				plot = ExpressionLanguage.lineGraphOf(yValueExpression);
+				break;
+			case CHANNELQUERY:
+				if (xChannelNames != null && !xChannelNames.isEmpty()) {
+					xValueExpression = vDoubleArrayOf(latestValueOf(channels(
+							xChannelNames, VNumber.class, VNumber.class)));
+					plot = ExpressionLanguage.lineGraphOf(xValueExpression,
+							yValueExpression);
+				} else if (xWaveformChannelName != null
+						&& !xWaveformChannelName.isEmpty()) {
+					xValueExpression = latestValueOf(vDoubleArrayOf(channel(xWaveformChannelName)));
+					plot = ExpressionLanguage.lineGraphOf(xValueExpression,
+							yValueExpression);
+				} else {
+					plot = null;
+				}
+				break;
+			case OFFSET_INCREMENT:
+				if (offset != null && increment != null) {
+					plot = ExpressionLanguage.lineGraphOf(yValueExpression,
+							latestValueOf(vNumber(offset)),
+							latestValueOf(vNumber(increment)));
+				} else {
+					plot = ExpressionLanguage.lineGraphOf(yValueExpression);
+				}
+				break;
+			default:
+				plot = ExpressionLanguage.lineGraphOf(yValueExpression);
+				break;
+			}
 		}
-
-		if (xValueExpression == null) {
-			// create a simple plot using the yExpression alone
-			plot = ExpressionLanguage.lineGraphOf(yValueExpression);
-		} else {
-			// create a graph using both the expressions
-			plot = ExpressionLanguage.lineGraphOf(xValueExpression,
-					yValueExpression);
-		}
-
 		if (plot == null) {
-			plot = ExpressionLanguage
-					.lineGraphOf(vDoubleArrayOf(latestValueOf(channels(
-							yChannelNames, VNumber.class, VNumber.class))));
+			return;
 		}
-
 		plot.update(new LineGraphRendererUpdate()
 				.imageHeight(imageDisplay.getSize().y)
 				.imageWidth(imageDisplay.getSize().x)
@@ -439,6 +550,46 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	@Override
 	public void configurationDialogClosed() {
 		dialog = null;
+	}
+
+	/** Memento tag */
+	private static final String MEMENTO_CHANNEL_QUERY = "channelQuery"; //$NON-NLS-1$
+	private static final String MEMENTO_SORT_PROPERTY = "sortProperty"; //$NON-NLS-1$
+	private static final String MEMENTO_OFFSET = "offset"; //$NON-NLS-1$
+	private static final String MEMENTO_INCREMENT = "increment"; //$NON-NLS-1$
+
+	public void saveState(IMemento memento) {
+		if (getChannelQuery() != null) {
+			memento.putString(MEMENTO_CHANNEL_QUERY, getChannelQuery()
+					.getQuery());
+		}
+		if (getSortProperty() != null) {
+			memento.putString(MEMENTO_SORT_PROPERTY, getSortProperty());
+		}
+		if (getOffset() != null) {
+			memento.putString(MEMENTO_OFFSET, getOffset());
+		}
+		if (getIncrement() != null) {
+			memento.putString(MEMENTO_INCREMENT, getIncrement());
+		}
+	}
+
+	public void loadState(IMemento memento) {
+		if (memento != null) {
+			if (memento.getString(MEMENTO_SORT_PROPERTY) != null) {
+				setSortProperty(memento.getString(MEMENTO_SORT_PROPERTY));
+			}
+			if (memento.getString(MEMENTO_CHANNEL_QUERY) != null) {
+				setChannelQuery(ChannelQuery.query(
+						memento.getString(MEMENTO_CHANNEL_QUERY)).build());
+			}
+			if (memento.getString(MEMENTO_OFFSET) != null) {
+				setOffset(memento.getString(MEMENTO_OFFSET));
+			}
+			if (memento.getString(MEMENTO_INCREMENT) != null) {
+				setIncrement(memento.getString(MEMENTO_INCREMENT));
+			}
+		}
 	}
 
 }

@@ -3,6 +3,7 @@ package org.csstudio.channel.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.csstudio.channel.widgets.Line2DPlotWidget.XAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.ModifyEvent;
@@ -13,16 +14,21 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class Line2DPlotConfigurationPanel extends
 		AbstractConfigurationComposite {
-	
+
 	private Text xChannelQuery;
 	private Text offset;
 	private Text increment;
 	private CCombo combo;
+
+	private Button btnIndex;
+	private Button btnProperty;
+	private Button btnChannelQuery;
 
 	public Line2DPlotConfigurationPanel(Composite parent, int style) {
 		super(parent, style);
@@ -32,16 +38,14 @@ public class Line2DPlotConfigurationPanel extends
 		lblXAxis.setText("X Axis Configuration");
 		new Label(this, SWT.NONE);
 
-		Button btnRadioButton = new Button(this, SWT.RADIO);
-		btnRadioButton.addSelectionListener(new SelectionAdapter() {
+		btnIndex = new Button(this, SWT.RADIO);
+		btnIndex.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				disableInputs();
-				offset.setEnabled(true);
-				increment.setEnabled(true);
+				setXOrdering(XAxis.OFFSET_INCREMENT);
 			}
 		});
-		btnRadioButton.setText("Index");
+		btnIndex.setText("Index");
 		new Label(this, SWT.NONE);
 
 		Label lblNewLabel = new Label(this, SWT.NONE);
@@ -50,6 +54,12 @@ public class Line2DPlotConfigurationPanel extends
 		lblNewLabel.setText("Offset:");
 
 		offset = new Text(this, SWT.BORDER);
+		offset.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				changeSupport.firePropertyChange("offset", null, getOffset());
+			}
+		});
 		offset.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 
@@ -59,18 +69,24 @@ public class Line2DPlotConfigurationPanel extends
 		lblNewLabel_1.setText("Increment:");
 
 		increment = new Text(this, SWT.BORDER);
+		increment.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				changeSupport.firePropertyChange("increment", null,
+						getIncrement());
+			}
+		});
 		increment.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				1, 1));
 
-		Button btnRadioButton_1 = new Button(this, SWT.RADIO);
-		btnRadioButton_1.addSelectionListener(new SelectionAdapter() {
+		btnProperty = new Button(this, SWT.RADIO);
+		btnProperty.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				disableInputs();
-				combo.setEnabled(true);
+				setXOrdering(XAxis.PROPERTY);
 			}
 		});
-		btnRadioButton_1.setText("Property");
+		btnProperty.setText("Property");
 		new Label(this, SWT.NONE);
 
 		Label lblNewLabel_2 = new Label(this, SWT.NONE);
@@ -79,18 +95,24 @@ public class Line2DPlotConfigurationPanel extends
 		lblNewLabel_2.setText("Property Name:");
 
 		combo = new CCombo(this, SWT.BORDER);
+		combo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				changeSupport.firePropertyChange("sortProperty", null,
+						getSortProperty());
+			}
+		});
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 				1));
 
-		Button btnRadioButton_2 = new Button(this, SWT.RADIO);
-		btnRadioButton_2.addSelectionListener(new SelectionAdapter() {
+		btnChannelQuery = new Button(this, SWT.RADIO);
+		btnChannelQuery.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				disableInputs();
-				xChannelQuery.setEnabled(true);
+				setXOrdering(XAxis.CHANNELQUERY);
 			}
 		});
-		btnRadioButton_2.setText("Channel Query");
+		btnChannelQuery.setText("Channel Query");
 		new Label(this, SWT.NONE);
 
 		Label lblXChannelQuery = new Label(this, SWT.NONE);
@@ -108,7 +130,7 @@ public class Line2DPlotConfigurationPanel extends
 		});
 		xChannelQuery.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
 				false, 1, 1));
-		disableInputs();
+		initializeControls();
 	}
 
 	private final void disableInputs() {
@@ -118,6 +140,36 @@ public class Line2DPlotConfigurationPanel extends
 		this.offset.setEnabled(false);
 	}
 
+	/**
+	 * need this since setSelection on radio button does not toggle rest of the
+	 * buttons in the group.
+	 */
+	private void initializeControls() {
+		disableInputs();
+		switch (xOrdering) {
+		case CHANNELQUERY:
+			btnIndex.setSelection(false);
+			btnProperty.setSelection(false);
+			btnChannelQuery.setSelection(true);
+			xChannelQuery.setEnabled(true);
+			break;
+		case PROPERTY:
+			btnIndex.setSelection(false);
+			btnProperty.setSelection(true);
+			combo.setEnabled(true);
+			btnChannelQuery.setSelection(false);
+			break;
+		default:
+			btnIndex.setSelection(true);
+			btnProperty.setSelection(false);
+			btnChannelQuery.setSelection(false);
+			offset.setEnabled(true);
+			increment.setEnabled(true);
+			break;
+		}
+		changeSupport.firePropertyChange("xOrdering", null, getXOrdering());
+	}
+
 	public String getXChannelQuery() {
 		return xChannelQuery.getText();
 	}
@@ -125,36 +177,47 @@ public class Line2DPlotConfigurationPanel extends
 	public void setXChannelQuery(String xChannelQuery) {
 		this.xChannelQuery.setText(xChannelQuery);
 	}
-	
-	public String getSortProperty(){
+
+	public String getSortProperty() {
 		return combo.getText();
 	}
 
 	private volatile Collection<String> properties = new ArrayList<String>();
-	public void setSortProperty(Collection<String> properties){
+	private XAxis xOrdering = XAxis.INDEX;
+
+	public void setProperties(Collection<String> properties) {
 		this.properties = properties;
 		this.combo.setItems(properties.toArray(new String[properties.size()]));
 	}
-	
-	public void setSortProperty(String sortProperty){
-		if(properties.contains(sortProperty)){
+
+	public void setSortProperty(String sortProperty) {
+		if (properties.contains(sortProperty)) {
 			this.combo.setText(sortProperty);
 		}
 	}
-	
-	public String getOffset(){
+
+	public String getOffset() {
 		return this.offset.getText();
 	}
-	
-	public void setOffset(String offset){
+
+	public void setOffset(String offset) {
 		this.offset.setText(offset);
 	}
-	
-	public String getIncrement(){
+
+	public String getIncrement() {
 		return this.increment.getText();
 	}
-	
-	public void setIncrement(String increment){
+
+	public void setIncrement(String increment) {
 		this.increment.setText(increment);
+	}
+
+	public void setXOrdering(XAxis xOrdering) {
+		this.xOrdering = xOrdering;
+		initializeControls();
+	}
+
+	public XAxis getXOrdering() {
+		return this.xOrdering;
 	}
 }
