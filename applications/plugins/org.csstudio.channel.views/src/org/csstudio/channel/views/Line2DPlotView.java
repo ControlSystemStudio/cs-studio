@@ -6,6 +6,8 @@ import org.eclipse.ui.IMemento;
 
 public class Line2DPlotView extends AbstractChannelQueryView<Line2DPlotWidget> {
 
+	public static final String ID = "org.csstudio.channel.views.Line2DPlotView";
+
 	@Override
 	public void saveWidgetState(Line2DPlotWidget widget, IMemento memento) {
 		widget.saveState(memento);

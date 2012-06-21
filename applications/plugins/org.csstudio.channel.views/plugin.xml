@@ -131,6 +131,12 @@
                label="Waterfall"
                style="push">
          </command>
+         <command
+               commandId="org.csstudio.channel.views.OpenLine2D"
+               icon="platform:/plugin/org.csstudio.channel.widgets/icons/multi-channel-16.png"
+               label="Line2DPlot"
+               style="push">
+         </command>
       </menuContribution>
     </extension>
    <extension
@@ -159,6 +165,11 @@
             defaultHandler="org.csstudio.channel.views.OpenChannelViewer"
             id="org.csstudio.channel.views.OpenChannelViewer"
             name="Channel Viewer">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenLine2DPlot"
+            id="org.csstudio.channel.views.OpenLine2D"
+            name="Line2DPlot">
       </command>
    </extension>
 </plugin>
