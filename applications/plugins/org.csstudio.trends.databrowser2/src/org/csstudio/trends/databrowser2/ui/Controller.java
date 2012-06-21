@@ -14,6 +14,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
@@ -817,6 +818,9 @@ public class Controller implements ArchiveFetchJobListener
                 }
             });
         }
+        else if (error instanceof UnknownChannelException)
+            Logger.getLogger(getClass().getName()).log(Level.FINE,
+                        "No archived data for " + job.getPVItem().getDisplayName(), error);
         else
             Logger.getLogger(getClass().getName()).log(Level.WARNING,
                     "No archived data for " + job.getPVItem().getDisplayName(), error);

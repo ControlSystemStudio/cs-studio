@@ -19,6 +19,7 @@ import org.csstudio.data.values.ValueUtil;
 import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.server.ScanCommandImpl;
+import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
 
@@ -81,7 +82,8 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 	@Override
     public void execute(final ScanContext context)  throws Exception
     {
-		context.write(command.getDeviceName(), command.getValue(),
+	    ScanCommandUtil.write(context,
+	            command.getDeviceName(), command.getValue(),
 				command.getReadback(), command.getWait(),
 				command.getTolerance(), command.getTimeout());
 		context.workPerformed(1);

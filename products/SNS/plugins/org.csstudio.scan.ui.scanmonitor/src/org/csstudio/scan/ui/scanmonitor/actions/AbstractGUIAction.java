@@ -30,21 +30,21 @@ public abstract class AbstractGUIAction extends Action
 {
 	final protected Shell shell;
     final protected ScanInfoModel model;
-    final protected ScanInfo info;
+    final protected ScanInfo[] infos;
 
     /** Initialize
      *  @param shell Parent shell
-     *  @param model ScanInfoModel
-     *  @param info ScanInfo for scan on which this action acts
+     *  @param model {@link ScanInfoModel}
+     *  @param infos {@link ScanInfo}s for scan on which this action acts
      *  @param label Label
      *  @param icon Icon image
      */
-    public AbstractGUIAction(final Shell shell, final ScanInfoModel model, final ScanInfo info, final String label, final ImageDescriptor icon)
+    public AbstractGUIAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos, final String label, final ImageDescriptor icon)
     {
         super(label, icon);
         this.shell = shell;
         this.model = model;
-        this.info = info;
+        this.infos = infos;
     }
 
     /** Invoke the 'real' action, handling errors */

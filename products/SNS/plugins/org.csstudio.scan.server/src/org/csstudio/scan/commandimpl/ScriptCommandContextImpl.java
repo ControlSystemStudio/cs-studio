@@ -14,6 +14,7 @@ import org.csstudio.scan.command.ScriptCommandContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
+import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
 
@@ -39,7 +40,7 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 	@Override
 	public ScanData getScanData() throws Exception
 	{
-		return context.getScanData();
+		return context.getDataLog().getScanData();
 	}
 
     /** {@inheritDoc} */
@@ -70,7 +71,7 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
         {
             final ScanSample sample =
                 ScanSampleFactory.createSample(device, timestamp , serial++, iter.nextDouble());
-            context.logSample(sample);
+            context.getDataLog().log(sample);
         }
 	}
 
@@ -79,6 +80,6 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 	public void write(final String device_name, final Object value, final String readback,
 	        final boolean wait, final double tolerance, final double timeout) throws Exception
 	{
-		context.write(device_name, value, readback, wait, tolerance, timeout);
+	    ScanCommandUtil.write(context, device_name, value, readback, wait, tolerance, timeout);
 	}
 }

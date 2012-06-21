@@ -22,6 +22,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,8 +33,6 @@ import org.csstudio.scan.command.LoopCommand;
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommand;
 import org.csstudio.scan.commandimpl.WaitForDevicesCommandImpl;
-import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
@@ -40,6 +42,7 @@ import org.csstudio.scan.server.Scan;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
 
 /** Scan that can be executed: Commands, device context, state
@@ -52,29 +55,42 @@ import org.csstudio.scan.server.ScanState;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ExecutableScan extends ScanContext
+public class ExecutableScan extends LoggedScan implements ScanContext, Callable<Object>
 {
-    final private Scan scan;
+    /** Serialization ID */
+    final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
+    /** Commands to execute */
+    final private transient List<ScanCommandImpl<?>> pre_scan, implementations, post_scan;
+
+    /** Devices used by the scan */
+    final protected transient DeviceContext devices;
+
+    /** Log each device access, or require specific log command? */
+    private volatile transient boolean automatic_log_mode = false;
+
+    /** Data logger, non-null while when executing the scan */
+    private volatile transient DataLog data_logger = null;
+
+    final protected transient AtomicLong work_performed = new AtomicLong();
 
     /** State of this scan
      *  SYNC on this for access
      */
-    private ScanState state = ScanState.Idle;
+    private transient ScanState state = ScanState.Idle;
 
-    private volatile String error = null;
+    private volatile transient String error = null;
 
-    private volatile long start_ms = 0;
+    private volatile transient long start_ms = 0;
 
-    private volatile long end_ms = 0;
+    private volatile transient long end_ms = 0;
 
-    final private long total_work_units;
+    final private transient long total_work_units;
 
-    /** Data logger, non-null while when executing the scan */
-    private volatile DataLog data_logger = null;
+    private volatile transient ScanCommandImpl<?> current_command = null;
 
-    private volatile ScanCommandImpl<?> current_command = null;
+    /** {@link Future} after scan has been submitted to {@link ExecutorService} */
+    private volatile transient Future<Object> future = null;
 
     /** Initialize
      *  @param name User-provided name for this scan
@@ -103,8 +119,24 @@ public class ExecutableScan extends ScanContext
             final List<ScanCommandImpl<?>> implementations,
             final List<ScanCommandImpl<?>> post_scan) throws Exception
     {
-    	super(devices);
-    	scan = DataLogFactory.createDataLog(name);
+        this(DataLogFactory.createDataLog(name), devices, pre_scan, implementations, post_scan);
+    }
+
+    /** Initialize
+     *  @param scan {@link Scan}
+     *  @param devices {@link DeviceContext} to use for scan
+     *  @param pre_scan Commands to execute before the 'main' section of the scan
+     *  @param implementations Commands to execute in this scan
+     *  @param post_scan Commands to execute before the 'main' section of the scan
+     *  @throws Exception on error (cannot access log, ...)
+     */
+    public ExecutableScan(final Scan scan, final DeviceContext devices,
+            final List<ScanCommandImpl<?>> pre_scan,
+            final List<ScanCommandImpl<?>> implementations,
+            final List<ScanCommandImpl<?>> post_scan) throws Exception
+    {
+        super(scan);
+        this.devices = devices;
         this.pre_scan = pre_scan;
         this.implementations = implementations;
         this.post_scan = post_scan;
@@ -121,30 +153,33 @@ public class ExecutableScan extends ScanContext
         total_work_units = work_units;
     }
 
-    /** @return Unique scan identifier (within JVM of the scan engine) */
-    public long getId()
+    /** Submit scan for execution
+     *  @param executor {@link ExecutorService} to use
+     *  @throws IllegalStateException if scan had been submitted before
+     */
+    public void submit(final ExecutorService executor)
     {
-        return scan.getId();
+        if (future != null)
+            throw new IllegalStateException("Already submitted for execution");
+        future = executor.submit(this);
     }
 
-    /** @return Scan name */
-    public String getName()
+    /** @return {@link ScanState} */
+    @Override
+    public synchronized ScanState getScanState()
     {
-        return scan.getName();
+        return state;
     }
 
     /** @return Info about current state of this scan */
+    @Override
     public ScanInfo getScanInfo()
     {
         final ScanCommandImpl<?> command = current_command;
 
         final long address = command == null ? -1 : command.getCommand().getAddress();
         final String command_name;
-        final ScanState state;
-        synchronized (this)
-        {
-            state = this.state;
-        }
+        final ScanState state = getScanState();
         if (state == ScanState.Finished)
         {
             command_name = "- end -";
@@ -153,7 +188,7 @@ public class ExecutableScan extends ScanContext
             command_name = command.toString();
         else
             command_name = "";
-        return new ScanInfo(scan.getId(), scan.getName(), scan.getCreated(), state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
+        return new ScanInfo(this, state, error, computeRuntime(), work_performed.get(), total_work_units, address, command_name);
     }
 
     /** @return Runtime of this scan (so far) in millisecs. 0 if not started */
@@ -249,55 +284,44 @@ public class ExecutableScan extends ScanContext
 
     /** {@inheritDoc} */
     @Override
-    public long getNextScanDataSerial()
+    public Device getDevice(final String name) throws Exception
     {
-        if (data_logger == null)
-            return -1;
-    	return data_logger.getNextScanDataSerial();
+        return devices.getDeviceByAlias(name);
     }
-
-    /** @return Last logged scan data serial. -1 if nothing has been logged. 0 if scan is not active */
-    public long getLastScanDataSerial()
-    {
-        if (data_logger == null)
-            return 0;
-        return data_logger.getLastScanDataSerial();
-    }
-
-    /** {@inheritDoc} */
-	@Override
-	public ScanData getScanData() throws Exception
-	{
-	    // Allow calls non-active scan where data_logger == null
-	    final DataLog logger = DataLogFactory.getDataLog(scan);
-	    try
-	    {
-	        return logger.getScanData();
-	    }
-	    finally
-	    {
-	        logger.close();
-	    }
-	}
 
     /** {@inheritDoc} */
     @Override
-    public void logSample(final ScanSample sample) throws Exception
+    public void setLogMode(final boolean automatic)
     {
-        if (data_logger == null)
-            throw new IllegalStateException("Cannot log while scan is " + state);
-        data_logger.log(sample);
+        automatic_log_mode = automatic;
     }
 
-    /** Execute all commands on the scan,
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutomaticLogMode()
+    {
+        return automatic_log_mode;
+    }
+
+	/** {@inheritDoc} */
+    @Override
+    public DataLog getDataLog()
+    {
+        return data_logger;
+    }
+
+    /** Callable for executing all commands on the scan,
      *  turning exceptions into a 'Failed' scan state.
      */
-    public void execute()
+    @Override
+    public Object call() throws Exception
     {
+        Logger.getLogger(getClass().getName()).log(Level.INFO, "Executing {0}", getName());
+
         try
         {
             // Open logger for execution of scan
-            data_logger = DataLogFactory.getDataLog(scan);
+            data_logger = DataLogFactory.getDataLog(this);
             execute_or_die_trying();
         }
         catch (InterruptedException ex)
@@ -320,6 +344,8 @@ public class ExecutableScan extends ScanContext
         final DataLog copy = data_logger;
         data_logger = null;
         copy.close();
+
+        return null;
     }
 
     /** Execute all commands on the scan,
@@ -483,18 +509,21 @@ public class ExecutableScan extends ScanContext
     }
 
     /** Ask for execution to stop */
-    synchronized void abort()
+    public synchronized void abort()
     {
         if (! state.isDone())
             state = ScanState.Aborted;
+
+        if (future != null)
+            future.cancel(true);
         notifyAll();
     }
 
-    // Hash by ID
+    /** {@inheritDoc} */
     @Override
-    public int hashCode()
+    public void workPerformed(final int work_units)
     {
-        return scan.hashCode();
+        work_performed.addAndGet(work_units);
     }
 
     // Compare by ID
@@ -504,12 +533,6 @@ public class ExecutableScan extends ScanContext
         if (! (obj instanceof ExecutableScan))
             return false;
         final ExecutableScan other = (ExecutableScan) obj;
-        return scan.equals(other.scan);
-    }
-
-	@Override
-    public String toString()
-    {
-	    return scan.toString();
+        return getId() == other.getId();
     }
 }
