@@ -175,7 +175,8 @@ public class ScanInfo extends Scan implements Serializable
         buf.append("Scan '").append(getName()).append("' [").append(getId()).append("]: ").append(state);
         if (error != null)
             buf.append(" (").append(error).append(")");
-        buf.append(", ").append(getPercentage()).append("% done");
+        if (state.isActive())
+            buf.append(", ").append(getPercentage()).append("% done");
         return buf.toString();
     }
 }

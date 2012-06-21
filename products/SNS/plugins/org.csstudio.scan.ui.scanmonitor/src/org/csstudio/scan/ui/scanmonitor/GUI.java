@@ -218,7 +218,8 @@ public class GUI implements ScanInfoModelListener
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(info.getRuntimeText());
+                if (info.getState() != ScanState.Logged)
+                    cell.setText(info.getRuntimeText());
             }
         });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
@@ -279,6 +280,9 @@ public class GUI implements ScanInfoModelListener
                 final GC gc = event.gc;
                 final TableItem item = (TableItem) event.item;
                 final ScanInfo info = (ScanInfo) item.getData();
+                if (info.getState() == ScanState.Logged)
+                    return;
+
                 final Color foreground = gc.getForeground();
                 final Color background = gc.getBackground();
                 gc.setForeground(getStateColor(display, info));
