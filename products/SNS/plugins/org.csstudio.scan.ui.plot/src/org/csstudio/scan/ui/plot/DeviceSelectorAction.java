@@ -8,12 +8,23 @@
 package org.csstudio.scan.ui.plot;
 
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
+import org.eclipse.osgi.util.NLS;
 
 /** Toolbar actions to select a device for the 'X' or 'Y' axis
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 abstract public class DeviceSelectorAction extends DropdownToolbarAction
 {
+    /** Action ID for X selector */
+    final public static String ID_X = "x";
+
+    /** Action ID for Y selector (plus 0, 1, 2, ...) */
+    final public static String ID_Y = "y";
+
+    /** Action ID for adding Y device */
+    final public static String ID_ADD = "add";
+
     /** Scan model */
     final protected PlotDataModel model;
 
@@ -25,14 +36,14 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
      */
     public static DeviceSelectorAction forXAxis(final PlotDataModel model, final Plot plot)
     {
-        return new DeviceSelectorAction(model, plot, Messages.Device_X, Messages.Device_X_TT)
+        return new DeviceSelectorAction(ID_X, model, plot, Messages.Device_X, Messages.Device_X_TT)
         {
             /** {@inheritDoc} */
             @Override
             public void handleSelection(final String item)
             {
                 this.model.selectXDevice(item);
-                this.plot.setXAxisTitle(item);
+                this.plot.setDataProviders(this.model.getPlotDataProviders());
             }
         };
     }
@@ -40,30 +51,60 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
     /** @param model
      *  @return Y axis device selector
      */
-    public static DeviceSelectorAction forYAxis(final PlotDataModel model, final Plot plot)
+    public static DeviceSelectorAction forYAxis(final PlotDataModel model, final int index, final Plot plot)
     {
-        return new DeviceSelectorAction(model, plot, Messages.Device_Y, Messages.Device_Y_TT)
+        final String label;
+        if (index == 0)
+            label = Messages.Device_Y;
+        else
+            label = NLS.bind(Messages.Device_Y_Fmt, index + 1);
+        return new DeviceSelectorAction(ID_Y + index, model, plot, label, Messages.Device_Y_TT)
         {
             /** {@inheritDoc} */
             @Override
             public void handleSelection(final String item)
             {
-                this.model.selectYDevice(item);
-                this.plot.setYAxisTitle(item);
+                if (this.model.getYDevices().length < 1)
+                    this.model.addYDevice(item);
+                else
+                    this.model.selectYDevice(index, item);
+                this.plot.setDataProviders(this.model.getPlotDataProviders());
+            }
+        };
+    }
+
+    /** @param model
+     *  @return Y axis device selector
+     */
+    public static DeviceSelectorAction forNewYAxis(final PlotDataModel model, final Plot plot,
+            final ScanPlotView view)
+    {
+        return new DeviceSelectorAction(ID_ADD, model, plot, "Add...", "Add trace for another signal to the plot")
+        {
+            /** {@inheritDoc} */
+            @Override
+            public void handleSelection(final String item)
+            {
+                this.model.addYDevice(item);
+                this.plot.setDataProviders(this.model.getPlotDataProviders());
+                view.updateToolbar();
             }
         };
     }
 
     /** Initialize
-     *  @param model
-     *  @param label
-     *  @param tooltip
+     *  @param id Action ID
+     *  @param model Model that provides data
+     *  @param plot Plot that displays the data
+     *  @param label Label for selector
+     *  @param tooltip Tooltip
      */
-    private DeviceSelectorAction(final PlotDataModel model, final Plot plot,
+    private DeviceSelectorAction(final String id, final PlotDataModel model, final Plot plot,
             final String label,
             final String tooltip)
     {
         super(label, tooltip);
+        setId(id);
         this.model = model;
         this.plot = plot;
     }

@@ -8,7 +8,10 @@ public class Messages extends NLS
     public static String Device_X;
     public static String Device_X_TT;
     public static String Device_Y;
+    public static String Device_Y_Fmt;
     public static String Device_Y_TT;
+    public static String EmptyXTitle;
+    public static String EmptyYTitle;
     public static String Error;
     public static String OpenPlotError;
     public static String Plot_DefaultXAxisLabel;

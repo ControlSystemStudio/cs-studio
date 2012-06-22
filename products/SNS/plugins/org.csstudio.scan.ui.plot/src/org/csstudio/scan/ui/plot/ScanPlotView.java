@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -84,7 +85,6 @@ public class ScanPlotView extends ViewPart
         try
         {
             model = new PlotDataModel(parent.getDisplay());
-            model.start();
         }
         catch (Exception ex)
         {
@@ -115,6 +115,9 @@ public class ScanPlotView extends ViewPart
             updateSelection(y_selector, memento.getString(TAG_YDEVICE));
             memento = null;
         }
+
+        // Start model after GUI has been created and updated to saved state
+        model.start();
     }
 
     /** Update a selector as if user had entered a value
@@ -133,15 +136,15 @@ public class ScanPlotView extends ViewPart
     private void createComponents(final Composite parent)
     {
         plot = new Plot(parent);
-        plot.addTrace(model.getPlotData());
 
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         scan_selector = new ScanSelectorAction(model, plot);
         x_selector = DeviceSelectorAction.forXAxis(model, plot);
-        y_selector = DeviceSelectorAction.forYAxis(model, plot);
+        y_selector = DeviceSelectorAction.forYAxis(model, 0, plot);
         toolbar.add(scan_selector);
         toolbar.add(x_selector);
         toolbar.add(y_selector);
+        toolbar.add(DeviceSelectorAction.forNewYAxis(model, plot, this));
     }
 
     /** {@inheritDoc} */
@@ -169,13 +172,24 @@ public class ScanPlotView extends ViewPart
         updateSelection(scan_selector, option);
     }
 
-    /** Select the devices to use for the plot's axes
-     *  @param xdevice Name of X axis device
-     *  @param ydevice .. Y axis ...
-     */
-    public void selectDevices(final String xdevice, final String ydevice)
+    /** Update toolbar to display selectors for the devices shown in the plot */
+    public void updateToolbar()
     {
-        updateSelection(x_selector, xdevice);
-        updateSelection(y_selector, ydevice);
+        final String[] devices = model.getYDevices();
+        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        for (int i=0; i<devices.length; ++i)
+        {
+            final ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
+            final DeviceSelectorAction selector;
+            if (item != null)
+                selector = (DeviceSelectorAction) item.getAction();
+            else
+            {
+                selector = DeviceSelectorAction.forYAxis(model, i, plot);
+                toolbar.insertBefore(DeviceSelectorAction.ID_ADD, selector);
+                toolbar.update(true);
+            }
+            selector.setSelection(devices[i]);
+        }
     }
 }

@@ -21,43 +21,58 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.swt.widgets.Display;
 
 /** Data provider for XYGraph based on {@link ScanSample}
+ *
+ *  <p>Updated by {@link PlotDataModel},
+ *  and this {@link IDataProvider} then refreshes the plot widget.
  *  @author Kay Kasemir
  */
 public class PlotDataProvider implements IDataProvider
 {
     final private Display display;
 
+    /** Device used for 'X' axis */
+    private String x_device;
+
+    /** Device used for 'Y' axis */
+    private String y_device;
+
     final private List<IDataProviderListener> listeners =
             new CopyOnWriteArrayList<IDataProviderListener>();
 
     // Synchronize on access. XYPlot will also sync on 'this'.
-    private long last_serial = -1;
     private List<SampleAdapter> samples = new ArrayList<SampleAdapter>();
     private Range xrange = new Range(0, 0);
     private Range yrange = new Range(0, 0);
 
     /** Initialize
-     *  @param display Display to use for listener notifications, <code>null</code> for update thread
+     *  @param plot Display to use for notifications
+     *  @param x_device Device used for 'X' axis
+     *  @param y_device Device used for 'Y' axis
      */
-    public PlotDataProvider(final Display display)
+    public PlotDataProvider(final Display display, final String x_device, final String y_device)
     {
         this.display = display;
+        this.x_device = x_device;
+        this.y_device = y_device;
+    }
+
+    /** @return Name of device for 'X' axis */
+    public String getXDevice()
+    {
+        return x_device;
+    }
+
+    /** @return Name of device for 'Y' axis */
+    public String getYDevice()
+    {
+        return y_device;
     }
 
     /** Remove all samples */
     public void clear()
     {
-        clear(-1);
-    }
-
-    /** Remove all samples
-     *  @param last_serial Last sample serial when data was cleared
-     */
-    public void clear(final long last_serial)
-    {
         synchronized (this)
         {
-            this.last_serial = last_serial;
             samples.clear();
             xrange = new Range(0, 0);
             yrange = new Range(0, 0);
@@ -66,14 +81,10 @@ public class PlotDataProvider implements IDataProvider
     }
 
     /** Set samples for plot from scan data
-     *  @param last_serial Serial of last sample
      *  @param scan_data {@link ScanData}
-     *  @param x_device Name of device for 'X' axis
-     *  @param y_device Name of device for 'Y' axis
      */
-    public void update(final long last_serial, final ScanData scan_data, final String x_device, final String y_device)
+    public void update(final ScanData scan_data)
     {
-        this.last_serial = last_serial;
         // Arrange data in 'spreadsheet'
         final SpreadsheetScanDataIterator sheet =
                 new SpreadsheetScanDataIterator(scan_data, x_device, y_device);
@@ -141,11 +152,6 @@ public class PlotDataProvider implements IDataProvider
     public boolean removeDataProviderListener(final IDataProviderListener listener)
     {
         return listeners.remove(listener);
-    }
-
-    public long getLastSerial()
-    {
-        return last_serial;
     }
 
     /** {@inheritDoc} */
