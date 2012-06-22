@@ -27,6 +27,7 @@ public class Line2DPlotConfigurationPanel extends
 	private CCombo combo;
 
 	private Button btnIndex;
+	private Button btnRange;
 	private Button btnProperty;
 	private Button btnChannelQuery;
 
@@ -42,10 +43,20 @@ public class Line2DPlotConfigurationPanel extends
 		btnIndex.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				setXOrdering(XAxis.OFFSET_INCREMENT);
+				setXOrdering(XAxis.INDEX);
 			}
 		});
 		btnIndex.setText("Index");
+		new Label(this, SWT.NONE);
+
+		btnRange = new Button(this, SWT.RADIO);
+		btnRange.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				setXOrdering(XAxis.OFFSET_INCREMENT);
+			}
+		});
+		btnRange.setText("Range");
 		new Label(this, SWT.NONE);
 
 		Label lblNewLabel = new Label(this, SWT.NONE);
@@ -147,24 +158,33 @@ public class Line2DPlotConfigurationPanel extends
 	private void initializeControls() {
 		disableInputs();
 		switch (xOrdering) {
-		case CHANNELQUERY:
+		case OFFSET_INCREMENT:
 			btnIndex.setSelection(false);
-			btnProperty.setSelection(false);
-			btnChannelQuery.setSelection(true);
-			xChannelQuery.setEnabled(true);
-			break;
-		case PROPERTY:
-			btnIndex.setSelection(false);
-			btnProperty.setSelection(true);
-			combo.setEnabled(true);
-			btnChannelQuery.setSelection(false);
-			break;
-		default:
-			btnIndex.setSelection(true);
+			btnRange.setSelection(true);
 			btnProperty.setSelection(false);
 			btnChannelQuery.setSelection(false);
 			offset.setEnabled(true);
 			increment.setEnabled(true);
+			break;
+		case PROPERTY:
+			btnIndex.setSelection(false);
+			btnRange.setSelection(false);
+			btnProperty.setSelection(true);
+			combo.setEnabled(true);
+			btnChannelQuery.setSelection(false);
+			break;
+		case CHANNELQUERY:
+			btnIndex.setSelection(false);
+			btnRange.setSelection(false);
+			btnProperty.setSelection(false);
+			btnChannelQuery.setSelection(true);
+			xChannelQuery.setEnabled(true);
+			break;
+		default:
+			btnIndex.setSelection(true);
+			btnRange.setSelection(false);
+			btnProperty.setSelection(false);
+			btnChannelQuery.setSelection(false);
 			break;
 		}
 		changeSupport.firePropertyChange("xOrdering", null, getXOrdering());
