@@ -42,7 +42,7 @@ id = scan.submit(name, seq);
 # Open scan monitor
 showScans()
 # Open plot for scan (xpos, signal) as well as result of fit
-showPlot(name, id, 'xpos', 'signal', 'fit')
+showIndividualPlot(name, id, 'xpos', 'signal', 'fit')
 
 # Update name of the scan
 setWidgetPV(display, "name", incrementScan(name))
