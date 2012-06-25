@@ -44,7 +44,7 @@ public class MonitorStatusHistoryEntry implements Serializable
     /** Timestamp of JMS message. Used to identify timed out checks. */
     private long timeStampOfUnansweredCheck;
 
-    /** The check status / answer of the SmsConnector */
+    /** The check status / answer of the SmsDeliveryWorker */
     private CheckResult checkStatus;
     
     /** Flag that indicates whether or not a SMS was sent for this status entry */

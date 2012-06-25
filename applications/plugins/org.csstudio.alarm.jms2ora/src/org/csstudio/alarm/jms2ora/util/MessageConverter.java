@@ -57,8 +57,6 @@ public class MessageConverter extends Thread implements IMessageConverter {
     /** Object that creates the MessageContent objects */
     private final MessageContentCreator contentCreator;
 
-    private final Object lock;
-
     private boolean working;
 
     public MessageConverter(@Nonnull final IMessageProcessor processor, @Nonnull final StatisticCollector c) {
@@ -66,7 +64,6 @@ public class MessageConverter extends Thread implements IMessageConverter {
         messageAcceptor = new MessageAcceptor(this, c);
         rawMessages = new ConcurrentLinkedQueue<RawMessage>();
         contentCreator = new MessageContentCreator(c);
-        lock = new Object();
         working = true;
         this.start();
     }
@@ -78,10 +75,10 @@ public class MessageConverter extends Thread implements IMessageConverter {
 
         while (working) {
 
-            synchronized (lock) {
+            synchronized (this) {
                 try {
                     if (rawMessages.isEmpty()) {
-                        lock.wait();
+                        this.wait();
                     }
                 } catch (final InterruptedException ie) {
                     LOG.warn("[*** InterruptedException ***]: {}", ie.getMessage());
@@ -108,8 +105,8 @@ public class MessageConverter extends Thread implements IMessageConverter {
     @Override
     public final void putRawMessage(@Nonnull final RawMessage m) {
         rawMessages.add(m);
-        synchronized (lock) {
-            lock.notify();
+        synchronized (this) {
+            this.notify();
         }
     }
 
@@ -118,8 +115,8 @@ public class MessageConverter extends Thread implements IMessageConverter {
      */
     public void stopWorking() {
         working = false;
-        synchronized (lock) {
-            lock.notify();
+        synchronized (this) {
+            this.notify();
         }
     }
 }

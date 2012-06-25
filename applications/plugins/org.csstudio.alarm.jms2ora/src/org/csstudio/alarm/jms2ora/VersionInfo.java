@@ -27,14 +27,13 @@ package org.csstudio.alarm.jms2ora;
  * @author Markus Moeller
  *
  */
-public class VersionInfo
-{
-    public static final String NAME = "Jms2Ora";
-    public static final String VERSION = " 3.0.0";
-    public static final String BUILD = " - BUILD 2012-01-31 16:00";
+public class VersionInfo {
     
-    public static String getAll()
-    {
+    public static final String NAME = "Jms2Ora";
+    public static final String VERSION = " 3.0.3";
+    public static final String BUILD = " - BUILD 2012-05-24 14:30";
+    
+    public static String getAll() {
         return NAME + VERSION + BUILD;
     }
 }

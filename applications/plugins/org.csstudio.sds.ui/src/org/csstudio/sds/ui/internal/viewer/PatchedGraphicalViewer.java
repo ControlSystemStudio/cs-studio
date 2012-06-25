@@ -8,9 +8,13 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.internal.ObjectPluginAction;
 
 /**
  * Patched graphical viewer implementation.
@@ -39,11 +43,11 @@ public class PatchedGraphicalViewer extends ScrollingGraphicalViewer {
 		if (getControl() != null && !getControl().isDisposed()) {
 			getControl().setMenu(contextMenu.createContextMenu(getControl()));
 		}
-		
+
 		// code from GraphicalViewerImpl (=super)
-		
+
 		// ... is left out
-		
+
 		// ... and rewritten here
 		if (contextMenu != null) {
 			final IMenuListener menuListener = new IMenuListener() {
@@ -67,8 +71,26 @@ public class PatchedGraphicalViewer extends ScrollingGraphicalViewer {
 		}
 	}
 
+	/**
+	 * Patch selections. Return amended selections that keep only weak
+	 * references to their underlying objects. This is part of a workaround for
+	 * a memory leak which is caused by popup menu actions that are contributed
+	 * via extension point 'org.eclipse.ui.popupMenus' and as
+	 * 'objectContribution'. Those actions will references the latest workbench
+	 * selection for as long as a new selection occurs (see
+	 * {@link ObjectPluginAction#selectionChanged(ISelection)}. In certain
+	 * situations this behaviour prevents garbage collection of SDS displays.
+	 */
 	@Override
-	public void fireSelectionChanged() {
-		super.fireSelectionChanged();
+	public ISelection getSelection() {
+		IStructuredSelection selection = (IStructuredSelection) super
+				.getSelection();
+
+		if (selection != null) {
+			return new WeakStructuredSelection(selection);
+		} else {
+			return null;
+		}
 	}
+
 }

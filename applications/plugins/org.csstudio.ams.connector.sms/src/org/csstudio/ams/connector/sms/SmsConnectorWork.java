@@ -754,7 +754,7 @@ public class SmsConnectorWork extends Thread implements AmsConstants {
             mapMessage.setString("HOST", Environment.getInstance().getHostName());
             mapMessage.setString("USER", Environment.getInstance().getUserName());
             mapMessage.setString("NAME", "AMS_SYSTEM_CHECK_ANSWER");
-            mapMessage.setString("APPLICATION-ID", "SmsConnector");
+            mapMessage.setString("APPLICATION-ID", SmsConnectorPlugin.CONNECTOR_ID);
             mapMessage.setString("DESTINATION", "AmsSystemMonitor");
             
             amsPublisherReply.sendMessage(topicName, mapMessage);

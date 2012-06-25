@@ -88,9 +88,7 @@ public class ArchiveLocation {
     @Nonnull
     public String[] getAllPaths(final long startTimeInMS, final long endTimeInMS) {
 
-
         final Interval interval = new Interval(startTimeInMS, endTimeInMS);
-
         List<String> result = Lists.newArrayList();
 
         // transform startDate to the first day of the month before
@@ -101,6 +99,7 @@ public class ArchiveLocation {
         for(DateTime curDate = startDate; curDate.isBefore(endDate); curDate = curDate.plusMonths(1)) {
             result = assemblePath(result, curDate);
         }
+
         return result.toArray(new String[result.size()]);
     }
 

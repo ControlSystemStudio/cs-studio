@@ -66,15 +66,14 @@ public class SddsFileReader {
 
     private final boolean ignoreBigFiles;
 
+    private final boolean useCompressedFiles;
+
     /**
      * Constructor that gets a string containing the path to the data files.
      *
      * @throws DataPathNotFoundException
      */
     public SddsFileReader(@Nonnull final String dataSourceFile) throws DataPathNotFoundException {
-
-        archiveLocation = new ArchiveLocation(dataSourceFile);
-
         final IPreferencesService pref = Platform.getPreferencesService();
         if (pref != null) {
             littleEndian = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
@@ -89,14 +88,22 @@ public class SddsFileReader {
                                        ServerPreferenceKey.P_MAX_FILE_SIZE,
                                        5242880L, null);
             LOG.info("Max. file size: {}", maxFileSize);
+            useCompressedFiles = pref.getBoolean(SddsServerActivator.PLUGIN_ID,
+                                                 ServerPreferenceKey.P_USE_COMPRESSED_FILES,
+                                                 true, null);
+            LOG.info("Use compressed files: {}", ignoreBigFiles);
+
         } else {
-            LOG.warn("Cannot read endianness. Use default BIG ENDIAN.");
+            LOG.warn("Cannot read endianness. Using default: BIG ENDIAN.");
             littleEndian = false;
-            LOG.warn("Cannot read if I should ignore big files. Use default: true.");
+            LOG.warn("Cannot read if I should ignore big files. Using default: true.");
             ignoreBigFiles = true;
-            LOG.warn("Cannot read max. file size. Use default: 5MB");
+            LOG.warn("Cannot read max. file size. Using default: 5MB");
             maxFileSize = 5242880L;
+            LOG.warn("Cannot read if I should use compressed files. Using default: true.");
+            useCompressedFiles = true;
         }
+        archiveLocation = new ArchiveLocation(dataSourceFile);
     }
 
     /**
@@ -114,6 +121,7 @@ public class SddsFileReader {
 
         final String[] filePaths = archiveLocation.getAllPaths(1000L * startTimeInS,
                                                                1000L * endTimeInS);
+
         final long st = System.currentTimeMillis();
 
         // TODO: First check which paths do exist, then create the arrays
@@ -130,7 +138,10 @@ public class SddsFileReader {
                 //       1048576 Byte = 1 MB
                 final File file = new File(filePaths[i]);
                 final long fileLength = file.length();
-                LOG.debug(" " + filePaths[i] + " - Length: " + fileLength);
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(" " + filePaths[i] + " - Length: " + fileLength);
+                }
 
                 // If the file length is greater then max. allowed file size
                 // AND the server have to ignore them
@@ -161,7 +172,9 @@ public class SddsFileReader {
 
         final long et = System.currentTimeMillis() - st;
 
-        LOG.debug("Finished in " + et + " Millisekunden (" + et / 1000 + " sec)");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Finished in " + et + " Millisekunden (" + et / 1000 + " sec)");
+        }
 
         final RecordDataCollection dataCollection = new RecordDataCollection();
 
@@ -191,9 +204,14 @@ public class SddsFileReader {
                                       @Nonnull final String filename) {
 
         String result = null;
-        File file = null;
+        if (useCompressedFiles) {
+            final File file = new File(path + filename + ".cmp");
+            if (file.exists()) {
+                return path + filename + ".cmp";
+            }
+        }
 
-        file = new File(path + filename);
+        File file = new File(path + filename);
         if(!file.exists()) {
             file = null;
             file = new File(path + filename + ".gz");

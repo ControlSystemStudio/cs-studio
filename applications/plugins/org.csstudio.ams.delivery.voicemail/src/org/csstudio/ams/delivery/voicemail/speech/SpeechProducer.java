@@ -33,13 +33,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import marytts.client.MaryClient;
+import marytts.client.http.Address;
+
 import org.csstudio.ams.delivery.voicemail.VoiceMailDeliveryActivator;
 import org.csstudio.ams.delivery.voicemail.internal.VoicemailConnectorPreferenceKey;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.dfki.lt.mary.client.MaryClient;
 
 /**
  * @author Markus Moeller
@@ -58,8 +61,8 @@ public class SpeechProducer {
     /** Port of MARY server */
     private int maryPort;
 
-    /** Default input type (TEXT_DE, TEXT_EN) */
-    private String inputType;
+    /** Default input type (de, en-US) */
+    private String local;
 
     /** Flag that indicates wheather or not the server was connected */
     private boolean connected;
@@ -83,9 +86,9 @@ public class SpeechProducer {
                                          VoicemailConnectorPreferenceKey.P_MARY_HOST,
                                          "localhost",
                                          null);
-        String type = prefs.getString(VoiceMailDeliveryActivator.PLUGIN_ID,
+        String language = prefs.getString(VoiceMailDeliveryActivator.PLUGIN_ID,
                                       VoicemailConnectorPreferenceKey.P_MARY_DEFAULT_LANGUAGE,
-                                      "TEXT_DE",
+                                      "de",
                                       null);
         int port = prefs.getInt(VoiceMailDeliveryActivator.PLUGIN_ID,
                                 VoicemailConnectorPreferenceKey.P_MARY_PORT,
@@ -96,13 +99,13 @@ public class SpeechProducer {
 
         maryHost = address;
         maryPort = port;
-        this.inputType = type;
+        this.local = language;
         
         try {
-            mary = new MaryClient(maryHost, maryPort);
+            mary = MaryClient.getMaryClient(new Address(maryHost, maryPort));
             connected = true;
         } catch(IOException e) {
-            LOG.error("Cannot init MARY client.");
+            LOG.error("Cannot init MARY client: {}", e.getMessage());
             connected = false;
         }
     }
@@ -124,6 +127,7 @@ public class SpeechProducer {
         
         String text = workOnText(checkText);
         
+        String inputType = "TEXT";
         String outputType = "AUDIO";
         String audioType = "WAVE";
         String defaultVoiceName = null;
@@ -131,7 +135,7 @@ public class SpeechProducer {
         baos = new ByteArrayOutputStream();
         
         try {
-            mary.process(text, inputType, outputType, audioType, defaultVoiceName, baos);
+            mary.process(text, inputType, outputType, local, audioType, defaultVoiceName, baos);
         } catch(UnknownHostException uhe) {
             LOG.error("[*** UnknownHostException ***]: " + uhe.getMessage());
             baos = null;
@@ -231,7 +235,7 @@ public class SpeechProducer {
         mary = null;
     }
 
-    public String getInputType() {
-        return inputType;
+    public String getLocal() {
+        return local;
     }
 }

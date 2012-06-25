@@ -56,7 +56,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer
         node.put(PreferenceKeys.P_SMS_EMERGENCY_MAIL, "");
         node.put(PreferenceKeys.P_SMS_CHECK_INTERVAL, "15");
         node.put(PreferenceKeys.P_SMS_WAIT_TIME, "120000");
-        node.put(PreferenceKeys.P_AMS_WAIT_TIME, "30000");
+        node.put(PreferenceKeys.P_AMS_WAIT_TIME, "3000");
         node.put(PreferenceKeys.P_ALLOWED_TIMEOUT_COUNT, "2");
         node.put(PreferenceKeys.P_SMS_REPEAT_INTERVAL, "15");
         node.put(PreferenceKeys.P_SMS_USE_OAS, "false");

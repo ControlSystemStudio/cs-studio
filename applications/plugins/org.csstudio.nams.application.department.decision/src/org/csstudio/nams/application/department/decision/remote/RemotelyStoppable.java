@@ -40,6 +40,14 @@ public interface RemotelyStoppable {
 	public void stopRemotely(ILogger logger);
 	
 	/**
+	 * Restarts this, whatever this is.
+	 * 
+	 * @param logger
+     *            The logger to log infos and errors to, not null.
+	 */
+	public void restartRemotly(ILogger logger);
+	
+	/**
 	 * Returns the remote management password
 	 */
 	public String getPassword();
