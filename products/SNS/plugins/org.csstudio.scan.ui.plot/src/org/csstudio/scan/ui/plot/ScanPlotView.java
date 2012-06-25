@@ -196,8 +196,23 @@ public class ScanPlotView extends ViewPart
         plot.setDataProviders(this.model.getPlotDataProviders());
     }
 
+    /** Select the devices to show
+     *  @param devices X device, Y devices...
+     */
+    public void selectDevices(final String... devices)
+    {
+        if (devices.length > 0)
+            model.selectXDevice(devices[0]);
+        final List<String> y_devices = new ArrayList<String>();
+        for (int i=1; i<devices.length; ++i)
+            y_devices.add(devices[i]);
+        model.selectYDevices(y_devices);
+        plot.setDataProviders(this.model.getPlotDataProviders());
+        updateToolbar();
+    }
+
     /** Update toolbar to display selectors for the devices shown in the plot */
-    public void updateToolbar()
+    void updateToolbar()
     {
         final String[] devices = model.getYDevices();
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
@@ -216,9 +231,10 @@ public class ScanPlotView extends ViewPart
             }
             selector.setSelection(devices[i]);
         }
-        // Remove extra Y selector, if there is one
-        final ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + devices.length);
-        if (item != null)
+        // Remove extra Y selectors, if there are any
+        int i = devices.length;
+        ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
+        while (item != null)
         {
             final DeviceSelectorAction selector = (DeviceSelectorAction) item.getAction();
             if (devices.length <= 0)
@@ -228,6 +244,8 @@ public class ScanPlotView extends ViewPart
                 toolbar.remove(item);
                 toolbar.update(true);
             }
+            ++i;
+            item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
         }
 
         y_removal.setEnabled(devices.length > 1);

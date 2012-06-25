@@ -49,6 +49,7 @@ public class Plot
         xygraph.primaryYAxis.setTitle(Messages.Plot_DefaultYAxisLabel);
         xygraph.primaryYAxis.setAutoScale(true);
         plot.setShowToolbar(false);
+        xygraph.setShowLegend(true);
 
         // Embed Draw2D plot figure in SWT Canvas
         parent.setLayout(new FillLayout());
@@ -81,36 +82,43 @@ public class Plot
         while (N > 0)
             xygraph.removeTrace(xygraph.getPlotArea().getTraceList().get(--N));
 
+        // Nothing to show?
         if (data_providers.length <= 0)
         {
-            xygraph.primaryXAxis.setTitle(Messages.EmptyXTitle);
-            xygraph.primaryYAxis.setTitle(Messages.EmptyYTitle);
+            xygraph.primaryXAxis.setTitle(Messages.Plot_DefaultXAxisLabel);
+            xygraph.primaryYAxis.setTitle(Messages.Plot_DefaultYAxisLabel);
+            return;
         }
+
+        // X axis shows x device name
+        xygraph.primaryXAxis.setTitle(data_providers[0].getXDevice());
+        // Y axis shows default when legend is enabled...
+        if (xygraph.isShowLegend())
+            xygraph.primaryYAxis.setTitle(Messages.Plot_DefaultYAxisLabel);
         else
-        {
-            xygraph.primaryXAxis.setTitle(data_providers[0].getXDevice());
+        {   // ... otherwise: Trace device names
             final StringBuilder y_axis_label = new StringBuilder();
-            int traceNum = 0;
             for (PlotDataProvider data_provider : data_providers)
             {
-                if (traceNum > 0)
+                if (y_axis_label.length() > 0)
                     y_axis_label.append(", ");
                 y_axis_label.append(data_provider.getYDevice());
-
-                final Trace trace = new Trace(data_provider.getYDevice(),
-                        xygraph.primaryXAxis,
-                        xygraph.primaryYAxis,
-                        data_provider);
-                trace.setTraceType(TraceType.SOLID_LINE);
-                trace.setPointStyle(PointStyle.FILLED_DIAMOND);
-                trace.setPointSize(10);
-                trace.setTraceColor(XYGraphMediaFactory.getInstance().getColor(
-                        XYGraph.DEFAULT_TRACES_COLOR[traceNum % XYGraph.DEFAULT_TRACES_COLOR.length]));
-                xygraph.addTrace(trace);
-                ++traceNum;
             }
             xygraph.primaryYAxis.setTitle(y_axis_label.toString());
-            xygraph.performAutoScale();
         }
+        // Create traces
+        for (int i = 0; i<data_providers.length; ++i)
+        {
+            final PlotDataProvider data = data_providers[i];
+            final Trace trace = new Trace(data.getYDevice(),
+                    xygraph.primaryXAxis, xygraph.primaryYAxis, data);
+            trace.setTraceType(TraceType.SOLID_LINE);
+            trace.setPointStyle(PointStyle.FILLED_DIAMOND);
+            trace.setPointSize(5);
+            trace.setTraceColor(XYGraphMediaFactory.getInstance().getColor(
+                    XYGraph.DEFAULT_TRACES_COLOR[i % XYGraph.DEFAULT_TRACES_COLOR.length]));
+            xygraph.addTrace(trace);
+        }
+        xygraph.performAutoScale();
     }
 }

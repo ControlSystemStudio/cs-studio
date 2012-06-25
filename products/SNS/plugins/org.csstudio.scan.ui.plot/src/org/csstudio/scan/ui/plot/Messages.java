@@ -14,8 +14,6 @@ public class Messages extends NLS
     public static String Device_Y_Remove;
     public static String Device_Y_Remove_TT;
     public static String Device_Y_TT;
-    public static String EmptyXTitle;
-    public static String EmptyYTitle;
     public static String Error;
     public static String OpenPlotError;
     public static String Plot_DefaultXAxisLabel;
