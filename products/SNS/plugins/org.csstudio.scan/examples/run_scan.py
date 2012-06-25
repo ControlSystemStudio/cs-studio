@@ -16,7 +16,6 @@ y0 = getWidgetPVDouble(display, "y0")
 y1 = getWidgetPVDouble(display, "y1")
 dy = getWidgetPVDouble(display, "dy")
 
-dy = getWidgetPVDouble(display, "dy")
 simu = getWidgetPVBool(display, "simu")
 neutrons = getWidgetPVDouble(display, "neutrons")
 

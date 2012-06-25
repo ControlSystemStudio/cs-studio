@@ -94,13 +94,13 @@ def showSimulation(simu):
 
 def showPlot(*args):
     """ Display Scan Plot for a given scan
-        @param name, id:         Optional Scan name and ID to show
-        @param xdevice, ydevice: Optional X and Y device to use for plot
+        @param name, id: Optional Scan name and ID to show
+        @param xdevice, ydevice, ydevice, ...: Optional X and Y devices to use for plot
     """
     view = __showView__("org.csstudio.scan.ui.plot.view")
     if len(args) >= 2:
         # Configure it to display scan and devices
         view.selectScan(args[0], args[1])
     if len(args) >= 4:
-        view.selectDevices(args[2], args[3])
+        view.selectDevices(args[2:])
 
