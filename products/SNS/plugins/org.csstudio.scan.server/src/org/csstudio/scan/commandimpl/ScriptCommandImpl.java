@@ -71,7 +71,7 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
         }
         catch (PyException ex)
         {
-        	new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
+        	throw new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
         }
 
 		context.workPerformed(1);
