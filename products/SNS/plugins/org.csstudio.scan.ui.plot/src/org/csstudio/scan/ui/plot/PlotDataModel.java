@@ -116,6 +116,14 @@ public class PlotDataModel implements Runnable
         updatePlotDataProviders();
     }
 
+    /** @param devices Devices to use for "Y" axis */
+    public synchronized void selectYDevices(final List<String> devices)
+    {
+        y_axis_devices.clear();
+        y_axis_devices.addAll(devices);
+        updatePlotDataProviders();
+    }
+
     /** @param device_name Device to use for additional "Y" axis */
     public synchronized void addYDevice(final String device_name)
     {
