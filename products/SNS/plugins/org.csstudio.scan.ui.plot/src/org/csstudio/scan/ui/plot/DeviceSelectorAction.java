@@ -8,7 +8,11 @@
 package org.csstudio.scan.ui.plot;
 
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /** Toolbar actions to select a device for the 'X' or 'Y' axis
  *  @author Kay Kasemir
@@ -25,13 +29,17 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
     /** Action ID for adding Y device */
     final public static String ID_ADD = "add";
 
+    /** Action ID for removing Y device */
+    final public static String ID_REMOVE = "remove";
+
     /** Scan model */
     final protected PlotDataModel model;
 
     /** Plot */
     final protected Plot plot;
 
-    /** @param model
+    /** @param model {@link PlotDataModel}
+     *  @param plot {@link Plot}
      *  @return X axis device selector
      */
     public static DeviceSelectorAction forXAxis(final PlotDataModel model, final Plot plot)
@@ -48,7 +56,9 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
         };
     }
 
-    /** @param model
+    /** @param model {@link PlotDataModel}
+     *  @param index Y axis index 0, 1, ...
+     *  @param plot {@link Plot}
      *  @return Y axis device selector
      */
     public static DeviceSelectorAction forYAxis(final PlotDataModel model, final int index, final Plot plot)
@@ -73,13 +83,16 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
         };
     }
 
-    /** @param model
+    /** @param model {@link PlotDataModel}
+     *  @param plot {@link Plot}
+     *  @param view {@link ScanPlotView}
      *  @return Y axis device selector
      */
     public static DeviceSelectorAction forNewYAxis(final PlotDataModel model, final Plot plot,
             final ScanPlotView view)
     {
-        return new DeviceSelectorAction(ID_ADD, model, plot, "Add...", "Add trace for another signal to the plot")
+        DeviceSelectorAction action = new DeviceSelectorAction(ID_ADD, model, plot,
+                Messages.Device_Y_Add, Messages.Device_Y_Add_TT)
         {
             /** {@inheritDoc} */
             @Override
@@ -90,6 +103,34 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
                 view.updateToolbar();
             }
         };
+        action.setImageDescriptor(Activator.getImageDescriptor("icons/add.gif"));
+        return action;
+    }
+
+    /** @param model {@link PlotDataModel}
+     *  @param plot {@link Plot}
+     *  @param view {@link ScanPlotView}
+     *  @return Y axis device selector
+     */
+    public static Action forYAxisRemoval(final PlotDataModel model, final Plot plot,
+            final ScanPlotView view)
+    {
+        final ImageDescriptor icon = PlatformUI.getWorkbench().getSharedImages()
+                .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE);
+        final Action action = new Action(Messages.Device_Y_Remove, icon)
+        {
+            /** {@inheritDoc} */
+            @Override
+            public void run()
+            {
+                model.removeYDevice();
+                plot.setDataProviders(model.getPlotDataProviders());
+                view.updateToolbar();
+            }
+        };
+        action.setToolTipText(Messages.Device_Y_Remove_TT);
+        action.setEnabled(false);
+        return action;
     }
 
     /** Initialize

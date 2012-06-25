@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
@@ -51,6 +52,7 @@ public class ScanPlotView extends ViewPart
     private ScanSelectorAction scan_selector;
     private DeviceSelectorAction y_selector;
     private DeviceSelectorAction x_selector;
+    private Action y_removal;
 
     /** @return Next secondary view ID for creating multiple plot views */
     public static String getNextViewID()
@@ -141,10 +143,12 @@ public class ScanPlotView extends ViewPart
         scan_selector = new ScanSelectorAction(model, plot);
         x_selector = DeviceSelectorAction.forXAxis(model, plot);
         y_selector = DeviceSelectorAction.forYAxis(model, 0, plot);
+        y_removal = DeviceSelectorAction.forYAxisRemoval(model, plot, this);
         toolbar.add(scan_selector);
         toolbar.add(x_selector);
         toolbar.add(y_selector);
         toolbar.add(DeviceSelectorAction.forNewYAxis(model, plot, this));
+        toolbar.add(y_removal);
     }
 
     /** {@inheritDoc} */
@@ -177,6 +181,7 @@ public class ScanPlotView extends ViewPart
     {
         final String[] devices = model.getYDevices();
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        // Add/update Y axis selectors
         for (int i=0; i<devices.length; ++i)
         {
             final ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
@@ -191,5 +196,20 @@ public class ScanPlotView extends ViewPart
             }
             selector.setSelection(devices[i]);
         }
+        // Remove extra Y selector, if there is one
+        final ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + devices.length);
+        if (item != null)
+        {
+            final DeviceSelectorAction selector = (DeviceSelectorAction) item.getAction();
+            if (devices.length <= 0)
+                selector.setSelection(""); //$NON-NLS-1$
+            else
+            {
+                toolbar.remove(item);
+                toolbar.update(true);
+            }
+        }
+
+        y_removal.setEnabled(devices.length > 1);
     }
 }

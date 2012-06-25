@@ -123,6 +123,16 @@ public class PlotDataModel implements Runnable
         updatePlotDataProviders();
     }
 
+    /** Remove device from "Y" axis */
+    public synchronized void removeYDevice()
+    {
+        final int last = y_axis_devices.size() - 1;
+        if (last < 0)
+            return;
+        y_axis_devices.remove(last);
+        updatePlotDataProviders();
+    }
+
     /** Create/update plot data providers */
     private synchronized void updatePlotDataProviders()
     {
