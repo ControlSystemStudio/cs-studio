@@ -1,6 +1,8 @@
 """
 Example for submitting scan file (XML) from command-line
 
+ jython.sh submit_scan my_scan.py
+
 @author: Kay Kasemir
 """
 

@@ -8,7 +8,7 @@ PLUGINS=../..
 
 if [ -r ../../../../../applications/plugins/org.python/jython.jar ]
 then
-    # When run from within the IDE setup,
+    # When run from within the source tree,
     # org.python would be under "applications"
     JYTHON=../../../../../applications/plugins/org.python/jython.jar
 elif [ -r $PLUGINS/org.python_*/jython.jar ]
@@ -17,6 +17,8 @@ then
     # jython would be one of the other plugins of the product
     JYTHON=$PLUGINS/org.python_*/jython.jar
 else
+    # TODO: Set to the absolute path of jython.jar
+    JYTHON=/home/css/CSS3.1.0/plugins/org.python_*/jython.jar
     echo "Cannot locate jython.jar"
 fi
 

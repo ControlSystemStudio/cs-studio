@@ -500,7 +500,7 @@ $(pv_value)</tooltip>
       <y>210</y>
       <actions hook="false" hook_all="false">
         <action type="EXECUTE_PYTHONSCRIPT">
-          <path>run_scan.py</path>
+          <path>2_xy_scan.py</path>
           <scriptText><![CDATA[from org.csstudio.opibuilder.scriptUtil import PVUtil]]></scriptText>
           <embedded>false</embedded>
           <description>Go!</description>
