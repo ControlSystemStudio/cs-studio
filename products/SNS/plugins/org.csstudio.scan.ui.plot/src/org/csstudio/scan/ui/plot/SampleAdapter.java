@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
 
@@ -34,14 +34,14 @@ public class SampleAdapter implements ISample
     @Override
     public double getXValue()
     {
-        return DataFormatter.asDouble(x);
+        return ScanSampleFormatter.asDouble(x);
     }
 
     /** {@inheritDoc} */
     @Override
     public double getYValue()
     {
-        return DataFormatter.asDouble(y);
+        return ScanSampleFormatter.asDouble(y);
     }
 
     /** {@inheritDoc} */

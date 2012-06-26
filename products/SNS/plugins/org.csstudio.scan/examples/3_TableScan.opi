@@ -398,7 +398,7 @@ $(trace_0_y_pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>d22634c:135c0745448:-78d7</wuid>
       <scripts />
       <height>240</height>
@@ -968,7 +968,7 @@ display.getWidget("TraceXYGraph").clearGraph()]]></scriptText>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>d22634c:135c0745448:-78d8</wuid>
       <scripts />
       <height>240</height>
@@ -1137,7 +1137,7 @@ display.getWidget("TraceXYGraph").clearGraph()
             <description>Clear Graph</description>
           </action>
           <action type="EXECUTE_PYTHONSCRIPT">
-            <path>3_TabelScan_Nested_Run.py</path>
+            <path>3_TableScan_Nested_Run.py</path>
             <scriptText><![CDATA[from org.csstudio.opibuilder.scriptUtil import PVUtil
 ]]></scriptText>
             <embedded>false</embedded>

@@ -132,7 +132,7 @@ import org.csstudio.scan.command.DelayCommand as DelayCommand
 import org.csstudio.scan.command.LogCommand as LogCommand
 import org.csstudio.scan.command.SetCommand as SetCommand
 import org.csstudio.scan.command.ScriptCommand as ScriptCommand
-import org.csstudio.scan.data.SpreadsheetScanDataIterator as SpreadsheetScanDataIterator
+import org.csstudio.scan.data.ScanDataIterator as ScanDataIterator
 
 import time
 

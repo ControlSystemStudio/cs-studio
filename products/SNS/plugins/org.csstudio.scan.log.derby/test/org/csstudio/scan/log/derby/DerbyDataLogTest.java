@@ -15,7 +15,7 @@ import java.util.Date;
 
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.server.Scan;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -98,7 +98,7 @@ public class DerbyDataLogTest
 		// Fetches >30000/sec (50000 in 1.6)
 		final ScanData data = log.getScanData(scan_id);
 		// Printout takes ~2.5 secs
-		new SpreadsheetScanDataIterator(data).printTable(System.out);
+		new ScanDataIterator(data).printTable(System.out);
 
 		log.close();
 	}

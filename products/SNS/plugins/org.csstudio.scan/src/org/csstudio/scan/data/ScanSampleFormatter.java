@@ -19,11 +19,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/** Helper for formatting data
+/** Helper for formatting {@link ScanSample}s
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DataFormatter
+public class ScanSampleFormatter
 {
 	/** Suggested time format */
 	final public static String TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";

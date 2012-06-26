@@ -10,10 +10,10 @@ package org.csstudio.scan.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.data.DataFormatter;
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanSampleFormatter;
 
 /** Context in which a {@link ScriptCommand}'s script is executed
  *
@@ -22,14 +22,18 @@ import org.csstudio.scan.data.SpreadsheetScanDataIterator;
  *
  *  @author Kay Kasemir
  */
-abstract public class ScriptCommandContext
+abstract public class ScanScriptContext
 {
-    /** @return {@link ScanData} of currently logged data or <code>null</code>
+    /** Access to the {@link ScanData}
+     *
+     *  <p>Provides access to the scan data in its basic form.
+     *  @return {@link ScanData} of currently logged data or <code>null</code>
 	 *  @throws Exception on error
+	 *  @see #getData
      */
     abstract public ScanData getScanData() throws Exception;
 
-    /** Get data for devices.
+    /** Get data for devices in a form suitable for computations.
      *
      *  <p>Data will be interpolated onto matching serial numbers
      *  via 'staircase' interpolation, holding a value until it changes.
@@ -41,7 +45,7 @@ abstract public class ScriptCommandContext
      */
     public double[][] getData(final String... devices) throws Exception
     {
-    	SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(getScanData(), devices);
+    	ScanDataIterator sheet = new ScanDataIterator(getScanData(), devices);
     	final List<List<Double>> data = new ArrayList<List<Double>>(devices.length);
     	for (int i=0; i<devices.length; ++i)
     		data.add(new ArrayList<Double>());
@@ -49,7 +53,7 @@ abstract public class ScriptCommandContext
     	{
     		final ScanSample[] samples = sheet.getSamples();
         	for (int i=0; i<devices.length; ++i)
-        		data.get(i).add(DataFormatter.asDouble(samples[i]));
+        		data.get(i).add(ScanSampleFormatter.asDouble(samples[i]));
     	}
     	sheet = null;
 

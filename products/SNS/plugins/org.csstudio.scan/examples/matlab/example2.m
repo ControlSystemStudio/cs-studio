@@ -47,7 +47,7 @@ while 1
     scandata = server.getScanData(id);
     scandata.getDevices();
     
-    sheet = SpreadsheetScanDataIterator(scandata, { 'xpos', 'ypos' });
+    sheet = ScanDataIterator(scandata, { 'xpos', 'ypos' });
     table = scan_decode_spreadsheet(sheet);
   
     plot(x, y, 'g-', table(:,1), table(:,2), 'b-*');

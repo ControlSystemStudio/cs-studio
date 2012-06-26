@@ -24,7 +24,7 @@ import java.util.Date;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.junit.Test;
 
 /** JUnit test of the {@link DataLog}s
@@ -73,8 +73,8 @@ public class DataLogUnitTest
         System.out.println("MemoryDataLogger as Spreadsheet:");
 		final DataLog logger = new MemoryDataLog();
 		logData(logger);
-		SpreadsheetScanDataIterator sheet =
-	        new SpreadsheetScanDataIterator(logger.getScanData());
+		ScanDataIterator sheet =
+	        new ScanDataIterator(logger.getScanData());
         sheet.printTable(System.out);
 	}
 }

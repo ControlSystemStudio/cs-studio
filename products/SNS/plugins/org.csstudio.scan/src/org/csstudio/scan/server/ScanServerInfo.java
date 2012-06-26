@@ -17,7 +17,7 @@ package org.csstudio.scan.server;
 
 import java.util.Date;
 
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 
 /** Scan server info
  *  @author Kay Kasemir
@@ -79,7 +79,7 @@ public class ScanServerInfo  extends MemoryInfo
     {
         final StringBuilder buf = new StringBuilder();
         buf.append("Scan Server ").append(version).append("\n");
-        buf.append("Started: ").append(DataFormatter.format(start_time)).append("\n");
+        buf.append("Started: ").append(ScanSampleFormatter.format(start_time)).append("\n");
         buf.append("Beamline Configuration: ").append(beamline_config).append("\n");
         buf.append("Simulation Configuration: ").append(simulation_config).append("\n");
         buf.append("Memory: ").append(getMemoryInfo()).append("\n");

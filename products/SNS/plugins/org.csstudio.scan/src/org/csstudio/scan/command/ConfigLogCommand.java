@@ -45,13 +45,13 @@ public class ConfigLogCommand extends ScanCommand
         return properties;
     }
 
-    /** @return Wait for readback to match? */
+    /** @return Log automatically? */
     public boolean getAutomatic()
     {
         return automatic;
     }
 
-    /** @param wait Wait for readback to match? */
+    /** @param automatic Use automatic logging? */
     public void setAutomatic(final Boolean automatic)
     {
         this.automatic = automatic;

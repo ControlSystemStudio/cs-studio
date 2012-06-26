@@ -10,7 +10,7 @@ package org.csstudio.scan.commandimpl;
 import java.util.Date;
 
 import org.csstudio.ndarray.NDArray;
-import org.csstudio.scan.command.ScriptCommandContext;
+import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
@@ -18,13 +18,13 @@ import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
 
-/** Implementation of the {@link ScriptCommandContext}
+/** Implementation of the {@link ScanScriptContext}
  *
  *  <p>Exposes what's needed for scripts from the {@link ScanContext}
  *
  *  @author Kay Kasemir
  */
-public class ScriptCommandContextImpl extends ScriptCommandContext
+public class ScriptCommandContextImpl extends ScanScriptContext
 {
 	final private ScanContext context;
 

@@ -44,9 +44,7 @@ public class ScanInfo extends Scan implements Serializable
     }
 
     /** Initialize
-     *  @param id Scan ID
-     *  @param name Name
-     *  @param created Time when scan was created (submitted to server)
+     *  @param scan Scan
      *  @param state Scan state
      *  @param error Error or <code>null</code>
      *  @param runtime_ms Runtime in millisecs

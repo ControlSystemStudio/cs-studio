@@ -23,14 +23,19 @@ import java.util.List;
 
 import org.csstudio.scan.util.TextTable;
 
-/** Iterate over {@link ScanData} as spreadsheet
+/** Iterate over {@link ScanData} as spreadsheet-type table
  *
- *  <p>{@link ScanSample} serials are used to correlate samples.
+ *  <p>Each column represents the samples for a device.
+ *  {@link ScanSample} serials are used to correlate samples.
+ *  Each "line" of the spreadsheet contains samples for the
+ *  same serial.
+ *  Values for a device are repeated on following lines until
+ *  a sample with new serial is received.
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SpreadsheetScanDataIterator
+public class ScanDataIterator
 {
 	/** "Comma Separator" is actually comma,
 	 *  but could in the future be changed to '\t' or other
@@ -55,7 +60,7 @@ public class SpreadsheetScanDataIterator
     /** Initialize for all devices in the {@link ScanData}
      *  @param scan_data Scan data
      */
-    public SpreadsheetScanDataIterator(final ScanData scan_data)
+    public ScanDataIterator(final ScanData scan_data)
     {
         // Determine for which devices we have samples
         this(scan_data, scan_data.getDevices());
@@ -66,7 +71,7 @@ public class SpreadsheetScanDataIterator
      *  @param device_names Devices that must be in the scan data
      */
     @SuppressWarnings("unchecked")
-    public SpreadsheetScanDataIterator(final ScanData scan_data, final String... device_names)
+    public ScanDataIterator(final ScanData scan_data, final String... device_names)
     {
 	    this.device_names = device_names;
         final int N = device_names.length;
@@ -174,7 +179,7 @@ public class SpreadsheetScanDataIterator
         // Iterate over device data in 'spreadsheet' manner
         while (hasNext())
         {
-        	table.addCell(DataFormatter.format(getTimestamp()));
+        	table.addCell(ScanSampleFormatter.format(getTimestamp()));
             // Print current line
             for (ScanSample sample : getSamples())
             {
@@ -202,7 +207,7 @@ public class SpreadsheetScanDataIterator
         // Iterate over device data in 'spreadsheet' manner
         while (hasNext())
         {
-        	out.append(DataFormatter.format(getTimestamp()));
+        	out.append(ScanSampleFormatter.format(getTimestamp()));
             // Print current line
             for (ScanSample sample : getSamples())
             {
@@ -210,7 +215,7 @@ public class SpreadsheetScanDataIterator
                 if (sample == null)
                 	out.append("#N/A");
                 else
-                	out.append(DataFormatter.asString(sample));
+                	out.append(ScanSampleFormatter.asString(sample));
             }
             out.println();
         }

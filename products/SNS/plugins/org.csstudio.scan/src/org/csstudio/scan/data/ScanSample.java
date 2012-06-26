@@ -48,7 +48,7 @@ abstract public class ScanSample implements Serializable
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
+    final private String device_name; // TODO Remove the device name.
 	final private Date timestamp;
 	final private long serial;
 
@@ -92,6 +92,6 @@ abstract public class ScanSample implements Serializable
 	@Override
 	public String toString()
 	{
-	    return device_name + ": " + DataFormatter.format(timestamp) + " " + getValue();
+	    return device_name + ": " + ScanSampleFormatter.format(timestamp) + " " + getValue();
 	}
 }

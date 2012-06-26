@@ -125,7 +125,7 @@ abstract public class ScanCommand
     }
 
     /** Set a command's property
-     *  @param property_id ID of the property to set
+     *  @param property Property to set
      *  @param value New value
      *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
@@ -166,9 +166,8 @@ abstract public class ScanCommand
         throw new UnknownScanCommandPropertyException("Unkown property ID " + property_id + " for " + getClass().getName());
     }
 
-    /** Set a command's property
-     *  @param property_id ID of the property to set
-     *  @param value New value
+    /** Get a command's property
+     *  @return Value
      *  @throws UnknownScanCommandPropertyException when there is no property with that ID and value type
      */
     public Object getProperty(final ScanCommandProperty property) throws UnknownScanCommandPropertyException

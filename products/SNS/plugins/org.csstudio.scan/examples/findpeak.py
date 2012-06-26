@@ -1,3 +1,6 @@
+# ScriptCommand class that fits a gaussian shape to xpos & signal,
+# then moves xpos to the center of the fit
+
 from org.csstudio.scan.command import ScanScript
 from math import sqrt, exp
 import sys

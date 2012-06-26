@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
@@ -140,14 +140,14 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.CreateTimeFmt,
-                        DataFormatter.format(info.getCreated()));
+                        ScanSampleFormatter.format(info.getCreated()));
             }
 
             @Override
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(DataFormatter.format(info.getCreated()));
+                cell.setText(ScanSampleFormatter.format(info.getCreated()));
             }
         });
         createColumn(table_viewer, table_layout, Messages.Name, 120, 100, new CellLabelProvider()

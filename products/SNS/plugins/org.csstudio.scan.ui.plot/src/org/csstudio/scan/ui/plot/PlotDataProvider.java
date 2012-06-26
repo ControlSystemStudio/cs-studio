@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
@@ -86,8 +86,8 @@ public class PlotDataProvider implements IDataProvider
     public void update(final ScanData scan_data)
     {
         // Arrange data in 'spreadsheet'
-        final SpreadsheetScanDataIterator sheet =
-                new SpreadsheetScanDataIterator(scan_data, x_device, y_device);
+        final ScanDataIterator sheet =
+                new ScanDataIterator(scan_data, x_device, y_device);
 
         final List<SampleAdapter> new_samples = new ArrayList<SampleAdapter>();
         Range new_xrange = new Range(0, 0);

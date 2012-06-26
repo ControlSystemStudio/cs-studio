@@ -11,8 +11,6 @@ import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 
 /** Toolbar actions to select a device for the 'X' or 'Y' axis
  *  @author Kay Kasemir
@@ -115,8 +113,7 @@ abstract public class DeviceSelectorAction extends DropdownToolbarAction
     public static Action forYAxisRemoval(final PlotDataModel model, final Plot plot,
             final ScanPlotView view)
     {
-        final ImageDescriptor icon = PlatformUI.getWorkbench().getSharedImages()
-                .getImageDescriptor(ISharedImages.IMG_TOOL_DELETE);
+        final ImageDescriptor icon = Activator.getImageDescriptor("icons/delete.gif");
         final Action action = new Action(Messages.Device_Y_Remove, icon)
         {
             /** {@inheritDoc} */

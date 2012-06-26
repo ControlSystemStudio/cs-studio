@@ -17,7 +17,7 @@ package org.csstudio.scan.commandimpl;
 
 import org.csstudio.scan.command.ScanScript;
 import org.csstudio.scan.command.ScriptCommand;
-import org.csstudio.scan.command.ScriptCommandContext;
+import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
@@ -66,7 +66,7 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
     {
         try
         {
-        	final ScriptCommandContext script_context = new ScriptCommandContextImpl(context);
+        	final ScanScriptContext script_context = new ScriptCommandContextImpl(context);
         	script_object.run(script_context);
         }
         catch (PyException ex)

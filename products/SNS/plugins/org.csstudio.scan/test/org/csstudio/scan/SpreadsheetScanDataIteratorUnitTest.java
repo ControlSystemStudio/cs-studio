@@ -28,10 +28,10 @@ import java.util.Map;
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.junit.Test;
 
-/** JUnit test of the {@link SpreadsheetScanDataIterator}
+/** JUnit test of the {@link ScanDataIterator}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -57,10 +57,10 @@ public class SpreadsheetScanDataIteratorUnitTest
         final ScanData data = new ScanData(device_data);
 
         // Dump as spreadsheet table
-        new SpreadsheetScanDataIterator(data).printTable(System.out);
+        new ScanDataIterator(data).printTable(System.out);
 
         // Should have at least one line and 2 columns
-        final SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+        final ScanDataIterator sheet = new ScanDataIterator(data);
         assertEquals(2, sheet.getDevices().length);
         // Check rows
         Date last_time = null;
@@ -74,6 +74,6 @@ public class SpreadsheetScanDataIteratorUnitTest
         assertEquals( new Date(now.getTime() + 19*1000), last_time);
 
         // Dump as CVS
-        new SpreadsheetScanDataIterator(data).printCSV(System.out);
+        new ScanDataIterator(data).printCSV(System.out);
     }
 }

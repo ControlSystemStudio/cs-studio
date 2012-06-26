@@ -52,7 +52,7 @@ implements Serializable
     }
 
     /** Initialize
-     *  @param Scan Other scan
+     *  @param scan Other scan
      */
     protected Scan(final Scan scan)
     {
