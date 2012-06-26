@@ -13,6 +13,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
@@ -20,15 +21,15 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolItem;
 
 /** Action for 'View' toolbar that uses a drop-down menu.
- *  
+ *
  *  <p>To use, the current list of strings needs to
  *  be provided and a handler.
- *  
+ *
  *  <p>This helper implements the required {@link IMenuCreator}.
  *  It also handles clicking on the basic 'button' area as opposed
  *  to the default action behavior which only opens the drop-down
  *  when clicking the tiny triangle.
- *  
+ *
  *  @author Kay Kasemir
  */
 public abstract class DropdownToolbarAction extends Action implements IMenuCreator
@@ -37,10 +38,10 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
     private String selection = null;
 
     /** Initialize
-     * 
+     *
      *  <p>The provided label is the initial label of the action.
      *  It can later be updated via <code>setText(String)</code>.
-     *  
+     *
      *  @param label Label to show in the drop-down 'button'
      *  @param tooltip Tool tip text
      */
@@ -50,7 +51,7 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
         setToolTipText(tooltip);
         setMenuCreator(this);
     }
-    
+
     /** @return Options to show, i.e. menu entries to create */
     abstract public String[] getOptions();
 
@@ -59,18 +60,18 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
     {
         return selection;
     }
-    
+
     /** @param selection Set selected option */
     public void setSelection(final String selection)
     {
         this.selection = selection;
     }
-    
+
     /** Invoked when user selects an entry from the drop-down
      *  @param option Text of the entry
      */
     abstract public void handleSelection(String option);
-    
+
     /** Invoked when user selects the action (clicks on 'main' section of the button)
      *  {@inheritDoc}
      */
@@ -81,12 +82,13 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
         // Execute drop-down behavior anyway, based on code copied from
         // Eclipse 3.6.1 ActionContributionItem.ActionContributionItem.handleWidgetSelection
         final ToolItem item = (ToolItem) event.widget;
+        final Rectangle bounds = item.getBounds();
         final Menu menu = getMenu(item.getParent());
-        final Point point = item.getParent().toDisplay(0, item.getBounds().height);
+        final Point point = item.getParent().toDisplay(bounds.x, bounds.height);
         menu.setLocation(point.x, point.y);
         menu.setVisible(true);
     }
-    
+
     /** Dispose menu (if there was one) */
     private void disposeMenu()
     {
@@ -100,7 +102,7 @@ public abstract class DropdownToolbarAction extends Action implements IMenuCreat
     @Override
     public void dispose()
     {
-        disposeMenu();        
+        disposeMenu();
     }
 
     /** {@inheritDoc} */
