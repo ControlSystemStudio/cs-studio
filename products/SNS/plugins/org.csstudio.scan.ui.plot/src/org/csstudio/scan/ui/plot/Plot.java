@@ -113,8 +113,8 @@ public class Plot
             final Trace trace = new Trace(data.getYDevice(),
                     xygraph.primaryXAxis, xygraph.primaryYAxis, data);
             trace.setTraceType(TraceType.SOLID_LINE);
-            trace.setPointStyle(PointStyle.FILLED_DIAMOND);
-            trace.setPointSize(5);
+            trace.setPointStyle(PointStyle.CIRCLE);
+            trace.setPointSize(8);
             trace.setTraceColor(XYGraphMediaFactory.getInstance().getColor(
                     XYGraph.DEFAULT_TRACES_COLOR[i % XYGraph.DEFAULT_TRACES_COLOR.length]));
             xygraph.addTrace(trace);
