@@ -391,16 +391,19 @@ class MyScript(ScanScript):
 </pre>
 </p>
 
-
 <p>While the script command can be very powerful, it can also be dangerous
 because errors in the script are beyond the control of the scan server.
-To debug a command script, 
-More complex scripted operation should therefore be implemented
-outside of the script command:
+A script can not be paused like other scan commands, but scans with script
+commands can still be aborted.
+To debug a command script, <code>print</code> statements in the script
+can be viewed on the scan server console.
 </p>
-
-
-
+<p>The use of script commands should be limited to well-tested
+and reusable scripts.
+Rapidly changing scripts can be executed on the client side.
+They can submit scans to the server, fetch the result, perform
+computations, submit follow-up scans and so on.
+</p>
 
 
 <h3><a name="DelayCommand"><img alt="delay" src="PLUGINS_ROOT/org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</a></h3>
