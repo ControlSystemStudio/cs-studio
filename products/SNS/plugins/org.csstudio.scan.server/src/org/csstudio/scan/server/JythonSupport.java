@@ -9,6 +9,7 @@ package org.csstudio.scan.server;
 
 import java.net.URL;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -28,7 +29,7 @@ public class JythonSupport
     private static boolean initialized = false;
     private static String std_lib_path;
     private static String numjy_path;
-    private static String scan_path;
+    private static String[] scan_paths;
 
 	final private PythonInterpreter interpreter;
 
@@ -39,18 +40,45 @@ public class JythonSupport
 	{
 	    if (!initialized)
 	    {
-	        // Locate org.python/jython.jar/Lib to Python path
+	        // Add org.python/jython.jar/Lib to Python path
 	        Bundle bundle = Platform.getBundle("org.python");
 	        URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
 	        std_lib_path = FileLocator.resolve(url).getPath() + "/Lib";
 
+	        // Add numji
 	        bundle = Platform.getBundle("org.csstudio.numjy");
 	        url = FileLocator.find(bundle, new Path("jython"), null);
 	        numjy_path = FileLocator.resolve(url).getPath();
 
-	        bundle = Platform.getBundle("org.csstudio.scan");
-	        url = FileLocator.find(bundle, new Path("examples"), null);
-	        scan_path = FileLocator.resolve(url).getPath();
+	        // Add scan script paths
+	        scan_paths = ScanSystemPreferences.getScriptPaths();
+	        for (int i=0; i<scan_paths.length; ++i)
+	        {   // Resolve platform:/plugin/...
+	            if (scan_paths[i].startsWith("platform:/plugin/"))
+	            {
+	                final String plugin_path = scan_paths[i].substring(17);
+	                // Locate name of plugin and path within plugin
+	                final int sep = plugin_path.indexOf('/');
+	                final String plugin, path;
+	                if (sep < 0)
+	                {
+	                    plugin = plugin_path;
+	                    path = "/";
+	                }
+	                else
+	                {
+	                    plugin = plugin_path.substring(0, sep);
+	                    path = plugin_path.substring(sep + 1);
+	                }
+	                bundle = Platform.getBundle(plugin);
+	                if (bundle == null)
+	                    throw new Exception("Error in scan script path " + scan_paths[i]);
+	                url = FileLocator.find(bundle, new Path(path), null);
+	                if (url == null)
+                        throw new Exception("Plugin path error in scan script path " + scan_paths[i]);
+	                scan_paths[i] = FileLocator.resolve(url).getPath();
+	            }
+	        }
 
 	        initialized = true;
 	    }
@@ -68,9 +96,8 @@ public class JythonSupport
 		// Path to Python standard lib, numjy, scan system
 		state.path.append(new PyString(std_lib_path));
         state.path.append(new PyString(numjy_path));
-        state.path.append(new PyString(scan_path));
-
-		// TODO Preferences for more Script Paths?
+        for (String path : scan_paths)
+            state.path.append(new PyString(path));
 
     	interpreter = new PythonInterpreter(null, state);
 	}
