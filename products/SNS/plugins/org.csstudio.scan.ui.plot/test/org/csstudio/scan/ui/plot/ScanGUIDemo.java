@@ -39,24 +39,24 @@ public class ScanGUIDemo
         final Map<String, List<ScanSample>> data = new HashMap<String, List<ScanSample>>();
         data.put("xpos", Arrays.asList(new ScanSample[]
         {
-                new NumberScanSample("xpos", new Date(), 1, 1),
-                new NumberScanSample("xpos", new Date(), 2, 2),
-                new NumberScanSample("xpos", new Date(), 3, 3),
-                new NumberScanSample("xpos", new Date(), 4, 4),
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 2),
+                new NumberScanSample(new Date(), 3, 3),
+                new NumberScanSample(new Date(), 4, 4),
         }));
         data.put("readback", Arrays.asList(new ScanSample[]
         {
-                new NumberScanSample("readback", new Date(), 1, 1),
-                new NumberScanSample("readback", new Date(), 2, 2),
-                new NumberScanSample("readback", new Date(), 3, 4),
-                new NumberScanSample("readback", new Date(), 4, 1),
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 2),
+                new NumberScanSample(new Date(), 3, 4),
+                new NumberScanSample(new Date(), 4, 1),
         }));
         data.put("fit", Arrays.asList(new ScanSample[]
         {
-                new NumberScanSample("fit", new Date(), 1, 1),
-                new NumberScanSample("fit", new Date(), 2, 3),
-                new NumberScanSample("fit", new Date(), 3, 3),
-                new NumberScanSample("fit", new Date(), 4, 1),
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 3),
+                new NumberScanSample(new Date(), 3, 3),
+                new NumberScanSample(new Date(), 4, 1),
         }));
         final ScanData scan_data = new ScanData(data);
 

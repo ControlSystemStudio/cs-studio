@@ -74,7 +74,7 @@ public class ScanCommandUtil
             final IValue log_value = readback.read();
             final DataLog log = context.getDataLog();
             final long serial = log.getNextScanDataSerial();
-            log.log(ValueConverter.createSample(readback.getInfo().getAlias(), serial, log_value));
+            log.log(readback.getInfo().getAlias(), ValueConverter.createSample(serial, log_value));
         }
     }
 }

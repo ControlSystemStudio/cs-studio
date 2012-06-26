@@ -35,11 +35,11 @@ public class DerbyDataLog extends DataLog
 
     /** {@inheritDoc} */
 	@Override
-	public void doLog(final ScanSample sample) throws Exception
+	public void doLog(final String device, final ScanSample sample) throws Exception
 	{
 		if (logger == null)
 			logger = new DerbyDataLogger();
-		logger.log(scan_id, sample);
+		logger.log(scan_id, device, sample);
 	}
 
     /** {@inheritDoc} */

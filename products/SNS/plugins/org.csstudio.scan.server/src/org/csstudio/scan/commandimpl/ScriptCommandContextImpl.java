@@ -70,8 +70,8 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         while (iter.hasNext())
         {
             final ScanSample sample =
-                ScanSampleFactory.createSample(device, timestamp , serial++, iter.nextDouble());
-            context.getDataLog().log(sample);
+                ScanSampleFactory.createSample(timestamp , serial++, iter.nextDouble());
+            context.getDataLog().log(device, sample);
         }
 	}
 

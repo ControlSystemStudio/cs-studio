@@ -225,12 +225,13 @@ abstract public class RDBDataLogger
 
 	/** Log a sample
 	 *  @param scan_id ID of associated scan
+	 *  @param device Device name
 	 *  @param sample Sample to log
 	 *  @throws Exception on error
 	 */
-    public void log(final long scan_id, final ScanSample sample) throws Exception
+    public void log(final long scan_id, final String device, final ScanSample sample) throws Exception
     {
-    	final int device_id = getDevice(sample.getDeviceName());
+    	final int device_id = getDevice(device);
 
     	if (insert_sample_statement == null)
 			insert_sample_statement = connection.prepareStatement(
@@ -291,7 +292,7 @@ abstract public class RDBDataLogger
 				final long serial = result.getLong(1);
 				final Date timestamp = result.getTimestamp(2);
 				final double number = result.getDouble(3);
-				samples.add(new NumberScanSample(device_name, timestamp, serial, number));
+				samples.add(new NumberScanSample(timestamp, serial, number));
 			}
 			result.close();
 		}

@@ -44,13 +44,14 @@ abstract public class DataLog
      *  name and serial twice within a scan.
      *  The specific behavior will depend on the implementation.
      *
+     *  @param device Device name
 	 *  @param sample {@link ScanSample} to log
 	 *  @throws Exception on error
 	 *  @see #close()
 	 */
-	public void log(final ScanSample sample) throws Exception
+	public void log(final String device, final ScanSample sample) throws Exception
 	{
-		doLog(sample);
+		doLog(device, sample);
 		synchronized (this)
 		{
 			last_serial  = sample.getSerial();
@@ -58,10 +59,11 @@ abstract public class DataLog
 	}
 
     /** Perform actual logging of a sample.
+     *  @param device Device name
      *  @param sample {@link ScanSample} to log
 	 *  @throws Exception on error
 	 */
-	abstract protected void doLog(ScanSample sample) throws Exception;
+	abstract protected void doLog(final String device, ScanSample sample) throws Exception;
 
 	/** @return Serial of last sample in scan data or -1 if nothing has been logged */
     public synchronized long getLastScanDataSerial()

@@ -61,7 +61,7 @@ public class LogCommandImpl extends ScanCommandImpl<LogCommand>
 			final Device device = context.getDevice(device_name);
 			final IValue value = device.read();
 			logger.log(Level.FINER, "Log: {0} = {1}", new Object[] { device, value });
-			log.log(ValueConverter.createSample(device_name, serial, value));
+			log.log(device_name, ValueConverter.createSample(serial, value));
 		}
         context.workPerformed(1);
 	}

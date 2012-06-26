@@ -22,6 +22,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 @SuppressWarnings("nls")
+/** JUnit test of the DerbyDataLogger
+ *
+ *  <p>Will execute Derby for the database, cannot run if another Derby instance (Scan Server)
+ *  already runs the database.
+ *
+ *  @author Kay Kasemir
+ */
 public class DerbyDataLogTest
 {
 	private static Scan scan = null;
@@ -82,7 +89,7 @@ public class DerbyDataLogTest
 		final long scan_id = scan.getId();
 		final long start = System.nanoTime();
 		for (long serial = 1; serial < 50000; ++serial)
-			log.log(scan_id, new NumberScanSample("setpoint", new Date(), serial, 3.14 + serial * 0.01));
+			log.log(scan_id, "setpoint", new NumberScanSample(new Date(), serial, 3.14 + serial * 0.01));
         final long end = System.nanoTime();
 		log.close();
 		final long vals_per_sec = 50000 * 1000000000 / (end - start);

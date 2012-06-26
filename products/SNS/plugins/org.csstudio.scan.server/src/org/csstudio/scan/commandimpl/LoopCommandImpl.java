@@ -209,7 +209,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         {
             final DataLog log = context.getDataLog();
 	        final long serial = log.getNextScanDataSerial();
-	        log.log(ValueConverter.createSample(readback.getInfo().getAlias(), serial, readback.read()));
+	        log.log(readback.getInfo().getAlias(), ValueConverter.createSample(serial, readback.read()));
         }
 
         // Execute loop body

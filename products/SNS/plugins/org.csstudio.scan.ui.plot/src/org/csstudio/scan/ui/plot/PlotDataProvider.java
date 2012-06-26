@@ -12,8 +12,8 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanDataIterator;
+import org.csstudio.scan.data.ScanSample;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
 import org.csstudio.swt.xygraph.dataprovider.ISample;
@@ -98,7 +98,7 @@ public class PlotDataProvider implements IDataProvider
             final ScanSample[] samples = sheet.getSamples();
 
             // Add sample
-            final SampleAdapter sample = new SampleAdapter(samples[0], samples[1]);
+            final SampleAdapter sample = new SampleAdapter(y_device, samples[0], samples[1]);
             new_samples.add(sample);
 
             // Update ranges
