@@ -208,6 +208,40 @@ public class MessageFileHandler implements FilenameFilter {
         return result;
     }
 
+    public ArchiveMessage readMessageContent(final String fileName) {
+
+        ArchiveMessage content = null;
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+
+        File file = new File(fileName);
+        
+        try {
+            fis = new FileInputStream(file);
+            ois = new ObjectInputStream(fis);
+
+            // Write the MessageContent object to disk
+            content = (ArchiveMessage) ois.readObject();
+        } catch(final FileNotFoundException fnfe) {
+            LOG.error("FileNotFoundException : " + fnfe.getMessage());
+        } catch(final IOException ioe) {
+            LOG.error("IOException : " + ioe.getMessage());
+        } catch (final ClassNotFoundException e) {
+            LOG.error("ClassNotFoundException : " + e.getMessage());
+        } finally {
+            if(ois != null){try{ois.close();}catch(final IOException ioe){/* Can be ignored */}}
+            if(fis != null){try{fis.close();}catch(final IOException ioe){/* Can be ignored */}}
+
+            ois = null;
+            fis = null;
+        }
+
+        if (file.delete()) {
+            LOG.debug("{} deleted.", fileName);
+        }
+
+        return content;
+    }
 
     /**
      * The method deletes all message files.
@@ -258,15 +292,15 @@ public class MessageFileHandler implements FilenameFilter {
      *
      * @param content - The MessageContent object that have to be stored on disk.
      */
-    public void writeMessagesToFile(final Vector<ArchiveMessage> content) {
+    public int writeMessagesToFile(final Vector<ArchiveMessage> content) {
 
         if (content.isEmpty()) {
-            return;
+            return 0;
         }
         
         if(dataDirectories.existsDataDirectory() == false) {
             LOG.warn("Object folder does not exist. Message cannot be stored.");
-            return;
+            return -1;
         }
 
         final GregorianCalendar cal = new GregorianCalendar();
@@ -300,34 +334,27 @@ public class MessageFileHandler implements FilenameFilter {
                 fos = null;
             }
         }
+        count--;
+        return count;
     }
-
-    public ArchiveMessage readMessageContent(final String fileName) {
-
-        ArchiveMessage content = null;
-        FileInputStream fis = null;
-        ObjectInputStream ois = null;
-
+    
+    public Vector<ArchiveMessage> readMessagesFromFile() {
+        Vector<ArchiveMessage> result = new Vector<ArchiveMessage>();
         try {
-            fis = new FileInputStream(fileName);
-            ois = new ObjectInputStream(fis);
-
-            // Write the MessageContent object to disk
-            content = (ArchiveMessage)ois.readObject();
-        } catch(final FileNotFoundException fnfe) {
-            LOG.error("FileNotFoundException : " + fnfe.getMessage());
-        } catch(final IOException ioe) {
-            LOG.error("IOException : " + ioe.getMessage());
-        } catch (final ClassNotFoundException e) {
-            LOG.error("ClassNotFoundException : " + e.getMessage());
-        } finally {
-            if(ois != null){try{ois.close();}catch(final IOException ioe){/* Can be ignored */}}
-            if(fis != null){try{fis.close();}catch(final IOException ioe){/* Can be ignored */}}
-
-            ois = null;
-            fis = null;
+            File file = dataDirectories.getDataDirectory();
+            String path = file.getAbsolutePath() + System.getProperty("file.separator");
+            String[] fileNames = file.list(this);
+            if (fileNames != null) {
+                if (fileNames.length > 0) {
+                    for (String s : fileNames) {
+                        ArchiveMessage am = readMessageContent(path + s);
+                        result.add(am);
+                    }
+                }
+            }
+        } catch (DataDirectoryException e) {
+            LOG.error("[*** DataDirectoryException ***]: {}", e.getMessage());
         }
-
-        return content;
+        return result;
     }
 }

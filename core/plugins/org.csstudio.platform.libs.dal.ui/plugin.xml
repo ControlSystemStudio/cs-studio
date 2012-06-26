@@ -46,6 +46,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
+      	 	adaptable="false"
             id="IProcessVariableAdressProviderContributions"
             objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
          <action

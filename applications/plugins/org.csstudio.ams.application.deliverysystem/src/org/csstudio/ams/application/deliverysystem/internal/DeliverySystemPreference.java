@@ -49,6 +49,15 @@ public class DeliverySystemPreference<T> extends AbstractPreference<T> {
     public static final DeliverySystemPreference<String> DELIVERY_WORKER_LIST =
             new DeliverySystemPreference<String>("deliveryWorkerList", "");
 
+    public static final DeliverySystemPreference<String> WORKER_STATUS_MAIL =
+            new DeliverySystemPreference<String>("deliveryWorkerMail", "");
+
+    public static final DeliverySystemPreference<Boolean> ENABLE_WORKER_STOP =
+            new DeliverySystemPreference<Boolean>("enableWorkerStop", false);
+
+    public static final DeliverySystemPreference<Boolean> ENABLE_WORKER_RESTART =
+            new DeliverySystemPreference<Boolean>("enableWorkerRestart", false);
+
     private DeliverySystemPreference(final String keyAsString, final T defaultValue) {
         super(keyAsString, defaultValue);
     }

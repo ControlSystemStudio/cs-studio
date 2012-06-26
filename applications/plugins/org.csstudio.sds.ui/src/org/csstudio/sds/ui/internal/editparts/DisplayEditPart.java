@@ -33,6 +33,7 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
+import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The EditPart implementation for synoptic display.
@@ -56,7 +57,7 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
 	public DisplayModel getDisplayModel() {
 		return (DisplayModel) getContainerModel();
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,6 +116,11 @@ public final class DisplayEditPart extends AbstractContainerEditPart {
 			}
 		};
 		setPropertyChangeHandler(DisplayModel.PROP_DISPLAY_BORDER_VISIBILITY, displayBorderHandler);
+	}
+
+	@Override
+	protected boolean determineChildrenSelectability() {
+		return true;
 	}
 
 }

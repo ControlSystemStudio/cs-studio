@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Hashtable;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -81,7 +82,7 @@ public class JmsSimpleProducer {
             context = new InitialContext(properties);
            
             // Create a connection factory
-            factory = (ConnectionFactory)context.lookup("ConnectionFactory");
+            factory = (ConnectionFactory) context.lookup("ConnectionFactory");
             
             // Create a connection
             connection = factory.createConnection();
@@ -99,7 +100,8 @@ public class JmsSimpleProducer {
             
             // Create a message producer
             producer = session.createProducer(topic);
-            
+            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            producer.setTimeToLive(Message.DEFAULT_TIME_TO_LIVE);
         } catch(NamingException ne) {
             // logger.info(" *** NamingException *** : " + ne.getMessage());
             closeAll();

@@ -36,8 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TODO (mmoeller) : 
- * 
  * @author mmoeller
  * @version 1.0
  * @since 18.12.2011
@@ -47,8 +45,8 @@ public class OutgoingSmsQueue extends AbstractMessageQueue<SmsAlarmMessage> {
     /** Static class logger */
     private static final Logger LOG = LoggerFactory.getLogger(OutgoingSmsQueue.class);
     
-    public OutgoingSmsQueue() {
-        super();
+    public OutgoingSmsQueue(Object lock) {
+        super(lock);
     }
     
     @Override

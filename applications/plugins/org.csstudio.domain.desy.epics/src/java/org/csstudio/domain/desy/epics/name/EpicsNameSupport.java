@@ -56,13 +56,13 @@ public final class EpicsNameSupport {
      * the field type (if already known) {@link RecordField}, and a new instance of
      * {@link UnknownRecordField} with the specified fieldName set to the given suffix.
      */
-    @Nonnull
     public static IRecordField parseField(@Nonnull final String rawName) {
         if (rawName.matches("^" + FULLNAME_REGEX + "$")) {
 
             final String[] fields = rawName.split(FIELD_SEP_FOR_REGEXP);
             if (fields.length == 1) {
-                return RecordField.VAL;
+//                return RecordField.VAL;
+                return null;
             }
             if (fields.length == 2) {
                 try {

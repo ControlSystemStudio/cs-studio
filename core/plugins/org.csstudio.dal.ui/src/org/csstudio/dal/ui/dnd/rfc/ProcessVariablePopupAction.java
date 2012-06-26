@@ -19,8 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.dal.ui.dnd.rfc;
+package org.csstudio.dal.ui.dnd.rfc;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.internal.ObjectPluginAction;
 
 /**
  * Base class for popup menu actions used in Object contributions for
@@ -41,12 +43,13 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Sven Wende
  * 
  */
-public abstract class ProcessVariablePopupAction implements IObjectActionDelegate {
+public abstract class ProcessVariablePopupAction implements
+		IObjectActionDelegate {
 
-	private List<IProcessVariableAdressProvider> _pvAdressListProviders;
+	private List<WeakReference<IProcessVariableAdressProvider>> _pvAdressListProviders;
 
 	public ProcessVariablePopupAction() {
-		_pvAdressListProviders = new ArrayList<IProcessVariableAdressProvider>();
+		_pvAdressListProviders = new ArrayList<WeakReference<IProcessVariableAdressProvider>>();
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
@@ -55,11 +58,14 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 	public void run(IAction action) {
 		Set<IProcessVariableAddress> pvs = new HashSet<IProcessVariableAddress>();
-		
-		for (IProcessVariableAdressProvider provider : _pvAdressListProviders) {
-			pvs.addAll(provider.getProcessVariableAdresses());
+
+		for (WeakReference<IProcessVariableAdressProvider> ref : _pvAdressListProviders) {
+			IProcessVariableAdressProvider provider = ref.get();
+			if (provider != null) {
+				pvs.addAll(provider.getProcessVariableAdresses());
+			}
 		}
-		
+
 		handlePvs(pvs);
 	}
 
@@ -71,7 +77,8 @@ public abstract class ProcessVariablePopupAction implements IObjectActionDelegat
 
 			for (Object o : sel.toList()) {
 				if (o instanceof IProcessVariableAdressProvider) {
-					_pvAdressListProviders.add((IProcessVariableAdressProvider) o);
+					_pvAdressListProviders
+							.add(new WeakReference<IProcessVariableAdressProvider>((IProcessVariableAdressProvider) o));
 				}
 			}
 		}

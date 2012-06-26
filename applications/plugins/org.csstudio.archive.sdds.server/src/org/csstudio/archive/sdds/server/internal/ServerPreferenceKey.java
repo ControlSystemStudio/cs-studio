@@ -40,6 +40,7 @@ public final class ServerPreferenceKey {
     public static final String P_MAX_SAMPLES_PER_REQUEST = "maxSamplesPerRequest";
     public static final String P_IGNORE_BIG_FILES = "ignoreBigFiles";
     public static final String P_MAX_FILE_SIZE = "maxFileSize";
+    public static final String P_USE_COMPRESSED_FILES = "useCompressedFiles";
 
     private ServerPreferenceKey() {
         // Avoid instantiation

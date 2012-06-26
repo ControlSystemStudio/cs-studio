@@ -99,7 +99,7 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
         String host = null;
         String user = null;
 
-        args = (String[])context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
+        args = (String[]) context.getArguments().get(IApplicationContext.APPLICATION_ARGS);
 
         final IPreferencesService prefs = Platform.getPreferencesService();
         final String xmppUser = prefs.getString(Jms2OraActivator.PLUGIN_ID,
