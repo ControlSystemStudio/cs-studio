@@ -22,8 +22,7 @@ import org.csstudio.scan.server.ScanServer;
 
 /** A sample taken by a scan
  *
- *  <p>All samples have a time stamp
- *  and info about the device that produced the sample.
+ *  <p>All samples have a time stamp.
  *
  *  <p>A serial number is used to track the sequence
  *  in which samples were acquired within a scan.
