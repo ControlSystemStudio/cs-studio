@@ -35,7 +35,8 @@
             use="false"
             windowtitle="Scan System API"
         	overview="doc/javadoc_overview.html"
-            useexternalfile="yes">
+            useexternalfile="yes"
+        	additionalparam="-notimestamp">
         	
             <doctitle><![CDATA[<h1>Scan System API</h1>]]></doctitle>
             <fileset dir="..">
