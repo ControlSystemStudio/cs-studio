@@ -35,7 +35,8 @@
             version="true"
             use="true"
             windowtitle="CSS Core API"
-            useexternalfile="yes">
+            useexternalfile="yes"
+            additionalparam="-notimestamp">
         	
             <doctitle><![CDATA[<h1>CSS Core API</h1>]]></doctitle>
             <fileset dir="../core/plugins">
