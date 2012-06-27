@@ -21,8 +21,6 @@ import org.eclipse.draw2d.IFigure;
  */
 public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart implements IPVWidgetEditpart{
 
-
-
 	private PVWidgetEditpartDelegate delegate;
 	
 	public AbstractPVWidgetEditPart() {
@@ -30,11 +28,15 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	}
 	
 	@Override
+	protected void doActivate() {
+		super.doActivate();
+		delegate.doActivate();			
+	}
+	@Override
 	public void activate() {
-		if(!isActive()){
-			super.activate();
-			delegate.activate();			
-		}
+		super.activate();
+		//PV should be started at the last step.
+		delegate.startPVs();
 	}
 	
 	@Override
@@ -63,16 +65,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 				new DropPVtoPVWidgetEditPolicy());
 	}
 
-
-
-
 	@Override
-	public void deactivate() {
+	protected void doDeActivate() {
 		if(isActive()){
-			delegate.deactivate();
-			super.deactivate();
+			delegate.doDeActivate();
+			super.doDeActivate();
 		}
 	}
+	
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 		if(key == ProcessVariable.class){			
@@ -163,5 +163,10 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
 	 */
 	public void setPVValue(String pvPropId, Object value){
 		delegate.setPVValue(pvPropId, value);
+	}
+	
+	@Override
+	public boolean isPVControlWidget() {
+		return delegate.isPVControlWidget();
 	}
 }
