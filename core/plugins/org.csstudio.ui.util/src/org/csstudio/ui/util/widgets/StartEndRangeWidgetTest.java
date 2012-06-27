@@ -49,6 +49,16 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 				container, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
 				2, 1));
+		composite.addRangeListener(new RangeListener() {
+
+			@Override
+			public void rangeChanged() {
+				text.setText(String.valueOf(composite.getMin()));
+				text_1.setText(String.valueOf(composite.getMax()));
+				text_2.setText(String.valueOf(composite.getSelectedMin()));
+				text_3.setText(String.valueOf(composite.getSelectedMax()));
+			}
+		});
 
 		Label lblMin = new Label(container, SWT.NONE);
 		lblMin.setText("min:");
@@ -59,7 +69,6 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 		text = new Text(container, SWT.BORDER);
 		text.addListener(SWT.DefaultSelection, new Listener() {
 			public void handleEvent(Event e) {
-				System.out.println(e.widget + " - Default Selection");
 				composite.setMin(Double.valueOf(text.getText()));
 			}
 		});
@@ -67,8 +76,7 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 		text_1 = new Text(container, SWT.BORDER);
 		text_1.addListener(SWT.DefaultSelection, new Listener() {
 			public void handleEvent(Event e) {
-				System.out.println(e.widget + " - Default Selection");
-				composite.setMin(Double.valueOf(text_1.getText()));
+				composite.setMax(Double.valueOf(text_1.getText()));
 			}
 		});
 

@@ -3,6 +3,9 @@
  */
 package org.csstudio.ui.util.widgets;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -38,6 +41,34 @@ public class StartEndRangeWidget extends Canvas {
 		SELECTEDMIN, SELECTEDMAX, RANGE, NONE
 	}
 
+	private Set<RangeListener> listeners = new HashSet<RangeListener>();
+
+	/**
+	 * Adds a listener, notified if the range resolution changes.
+	 * 
+	 * @param listener
+	 *            a new listener
+	 */
+	public void addRangeListener(RangeListener listener) {
+		listeners.add(listener);
+	}
+
+	/**
+	 * Removes a listener.
+	 * 
+	 * @param listener
+	 *            listener to be removed
+	 */
+	public void removeRangeListener(RangeListener listener) {
+		listeners.remove(listener);
+	}
+
+	private void fireRangeChanged() {
+		for (RangeListener listener : listeners) {
+			listener.rangeChanged();
+		}
+	}
+
 	private ORIENTATION orientation;
 	private MOVE moveControl = MOVE.NONE;
 
@@ -47,6 +78,13 @@ public class StartEndRangeWidget extends Canvas {
 		addPaintListener(paintListener);
 		addMouseListener(mouseListener);
 		addMouseMoveListener(mouseListener);
+		addRangeListener(new RangeListener() {
+
+			@Override
+			public void rangeChanged() {
+				redraw();
+			}
+		});
 	}
 
 	public double getMin() {
@@ -54,9 +92,10 @@ public class StartEndRangeWidget extends Canvas {
 	}
 
 	public void setMin(double min) {
-		this.min = min;
-		calculateDistancePerPx();
-		redraw();
+		if (this.min != min) {
+			this.min = min;
+			recalculateDistancePerPx();
+		}
 	}
 
 	public double getMax() {
@@ -64,9 +103,10 @@ public class StartEndRangeWidget extends Canvas {
 	}
 
 	public void setMax(double max) {
-		this.max = max;
-		calculateDistancePerPx();
-		redraw();
+		if (this.max != max) {
+			this.max = max;
+			recalculateDistancePerPx();
+		}
 	}
 
 	public double getSelectedMin() {
@@ -74,8 +114,10 @@ public class StartEndRangeWidget extends Canvas {
 	}
 
 	public void setSelectedMin(double selectedMin) {
-		this.selectedMin = selectedMin;
-		redraw();
+		if (this.selectedMin != selectedMin) {
+			this.selectedMin = selectedMin;
+			fireRangeChanged();
+		}
 	}
 
 	public double getSelectedMax() {
@@ -83,8 +125,10 @@ public class StartEndRangeWidget extends Canvas {
 	}
 
 	public void setSelectedMax(double selectedMax) {
-		this.selectedMax = selectedMax;
-		redraw();
+		if (this.selectedMax != selectedMax) {
+			this.selectedMax = selectedMax;
+			fireRangeChanged();
+		}
 	}
 
 	// public ORIENTATION getOrientation() {
@@ -92,12 +136,14 @@ public class StartEndRangeWidget extends Canvas {
 	// }
 
 	public void setOrientation(ORIENTATION orientation) {
-		this.orientation = orientation;
-		redraw();
+		if (this.orientation != orientation) {
+			this.orientation = orientation;
+			fireRangeChanged();
+		}
 	}
 
-	private void calculateDistancePerPx() {
-		distancePerPx = getClientArea().width / Math.abs(max - min);
+	private void recalculateDistancePerPx() {
+		setDistancePerPx(getClientArea().width / Math.abs(max - min));
 	}
 
 	private final MouseRescale mouseListener = new MouseRescale();
@@ -111,7 +157,6 @@ public class StartEndRangeWidget extends Canvas {
 		@Override
 		public void mouseDown(MouseEvent e) {
 			// Save the starting point
-			// System.out.println("x:" + e.x + " y:" + e.y);
 			double minSelectedOval = selectedMin * distancePerPx;
 			double maxSelectedOval = selectedMax * distancePerPx;
 			if ((e.x >= minSelectedOval && e.x <= minSelectedOval + 10)
@@ -123,7 +168,6 @@ public class StartEndRangeWidget extends Canvas {
 			} else if ((e.x >= minSelectedOval + 10 && e.x <= maxSelectedOval)) {
 				moveControl = MOVE.RANGE;
 				rangeX = e.x;
-				System.out.println(e.x);
 			} else {
 				moveControl = MOVE.NONE;
 			}
@@ -137,7 +181,6 @@ public class StartEndRangeWidget extends Canvas {
 		@Override
 		public void mouseMove(MouseEvent e) {
 			// Only if editable and it is a left click drag
-//			System.out.println("M x:" + e.x + " M y:" + e.y);
 			switch (moveControl) {
 			case SELECTEDMIN:
 				setSelectedMin(e.x / distancePerPx);
@@ -146,8 +189,6 @@ public class StartEndRangeWidget extends Canvas {
 				setSelectedMax(e.x / distancePerPx);
 				break;
 			case RANGE:
-				System.out.println(e.x + " " + rangeX + " " + (e.x - rangeX)
-						/ distancePerPx);
 				double increment = ((e.x - rangeX) / distancePerPx);
 				setSelectedMin(getSelectedMin() + increment);
 				setSelectedMax(getSelectedMax() + increment);
@@ -159,10 +200,10 @@ public class StartEndRangeWidget extends Canvas {
 		}
 	}
 
-	public void setDistancePerPx(double distancePerPx) {
+	private void setDistancePerPx(double distancePerPx) {
 		this.distancePerPx = distancePerPx;
 		// New range: need to redraw and notify listeners
-		redraw();
+		fireRangeChanged();
 	}
 
 	// Drawing function
@@ -170,11 +211,7 @@ public class StartEndRangeWidget extends Canvas {
 
 		@Override
 		public void paintControl(PaintEvent e) {
-			System.out.println("distance per " + distancePerPx);
-			double height = getClientArea().height;
 			int width = getClientArea().width;
-			double currentPx = 0.0;
-			int sizeIndex = 0;
 
 			// Draw the line of appropriate size
 			e.gc.drawLine(5, 5, width, 5);
