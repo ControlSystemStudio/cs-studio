@@ -115,8 +115,10 @@ public class StartEndRangeWidget extends Canvas {
 
 	public void setSelectedMin(double selectedMin) {
 		if (this.selectedMin != selectedMin) {
-			this.selectedMin = selectedMin;
-			fireRangeChanged();
+			if (!(selectedMin < this.min) && (selectedMin <= this.selectedMax)) {
+				this.selectedMin = selectedMin;
+				fireRangeChanged();
+			}
 		}
 	}
 
@@ -126,8 +128,10 @@ public class StartEndRangeWidget extends Canvas {
 
 	public void setSelectedMax(double selectedMax) {
 		if (this.selectedMax != selectedMax) {
-			this.selectedMax = selectedMax;
-			fireRangeChanged();
+			if (!(selectedMax > this.max) && (selectedMax >= this.selectedMin)) {
+				this.selectedMax = selectedMax;
+				fireRangeChanged();
+			}
 		}
 	}
 
@@ -190,8 +194,11 @@ public class StartEndRangeWidget extends Canvas {
 				break;
 			case RANGE:
 				double increment = ((e.x - rangeX) / distancePerPx);
-				setSelectedMin(getSelectedMin() + increment);
-				setSelectedMax(getSelectedMax() + increment);
+				if ((getSelectedMin() + increment) > getMin()
+						&& (getSelectedMax() + increment) < getMax()) {
+					setSelectedMin(getSelectedMin() + increment);
+					setSelectedMax(getSelectedMax() + increment);
+				}
 				rangeX = e.x;
 				break;
 			default:
