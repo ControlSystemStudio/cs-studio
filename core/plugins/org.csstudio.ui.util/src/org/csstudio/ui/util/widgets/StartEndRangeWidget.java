@@ -6,6 +6,8 @@ package org.csstudio.ui.util.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -75,6 +77,18 @@ public class StartEndRangeWidget extends Canvas {
 	public StartEndRangeWidget(Composite parent, int style) {
 		super(parent, SWT.DOUBLE_BUFFERED);
 
+		addControlListener(new ControlListener() {
+			
+			@Override
+			public void controlResized(ControlEvent e) {
+				recalculateDistancePerPx();
+			}
+			
+			@Override
+			public void controlMoved(ControlEvent e) {
+				
+			}
+		});
 		addPaintListener(paintListener);
 		addMouseListener(mouseListener);
 		addMouseMoveListener(mouseListener);
@@ -198,8 +212,8 @@ public class StartEndRangeWidget extends Canvas {
 						&& (getSelectedMax() + increment) < getMax()) {
 					setSelectedMin(getSelectedMin() + increment);
 					setSelectedMax(getSelectedMax() + increment);
+					rangeX = e.x;
 				}
-				rangeX = e.x;
 				break;
 			default:
 				break;
@@ -222,6 +236,9 @@ public class StartEndRangeWidget extends Canvas {
 
 			// Draw the line of appropriate size
 			e.gc.drawLine(5, 5, width, 5);
+			// e.gc.drawLine((int) (selectedMin * distancePerPx), 4,
+			// (int) (selectedMax * distancePerPx), 4);
+
 			e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
 			// min selected
 			e.gc.drawOval((int) (selectedMin * distancePerPx), 0, 10, 10);
