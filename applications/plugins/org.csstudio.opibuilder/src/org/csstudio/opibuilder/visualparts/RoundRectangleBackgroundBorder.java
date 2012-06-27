@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.eclipse.draw2d.AbstractBackground;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Insets;
@@ -22,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
 public class RoundRectangleBackgroundBorder extends AbstractBackground {
 
 	
-	private static final int ARC_SIZE = 6;
+	private static final int ARC_SIZE = 8;
 
 	private int lineWidth;
 	
@@ -63,7 +62,7 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
 		}
 		tempRect.shrink(lineWidth / 2, lineWidth / 2);
 		graphics.setLineWidth(lineWidth);
-		graphics.setForegroundColor(ColorConstants.buttonDarker);
+		graphics.setForegroundColor(backgroundColor);//ColorConstants.buttonDarker);
 		graphics.drawRoundRectangle(tempRect, ARC_SIZE, ARC_SIZE);
 		graphics.popState();
 	}
@@ -74,8 +73,8 @@ public class RoundRectangleBackgroundBorder extends AbstractBackground {
 		graphics.pushState();
 		graphics.setAntialias(SWT.ON);
 		tempRect.setBounds(getPaintRectangle(figure, insets));
-		if(backgroundColor != null)
-			graphics.setBackgroundColor(backgroundColor);
+//		if(backgroundColor != null)
+//			graphics.setBackgroundColor(backgroundColor);
 		tempRect.shrink(lineWidth <= 1? 1 : lineWidth/2, lineWidth <= 1? 1 : lineWidth/2);
 		graphics.fillRoundRectangle(tempRect, ARC_SIZE, ARC_SIZE);
 		graphics.popState();
