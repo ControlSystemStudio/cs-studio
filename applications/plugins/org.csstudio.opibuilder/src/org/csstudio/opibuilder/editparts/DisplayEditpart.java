@@ -61,7 +61,6 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		removeEditPolicy(EditPolicy.GRAPHICAL_NODE_ROLE);
 	}
 	
-	@SuppressWarnings("serial")
 	@Override
 	public void activate() {
 		super.activate();
@@ -129,15 +128,14 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		final Control control = getViewer().getControl();
 		if (getViewer() != null && !control.isDisposed()) {
 			//This needs to be executed in UI Thread
-			
+			final ZoomManager zoomManager = ((ScalableFreeformRootEditPart) getRoot()).getZoomManager();
 			control.getDisplay().asyncExec(new Runnable() {
 				
 				@Override
 				public void run() {
 					if (zoomListener != null && !control.isDisposed()) {
 						// recover zoom
-						((ScalableFreeformRootEditPart) getRoot()).getZoomManager()
-								.setZoom(1.0);
+						zoomManager.setZoom(1.0);
 						control.removeControlListener(zoomListener);
 					}
 
