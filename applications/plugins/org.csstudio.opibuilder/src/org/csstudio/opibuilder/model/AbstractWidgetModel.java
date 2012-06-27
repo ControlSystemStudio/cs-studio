@@ -620,7 +620,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	protected void doScale(double widthRatio, double heightRatio) {
 		setLocation((int)Math.round(originLocation.x*widthRatio),(int)Math.round(originLocation.y * heightRatio)); 
-		setSize(getScaledSize(widthRatio, heightRatio));
+		if(getScaleOptions().isHeightScalable() || getScaleOptions().isWidthScalable())
+			setSize(getScaledSize(widthRatio, heightRatio));
 	}
 
 	/**
