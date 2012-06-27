@@ -40,6 +40,13 @@ public class Preferences
     final public static String JMS_USER = "jms_user";
     final public static String JMS_PASSWORD = "jms_password";
     final public static String JMS_IDLE_TIMEOUT = "jms_idle_timeout";
+    final public static String SMTP_HOST = "smtp_host";
+    final public static String SMTP_USER = "smtp_user";
+    final public static String SMTP_PASSWORD = "smtp_password";
+    final public static String SMTP_SENDER = "smtp_sender";
+    final public static String SMS_URL = "sms_url";
+    final public static String SMS_USER = "sms_user";
+    final public static String SMS_PASSWORD = "sms_password";
     final public static String PV_START_DELAY = "pv_start_delay";
     final public static String CONNECTION_GRACE_PERIOD = "connection_grace_period";
     final public static String COMMAND_DIRECTORY = "command_directory";
@@ -58,7 +65,11 @@ public class Preferences
     final private static String SERVER_SUFFIX = "_SERVER";
     final private static String CLIENT_SUFFIX = "_CLIENT";
     final private static String TALK_SUFFIX = "_TALK";
-
+    
+    final private static String NOTIFIER_SUFFIX_EXECUTE = "_NOTIFIER_EXE";
+    final private static String NOTIFIER_SUFFIX_RETURN = "_NOTIFIER_RTN";
+    final public static String NOTIFIER_THRESHOLD = "notifier_threshold";
+    
     /** @param setting Preference identifier
      *  @return String from preference system, or <code>null</code>
      */
@@ -83,6 +94,8 @@ public class Preferences
     public static boolean isReadOnly()
     {
         final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return true;
         return service.getBoolean(Activator.ID, READONLY, true, null);
     }
 
@@ -133,7 +146,7 @@ public class Preferences
     /** @return JMS URL */
     public static String getJMS_URL()
     {
-        return getString(JMS_URL);
+    	return getString(JMS_URL, "tcp://localhost:61616");
     }
 
     /** @return JMS User name */
@@ -146,6 +159,48 @@ public class Preferences
     public static String getJMS_Password()
     {
     	return getSecureString(JMS_PASSWORD);
+    }
+    
+    /** @return SMTP URL */
+    public static String getSMTP_Host()
+    {
+    	return getString(SMTP_HOST, "localhost");
+    }
+
+    /** @return SMTP User name */
+    public static String getSMTP_User()
+    {
+       return getSecureString(SMTP_USER);
+    }
+
+    /** @return SMTP Password */
+    public static String getSMTP_Password()
+    {
+    	return getSecureString(SMTP_PASSWORD);
+    }
+    
+    /** @return SMTP Password */
+    public static String getSMTP_Sender()
+    {
+    	return getString(SMTP_SENDER, "");
+    }
+    
+    /** @return SMS URL */
+    public static String getSMS_URL()
+    {
+        return getString(SMS_URL);
+    }
+
+    /** @return SMS User name */
+    public static String getSMS_User()
+    {
+       return getSecureString(SMS_USER);
+    }
+
+    /** @return SMS Password */
+    public static String getSMS_Password()
+    {
+    	return getSecureString(SMS_PASSWORD);
     }
 
     /** @param config Alarm configuration name (root)
@@ -162,6 +217,31 @@ public class Preferences
     public static String getJMS_AlarmClientTopic(final String config)
     {
         return config + CLIENT_SUFFIX;
+    }
+    
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for executing automated actions
+     */
+    public static String getJMS_AlarmNotifierExeTopic(final String config)
+    {
+        return config + NOTIFIER_SUFFIX_EXECUTE;
+    }
+    
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for read automated actions result
+     */
+    public static String getJMS_AlarmNotifierRtnTopic(final String config)
+    {
+        return config + NOTIFIER_SUFFIX_RETURN;
+    }
+    
+    /**  @return threshold for automated actions */
+    public static int getNotifier_Threshold()
+    {
+		final IPreferencesService service = Platform.getPreferencesService();
+		if (service == null)
+			return 100;
+		return service.getInt(Activator.ID, NOTIFIER_THRESHOLD, 100, null);
     }
 
     /** @param config Alarm configuration name (root)

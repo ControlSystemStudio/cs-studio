@@ -27,6 +27,7 @@ public class SQL
 	final public String sel_guidance_by_id;
 	final public String sel_displays_by_id;
 	final public String sel_commands_by_id;
+	final public String sel_auto_actions_by_id;
     final public String sel_items_by_parent;
     final public String sel_item_by_parent_and_name;
     final public String sel_last_item_id;
@@ -38,6 +39,8 @@ public class SQL
 	final public String insert_display;
 	final public String delete_commands_by_id;
 	final public String insert_command;
+	final public String delete_auto_actions_by_id;
+	final public String insert_auto_action;
 
 	final public String update_item_config_time;
 
@@ -92,6 +95,8 @@ public class SQL
             "select TITLE, DETAIL FROM " + schema_prefix + "DISPLAY WHERE COMPONENT_ID=? ORDER BY DISPLAY_ORDER";
         sel_commands_by_id =
             "select TITLE, DETAIL FROM " + schema_prefix + "COMMAND WHERE COMPONENT_ID=? ORDER BY COMMAND_ORDER";
+        sel_auto_actions_by_id =
+                "select TITLE, DETAIL, DELAY FROM " + schema_prefix + "AUTOMATED_ACTION WHERE COMPONENT_ID=? ORDER BY AUTO_ACTION_ORDER";
         // Selects components or PVs by parent ID. For PVs, all the p.* columns are null.
         //
         // Components are ordered by ID, assuming they are originally
@@ -153,7 +158,11 @@ public class SQL
             "DELETE FROM " + schema_prefix + "COMMAND WHERE COMPONENT_ID=?";
         insert_command =
             "INSERT INTO " + schema_prefix + "COMMAND(COMPONENT_ID, COMMAND_ORDER, TITLE, DETAIL) VALUES(?,?,?,?)";
-
+        delete_auto_actions_by_id =
+                "DELETE FROM " + schema_prefix + "AUTOMATED_ACTION WHERE COMPONENT_ID=?";
+        insert_auto_action =
+                "INSERT INTO " + schema_prefix + "AUTOMATED_ACTION(COMPONENT_ID, AUTO_ACTION_ORDER, TITLE, DETAIL, DELAY) VALUES(?,?,?,?,?)";
+        
         update_item_config_time =
             "UPDATE " + schema_prefix + "ALARM_TREE SET CONFIG_TIME=? WHERE COMPONENT_ID=?";
 

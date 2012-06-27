@@ -1,0 +1,20 @@
+#! /bin/bash
+#
+# Startup Script for CSS Alarm Notification
+#
+# Description: Starts and stops CSS Alarm Notification
+
+
+. codacenv
+
+CONFIGURATION=()
+VARFILES=()
+
+unset REQUSER
+DAEMONS=(/usr/bin/alarm-notifier)
+LOGFILES=("$CODAC_VAR/beast/alarm.log")
+LOGAPPENDS=(true)
+NAMES=("CSS Alarm Notifier")
+ARGS=("$(printf "'%s' " "${@:2}")")
+
+. $CODAC_ROOT/bin/services/service-startup

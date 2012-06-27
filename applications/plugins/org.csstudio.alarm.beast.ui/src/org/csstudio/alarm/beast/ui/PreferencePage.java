@@ -73,6 +73,17 @@ public class PreferencePage extends FieldEditorPreferencePage
             Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
         timeout.setValidRange(0, 60*60);
         addField(timeout);
+        
+        // SMTP Connection
+        addField(new StringFieldEditor(Preferences.SMTP_HOST, Messages.Preferences_SMTP_Host, parent));
+        addField(new StringFieldEditor(Preferences.SMTP_SENDER, Messages.Preferences_SMTP_Sender, parent));
+        addField(new PasswordFieldEditor(Preferences.SMTP_USER, Messages.Preferences_SMTP_User, parent, PREF_QUALIFIER_ID, false));
+        addField(new PasswordFieldEditor(Preferences.SMTP_PASSWORD, Messages.Preferences_SMTP_Password, parent, PREF_QUALIFIER_ID));
+        
+        // SMS Connection
+        addField(new StringFieldEditor(Preferences.SMS_URL, Messages.Preferences_SMS_URL, parent));
+        addField(new PasswordFieldEditor(Preferences.SMS_USER, Messages.Preferences_SMS_User, parent, PREF_QUALIFIER_ID, false));
+        addField(new PasswordFieldEditor(Preferences.SMS_PASSWORD, Messages.Preferences_SMS_Password, parent, PREF_QUALIFIER_ID));
 
         // Commands, related displays
         addField(new StringFieldEditor(Preferences.COMMAND_DIRECTORY, Messages.Preferences_CommandDirectory, parent));

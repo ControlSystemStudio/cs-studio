@@ -103,10 +103,10 @@ public class ConfigureItemAction extends AbstractUserDependentAction
                         dlg.isEnabled(), dlg.isAnnunciate(), dlg.isLatch(),
                         dlg.getDelay(), dlg.getCount(),
                         dlg.getFilter(),
-                        dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands());
+                        dlg.getGuidance(), dlg.getDisplays(), dlg.getCommands(), dlg.getAutomatedActions());
             else
                 model.configureItem(item, dlg.getGuidance(), dlg.getDisplays(),
-                        dlg.getCommands());
+                        dlg.getCommands(), dlg.getAutomatedActions());
 
         }
         catch (Throwable ex)

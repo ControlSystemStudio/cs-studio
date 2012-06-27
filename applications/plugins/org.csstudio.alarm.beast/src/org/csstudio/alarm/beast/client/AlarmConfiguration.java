@@ -42,7 +42,6 @@ import org.eclipse.osgi.util.NLS;
  *  <p>See NOTE ON SYNCHRONIZATION in AlarmClientModel
  *
  *  @author Kay Kasemir, Xihui Chen
- *  @author Lana Abadie - Disable autocommit as needed.
  */
 public class AlarmConfiguration
 {
@@ -464,7 +463,7 @@ public class AlarmConfiguration
      */
     public void configureItem(final AlarmTreeItem item,
             final GDCDataStructure guidance[], final GDCDataStructure displays[],
-            final GDCDataStructure commands[]) throws Exception
+            final GDCDataStructure commands[], final AADataStructure automated_actions[]) throws Exception
     {
         // Prepare statements
         final Connection connection = rdb.getConnection();
@@ -474,6 +473,8 @@ public class AlarmConfiguration
         final PreparedStatement    insert_display = connection.prepareStatement(sql.insert_display);
         final PreparedStatement    delete_commands_by_id = connection.prepareStatement(sql.delete_commands_by_id);
         final PreparedStatement    insert_command = connection.prepareStatement(sql.insert_command);
+        final PreparedStatement    delete_auto_actions_by_id = connection.prepareStatement(sql.delete_auto_actions_by_id);
+        final PreparedStatement    insert_auto_actions = connection.prepareStatement(sql.insert_auto_action);
 
         //update guidance, displays and commands
         connection.setAutoCommit(false);
@@ -482,6 +483,7 @@ public class AlarmConfiguration
             updateGDC(item.getID(), guidance, delete_guidance_by_id, insert_guidance);
             updateGDC(item.getID(), displays, delete_displays_by_id, insert_display);
             updateGDC(item.getID(), commands, delete_commands_by_id, insert_command);
+            updateAA(item.getID(), automated_actions, delete_auto_actions_by_id, insert_auto_actions);
             connection.commit();
         }
         catch (Exception ex)
@@ -495,10 +497,12 @@ public class AlarmConfiguration
             delete_guidance_by_id.close();
             delete_displays_by_id.close();
             delete_commands_by_id.close();
+            delete_auto_actions_by_id.close();
 
             insert_guidance.close();
             insert_display.close();
             insert_command.close();
+            insert_auto_actions.close();
         }
 
         // Update item's config time after RDB commit succeeded
@@ -542,9 +546,9 @@ public class AlarmConfiguration
         final boolean enabled, final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
         final GDCDataStructure guidance[], final GDCDataStructure displays[],
-        final GDCDataStructure commands[]) throws Exception
+        final GDCDataStructure commands[], final AADataStructure automated_actions[]) throws Exception
     {
-        configureItem(pv, guidance, displays, commands);
+        configureItem(pv, guidance, displays, commands, automated_actions);
         rdb.getConnection().setAutoCommit(false);
         final PreparedStatement    update_pv_config_statement = rdb.getConnection().prepareStatement(sql.update_pv_config);
         try
@@ -688,6 +692,7 @@ public class AlarmConfiguration
         try
         {
             deleteGDCWithoutCommit(item.getID());
+            deleteAAWithoutCommit(item.getID());
             statement.setInt(1, item.getID());
             statement.executeUpdate();
             rdb.getConnection().commit();
@@ -723,6 +728,7 @@ public class AlarmConfiguration
         try
         {
             deleteGDCWithoutCommit(pv.getID());
+            deleteAAWithoutCommit(pv.getID());
 
             delPVStatement.setInt(1, pv.getID());
             delPVStatement.executeUpdate();
@@ -805,6 +811,39 @@ public class AlarmConfiguration
             throw ex;
         }
     }
+    
+    /**Update automated actions in RDB by id
+     * @param id The id of the item in alarmtree.
+     * @param aaList automated actions ArrayList.
+     * @param deleteAA The statement for deleting old AA.
+     * @param insertAA The statement for inserting new AA.
+     * @throws SQLException
+     */
+	private void updateAA(final int id, final AADataStructure aaList[],
+			final PreparedStatement deleteAA, final PreparedStatement insertAA)
+			throws Exception {
+		try {
+			deleteAA.setInt(1, id);
+			deleteAA.executeUpdate();
+			int order = 0;
+			if (aaList != null && aaList.length > 0) 
+			{
+				for (AADataStructure aa : aaList) 
+				{
+					insertAA.setInt(1, id);
+					insertAA.setInt(2, order);
+					insertAA.setString(3, aa.getTitle());
+					insertAA.setString(4, aa.getDetails());
+					insertAA.setInt(5, aa.getDelay());
+					insertAA.executeUpdate();
+					order++;
+				}
+			}
+		} catch (Exception ex) 
+		{
+			throw ex;
+		}
+	}
 
     /** Delete all guidance, displays, commands for an item
      *  @param id Item ID
@@ -829,6 +868,24 @@ public class AlarmConfiguration
             delete_guidance_by_id.close();
             delete_displays_by_id.close();
             delete_commands_by_id.close();
+        }
+    }
+    
+    /** Delete all automated actions for an item
+     *  @param id Item ID
+     *  @throws Exception on error
+     */
+    private void deleteAAWithoutCommit(final int id) throws Exception
+    {
+        final PreparedStatement delete_auto_actions_by_id = rdb.getConnection().prepareStatement(sql.delete_auto_actions_by_id);
+        try
+        {
+            delete_auto_actions_by_id.setInt(1, id);
+            delete_auto_actions_by_id.executeUpdate();
+        }
+        finally
+        {
+            delete_auto_actions_by_id.close();
         }
     }
 

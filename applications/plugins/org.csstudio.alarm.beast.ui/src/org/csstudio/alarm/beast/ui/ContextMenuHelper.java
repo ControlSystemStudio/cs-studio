@@ -12,10 +12,12 @@ import java.util.List;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.actions.AcknowledgeAction;
+import org.csstudio.alarm.beast.ui.actions.AutomatedAction;
 import org.csstudio.alarm.beast.ui.actions.CommandAction;
 import org.csstudio.alarm.beast.ui.actions.CopyToClipboardAction;
 import org.csstudio.alarm.beast.ui.actions.DurationAction;
@@ -43,6 +45,7 @@ public class ContextMenuHelper
     private final ArrayList<GDCDataStructure> addedGuidance = new ArrayList<GDCDataStructure>();
     private final ArrayList<GDCDataStructure> addedDisplays = new ArrayList<GDCDataStructure>();
     private final ArrayList<GDCDataStructure> addedCommands = new ArrayList<GDCDataStructure>();
+    private final ArrayList<AADataStructure> addedAutoActions = new ArrayList<AADataStructure>();
 
     /** Add menu entries for guidance messages, related displays,
      *  and acknowledgment
@@ -92,6 +95,9 @@ public class ContextMenuHelper
         // Add one menu entry for each related display
         for (AlarmTreeItem item : items)
             addRelatedDisplays(manager, shell, item);
+		// Add one menu entry for each related automated action
+		for (AlarmTreeItem item : items)
+			addAutomatedActions(manager, shell, item);
         if (allow_write)
         {
             // Add one menu entry for each command
@@ -205,6 +211,32 @@ public class ContextMenuHelper
              {  // See comment in addRelatedDisplays
                  manager.add(new GuidanceAction(shell, null,
                          new GDCDataStructure(Messages.MoreTag, Messages.MoreCommandsInfo)));
+                 break;
+             }
+    	}
+    }
+    
+    /** Recursively add automated actions
+     *  @param manager Menu to which to add related display action
+     *  @param shell Shell to use
+     *  @param item Item who's displays to add, recursing to parent
+     */
+    private void addAutomatedActions(final IMenuManager manager,
+            final Shell shell, AlarmTreeItem item)
+    {
+        if (item == null  ||  addedAutoActions.size() > max_context_entries)
+            return;
+        addAutomatedActions(manager, shell, item.getClientParent());
+        for (AADataStructure action : item.getAutomatedActions())
+        {   // avoid duplicates
+        	if (addedAutoActions.contains(action))
+        	    continue;
+    		 manager.add(new AutomatedAction(shell, item, action));
+    		 addedAutoActions.add(action);
+             if (addedAutoActions.size() > max_context_entries)
+             {  // See comment in addRelatedDisplays
+                 manager.add(new GuidanceAction(shell, null,
+                         new GDCDataStructure(Messages.MoreTag, Messages.MoreAutoActionsInfo)));
                  break;
              }
     	}

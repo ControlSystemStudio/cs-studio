@@ -18,6 +18,7 @@ import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmConfiguration;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
@@ -613,11 +614,12 @@ public class AlarmClientModel
      *  @param guidance Guidance strings
      *  @param displays Related displays
      *  @param commands Commands
+     *  @param auto_actions Automated Actions
      *  @throws Exception on error
      */
     public void configureItem(final AlarmTreeItem item,
             final GDCDataStructure guidance[], final GDCDataStructure displays[],
-            final GDCDataStructure commands[]) throws Exception
+            final GDCDataStructure commands[], final AADataStructure auto_actions[]) throws Exception
     {
         if (! allow_write)
             return;
@@ -627,7 +629,7 @@ public class AlarmClientModel
                 return;
             try
             {
-            	config.configureItem(item, guidance, displays, commands);
+            	config.configureItem(item, guidance, displays, commands, auto_actions);
             }
             finally
             {
@@ -653,13 +655,14 @@ public class AlarmClientModel
      *  @param guidance Guidance strings
      *  @param displays Related displays
      *  @param commands Commands
+     *  @param auto_actions Automated actions
      *  @throws Exception on error
      */
     public void configurePV(final AlarmTreePV pv, final String description,
         final boolean enabled, final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
         final GDCDataStructure guidance[], final GDCDataStructure displays[],
-        final GDCDataStructure commands[]) throws Exception
+        final GDCDataStructure commands[], final AADataStructure auto_actions[]) throws Exception
     {
         if (! allow_write)
             return;
@@ -671,7 +674,7 @@ public class AlarmClientModel
             {
 	            config.configurePV(pv, description, enabled, annunciate,
 	                    latch, delay, count, filter,
-	                    guidance, displays, commands);
+	                    guidance, displays, commands, auto_actions);
             }
             finally
             {
@@ -774,7 +777,7 @@ public class AlarmClientModel
             config.configurePV(new_pv, pv.getDescription(), pv.isEnabled(),
                     pv.isAnnunciating(), pv.isLatching(), pv.getDelay(),
                     pv.getCount(), pv.getFilter(), pv.getGuidance(),
-                    pv.getDisplays(), pv.getCommands());
+                    pv.getDisplays(), pv.getCommands(), pv.getAutomatedActions());
         }
         // This will trigger an update the configuration of new_pv
         // in this model as well as other alarm system listeners

@@ -14,7 +14,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.ui.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.ui.messages"; //$NON-NLS-1$
     public static String Acknowledge_Action;
     public static String AcknowledgedAlarmsFmt;
     public static String AddComponent;
@@ -42,6 +42,10 @@ public class Messages extends NLS
     public static String AlarmSeverity;
     public static String AlarmTime;
     public static String AlarmValue;
+    public static String AutoActionInfo;
+    public static String AutoActionInfoFmt;
+    public static String AutoActionError;
+    public static String AutoActionErrorFmt;
     public static String CannotUpdateConfigurationErrorFmt;
     public static String Command;
     public static String CommandError;
@@ -51,6 +55,8 @@ public class Messages extends NLS
     public static String Config_Behavior;
     public static String Config_Commands;
     public static String Config_CommandsTT;
+    public static String Config_AutomatedActions;
+    public static String Config_AutomatedActionsTT;
     public static String Config_Count;
     public static String Config_CountError;
     public static String Config_CountTT;
@@ -81,12 +87,20 @@ public class Messages extends NLS
 	public static String DefaultEMailSender;
 	public static String DefaultEMailTitle;
 	public static String Detail;
+	public static String Delay;
     public static String DuplicatePV;
     public static String DuplicatePVMesgFmt;
     public static String Duration;
     public static String DurationMsgFmt;
     public static String EditGDCItemDialog_Detail;
     public static String EditGDCItemDialog_Title;
+    public static String EditAAItemDialog_Delay;
+    public static String EditAAItemDialog_Detail;
+    public static String EditAAItemDialog_Title;
+    // TODO: remove
+//    public static String EditAAItemDialog_SendMail;
+//    public static String EditAAItemDialog_SendSMS;
+//    public static String EditAAItemDialog_PhoneCall;
     public static String Error;
     public static String ErrorInFilter;
 	public static String Filter;
@@ -99,6 +113,7 @@ public class Messages extends NLS
     public static String MoreCommandsInfo;
     public static String MoreDisplaysInfo;
     public static String MoreGuidanceInfo;
+    public static String MoreAutoActionsInfo;
     public static String MoreTag;
     public static String MoveConfirmationFmt;
     public static String MoveItem;
@@ -110,6 +125,13 @@ public class Messages extends NLS
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;
     public static String Preferences_JMS_Password;
+    public static String Preferences_SMTP_Host;
+    public static String Preferences_SMTP_Sender;
+    public static String Preferences_SMTP_User;
+    public static String Preferences_SMTP_Password;
+    public static String Preferences_SMS_URL;
+    public static String Preferences_SMS_User;
+    public static String Preferences_SMS_Password;
     public static String Preferences_MaxContextEntries;
     public static String Preferences_Message;
     public static String Preferences_RDB_URL;
@@ -131,6 +153,12 @@ public class Messages extends NLS
     public static String SendToElogAction_Message;
     public static String ServerErrorFmt;
     public static String ServerTimeout;
+    public static String StringTableEditor_AddRowText;
+    public static String StringTableEditor_AddToolTip;
+    public static String StringTableEditor_EditToolTip;
+    public static String StringTableEditor_MoveUpToolTip;
+    public static String StringTableEditor_MoveDownToolTip;
+    public static String StringTableEditor_DeleteToolTip;
     public static String Title;
     public static String UnacknowledgeAction;
     public static String Unselect;

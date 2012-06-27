@@ -252,7 +252,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
             XMLWriter.XML(out, level, XMLTags.ANNUNCIATING, Boolean.TRUE.toString());
         if (delay > 0)
         {
-            XMLWriter.XML(out, level, XMLTags.DELAY, Double.toString(delay));
+            XMLWriter.XML(out, level, XMLTags.DELAY, Integer.toString(delay));
             XMLWriter.XML(out, level, XMLTags.COUNT, Integer.toString(count));
         }
         if (filter.length() > 0)
