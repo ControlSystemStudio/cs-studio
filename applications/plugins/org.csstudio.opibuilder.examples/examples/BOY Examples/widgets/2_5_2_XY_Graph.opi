@@ -495,7 +495,7 @@ $(pv_value)</tooltip>
     <y>568</y>
     <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
-        <path>2_5_4_XY_Graph.opi</path>
+        <path>2_5_1_XY_Graph.opi</path>
         <macros>
           <include_parent_macros>true</include_parent_macros>
         </macros>
@@ -563,7 +563,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <wuid>38d90a0d:1357c5ff43f:-7fd2</wuid>
     <scripts />
-    <height>23</height>
+    <height>27</height>
     <name>Combo Box</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -672,7 +672,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name>Default</opifont.name>
     </font>
-    <width>73</width>
+    <width>110</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
@@ -683,7 +683,7 @@ $(pv_value)</tooltip>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>330</y>
+    <y>331</y>
     <actions hook="false" hook_all="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/ClearGraph.js</path>
@@ -694,7 +694,7 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip>Clear data on graph</tooltip>
-    <x>430</x>
+    <x>429</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
