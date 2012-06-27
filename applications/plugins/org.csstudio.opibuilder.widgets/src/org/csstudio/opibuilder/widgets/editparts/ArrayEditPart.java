@@ -53,6 +53,7 @@ import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
@@ -104,33 +105,46 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	public ArrayEditPart() {
 		delegate = new PVWidgetEditpartDelegate(this);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void activate() {
-		if (!isActive()) {
-			super.activate();
-			delegate.activate();
-
-			if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-				if (!getChildren().isEmpty()) {
-					elementDefaultValue = ((AbstractBaseEditPart) getChildren().get(0)).getValue();
-					initValueArray();
-					setValue(getValue());
-					IWidgetInfoProvider provider = (IWidgetInfoProvider) getWidgetModel()
-							.getChildren().get(0).getAdapter(IWidgetInfoProvider.class);
-					if (provider != null) {
-						Object info = provider.getInfo(ArrayModel.ARRAY_UNIQUEPROP_ID);
-						if (info != null && info instanceof List<?>) {
-							unSyncablePropIDsFromChild = new ArrayList<String>((List<String>) info);
-							unSyncablePropIDsFromChild.addAll(NONE_SYNCABLE_PROPIDS);
-						}
+	protected void doActivate() {
+		super.doActivate();
+		delegate.doActivate();
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			if (!getChildren().isEmpty()) {
+				elementDefaultValue = ((AbstractBaseEditPart) getChildren()
+						.get(0)).getValue();
+				initValueArray();
+				setValue(getValue());
+				IWidgetInfoProvider provider = (IWidgetInfoProvider) getWidgetModel()
+						.getChildren().get(0)
+						.getAdapter(IWidgetInfoProvider.class);
+				if (provider != null) {
+					Object info = provider
+							.getInfo(ArrayModel.ARRAY_UNIQUEPROP_ID);
+					if (info != null && info instanceof List<?>) {
+						unSyncablePropIDsFromChild = new ArrayList<String>(
+								(List<String>) info);
+						unSyncablePropIDsFromChild
+								.addAll(NONE_SYNCABLE_PROPIDS);
 					}
 				}
-				registerLoadPVDataTypeListener();
+				if (getChildren().get(0) instanceof IPVWidgetEditpart
+						&& ((IPVWidgetEditpart) getChildren().get(0)).isPVControlWidget()) {
+					delegate.markAsControlPV(IPVWidgetModel.PROP_PVNAME, IPVWidgetModel.PROP_PVVALUE);
+					delegate.setUpdateSuppressTime(-1);
+				}
 			}
-
+			registerLoadPVDataTypeListener();
 		}
+		
+	}
+
+	@Override
+	public void activate() {
+		super.activate();
+		delegate.startPVs();
 	}
 
 	protected void initValueArray() {
@@ -251,7 +265,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 		if(getExecutionMode() == ExecutionMode.EDIT_MODE){
 			for(String propId: INVISIBLE_CHILD_PROPIDS)
 				try {
-					childModel.setPropertyVisibleAndSavable(propId, false, false);
+					childModel.setPropertyVisibleAndSavable(propId, false, true);
 				} catch (NonExistPropertyException e) {					
 				}						
 		}
@@ -369,13 +383,12 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 					new ContainerHighlightEditPolicy());
 		}
 		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new ArraySpinnerDirectEditPolicy());
-
 	}
 
 	@Override
 	public void deactivate() {
 		if (isActive()) {
-			delegate.deactivate();
+			delegate.doDeActivate();
 			super.deactivate();
 		}
 	}
@@ -457,17 +470,17 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
 				@Override
 				public void mouseDoubleClick(MouseEvent me, EditPartViewer viewer) {
-					if (getArrayFigure().findFigureAt(me.x, me.y) == getArrayFigure().getSpinner()
+					if (((GraphicalEditPart)getRoot()).getFigure().findFigureAt(me.x, me.y) == getArrayFigure().getSpinner()
 							.getLabelFigure())
 						super.mouseDoubleClick(me, viewer);
 				}
 
 				@Override
 				public void mouseUp(MouseEvent me, EditPartViewer viewer) {
-					if (getArrayFigure().findFigureAt(me.x, me.y) == getArrayFigure().getSpinner()
+					if (((GraphicalEditPart)getRoot()).getFigure().findFigureAt(me.x, me.y) == getArrayFigure().getSpinner()
 							.getLabelFigure())
 						super.mouseUp(me, viewer);
-				}
+				}				
 			};
 		} else
 			return super.getDragTracker(request);
@@ -553,8 +566,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
 	@Override
 	public void performRequest(Request request) {
-		if (getFigure().isEnabled()
-				&& ((request.getType() == RequestConstants.REQ_DIRECT_EDIT && getExecutionMode() != ExecutionMode.RUN_MODE) || request
+		if (((request.getType() == RequestConstants.REQ_DIRECT_EDIT && getExecutionMode() != ExecutionMode.RUN_MODE) || request
 						.getType() == RequestConstants.REQ_OPEN))
 			performDirectEdit();
 	}
@@ -854,6 +866,11 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@Override
 	public void addSetPVValueListener(ISetPVValueListener listener) {
 		delegate.addSetPVValueListener(listener);
+	}
+	
+	@Override
+	public boolean isPVControlWidget() {
+		return delegate.isPVControlWidget();
 	}
 
 }
