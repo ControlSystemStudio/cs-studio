@@ -59,6 +59,8 @@ public class ScanSystemPreferences extends SystemSettings
     public static String[] getScriptPaths()
     {
         final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return new String[0];
         final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
         return pref.split("\\s*,\\s*");
     }

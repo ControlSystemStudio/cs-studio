@@ -30,7 +30,6 @@ public class ScriptCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-    	// TODO Use a new "ScriptPath" instead of String to allow specific editor
     	new ScanCommandProperty("script", "Script", String.class)
     };
 
