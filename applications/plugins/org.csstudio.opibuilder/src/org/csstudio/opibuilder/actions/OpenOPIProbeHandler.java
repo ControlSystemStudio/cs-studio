@@ -5,11 +5,11 @@ import java.util.LinkedHashMap;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -45,7 +45,7 @@ public class OpenOPIProbeHandler extends AbstractHandler {
 				MessageDialog.openError(shell, "No Probe OPI",
 						"Cannot open probe OPI.\nPlease define your probe OPI on BOY preference page.");
 			}
-			probeOPIPath = new URLPath(url.getPath());
+			probeOPIPath = ResourceUtil.getPathFromString(url.getPath());
 		}
 
 		LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
@@ -61,8 +61,7 @@ public class OpenOPIProbeHandler extends AbstractHandler {
 		MacrosInput macrosInput = new MacrosInput(macros, true);
 
 		// Errors in here will show in dialog and error log
-		RunModeService.getInstance().runOPI(probeOPIPath,
-				TargetWindow.SAME_WINDOW, null, macrosInput);
+		RunModeService.runOPIInView(probeOPIPath, null,macrosInput, Position.DETACHED);
 		return null;
 	}
 
