@@ -119,16 +119,16 @@ public class FontProperty extends AbstractWidgetProperty {
 		
 		if(!opiFont.isPreDefined()){
 			fontElement= new Element(XML_ELEMENT_FONT);
-			FontData fontData = opiFont.getFontData();
-			fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
-			fontElement.setAttribute(XML_ATTRIBUTE_FONT_HEIGHT,
-					"" + fontData.getHeight()); //$NON-NLS-1$
-			fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
-					"" + fontData.getStyle()); //$NON-NLS-1$
 		}else{
 			fontElement = new Element(XML_ELEMENT_FONTNAME);
-			fontElement.setText(opiFont.getFontMacroName());
+			fontElement.setText(opiFont.getFontMacroName());			
 		}
+		FontData fontData = opiFont.getFontData();
+		fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
+		fontElement.setAttribute(XML_ATTRIBUTE_FONT_HEIGHT,
+				"" + fontData.getHeight()); //$NON-NLS-1$
+		fontElement.setAttribute(XML_ATTRIBUTE_FONT_STYLE,
+				"" + fontData.getStyle()); //$NON-NLS-1$
 		
 		propElement.addContent(fontElement);		
 	}
@@ -142,8 +142,17 @@ public class FontProperty extends AbstractWidgetProperty {
 				Integer.parseInt(fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE))));
 		}else{
 			fontElement = propElement.getChild(XML_ELEMENT_FONTNAME);
-			if(fontElement != null)
+			if(fontElement != null){
+				String fontName = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_NAME);
+				String fontHeight=fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_HEIGHT);
+				String fontStyle = fontElement.getAttributeValue(XML_ATTRIBUTE_FONT_STYLE);
+				if(fontName != null && fontHeight != null && fontStyle != null){
+					FontData fd = new FontData(fontName, (int) Double.parseDouble(fontHeight), 
+							Integer.parseInt(fontStyle));
+					return MediaService.getInstance().getOPIFont(fontElement.getText(), fd);
+				}
 				return MediaService.getInstance().getOPIFont(fontElement.getText());
+			}
 			else
 				return null;
 		}
