@@ -54,14 +54,29 @@ public abstract class DataSource {
      * @return a new or cached handler
      */
     ChannelHandler channel(String channelName) {
-        ChannelHandler channel = usedChannels.get(channelName);
+        String channelHandlerName = channelHandlerFor(channelName);
+        ChannelHandler channel = usedChannels.get(channelHandlerName);
         if (channel == null) {
-            channel = createChannel(channelName);
+            channel = createChannel(channelHandlerName);
             if (channel == null)
                 return null;
-            usedChannels.put(channelName, channel);
+            usedChannels.put(channelHandlerName, channel);
         }
         return channel;
+    }
+    
+    /**
+     * Returns the channel handler name to be used for the given channel.
+     * By default, it returns the channel name itself. If a datasource
+     * needs to multiple different channels to the same channel handler
+     * (e.g. parts of the channel name are parameters for the read/write)
+     * then it can override this method to do the appropriate mapping.
+     * 
+     * @param channelName
+     * @return the channel handler name
+     */
+    String channelHandlerFor(String channelName) {
+        return channelName;
     }
 
     /**

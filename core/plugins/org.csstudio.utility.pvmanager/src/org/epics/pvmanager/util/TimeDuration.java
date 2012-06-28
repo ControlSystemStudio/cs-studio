@@ -13,6 +13,7 @@ package org.epics.pvmanager.util;
  * takes into account leap seconds, all the math operations on TimeStamps do
  * not take leap seconds into account.
  * 
+ * @deprecated This class is being retired in favor of {@link org.epics.util.time.TimeDuration}
  * @author carcassi
  */
 @Deprecated

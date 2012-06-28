@@ -69,12 +69,12 @@ class LocalChannelHandler extends MultiplexedChannelHandler<Object, Object> {
     private Object wrapValue(Object value) {
         if (value instanceof Number) {
             // Special support for numbers
-            return newVDouble(((Number) value).doubleValue(), alarmNone(), newTime(Timestamp.now()),
+            return newVDouble(((Number) value).doubleValue(), alarmNone(), timeNow(),
                     displayNone());
         } else if (value instanceof String) {
             // Special support for strings
             return newVString(((String) value),
-                    AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null);
+                    alarmNone(), timeNow());
         }
         return value;
     }

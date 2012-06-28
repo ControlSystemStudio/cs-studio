@@ -89,7 +89,7 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
      * Sets the rate of scan of the expression and creates the actual {@link PVReader}
      * object that can be monitored through listeners.
      * 
-     * @param period the minimum time distance (i.e. the maximum rate) between two different notifications
+     * @param rate the minimum time distance (i.e. the maximum rate) between two different notifications
      * @return the PVReader
      */
     public PVReader<T> maxRate(TimeDuration rate) {

@@ -23,6 +23,11 @@ public class WriteCache<T> extends WriteFunction<T> {
      */
     private T value;
     
+    /**
+     * The channel we should be writing to
+     */
+    private final String channelName;
+    
     private List<String> precedingChannels = Collections.emptyList();
 
     /**
@@ -30,6 +35,17 @@ public class WriteCache<T> extends WriteFunction<T> {
      */
     public WriteCache() {
         this.value = null;
+        this.channelName = null;
+    }
+
+    /**
+     * Creates a new cache for the given channel name.
+     * 
+     * @param channelName the channel name
+     */
+    public WriteCache(String channelName) {
+        this.value = null;
+        this.channelName = channelName;
     }
 
     /**
@@ -70,7 +86,15 @@ public class WriteCache<T> extends WriteFunction<T> {
     public Collection<String> getPrecedingChannels() {
         return precedingChannels;
     }
-    
+
+    /**
+     * The channel associated to this cache
+     * 
+     * @return the channel name
+     */
+    public String getChannelName() {
+        return channelName;
+    }
     
 
 }

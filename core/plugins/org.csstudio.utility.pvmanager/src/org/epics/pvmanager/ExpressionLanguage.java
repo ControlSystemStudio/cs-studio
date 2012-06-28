@@ -53,6 +53,21 @@ public class ExpressionLanguage {
      * @return an expression that is always going to return the given value
      */
     public static <T> DesiredRateExpression<T> constant(T value) {
+        return constant(value, value.toString());
+    }
+    
+    /**
+     * Creates a constant expression that always return that object, with the
+     * given name for the expression.
+     * This is useful to test expressions or to introduce data that is available
+     * at connection time at that will not change.
+     * 
+     * @param <T> type of the value
+     * @param value the actual value
+     * @param name the name of the expression
+     * @return an expression that is always going to return the given value
+     */
+    public static <T> DesiredRateExpression<T> constant(T value, String name) {
         Class<?> clazz = Object.class;
         if (value != null)
             clazz = value.getClass();
@@ -60,7 +75,7 @@ public class ExpressionLanguage {
         ValueCache<T> cache = (ValueCache<T>) new ValueCache(clazz);
         if (value != null)
             cache.setValue(value);
-        return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, value.toString());
+        return new DesiredRateExpressionImpl<T>(new DesiredRateExpressionListImpl<T>(), cache, name);
     }
 
     /**
@@ -335,11 +350,27 @@ public class ExpressionLanguage {
      * @return a new expression
      */
     public static <R, A1, A2> DesiredRateExpression<R> resultOf(final TwoArgFunction<R, A1, A2> function,
-            DesiredRateExpression<A1> arg1Expression, DesiredRateExpression<A2> arg2Expression) {
-        String name = function.getClass().getSimpleName() + "(" + arg1Expression.getName() +
-                ", " + arg2Expression.getName() + ")";
-        final Function<A1> arg1 = arg1Expression.getFunction();
-        final Function<A2> arg2 = arg2Expression.getFunction();
+            DesiredRateExpression<? extends A1> arg1Expression, DesiredRateExpression<? extends A2> arg2Expression) {
+        return resultOf(function, arg1Expression, arg2Expression, function.getClass().getSimpleName() + "(" + arg1Expression.getName() +
+                ", " + arg2Expression.getName() + ")");
+    }
+
+    /**
+     * An expression that represents the result of a user provided function.
+     *
+     * @param <R> result type
+     * @param <A1> first argument type
+     * @param <A2> second argument type
+     * @param function the user provided function
+     * @param arg1Expression expression for the first argument
+     * @param arg2Expression expression for the second argument
+     * @param name expression name
+     * @return a new expression
+     */
+    public static <R, A1, A2> DesiredRateExpression<R> resultOf(final TwoArgFunction<R, A1, A2> function,
+            DesiredRateExpression<? extends A1> arg1Expression, DesiredRateExpression<? extends A2> arg2Expression, String name) {
+        final Function<? extends A1> arg1 = arg1Expression.getFunction();
+        final Function<? extends A2> arg2 = arg2Expression.getFunction();
         @SuppressWarnings("unchecked")
         DesiredRateExpressionList<? extends Object> argExpressions =
                 new DesiredRateExpressionListImpl<Object>().and(arg1Expression).and(arg2Expression);

@@ -4,6 +4,8 @@
  */
 package org.epics.pvmanager;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -25,6 +27,16 @@ public abstract class ChannelHandler {
         if (channelName == null)
             throw new NullPointerException("Channel name cannot be null");
         this.channelName = channelName;
+    }
+    
+    /**
+     * Returns extra information about the channel, typically
+     * useful for debugging.
+     * 
+     * @return a property map
+     */
+    public Map<String, Object> getProperties() {
+        return Collections.emptyMap();
     }
 
     /**

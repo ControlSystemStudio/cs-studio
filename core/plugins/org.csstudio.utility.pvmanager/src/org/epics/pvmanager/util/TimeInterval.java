@@ -8,6 +8,7 @@ package org.epics.pvmanager.util;
  * A period of time that spans two instances (included) at the nanosecond
  * precision.
  *
+ * @deprecated This class is being retired in favor of {@link org.epics.util.time.TimeInterval}
  * @author carcassi
  */
 @Deprecated
