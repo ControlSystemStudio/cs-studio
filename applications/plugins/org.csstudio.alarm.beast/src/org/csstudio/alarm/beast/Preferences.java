@@ -112,16 +112,19 @@ public class Preferences
     	return getSecureString(RDB_USER);
     }
 
-	/** @return JMS Password */
+	/** @return RDB Password */
     public static String getRDB_Password()
     {
         return getSecureString(RDB_PASSWORD);
     }
 
-	/** @return JMS Password */
+	/** @return RDB schema */
     public static String getRDB_Schema()
     {
-        return getString(RDB_SCHEMA);
+        final String schema = getString(RDB_SCHEMA);
+        if (schema.endsWith("."))
+            return schema.substring(0, schema.length()-1);
+        return schema;
     }
 
 	/** @return Configuration Name, i.e. name of alarm tree root component */
@@ -274,7 +277,7 @@ public class Preferences
         }
         return rgb;
     }
-    
+
     /** @return Delay in millisecs for the initial update after trigger */
     public static long getGuiThrottleInitialMillis()
     {
