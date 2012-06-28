@@ -66,6 +66,7 @@ public final class Messages extends NLS {
 	public static String LoginDialog_Password;
 	public static String LoginDialog_UserName;
 
+    public static String NotLoggedIn;
 
     static
     {
