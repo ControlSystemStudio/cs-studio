@@ -60,14 +60,14 @@ public class Application implements IApplication {
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
         System.out.println("JMS Notifier Exe Topic: " + Preferences.getJMS_AlarmNotifierExeTopic(config_name.get()));
         System.out.println("JMS Notifier Rtn Topic: " + Preferences.getJMS_AlarmNotifierRtnTopic(config_name.get()));
-        System.out.println("Notifier threshold: " + Preferences.getNotifier_Threshold());
+        System.out.println("Notifier threshold: " + org.csstudio.alarm.beast.notifier.Preferences.getThreshold());
 
 		try {
 			NotificationActionFactory factory = NotificationActionFactory.getInstance();
 			factory.init(getActions());
 			final IAlarmRDBHandler rdbHandler = new AlarmRDBHandler(config_name.get());
 			// TODO: define threshold in preferences
-			final int threshold = Preferences.getNotifier_Threshold();
+			final int threshold = org.csstudio.alarm.beast.notifier.Preferences.getThreshold();
 			final AlarmNotifier alarm_notifer = new AlarmNotifier(config_name.get(), rdbHandler, factory, threshold);
 			rdbHandler.init(alarm_notifer);
 			alarm_notifer.start();

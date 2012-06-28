@@ -125,13 +125,6 @@ public class Messages extends NLS
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;
     public static String Preferences_JMS_Password;
-    public static String Preferences_SMTP_Host;
-    public static String Preferences_SMTP_Sender;
-    public static String Preferences_SMTP_User;
-    public static String Preferences_SMTP_Password;
-    public static String Preferences_SMS_URL;
-    public static String Preferences_SMS_User;
-    public static String Preferences_SMS_Password;
     public static String Preferences_MaxContextEntries;
     public static String Preferences_Message;
     public static String Preferences_RDB_URL;

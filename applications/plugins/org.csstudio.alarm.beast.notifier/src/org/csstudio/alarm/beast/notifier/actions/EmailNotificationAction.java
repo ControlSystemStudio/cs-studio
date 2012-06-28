@@ -12,7 +12,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.notifier.ActionID;
 import org.csstudio.alarm.beast.notifier.Activator;
@@ -51,8 +50,8 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 	public void init(AlarmNotifier notifier, ActionID id, ItemInfo item, int delay,
 			String details, IActionValidator validator) {
 		super.init(notifier, id, item, delay, details);
-		this.host = Preferences.getSMTP_Host();
-		this.from =  Preferences.getSMTP_Sender();
+		this.host = org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Host();
+		this.from =  org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Sender();
 		
 		try {
 			EMailCommandValidator ecv = (EMailCommandValidator) validator;
