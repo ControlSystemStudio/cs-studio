@@ -21,14 +21,14 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-@SuppressWarnings("nls")
-/** JUnit test of the DerbyDataLogger
+/** JUnit test of the {@link DerbyDataLogger}
  *
  *  <p>Will execute Derby for the database, cannot run if another Derby instance (Scan Server)
  *  already runs the database.
  *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class DerbyDataLogTest
 {
 	private static Scan scan = null;
@@ -85,27 +85,39 @@ public class DerbyDataLogTest
 	public void testSampleLogging() throws Exception
 	{
 		final DerbyDataLogger log = new DerbyDataLogger();
-    	// Allows about 2500 samples/second (50000 in 20 seconds)
+        // Allows about 19000 samples/second
+		//
+		// When value was just a DOUBLE number, no SampleValue:
+		// Allows about 2500 samples/second
 		final long scan_id = scan.getId();
 		final long start = System.nanoTime();
 		for (long serial = 1; serial < 50000; ++serial)
 			log.log(scan_id, "setpoint", new NumberScanSample(new Date(), serial, 3.14 + serial * 0.01));
-        final long end = System.nanoTime();
+        final long nanos = System.nanoTime() - start;
 		log.close();
-		final long vals_per_sec = 50000 * 1000000000 / (end - start);
+		final long vals_per_sec = 50000L * 1000000000L / nanos;
 		System.out.println("Writing " + vals_per_sec + " vals/sec");
 	}
 
-	@Test(timeout=10000)
+	@Test(timeout=50000)
 	public void testSampleRetrieval() throws Exception
 	{
 		final DerbyDataLogger log = new DerbyDataLogger();
         final long scan_id = scan.getId();
 
-		// Fetches >30000/sec (50000 in 1.6)
+        // Reads about 4400 samples/second
+        //
+        // When value was just a DOUBLE number, no SampleValue: >30000/sec
+        final long start = System.nanoTime();
 		final ScanData data = log.getScanData(scan_id);
-		// Printout takes ~2.5 secs
+        final long nanos = System.nanoTime() - start;
+
+        // Printout takes 2..3 secs
 		new ScanDataIterator(data).printTable(System.out);
+
+        final long vals_per_sec = 50000L * 1000000000L / nanos;
+        System.out.println("Reading " + vals_per_sec + " vals/sec");
+
 
 		log.close();
 	}
