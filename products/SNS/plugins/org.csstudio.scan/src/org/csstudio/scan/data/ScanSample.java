@@ -50,6 +50,8 @@ abstract public class ScanSample implements Serializable
 	final private Date timestamp;
 	final private long serial;
 
+	// TODO support array values (see log.derby.SampleValue, ArrayNumber, ...)
+
     /** Initialize
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
