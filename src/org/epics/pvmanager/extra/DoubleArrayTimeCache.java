@@ -35,7 +35,7 @@ public interface DoubleArrayTimeCache {
      * are going to be returned, and a new region, where all data is going to
      * be returned.
      * 
-     * @return 
+     * @return the new data chunks
      */
     public List<Data> newData(Timestamp beginUpdate, Timestamp endUpdate, Timestamp beginNew, Timestamp endNew);
     

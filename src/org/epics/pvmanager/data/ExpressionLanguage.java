@@ -66,7 +66,12 @@ public class ExpressionLanguage {
         return new SourceRateExpressionImpl<VDoubleArray>(expression, new ConverterVDoubleArrayFunction(expression.getFunction()), expression.getName());
     }
     
-    
+    /**
+     * Transforms a list of numeric scalar into a double array.
+     * 
+     * @param expressions a list of numeric expressions
+     * @return a new double array expression
+     */
     public static DesiredRateExpression<VDoubleArray>
             vDoubleArrayOf(DesiredRateExpressionList<? extends VNumber> expressions) {
         // TODO - there should be a common function to extract the list of functions
@@ -227,32 +232,77 @@ public class ExpressionLanguage {
     // Constant expressions
     //
     
+    /**
+     * A constant representing a double. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param value the constant value
+     * @return a double expression
+     */
     public static DesiredRateExpression<VDouble> vConst(double value) {
-        return constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVDouble(value, alarmNone(), newTime(Timestamp.now()), displayNone()), Double.toString(value));
     }
     
+    /**
+     * A constant representing an int. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param value the constant value
+     * @return an int expression
+     */
     public static DesiredRateExpression<VInt> vConst(int value) {
-        return constant(newVInt(value, alarmNone(), newTime(Timestamp.now()), displayNone()));
+        return constant(newVInt(value, alarmNone(), newTime(Timestamp.now()), displayNone()), Integer.toString(value));
     }
     
+    /**
+     * A constant representing a double array. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param values the constant values
+     * @return a double array expression
+     */
     public static DesiredRateExpression<VDoubleArray> vConst(double... values) {
         return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
     
+    /**
+     * A constant representing a double array. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param values the constant values
+     * @return a double array expression
+     */
     public static DesiredRateExpression<VDoubleArray> vConst(ListDouble values) {
         return constant(newVDoubleArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
     
+    /**
+     * A constant representing an int array. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param values the constant values
+     * @return an int array expression
+     */
     public static DesiredRateExpression<VIntArray> vConst(int... values) {
         return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
     
+    /**
+     * A constant representing an int array. Alarm will be none, timestamp now
+     * and no display information.
+     * 
+     * @param values the constant values
+     * @return an int array expression
+     */
     public static DesiredRateExpression<VIntArray> vConst(ListInt values) {
         return constant(newVIntArray(values, alarmNone(), newTime(Timestamp.now()), displayNone()));
     }
 
     /**
      * A list of constant expressions of type VDouble.
+     * 
+     * @param values the list of constants
+     * @return a list of double expression
      */
     public static DesiredRateExpressionList<VDouble> vDoubleConstants(List<Double> values) {
         DesiredRateExpressionList<VDouble> list = new DesiredRateExpressionListImpl<VDouble>();
@@ -264,6 +314,9 @@ public class ExpressionLanguage {
 
     /**
      * A list of constant expressions of type VDouble.
+     * 
+     * @param values the list of constants
+     * @return a list of int expression
      */
     public static DesiredRateExpressionList<VInt> vIntConstants(List<Integer> values) {
         DesiredRateExpressionList<VInt> list = new DesiredRateExpressionListImpl<VInt>();
@@ -275,17 +328,21 @@ public class ExpressionLanguage {
 
     /**
      * A list of constant expressions of type VString.
+     * 
+     * @param values the list of constants
+     * @return a list of string expression
      */
     public static DesiredRateExpressionList<VString> vStringConstants(List<String> values) {
         DesiredRateExpressionList<VString> list = new DesiredRateExpressionListImpl<VString>();
         for (String value : values) {
-            list.and(constant(ValueFactory.newVString(value, AlarmSeverity.NONE, AlarmStatus.NONE, TimeStamp.now(), null)));
+            list.and(constant(newVString(value, alarmNone(), timeNow())));
         }
         return list;
     }
 
     /**
      * Aggregates the sample at the scan rate and takes the average.
+     * 
      * @param doublePv the expression to take the average of; can't be null
      * @return an expression representing the average of the expression
      */
@@ -310,7 +367,7 @@ public class ExpressionLanguage {
     }
 
     /**
-     * Applies {@link #statisticsOf(org.epics.pvmanager.SourceRateExpression)} to all
+     * Applies {@link #statisticsOf(org.epics.pvmanager.expression.SourceRateExpression)} to all
      * arguments.
      *
      * @param doubleExpressions a list of double expressions
@@ -371,6 +428,7 @@ public class ExpressionLanguage {
      * @param tolerance maximum time difference between samples
      * @param expressions the expressions from which to reconstruct the array
      * @return an expression for the array
+     * @deprecated use {@link #synchronizedArrayOf(org.epics.util.time.TimeDuration, org.epics.pvmanager.expression.SourceRateExpressionList) }
      */
     @Deprecated
     public static DesiredRateExpression<VMultiDouble>
@@ -387,6 +445,7 @@ public class ExpressionLanguage {
      * used to reconstruct the array
      * @param expressions the expressions from which to reconstruct the array
      * @return an expression for the array
+     * @deprecated {@link #synchronizedArrayOf(org.epics.util.time.TimeDuration, org.epics.util.time.TimeDuration, org.epics.pvmanager.expression.SourceRateExpressionList) }
      */
     @Deprecated
     public static DesiredRateExpression<VMultiDouble>

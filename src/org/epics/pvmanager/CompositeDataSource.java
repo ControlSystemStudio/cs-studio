@@ -4,9 +4,8 @@
  */
 package org.epics.pvmanager;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -258,6 +257,22 @@ public class CompositeDataSource extends DataSource {
         for (DataSource dataSource : dataSources.values()) {
             dataSource.close();
         }
+    }
+
+    @Override
+    public Map<String, ChannelHandler> getChannels() {
+        Map<String, ChannelHandler> channels = new HashMap<String, ChannelHandler>();
+        for (Entry<String, DataSource> entry : dataSources.entrySet()) {
+            String dataSourceName = entry.getKey();
+            DataSource dataSource = entry.getValue();
+            for (Entry<String, ChannelHandler> channelEntry : dataSource.getChannels().entrySet()) {
+                String channelName = channelEntry.getKey();
+                ChannelHandler channelHandler = channelEntry.getValue();
+                channels.put(dataSourceName + delimiter + channelName, channelHandler);
+            }
+        }
+        
+        return channels;
     }
 
 }

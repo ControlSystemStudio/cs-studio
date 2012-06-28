@@ -34,7 +34,6 @@ public class GaussianWaveform extends SimFunction<VDoubleArray> {
      * Creates a gaussian waveform signal with a gaussian distribution, updating at the rate
      * specified.
      *
-     * @param average average of the gaussian distribution
      * @param stdDev standard deviation of the gaussian distribution
      * @param nSamples number of elements in the waveform
      * @param interval time between samples in seconds

@@ -12,6 +12,8 @@ import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.event.MonitorEvent;
 
 /**
+ * Represent the payload produced at each monitor event, consisting of
+ * both the metadata and the event data.
  *
  * @author carcassi
  */
@@ -24,10 +26,20 @@ public class JCAMessagePayload {
         this.event = event;
     }
 
+    /**
+     * The event returned by the monitor.
+     * 
+     * @return the monitor event
+     */
     public MonitorEvent getEvent() {
         return event;
     }
 
+    /**
+     * The data taken with a GET at connection time.
+     * 
+     * @return the dbr type for the metadata
+     */
     public DBR getMetadata() {
         return metadata;
     }

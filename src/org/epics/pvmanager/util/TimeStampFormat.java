@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.epics.util.time.TimestampFormat;
 
 /**
  * Implements a formatting class to format timestamps. The format String
@@ -28,8 +29,10 @@ import java.util.regex.Pattern;
  * <p>
  * Parsing is not currently supported.
  *
+ * @deprecated This class is being retired in favor of {@link TimestampFormat}
  * @author carcassi
  */
+@Deprecated
 public class TimeStampFormat extends Format {
 
     private final DateFormat dateFormat;
