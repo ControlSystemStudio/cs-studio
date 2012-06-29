@@ -466,7 +466,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				.imageHeight(imageDisplay.getSize().y)
 				.imageWidth(imageDisplay.getSize().x)
 				.interpolation(InterpolationScheme.LINEAR));
-		pv = PVManager.read(plot).maxRate(ofHertz(50));
+		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
 		pv.addPVReaderListener(new PVReaderListener() {
 
 			@Override
@@ -474,13 +474,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				if (pv.lastException() != null)
 					setLastError(pv.lastException());
 				if (pv.getValue() != null) {
-					getDisplay().asyncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							imageDisplay.setVImage(pv.getValue().getImage());
-						}
-					});
+					imageDisplay.setVImage(pv.getValue().getImage());
+				} else {
+					imageDisplay.setVImage(null);
 				}
 			}
 
