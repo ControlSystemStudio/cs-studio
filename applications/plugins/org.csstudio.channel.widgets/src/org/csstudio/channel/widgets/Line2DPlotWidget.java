@@ -53,6 +53,7 @@ import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
+import org.epics.pvmanager.graphene.Plot2DResult;
 import org.epics.pvmanager.util.TimeDuration;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
@@ -197,7 +198,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		}
 	}
 
-	private PVReader<VImage> pv;
+	private PVReader<Plot2DResult> pv;
 	// Y values
 	private Collection<String> yChannelNames;
 	private String yWaveformChannelName;
@@ -477,7 +478,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 						@Override
 						public void run() {
-							imageDisplay.setVImage(pv.getValue());
+							imageDisplay.setVImage(pv.getValue().getImage());
 						}
 					});
 				}

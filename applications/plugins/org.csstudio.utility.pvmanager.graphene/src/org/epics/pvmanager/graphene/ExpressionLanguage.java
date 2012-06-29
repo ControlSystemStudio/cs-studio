@@ -8,6 +8,8 @@ package org.epics.pvmanager.graphene;
 import java.util.List;
 import org.epics.pvmanager.BasicTypeSupport;
 import static org.epics.pvmanager.ExpressionLanguage.*;
+import org.epics.pvmanager.NotificationSupport;
+import org.epics.pvmanager.TypeSupport;
 import org.epics.pvmanager.data.DataTypeSupport;
 import org.epics.pvmanager.data.VNumber;
 import org.epics.pvmanager.data.VNumberArray;
@@ -27,6 +29,7 @@ public class ExpressionLanguage {
         DataTypeSupport.install();
         // Add support for Basic types
         BasicTypeSupport.install();
+        TypeSupport.addTypeSupport(NotificationSupport.immutableTypeSupport(Plot2DResult.class));
     }
 
     public static Histogram1DPlot histogramOf(SourceRateExpression<? extends VNumber> vDoubles) {

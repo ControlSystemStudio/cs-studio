@@ -17,7 +17,7 @@ import org.epics.pvmanager.data.*;
  *
  * @author carcassi
  */
-class LineGraphFunction extends Function<VImage> {
+class LineGraphFunction extends Function<Plot2DResult> {
     
     private Function<? extends VNumberArray> yArray;
     private Function<? extends VNumberArray> xArray;
@@ -50,7 +50,7 @@ class LineGraphFunction extends Function<VImage> {
     }
 
     @Override
-    public VImage getValue() {
+    public Plot2DResult getValue() {
         VNumberArray newData = yArray.getValue();
         
         // No data, no plot
@@ -98,7 +98,9 @@ class LineGraphFunction extends Function<VImage> {
         renderer.draw(image.createGraphics(), dataset);
         
         previousImage = ValueUtil.toVImage(image);
-        return previousImage;
+        return new Plot2DResult(previousImage,
+                new PlotDataRange(renderer.getStartPlotX(), renderer.getEndPlotX(), dataset.getXMinValue(), dataset.getXMaxValue(), renderer.getIntegratedMinX(), renderer.getIntegratedMaxX()),
+                new PlotDataRange(renderer.getStartPlotY(), renderer.getEndPlotY(), dataset.getYMinValue(), dataset.getYMaxValue(), renderer.getIntegratedMinY(), renderer.getIntegratedMaxY()));
     }
     
 }
