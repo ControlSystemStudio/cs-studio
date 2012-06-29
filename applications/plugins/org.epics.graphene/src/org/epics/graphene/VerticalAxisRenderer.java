@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 class VerticalAxisRenderer {
     
     private ValueAxis axis;
-    private static Font defaultAxisFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+    private static Font defaultAxisFont = FontUtil.getLiberationSansRegular();
     private Font axisFont = defaultAxisFont;
     private int axisWidth;
     private int leftMargin;
@@ -59,6 +59,7 @@ class VerticalAxisRenderer {
 
         // Draw y-axis
         graphics.setColor(axisTextColor);
+        graphics.setFont(axisFont);
         for (int i = 0; i < yLabels.length; i++) {
             int halfHeight = (metrics.getAscent()) / 2 - 1;
             graphics.drawString(yLabels[i], axisPosition - yLabelWidths[i] - textTickMargin - tickSize, imageHeight - yTicks[i] + halfHeight);
