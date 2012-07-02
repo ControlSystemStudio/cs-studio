@@ -18,7 +18,7 @@ import org.epics.util.time.Timestamp;
  * takes into account leap seconds, all the math operations on TimeStamps do
  * not take leap seconds into account.
  *
- * @deprecated this class is being retired in favor of {@link Timestamp}
+ * @deprecated This class is being retired in favor of {@link Timestamp}
  * @author carcassi
  */
 @Deprecated
@@ -151,7 +151,7 @@ public class TimeStamp implements Comparable<TimeStamp> {
     /**
      * Defines the natural ordering for timestamp as forward in time.
      *
-     * @param o another object
+     * @param other another object
      * @return comparison result
      */
     @Override

@@ -23,10 +23,10 @@ public class LineGraphRenderer {
     private InterpolationScheme scheme = InterpolationScheme.NEAREST_NEIGHBOUR;
     
     private boolean rangeFromDataset = true;
-    private double startX = java.lang.Double.MIN_VALUE;
-    private double endX = java.lang.Double.MAX_VALUE;
-    private double startY = java.lang.Double.MIN_VALUE;
-    private double endY = java.lang.Double.MAX_VALUE;
+    private double startPlotX = java.lang.Double.MIN_VALUE;
+    private double endPlotX = java.lang.Double.MAX_VALUE;
+    private double startPlotY = java.lang.Double.MIN_VALUE;
+    private double endPlotY = java.lang.Double.MAX_VALUE;
     
     private double integratedMinX = java.lang.Double.MAX_VALUE;
     private double integratedMinY = java.lang.Double.MAX_VALUE;
@@ -54,6 +54,38 @@ public class LineGraphRenderer {
         return scheme;
     }
 
+    public double getEndPlotX() {
+        return endPlotX;
+    }
+
+    public double getEndPlotY() {
+        return endPlotY;
+    }
+
+    public double getIntegratedMaxX() {
+        return integratedMaxX;
+    }
+
+    public double getIntegratedMaxY() {
+        return integratedMaxY;
+    }
+
+    public double getIntegratedMinX() {
+        return integratedMinX;
+    }
+
+    public double getIntegratedMinY() {
+        return integratedMinY;
+    }
+
+    public double getStartPlotX() {
+        return startPlotX;
+    }
+
+    public double getStartPlotY() {
+        return startPlotY;
+    }
+    
     public void update(LineGraphRendererUpdate update) {
         if (update.getImageHeight() != null) {
             height = update.getImageHeight();
@@ -68,16 +100,16 @@ public class LineGraphRenderer {
             rangeFromDataset = update.isRangeFromDataset();
         }
         if (update.getStartX() != null) {
-            startX = update.getStartX();
+            startPlotX = update.getStartX();
         }
         if (update.getStartY() != null) {
-            startY = update.getStartY();
+            startPlotY = update.getStartY();
         }
         if (update.getEndX() != null) {
-            endX = update.getEndX();
+            endPlotX = update.getEndX();
         }
         if (update.getEndY() != null) {
-            endY = update.getEndY();
+            endPlotY = update.getEndY();
         }
         
     }
@@ -103,10 +135,10 @@ public class LineGraphRenderer {
             endXPlot = integratedMaxX;
             endYPlot = integratedMaxY;
         } else {
-            startXPlot = startX;
-            startYPlot = startY;
-            endXPlot = endX;
-            endYPlot = endY;
+            startXPlot = startPlotX;
+            startYPlot = startPlotY;
+            endXPlot = endPlotX;
+            endYPlot = endPlotY;
         }
         int margin = 3;
 

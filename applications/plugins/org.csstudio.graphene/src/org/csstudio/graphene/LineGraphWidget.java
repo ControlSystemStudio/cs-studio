@@ -29,6 +29,7 @@ import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.data.VImage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
+import org.epics.pvmanager.graphene.Plot2DResult;
 
 public class LineGraphWidget extends Composite {
 	
@@ -105,7 +106,7 @@ public class LineGraphWidget extends Composite {
 	}
 	
 	// The pv created by pvmanager
-	private PVReader<VImage> pv;
+	private PVReader<Plot2DResult> pv;
 	
 	/**
 	 * Whether the user is able to customize the widget.
@@ -154,7 +155,11 @@ public class LineGraphWidget extends Composite {
 			@Override
 			public void pvChanged() {
 				setLastError(pv.lastException());
-				imageDisplay.setVImage(pv.getValue());
+				if (pv.getValue() != null) {
+					imageDisplay.setVImage(pv.getValue().getImage());
+				} else {
+					imageDisplay.setVImage(null);
+				}
 			}
 		});
 	}

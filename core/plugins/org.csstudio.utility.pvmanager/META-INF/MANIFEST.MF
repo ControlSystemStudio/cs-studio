@@ -8,7 +8,8 @@ Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.g
 Bundle-Description: PVManager integration with CSS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.libs.epics;resolution:=optional,
- org.epics.util;bundle-version="0.1.0"
+ org.epics.util;bundle-version="0.1.0",
+ org.antlr.runtime;bundle-version="3.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.csstudio.utility.pvmanager,
  org.epics.pvmanager,

@@ -15,6 +15,9 @@ import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
 import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
 import org.epics.pvmanager.*;
 
 /**
@@ -32,17 +35,37 @@ import org.epics.pvmanager.*;
  *
  * @author carcassi
  */
-public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
+class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePayload> {
 
     private static final int LARGE_ARRAY = 100000;
     private final JCADataSource jcaDataSource;
     private volatile Channel channel;
     private volatile boolean needsMonitor;
     private volatile boolean largeArray = false;
+    private boolean putCallback = false;
+    
+    private final static Pattern hasOptions = Pattern.compile(".* \\{.*\\}");
 
     public JCAChannelHandler(String channelName, JCADataSource jcaDataSource) {
         super(channelName);
         this.jcaDataSource = jcaDataSource;
+        parseParameters();
+    }
+    
+    private void parseParameters() {
+        if (hasOptions.matcher(getChannelName()).matches()) {
+            if (getChannelName().endsWith("{\"putCallback\":true}")) {
+                putCallback = true;
+            } else if (getChannelName().endsWith("{\"putCallback\":false}")) {
+                putCallback = false;
+            } else {
+                throw new IllegalArgumentException("Option not recognized for " + getChannelName());
+            }
+        }
+    }
+
+    public boolean isPutCallback() {
+        return putCallback;
     }
  
     @Override
@@ -64,6 +87,67 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
         } catch (CAException ex) {
             throw new RuntimeException("JCA Connection failed", ex);
         }
+    }
+
+    private void putWithCallback(Object newValue, final ChannelWriteCallback callback) throws CAException {
+        PutListener listener = new PutListener() {
+
+            @Override
+            public void putCompleted(PutEvent ev) {
+                if (ev.getStatus().isSuccessful()) {
+                    callback.channelWritten(null);
+                } else {
+                    callback.channelWritten(new Exception(ev.toString()));
+                }
+            }
+        };
+        if (newValue instanceof String) {
+            channel.put(newValue.toString(), listener);
+        } else if (newValue instanceof byte[]) {
+            channel.put((byte[]) newValue, listener);
+        } else if (newValue instanceof short[]) {
+            channel.put((short[]) newValue, listener);
+        } else if (newValue instanceof int[]) {
+            channel.put((int[]) newValue, listener);
+        } else if (newValue instanceof float[]) {
+            channel.put((float[]) newValue, listener);
+        } else if (newValue instanceof double[]) {
+            channel.put((double[]) newValue, listener);
+        } else if (newValue instanceof Byte || newValue instanceof Short
+                || newValue instanceof Integer || newValue instanceof Long) {
+            channel.put(((Number) newValue).longValue(), listener);
+        } else if (newValue instanceof Float || newValue instanceof Double) {
+            channel.put(((Number) newValue).doubleValue(), listener);
+        } else {
+            throw new RuntimeException("Unsupported type for CA: " + newValue.getClass());
+        }
+        jcaDataSource.getContext().flushIO();
+    }
+
+    private void put(Object newValue, final ChannelWriteCallback callback) throws CAException {
+        if (newValue instanceof String) {
+            channel.put(newValue.toString());
+        } else if (newValue instanceof byte[]) {
+            channel.put((byte[]) newValue);
+        } else if (newValue instanceof short[]) {
+            channel.put((short[]) newValue);
+        } else if (newValue instanceof int[]) {
+            channel.put((int[]) newValue);
+        } else if (newValue instanceof float[]) {
+            channel.put((float[]) newValue);
+        } else if (newValue instanceof double[]) {
+            channel.put((double[]) newValue);
+        } else if (newValue instanceof Byte || newValue instanceof Short
+                || newValue instanceof Integer || newValue instanceof Long) {
+            channel.put(((Number) newValue).longValue());
+        } else if (newValue instanceof Float || newValue instanceof Double) {
+            channel.put(((Number) newValue).doubleValue());
+        } else {
+            callback.channelWritten(new Exception(new RuntimeException("Unsupported type for CA: " + newValue.getClass())));
+            return;
+        }
+        jcaDataSource.getContext().flushIO();
+        callback.channelWritten(null);
     }
 
     private void setup(Channel channel) throws CAException {
@@ -95,7 +179,7 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
         // Start the monitor only if the channel was (re)created, and
         // not because a disconnection/reconnection
         if (needsMonitor) {
-            channel.addMonitor(valueTypeFor(channel), channel.getElementCount(), jcaDataSource.getMonitorMask(), monitorListener);
+            channel.addMonitor(valueTypeFor(channel), countFor(channel), jcaDataSource.getMonitorMask(), monitorListener);
             needsMonitor = false;
         }
 
@@ -165,38 +249,10 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
     @Override
     public void write(Object newValue, final ChannelWriteCallback callback) {
         try {
-            PutListener listener = new PutListener() {
-
-                @Override
-                public void putCompleted(PutEvent ev) {
-                    if (ev.getStatus().isSuccessful()) {
-                        callback.channelWritten(null);
-                    } else {
-                        callback.channelWritten(new Exception(ev.toString()));
-                    }
-                }
-            };
-            if (newValue instanceof String) {
-                channel.put(newValue.toString(), listener);
-            } else if (newValue instanceof byte[]) {
-                channel.put((byte[]) newValue, listener);
-            } else if (newValue instanceof short[]) {
-                channel.put((short[]) newValue, listener);
-            } else if (newValue instanceof int[]) {
-                channel.put((int[]) newValue, listener);
-            } else if (newValue instanceof float[]) {
-                channel.put((float[]) newValue, listener);
-            } else if (newValue instanceof double[]) {
-                channel.put((double[]) newValue, listener);
-            } else if (newValue instanceof Byte || newValue instanceof Short
-                    || newValue instanceof Integer || newValue instanceof Long) {
-                channel.put(((Number) newValue).longValue(), listener);
-            } else if (newValue instanceof Float || newValue instanceof Double) {
-                channel.put(((Number) newValue).doubleValue(), listener);
-            } else {
-                throw new RuntimeException("Unsupported type for CA: " + newValue.getClass());
-            }
-            jcaDataSource.getContext().flushIO();
+            if (isPutCallback())
+                putWithCallback(newValue, callback);
+            else
+                put(newValue, callback);
         } catch (CAException ex) {
             callback.channelWritten(ex);
         }
@@ -211,6 +267,21 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
         return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 
+    @Override
+    public synchronized Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        if (channel != null) {
+            properties.put("Channel name", channel.getName());
+            properties.put("Hostname", channel.getHostName());
+            properties.put("Channel type", channel.getFieldType().getName());
+            properties.put("Connection state", channel.getConnectionState().getName());
+            properties.put("Element count", channel.getElementCount());
+            properties.put("Read access", channel.getReadAccess());
+            properties.put("Write access", channel.getWriteAccess());
+        }
+        return properties;
+    }
+
     protected DBRType metadataFor(Channel channel) {
         DBRType type = channel.getFieldType();
         
@@ -221,6 +292,16 @@ public class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMes
             return DBR_LABELS_Enum.TYPE;
         
         return null;
+    }
+
+    protected int countFor(Channel channel) {
+        if (channel.getElementCount() == 1)
+            return 1;
+        
+        if (jcaDataSource.isVarArraySupported())
+            return 0;
+        else
+            return channel.getElementCount();
     }
 
     protected DBRType valueTypeFor(Channel channel) {

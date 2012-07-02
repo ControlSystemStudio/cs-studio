@@ -9,6 +9,7 @@ import org.epics.pvmanager.DataSource;
 /**
  * Adds support for CA types as defined in JCA.
  *
+ * @deprecated Create a {@link JCADataSource} instead.
  * @author carcassi
  */
 @Deprecated

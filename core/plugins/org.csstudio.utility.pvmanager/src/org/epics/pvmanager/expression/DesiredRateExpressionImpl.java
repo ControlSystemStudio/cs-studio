@@ -109,8 +109,9 @@ public class DesiredRateExpressionImpl<R> extends DesiredRateExpressionListImpl<
     }
 
     /**
+     * The implementation for this expression.
      * 
-     * @return
+     * @return returns the implementation for this desired rate
      */
     @Override
     public final DesiredRateExpressionImpl<R> getDesiredRateExpressionImpl() {

@@ -5,6 +5,10 @@ import static org.epics.pvmanager.ExpressionLanguage.channel;
 import static org.epics.pvmanager.util.TimeDuration.hz;
 import static org.epics.pvmanager.util.TimeDuration.ms;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +39,9 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.epics.pvmanager.ChannelHandler;
+import org.epics.pvmanager.CompositeDataSource;
+import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderListener;
@@ -363,6 +370,19 @@ public class PVManagerProbe extends ViewPart {
 		meter.setVisible(show);
 		meter.getShell().layout(true, true);
 	}
+	
+	private String pvNameWithDataSource() {
+		DataSource defaultDS = PVManager.getDefaultDataSource();
+		String pvName = PVName.getName();
+		if (defaultDS instanceof CompositeDataSource) {
+			CompositeDataSource composite = (CompositeDataSource) defaultDS;
+			if (!pvName.contains(composite.getDelimiter())) {
+				pvName = composite.getDefaultDataSource() + composite.getDelimiter() + pvName;
+			}
+		}
+
+		return pvName;
+	}
 
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
@@ -377,6 +397,17 @@ public class PVManagerProbe extends ViewPart {
 			Alarm alarm = ValueUtil.alarmOf(value);
 			Display display = ValueUtil.displayOf(value);
 			Class<?> type = ValueUtil.typeOf(value);
+			ChannelHandler handler = PVManager.getDefaultDataSource().getChannels().get(pvNameWithDataSource());
+			
+			if (handler != null) {
+				SortedMap<String, Object> sortedProperties = new TreeMap<String, Object>(handler.getProperties());
+				if (!sortedProperties.isEmpty()) {
+					info.append("Channel details:").append(nl);
+					for (Map.Entry<String, Object> entry : sortedProperties.entrySet()) {
+						info.append(indent).append(entry.getKey()).append(" = ").append(entry.getValue()).append(nl);
+					}
+				}
+			}
 
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {

@@ -89,9 +89,12 @@ public class ValueUtil {
      * @return the display information for the object
      */
     public static Display displayOf(Object obj) {
-        if (obj instanceof Display)
-            return (Display) obj;
-        return null;
+        if (!(obj instanceof Display))
+            return null;
+        Display display = (Display) obj;
+        if (display.getLowerAlarmLimit() == null || display.getLowerDisplayLimit() == null)
+            return null;
+        return display;
     }
     
     /**
@@ -212,7 +215,7 @@ public class ValueUtil {
      * Currently, only TYPE_3BYTE_BGR is supported
      * 
      * @param image
-     * @return
+     * @return a new image
      */
     public static VImage toVImage(BufferedImage image) {
         if (image.getType() != BufferedImage.TYPE_3BYTE_BGR) {

@@ -4,10 +4,10 @@
  */
 package org.epics.graphene;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+import java.awt.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,7 +16,7 @@ import java.awt.Graphics2D;
 class HorizontalAxisRenderer {
     
     private ValueAxis axis;
-    private static Font defaultAxisFont = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+    private static Font defaultAxisFont = FontUtil.getLiberationSansRegular();
     private Font axisFont = defaultAxisFont;
     private int axisHeight;
     private int bottomMargin = 3;
@@ -57,6 +57,7 @@ class HorizontalAxisRenderer {
         
         // Draw x-axis
         graphics.setColor(axisColor);
+        graphics.setFont(axisFont);
         graphics.drawLine(startAxis, imageHeight - getAxisHeight(), startAxis + plotWidth, imageHeight - getAxisHeight());
         int[] drawRange = new int[] {0, imageWidth};
         
