@@ -314,14 +314,14 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
                     }
 
                     if (timeStoredDiff > maxStoreDiffTime) {
-
-                        if (filteredDate.getTime() > storedDate.getTime()
-                            || discardedDate.getTime() > storedDate.getTime()) {
-
-                            result = true;
-                        } else {
-                            result = false;
-                        }
+                        result = false;
+//                        if (filteredDate.getTime() > storedDate.getTime()
+//                            || discardedDate.getTime() > storedDate.getTime()) {
+//
+//                            result = true;
+//                        } else {
+//                            result = false;
+//                        }
                     } else {
                         result = true;
                     }
