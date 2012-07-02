@@ -249,7 +249,6 @@ public class StartEndRangeWidget extends Canvas {
 				break;
 			case RANGE:
 				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
-				System.out.println(increment);
 				if ((getSelectedMin() + increment) > getMin()
 						&& (getSelectedMax() + increment) < getMax()) {
 					setSelectedRange(getSelectedMin() + increment,

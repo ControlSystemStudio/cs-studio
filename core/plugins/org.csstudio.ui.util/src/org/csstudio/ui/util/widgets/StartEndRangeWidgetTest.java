@@ -49,8 +49,10 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
 		final StartEndRangeWidget hStartEndRangeWidget = new StartEndRangeWidget(
 				container, SWT.NONE);
-		hStartEndRangeWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-				true, false, 2, 1));
+		GridData gd_hStartEndRangeWidget = new GridData(SWT.FILL, SWT.CENTER,
+				true, false, 2, 1);
+		gd_hStartEndRangeWidget.heightHint = 20;
+		hStartEndRangeWidget.setLayoutData(gd_hStartEndRangeWidget);
 		hStartEndRangeWidget.setBounds(0, 0, 442, 20);
 		hStartEndRangeWidget.addRangeListener(new RangeListener() {
 
@@ -67,8 +69,10 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 
 		final StartEndRangeWidget vStartEndRangeWidget = new StartEndRangeWidget(
 				container, SWT.NONE);
-		vStartEndRangeWidget.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false,
-				true, 1, 4));
+		GridData gd_vStartEndRangeWidget = new GridData(SWT.LEFT, SWT.FILL, false,
+				true, 1, 4);
+		gd_vStartEndRangeWidget.widthHint = 20;
+		vStartEndRangeWidget.setLayoutData(gd_vStartEndRangeWidget);
 		vStartEndRangeWidget.setBounds(0, 0, 20, 260);
 		vStartEndRangeWidget.setOrientation(ORIENTATION.VERTICAL);
 		vStartEndRangeWidget.addRangeListener(new RangeListener() {
