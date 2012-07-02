@@ -1,5 +1,6 @@
 package org.csstudio.ui.util.widgets;
 
+import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.StatusLineManager;
 import org.eclipse.jface.action.ToolBarManager;
@@ -43,54 +44,90 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
-		container.setLayout(new GridLayout(2, false));
+		container.setLayout(new GridLayout(3, false));
+		new Label(container, SWT.NONE);
 
-		final StartEndRangeWidget composite = new StartEndRangeWidget(
+		final StartEndRangeWidget hStartEndRangeWidget = new StartEndRangeWidget(
 				container, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
-				2, 1));
-		composite.addRangeListener(new RangeListener() {
+		hStartEndRangeWidget.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+				true, false, 2, 1));
+		hStartEndRangeWidget.setBounds(0, 0, 442, 20);
+		hStartEndRangeWidget.addRangeListener(new RangeListener() {
 
 			@Override
 			public void rangeChanged() {
-				text.setText(String.valueOf(composite.getMin()));
-				text_1.setText(String.valueOf(composite.getMax()));
-				text_2.setText(String.valueOf(composite.getSelectedMin()));
-				text_3.setText(String.valueOf(composite.getSelectedMax()));
+				text.setText(String.valueOf(hStartEndRangeWidget.getMin()));
+				text_1.setText(String.valueOf(hStartEndRangeWidget.getMax()));
+				text_2.setText(String.valueOf(hStartEndRangeWidget
+						.getSelectedMin()));
+				text_3.setText(String.valueOf(hStartEndRangeWidget
+						.getSelectedMax()));
+			}
+		});
+
+		final StartEndRangeWidget vStartEndRangeWidget = new StartEndRangeWidget(
+				container, SWT.NONE);
+		vStartEndRangeWidget.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false,
+				true, 1, 4));
+		vStartEndRangeWidget.setBounds(0, 0, 20, 260);
+		vStartEndRangeWidget.setOrientation(ORIENTATION.VERTICAL);
+		vStartEndRangeWidget.addRangeListener(new RangeListener() {
+
+			@Override
+			public void rangeChanged() {
+				text.setText(String.valueOf(vStartEndRangeWidget.getMin()));
+				text_1.setText(String.valueOf(vStartEndRangeWidget.getMax()));
+				text_2.setText(String.valueOf(vStartEndRangeWidget
+						.getSelectedMin()));
+				text_3.setText(String.valueOf(vStartEndRangeWidget
+						.getSelectedMax()));
 			}
 		});
 
 		Label lblMin = new Label(container, SWT.NONE);
+		lblMin.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1,
+				1));
 		lblMin.setText("min:");
 
 		Label lblMax = new Label(container, SWT.NONE);
+		lblMax.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false, 1,
+				1));
 		lblMax.setText("max:");
 
 		text = new Text(container, SWT.BORDER);
 		text.addListener(SWT.DefaultSelection, new Listener() {
 			public void handleEvent(Event e) {
-				composite.setMin(Double.valueOf(text.getText()));
+				hStartEndRangeWidget.setMin(Double.valueOf(text.getText()));
+				vStartEndRangeWidget.setMin(Double.valueOf(text.getText()));
 			}
 		});
 
 		text_1 = new Text(container, SWT.BORDER);
 		text_1.addListener(SWT.DefaultSelection, new Listener() {
 			public void handleEvent(Event e) {
-				composite.setMax(Double.valueOf(text_1.getText()));
+				hStartEndRangeWidget.setMax(Double.valueOf(text_1.getText()));
+				vStartEndRangeWidget.setMax(Double.valueOf(text_1.getText()));
 			}
 		});
 
 		Label lblSelectedmin = new Label(container, SWT.NONE);
+		lblSelectedmin.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
 		lblSelectedmin.setText("selectedMin:");
 
 		Label lblSelectedmax = new Label(container, SWT.NONE);
+		lblSelectedmax.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1));
 		lblSelectedmax.setText("selectedMax:");
 
 		text_2 = new Text(container, SWT.BORDER);
 		text_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				composite.setSelectedMin(Double.valueOf(text_2.getText()));
+				hStartEndRangeWidget.setSelectedMin(Double.valueOf(text_2
+						.getText()));
+				vStartEndRangeWidget.setSelectedMin(Double.valueOf(text_2
+						.getText()));
 			}
 		});
 
@@ -98,7 +135,10 @@ public class StartEndRangeWidgetTest extends ApplicationWindow {
 		text_3.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				composite.setSelectedMax(Double.valueOf(text_3.getText()));
+				hStartEndRangeWidget.setSelectedMax(Double.valueOf(text_3
+						.getText()));
+				vStartEndRangeWidget.setSelectedMax(Double.valueOf(text_3
+						.getText()));
 			}
 		});
 

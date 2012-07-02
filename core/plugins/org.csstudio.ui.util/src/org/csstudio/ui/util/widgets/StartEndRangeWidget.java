@@ -15,6 +15,7 @@ import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Slider;
@@ -22,9 +23,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Scale;
 
+import sun.awt.HorizBagLayout;
+
 /**
  * @author shroffk
  * 
+ *         TODO: bug when the range is moved back and forth quickly
  */
 public class StartEndRangeWidget extends Canvas {
 
@@ -71,22 +75,22 @@ public class StartEndRangeWidget extends Canvas {
 		}
 	}
 
-	private ORIENTATION orientation;
+	private ORIENTATION orientation = ORIENTATION.HORIZONTAL;
 	private MOVE moveControl = MOVE.NONE;
 
 	public StartEndRangeWidget(Composite parent, int style) {
 		super(parent, SWT.DOUBLE_BUFFERED);
 
 		addControlListener(new ControlListener() {
-			
+
 			@Override
 			public void controlResized(ControlEvent e) {
 				recalculateDistancePerPx();
 			}
-			
+
 			@Override
 			public void controlMoved(ControlEvent e) {
-				
+
 			}
 		});
 		addPaintListener(paintListener);
@@ -149,6 +153,15 @@ public class StartEndRangeWidget extends Canvas {
 		}
 	}
 
+	private void setSelectedRange(double selectedMin, double selectedMax) {
+		if (selectedMax <= this.max && selectedMin >= this.min
+				&& selectedMax >= selectedMin) {
+			this.selectedMin = selectedMin;
+			this.selectedMax = selectedMax;
+			fireRangeChanged();
+		}
+	}
+
 	// public ORIENTATION getOrientation() {
 	// return orientation;
 	// }
@@ -161,7 +174,18 @@ public class StartEndRangeWidget extends Canvas {
 	}
 
 	private void recalculateDistancePerPx() {
-		setDistancePerPx(getClientArea().width / Math.abs(max - min));
+		switch (orientation) {
+		case HORIZONTAL:
+			setDistancePerPx((getClientArea().width - 10) / Math.abs(max - min));
+			break;
+		case VERTICAL:
+			setDistancePerPx((getClientArea().height - 10)
+					/ Math.abs(max - min));
+			break;
+		default:
+			break;
+		}
+
 	}
 
 	private final MouseRescale mouseListener = new MouseRescale();
@@ -170,22 +194,32 @@ public class StartEndRangeWidget extends Canvas {
 	private class MouseRescale extends MouseAdapter implements
 			MouseMoveListener {
 
-		private int rangeX;
+		private volatile int rangeX;
 
 		@Override
 		public void mouseDown(MouseEvent e) {
 			// Save the starting point
 			double minSelectedOval = selectedMin * distancePerPx;
 			double maxSelectedOval = selectedMax * distancePerPx;
-			if ((e.x >= minSelectedOval && e.x <= minSelectedOval + 10)
-					&& (e.y >= 0 && e.y <= 10)) {
+
+			int valueAlongOrientationAxis;
+			int valueAlongNonOrientationAxis;
+			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
+				valueAlongOrientationAxis = e.x;
+				valueAlongNonOrientationAxis = e.y;
+			} else {
+				valueAlongOrientationAxis = e.y;
+				valueAlongNonOrientationAxis = e.x;
+			}
+			if ((valueAlongOrientationAxis >= minSelectedOval && valueAlongOrientationAxis <= minSelectedOval + 10)
+					&& (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 				moveControl = MOVE.SELECTEDMIN;
-			} else if ((e.x >= maxSelectedOval && e.x <= maxSelectedOval + 10)
-					&& (e.y >= 0 && e.y <= 10)) {
+			} else if ((valueAlongOrientationAxis >= maxSelectedOval && valueAlongOrientationAxis <= maxSelectedOval + 10)
+					&& (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 				moveControl = MOVE.SELECTEDMAX;
-			} else if ((e.x >= minSelectedOval + 10 && e.x <= maxSelectedOval)) {
+			} else if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
 				moveControl = MOVE.RANGE;
-				rangeX = e.x;
+				rangeX = valueAlongOrientationAxis;
 			} else {
 				moveControl = MOVE.NONE;
 			}
@@ -199,20 +233,28 @@ public class StartEndRangeWidget extends Canvas {
 		@Override
 		public void mouseMove(MouseEvent e) {
 			// Only if editable and it is a left click drag
+			// System.out.println(e.x + " " + e.y);
+			int valueAlongOrientationAxis;
+			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
+				valueAlongOrientationAxis = e.x;
+			} else {
+				valueAlongOrientationAxis = e.y;
+			}
 			switch (moveControl) {
 			case SELECTEDMIN:
-				setSelectedMin(e.x / distancePerPx);
+				setSelectedMin(valueAlongOrientationAxis / distancePerPx);
 				break;
 			case SELECTEDMAX:
-				setSelectedMax(e.x / distancePerPx);
+				setSelectedMax(valueAlongOrientationAxis / distancePerPx);
 				break;
 			case RANGE:
-				double increment = ((e.x - rangeX) / distancePerPx);
+				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
+				System.out.println(increment);
 				if ((getSelectedMin() + increment) > getMin()
 						&& (getSelectedMax() + increment) < getMax()) {
-					setSelectedMin(getSelectedMin() + increment);
-					setSelectedMax(getSelectedMax() + increment);
-					rangeX = e.x;
+					setSelectedRange(getSelectedMin() + increment,
+							getSelectedMax() + increment);
+					rangeX = valueAlongOrientationAxis;
 				}
 				break;
 			default:
@@ -232,20 +274,30 @@ public class StartEndRangeWidget extends Canvas {
 
 		@Override
 		public void paintControl(PaintEvent e) {
-			int width = getClientArea().width;
+			Point origin = new Point(5, 5);
+			Point end;
+			Point minOval;
+			Point maxOval;
+			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
+				end = new Point(getClientArea().width - 5, 5);
+				minOval = new Point((int) (selectedMin * distancePerPx), 0);
+				maxOval = new Point((int) (selectedMax * distancePerPx), 0);
+			} else {
+				end = new Point(5, getClientArea().height - 5);
+				minOval = new Point(0, (int) (selectedMin * distancePerPx));
+				maxOval = new Point(0, (int) (selectedMax * distancePerPx));
+			}
 
 			// Draw the line of appropriate size
-			e.gc.drawLine(5, 5, width, 5);
-			// e.gc.drawLine((int) (selectedMin * distancePerPx), 4,
-			// (int) (selectedMax * distancePerPx), 4);
+			e.gc.drawLine(origin.x, origin.y, end.x, end.y);
 
 			e.gc.setBackground(new Color(getDisplay(), 234, 246, 253));
 			// min selected
-			e.gc.drawOval((int) (selectedMin * distancePerPx), 0, 10, 10);
-			e.gc.fillOval((int) ((selectedMin * distancePerPx) + 1), 1, 9, 9);
+			e.gc.drawOval(minOval.x, minOval.y, 10, 10);
+			e.gc.fillOval(minOval.x + 1, minOval.y + 1, 9, 9);
 			// max selected
-			e.gc.drawOval((int) (selectedMax * distancePerPx), 0, 10, 10);
-			e.gc.fillOval((int) ((selectedMax * distancePerPx) + 1), 1, 9, 9);
+			e.gc.drawOval(maxOval.x, maxOval.y, 10, 10);
+			e.gc.fillOval(maxOval.x + 1, maxOval.y + 1, 9, 9);
 
 		}
 	};
