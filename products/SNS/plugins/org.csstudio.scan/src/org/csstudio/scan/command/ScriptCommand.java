@@ -30,7 +30,6 @@ public class ScriptCommand extends ScanCommand
     /** Configurable properties of this command */
     final private static ScanCommandProperty[] properties = new ScanCommandProperty[]
     {
-    	// TODO Use a new "ScriptPath" instead of String to allow specific editor
     	new ScanCommandProperty("script", "Script", String.class)
     };
 
@@ -57,13 +56,13 @@ public class ScriptCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Script */
+	/** @return Name of script class */
     public String getScript()
     {
         return script;
     }
 
-    /** @param device_names Names of devices to read and log */
+    /** @param script Name of the script class */
     public void setScript(final String script)
     {
         this.script = script;

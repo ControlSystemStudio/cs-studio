@@ -24,7 +24,7 @@ public class MemoryDataLogFactory implements IDataLogFactory
     final private static List<Scan> scans = new ArrayList<Scan>();
 
     /** Map of scan IDs to logs */
-    final private Map<Long, DataLog> logs = new HashMap<Long, DataLog>();
+    final private Map<Scan, DataLog> logs = new HashMap<Scan, DataLog>();
 
     /** {@inheritDoc} */
 	@Override
@@ -33,7 +33,7 @@ public class MemoryDataLogFactory implements IDataLogFactory
 		final long id = scans.size() + 1;
 		final Scan scan = new Scan(id, scan_name, new Date());
 		scans.add(scan);
-		logs.put(id, new MemoryDataLog());
+		logs.put(scan, new MemoryDataLog());
         return scan;
 	}
 
@@ -46,8 +46,16 @@ public class MemoryDataLogFactory implements IDataLogFactory
 
     /** {@inheritDoc} */
 	@Override
-	public DataLog getDataLog(final Scan scan) throws Exception
+	public synchronized DataLog getDataLog(final Scan scan) throws Exception
 	{
-		return logs.get(scan.getId());
+		return logs.get(scan);
 	}
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void deleteDataLog(final Scan scan) throws Exception
+    {
+        scans.remove(scan);
+        logs.remove(scan);
+    }
 }

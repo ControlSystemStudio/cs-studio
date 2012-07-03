@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
@@ -159,7 +159,7 @@ public class ConsoleCommands implements CommandProvider
             final long id = Long.parseLong(arg.trim());
             // Dump data
             final ScanData data = server.getScanData(id);
-            final SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+            final ScanDataIterator sheet = new ScanDataIterator(data);
             while (sheet.hasNext())
             {
                 final ScanSample[] line = sheet.getSamples();

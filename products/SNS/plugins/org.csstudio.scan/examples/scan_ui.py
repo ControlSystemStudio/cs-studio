@@ -73,16 +73,19 @@ def incrementScan(name):
         number = 1
     return name + str(number)
 
-def __showView__(view_id):
+def __showView__(view_id, secondary=0):
     """ Display Eclipse view
-        @param view_id View ID
+        @param view_id: View ID
+        @param secondary: Optional ID for secondary view 
         @return View
     """
     workbench = PlatformUI.getWorkbench()
     window = workbench.getActiveWorkbenchWindow()
     page = window.getActivePage()
-    return page.showView(view_id)
-
+    if secondary > 0:
+        return page.showView(view_id, secondary, page.VIEW_ACTIVATE)
+    else:
+        return page.showView(view_id)
 
 def showScans():
     """ Display Scan Monitor"""
@@ -92,15 +95,40 @@ def showSimulation(simu):
     """ Display Scan Simulation"""
     SimulationDisplay.show(simu)
 
+_scan_plots = 0
+
 def showPlot(*args):
-    """ Display Scan Plot for a given scan
-        @param name, id:         Optional Scan name and ID to show
-        @param xdevice, ydevice: Optional X and Y device to use for plot
+    """ Display Scan Plot, updating the 'main' plot view if already open
+    
+        May be called with list of scan_name, scan_id, xdevice, ydevice, ydevice, ...
+        
+        Scan name and ID will set plot to a specific scan.
+        X and Y devices will select the data to display.
     """
     view = __showView__("org.csstudio.scan.ui.plot.view")
     if len(args) >= 2:
-        # Configure it to display scan and devices
+        # Configure to display scan
         view.selectScan(args[0], args[1])
     if len(args) >= 4:
-        view.selectDevices(args[2], args[3])
+        # Configure to display devices
+        view.selectDevices(args[2:])
+        
 
+def showIndividualPlot(*args):
+    """ Display Scan Plot, using a new plot view
+    
+        May be called with list of scan_name, scan_id, xdevice, ydevice, ydevice, ...
+        
+        Scan name and ID will set plot to a specific scan.
+        X and Y devices will select the data to display.
+    """
+    global _scan_plots
+    _scan_plots += 1
+    secondary = "scan_ui" + str(_scan_plots)
+    view = __showView__("org.csstudio.scan.ui.plot.view", secondary)
+    if len(args) >= 2:
+        # Configure to display scan
+        view.selectScan(args[0], args[1])
+    if len(args) >= 4:
+        # Configure to display devices
+        view.selectDevices(args[2:])

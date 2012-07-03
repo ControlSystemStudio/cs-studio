@@ -21,7 +21,7 @@ fprintf(1, 'Configuring Scan System ...\n')
 
 % Ideally, use the standalone client JAR
 % created from org.csstudio.scan.client/build.xml
-javaclasspath('/usr/local/css/scan.client.jar')
+%javaclasspath('/usr/local/css/scan.client.jar')
 
 % Alternatively, use use classes fetched from IDE,
 % using the 'bin' subdir of the source code.
@@ -30,11 +30,11 @@ javaclasspath('/usr/local/css/scan.client.jar')
 % version number of the plugin, like '/org.csstudio.scan_1.2.3',
 % and there's no 'bin' subdir.
 %
-%basepath='/Kram/MerurialRepos/cs-studio/products/SNS/plugins';
-%path={};
-%path{1} = strcat(basepath, '/org.csstudio.scan/bin');
-%path{2} = strcat(basepath, '/org.csstudio.scan.client/bin');
-%javaclasspath(path)
+basepath='/Kram/MerurialRepos/cs-studio-3.1/products/SNS/plugins';
+path={};
+path{1} = strcat(basepath, '/org.csstudio.scan/bin');
+path{2} = strcat(basepath, '/org.csstudio.scan.client/bin');
+javaclasspath(path)
 
 %% Import scan system classes
 import org.csstudio.scan.server.*

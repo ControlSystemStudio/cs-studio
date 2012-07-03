@@ -24,18 +24,17 @@ import java.util.Date;
 public class ScanSampleFactory
 {
     /** Create ScanSample for plain number or text value
-	 *  @param device_name Name of the device that provided the sample
 	 *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
 	 *  @param value Value (Number, String)
 	 *  @return {@link ScanSample}
 	 *  @throws IllegalArgumentException if the value type is not handled
 	 */
-	public static ScanSample createSample(final String device_name, final Date timestamp,
+	public static ScanSample createSample(final Date timestamp,
 	        final long serial, final Object value) throws IllegalArgumentException
 	{
 		if (value instanceof Number)
-			return new NumberScanSample(device_name, timestamp, serial, (Number)value);
+			return new NumberScanSample(timestamp, serial, (Number)value);
 		throw new IllegalArgumentException("Sample of type " + value.getClass().getName() + " is not handled");
 	}
 }

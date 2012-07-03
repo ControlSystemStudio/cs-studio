@@ -8,7 +8,12 @@
 package org.csstudio.scan.server;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -26,9 +31,7 @@ import org.python.util.PythonInterpreter;
 public class JythonSupport
 {
     private static boolean initialized = false;
-    private static String std_lib_path;
-    private static String numjy_path;
-    private static String scan_path;
+    private static List<String> paths = new ArrayList<String>();
 
 	final private PythonInterpreter interpreter;
 
@@ -39,18 +42,53 @@ public class JythonSupport
 	{
 	    if (!initialized)
 	    {
-	        // Locate org.python/jython.jar/Lib to Python path
+	        // Add org.python/jython.jar/Lib to Python path
 	        Bundle bundle = Platform.getBundle("org.python");
-	        URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
-	        std_lib_path = FileLocator.resolve(url).getPath() + "/Lib";
+	        if (bundle != null)
+	        {
+	            final URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
+	            paths.add(FileLocator.resolve(url).getPath() + "/Lib");
+	        }
 
+	        // Add numji
 	        bundle = Platform.getBundle("org.csstudio.numjy");
-	        url = FileLocator.find(bundle, new Path("jython"), null);
-	        numjy_path = FileLocator.resolve(url).getPath();
+	        if (bundle != null)
+	        {
+	            final URL url = FileLocator.find(bundle, new Path("jython"), null);
+	            paths.add(FileLocator.resolve(url).getPath());
+	        }
 
-	        bundle = Platform.getBundle("org.csstudio.scan");
-	        url = FileLocator.find(bundle, new Path("examples"), null);
-	        scan_path = FileLocator.resolve(url).getPath();
+	        // Add scan script paths
+	        final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
+	        for (String pref_path : pref_paths)
+	        {   // Resolve platform:/plugin/...
+	            if (pref_path.startsWith("platform:/plugin/"))
+	            {
+	                final String plugin_path = pref_path.substring(17);
+	                // Locate name of plugin and path within plugin
+	                final int sep = plugin_path.indexOf('/');
+	                final String plugin, path;
+	                if (sep < 0)
+	                {
+	                    plugin = plugin_path;
+	                    path = "/";
+	                }
+	                else
+	                {
+	                    plugin = plugin_path.substring(0, sep);
+	                    path = plugin_path.substring(sep + 1);
+	                }
+	                bundle = Platform.getBundle(plugin);
+	                if (bundle == null)
+	                    throw new Exception("Error in scan script path " + pref_path);
+	                final URL url = FileLocator.find(bundle, new Path(path), null);
+	                if (url == null)
+                        throw new Exception("Plugin path error in scan script path " + pref_path);
+	                paths.add(FileLocator.resolve(url).getPath());
+	            }
+	            else // Add as-is
+	                paths.add(pref_path);
+	        }
 
 	        initialized = true;
 	    }
@@ -62,15 +100,11 @@ public class JythonSupport
 	public JythonSupport() throws Exception
 	{
 	    init();
-		// TODO Configure Jython in ScanContext so one is shared for this scan?
 		final PySystemState state = new PySystemState();
 
 		// Path to Python standard lib, numjy, scan system
-		state.path.append(new PyString(std_lib_path));
-        state.path.append(new PyString(numjy_path));
-        state.path.append(new PyString(scan_path));
-
-		// TODO Preferences for more Script Paths?
+        for (String path : paths)
+            state.path.append(new PyString(path));
 
     	interpreter = new PythonInterpreter(null, state);
 	}
@@ -87,6 +121,14 @@ public class JythonSupport
 	{
 		// Get package name
 		final String pack_name = class_name.toLowerCase();
+		Logger.getLogger(getClass().getName()).log(Level.FINE,
+	        "Loading Jython class {0} from {1}",
+	        new Object[] { class_name, pack_name });
+
+		// Display path
+		//interpreter.exec("import sys");
+        //interpreter.exec("print 'Jython Path: ', sys.path");
+
     	// Import class into Jython
 		interpreter.exec("from " + pack_name +  " import " + class_name);
 		// Create Java reference

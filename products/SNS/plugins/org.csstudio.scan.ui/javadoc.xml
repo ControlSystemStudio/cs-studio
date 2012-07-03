@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!-- Ant file for generating javadoc for scan system client API
+  -->
+<project name="scan.client.api" default="all">
+
+    <!-- Output directory -->
+    <property name="out" value="doc/java" />
+
+	<path id="classpath">
+		<!--
+	      <fileset dir="/Kram/Eclipse/3_7_2/rcp/eclipse/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705">
+	          <include name="**/*.jar"/>
+	      </fileset>
+	      -->
+    </path>
+	
+    <!-- Remove all that might have been created -->
+    <target name="clean">
+        <delete dir="${out}" />
+    </target>
+
+    <!-- Create Javadoc -->
+    <target name="javadoc">
+        <!-- Capture the path as a delimited property using the refid attribute -->
+    	<property name="myclasspath" refid="classpath"/>
+	    <!-- Emit the property to the ant console -->
+	    <echo message="Classpath: ${myclasspath}"/>
+
+        <javadoc
+            classpathref="classpath"
+            destdir="${out}"
+            author="false"
+        	access="public"
+            version="true"
+            use="false"
+            windowtitle="Scan System API"
+        	overview="doc/javadoc_overview.html"
+            useexternalfile="yes"
+        	additionalparam="-notimestamp">
+        	
+            <doctitle><![CDATA[<h1>Scan System API</h1>]]></doctitle>
+            <fileset dir="..">
+                <include name="org.csstudio.scan/src/org/csstudio/scan/command/*.java"/>
+            	<include name="org.csstudio.scan/src/org/csstudio/scan/data/*.java"/>
+                <include name="org.csstudio.scan/src/org/csstudio/scan/device/*.java"/>
+                <include name="org.csstudio.scan/src/org/csstudio/scan/server/*.java"/>
+                <include name="org.csstudio.scan.custom/src/**/*.java"/>
+
+            	<include name="org.csstudio.scan.client/src/org/csstudio/scan/client/*.java"/>
+            	
+            	<exclude name="**/ScanCommandFactory.java"/>
+                <exclude name="**/DOMHelper.java"/>
+                <exclude name="**/BeamlineDeviceInfoReader.java"/>
+            	
+            	
+            </fileset>
+        	
+            <group title="Scan System Packages" packages="org.csstudio.scan.*"/>
+
+        </javadoc>
+    </target>
+
+    <!-- Run the whole chain -->
+    <target name="all" depends="javadoc">
+        <echo>=== Completed ${ant.project.name} ===</echo>
+    </target>
+</project>
+

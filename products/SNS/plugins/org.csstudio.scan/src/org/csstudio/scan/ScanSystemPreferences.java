@@ -55,6 +55,16 @@ public class ScanSystemPreferences extends SystemSettings
         return service.getString(Activator.ID, "post_scan", "platform:/plugin/org.csstudio.scan/examples/post_scan.scn", null);
     }
 
+    /** @return Scan script search paths */
+    public static String[] getScriptPaths()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service == null)
+            return new String[0];
+        final String pref = service.getString(Activator.ID, "script_paths", "platform:/plugin/org.csstudio.scan/examples", null);
+        return pref.split("\\s*,\\s*");
+    }
+
     /** @return Memory threshold for removing older scans */
     public static double getOldScanRemovalMemoryThreshold()
     {

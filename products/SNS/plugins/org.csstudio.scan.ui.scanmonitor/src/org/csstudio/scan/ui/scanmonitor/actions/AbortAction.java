@@ -29,17 +29,21 @@ public class AbortAction extends AbstractGUIAction
     /** Initialize
      *  @param shell Parent shell
      *  @param model
-     *  @param info
+     *  @param infos
      */
-    public AbortAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
+    public AbortAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
     {
-        super(shell, model, info, Messages.Abort, ScanUIActivator.getImageDescriptor("icons/abort.gif")); //$NON-NLS-1$
+        super(shell, model, infos, Messages.Abort, ScanUIActivator.getImageDescriptor("icons/abort.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().abort(info == null ? -1 : info.getId());
+        if (infos == null)
+            model.getServer().abort(-1);
+        else
+            for (ScanInfo info : infos)
+                model.getServer().abort(info.getId());
     }
 }

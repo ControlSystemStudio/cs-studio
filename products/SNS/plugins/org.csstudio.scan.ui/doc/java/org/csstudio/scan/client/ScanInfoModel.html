@@ -1,0 +1,385 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!--NewPage-->
+<HTML>
+<HEAD>
+<TITLE>
+ScanInfoModel (Scan System API)
+</TITLE>
+
+
+<LINK REL ="stylesheet" TYPE="text/css" HREF="../../../../stylesheet.css" TITLE="Style">
+
+<SCRIPT type="text/javascript">
+function windowTitle()
+{
+    if (location.href.indexOf('is-external=true') == -1) {
+        parent.document.title="ScanInfoModel (Scan System API)";
+    }
+}
+</SCRIPT>
+<NOSCRIPT>
+</NOSCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="white" onload="windowTitle();">
+<HR>
+
+
+<!-- ========= START OF TOP NAVBAR ======= -->
+<A NAME="navbar_top"><!-- --></A>
+<A HREF="#skip-navbar_top" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_top_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/csstudio/scan/client/ScanInfoModel.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ScanInfoModel.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_top"></A>
+<!-- ========= END OF TOP NAVBAR ========= -->
+
+<HR>
+<!-- ======== START OF CLASS DATA ======== -->
+<H2>
+<FONT SIZE="-1">
+org.csstudio.scan.client</FONT>
+<BR>
+Class ScanInfoModel</H2>
+<PRE>
+java.lang.Object
+  <IMG SRC="../../../../resources/inherit.gif" ALT="extended by "><B>org.csstudio.scan.client.ScanInfoModel</B>
+</PRE>
+<HR>
+<DL>
+<DT><PRE>public class <B>ScanInfoModel</B><DT>extends java.lang.Object</DL>
+</PRE>
+
+<P>
+Model of scan information on scan server
+
+  <p>The scan server has (at this time) a simple RMI
+  interface that only offers polling access.
+
+  This model periodically polls the scan server for its
+  state and sends updates to a (GUI) listener.
+
+  <p>Singleton to allow multiple views to monitor
+  the scan server by using a single underlying
+  network connection and poll thread.
+<P>
+
+<P>
+<HR>
+
+<P>
+
+<!-- ========== METHOD SUMMARY =========== -->
+
+<A NAME="method_summary"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="2"><FONT SIZE="+2">
+<B>Method Summary</B></FONT></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#addListener(org.csstudio.scan.client.ScanInfoModelListener)">addListener</A></B>(<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</A>&nbsp;listener)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.util.List&lt;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A>&gt;</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#getInfos()">getInfos</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;<A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#getInstance()">getInstance</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Obtain reference to the singleton instance.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServer()">getServer</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;<A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</A></CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServerInfo()">getServerInfo</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#getServerInfoText()">getServerInfoText</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#release()">release</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Release
+  When last reference to the model has been released,
+  singleton instance is stopped and removed.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;void</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#removeListener(org.csstudio.scan.client.ScanInfoModelListener)">removeListener</A></B>(<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</A>&nbsp;listener)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+</TABLE>
+&nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#EEEEFF" CLASS="TableSubHeadingColor">
+<TH ALIGN="left"><B>Methods inherited from class java.lang.Object</B></TH>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD><CODE>equals, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</CODE></TD>
+</TR>
+</TABLE>
+&nbsp;
+<P>
+
+<!-- ============ METHOD DETAIL ========== -->
+
+<A NAME="method_detail"><!-- --></A>
+<TABLE BORDER="1" WIDTH="100%" CELLPADDING="3" CELLSPACING="0" SUMMARY="">
+<TR BGCOLOR="#CCCCFF" CLASS="TableHeadingColor">
+<TH ALIGN="left" COLSPAN="1"><FONT SIZE="+2">
+<B>Method Detail</B></FONT></TH>
+</TR>
+</TABLE>
+
+<A NAME="getInstance()"><!-- --></A><H3>
+getInstance</H3>
+<PRE>
+public static <A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client">ScanInfoModel</A> <B>getInstance</B>()
+                                 throws java.lang.Exception</PRE>
+<DL>
+<DD>Obtain reference to the singleton instance.
+  Must release when no longer used.
+<P>
+<DD><DL>
+
+<DT><B>Returns:</B><DD><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html" title="class in org.csstudio.scan.client"><CODE>ScanInfoModel</CODE></A>
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.Exception</CODE> - on error creating the initial instance<DT><B>See Also:</B><DD><A HREF="../../../../org/csstudio/scan/client/ScanInfoModel.html#release()"><CODE>release()</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="release()"><!-- --></A><H3>
+release</H3>
+<PRE>
+public void <B>release</B>()</PRE>
+<DL>
+<DD>Release
+  When last reference to the model has been released,
+  singleton instance is stopped and removed.
+<P>
+<DD><DL>
+</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="addListener(org.csstudio.scan.client.ScanInfoModelListener)"><!-- --></A><H3>
+addListener</H3>
+<PRE>
+public void <B>addListener</B>(<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</A>&nbsp;listener)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>listener</CODE> - Listener to add</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="removeListener(org.csstudio.scan.client.ScanInfoModelListener)"><!-- --></A><H3>
+removeListener</H3>
+<PRE>
+public void <B>removeListener</B>(<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client">ScanInfoModelListener</A>&nbsp;listener)</PRE>
+<DL>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>listener</CODE> - Listener to remove</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getServer()"><!-- --></A><H3>
+getServer</H3>
+<PRE>
+public <A HREF="../../../../org/csstudio/scan/server/ScanServer.html" title="interface in org.csstudio.scan.server">ScanServer</A> <B>getServer</B>()
+                     throws java.rmi.RemoteException</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Server
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - when not connected to server</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getServerInfo()"><!-- --></A><H3>
+getServerInfo</H3>
+<PRE>
+public <A HREF="../../../../org/csstudio/scan/server/ScanServerInfo.html" title="class in org.csstudio.scan.server">ScanServerInfo</A> <B>getServerInfo</B>()</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Scan Server info or <code>null</code></DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getServerInfoText()"><!-- --></A><H3>
+getServerInfoText</H3>
+<PRE>
+public java.lang.String <B>getServerInfoText</B>()
+                                   throws java.rmi.RemoteException</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Scan Server info
+<DT><B>Throws:</B>
+<DD><CODE>java.rmi.RemoteException</CODE> - on error in remote access</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getInfos()"><!-- --></A><H3>
+getInfos</H3>
+<PRE>
+public java.util.List&lt;<A HREF="../../../../org/csstudio/scan/server/ScanInfo.html" title="class in org.csstudio.scan.server">ScanInfo</A>&gt; <B>getInfos</B>()</PRE>
+<DL>
+<DD><DL>
+
+<DT><B>Returns:</B><DD>Most recent infos obtained from server</DL>
+</DD>
+</DL>
+<!-- ========= END OF CLASS DATA ========= -->
+<HR>
+
+
+<!-- ======= START OF BOTTOM NAVBAR ====== -->
+<A NAME="navbar_bottom"><!-- --></A>
+<A HREF="#skip-navbar_bottom" title="Skip navigation links"></A>
+<TABLE BORDER="0" WIDTH="100%" CELLPADDING="1" CELLSPACING="0" SUMMARY="">
+<TR>
+<TD COLSPAN=2 BGCOLOR="#EEEEFF" CLASS="NavBarCell1">
+<A NAME="navbar_bottom_firstrow"><!-- --></A>
+<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="3" SUMMARY="">
+  <TR ALIGN="center" VALIGN="top">
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../overview-summary.html"><FONT CLASS="NavBarFont1"><B>Overview</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-summary.html"><FONT CLASS="NavBarFont1"><B>Package</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#FFFFFF" CLASS="NavBarCell1Rev"> &nbsp;<FONT CLASS="NavBarFont1Rev"><B>Class</B></FONT>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="package-tree.html"><FONT CLASS="NavBarFont1"><B>Tree</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../deprecated-list.html"><FONT CLASS="NavBarFont1"><B>Deprecated</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../index-all.html"><FONT CLASS="NavBarFont1"><B>Index</B></FONT></A>&nbsp;</TD>
+  <TD BGCOLOR="#EEEEFF" CLASS="NavBarCell1">    <A HREF="../../../../help-doc.html"><FONT CLASS="NavBarFont1"><B>Help</B></FONT></A>&nbsp;</TD>
+  </TR>
+</TABLE>
+</TD>
+<TD ALIGN="right" VALIGN="top" ROWSPAN=3><EM>
+</EM>
+</TD>
+</TR>
+
+<TR>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+&nbsp;PREV CLASS&nbsp;
+&nbsp;<A HREF="../../../../org/csstudio/scan/client/ScanInfoModelListener.html" title="interface in org.csstudio.scan.client"><B>NEXT CLASS</B></A></FONT></TD>
+<TD BGCOLOR="white" CLASS="NavBarCell2"><FONT SIZE="-2">
+  <A HREF="../../../../index.html?org/csstudio/scan/client/ScanInfoModel.html" target="_top"><B>FRAMES</B></A>  &nbsp;
+&nbsp;<A HREF="ScanInfoModel.html" target="_top"><B>NO FRAMES</B></A>  &nbsp;
+&nbsp;<SCRIPT type="text/javascript">
+  <!--
+  if(window==top) {
+    document.writeln('<A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>');
+  }
+  //-->
+</SCRIPT>
+<NOSCRIPT>
+  <A HREF="../../../../allclasses-noframe.html"><B>All Classes</B></A>
+</NOSCRIPT>
+
+
+</FONT></TD>
+</TR>
+<TR>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+  SUMMARY:&nbsp;NESTED&nbsp;|&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_summary">METHOD</A></FONT></TD>
+<TD VALIGN="top" CLASS="NavBarCell3"><FONT SIZE="-2">
+DETAIL:&nbsp;FIELD&nbsp;|&nbsp;CONSTR&nbsp;|&nbsp;<A HREF="#method_detail">METHOD</A></FONT></TD>
+</TR>
+</TABLE>
+<A NAME="skip-navbar_bottom"></A>
+<!-- ======== END OF BOTTOM NAVBAR ======= -->
+
+<HR>
+
+</BODY>
+</HTML>

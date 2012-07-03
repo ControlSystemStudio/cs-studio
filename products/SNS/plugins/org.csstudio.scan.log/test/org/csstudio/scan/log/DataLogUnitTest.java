@@ -22,9 +22,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 
 import org.csstudio.scan.data.ScanData;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
 import org.junit.Test;
 
 /** JUnit test of the {@link DataLog}s
@@ -39,9 +39,9 @@ public class DataLogUnitTest
 		{
 		    final Date now = new Date();
 		    final long serial = logger.getNextScanDataSerial();
-			logger.log(ScanSampleFactory.createSample("x", now, serial, Double.valueOf(x)));
+			logger.log("x", ScanSampleFactory.createSample(now, serial, Double.valueOf(x)));
 			for (int y=0; y<5; ++y)
-				logger.log(ScanSampleFactory.createSample("y", now, serial, Double.valueOf(y)));
+				logger.log("y", ScanSampleFactory.createSample(now, serial, Double.valueOf(y)));
 		}
     }
 
@@ -73,8 +73,8 @@ public class DataLogUnitTest
         System.out.println("MemoryDataLogger as Spreadsheet:");
 		final DataLog logger = new MemoryDataLog();
 		logData(logger);
-		SpreadsheetScanDataIterator sheet =
-	        new SpreadsheetScanDataIterator(logger.getScanData());
+		ScanDataIterator sheet =
+	        new ScanDataIterator(logger.getScanData());
         sheet.printTable(System.out);
 	}
 }

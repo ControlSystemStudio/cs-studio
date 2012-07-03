@@ -9,7 +9,7 @@ package org.csstudio.scan.ui.scandata;
 
 import java.util.Date;
 
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanSample;
 
 /** One row of data for a table of scan samples
@@ -57,7 +57,7 @@ public class ScanDataRow
     public String toString()
     {
 		final StringBuilder buf = new StringBuilder();
-		buf.append(DataFormatter.format(timestamp));
+		buf.append(ScanSampleFormatter.format(timestamp));
 		for (ScanSample sample : samples)
 		{
 			buf.append(" ");

@@ -9,6 +9,7 @@ package org.csstudio.scan.log;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.scan.server.Scan;
@@ -34,9 +35,19 @@ public class DataLogFactoryHeadlessTest
 		assertNotNull(log);
 		System.out.println("Got DataLog " + log.getClass().getName());
 
+		boolean found = false;
 		final Scan[] scans = DataLogFactory.getScans();
 		for (Scan s : scans)
+		{
+		    if (scan.equals(s))
+		        found = true;
 		    System.out.println(s);
+		}
 		assertTrue(scans.length > 0);
+        assertTrue(found);
+
+        DataLogFactory.deleteDataLog(scan);
+        final DataLog log2 = DataLogFactory.getDataLog(scan);
+        assertNull(log2);
 	}
 }

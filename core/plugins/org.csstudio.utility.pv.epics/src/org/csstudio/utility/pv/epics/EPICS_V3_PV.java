@@ -153,12 +153,15 @@ public class EPICS_V3_PV extends PlatformObject
         {   // This runs in a CA thread
             try
             {
-                if (!event.getStatus().isSuccessful())
+                if (event.getStatus()== null || !event.getStatus().isSuccessful())
                     return;
                 if (state == State.GettingMetadata)
                     state = State.GotMetaData;
-
+                if(!isRunning())
+                	return;
                 final DBR dbr = event.getDBR();
+                if (dbr == null)
+                    return;
                 meta = DBR_Helper.decodeMetaData(dbr);
 
                 Activator.getLogger().log(Level.FINEST, "{0} meta data update: {1}", new Object[] { name, meta });

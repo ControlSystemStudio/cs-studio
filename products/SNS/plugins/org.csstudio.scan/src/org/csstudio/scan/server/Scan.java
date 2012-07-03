@@ -21,7 +21,7 @@ import java.util.Date;
 /** Scan: ID, Name, Date
  *
  *  <p>The ID uniquely identifies a scan within a scan engine.
- *  If the scan engine is backed by a persistend log (RDB, ...),
+ *  If the scan engine is backed by a persistent log (RDB, ...),
  *  then the ID may persist through restarts of the scan engine.
  *  With a simple in-memory log, the IDs are only unique within
  *  one Scan Engine JVM, and get re-used as the scan engine restarts.
@@ -29,7 +29,8 @@ import java.util.Date;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Scan implements Serializable
+public class Scan
+implements Serializable
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
@@ -50,6 +51,16 @@ public class Scan implements Serializable
         this.created = created;
     }
 
+    /** Initialize
+     *  @param scan Other scan
+     */
+    protected Scan(final Scan scan)
+    {
+        this.id = scan.id;
+        this.name = scan.name;
+        this.created = scan.created;
+    }
+
     /** @return Unique scan identifier (within JVM of the scan engine) */
     public long getId()
     {
@@ -68,17 +79,14 @@ public class Scan implements Serializable
         return created;
     }
 
-    /** Hash on most elements
+    /** Hash on ID
      *  {@inheritDoc}
      */
     @Override
     public int hashCode()
     {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + name.hashCode();
-        return result;
+        // From Long.hashCode()
+        return (int)(id ^ (id >>> 32));
     }
 
     /** Compare all elements

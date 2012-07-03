@@ -29,17 +29,21 @@ public class ResumeAction extends AbstractGUIAction
     /** Initialize
      *  @param shell Parent shell
      *  @param model
-     *  @param info
+     *  @param infos
      */
-    public ResumeAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
+    public ResumeAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
     {
-        super(shell, model, info, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
+        super(shell, model, infos, Messages.Resume, ScanUIActivator.getImageDescriptor("icons/resume.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().resume(info == null ? -1 : info.getId());
+        if (infos == null)
+            model.getServer().resume(-1);
+        else
+            for (ScanInfo info : infos)
+                model.getServer().resume(info.getId());
     }
 }

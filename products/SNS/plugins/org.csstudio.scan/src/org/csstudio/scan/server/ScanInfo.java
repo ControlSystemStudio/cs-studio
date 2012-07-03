@@ -16,7 +16,6 @@
 package org.csstudio.scan.server;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /** Information about a Scan
  *  @author Kay Kasemir
@@ -36,9 +35,16 @@ public class ScanInfo extends Scan implements Serializable
     final private String current_commmand;
 
     /** Initialize
-     *  @param id Scan ID
-     *  @param name Name
-     *  @param created Time when scan was created (submitted to server)
+     *  @param scan {@link Scan}
+     *  @param state Scan state
+     */
+    public ScanInfo(final Scan scan, final ScanState state)
+    {
+        this(scan, state, null, 0, 0, 0, 0, "");
+    }
+
+    /** Initialize
+     *  @param scan Scan
      *  @param state Scan state
      *  @param error Error or <code>null</code>
      *  @param runtime_ms Runtime in millisecs
@@ -46,12 +52,12 @@ public class ScanInfo extends Scan implements Serializable
      *  @param total_work_units Total number of work units
      *  @param current_commmand Description of current command
      */
-    public ScanInfo(final long id, final String name, final Date created, final ScanState state,
+    public ScanInfo(final Scan scan, final ScanState state,
             final String error, final long runtime_ms,
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
     {
-        super(id, name, created);
+        super(scan);
         this.state = state;
         this.error = error;
         this.runtime_ms = runtime_ms;
@@ -167,7 +173,8 @@ public class ScanInfo extends Scan implements Serializable
         buf.append("Scan '").append(getName()).append("' [").append(getId()).append("]: ").append(state);
         if (error != null)
             buf.append(" (").append(error).append(")");
-        buf.append(", ").append(getPercentage()).append("% done");
+        if (state.isActive())
+            buf.append(", ").append(getPercentage()).append("% done");
         return buf.toString();
     }
 }

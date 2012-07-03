@@ -8,6 +8,7 @@
 package org.csstudio.scan.ui.plot;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -42,7 +43,7 @@ public class PlotDataModelHeadlessTest
 
         final List<ScanCommand> commands = new ArrayList<ScanCommand>();
         commands.add(new LoopCommand("xpos", 1.0, 3.0, 1.0,
-                                     new LogCommand("readback"),
+                                     new LogCommand("xpos", "readback"),
                                      new DelayCommand(2.0)));
         final long id = server.submitScan("PlotDemo", XMLCommandWriter.toXMLString(commands));
         ScanServerConnector.disconnect(server);
@@ -73,29 +74,30 @@ public class PlotDataModelHeadlessTest
 
         model.selectScan(scan.getId());
         model.selectXDevice("xpos");
-        model.selectYDevice("readback");
+        model.addYDevice("readback");
 
-        PlotDataProvider data = null;
-        boolean display = true;
-        while (display)
+        PlotDataProvider[] data_providers = null;
+        boolean poll = true;
+        while (poll)
         {
             scan = model.getScan(id);
-            data = model.getPlotData();
-            synchronized (data)
+            data_providers = model.getPlotDataProviders();
+            for (PlotDataProvider data : data_providers)
             {
-                System.out.println("\n" + scan);
-                System.out.println("Last data serial: " + data.getLastSerial());
-
-                for (int i=0; i<data.getSize(); ++i)
-                    System.out.println(data.getSample(i));
+                synchronized (data)
+                {
+                    System.out.println("\n" + scan);
+                    for (int i=0; i<data.getSize(); ++i)
+                        System.out.println(data.getSample(i));
+                }
             }
             if (scan.getState().isDone())
-                display = false;
+                poll = false;
             else
                 Thread.sleep(500);
         }
-        assertTrue(data.getSize() >= 3);
-        assertTrue(data.getLastSerial() > 0);
+        assertEquals(1, data_providers.length);
+        assertTrue(data_providers[0].getSize() >= 3);
         model.stop();
     }
 
@@ -116,11 +118,15 @@ public class PlotDataModelHeadlessTest
 
         model.selectScan(scan.getId());
         model.selectXDevice("xpos");
-        model.selectYDevice("readback");
+        model.addYDevice("readback");
+        final PlotDataProvider[] data_providers = model.getPlotDataProviders();
+        assertNotNull(data_providers);
+        assertEquals(1, data_providers.length);
+
+        final PlotDataProvider data = data_providers[0];
 
         final AtomicInteger updates = new AtomicInteger();
 
-        final PlotDataProvider data = model.getPlotData();
         data.addDataProviderListener(new IDataProviderListener()
         {
             @Override

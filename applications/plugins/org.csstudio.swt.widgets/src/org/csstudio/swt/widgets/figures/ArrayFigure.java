@@ -27,6 +27,7 @@ import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.graphics.Cursor;
 
 /**
  * The figure for array widget.
@@ -108,13 +109,17 @@ public class ArrayFigure extends Figure implements Introspectable {
 		public void add(IFigure figure, Object constraint, int index) {
 			super.add(figure, constraint, index);
 			scrollbar.setExtent(getVisibleElementsCount());
+			scrollbar.setPageIncrement(getVisibleElementsCount());
 			enabilityDirty = true;
+			if(!isEnabled())
+				figure.setEnabled(false);
 		}
 
 		@Override
 		public void remove(IFigure figure) {
 			super.remove(figure);
 			scrollbar.setExtent(getVisibleElementsCount());
+			scrollbar.setPageIncrement(getVisibleElementsCount());
 			enabilityDirty = true;
 		}
 		
@@ -148,6 +153,7 @@ public class ArrayFigure extends Figure implements Introspectable {
 
 	private boolean enabilityDirty;
 	private ListenerList listeners;
+	private Cursor paneCursor;
 	
 	public ArrayFigure() {
 		listeners = new ListenerList();
@@ -415,19 +421,30 @@ public class ArrayFigure extends Figure implements Introspectable {
 	public void setArrayLength(int arrayLength) {
 		this.arrayLength = arrayLength;
 		scrollbar.setMaximum(arrayLength - 1);
-		scrollbar.setPageIncrement(arrayLength > 10 ? arrayLength / 10 : 1);
 		spinner.setMax(arrayLength - 1);
 		if(getIndex() >=arrayLength)
 			setIndex(0);
 		enabilityDirty = true;
 		updateElementsEnability();
 	}
+	@Override
+	public Cursor getCursor() {
+		return paneCursor;
+	}
+	
+	@Override
+	public void setCursor(Cursor cursor) {
+		pane.setCursor(cursor);
+		this.paneCursor = cursor;
+	}
 	
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		spinner.setEnabled(value);
-		scrollbar.setEnabled(value);
+		pane.setEnabled(value);
+		enabilityDirty=true;
+		updateElementsEnability();
+		
 	}
 
 	/**
@@ -460,6 +477,12 @@ public class ArrayFigure extends Figure implements Introspectable {
 		if(!enabilityDirty)
 			return;
 		enabilityDirty=false;
+		if(!pane.isEnabled()){
+			for(Object child : pane.getChildren())
+				((IFigure)child).setEnabled(false);
+			return;
+		}
+			
 		int elementsCount = pane.getChildren().size();
 		if (elementsCount <= 0)
 			return;

@@ -30,7 +30,7 @@ import org.csstudio.scan.command.LogCommand;
 import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.condition.WaitForDevicesCondition;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.device.PVDevice;
@@ -187,7 +187,7 @@ public class ScanServerHeadlessTest implements Runnable
             assertTrue(devices.contains("xpos"));
             assertTrue(devices.contains("ypos"));
             assertTrue(devices.contains("readback"));
-            new SpreadsheetScanDataIterator(data).printTable(System.out);
+            new ScanDataIterator(data).printTable(System.out);
 
             pv.stop();
         }

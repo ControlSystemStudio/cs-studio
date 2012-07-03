@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.command;
 
-/** Base for Jython scripts that are executed by {@link ScriptCommand}
+/** Base class for Jython scripts that are executed by a {@link ScriptCommand}
  *
- *  Example:
+ *  <p>Example:
  *  <pre>
  *  class MyScript(ScanScript):
  *      def getDeviceNames(self):
@@ -21,9 +21,9 @@ package org.csstudio.scan.command;
  *       context.write("result2", y[0])
  *  </pre>
  *
- *  <p>Script that defines class <code>MyScript</code> must
+ *  <p>The jython script that defines the class <code>MyScript</code> must
  *  be stored in file named <code>myscript.py</code>,
- *  i.e. using lower case version of the class name.
+ *  i.e. using the lower case version of the class name.
  *
  *  <p>All script classes must derive from {@link ScanScript}.
  *  @author Kay Kasemir
@@ -52,7 +52,7 @@ public class ScanScript
 	 *  to execute the script
 	 *  @param context Access to logged data, devices, ...
 	 */
-	public void run(final ScriptCommandContext context)
+	public void run(final ScanScriptContext context)
 	{
 		// Default doesn't do anything
 		// Script can read log data, perform computation,

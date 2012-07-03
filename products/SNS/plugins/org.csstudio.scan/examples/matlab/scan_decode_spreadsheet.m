@@ -5,7 +5,7 @@ function table = scan_decode_spreadsheet(sheet)
 % some device from the scan data:
 %
 %  data = server.getScanData(id)
-%  sheet = SpreadsheetScanDataIterator(data, { 'xpos', 'ypos' })
+%  sheet = ScanDataIterator(data, { 'xpos', 'ypos' })
 %  table = scan_decode_spreadsheet(sheet)
 %  plot(table(:,1), table(:,2), '-*');
 %

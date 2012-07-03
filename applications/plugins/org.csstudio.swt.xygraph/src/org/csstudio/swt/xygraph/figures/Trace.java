@@ -894,7 +894,6 @@ public class Trace extends Figure implements IDataProviderListener,
 	}
 
 	private void fireYAxisChanged(Axis oldName, Axis newName) {
-		System.out.println("Trace.fireYAxisChanged()");
 		for (ITraceListener listener : listeners)
 			listener.traceYAxisChanged(this, oldName, newName);
 	}

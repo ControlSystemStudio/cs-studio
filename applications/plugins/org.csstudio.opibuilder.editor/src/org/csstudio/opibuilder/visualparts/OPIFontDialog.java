@@ -52,7 +52,8 @@ public class OPIFontDialog extends HelpTrayDialog {
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
 		if(font.isPreDefined())
-			this.opiFont = MediaService.getInstance().getOPIFont(font.getFontMacroName());
+			this.opiFont = MediaService.getInstance().getOPIFont(
+					font.getFontMacroName(), font.getFontData());
 		else
 			this.opiFont = new OPIFont(font.getFontData());
 	}

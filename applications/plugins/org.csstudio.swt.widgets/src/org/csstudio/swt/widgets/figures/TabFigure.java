@@ -312,13 +312,13 @@ public class TabFigure extends Figure implements Introspectable{
 	
 	private void dispose(int index){
 		Label label = tabLabelList.get(index);
+		
 		Image image = label.getIcon();
 		if(image != null){
 			image.dispose();
 			image = null;
-//			label.setIcon(null);
+			label.setIcon(null);
 		}
-		
 	}
 
 	public void setTabColor(int index, Color color){

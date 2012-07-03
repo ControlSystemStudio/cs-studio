@@ -10,20 +10,21 @@ package org.csstudio.scan.commandimpl;
 import java.util.Date;
 
 import org.csstudio.ndarray.NDArray;
-import org.csstudio.scan.command.ScriptCommandContext;
+import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
+import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
 
-/** Implementation of the {@link ScriptCommandContext}
+/** Implementation of the {@link ScanScriptContext}
  *
  *  <p>Exposes what's needed for scripts from the {@link ScanContext}
  *
  *  @author Kay Kasemir
  */
-public class ScriptCommandContextImpl extends ScriptCommandContext
+public class ScriptCommandContextImpl extends ScanScriptContext
 {
 	final private ScanContext context;
 
@@ -39,7 +40,7 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 	@Override
 	public ScanData getScanData() throws Exception
 	{
-		return context.getScanData();
+		return context.getDataLog().getScanData();
 	}
 
     /** {@inheritDoc} */
@@ -69,8 +70,8 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
         while (iter.hasNext())
         {
             final ScanSample sample =
-                ScanSampleFactory.createSample(device, timestamp , serial++, iter.nextDouble());
-            context.logSample(sample);
+                ScanSampleFactory.createSample(timestamp , serial++, iter.nextDouble());
+            context.getDataLog().log(device, sample);
         }
 	}
 
@@ -79,6 +80,6 @@ public class ScriptCommandContextImpl extends ScriptCommandContext
 	public void write(final String device_name, final Object value, final String readback,
 	        final boolean wait, final double tolerance, final double timeout) throws Exception
 	{
-		context.write(device_name, value, readback, wait, tolerance, timeout);
+	    ScanCommandUtil.write(context, device_name, value, readback, wait, tolerance, timeout);
 	}
 }

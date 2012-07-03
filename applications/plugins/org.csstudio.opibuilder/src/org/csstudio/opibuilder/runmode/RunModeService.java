@@ -204,7 +204,7 @@ public class RunModeService {
 					}
 					
 					//Open a new view					
-					if(position != Position.DETACHED && !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
+					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW && !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
 						if(MessageDialog.openQuestion(window.getShell(), "Switch to OPI Runtime Perspective", 
 								"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
 								"\nDo you want to switch to it now?"))

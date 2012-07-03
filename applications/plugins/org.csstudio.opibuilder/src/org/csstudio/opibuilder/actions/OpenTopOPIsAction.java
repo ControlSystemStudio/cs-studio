@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
 import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -36,6 +37,7 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
  */
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
+	private static final String TOP_OPI_POSITION_KEY = "Position"; //$NON-NLS-1$
 	private Menu opiListMenu;
 	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance().getImageFromPlugin(
 			OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
@@ -53,15 +55,33 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 					item.addSelectionListener(new SelectionAdapter() {
 						@Override
 						public void widgetSelected(SelectionEvent e) {
-							RunModeService.getInstance().runOPI(
-									path, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
-						}
+							runOPI(topOPIs, path);
+						}						
 					});
 				}
 			}
 		return opiListMenu;
 	}
 
+	private void runOPI(final Map<IPath, MacrosInput> topOPIs, final IPath path) {
+		String position = topOPIs.get(path).getMacrosMap()
+				.get(TOP_OPI_POSITION_KEY);
+		if (position != null) {
+			Position pos = null;
+			for (Position p : Position.values()) {
+				if (p.name().equals(position.toUpperCase())) {
+					pos = p;
+					break;
+				}
+			}
+			if (pos != null) {
+				RunModeService.runOPIInView(path, null, topOPIs.get(path), pos);
+				return;
+			}
+		}
+		RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
+				null, topOPIs.get(path));
+	}
 	/**
 	 * @return the top OPIs from preference settings
 	 */
@@ -103,8 +123,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 		if(topOPIs != null && topOPIs.keySet().size() >= 1){
 			IPath path = (IPath) topOPIs.keySet().toArray()[0];
 			if(path != null){
-				RunModeService.getInstance().runOPI(
-						path, TargetWindow.SAME_WINDOW, null, topOPIs.get(path));
+				runOPI(topOPIs, path);
 			}
 		}
 	}

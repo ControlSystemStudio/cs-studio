@@ -250,7 +250,7 @@ public class ScanInfoModel
         }
         catch (RemoteException ex)
         {
-            Logger.getLogger(getClass().getName()).log(Level.FINE, "Cannot poll ScanServer", ex);
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot poll ScanServer", ex);
             infos = Collections.emptyList();
             if (is_connected)
             {   // Notify listeners once we get into the error state

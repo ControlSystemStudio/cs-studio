@@ -115,16 +115,13 @@ public class ColorProperty extends AbstractWidgetProperty {
 		OPIColor opiColor = (OPIColor) getPropertyValue();
 		Element colorElement;
 		colorElement= new Element(XML_ELEMENT_COLOR);
-		if(!opiColor.isPreDefined()){			
-			RGB color =  opiColor.getRGBValue();
-			colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
-			colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
-			colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
-
-		}else{			
-			colorElement.setAttribute(XML_ATTRIBUTE_NAME, opiColor.getColorName());
+		if(opiColor.isPreDefined()){			
+			colorElement.setAttribute(XML_ATTRIBUTE_NAME, opiColor.getColorName());			
 		}
-		
+		RGB color = opiColor.getRGBValue();
+		colorElement.setAttribute(XML_ATTRIBUTE_RED, "" + color.red); //$NON-NLS-1$
+		colorElement.setAttribute(XML_ATTRIBUTE_GREEN, "" + color.green); //$NON-NLS-1$
+		colorElement.setAttribute(XML_ATTRIBUTE_BLUE, "" + color.blue); //$NON-NLS-1$
 		propElement.addContent(colorElement);
 	}
 	
@@ -139,6 +136,14 @@ public class ColorProperty extends AbstractWidgetProperty {
 				Integer.parseInt(colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE)));
 				return new OPIColor(result);		
 		}else{
+			String red = colorElement.getAttributeValue(XML_ATTRIBUTE_RED);
+			String green = colorElement.getAttributeValue(XML_ATTRIBUTE_GREEN);
+			String blue = colorElement.getAttributeValue(XML_ATTRIBUTE_BLUE);
+			RGB rgb;
+			if(red != null && green != null && blue !=null){
+				rgb=new RGB(Integer.parseInt(red), Integer.parseInt(green), Integer.parseInt(blue));
+				return MediaService.getInstance().getOPIColor(name, rgb);
+			}
 			return MediaService.getInstance().getOPIColor(name);
 		}
 	

@@ -52,7 +52,7 @@ public final class MediaService {
 	private IPath colorFilePath;
 	private IPath fontFilePath;
 
-	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(0, 0, 0);
+	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(240, 240, 240);
 
 	public final static FontData DEFAULT_UNKNOWN_FONT = CustomMediaFactory.FONT_ARIAL;
 
@@ -155,8 +155,7 @@ public final class MediaService {
 		colorFilePath = PreferencesHelper.getColorFilePath();
 		if (colorFilePath == null || colorFilePath.isEmpty()) {
 			String message = "No color definition file was found.";
-			OPIBuilderPlugin.getLogger().warning(message);
-			ConsoleService.getInstance().writeWarning(message);
+			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
@@ -211,8 +210,7 @@ public final class MediaService {
 		fontFilePath = PreferencesHelper.getFontFilePath();
 		if (fontFilePath == null || fontFilePath.isEmpty()) {
 			String message = "No font definition file was found.";
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, message);
-			ConsoleService.getInstance().writeWarning(message);
+			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
@@ -298,9 +296,18 @@ public final class MediaService {
 	}
 
 	public OPIColor getOPIColor(String name) {
+		return getOPIColor(name, DEFAULT_UNKNOWN_COLOR);
+	}
+	
+	/**Get OPIColor based on name. If no such name exist, use the rgb value as its color.
+	 * @param name name of OPIColor
+	 * @param rgb rgb value in case the name is not exist.
+	 * @return the OPIColor.
+	 */
+	public OPIColor getOPIColor(String name, RGB rgb) {
 		if (colorMap.containsKey(name))
 			return colorMap.get(name);
-		return new OPIColor(name, DEFAULT_UNKNOWN_COLOR, true);
+		return new OPIColor(name, rgb, true);
 	}
 
 	public OPIColor[] getAllPredefinedColors() {
@@ -326,11 +333,27 @@ public final class MediaService {
 			return fontMap.get(name).getFontData();
 		return DEFAULT_UNKNOWN_FONT;
 	}
+	
+	/**Get the OPIFont by name, use {@link #DEFAULT_UNKNOWN_FONT} if no such a name is found.
+	 * @param name
+	 * @return
+	 * @see #getOPIFont(String, FontData)
+	 */
+	public OPIFont getOPIFont(String name){
+		return getOPIFont(name, DEFAULT_UNKNOWN_FONT);
+	}
+	
 
-	public OPIFont getOPIFont(String name) {
+	/**Get the OPIFont based on name. Use the provided fontData if no
+	 * such a name is found.
+	 * @param name 
+	 * @param fontData
+	 * @return
+	 */
+	public OPIFont getOPIFont(String name, FontData fontData) {
 		if (fontMap.containsKey(name))
 			return fontMap.get(name);
-		return new OPIFont(name, DEFAULT_UNKNOWN_FONT);
+		return new OPIFont(name, fontData);
 	}
 
 	public OPIFont[] getAllPredefinedFonts() {

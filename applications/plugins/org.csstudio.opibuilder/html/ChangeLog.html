@@ -18,11 +18,33 @@
 
 
 <A NAME="latest"></A>
-<h2>As of 5/23/2012</h2>
+<h2>As of 6/28/2012</h2>
 <ul>
+<li>For macro color and font, both color/font name and value are saved in OPI file, 
+so in case of color/font file is not available, use the saved value. This will
+make OPI function normally in most cases even color/font file is not available. The only drawback is 
+that it cannot reflect the changes in color/font file since it was last saved. Existing OPIs need to be 
+re-saved to take use of this feature.</li>
+<li> Allow to specify the TOP OPI open position by giving macro <code>Position</code>. 
+    The available positions are: 
+    <ul>
+    <li> <code>Left</code>: Left View</li>
+    <li> <code>Right</code>: Right View</li>
+    <li> <code>Top</code>: Top View</li>
+    <li> <code>Bottom</code>: Bottom View</li>
+    <li> <code>Default_View</code>: Default View</li>
+    <li> <code>Detached</code>: Detached View</li>
+    </ul>
+    <p>If macro <code>Position</code> is not set or is not in one of above positions, it will be opened in editor area.
+    For example:
+     
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+  </p>
+<li>Add <code>Round Rectangle Background Style</code> Border.
+<p><img src="img/RoundRectBorder.png"></p></li>
 <li>For XY Graph, always show full time stamp (date and time) on the start and end of an axis which is in time format. Optimized auto time format.</li>
 <li>Stop Autoscale on XYGraph whenever one of the Zoom buttons is toggled.</li>
-<li>Add Array widget to probe OPI so Waveform PV can be probed.</li>  
+<li>Add Array widget to probe OPI so Waveform PV can be probed. Probe OPI will be opened as detached view</li>  
 <li>WebOPI use system property <code>org.csstudio.rap.preference</code> to provide path to the preference file.</li>
 <li>Add Array widget.<p><img src="widgets/img/ArrayWidget.gif"></p>
 </li>
