@@ -48,6 +48,10 @@
       <product
             application="org.csstudio.websuite.WebsuiteApplication"
             name="WebsuiteProduct">
+         <property
+               name="appName"
+               value="WebsuiteProduct">
+         </property>
       </product>
    </extension>
 
