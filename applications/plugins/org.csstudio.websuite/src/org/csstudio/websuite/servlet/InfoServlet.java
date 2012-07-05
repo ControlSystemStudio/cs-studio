@@ -107,7 +107,9 @@ public class InfoServlet extends HttpServlet {
         this.appendLineRow(page);
         this.appendInfoIocViewerServlet(page);
         this.appendLineRow(page);
-        this.appendInfoHowToServlet(page);
+        this.appendInfoHowToViewerServlet(page);
+        this.appendLineRow(page);
+        this.appendInfoHowToSearchServlet(page);
         this.appendLineRow(page);
         this.appendFlashInfoServlet(page);
         this.appendLineRow(page);
@@ -166,11 +168,19 @@ public class InfoServlet extends HttpServlet {
         page.append("</tr>\n");
     }
 
-    private void appendInfoHowToServlet(final StringBuilder page) {
+    private void appendInfoHowToViewerServlet(final StringBuilder page) {
         page.append("<tr>\n");
         page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/html/HowToViewer.html\">HowToViewer</a></td>\n");
         page.append("<td class=\"info\">Doc</td>");
         page.append("<td class=\"info\">Die HowTo-Eintraege des eLogbooks anzeigen</td>");
+        page.append("</tr>\n");
+    }
+
+    private void appendInfoHowToSearchServlet(final StringBuilder page) {
+        page.append("<tr>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + appAddress + "/HowToSearch\">HowToSearch</a></td>\n");
+        page.append("<td class=\"info\">Direkt</td>");
+        page.append("<td class=\"info\">Nach den HowTo-Eintraege des eLogbooks suchen</td>");
         page.append("</tr>\n");
     }
 
