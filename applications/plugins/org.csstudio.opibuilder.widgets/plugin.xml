@@ -284,15 +284,6 @@
       </widget>
       <widget
             category="Controls"
-            description="A combo box which can write string or integer to PV based on its items property."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.ComboEditPart"
-            icon="icons/combo.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.ComboModel"
-            name="Combo Box"
-            typeId="org.csstudio.opibuilder.widgets.combo">
-      </widget>
-      <widget
-            category="Controls"
             description="Make a single choice in a radio box group."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RadioBoxEditpart"
             icon="icons/radiobutton.gif"
@@ -310,6 +301,51 @@
             typeId="org.csstudio.opibuilder.widgets.choiceButton">
       </widget>
       <widget
+            category="Native Widgets"
+            description="A native button which can execute an action when clicked."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeButtonEditPart"
+            icon="icons/nativeButton.png"
+            model_class="org.csstudio.opibuilder.widgets.model.NativeButtonModel"
+            name="Button"
+            typeId="org.csstudio.opibuilder.widgets.NativeButton">
+      </widget>
+      <widget
+            category="Native Widgets"
+            description="A native text widget which can be use as label, text update or text input."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeTextEditpart"
+            icon="icons/nativeText.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.NativeTextModel"
+            name="Text"
+            typeId="org.csstudio.opibuilder.widgets.NativeText">
+      </widget>
+      <widget
+            category="Native Widgets"
+            description="A combo box which can write string or integer to PV based on its items property."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ComboEditPart"
+            icon="icons/combo.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.ComboModel"
+            name="Combo"
+            typeId="org.csstudio.opibuilder.widgets.combo">
+      </widget>
+      <widget
+            category="Native Widgets"
+            description="A table widget which works like a spread sheet."
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.TableEditPart"
+            icon="icons/table.gif"
+            model_class="org.csstudio.opibuilder.widgets.model.TableModel"
+            name="Table"
+            typeId="org.csstudio.opibuilder.widgets.table">
+      </widget>
+      <widget
+            category="Native Widgets"
+            description="A widget that allows embedding webpage in OPI. "
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
+            icon="icons/web_browser.png"
+            model_class="org.csstudio.opibuilder.widgets.model.WebBrowserModel"
+            name="Web Browser"
+            typeId="org.csstudio.opibuilder.widgets.webbrowser">
+      </widget>
+      <widget
             category="Others"
             description="A container that could contains an array of other widgets."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.ArrayEditPart"
@@ -317,15 +353,6 @@
             model_class="org.csstudio.opibuilder.widgets.model.ArrayModel"
             name="Array"
             typeId="org.csstudio.opibuilder.widgets.array">
-      </widget>
-      <widget
-            category="Others"
-            description="A table widget which works like a spread sheet."
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.TableEditPart"
-            icon="icons/table.gif"
-            model_class="org.csstudio.opibuilder.widgets.model.TableModel"
-            name="Table"
-            typeId="org.csstudio.opibuilder.widgets.table">
       </widget>
       <widget
             category="Others"
@@ -362,15 +389,6 @@
             model_class="org.csstudio.opibuilder.widgets.model.SashContainerModel"
             name="Sash Container"
             typeId="org.csstudio.opibuilder.widgets.sashContainer">
-      </widget>
-      <widget
-            category="Others"
-            description="A widget that allows embedding webpage in OPI. "
-            editpart_class="org.csstudio.opibuilder.widgets.editparts.WebBrowserEditPart"
-            icon="icons/web_browser.png"
-            model_class="org.csstudio.opibuilder.widgets.model.WebBrowserModel"
-            name="Web Browser"
-            typeId="org.csstudio.opibuilder.widgets.webbrowser">
       </widget>
       <widget
             category="Others"
