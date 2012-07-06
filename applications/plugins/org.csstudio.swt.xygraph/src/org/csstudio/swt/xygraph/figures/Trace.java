@@ -44,7 +44,7 @@ public class Trace extends Figure implements IDataProviderListener,
 	 * Use advanced graphics? Might not make a real performance difference, but
 	 * since this it called a lot, keep it in variable
 	 */
-	final private static boolean use_advanced_graphics = Preferences
+	final private boolean use_advanced_graphics = Preferences
 			.useAdvancedGraphics();
 
 	/**
