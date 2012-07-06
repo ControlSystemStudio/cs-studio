@@ -23,6 +23,7 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel;
 import org.csstudio.opibuilder.widgets.model.TextUpdateModel.FormatEnum;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
@@ -53,13 +54,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 
-		//Initialize frequently used variables.
-		widgetModel = getWidgetModel();
-		format = widgetModel.getFormat();
-		isAutoSize = widgetModel.isAutoSize();
-		isPrecisionFromDB = widgetModel.isPrecisionFromDB();
-		isShowUnits = widgetModel.isShowUnits();
-		precision = widgetModel.getPrecision();
+		initFields();
 
 
 		TextFigure labelFigure = createTextFigure();
@@ -70,6 +65,19 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		labelFigure.setRotate(widgetModel.getRotationAngle());
 		return labelFigure;
+	}
+
+	/**
+	 * 
+	 */
+	protected void initFields() {
+		//Initialize frequently used variables.
+		widgetModel = getWidgetModel();
+		format = widgetModel.getFormat();
+		isAutoSize = widgetModel.isAutoSize();
+		isPrecisionFromDB = widgetModel.isPrecisionFromDB();
+		isShowUnits = widgetModel.isShowUnits();
+		precision = widgetModel.getPrecision();
 	}
 
 	protected TextFigure createTextFigure(){
@@ -88,25 +96,30 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public void activate() {
 		super.activate();
-		((TextFigure)getFigure()).setText(getWidgetModel().getText());
+		setFigureText(getWidgetModel().getText());
 		if(getWidgetModel().isAutoSize()){
-			getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
+			performAutoSize();
 			figure.revalidate();
 		}
 	}
-
+	/**
+	 * @param text
+	 */
+	protected void setFigureText(String text) {
+		((TextFigure) getFigure()).setText(text);
+	}
 	@Override
 	protected void registerPropertyChangeHandlers() {
 
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((TextFigure)figure).setText((String)newValue);
+				setFigureText((String)newValue);
 
 				if(isAutoSize){
 					Display.getCurrent().timerExec(10, new Runnable() {
 						public void run() {
-								performAutoSize(figure);
+								performAutoSize();
 						}
 					});
 				}
@@ -135,7 +148,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 				Display.getCurrent().timerExec(10, new Runnable() {
 					public void run() {
 						if(getWidgetModel().isAutoSize()){
-							performAutoSize(figure);
+							performAutoSize();
 							figure.revalidate();
 						}
 					}
@@ -162,7 +175,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 					IFigure figure) {
 				isAutoSize = (Boolean)newValue;
 				if((Boolean)newValue){
-					performAutoSize(figure);
+					performAutoSize();
 					figure.revalidate();
 				}
 				return true;
@@ -193,7 +206,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 					final IFigure figure) {
 				if(newValue == null)
 					return false;
-				formatValue(newValue, AbstractPVWidgetModel.PROP_PVVALUE, figure);
+				formatValue(newValue, AbstractPVWidgetModel.PROP_PVVALUE);
 				return false;
 			}
 		};
@@ -203,7 +216,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				format = FormatEnum.values()[(Integer)newValue];
-				formatValue(newValue, TextUpdateModel.PROP_FORMAT_TYPE, figure);
+				formatValue(newValue, TextUpdateModel.PROP_FORMAT_TYPE);
 				return true;
 			}
 		};
@@ -213,7 +226,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				precision = (Integer)newValue;
-				formatValue(newValue, TextUpdateModel.PROP_PRECISION, figure);
+				formatValue(newValue, TextUpdateModel.PROP_PRECISION);
 				return true;
 			}
 		};
@@ -223,7 +236,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				isPrecisionFromDB = (Boolean)newValue;
-				formatValue(newValue, TextUpdateModel.PROP_PRECISION_FROM_DB, figure);
+				formatValue(newValue, TextUpdateModel.PROP_PRECISION_FROM_DB);
 				return true;
 			}
 		};
@@ -233,7 +246,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
 				isShowUnits = (Boolean)newValue;
-				formatValue(newValue, TextUpdateModel.PROP_SHOW_UNITS, figure);
+				formatValue(newValue, TextUpdateModel.PROP_SHOW_UNITS);
 				return true;
 			}
 		};
@@ -255,7 +268,7 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	}
 
 	protected void performDirectEdit(){
-		new LabelEditManager(this, new LabelCellEditorLocator((TextFigure)getFigure())).show();
+		new TextEditManager(this, new LabelCellEditorLocator((TextFigure)getFigure())).show();
 	}
 
 	@Override
@@ -270,15 +283,15 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 	/**
 	 * @param figure
 	 */
-	protected void performAutoSize(IFigure figure) {
-		getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
+	protected void performAutoSize() {
+		getWidgetModel().setSize(((TextFigure)getFigure()).getAutoSizeDimension());
 	}
 
 	/**
 	 * @param newValue
 	 * @return
 	 */
-	protected String formatValue(Object newValue, String propId, IFigure figure) {
+	protected String formatValue(Object newValue, String propId) {
 
 
 		if(getExecutionMode() != ExecutionMode.RUN_MODE)
@@ -357,10 +370,10 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		//synchronize the property value without fire listeners.
 		widgetModel.getProperty(
 				TextUpdateModel.PROP_TEXT).setPropertyValue(text, false);
-		((TextFigure)figure).setText(text);
+		setFigureText(text);
 
 		if(isAutoSize)
-			performAutoSize(figure);
+			performAutoSize();
 
 		return text;
 	}
@@ -376,17 +389,17 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 		if(value instanceof Number)
 			text = formatValue(ValueFactory.createDoubleValue(
 					null, ValueFactory.createOKSeverity(), null, null, null, new double[]{((Number)value).doubleValue()}), 
-					AbstractPVWidgetModel.PROP_PVVALUE, getFigure());
+					AbstractPVWidgetModel.PROP_PVVALUE);
 		else 
 			text = value.toString();
-		((TextFigure)getFigure()).setText(text);
+		setFigureText(text);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == TextFigure.class)
-			return ((TextFigure)getFigure());
+		if(key == ITextFigure.class)
+			return getFigure();
 
 		return super.getAdapter(key);
 	}

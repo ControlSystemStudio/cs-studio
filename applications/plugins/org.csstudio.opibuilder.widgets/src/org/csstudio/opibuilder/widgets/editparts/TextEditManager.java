@@ -10,7 +10,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.ITextFigure;
+import org.eclipse.draw2d.AbstractBackground;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
 import org.eclipse.gef.tools.CellEditorLocator;
@@ -32,11 +33,11 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.part.CellEditorActionHandler;
 
 
-/**The manager help to managing the label direct editing.
+/**The manager help to managing the text direct editing.
  * @author Xihui Chen
  *
  */
-public class LabelEditManager extends DirectEditManager
+public class TextEditManager extends DirectEditManager
 {
 
 private IActionBars actionBars;
@@ -51,15 +52,14 @@ private ZoomListener zoomListener = new ZoomListener() {
 		updateScaledFont(newZoom);
 	}
 };
-public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator, boolean multiline) {
+public TextEditManager(AbstractBaseEditPart source, CellEditorLocator locator, boolean multiline) {
 	super(source, null, locator);
 	this.editPart = source;
 	this.multiLine = multiline;
 }
 
-public LabelEditManager(AbstractBaseEditPart source, CellEditorLocator locator) {
-	super(source, null, locator);
-	this.editPart = source;
+public TextEditManager(AbstractBaseEditPart source, CellEditorLocator locator) {
+	this(source, locator, true);
 }
 
 /**
@@ -87,7 +87,7 @@ protected void bringDown() {
 }
 
 protected CellEditor createCellEditorOn(Composite composite) {
-	return new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
+	CellEditor editor =  new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
 		@Override
 		protected void focusLost() {		
 			//in run mode, lose focus should cancel the editing
@@ -123,6 +123,8 @@ protected CellEditor createCellEditorOn(Composite composite) {
 			super.keyReleaseOccured(keyEvent);
 		}
 	};
+	editor.getControl().moveAbove(null);
+	return editor;
 }
 
 private void disposeScaledFont() {
@@ -134,14 +136,15 @@ private void disposeScaledFont() {
 
 protected void initCellEditor() {
 	// update text
-	TextFigure label = (TextFigure) getEditPart().getAdapter(TextFigure.class);
+	ITextFigure textFigure = (ITextFigure) getEditPart().getAdapter(ITextFigure.class);
+	
 //	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
-	getCellEditor().setValue(label.getText());
-	if(label.isOpaque()){
+	getCellEditor().setValue(textFigure.getText());
+	if(textFigure.isOpaque() || textFigure.getBorder() instanceof AbstractBackground){
 		getCellEditor().getControl().setBackground(
-					label.getBackgroundColor());	
+				textFigure.getBackgroundColor());	
 	}
-	getCellEditor().getControl().setForeground(label.getForegroundColor());
+	getCellEditor().getControl().setForeground(textFigure.getForegroundColor());
 	// update font
 	ZoomManager zoomMgr = (ZoomManager)getEditPart().getViewer()
 			.getProperty(ZoomManager.class.toString());
@@ -151,7 +154,7 @@ protected void initCellEditor() {
 		updateScaledFont(zoomMgr.getZoom());
 		zoomMgr.addZoomListener(zoomListener);
 	} else
-		getCellEditor().getControl().setFont(label.getFont());
+		getCellEditor().getControl().setFont(textFigure.getFont());
 
 	// Hook the cell editor's copy/paste actions to the actionBars so that they can
 	// be invoked via keyboard shortcuts.

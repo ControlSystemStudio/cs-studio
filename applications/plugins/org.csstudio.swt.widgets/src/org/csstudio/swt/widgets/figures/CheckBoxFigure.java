@@ -31,7 +31,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Xihui Chen
  *
  */
-public class CheckBoxFigure extends Label implements Introspectable{
+public class CheckBoxFigure extends Label implements Introspectable, ITextFigure{
 
 	protected long value = 0;
 

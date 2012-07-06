@@ -44,7 +44,6 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		figure.setFill(model.getFillLevel());
 		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
-		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
 		return figure;
 	}	
@@ -94,17 +93,6 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_TRANSPARENT, transparentHandler);	
 		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				EllipseFigure ellipseFigure = (EllipseFigure) refreshableFigure;
-				ellipseFigure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
 		
 		// line color
 		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {

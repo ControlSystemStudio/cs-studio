@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.opibuilder.widgets.model.ITextModel;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.DirectEditPolicy;
 import org.eclipse.gef.requests.DirectEditRequest;
@@ -17,7 +17,7 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class LabelDirectEditPolicy 
+public class TextDirectEditPolicy 
 	extends DirectEditPolicy {
 
 	/**
@@ -25,8 +25,8 @@ public class LabelDirectEditPolicy
 	 */
 	protected Command getDirectEditCommand(DirectEditRequest edit) {
 		String labelText = (String)edit.getCellEditor().getValue();
-		LabelEditPart label = (LabelEditPart)getHost();
-		LabelEditCommand command = new LabelEditCommand((LabelModel)label.getModel(),labelText);
+		LabelEditCommand command = new LabelEditCommand(
+				(ITextModel)getHost().getModel(),labelText);
 		return command;
 	}
 	
@@ -46,10 +46,10 @@ public class LabelDirectEditPolicy
 static class LabelEditCommand extends Command	{
 	
 	private String newText, oldText;
-	private LabelModel label;
+	private ITextModel textModel;
 	
-	public LabelEditCommand(LabelModel l, String s) {
-	label = l;
+	public LabelEditCommand(ITextModel l, String s) {
+	textModel = l;
 	if (s != null)
 		newText = s;
 	else
@@ -57,12 +57,12 @@ static class LabelEditCommand extends Command	{
 	}
 	
 	public void execute() {
-		oldText = label.getText();
-		label.setText(newText);
+		oldText = textModel.getText();
+		textModel.setText(newText);
 	}
 	
 	public void undo() {
-		label.setText(oldText);
+		textModel.setText(oldText);
 	}
 
 }

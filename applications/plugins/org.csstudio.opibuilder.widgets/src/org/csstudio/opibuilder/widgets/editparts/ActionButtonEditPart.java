@@ -22,8 +22,12 @@ import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.EditPolicy;
+import org.eclipse.gef.Request;
+import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.SWT;
 
 /**
@@ -33,7 +37,7 @@ import org.eclipse.swt.SWT;
  * @author Xihui Chen
  * 
  */
-public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
+public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	  
 	/**
 	 * {@inheritDoc}
@@ -49,6 +53,23 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		updatePropSheet(model.isToggleButton());	
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return buttonFigure;
+	}
+	
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
+	}	
+	
+
+	@Override
+	public void performRequest(Request request){
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
+				request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
+				request.getType() == RequestConstants.REQ_OPEN))
+			new TextEditManager(this, 
+					new LabelCellEditorLocator(getFigure()), false).show();
 	}
 	
 	@Override
@@ -77,24 +98,37 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	public List<AbstractWidgetAction> getHookedActions() {
+		ActionButtonModel widgetModel = getWidgetModel();
+		boolean isSelected = ((ActionButtonFigure)getFigure()).isSelected();	
+		return getHookedActionsForButton(widgetModel, isSelected);
+			
+	}
+
+	/**A shared static method for all button widgets.
+	 * @param widgetModel
+	 * @param isSelected
+	 * @return
+	 */
+	public static List<AbstractWidgetAction> getHookedActionsForButton(
+			ActionButtonModel widgetModel, boolean isSelected) {
 		int actionIndex;
 		
-		if(getWidgetModel().isToggleButton()){
-			if(((ActionButtonFigure)getFigure()).isSelected()){
-				actionIndex = getWidgetModel().getActionIndex();
+		if(widgetModel.isToggleButton()){
+			if(isSelected){
+				actionIndex = widgetModel.getActionIndex();
 			}else
-				actionIndex = getWidgetModel().getReleasedActionIndex();
+				actionIndex = widgetModel.getReleasedActionIndex();
 		}else
-			actionIndex = getWidgetModel().getActionIndex();
+			actionIndex = widgetModel.getActionIndex();
 				
-		ActionsInput actionsInput = getWidgetModel().getActionsInput();
+		ActionsInput actionsInput = widgetModel.getActionsInput();
 		if(actionsInput.getActionsList().size() <=0)
 			return null;
 		if(actionsInput.isHookUpAllActionsToWidget())
 			return actionsInput.getActionsList();
 		
 		if(actionIndex >= 0 && actionsInput.getActionsList().size() > actionIndex){
-			return getWidgetModel().getActionsInput().
+			return widgetModel.getActionsInput().
 						getActionsList().subList(actionIndex, actionIndex +1);			
 		}
 		
@@ -102,7 +136,6 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			return actionsInput.getActionsList();
 		
 		return null;
-			
 	}
 
 	@Override
@@ -112,8 +145,8 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	public void deactivate() {		
-		((ActionButtonFigure)getFigure()).dispose();
 		super.deactivate();
+		((ActionButtonFigure)getFigure()).dispose();
 	}
 	
 	
@@ -190,6 +223,14 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public Object getValue() {
 		return ((ActionButtonFigure)getFigure()).getText();
+	}
+	
+	@Override
+	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+		if(key == ITextFigure.class)
+			return getFigure();
+
+		return super.getAdapter(key);
 	}
 
 }

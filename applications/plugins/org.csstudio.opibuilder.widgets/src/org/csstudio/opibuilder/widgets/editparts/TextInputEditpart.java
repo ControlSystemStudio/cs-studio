@@ -74,27 +74,35 @@ public class TextInputEditpart extends TextUpdateEditPart {
 				.addManualValueChangeListener(new IManualStringValueChangeListener() {
 
 					public void manualValueChanged(String newValue) {
-						if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-							setPVValue(TextInputModel.PROP_PVNAME, newValue);
-							getWidgetModel().setPropertyValue(
-									TextInputModel.PROP_TEXT, newValue, false);
-						} else {
-							getViewer()
-									.getEditDomain()
-									.getCommandStack()
-									.execute(
-											new SetWidgetPropertyCommand(
-													getWidgetModel(),
-													TextInputModel.PROP_TEXT,
-													newValue));
-						}
+						outputText(newValue);
 					}
+
+					
 				});
 
 		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
+		updatePropSheet();
+		setPropertiesVisibilities(getWidgetModel().getSelectorType());
 		return textInputFigure;
 	}
 
+	/**Call this method when user hit Enter or Ctrl+Enter for multiline input.
+	 * @param newValue
+	 */
+	protected void outputText(String newValue) {
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			setPVValue(TextInputModel.PROP_PVNAME, newValue);
+			getWidgetModel().setPropertyValue(TextInputModel.PROP_TEXT,
+					newValue, false);
+		} else {
+			getViewer()
+					.getEditDomain()
+					.getCommandStack()
+					.execute(
+							new SetWidgetPropertyCommand(getWidgetModel(),
+									TextInputModel.PROP_TEXT, newValue));
+		}
+	}
 	@Override
 	protected TextFigure createTextFigure() {
 		return new TextInputFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
@@ -158,6 +166,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		}
 	}
 
+
+	
 	@Override
 	protected void registerPropertyChangeHandlers() {
 		super.registerPropertyChangeHandlers();
@@ -169,11 +179,11 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					String text = (String) newValue;
 					
 					if(getPV() == null){
-					 ((TextFigure)figure).setText(text);
+					 setFigureText(text);
 					 if(getWidgetModel().isAutoSize()){
 							Display.getCurrent().timerExec(10, new Runnable() {
 								public void run() {
-										performAutoSize(figure);
+										performAutoSize();
 								}
 							});
 						}
@@ -199,6 +209,8 @@ public class TextInputEditpart extends TextUpdateEditPart {
 					}
 					return false;
 				}
+
+			
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		}
@@ -213,7 +225,18 @@ public class TextInputEditpart extends TextUpdateEditPart {
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
 				pvNameHandler);
-
+	
+		getWidgetModel().getProperty(TextInputModel.PROP_LIMITS_FROM_PV)
+			.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent arg0) {
+				updatePropSheet();
+			}
+		});
+			
+		
+		
 		IWidgetPropertyChangeHandler dateTimeFormatHandler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue,
@@ -247,11 +270,10 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_FILE_RETURN_PART,
-				fileReturnPartHandler);
-
-		setPropertiesVisibilities(getWidgetModel().getSelectorType());
+				fileReturnPartHandler);		
 		
-		getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
+		if(getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE) != null)
+			getWidgetModel().getProperty(TextInputModel.PROP_SELECTOR_TYPE)
 				.addPropertyChangeListener(new PropertyChangeListener() {
 
 					public void propertyChange(PropertyChangeEvent evt) {
@@ -334,7 +356,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	}
 
 	protected void performDirectEdit() {
-		new LabelEditManager(this, new LabelCellEditorLocator(
+		new TextEditManager(this, new LabelCellEditorLocator(
 				(Figure) getFigure()), getWidgetModel().isMultilineInput()).show();
 	}
 	
@@ -507,11 +529,22 @@ public class TextInputEditpart extends TextUpdateEditPart {
 
 
 	@Override
-	protected String formatValue(Object newValue, String propId, IFigure figure) {
-		String text = super.formatValue(newValue, propId, figure);
+	protected String formatValue(Object newValue, String propId) {
+		String text = super.formatValue(newValue, propId);
 		getWidgetModel()
 				.setPropertyValue(TextInputModel.PROP_TEXT, text, false);
 		return text;
+
+	}
+	
+	/**
+	 * @param newValue
+	 */
+	protected void updatePropSheet() {
+		getWidgetModel().setPropertyVisible(
+				TextInputModel.PROP_MAX, !getWidgetModel().isLimitsFromPV());
+		getWidgetModel().setPropertyVisible(
+				TextInputModel.PROP_MIN, !getWidgetModel().isLimitsFromPV());
 
 	}
 

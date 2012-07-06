@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
 import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
@@ -56,7 +57,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	protected void createEditPolicies() {
 		super.createEditPolicies();
 		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new LabelDirectEditPolicy());
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
 		
 	}
 	
@@ -168,7 +169,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	}
 
 	private void performDirectEdit(){
-		new LabelEditManager(this, new LabelCellEditorLocator((WrappableTextFigure)getFigure())).show();
+		new TextEditManager(this, new LabelCellEditorLocator((WrappableTextFigure)getFigure())).show();
 	}
 	
 	@Override
@@ -188,7 +189,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == TextFigure.class)
+		if(key == ITextFigure.class)
 			return ((TextFigure)getFigure());
 
 		return super.getAdapter(key);
