@@ -102,9 +102,13 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 						GUIRefreshThread.getInstance(true).reLoadGUIRefreshCycle();
 					else if (event.getProperty().equals(
 							PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)) {
+						String disabled = PreferencesHelper.isAdvancedGraphicsDisabled() ? "true" : "false";//$NON-NLS-1$ //$NON-NLS-2$	
+						//for swt.widgets
 						System.setProperty(
-								"org.csstudio.swt.widget.prohibit_advanced_graphics", //$NON-NLS-1$
-								PreferencesHelper.isAdvancedGraphicsDisabled() ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+								"org.csstudio.swt.widget.prohibit_advanced_graphics", disabled);//$NON-NLS-1$												
+						//for XYGraph
+						System.setProperty("prohibit_advanced_graphics", disabled); //$NON-NLS-1$				
+				
 					} else if (event.getProperty().equals(
 							PreferencesHelper.URL_FILE_LOADING_TIMEOUT))
 						System.setProperty(
@@ -126,6 +130,21 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 			};
 
 			getPluginPreferences().addPropertyChangeListener(preferenceLisener);
+			
+			@SuppressWarnings("serial")
+			//need to run preferenceListener at startup
+			//A hack to make protected constructor public.
+			class HackPropertyChangeEvent extends PropertyChangeEvent{
+				public HackPropertyChangeEvent(Object source, String property, Object oldValue, Object newValue) {
+					super(source,property,oldValue,newValue);
+				}
+			}
+			preferenceLisener.propertyChange(
+					new HackPropertyChangeEvent(
+							this, PreferencesHelper.DISABLE_ADVANCED_GRAPHICS, null, null));
+			preferenceLisener.propertyChange(
+					new HackPropertyChangeEvent(
+							this, PreferencesHelper.URL_FILE_LOADING_TIMEOUT, null, null));
 		}
 	}
 
