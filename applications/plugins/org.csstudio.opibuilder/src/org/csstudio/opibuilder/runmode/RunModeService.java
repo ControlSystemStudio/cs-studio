@@ -10,14 +10,17 @@ package org.csstudio.opibuilder.runmode;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.opibuilder.visualparts.TipDialog;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
@@ -204,16 +207,26 @@ public class RunModeService {
 					}
 					
 					//Open a new view					
-					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW && !(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
-						if(MessageDialog.openQuestion(window.getShell(), "Switch to OPI Runtime Perspective", 
-								"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
-								"\nDo you want to switch to it now?"))
+					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
+							!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
+						int openCode=0;
+						if(PreferencesHelper.isShowOpiRuntimePerspectiveDialog()){
+							TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION, 
+									"Switch to OPI Runtime Perspective", 
+									"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
+								"\nDo you want to switch to it now?");
+							openCode=dialog.open();								
+							if(!dialog.isShowThisDialogAgain())
+								PreferencesHelper.setShowOpiRuntimePerspectiveDialog(false);
+						}
+						if(openCode==0 ||openCode==Window.OK)						
 							try {
 								workbench.showPerspective(OPIRunnerPerspective.ID, window);
 							} catch (WorkbenchException e) {
 								ErrorHandlerUtil.handleError(
-										"Faile to switch to OPI Runtime perspective", e, false, true);
-							}							
+									"Faile to switch to OPI Runtime perspective", e, false, true);
+							}
+						
 					}
 					
 					
