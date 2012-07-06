@@ -156,6 +156,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 			viewer.setContents(displayModel);
 			updateEditorTitle();
 			displayModel.setViewer(viewer);
+			displayModel.setOpiRuntime(opiRuntime);
 		}		
 		
 		SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
@@ -215,6 +216,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		if(displayModelFilled){
 			viewer.setContents(displayModel);
 			displayModel.setViewer(viewer);
+			displayModel.setOpiRuntime(opiRuntime);
 			updateEditorTitle();
 		}
 
@@ -383,6 +385,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
 										if(viewer != null){
 											viewer.setContents(displayModel);
 											displayModel.setViewer(viewer);
+											displayModel.setOpiRuntime(opiRuntime);
 										}
 										updateEditorTitle();
 										hideCloseButton(site);
