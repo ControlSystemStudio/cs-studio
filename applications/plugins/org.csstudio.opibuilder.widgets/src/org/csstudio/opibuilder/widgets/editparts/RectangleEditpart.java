@@ -45,7 +45,6 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		figure.setFill(model.getFillLevel());
 		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
-		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
 		return figure;
 	}	
@@ -94,18 +93,6 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 			}
 		};
 		setPropertyChangeHandler(RectangleModel.PROP_TRANSPARENT, transparentHandler);	
-		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
-				figure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
 		
 		// line color
 		IWidgetPropertyChangeHandler lineColorHandler = new IWidgetPropertyChangeHandler() {

@@ -34,7 +34,6 @@ import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -48,9 +47,7 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double fill = 100.0;
-	
-	private boolean antiAlias = true;
+	private double fill = 100.0;	
 
 	private boolean horizontalFill;
 
@@ -73,7 +70,6 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 	 */
 	@Override
 	protected void fillShape(final Graphics graphics) {
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		graphics.pushState();	
 		Rectangle figureBounds = getBounds();
 		if(!transparent){
@@ -132,12 +128,7 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 		return transparent;
 	}
 
-	/**
-	 * @return the antiAlias
-	 */
-	public boolean isAntiAlias() {
-		return antiAlias;
-	}
+
 
 	/**
 	 * Gets the orientation (horizontal==true | vertical==false).
@@ -157,12 +148,6 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 		g.popState();
 	}
 
-	public void setAntiAlias(boolean antiAlias) {
-		if(this.antiAlias == antiAlias)
-			return;
-		this.antiAlias = antiAlias;
-		repaint();
-	}
 	
 	/**
 	 * Overridden, to ensure that the bounds rectangle gets repainted each time,

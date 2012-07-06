@@ -48,7 +48,6 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 		PolygonModel model = getWidgetModel();
 		polygon.setPoints(model.getPoints());
 		polygon.setFill(model.getFillLevel());
-		polygon.setAntiAlias(model.isAntiAlias());
 		polygon.setHorizontalFill(model.isHorizontalFill());
 		polygon.setTransparent(model.isTransparent());
 		polygon.setLineColor(model.getLineColor());
@@ -78,18 +77,6 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 			}
 		};
 		setPropertyChangeHandler(AbstractPolyModel.PROP_FILL_LEVEL, fillHandler);		
-		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				PolygonFigure polygon = (PolygonFigure) refreshableFigure;
-				polygon.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPolyModel.PROP_ANTIALIAS, antiAliasHandler);		
 		
 		// fill orientaion
 		IWidgetPropertyChangeHandler fillOrientHandler = new IWidgetPropertyChangeHandler() {
