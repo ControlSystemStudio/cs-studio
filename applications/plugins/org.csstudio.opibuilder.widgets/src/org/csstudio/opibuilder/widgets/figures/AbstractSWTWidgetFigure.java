@@ -15,7 +15,6 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.AncestorListener;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -37,7 +36,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Scrollable;
 
 /**
  * The abstract figure for all SWT widget based figure. Note that there are 
@@ -358,13 +356,14 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 		final Rectangle clientArea = getClientArea();
 		final Rectangle rect = clientArea.getCopy();
 		translateToAbsolute(rect);
-		if(getSWTWidget() instanceof Scrollable){
-			org.eclipse.swt.graphics.Rectangle trim = ((Scrollable)getSWTWidget()).computeTrim(0,
-					0, 0, 0);
-			rect.translate(trim.x, trim.y);
-			rect.width += trim.width;
-			rect.height += trim.height;
-		}
+		//The trim should not be added here 
+//		if(getSWTWidget() instanceof Scrollable){
+//			org.eclipse.swt.graphics.Rectangle trim = ((Scrollable)getSWTWidget()).computeTrim(0,
+//					0, 0, 0);
+//			rect.translate(trim.x, trim.y);
+//			rect.width += trim.width;
+//			rect.height += trim.height;
+//		}
 		if (wrapComposite != null
 				&& getParent().getParent() instanceof Viewport) {
 			Rectangle viewPortArea = getParent().getParent().getClientArea();
@@ -432,30 +431,33 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 		if (updateFlag && updateManagerListener != null)
 			getUpdateManager().removeUpdateListener(updateManagerListener);
 		removeAncestorListener(ancestorListener);
+		Runnable task;
 		if (wrapComposite != null) {
-			UIBundlingThread.getInstance().addRunnable(
-					composite.getDisplay(),new Runnable() {
-						public void run() {
-							if (!wrapComposite.isDisposed()) {
-								getSWTWidget().setMenu(null);
-								wrapComposite.dispose();								
-								wrapComposite = null;		
-							}
-						}
-					});
-		}else{
-			UIBundlingThread.getInstance().addRunnable(composite.getDisplay(),
-					new Runnable() {
-						public void run() {
-							if (!getSWTWidget().isDisposed()) {
-								getSWTWidget().setMenu(null);
-								getSWTWidget().dispose();
-								composite.update();
-							}
-						}
-					});
+			task = new Runnable() {
+				public void run() {
+					if (!wrapComposite.isDisposed()) {
+						getSWTWidget().setMenu(null);
+						wrapComposite.dispose();
+						wrapComposite = null;
+					}
+				}
+			};
+		} else {
+			task = new Runnable() {
+				public void run() {
+					if (!getSWTWidget().isDisposed()) {
+						getSWTWidget().setMenu(null);
+						getSWTWidget().dispose();
+//						composite.update();
+					}
+				}
+			};
 		}
-			
+//		UIBundlingThread.getInstance().addRunnable(composite.getDisplay(), task);
+		if (composite.getDisplay().getThread() == Thread.currentThread()) {
+			task.run();
+		} else
+			composite.getDisplay().asyncExec(task);
 	}
 
 }
