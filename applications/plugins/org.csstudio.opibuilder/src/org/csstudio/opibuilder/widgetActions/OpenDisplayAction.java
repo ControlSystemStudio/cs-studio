@@ -22,9 +22,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.jdom.Element;
 
 /**
@@ -79,27 +77,23 @@ public class OpenDisplayAction extends AbstractOpenOPIAction {
 	@Override
 	protected void openOPI(IPath absolutePath) {
 		if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {				
-			IWorkbenchPart activePart = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage()
-					.getActivePart();
-			if (activePart instanceof IOPIRuntime) {
-				DisplayOpenManager manager = (DisplayOpenManager) (activePart
-						.getAdapter(DisplayOpenManager.class));
-				manager.openNewDisplay();
-				try {
-					RunModeService.replaceOPIRuntimeContent(
-							(IOPIRuntime) activePart,
-							new RunnerInput(absolutePath, manager,
-									getMacrosInput()));
-				} catch (PartInitException e) {
-					OPIBuilderPlugin.getLogger().log(Level.WARNING,
-							"Failed to open " + absolutePath, e); //$NON-NLS-1$
-					MessageDialog.openError(Display.getDefault()
-							.getActiveShell(), "Open file error", NLS.bind(
-							"Failed to open {0}", absolutePath));
-				}
-
+			IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
+					.getOpiRuntime();
+			DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
+					.getAdapter(DisplayOpenManager.class));
+			manager.openNewDisplay();
+			try {
+				RunModeService
+						.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
+								absolutePath, manager, getMacrosInput()));
+			} catch (PartInitException e) {
+				OPIBuilderPlugin.getLogger().log(Level.WARNING,
+						"Failed to open " + absolutePath, e); //$NON-NLS-1$
+				MessageDialog.openError(Display.getDefault().getActiveShell(),
+						"Open file error",
+						NLS.bind("Failed to open {0}", absolutePath));
 			}
+			
 		} else {
 			TargetWindow target;
 			if(!ctrlPressed && !shiftPressed){
