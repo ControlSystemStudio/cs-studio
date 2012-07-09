@@ -25,6 +25,7 @@ public class TextUtilities {
 		int borderWidth= textModel.getBorderWidth();
 		int fontSize = convertTextHeightToFontSize(textModel
 				.getHeight() - 2*borderWidth);
+		fontSize = fontSize-((int)(fontSize/10))*3;
 		FontData fontData = font.getFontData();
 		FontData newFontData = new FontData(fontData.getName(),
 				fontData.getHeight(), fontData.getStyle());
