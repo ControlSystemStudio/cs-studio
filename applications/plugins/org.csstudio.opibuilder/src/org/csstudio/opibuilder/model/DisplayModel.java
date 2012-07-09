@@ -27,6 +27,7 @@ import org.osgi.framework.Version;
  * 
  * @author Alexander Will, Sven Wende, Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
+ * @author Takashi Nakamoto @ Cosylab (Property for refresh rate)
  * 
  */
 public class DisplayModel extends AbstractContainerModel {
@@ -75,6 +76,12 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_AUTO_SCALE_WIDGETS = "auto_scale_widgets"; //$NON-NLS-1$
 
+	/**
+	 * Refresh rate in milliseconds.
+	 * This is the hidden property which can be referred only from scripts. 
+	 * The value is valid only when running mode. In edit mode, it is always -1.
+	 */
+	public static final String PROP_REFRESH_RATE = "refresh_rate"; //$NON-NLS-1$
 
 	private GraphicalViewer viewer;
 
@@ -112,6 +119,9 @@ public class DisplayModel extends AbstractContainerModel {
 				.getVersion();
 		addProperty(new VersionProperty(PROP_BOY_VERSION, "BOY Version",
 				WidgetPropertyCategory.Basic, version.toString()));
+		
+		addProperty(new IntegerProperty(PROP_REFRESH_RATE, "Refresh Rate",
+				WidgetPropertyCategory.Display, -1));
 
 		setPropertyVisible(PROP_BORDER_COLOR, false);
 		setPropertyVisible(PROP_BORDER_STYLE, false);
@@ -121,6 +131,7 @@ public class DisplayModel extends AbstractContainerModel {
 		setPropertyVisible(PROP_TOOLTIP, false);
 		setPropertyVisible(PROP_ACTIONS, false);
 		setPropertyVisible(PROP_FONT, false);
+		setPropertyVisible(PROP_REFRESH_RATE, false);
 		setPropertyVisibleAndSavable(PROP_BOY_VERSION, false, true);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
 				WidgetPropertyCategory.Behavior, false));
@@ -275,5 +286,14 @@ public class DisplayModel extends AbstractContainerModel {
 			heightRatio = minHeight/(double)getHeight();
 		for(AbstractWidgetModel child : getChildren())
 			child.scale(widthRatio, heightRatio);
+	}
+	
+	/**
+	 * When a new refresh rate is notified by GUI toolkit side, this method
+	 * shall be called to set the up-to-date refresh rate.
+	 * @param rate Refresh rate in milliseconds
+	 */
+	public void setRefreshRate(long rate) {
+		setPropertyValue(PROP_REFRESH_RATE, rate);
 	}
 }
