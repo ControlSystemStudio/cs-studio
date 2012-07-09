@@ -110,8 +110,9 @@ public class AlarmConfigurationLoader
 
         // Read component config elements
         loadCommonConfig(component, tree_component);
-        config.configureItem(tree_component, tree_component.getGuidance(),
-                tree_component.getDisplays(), tree_component.getCommands());
+		config.configureItem(tree_component, tree_component.getGuidance(),
+				tree_component.getDisplays(), tree_component.getCommands(),
+				tree_component.getAutomatedActions());
 
         System.out.println("Loading " + tree_component.getPathName());
 
@@ -152,6 +153,7 @@ public class AlarmConfigurationLoader
     	item.setGuidance(loadGDC(node, XMLTags.GUIDANCE));
     	item.setDisplays(loadGDC(node, XMLTags.DISPLAY));
     	item.setCommands(loadGDC(node, XMLTags.COMMAND));
+    	item.setAutomatedActions(loadAA(node, XMLTags.AUTOMATED_ACTION));
     }
 
     /** Load AlarmTreePV
@@ -187,13 +189,13 @@ public class AlarmConfigurationLoader
         config.configurePV(pv, pv.getDescription(), pv.isEnabled(),
                 pv.isAnnunciating(), pv.isLatching(),
                 pv.getDelay(), pv.getCount(), pv.getFilter(),
-                pv.getGuidance(), pv.getDisplays(), pv.getCommands());
+                pv.getGuidance(), pv.getDisplays(), pv.getCommands(), pv.getAutomatedActions());
     }
 
-    /** Load Guidance/Displays/Commands
+    /** Load Guidance/Displays/Commands/Automated Actions
      *  @param node DOM node, could be a component or a PV
-     *  @param name name of the item to load, it must be one of XMLTags.GUIDANCE/DISPLAY/COMMAND
-     *  @return Guidance/Displays/Commands array, never null.
+     *  @param name name of the item to load, it must be one of XMLTags.GUIDANCE/DISPLAY/COMMAND/AUTOMATED_ACTION
+     *  @return Guidance/Displays/Commands/Automated Actions array, never null.
      */
     private GDCDataStructure[] loadGDC(final Element node,
                                        final String name) throws Exception
@@ -224,4 +226,24 @@ public class AlarmConfigurationLoader
         }
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
+    
+    /** Load Automated Actions
+     *  @param node DOM node, could be a component or a PV
+     *  @param name name of the item to load, it must be XMLTags.AUTOMATED_ACTION
+     *  @return Automated Actions array, never null.
+     */
+	private AADataStructure[] loadAA(final Element node, final String name)
+			throws Exception {
+		final List<AADataStructure> aaList = new ArrayList<AADataStructure>();
+
+		Element aaNode = DOMHelper.findFirstElementNode(node.getFirstChild(), name);
+		while (aaNode != null) {
+			String title = DOMHelper.getSubelementString(aaNode, XMLTags.TITLE);
+			String details = DOMHelper.getSubelementString(aaNode, XMLTags.DETAILS);
+			Integer delay = DOMHelper.getSubelementInt(aaNode, XMLTags.DELAY);
+			aaList.add(new AADataStructure(title, details, delay));
+			aaNode = DOMHelper.findNextElementNode(aaNode, name);
+		}
+		return aaList.toArray(new AADataStructure[aaList.size()]);
+	}
 }
