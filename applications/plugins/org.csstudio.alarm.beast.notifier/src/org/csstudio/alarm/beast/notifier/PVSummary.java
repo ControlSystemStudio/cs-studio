@@ -18,14 +18,14 @@ public class PVSummary {
 	private String current_message, message;
 	private String value;
 	private String timestamp;
-	
+
 	boolean isNLSMessage = false;
 	private static Pattern NLSPattern = Pattern.compile("\\{\\ *\\d+\\ *\\}");
-	
+
 	/** Pattern for description prefixes */
     final protected static Pattern PrefixPattern = Pattern.compile("^[\\*\\!]*(.*)");
-	
-	public static PVSummary buildFromSnapshot(PVSnapshot pv) 
+
+	public static PVSummary buildFromSnapshot(PVSnapshot pv)
 	{
 		String description = pv.getDescription().trim();
 		boolean isNLSMessage = false;
@@ -46,12 +46,12 @@ public class PVSummary {
 		String message = pv.getMessage();
 		String value = pv.getValue();
 
-		String timestamp = pv.getTimestamp().toString();
+		String timestamp = pv.getTimestamp() == null ? "(no time)" : pv.getTimestamp().toString();
 
 		return new PVSummary(description, name, current_severity, severity,
 				current_message, message, value, timestamp, isNLSMessage);
 	}
-	
+
 	public PVSummary(String description,
 			String name,
 			String current_severity,
@@ -60,7 +60,7 @@ public class PVSummary {
 			String message,
 			String value,
 			String timestamp,
-			boolean isNLSMessage) 
+			boolean isNLSMessage)
 	{
 		this.description = description;
 		this.name = name;
@@ -72,8 +72,8 @@ public class PVSummary {
 		this.timestamp = timestamp;
 		this.isNLSMessage = isNLSMessage;
 	}
-	
-	public String getSummary() 
+
+	public String getSummary()
 	{
 		if (isNLSMessage) {
 			String[] bindings = { current_severity, value };
@@ -92,7 +92,7 @@ public class PVSummary {
 		}
 		return builder.toString();
 	}
-	
+
 	public String getDetails()
 	{
 		StringBuilder builder = new StringBuilder();
