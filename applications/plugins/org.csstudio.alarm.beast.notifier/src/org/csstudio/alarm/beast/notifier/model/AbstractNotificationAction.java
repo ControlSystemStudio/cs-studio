@@ -26,13 +26,14 @@ import org.csstudio.alarm.beast.notifier.actions.NotificationActionListener;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public abstract class AbstractNotificationAction implements INotificationAction {
 
 	protected List<NotificationActionListener> listeners;
 	protected AlarmNotifier notifier;
 	protected ActionID ID;
 	protected IActionValidator validator;
-	
+
 	protected Thread wrappingThread;
 
 	/** Map underlying PVs with their respective alarm  */
@@ -40,7 +41,7 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 
 	/** Information from {@link AlarmTreeItem} providing the automated action */
 	protected ItemInfo item;
-	
+
 	/** If <code>true</code>, this action is from {@link AlarmTreePV} */
 	protected boolean isPV = true;
 
@@ -48,9 +49,10 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 	protected int delay;
 	protected EActionStatus status = EActionStatus.OK;
 	protected EActionPriority priority= EActionPriority.OK;
-	
+
 	/** {@inheritDoc} */
-	public void init(AlarmNotifier notifier, ActionID id, ItemInfo item,
+	@Override
+    public void init(AlarmNotifier notifier, ActionID id, ItemInfo item,
 			int delay, String details) {
 		this.listeners = new ArrayList<NotificationActionListener>();
 		this.notifier = notifier;
@@ -63,23 +65,27 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 		if (item.isImportant()) {
 			this.priority = EActionPriority.IMPORTANT;
 		}
+		Activator.getLogger().log(Level.FINE, "Triggered by {0}", item.getPath());
 	}
-	
+
 	/** {@inheritDoc} */
-	public void init(AlarmNotifier notifier, ActionID id, ItemInfo item,
+	@Override
+    public void init(AlarmNotifier notifier, ActionID id, ItemInfo item,
 			int delay, String details, IActionValidator validator) {
 		init(notifier, id, item, delay, details);
 		this.validator = validator;
 	}
 
 	/** {@inheritDoc} */
+    @Override
 	public void addListener(NotificationActionListener listener) {
 		synchronized (listeners) {
 			listeners.add(listener);
 		}
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public void start() {
 		wrappingThread = new Thread(this);
 		wrappingThread.start();
@@ -88,7 +94,7 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 			} catch (InterruptedException e) {}
 		}
 	}
-	
+
 
 	/** Standard behavior of an automated action
 	 * 1. Sleep during the delay
@@ -123,7 +129,7 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 			actionCompleted();
 		}
 	}
-	
+
 	private void refreshStatus() {
 		// If canceled or stopped, we do nothing
 		if (status.equals(EActionStatus.CANCELED)
@@ -131,7 +137,7 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 			return;
 		// Clean PVs
 		synchronized (pvs) {
-			Map<String, PVAlarmHandler> pvsClone = 
+			Map<String, PVAlarmHandler> pvsClone =
 					new HashMap<String, PVAlarmHandler>(pvs);
 			for (Entry<String, PVAlarmHandler> entry : pvsClone.entrySet())
 				if (entry.getValue().validate() == false)
@@ -140,13 +146,15 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 				status = EActionStatus.CANCELED;
 		}
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public boolean isSleeping() {
 		return wrappingThread.getState().equals(State.TIMED_WAITING);
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public void actionCompleted() {
 		if (listeners != null) {
 			synchronized (listeners) {
@@ -156,8 +164,9 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 			}
 		}
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public void updateAlarms(PVSnapshot pv) {
 		// Update alarm handler
 		synchronized (pvs) {
@@ -187,39 +196,47 @@ public abstract class AbstractNotificationAction implements INotificationAction 
 	}
 
 	/** {@inheritDoc} */
+    @Override
 	public void updateStatus(EActionStatus status) {
 		this.status = status;
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public void cancel() {
 		status = EActionStatus.CANCELED;
 		wrappingThread.interrupt();
 	}
-	
+
 	/** {@inheritDoc} */
+    @Override
 	public void forceExec() {
 		status = EActionStatus.FORCED;
 		wrappingThread.interrupt();
 	}
 
+    @Override
 	public ActionID getID() {
 		return ID;
 	}
+    @Override
 	public ItemInfo getItem() {
 		return item;
 	}
+    @Override
 	public EActionStatus getActionStatus() {
 		return status;
 	}
+    @Override
 	public EActionPriority getActionPriority() {
 		return priority;
 	}
+    @Override
 	public boolean isPV() {
 		return isPV;
 	}
-	
-	@Override
+
+    @Override
 	public String toString() {
 		return item.getName() + ": " + ID.getAaTitle();
 	}
