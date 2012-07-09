@@ -18,8 +18,21 @@
 
 
 <A NAME="latest"></A>
-<h2>As of 6/28/2012</h2>
+<h2>As of 7/9/2012</h2>
 <ul>
+<li>Fixed the bug that zooming a widget with gradient (or 3D) effect resulted in ugly looking.</li>
+
+<li>Add alpha property to all shape widgets. 
+Add gradient, background gradient start color, foreground gradient start color properties to Rectangle,
+Rounded Rectangle and Ellipse widgets.</li>
+
+<li>Add native button, text widgets. Native widgets will have significantly better performance in WebOPI.
+The native text widget can be used as either label, text update or text input.</li>
+
+
+<li>Add direct edit support to button, menu button, check box widgets, so now you can
+double click these widgets to input text in edit mode</li>
+
 <li>For macro color and font, both color/font name and value are saved in OPI file, 
 so in case of color/font file is not available, use the saved value. This will
 make OPI function normally in most cases even color/font file is not available. The only drawback is 
