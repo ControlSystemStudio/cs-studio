@@ -56,6 +56,11 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	 */
 	public static final String PROP_ANTIALIAS = "anti_alias"; //$NON-NLS-1$
 	
+	/**
+	 * Alpha value.
+	 */
+	public static final String PROP_ALPHA = "alpha"; //$NON-NLS-1$
+	
 	/** True if background is transparent. */
 	public static final String PROP_TRANSPARENT = "transparent";	
 
@@ -75,6 +80,8 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {
 		addProperty(new IntegerProperty(PROP_LINE_WIDTH, "Line Width",
 				WidgetPropertyCategory.Display, 0, 0, 100));
+		addProperty(new IntegerProperty(PROP_ALPHA, "Alpha",
+				WidgetPropertyCategory.Display, 255, 0, 255));
 		addProperty(new ComboProperty(PROP_LINE_STYLE, "Line Style",
 				WidgetPropertyCategory.Display, LineStyle.stringValues(), 0));
 		addProperty(new ColorProperty(PROP_LINE_COLOR, "Line Color",
@@ -97,6 +104,10 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	 */
 	public final boolean isAntiAlias(){
 		return (Boolean)getCastedPropertyValue(PROP_ANTIALIAS);
+	}
+	
+	public int getAlpha(){
+		return (Integer)getPropertyValue(PROP_ALPHA); 
 	}
 	
 	/**

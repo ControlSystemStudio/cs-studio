@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
  * @author Xihui Chen
  *
  */
-public class TextFigure extends Figure implements Introspectable{	
+public class TextFigure extends Figure implements Introspectable, ITextFigure{	
 	
 	
 	protected V_ALIGN verticalAlignment = V_ALIGN.TOP;

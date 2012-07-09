@@ -56,7 +56,8 @@
       <p>Preference key: <code>opi_search_path</code></p></li>
     
     <li><b>Top OPIs: </b><p>The OPIs which will be listed in the "Top OPIs" drop down button. 
-    To add initial macros to the OPI, append "macroName=macroValue" behind path and separate them by commas.
+    To add macros input for the OPI, append "macroName=macroValue" to path and separate them by commas.
+    To give a different menu text rather than using file name, append a macro "Alias=The Menu Name".
     It is also possible to specify the OPI open position by giving macro <code>Position</code>. 
     The available positions are: 
     <ul>
@@ -70,7 +71,7 @@
     <p>If macro <code>Position</code> is not set or is not in one of above positions, it will be opened in editor area.</p>
     <p>Multiple top OPIs are separated by <code>|</code>. For example:
     </p> 
-    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Alias=BOY Examples", "Position=Left"| "BOY Examples/1_2_WidgetExamples.opi"</pre>    
     
     <p><img src="./img/top_opis.png"></p>
     

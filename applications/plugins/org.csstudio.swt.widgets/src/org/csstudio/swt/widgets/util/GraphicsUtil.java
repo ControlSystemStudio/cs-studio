@@ -19,12 +19,7 @@ import org.eclipse.swt.graphics.RGB;
 public class GraphicsUtil {
 
 	public static synchronized boolean testPatternSupported(Graphics graphics){
-		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-			return false;
-		if(!Preferences.useAdvancedGraphics())
-			return false;
-		String value = System.getProperty(Preferences.PROHIBIT_ADVANCED_GRAPHICS); //$NON-NLS-1$
-		if(value != null && value.equals("true")) //$NON-NLS-1$
+		if(!useAdvancedGraphics())
 			return false;
 		
 		boolean support3D = true;
@@ -36,6 +31,20 @@ public class GraphicsUtil {
 		}
 		
 		return support3D;
+	}
+
+	/**
+	 * If advanced graphics is enabled by system setting.
+	 */
+	public static boolean useAdvancedGraphics() {
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			return false;
+		if(!Preferences.useAdvancedGraphics())
+			return false;
+		String value = System.getProperty(Preferences.PROHIBIT_ADVANCED_GRAPHICS); //$NON-NLS-1$
+		if(value != null && value.equals("true")) //$NON-NLS-1$
+			return false;
+		return true;
 	}
 	
 	/**

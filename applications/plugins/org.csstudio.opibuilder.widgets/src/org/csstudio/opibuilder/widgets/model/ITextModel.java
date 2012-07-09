@@ -5,32 +5,21 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.opibuilder.palette;
+package org.csstudio.opibuilder.widgets.model;
 
-/**The Major categories of widgets on the palette.
+import org.csstudio.opibuilder.widgets.editparts.TextDirectEditPolicy;
+
+/**
+ * The model for widgets have text property,
+ *  so the widget can be directly edited by installing {@link TextDirectEditPolicy}. 
  * @author Xihui Chen
  *
  */
-public enum MajorCategories {
+public interface ITextModel {
+
+	public void setText(String text);
 	
-	GRAPHICS("Graphics"),
+	public String getText();
 	
-	MONITORS("Monitors"),
 	
-	CONTROLS("Controls"),
-	
-	NATIVE_WIDGETS("Native Widgets"),
-	
-	OTHERS("Others");
-	
-	private String description;
-	
-	private MajorCategories(String description){
-		this.description = description;
-	}
-	
-	@Override
-	public String toString() {
-		return description;
-	}
 }

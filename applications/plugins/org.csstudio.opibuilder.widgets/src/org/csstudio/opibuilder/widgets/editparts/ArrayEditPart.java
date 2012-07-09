@@ -43,7 +43,7 @@ import org.csstudio.swt.widgets.datadefinition.IntArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.LongArrayWrapper;
 import org.csstudio.swt.widgets.datadefinition.ShortArrayWrapper;
 import org.csstudio.swt.widgets.figures.ArrayFigure;
-import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.Border;
@@ -425,7 +425,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	@Override
 	public Object getAdapter(Class key) {
 		// for direct edit manager
-		if (key == TextFigure.class)
+		if (key == ITextFigure.class)
 			return getArrayFigure().getSpinner().getLabelFigure();
 		if (key == ProcessVariable.class) {
 			return new ProcessVariable(getPVName());
@@ -560,7 +560,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 	}
 
 	protected void performDirectEdit() {
-		new LabelEditManager(this, new LabelCellEditorLocator(getArrayFigure().getSpinner()
+		new TextEditManager(this, new LabelCellEditorLocator(getArrayFigure().getSpinner()
 				.getLabelFigure()), false).show();
 	}
 

@@ -18,10 +18,9 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
-import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgets.figures.NativeButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
-import org.csstudio.swt.widgets.figures.ActionButtonFigure;
-import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
+import org.csstudio.opibuilder.widgets.model.NativeButtonModel;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
@@ -29,26 +28,32 @@ import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 
 /**
- * EditPart controller for the ActioButton widget. The controller mediates
- * between {@link ActionButtonModel} and {@link ActionButtonFigure2}.
- * @author Sven Wende (class of same name in SDS)
+ * EditPart controller for the Native Button widget. 
  * @author Xihui Chen
  * 
  */
-public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
+public final class NativeButtonEditPart extends AbstractPVWidgetEditPart {
 	  
+	private Button button;
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected IFigure doCreateFigure() {
-		ActionButtonModel model = getWidgetModel();
-
-		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
-		buttonFigure.setText(model.getText());
-		buttonFigure.setToggleStyle(model.isToggleButton());
+		NativeButtonModel model = getWidgetModel();
+		int style=SWT.None;
+		style|= model.isToggleButton()?SWT.TOGGLE:SWT.PUSH;
+		style |= SWT.WRAP;
+		final NativeButtonFigure buttonFigure = 
+				new NativeButtonFigure(this, style);
+		button = buttonFigure.getSWTWidget();
+		button.setText(model.getText());
 		buttonFigure.setImagePath(model.getImagePath());
 		updatePropSheet(model.isToggleButton());	
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
@@ -74,83 +79,43 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	protected void hookMouseClickAction() {
-
-		((ActionButtonFigure)getFigure()).addActionListener(new ButtonActionListener(){
-			public void actionPerformed(int mouseEventState) {					
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				List<AbstractWidgetAction> actions = getHookedActions();
 				if(actions!= null){
 					for(AbstractWidgetAction action: actions){
 						if(action instanceof AbstractOpenOPIAction){
 							((AbstractOpenOPIAction) action).setCtrlPressed(false);
 							((AbstractOpenOPIAction) action).setShiftPressed(false);
-							if(mouseEventState == SWT.CONTROL){
+							if((e.stateMask & SWT.CTRL) !=0){
 								((AbstractOpenOPIAction) action).setCtrlPressed(true);
-							}else if (mouseEventState == SWT.SHIFT){
+							}else if ((e.stateMask & SWT.SHIFT) !=0){
 								((AbstractOpenOPIAction) action).setShiftPressed(true);
 							}	
 						}
 						action.run();
 					}					
-				}							
+				}		
 			}
 		});
+		
+		
 	}
 	
 	@Override
 	public List<AbstractWidgetAction> getHookedActions() {
 		ActionButtonModel widgetModel = getWidgetModel();
-		boolean isSelected = ((ActionButtonFigure)getFigure()).isSelected();	
-		return getHookedActionsForButton(widgetModel, isSelected);
+		boolean isSelected = button.getSelection();	
+		return ActionButtonEditPart.getHookedActionsForButton(widgetModel, isSelected);
 			
 	}
 
-	/**A shared static method for all button widgets.
-	 * @param widgetModel
-	 * @param isSelected
-	 * @return
-	 */
-	public static List<AbstractWidgetAction> getHookedActionsForButton(
-			ActionButtonModel widgetModel, boolean isSelected) {
-		int actionIndex;
-		
-		if(widgetModel.isToggleButton()){
-			if(isSelected){
-				actionIndex = widgetModel.getActionIndex();
-			}else
-				actionIndex = widgetModel.getReleasedActionIndex();
-		}else
-			actionIndex = widgetModel.getActionIndex();
-				
-		ActionsInput actionsInput = widgetModel.getActionsInput();
-		if(actionsInput.getActionsList().size() <=0)
-			return null;
-		if(actionsInput.isHookUpAllActionsToWidget())
-			return actionsInput.getActionsList();
-		
-		if(actionIndex >= 0 && actionsInput.getActionsList().size() > actionIndex){
-			return widgetModel.getActionsInput().
-						getActionsList().subList(actionIndex, actionIndex +1);			
-		}
-		
-		if(actionIndex == -1)
-			return actionsInput.getActionsList();
-		
-		return null;
-	}
-
 	@Override
-	public ActionButtonModel getWidgetModel() {
-		return (ActionButtonModel)getModel();
+	public NativeButtonModel getWidgetModel() {
+		return (NativeButtonModel)getModel();
 	}
 	
-	@Override
-	public void deactivate() {		
-		super.deactivate();
-		((ActionButtonFigure)getFigure()).dispose();
-	}
-	
-	
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -161,8 +126,8 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setText(newValue.toString());
+				button.setText(newValue.toString());
+				button.setSize(button.getSize());
 				return true;
 			}
 		};
@@ -173,7 +138,7 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler imageHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;				
+				NativeButtonFigure figure = (NativeButtonFigure) refreshableFigure;				
 				IPath absolutePath = (IPath)newValue;
 				if(absolutePath != null && !absolutePath.isEmpty() && !absolutePath.isAbsolute())
 					absolutePath = ResourceUtil.buildAbsolutePath(
@@ -187,14 +152,10 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		// button style
 		final IWidgetPropertyChangeHandler buttonStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setToggleStyle((Boolean) newValue);				
+					final Object newValue, final IFigure refreshableFigure) {			
 				updatePropSheet((Boolean) newValue);
 				return true;
-			}
-
-			
+			}			
 		};
 		getWidgetModel().getProperty(ActionButtonModel.PROP_TOGGLE_BUTTON).
 			addPropertyChangeListener(new PropertyChangeListener(){
@@ -217,14 +178,14 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	public void setValue(Object value) {
-		((ActionButtonFigure)getFigure()).setText(value.toString());
+		button.setText(value.toString());
 	}
 	
 	@Override
 	public Object getValue() {
-		return ((ActionButtonFigure)getFigure()).getText();
+		return button.getText();
 	}
-	
+
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 		if(key == ITextFigure.class)
@@ -232,5 +193,4 @@ public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
 		return super.getAdapter(key);
 	}
-
 }

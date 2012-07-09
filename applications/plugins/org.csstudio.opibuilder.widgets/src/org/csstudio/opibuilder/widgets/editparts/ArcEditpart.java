@@ -8,7 +8,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.ArcModel;
 import org.csstudio.swt.widgets.figures.ArcFigure;
 import org.eclipse.draw2d.IFigure;
@@ -26,7 +25,6 @@ public class ArcEditpart extends AbstractShapeEditPart {
 		ArcFigure figure = new ArcFigure();
 		ArcModel model = getWidgetModel();
 		figure.setFill(model.isFill());		
-		figure.setAntiAlias(model.isAntiAlias());
 		figure.setStartAngle(model.getStartAngle());
 		figure.setTotalAngle(model.getTotalAngle());		
 		return figure;
@@ -52,20 +50,6 @@ public class ArcEditpart extends AbstractShapeEditPart {
 			}
 		};
 		setPropertyChangeHandler(ArcModel.PROP_FILL, fillHandler);	
-		
-		
-		// anti alias
-		IWidgetPropertyChangeHandler antiAliasHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ArcFigure figure = (ArcFigure) refreshableFigure;
-				figure.setAntiAlias((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractShapeModel.PROP_ANTIALIAS, antiAliasHandler);
-		
 		
 		//start angle
 		IWidgetPropertyChangeHandler startAngleHandler = new IWidgetPropertyChangeHandler() {

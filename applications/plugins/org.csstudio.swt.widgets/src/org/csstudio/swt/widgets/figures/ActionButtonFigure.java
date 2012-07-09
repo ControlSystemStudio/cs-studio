@@ -54,7 +54,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Xihui Chen
  *
  */
-public class ActionButtonFigure extends Figure implements Introspectable{
+public class ActionButtonFigure extends Figure implements Introspectable, ITextFigure{
 
 	/**
 	 * When it was set as armed, action will be fired when mouse released.

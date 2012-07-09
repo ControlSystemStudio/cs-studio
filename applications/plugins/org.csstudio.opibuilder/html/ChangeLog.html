@@ -25,7 +25,10 @@ so in case of color/font file is not available, use the saved value. This will
 make OPI function normally in most cases even color/font file is not available. The only drawback is 
 that it cannot reflect the changes in color/font file since it was last saved. Existing OPIs need to be 
 re-saved to take use of this feature.</li>
-<li> Allow to specify the TOP OPI open position by giving macro <code>Position</code>. 
+
+<li> Allow to give a different menu text rather than using file name for top opi by appending
+ a macro "Alias=The Menu Name". It also allows to specify the top opi open position by appending 
+ a macro <code>Position</code>. 
     The available positions are: 
     <ul>
     <li> <code>Left</code>: Left View</li>
@@ -38,7 +41,7 @@ re-saved to take use of this feature.</li>
     <p>If macro <code>Position</code> is not set or is not in one of above positions, it will be opened in editor area.
     For example:
      
-    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
+    <pre class = "example_code">"/BOY Examples/main.opi", "macro1 = hello", "macro2 = hello2", "Alias=BOY Examples", "Position=Left" | "BOY Examples/1_2_WidgetExamples.opi"</pre>    
   </p>
 <li>Add <code>Round Rectangle Background Style</code> Border.
 <p><img src="img/RoundRectBorder.png"></p></li>

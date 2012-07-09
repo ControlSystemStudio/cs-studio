@@ -20,6 +20,7 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.SpinnerModel;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.figures.SpinnerFigure;
 import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.swt.widgets.figures.TextFigure;
@@ -333,7 +334,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	}
 
 	protected void performDirectEdit(){
-		new LabelEditManager(this,
+		new TextEditManager(this,
 				new LabelCellEditorLocator(
 						((SpinnerFigure)getFigure()).getLabelFigure()), false).show();
 	}
@@ -372,7 +373,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == TextFigure.class)
+		if(key == ITextFigure.class)
 			return ((SpinnerFigure)getFigure()).getLabelFigure();
 
 		return super.getAdapter(key);

@@ -80,7 +80,7 @@ public class TextInputModel extends TextUpdateModel {
 				WidgetPropertyCategory.Behavior, true));
 		
 		addProperty(new BooleanProperty(PROP_MULTILINE_INPUT, "Multi-line Input",
-				WidgetPropertyCategory.Display, false));		
+				WidgetPropertyCategory.Behavior, false));		
 		
 		addProperty(new StringProperty(PROP_DATETIME_FORMAT, "Datetime Format", 
 				WidgetPropertyCategory.Display, "yyyy-MM-dd HH:mm:ss")); //$NON-NLS-1$

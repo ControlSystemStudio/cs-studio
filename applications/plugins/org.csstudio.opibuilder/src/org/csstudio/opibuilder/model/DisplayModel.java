@@ -18,6 +18,7 @@ import org.csstudio.opibuilder.properties.ComplexDataProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.VersionProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.GraphicalViewer;
 import org.osgi.framework.Version;
@@ -77,6 +78,8 @@ public class DisplayModel extends AbstractContainerModel {
 
 
 	private GraphicalViewer viewer;
+	
+	private IOPIRuntime opiRuntime;
 
 	private IPath opiFilePath;
 
@@ -174,6 +177,20 @@ public class DisplayModel extends AbstractContainerModel {
 		this.opiFilePath = opiFilePath;
 	}
 
+	/**Set the {@link IOPIRuntime} on this display if it is in run mode.
+	 * @param opiRuntime
+	 */
+	public void setOpiRuntime(IOPIRuntime opiRuntime) {
+		this.opiRuntime = opiRuntime;
+	}
+	
+	/**
+	 * @return the {@link IOPIRuntime} if it is in run mode.
+	 */
+	public IOPIRuntime getOpiRuntime() {
+		return opiRuntime;
+	}
+	
 	/**
 	 * @return the opiFilePath
 	 */

@@ -38,6 +38,7 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
 	private static final String TOP_OPI_POSITION_KEY = "Position"; //$NON-NLS-1$
+	private static final String ALIAS_KEY = "Alias"; //$NON-NLS-1$
 	private Menu opiListMenu;
 	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance().getImageFromPlugin(
 			OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
@@ -50,7 +51,12 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 			for(final IPath path : topOPIs.keySet()){
 				if(path != null){
 					MenuItem item = new MenuItem(opiListMenu, SWT.PUSH);
-					item.setText(path.lastSegment());
+					String alias = topOPIs.get(path).getMacrosMap()
+							.get(ALIAS_KEY);
+					if(alias != null)
+						item.setText(alias);
+					else
+						item.setText(path.lastSegment());
 					item.setImage(OPI_RUNTIME_IMAGE);
 					item.addSelectionListener(new SelectionAdapter() {
 						@Override
