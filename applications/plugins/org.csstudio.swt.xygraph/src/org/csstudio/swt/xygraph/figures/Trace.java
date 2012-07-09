@@ -8,6 +8,7 @@
 package org.csstudio.swt.xygraph.figures;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.csstudio.swt.xygraph.Messages;
@@ -541,6 +542,9 @@ public class Trace extends Figure implements IDataProviderListener,
 					endIndex = traceDataProvider.getSize() - 1;
 				}
 				
+				// Set of points which were already drawn
+				HashSet<Point> hsPoint = new HashSet<Point>();
+				
 				// List of points for drawing polyline
 				PointList plPolyline = new PointList(); 
 				
@@ -583,7 +587,13 @@ public class Trace extends Figure implements IDataProviderListener,
 								dp.getXValue(), false), yAxis.getValuePosition(
 								dp.getYValue(), false));
 						hotSampleist.add(dp);
-						drawPoint(graphics, dpPos);
+						
+						// Do not draw points in the same place to improve performance
+						if (!hsPoint.contains(dpPos)) {
+							drawPoint(graphics, dpPos);
+							hsPoint.add(dpPos);
+						}
+						
 						if (errorBarEnabled && !drawYErrorInArea)
 							drawErrorBar(graphics, dpPos, dp);
 					}
