@@ -22,6 +22,7 @@ import org.csstudio.swt.xygraph.util.SWTConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -480,6 +481,30 @@ public class Trace extends Figure implements IDataProviderListener,
 		}
 		graphics.popState();
 	}
+	
+	/**
+ 	 * Draw polyline with the line style and line width of the trace.
+ 	 * 
+	 * @param graphics
+	 * @param pl
+	 */
+	private void drawPolyline(Graphics graphics, PointList pl) {
+		graphics.pushState();
+		graphics.setLineWidth(lineWidth);
+		switch(traceType) {
+		case SOLID_LINE:
+			graphics.setLineStyle(SWTConstants.LINE_SOLID);
+			graphics.drawPolyline(pl);
+			break;
+		case DASH_LINE:
+			graphics.setLineStyle(SWTConstants.LINE_DASH);
+			graphics.drawPolyline(pl);
+			break;
+		default:
+			break;
+		}
+		graphics.popState();
+	}
 
 	@Override
 	protected void paintFigure(Graphics graphics) {
@@ -514,6 +539,10 @@ public class Trace extends Figure implements IDataProviderListener,
 					startIndex = 0;
 					endIndex = traceDataProvider.getSize() - 1;
 				}
+				
+				// List of points for drawing polyline
+				PointList plPolyline = new PointList(endIndex - startIndex); 
+				
 				for (int i = startIndex; i <= endIndex; i++) {
 					ISample dp = traceDataProvider.getSample(i);
 					final boolean dpInXRange = xAxis.getRange().inRange(
@@ -653,11 +682,42 @@ public class Trace extends Figure implements IDataProviderListener,
 						if (errorBarEnabled && drawYErrorInArea
 								&& traceType != TraceType.BAR)
 							drawYErrorArea(graphics, predp, dp, predpPos, dpPos);
-						drawLine(graphics, predpPos, dpPos);
+						
+						switch (traceType) {
+						case SOLID_LINE:
+						case DASH_LINE:
+							if (plPolyline.size() == 0)
+								plPolyline.addPoint(predpPos);
+
+							if (!predpPos.equals(plPolyline.getLastPoint())) {
+								// The line for this trace is not continous.
+								// Draw a polyline at this point, and start to reconstruct a new
+								// polyline for the the rest of the trace.
+								drawPolyline(graphics, plPolyline);
+								plPolyline.removeAllPoints();
+								plPolyline.addPoint(predpPos);
+							}
+							
+							plPolyline.addPoint(dpPos);
+							break;
+						default:
+							drawLine(graphics, predpPos, dpPos);
+							break;
+						}
 					}
 
 					predp = origin_dp;
 					predpInRange = origin_dpInRange;
+				}
+				
+				// Draw polyline which was not drawn yet.
+				switch (traceType) {
+				case SOLID_LINE:
+				case DASH_LINE:
+					drawPolyline(graphics, plPolyline);
+					break;
+				default:
+					break;
 				}
 			}
 		}
