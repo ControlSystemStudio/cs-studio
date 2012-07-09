@@ -63,7 +63,8 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	private Color lineColor = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_PURPLE);
 	
-	private Color gradientStartColor =ColorConstants.white; 
+	private Color backGradientStartColor =ColorConstants.white; 
+	private Color foreGradientStartColor =ColorConstants.white; 
 	private boolean gradient=false;
 	private Boolean support3D = null;
 
@@ -82,7 +83,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 					graphics.setBackgroundColor(getBackgroundColor());
 				Pattern pattern = null;
 				if(gradient && support3D && isEnabled()){
-					pattern = setGradientPattern(graphics, figureBounds,getBackgroundColor());
+					pattern = setGradientPattern(graphics, figureBounds, backGradientStartColor, getBackgroundColor());
 				}
 				graphics.fillOval(figureBounds);
 				if(pattern!=null)
@@ -110,7 +111,7 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 			
 			Pattern pattern = null;
 			if(gradient && support3D && isEnabled()){
-				pattern = setGradientPattern(graphics, figureBounds,getForegroundColor());
+				pattern = setGradientPattern(graphics, figureBounds, foreGradientStartColor, getForegroundColor());
 			}
 			graphics.fillOval(figureBounds);
 			if(pattern!=null)
@@ -125,8 +126,8 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	 * @return
 	 */
 	protected Pattern setGradientPattern(final Graphics graphics,
-			Rectangle figureBounds, Color fillColor) {
-		Pattern pattern;
+			Rectangle figureBounds, Color gradientStartColor, Color fillColor) {
+		Pattern pattern;		
 		int tx = figureBounds.x;
 		int ty = figureBounds.y+figureBounds.height;
 		if(!horizontalFill){
@@ -134,8 +135,14 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 			ty=figureBounds.y;
 		}
 		int alpha = getAlpha()==null?255:getAlpha();
-		pattern = new Pattern(Display.getCurrent(), figureBounds.x,	figureBounds.y,
-				tx, ty, 
+		//Workaround for the pattern zoom bug on ScaledGraphics:
+		//The coordinates need to be scaled for ScaledGraphics.
+		double scale = graphics.getAbsoluteScale();
+		pattern = new Pattern(Display.getCurrent(), 
+				(int)(figureBounds.x*scale),	
+				(int)(figureBounds.y*scale),
+				(int)(tx*scale),
+				(int)(ty*scale), 
 				gradientStartColor, alpha, fillColor, alpha);
 		graphics.setBackgroundPattern(pattern);
 		return pattern;
@@ -155,6 +162,17 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 	public double getFill() {
 		return fill;
 	}
+	
+	/**
+	 * @return the start color of gradient.
+	 */
+	public Color getBackGradientStartColor() {
+		return backGradientStartColor;
+	}
+	
+	public Color getForeGradientStartColor() {
+		return foreGradientStartColor;
+	}
 
 	/**
 	 * @return the lineColor
@@ -172,6 +190,12 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 		return transparent;
 	}
 
+	/**
+	 * @return true if this figure is filled with gradient.
+	 */
+	public boolean isGradient() {
+		return gradient;
+	}
 	
 	/**
 	 * Gets the orientation (horizontal==true | vertical==false).
@@ -216,6 +240,23 @@ public final class EllipseFigure extends Ellipse implements Introspectable {
 		this.fill = fill;
 		repaint();
 	}
+	
+	public void setGradient(boolean gradient) {
+		this.gradient = gradient;
+		repaint();
+	}
+	
+	public void setBackGradientStartColor(Color gradientStartColor) {
+		this.backGradientStartColor = gradientStartColor;
+		repaint();
+	}
+	
+	public void setForeGradientStartColor(Color foreGradientStartColor) {
+		this.foreGradientStartColor = foreGradientStartColor;
+		repaint();
+	}
+	
+	
 
 	/**
 	 * Sets the orientation (horizontal==true | vertical==false).

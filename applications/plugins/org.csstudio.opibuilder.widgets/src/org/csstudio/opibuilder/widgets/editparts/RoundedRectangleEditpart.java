@@ -32,6 +32,10 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 		figure.setTransparent(model.isTransparent());
 		figure.setCornerDimensions(new Dimension(model.getCornerWidth(), model.getCornerHeight()));
 		figure.setLineColor(model.getLineColor());
+		figure.setGradient(model.isGradient());
+		figure.setBackGradientStartColor(model.getBackgroundGradientStartColor());
+		figure.setForeGradientStartColor(model.getForegroundGradientStartColor());
+		
 		return figure;
 	}	
 	
@@ -118,6 +122,36 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 			}
 		};
 		setPropertyChangeHandler(RoundedRectangleModel.PROP_CORNER_HEIGHT, cornerHeightHandler);	
+	
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((RoundedRectangleFigure)figure).setGradient((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_GRADIENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((RoundedRectangleFigure)figure).setBackGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_BACKGROUND_GRADIENT_START_COLOR, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((RoundedRectangleFigure)figure).setForeGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_FOREGROUND_GRADIENT_START_COLOR, handler);
 	
 	}
 

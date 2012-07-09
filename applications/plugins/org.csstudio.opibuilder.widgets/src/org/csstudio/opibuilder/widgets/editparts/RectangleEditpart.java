@@ -26,6 +26,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
+import org.csstudio.opibuilder.widgets.model.RoundedRectangleModel;
 import org.csstudio.swt.widgets.figures.OPIRectangleFigure;
 import org.eclipse.draw2d.IFigure;
 
@@ -46,6 +47,10 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setLineColor(model.getLineColor());
+		figure.setGradient(model.isGradient());
+		figure.setBackGradientStartColor(model.getBackgroundGradientStartColor());
+		figure.setForeGradientStartColor(model.getForegroundGradientStartColor());
+
 		return figure;
 	}	
 	
@@ -106,6 +111,37 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		};
 		setPropertyChangeHandler(AbstractShapeModel.PROP_LINE_COLOR,
 				lineColorHandler);
+		
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setGradient((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_GRADIENT, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setBackGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RectangleModel.PROP_BACKGROUND_GRADIENT_START_COLOR, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((OPIRectangleFigure)figure).setForeGradientStartColor(((OPIColor)newValue).getSWTColor());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(RoundedRectangleModel.PROP_FOREGROUND_GRADIENT_START_COLOR, handler);
+	
 		
 	}
 	

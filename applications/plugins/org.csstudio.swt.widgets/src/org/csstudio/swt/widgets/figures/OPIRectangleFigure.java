@@ -60,7 +60,8 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	private Color lineColor = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_PURPLE);
 	
-	private Color gradientStartColor =ColorConstants.white; 
+	private Color backGradientStartColor =ColorConstants.white; 
+	private Color foreGradientStartColor =ColorConstants.white; 
 	private boolean gradient=false;
 	private boolean useAdvancedGraphics=GraphicsUtil.useAdvancedGraphics();
 	
@@ -74,7 +75,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 			if(isEnabled())
 				graphics.setBackgroundColor(getBackgroundColor());
 			if(gradient && useAdvancedGraphics){
-				graphics.setForegroundColor(gradientStartColor);
+				graphics.setForegroundColor(backGradientStartColor);
 				graphics.fillGradient(figureBounds, horizontalFill);
 			}else
 				graphics.fillRectangle(figureBounds);	
@@ -91,7 +92,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
 			}
 			if(gradient && useAdvancedGraphics){
-				graphics.setForegroundColor(gradientStartColor);
+				graphics.setForegroundColor(foreGradientStartColor);
 				graphics.fillGradient(fillRectangle, horizontalFill);
 			}else
 				graphics.fillRectangle(fillRectangle);
@@ -139,6 +140,46 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	public boolean isHorizontalFill() {
 		return horizontalFill;
 	}
+
+	/**
+	 * @return the gradientStartColor
+	 */
+	public Color getBackGradientStartColor() {
+		return backGradientStartColor;
+	}
+	
+	public Color getForeGradientStartColor() {
+		return foreGradientStartColor;
+	}
+
+	/**
+	 * @return the gradient
+	 */
+	public boolean isGradient() {
+		return gradient;
+	}
+
+	/**
+	 * @param gradient the gradient to set
+	 */
+	public void setGradient(boolean gradient) {
+		this.gradient = gradient;
+		repaint();
+	}
+	
+	/**Set gradient start color.
+	 * @param gradientStartColor
+	 */
+	public void setBackGradientStartColor(Color gradientStartColor) {
+		this.backGradientStartColor = gradientStartColor;
+		repaint();
+	}
+	
+	public void setForeGradientStartColor(Color foreGradientStartColor) {
+		this.foreGradientStartColor = foreGradientStartColor;
+		repaint();
+	}
+	
 
 	/**
 	 * @see Shape#outlineShape(Graphics)
