@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization, STEP_HORIZONTALLY tweaks)
  * @author Laurent PHILIPPE (Add trace listeners)
+ * @author Takashi Nakamoto @ Cosylab (performance improvement)
  */
 public class Trace extends Figure implements IDataProviderListener,
 		IAxisListener {
@@ -541,7 +542,11 @@ public class Trace extends Figure implements IDataProviderListener,
 				}
 				
 				// List of points for drawing polyline
-				PointList plPolyline = new PointList(endIndex - startIndex); 
+				PointList plPolyline = new PointList(); 
+				
+				Point maxInRegion = null;
+				Point minInRegion = null;
+				Point lastInRegion = null;
 				
 				for (int i = startIndex; i <= endIndex; i++) {
 					ISample dp = traceDataProvider.getSample(i);
@@ -689,16 +694,86 @@ public class Trace extends Figure implements IDataProviderListener,
 							if (plPolyline.size() == 0)
 								plPolyline.addPoint(predpPos);
 
-							if (!predpPos.equals(plPolyline.getLastPoint())) {
-								// The line for this trace is not continous.
-								// Draw a polyline at this point, and start to reconstruct a new
-								// polyline for the the rest of the trace.
-								drawPolyline(graphics, plPolyline);
-								plPolyline.removeAllPoints();
-								plPolyline.addPoint(predpPos);
+							if (traceDataProvider.isChronological()) {
+								// Line drawing optimization is available only when the trace data
+								// is ascending sorted on X axis. 
+								if (predpPos.x != dpPos.x) {
+									if (lastInRegion == null) {
+										// There were not points in the previous region.
+										// Just draw polyline as usual.
+										
+										if (!predpPos.equals(plPolyline.getLastPoint())) {
+											// The line for this trace is not continuous.
+											// Draw a polyline at this point, and start to reconstruct
+											// a new polyline for the the rest of the trace.
+											drawPolyline(graphics, plPolyline);
+											plPolyline.removeAllPoints();
+											plPolyline.addPoint(predpPos);
+										}
+										
+										plPolyline.addPoint(dpPos);
+									} else {
+										// There were several points which have the same X value.
+										// Draw lines that connect those points at once.
+										if (minInRegion != null)
+											plPolyline.addPoint(minInRegion);
+										if (maxInRegion != null)
+											plPolyline.addPoint(maxInRegion);
+
+										plPolyline.addPoint(lastInRegion);
+										
+										// The first point of the next region is drawn anyway.
+										plPolyline.addPoint(dpPos);
+									}
+									
+									minInRegion = null;
+									maxInRegion = null;
+									lastInRegion = null;
+								} else {
+									// The current point has the same value as the previous point.
+									if (lastInRegion == null) {
+										// At this moment, there are two points which have the same
+										// X value.
+										lastInRegion = dpPos;
+									} else if (minInRegion == null) {
+										// At this moment, there are three points which have the
+										// same X value.
+										minInRegion = lastInRegion;
+										lastInRegion = dpPos;
+									} else if (maxInRegion == null) {
+										// At this moment, there are four points which have the same
+										// X value.
+										if (minInRegion.y > lastInRegion.y) {
+											maxInRegion = minInRegion;
+											minInRegion = lastInRegion;
+										} else {
+											maxInRegion = lastInRegion;
+										}
+										lastInRegion = dpPos;
+									} else {
+										// There are more than four points which have the same X
+										// value.
+										if (lastInRegion.y > maxInRegion.y) {
+											maxInRegion = lastInRegion; 
+										} else if (lastInRegion.y < minInRegion.y) {
+											minInRegion = lastInRegion;
+										}
+										lastInRegion = dpPos;
+									}
+								}
+							} else {
+								if (!predpPos.equals(plPolyline.getLastPoint())) {
+									// The line for this trace is not continuous.
+									// Draw a polyline at this point, and start to reconstruct a new
+									// polyline for the the rest of the trace.
+									drawPolyline(graphics, plPolyline);
+									plPolyline.removeAllPoints();
+									plPolyline.addPoint(predpPos);
+								}
+								
+								plPolyline.addPoint(dpPos);
 							}
 							
-							plPolyline.addPoint(dpPos);
 							break;
 						default:
 							drawLine(graphics, predpPos, dpPos);
