@@ -6,11 +6,11 @@ package org.csstudio.ui.util.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
@@ -18,24 +18,17 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Slider;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Scale;
-
-import sun.awt.HorizBagLayout;
 
 /**
  * @author shroffk
  * 
- *         TODO: bug when the range is moved back and forth quickly
  */
 public class StartEndRangeWidget extends Canvas {
 
-	private double min;
-	private double max;
-	private double selectedMin;
-	private double selectedMax;
+	private double min = 0;
+	private double max = 1;
+	private double selectedMin = min;
+	private double selectedMax = max;
 
 	private double distancePerPx;
 
@@ -103,6 +96,7 @@ public class StartEndRangeWidget extends Canvas {
 				redraw();
 			}
 		});
+		redraw();
 	}
 
 	public double getMin() {
@@ -199,8 +193,9 @@ public class StartEndRangeWidget extends Canvas {
 		@Override
 		public void mouseDown(MouseEvent e) {
 			// Save the starting point
-			double minSelectedOval = selectedMin * distancePerPx;
-			double maxSelectedOval = selectedMax * distancePerPx;
+			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
+			double minSelectedOval = zero + (selectedMin * distancePerPx);
+			double maxSelectedOval = zero + (selectedMax * distancePerPx);
 
 			int valueAlongOrientationAxis;
 			int valueAlongNonOrientationAxis;
@@ -235,6 +230,7 @@ public class StartEndRangeWidget extends Canvas {
 			// Only if editable and it is a left click drag
 			// System.out.println(e.x + " " + e.y);
 			int valueAlongOrientationAxis;
+			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
 			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
 				valueAlongOrientationAxis = e.x;
 			} else {
@@ -242,10 +238,10 @@ public class StartEndRangeWidget extends Canvas {
 			}
 			switch (moveControl) {
 			case SELECTEDMIN:
-				setSelectedMin(valueAlongOrientationAxis / distancePerPx);
+				setSelectedMin((valueAlongOrientationAxis-zero) / distancePerPx);
 				break;
 			case SELECTEDMAX:
-				setSelectedMax(valueAlongOrientationAxis / distancePerPx);
+				setSelectedMax((valueAlongOrientationAxis-zero) / distancePerPx);
 				break;
 			case RANGE:
 				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
@@ -277,14 +273,19 @@ public class StartEndRangeWidget extends Canvas {
 			Point end;
 			Point minOval;
 			Point maxOval;
+			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
 			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
 				end = new Point(getClientArea().width - 5, 5);
-				minOval = new Point((int) (selectedMin * distancePerPx), 0);
-				maxOval = new Point((int) (selectedMax * distancePerPx), 0);
+				minOval = new Point(
+						(int) (zero + (selectedMin * distancePerPx)), 0);
+				maxOval = new Point(
+						(int) (zero + (selectedMax * distancePerPx)), 0);
 			} else {
 				end = new Point(5, getClientArea().height - 5);
-				minOval = new Point(0, (int) (selectedMin * distancePerPx));
-				maxOval = new Point(0, (int) (selectedMax * distancePerPx));
+				minOval = new Point(0,
+						(int) (zero + (selectedMin * distancePerPx)));
+				maxOval = new Point(0,
+						(int) (zero + (selectedMax * distancePerPx)));
 			}
 
 			// Draw the line of appropriate size
