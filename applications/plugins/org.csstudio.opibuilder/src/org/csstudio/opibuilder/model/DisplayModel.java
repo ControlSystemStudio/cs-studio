@@ -131,7 +131,7 @@ public class DisplayModel extends AbstractContainerModel {
 		setPropertyVisible(PROP_TOOLTIP, false);
 		setPropertyVisible(PROP_ACTIONS, false);
 		setPropertyVisible(PROP_FONT, false);
-		setPropertyVisible(PROP_REFRESH_RATE, false);
+		setPropertyVisibleAndSavable(PROP_REFRESH_RATE, false, false);
 		setPropertyVisibleAndSavable(PROP_BOY_VERSION, false, true);
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
 				WidgetPropertyCategory.Behavior, false));
