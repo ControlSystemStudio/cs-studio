@@ -73,7 +73,7 @@ public class PreferencePage extends FieldEditorPreferencePage
             Preferences.JMS_IDLE_TIMEOUT,Messages.Preferences_JMS_IdleTimeout, parent);
         timeout.setValidRange(0, 60*60);
         addField(timeout);
-        
+
         // Commands, related displays
         addField(new StringFieldEditor(Preferences.COMMAND_DIRECTORY, Messages.Preferences_CommandDirectory, parent));
         final IntegerFieldEditor max_entries = new IntegerFieldEditor(Preferences.MAX_CONTEXT_MENU_ENTRIES, Messages.Preferences_MaxContextEntries, parent);

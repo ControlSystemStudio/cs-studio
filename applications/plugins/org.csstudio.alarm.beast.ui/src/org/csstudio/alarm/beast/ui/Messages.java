@@ -14,7 +14,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.ui.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.ui.messages"; //$NON-NLS-1$
     public static String Acknowledge_Action;
     public static String AcknowledgedAlarmsFmt;
     public static String AddComponent;
@@ -97,10 +97,6 @@ public class Messages extends NLS
     public static String EditAAItemDialog_Delay;
     public static String EditAAItemDialog_Detail;
     public static String EditAAItemDialog_Title;
-    // TODO: remove
-//    public static String EditAAItemDialog_SendMail;
-//    public static String EditAAItemDialog_SendSMS;
-//    public static String EditAAItemDialog_PhoneCall;
     public static String Error;
     public static String ErrorInFilter;
 	public static String Filter;

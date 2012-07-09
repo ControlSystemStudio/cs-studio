@@ -184,7 +184,7 @@ public class AlarmConfigurationLoader
         pv.setLatching(DOMHelper.getSubelementBoolean(node, XMLTags.LATCHING));
         pv.setAnnunciating(DOMHelper.getSubelementBoolean(node, XMLTags.ANNUNCIATING));
         pv.setFilter(DOMHelper.getSubelementString(node, XMLTags.FILTER));
-        pv.setDelay(DOMHelper.getSubelementInt(node, XMLTags.DELAY, 0));
+        pv.setDelay(DOMHelper.getSubelementDouble(node, XMLTags.DELAY, 0.0));
         pv.setCount(DOMHelper.getSubelementInt(node, XMLTags.COUNT, 0));
         config.configurePV(pv, pv.getDescription(), pv.isEnabled(),
                 pv.isAnnunciating(), pv.isLatching(),
