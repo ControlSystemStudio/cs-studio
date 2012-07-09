@@ -184,7 +184,7 @@ public class RoundScaledRamp extends Figure {
     	if(lo.visible){
     		if(support3D && gradient && lolo.visible){
     				try {
-						pattern = new Pattern(Display.getCurrent(), lolo.leftPoint.x, lolo.leftPoint.y, 
+						pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), lolo.leftPoint.x, lolo.leftPoint.y, 
 								lo.rightPoint.x, lo.rightPoint.y, lolo.color, lo.color);
 						graphics.setBackgroundPattern(pattern);    		
 						overlap = OVERLAP_DEGREE/2;
@@ -222,7 +222,7 @@ public class RoundScaledRamp extends Figure {
     		leftMarkerVisible = false;
     	
     	if(gradient && leftMarkerVisible && support3D){
-    		pattern = new Pattern(Display.getCurrent(), leftMarker.leftPoint.x, leftMarker.leftPoint.y, 
+    		pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), leftMarker.leftPoint.x, leftMarker.leftPoint.y, 
     				normal.rightPoint.x, normal.rightPoint.y, leftMarker.color, normal.color);
     		graphics.setBackgroundPattern(pattern);    		
     		overlap = OVERLAP_DEGREE/2;
@@ -254,7 +254,7 @@ public class RoundScaledRamp extends Figure {
     		rightMarkerVisible = false;
     	
     	if(gradient && rightMarkerVisible && support3D){
-    		pattern = new Pattern(Display.getCurrent(), rightMarker.rightPoint.x, rightMarker.rightPoint.y, 
+    		pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), rightMarker.rightPoint.x, rightMarker.rightPoint.y, 
     				normal.leftPoint.x, normal.leftPoint.y, rightMarker.color, normal.color);
     		graphics.setBackgroundPattern(pattern);    		
     		overlap = OVERLAP_DEGREE/2;
@@ -283,7 +283,7 @@ public class RoundScaledRamp extends Figure {
 	    		rightMarkerVisible = false;
 	    	
 	    	if(gradient && rightMarkerVisible && support3D){
-	    		pattern = new Pattern(Display.getCurrent(), rightMarker.rightPoint.x, rightMarker.rightPoint.y, 
+	    		pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), rightMarker.rightPoint.x, rightMarker.rightPoint.y, 
 	    				hi.leftPoint.x, hi.leftPoint.y, rightMarker.color, hi.color);
 	    		graphics.setBackgroundPattern(pattern);    		
 	    		overlap = OVERLAP_DEGREE/2;

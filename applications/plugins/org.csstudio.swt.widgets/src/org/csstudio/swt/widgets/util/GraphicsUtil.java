@@ -10,6 +10,9 @@ package org.csstudio.swt.widgets.util;
 import org.csstudio.swt.widgets.Preferences;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Device;
+import org.eclipse.swt.graphics.Pattern;
 import org.eclipse.swt.graphics.RGB;
 
 /**The utility class contains functions that all related with graphics.
@@ -46,6 +49,23 @@ public class GraphicsUtil {
 			return false;
 		return true;
 	}
+	
+	public static Pattern createScaledPattern(Graphics graphics, Device device,
+			float x1, float y1, float x2, float y2, Color color1, int alpha1,
+			Color color2, int alpha2) {
+		double scale = graphics.getAbsoluteScale();
+		return new Pattern(device, (int) (x1 * scale), (int) (y1 * scale),
+				(int) (x2 * scale), (int) (y2 * scale), color1, alpha1, color2,
+				alpha2);
+	}
+	
+	public static Pattern createScaledPattern(Graphics graphics, Device device,
+			float x1, float y1, float x2, float y2, Color color1, Color color2) {
+		double scale = graphics.getAbsoluteScale();
+		return new Pattern(device, (int) (x1 * scale), (int) (y1 * scale),
+				(int) (x2 * scale), (int) (y2 * scale), color1, color2);
+	}
+	
 	
 	/**
 	 * Mixes the passed Colors and returns the resulting Color.

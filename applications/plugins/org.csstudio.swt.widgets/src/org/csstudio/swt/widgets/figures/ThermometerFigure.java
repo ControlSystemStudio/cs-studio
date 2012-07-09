@@ -241,7 +241,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 				//int l = (int) ((bounds.width - lineWidth)*0.293/2);
 				Pattern backPattern = null;
 				
-				 backPattern = new Pattern(Display.getCurrent(), 
+				 backPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 					bounds.x + lineWidth, bounds.y + lineWidth, 
 					bounds.x+bounds.width-lineWidth, bounds.y+bounds.height-lineWidth,
 					WHITE_COLOR,255, fillColor, 0);			
@@ -284,7 +284,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
 					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
-				Pattern backPattern = new Pattern(Display.getCurrent(), 
+				Pattern backPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
 					pipe.getBounds().x + Pipe.PIPE_WIDTH,
 					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
@@ -344,7 +344,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 				graphics.setForegroundColor(EFFECT3D_PIPE_COLOR);
 				//fill back
 				super.fillShape(graphics);
-				Pattern backPattern = new Pattern(Display.getCurrent(), 
+				Pattern backPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 						bounds.x, bounds.y, bounds.x+bounds.width, bounds.y, 
 						WHITE_COLOR,255, fillBackgroundColor, 0);
 				graphics.setBackgroundPattern(backPattern);
@@ -358,7 +358,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 						bounds.width - 2* lineWidth, 
 						bounds.height - (valuePosition - bounds.y)),
 						FILL_CORNER, FILL_CORNER);		
-				backPattern = new Pattern(Display.getCurrent(), 
+				backPattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
 						bounds.x, bounds.y, bounds.x+bounds.width, bounds.y, 
 						WHITE_COLOR,255, fillColor, 0);
 				graphics.setBackgroundPattern(backPattern);

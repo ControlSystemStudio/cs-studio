@@ -62,7 +62,7 @@ public class Bulb extends Figure{
 	        graphics.fillOval(bounds);
 	        
 			//diagonal linear gradient
-				Pattern p = new Pattern(Display.getCurrent(), bounds.x,	bounds.y,
+				Pattern p = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x,	bounds.y,
 						bounds.x + getWidth(), bounds.y + getHeight(),
 						COLOR_WHITE, 255, bulbColor, 0);
 	        try {				

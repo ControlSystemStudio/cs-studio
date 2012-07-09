@@ -85,7 +85,7 @@ public class LEDFigure extends AbstractBoolFigure {
 		if(squareLED){
 			if(effect3D && support3D){
 				//draw up border			
-				Pattern pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+				Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 					clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, BLACK_COLOR, 20, BLACK_COLOR, 100);			
 				graphics.setBackgroundPattern(pattern);
 				graphics.fillPolygon(new int[]{clientArea.x, clientArea.y, 
@@ -95,7 +95,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				pattern.dispose();
 				
 				//draw left border
-				pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
+				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y, 
 					clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, BLACK_COLOR, 20, BLACK_COLOR, 100);			
 				graphics.setBackgroundPattern(pattern);
 				graphics.fillPolygon(new int[]{clientArea.x, clientArea.y, 
@@ -105,7 +105,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				pattern.dispose();				
 				
 				//draw bottom border			
-				pattern = new Pattern(Display.getCurrent(), clientArea.x, 
+				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, 
 					clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH, 
 					clientArea.x, clientArea.y+clientArea.height, 
 					WHITE_COLOR, 20, WHITE_COLOR, 30);			
@@ -118,7 +118,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				pattern.dispose();
 				
 				//draw right border			
-				pattern = new Pattern(Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
+				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
 					clientArea.y, 
 					clientArea.x + clientArea.width, clientArea.y, 
 					WHITE_COLOR, 20, WHITE_COLOR, 30);			
@@ -135,7 +135,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				Color fillColor = booleanValue?onColor:offColor;
 		        graphics.setBackgroundColor(fillColor);
 		        graphics.fillRectangle(clientArea);
-				pattern = new Pattern(Display.getCurrent(), clientArea.x,	clientArea.y,
+				pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,	clientArea.y,
 		        		clientArea.x + clientArea.width, clientArea.y + clientArea.height,
 		        		WHITE_COLOR, 200, fillColor, 0);
 		        graphics.setBackgroundPattern(pattern);
@@ -161,7 +161,7 @@ public class LEDFigure extends AbstractBoolFigure {
 			if(effect3D && support3D){
 				graphics.setBackgroundColor(WHITE_COLOR);
 				graphics.fillOval(outRect);
-				Pattern pattern = new Pattern(Display.getCurrent(), outRect.x, outRect.y,
+				Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), outRect.x, outRect.y,
 					outRect.x+width, outRect.y+width, DARK_GRAY_COLOR, 255, DARK_GRAY_COLOR, 0);
 				graphics.setBackgroundPattern(pattern);
 				graphics.fillOval(outRect);
