@@ -1,3 +1,4 @@
+javax.mail/**
 org.csstudio.alarm.beast/**
 org.csstudio.alarm.beast.annunciator/**
 org.csstudio.alarm.beast.configtool/**
