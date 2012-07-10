@@ -148,7 +148,8 @@ public class InfoServlet extends HttpServlet {
 
     private void appendSecondHeadline(final StringBuilder page) {
         page.append("<tr>\n");
-        page.append("<th class=\"info\" colspan=\"2\">Externe Web-Anwendung</th>\n");
+        page.append("<th class=\"info\">Externe Web-Anwendung</th>\n");
+        page.append("<th class=\"info\">nur DESY-intern</th>\n");
         page.append("<th class=\"info\">Beschreibung</th>\n");
         page.append("</tr>\n");
     }
@@ -243,7 +244,8 @@ public class InfoServlet extends HttpServlet {
 
     private void appendAmsWebMonitorLink(final StringBuilder page) {
         page.append("<tr>\n");
-        page.append("<td class=\"info\" colspan=\"2\"><a href=\"http://" + externAppAddress + "/ams/AmsWebMonitor\" target=\"_blank\">AmsWebMonitor</a></td>\n");
+        page.append("<td class=\"info\"><a href=\"http://" + externAppAddress + "/ams/AmsWebMonitor\" target=\"_blank\">AmsWebMonitor</a></td>\n");
+        page.append("<td class=\"info\">Ja</td>");
         page.append("<td class=\"info\">Status des AMS-Checks und Versenden von Test-Nachricht</td>");
         page.append("</tr>\n");
     }
