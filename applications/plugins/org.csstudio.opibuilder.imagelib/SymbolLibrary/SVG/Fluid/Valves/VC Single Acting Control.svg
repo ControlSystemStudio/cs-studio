@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0701.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.472719in"
+		height="1.17981in" viewBox="0 0 34.0357 84.946" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.01}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st3 {fill:#ffffff}
+		.st4 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+	]]>
+	</style>
+	<defs id="Masters">
+		<symbol id="master0" v:mID="0" class="st2">
+			<title>FL_EF0701</title>
+			<g id="master-shape5-7" v:mID="5" v:groupContext="shape">
+				<title>Feuille.5</title>
+				<path d="M17.01 55.18 A8.7294 8.7294 -180 0 0 0 55.18 L17.01 55.18 Z M0 84.95 L0 76.44 L17.01 84.95 L17.01 76.44
+							 L0 84.95 Z" class="st3"/>
+				<path d="M17.01 55.18 A8.7294 8.7294 -180 0 0 0 55.18 L17.01 55.18" class="st4"/>
+				<path d="M0 84.95 L0 76.44 L17.01 84.95 L17.01 76.44 L0 84.95" class="st4"/>
+				<path d="M8.5 80.69 L8.5 55.18" class="st4"/>
+			</g>
+		</symbol>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="group3-1" transform="translate(0.01,-0.01)" v:mID="3" v:groupContext="group">
+			<title>Feuille.3</title>
+			<g id="shape1-2" v:mID="1" v:groupContext="shape" transform="translate(33.9874,0)">
+				<title>Feuille.1</title>
+				<rect x="0" y="84.9176" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+			<g id="shape2-4" v:mID="2" v:groupContext="shape" transform="translate(0,-84.8976)">
+				<title>Feuille.2</title>
+				<rect x="0" y="84.9176" width="0.0283465" height="0.0283465" class="st1"/>
+			</g>
+		</g>
+		<use id="shape4-6" v:mID="4" xlink:href="#master0" transform="translate(8.51394,-38.2092)">
+			<title>FL_EF0701</title>
+		</use>
+	</g>
+</svg>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 OL_EE1003.svg Page-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.500219in"
+		height="0.500219in" viewBox="0 0 36.0157 36.0157" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:1}
+		.st2 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.24}
+		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>Page-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(1,-1)">
+			<title>Feuille.1</title>
+			<rect x="0" y="2" width="34.0157" height="34.0157" class="st1"/>
+		</g>
+		<g id="shape2-3" v:mID="2" v:groupContext="shape" transform="translate(13.7559,-22.2598)">
+			<title>Feuille.2</title>
+			<rect x="0" y="31.7638" width="8.50394" height="4.25197" class="st1"/>
+		</g>
+		<g id="shape3-5" v:mID="3" v:groupContext="shape" transform="translate(17.198,-23.6772)">
+			<title>Feuille.3</title>
+			<ellipse cx="0.708661" cy="35.3071" rx="0.708661" ry="0.708661" class="st2"/>
+		</g>
+		<g id="shape4-7" v:mID="4" v:groupContext="shape" transform="translate(13.7559,-18.0079)">
+			<title>Feuille.4</title>
+			<rect x="0" y="31.7638" width="8.50394" height="4.25197" class="st1"/>
+		</g>
+		<g id="shape5-9" v:mID="5" v:groupContext="shape" transform="translate(17.198,-19.4252)">
+			<title>Feuille.5</title>
+			<ellipse cx="0.708661" cy="35.3071" rx="0.708661" ry="0.708661" class="st2"/>
+		</g>
+		<g id="shape6-11" v:mID="6" v:groupContext="shape" transform="translate(13.7559,-13.7559)">
+			<title>Feuille.6</title>
+			<rect x="0" y="31.7638" width="8.50394" height="4.25197" class="st1"/>
+		</g>
+		<g id="shape7-13" v:mID="7" v:groupContext="shape" transform="translate(17.198,-15.1732)">
+			<title>Feuille.7</title>
+			<ellipse cx="0.708661" cy="35.3071" rx="0.708661" ry="0.708661" class="st2"/>
+		</g>
+		<g id="shape8-15" v:mID="8" v:groupContext="shape" transform="translate(13.7559,-9.50394)">
+			<title>Feuille.8</title>
+			<rect x="0" y="31.7638" width="8.50394" height="4.25197" class="st1"/>
+		</g>
+		<g id="shape9-17" v:mID="9" v:groupContext="shape" transform="translate(17.198,-10.9213)">
+			<title>Feuille.9</title>
+			<ellipse cx="0.708661" cy="35.3071" rx="0.708661" ry="0.708661" class="st2"/>
+		</g>
+	</g>
+</svg>

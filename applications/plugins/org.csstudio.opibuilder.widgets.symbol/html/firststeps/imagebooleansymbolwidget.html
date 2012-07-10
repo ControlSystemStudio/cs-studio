@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+    Image Boolean Symbol
+    </title>
+  </head>
+  <body>
+    
+    <h2>Image Boolean Symbol</h2>
+    
+    <p>
+    A Boolean symbol control widget uses two images to represent its "On/Off" state. 
+    It supports GIF, PNG and SVG format.
+    </p>
+    <p>
+    The "On/Off" label and color of the symbol image can be selected. 
+    These colors will affect only black elements in the symbol (strokes or filled forms).
+    </p>
+    <p>
+    The selected image file name must have the format "xxx On.svg" or "xxx Off.svg", otherwise the same image is taken for the two states.    
+    </p>
+    <p>
+    The File Path Browser automatically filters the filename with a regular expression which is based on the PV name.
+    This option can be unchecked in the browser. The regular expression is defined in the preferences.ini file (<code>org.csstudio.boy.symbol.filter.regex</code>).
+    </p>
+    
+    <img src="img/ImageBooleanSymbolExample.bmp" alt="">
+    
+    <h3>Special Properties</h3>
+    <ul>   
+    
+    <li>Symbol Image (image_file) <dl><dd>The image used by the widget.</dd></dl></li>
+    <li>Stretch to Fit (stretch_to_fit) <dl><dd>Stretch the image to fit the widget size.</dd></dl></li>
+    <li>Auto Size (auto_size) <dl><dd>Automatically adjust the size of the widget to the image
+    size. This only works if <code>Stretch to Fit</code> is not enabled.</dd></dl></li>
+    </ul>
+    
+    <h3>See Also</h3>
+    <ul>
+      <li><a href="../../../org.csstudio.opibuilder/html/widgets/BooleanWidgets.html">Properties Common to Boolean Widgets</a></li>
+      <li><a href="../../../org.csstudio.opibuilder/html/widgets/PVWidgets.html">Properties Common to PV Widgets</a></li>
+      <li><a href="../../../org.csstudio.opibuilder/html/Widget Properties.html">Properties Common to All Widgets</a></li>
+    </ul>
+    <br>
+
+</body>
+</html>

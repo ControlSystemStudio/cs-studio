@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF1008.svg FL_EF0201 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.374331in"
+		height="0.610551in" viewBox="0 0 26.9518 43.9597" xml:space="preserve" color-interpolation-filters="sRGB" class="st3">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#ffffff;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st2 {fill:#000000;stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+		.st3 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>FL_EF0201</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
+				v:shadowOffsetY="-9"/>
+		<g id="group4-1" transform="translate(0.72,-0.72)" v:mID="4" v:groupContext="group">
+			<title>FL_EF1008</title>
+			<g id="shape5-2" v:mID="5" v:groupContext="shape">
+				<title>Feuille.5</title>
+				<path d="M0 31.2 L12.76 43.96 L25.51 31.2 L25.51 1.44 L0 1.44 L0 31.2 Z M14.88 26.95 A2.12598 2.12598 0 1 1 10.63
+							 26.95 A2.12598 2.12598 0 1 1 14.88 26.95 Z M14.88 9.94 A2.12598 2.12598 0 1 1 10.63 9.94 A2.12598 2.12598
+							 0 1 1 14.88 9.94 Z" class="st1"/>
+			</g>
+			<g id="shape6-4" v:mID="6" v:groupContext="shape" transform="translate(10.6299,-31.8898)">
+				<title>Feuille.6</title>
+				<ellipse cx="2.12598" cy="41.8337" rx="2.12598" ry="2.12598" class="st2"/>
+			</g>
+			<g id="shape7-6" v:mID="7" v:groupContext="shape" transform="translate(10.6299,-14.8819)">
+				<title>Feuille.7</title>
+				<ellipse cx="2.12598" cy="41.8337" rx="2.12598" ry="2.12598" class="st2"/>
+			</g>
+		</g>
+	</g>
+</svg>
