@@ -313,11 +313,11 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		List<Double> zoomLevelList = new ArrayList<Double>();
 
 		double level = 0.1;
-		while (level < 1.0) {
+		while (level <=0.9) {
 			zoomLevelList.add(level);
 			level = level + 0.1;
 		}
-
+		zoomLevelList.add(1.0);
 		zoomLevelList.add(1.1);
 		zoomLevelList.add(1.2);
 		zoomLevelList.add(1.3);
