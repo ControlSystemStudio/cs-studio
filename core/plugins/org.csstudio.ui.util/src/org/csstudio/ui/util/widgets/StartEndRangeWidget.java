@@ -6,6 +6,8 @@ package org.csstudio.ui.util.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.activity.InvalidActivityException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -149,6 +151,7 @@ public class StartEndRangeWidget extends Canvas {
 					followMin = true;
 				}
 				fireRangeChanged();
+			} else {
 			}
 		}
 	}
@@ -161,7 +164,7 @@ public class StartEndRangeWidget extends Canvas {
 		if (this.selectedMax != selectedMax) {
 			if (!(selectedMax > this.max) && (selectedMax >= this.selectedMin)) {
 				this.selectedMax = selectedMax;
-				if(selectedMax == this.max){
+				if (selectedMax == this.max) {
 					followMax = true;
 				}
 				fireRangeChanged();
@@ -187,6 +190,14 @@ public class StartEndRangeWidget extends Canvas {
 			this.orientation = orientation;
 			fireRangeChanged();
 		}
+	}
+
+	public double getRange() {
+		return this.max - this.min;
+	}
+
+	public double getSelectedRange() {
+		return this.selectedMax - this.selectedMin;
 	}
 
 	private void recalculateDistancePerPx() {
@@ -215,7 +226,8 @@ public class StartEndRangeWidget extends Canvas {
 		@Override
 		public void mouseDown(MouseEvent e) {
 			// Save the starting point
-			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
+			double zero = (0 - min) * distancePerPx;
+
 			double minSelectedOval = zero + (selectedMin * distancePerPx);
 			double maxSelectedOval = zero + (selectedMax * distancePerPx);
 
@@ -254,7 +266,7 @@ public class StartEndRangeWidget extends Canvas {
 			// Only if editable and it is a left click drag
 			// System.out.println(e.x + " " + e.y);
 			int valueAlongOrientationAxis;
-			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
+			double zero = (0 - min * distancePerPx);
 			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
 				valueAlongOrientationAxis = e.x;
 			} else {
@@ -262,20 +274,24 @@ public class StartEndRangeWidget extends Canvas {
 			}
 			switch (moveControl) {
 			case SELECTEDMIN:
-				setSelectedMin((valueAlongOrientationAxis - zero)
-						/ distancePerPx);
+				setSelectedMin(Math.max((valueAlongOrientationAxis - zero)
+						/ distancePerPx, getMin()));
 				break;
 			case SELECTEDMAX:
-				setSelectedMax((valueAlongOrientationAxis - zero)
-						/ distancePerPx);
+				setSelectedMax(Math.min((valueAlongOrientationAxis - zero)
+						/ distancePerPx, getMax()));
 				break;
 			case RANGE:
 				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
-				if ((getSelectedMin() + increment) > getMin()
-						&& (getSelectedMax() + increment) < getMax()) {
+				if ((getSelectedMin() + increment) >= getMin()
+						&& (getSelectedMax() + increment) <= getMax()) {
 					setSelectedRange(getSelectedMin() + increment,
 							getSelectedMax() + increment);
 					rangeX = valueAlongOrientationAxis;
+				} else if (getSelectedMin() + increment < getMin()) {
+					setSelectedRange(getMin(), getMin() + getSelectedRange());
+				} else if (getSelectedMax() + increment > getMax()) {
+					setSelectedRange(getMax() - getSelectedRange(), getMax());
 				}
 				break;
 			default:
@@ -299,7 +315,7 @@ public class StartEndRangeWidget extends Canvas {
 			Point end;
 			Point minOval;
 			Point maxOval;
-			double zero = min < 0 ? (0 - min) * distancePerPx : 0;
+			double zero = (0 - min) * distancePerPx;
 			if (orientation.equals(ORIENTATION.HORIZONTAL)) {
 				end = new Point(getClientArea().width - 5, 5);
 				minOval = new Point(
