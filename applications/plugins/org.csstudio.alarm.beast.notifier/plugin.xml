@@ -33,6 +33,8 @@
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedEmailAction"/>
       <action scheme="smsto" 
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedSmsAction"/>
+      <action scheme="cmd" 
+            action="org.csstudio.alarm.beast.notifier.actions.AutomatedCommandAction"/>
    </extension>
 	
 </plugin>

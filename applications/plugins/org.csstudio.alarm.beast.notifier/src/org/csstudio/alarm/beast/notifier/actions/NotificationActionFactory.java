@@ -51,7 +51,7 @@ public class NotificationActionFactory {
 
 	/**
 	 * Instantiate an automated action, if the scheme found (or not) in {@link AADataStructure}
-	 * details is unknown, it returns a {@link DefaultNotificationAction}
+	 * details is unknown, it returns a {@link CommandNotificationAction}
 	 * @param notifier
 	 * @param id
 	 * @param item
