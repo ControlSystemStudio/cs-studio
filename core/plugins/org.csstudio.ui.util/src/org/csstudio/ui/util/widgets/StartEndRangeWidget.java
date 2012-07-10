@@ -27,8 +27,11 @@ public class StartEndRangeWidget extends Canvas {
 
 	private double min = 0;
 	private double max = 1;
-	private double selectedMin = min;
-	private double selectedMax = max;
+	private double selectedMin;
+	private double selectedMax;
+
+	private boolean followMin = true;
+	private boolean followMax = true;
 
 	private double distancePerPx;
 
@@ -96,6 +99,13 @@ public class StartEndRangeWidget extends Canvas {
 				redraw();
 			}
 		});
+		if (followMin) {
+			selectedMin = min;
+		}
+		if (followMax) {
+			selectedMax = max;
+		}
+
 		redraw();
 	}
 
@@ -106,6 +116,9 @@ public class StartEndRangeWidget extends Canvas {
 	public void setMin(double min) {
 		if (this.min != min) {
 			this.min = min;
+			if (followMin) {
+				this.selectedMin = min;
+			}
 			recalculateDistancePerPx();
 		}
 	}
@@ -117,6 +130,9 @@ public class StartEndRangeWidget extends Canvas {
 	public void setMax(double max) {
 		if (this.max != max) {
 			this.max = max;
+			if (followMax) {
+				this.selectedMax = max;
+			}
 			recalculateDistancePerPx();
 		}
 	}
@@ -129,6 +145,9 @@ public class StartEndRangeWidget extends Canvas {
 		if (this.selectedMin != selectedMin) {
 			if (!(selectedMin < this.min) && (selectedMin <= this.selectedMax)) {
 				this.selectedMin = selectedMin;
+				if (selectedMin == this.min) {
+					followMin = true;
+				}
 				fireRangeChanged();
 			}
 		}
@@ -142,6 +161,9 @@ public class StartEndRangeWidget extends Canvas {
 		if (this.selectedMax != selectedMax) {
 			if (!(selectedMax > this.max) && (selectedMax >= this.selectedMin)) {
 				this.selectedMax = selectedMax;
+				if(selectedMax == this.max){
+					followMax = true;
+				}
 				fireRangeChanged();
 			}
 		}
@@ -209,9 +231,11 @@ public class StartEndRangeWidget extends Canvas {
 			if ((valueAlongOrientationAxis >= minSelectedOval && valueAlongOrientationAxis <= minSelectedOval + 10)
 					&& (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 				moveControl = MOVE.SELECTEDMIN;
+				followMin = false;
 			} else if ((valueAlongOrientationAxis >= maxSelectedOval && valueAlongOrientationAxis <= maxSelectedOval + 10)
 					&& (valueAlongNonOrientationAxis >= 0 && valueAlongNonOrientationAxis <= 10)) {
 				moveControl = MOVE.SELECTEDMAX;
+				followMax = false;
 			} else if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
 				moveControl = MOVE.RANGE;
 				rangeX = valueAlongOrientationAxis;
@@ -238,10 +262,12 @@ public class StartEndRangeWidget extends Canvas {
 			}
 			switch (moveControl) {
 			case SELECTEDMIN:
-				setSelectedMin((valueAlongOrientationAxis-zero) / distancePerPx);
+				setSelectedMin((valueAlongOrientationAxis - zero)
+						/ distancePerPx);
 				break;
 			case SELECTEDMAX:
-				setSelectedMax((valueAlongOrientationAxis-zero) / distancePerPx);
+				setSelectedMax((valueAlongOrientationAxis - zero)
+						/ distancePerPx);
 				break;
 			case RANGE:
 				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
