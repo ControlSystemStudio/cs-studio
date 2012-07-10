@@ -10,36 +10,59 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
-import org.csstudio.alarm.beast.notifier.ActionExtensionPoint;
+import org.csstudio.alarm.beast.notifier.model.IActionValidator;
+import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
+import org.csstudio.alarm.beast.notifier.model.INotificationAction;
+import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
 
-/** 
+/**
  * Unit test utilities.
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class TestUtils {
 
 	/** Build action extension point map with mock classes */
-	public static Map<String, ActionExtensionPoint> buildExtensionPoints()
+    public static Map<String, IAutomatedAction> buildExtensionPoints()
 	{
-		Map<String, ActionExtensionPoint> schemeMap = new HashMap<String, ActionExtensionPoint>();
+	    final Map<String, IAutomatedAction> schemeMap = new HashMap<String, IAutomatedAction>();
 
-		ActionExtensionPoint impl = new ActionExtensionPoint();
-		impl.setScheme("mailto");
-		impl.setActionClass("org.csstudio.alarm.beast.notifier.test.MockEMailNotificationAction");
-		impl.setValidatorClass("org.csstudio.alarm.beast.notifier.util.EMailCommandValidator");
-		schemeMap.put("mailto", impl);
+	    schemeMap.put("mailto", new IAutomatedAction()
+		{
+            @Override
+            public IActionValidator getValidator()
+            {
+                return new EMailCommandValidator();
+            }
 
-		ActionExtensionPoint impl2 = new ActionExtensionPoint();
-		impl2.setScheme("smsto");
-		impl2.setActionClass("org.csstudio.alarm.beast.notifier.test.MockSMSNotificationAction");
-		schemeMap.put("smsto", impl2);
+            @Override
+            public INotificationAction getNotifier()
+            {
+                return new MockEMailNotificationAction();
+            }
+		});
+
+        schemeMap.put("smsto", new IAutomatedAction()
+        {
+            @Override
+            public IActionValidator getValidator()
+            {
+                return null;
+            }
+
+            @Override
+            public INotificationAction getNotifier()
+            {
+                return new MockSMSNotificationAction();
+            }
+        });
 
 		return schemeMap;
 	}
-	
+
 	/** Build a basic AlarmTree */
-	public static AlarmTreeRoot buildBasicTree(boolean configureSystem) 
+	public static AlarmTreeRoot buildBasicTree(boolean configureSystem)
 	{
 		final GDCDataStructure guidance[] = new GDCDataStructure[] {
 				new GDCDataStructure("Run", "Run as fast as you can"),
@@ -47,7 +70,7 @@ public class TestUtils {
 		final GDCDataStructure displays[] = new GDCDataStructure[] {
 				new GDCDataStructure("main.edl", "edm main.edl"),
 				new GDCDataStructure("master.stp", "StripTool master.stp") };
-		final GDCDataStructure commands[] = new GDCDataStructure[] { 
+		final GDCDataStructure commands[] = new GDCDataStructure[] {
 				new GDCDataStructure("reset PV123", "caput PV123 Reset") };
 		final AADataStructure automated_actions[] = new AADataStructure[] {
 				new AADataStructure("Send EMail", "mailto:paul@home.there", 5),
@@ -66,7 +89,7 @@ public class TestUtils {
         //            ...Pressure
 		final AlarmTreeRoot tree = new AlarmTreeRoot("Root", 0);
 		final AlarmTreeItem dtl = new AlarmTreeItem(tree, "DTL", 0);
-		
+
 		final MockAlarmTreeItem dtl_vac = new MockAlarmTreeItem(dtl, "Vacuum", 0);
 		if (configureSystem) {
 			dtl_vac.setAutomatedActions(automated_actions);
@@ -84,7 +107,7 @@ public class TestUtils {
 		if (!configureSystem) {
 			pv.setAutomatedActions(automated_actions);
 		}
-		
+
 		final AlarmTreeItem dtl_rccs = new AlarmTreeItem(dtl, "RCCS", 0);
 		pv = new MockAlarmTreePV(dtl_rccs, "DTL_RCCS:Sensor1:Flow", 0);
 		pv.setGuidance(guidance);
@@ -99,8 +122,8 @@ public class TestUtils {
 
 		final List<AlarmTreeLeaf> leaves = new ArrayList<AlarmTreeLeaf>();
 		tree.addLeavesToList(leaves);
-		
+
 		return tree;
     }
-	
+
 }

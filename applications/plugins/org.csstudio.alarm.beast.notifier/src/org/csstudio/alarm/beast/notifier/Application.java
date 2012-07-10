@@ -6,12 +6,14 @@ import java.util.logging.Level;
 
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.notifier.actions.NotificationActionFactory;
+import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 import org.csstudio.alarm.beast.notifier.rdb.AlarmRDBHandler;
 import org.csstudio.alarm.beast.notifier.rdb.IAlarmRDBHandler;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
 import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
@@ -45,10 +47,10 @@ public class Application implements IApplication {
 			System.out.println(parser.getHelp());
 			return IApplication.EXIT_OK;
 		}
-        
+
         // Initialize logging
         LogConfigurator.configureFromPreferences();
-        
+
         // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
@@ -92,24 +94,22 @@ public class Application implements IApplication {
 	public void stop() {
 		run = false;
 	}
-	
+
 	/**
 	 * Read automated action extension points from plugin.xml.
-	 * @return Map<String, ActionExtensionPoint>, extension points referenced by their scheme.
+	 * @return Map<String, IAutomatedAction>, extension points referenced by their scheme.
+	 * @throws CoreException if implementations don't provide the correct IAutomatedAction
 	 */
-	public static Map<String, ActionExtensionPoint> getActions() {
-		Map<String, ActionExtensionPoint> map = new HashMap<String, ActionExtensionPoint>();
-		IExtensionRegistry reg = Platform.getExtensionRegistry();
-		IConfigurationElement[] extensions = reg
-				.getConfigurationElementsFor(Activator.ID);
-		for (int i = 0; i < extensions.length; i++) {
-			IConfigurationElement element = extensions[i];
-			ActionExtensionPoint impl = new ActionExtensionPoint();
-			String scheme = element.getAttribute("scheme");
-			impl.setScheme(scheme);
-			impl.setActionClass(element.getAttribute("actionClass"));
-			impl.setValidatorClass(element.getAttribute("validatorClass"));
-			map.put(scheme, impl);
+	public static Map<String, IAutomatedAction> getActions() throws CoreException {
+	    final Map<String, IAutomatedAction> map = new HashMap<String, IAutomatedAction>();
+		final IExtensionRegistry reg = Platform.getExtensionRegistry();
+		final IConfigurationElement[] extensions = reg
+				.getConfigurationElementsFor(IAutomatedAction.EXTENSION_POINT);
+		for (IConfigurationElement element : extensions)
+		{
+			final String scheme = element.getAttribute("scheme");
+			final IAutomatedAction action = (IAutomatedAction) element.createExecutableExtension("action");
+			map.put(scheme, action);
 		}
 		return map;
 	}

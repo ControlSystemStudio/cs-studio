@@ -30,10 +30,9 @@
 
    <extension point="org.csstudio.alarm.beast.notifier">
       <action scheme="mailto" 
-            actionClass="org.csstudio.alarm.beast.notifier.actions.EmailNotificationAction" 
-            validatorClass="org.csstudio.alarm.beast.notifier.util.EMailCommandValidator" />
+            action="org.csstudio.alarm.beast.notifier.actions.AutomatedEmailAction"/>
       <action scheme="smsto" 
-            actionClass="org.csstudio.alarm.beast.notifier.actions.SMSNotificationAction" />
+            action="org.csstudio.alarm.beast.notifier.actions.AutomatedSmsAction"/>
    </extension>
 	
 </plugin>
