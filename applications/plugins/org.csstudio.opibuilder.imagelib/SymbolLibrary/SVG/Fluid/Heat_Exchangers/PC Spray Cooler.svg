@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "C:\SeeVisioDTD\svg10.dtd">
+<!-- Généré par Microsoft Visio 11.0, SVG Export, v1.0 FL_EF0314.svg FL_EF0201 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="1.2011in"
+		height="0.964882in" viewBox="0 0 86.4794 69.4715" xml:space="preserve" color-interpolation-filters="sRGB" class="st1">
+	<v:documentProperties v:langID="1036" v:metric="true" v:viewMarkup="false"/>
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:none;fill-rule:evenodd;font-size:12;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+		.st2 {stroke:#000000;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.72}
+	]]>
+	</style>
+	<defs id="Masters">
+		<symbol id="master75" v:mID="75" class="st1">
+			<title>FL_EF0314</title>
+			<g id="master-shape5-2" v:mID="5" v:groupContext="shape">
+				<title>Feuille.5</title>
+				<path d="M8.5 1.44 L76.54 1.44" class="st2"/>
+				<path d="M17.01 18.45 L25.51 1.44" class="st2"/>
+				<path d="M34.02 18.45 L25.51 1.44" class="st2"/>
+				<path d="M25.51 18.45 L25.51 1.44" class="st2"/>
+				<path d="M51.02 18.45 L59.53 1.44" class="st2"/>
+				<path d="M68.03 18.45 L59.53 1.44 L59.53 18.45" class="st2"/>
+				<path d="M0 26.95 L72.28 26.95" class="st2"/>
+				<path d="M12.76 43.96 A4.25197 4.25197 0 0 1 8.5 39.71 A4.25197 4.25197 0 0 1 12.76 35.46" class="st2"/>
+				<path d="M12.76 43.96 L85.04 43.96" class="st2"/>
+				<path d="M72.28 35.46 L12.76 35.46" class="st2"/>
+				<path d="M72.28 26.95 A4.25197 4.25197 0 0 1 76.54 31.2 A4.25197 4.25197 90 0 1 72.28 35.46" class="st2"/>
+				<path d="M76.54 52.46 L76.54 69.47 L8.5 69.47" class="st2"/>
+				<path d="M8.5 69.47 L8.5 52.46" class="st2"/>
+			</g>
+		</symbol>
+	</defs>
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>FL_EF0201</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
+				v:shadowOffsetY="-9"/>
+		<use id="shape31-1" v:mID="31" xlink:href="#master75" transform="translate(0.72,-0.72)">
+			<title>FL_EF0314</title>
+		</use>
+	</g>
+</svg>

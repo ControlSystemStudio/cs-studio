@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=Cp1252"/>
+    <link rel="stylesheet" href="default.css" type="text/css" />
+    <title>
+    Multi-state Symbol Image
+    </title>
+  </head>
+  <body>
+    
+    <h2>Multi-state Symbol Image</h2>
+    
+    <p>
+    A Multi-state symbol control widget uses multiple images to represent its different state. 
+    It supports GIF, PNG and SVG format.
+    </p>
+    <p>
+    "On/Off" colors of the symbol image can be selected. "Off" refers to "state 0" and "On" to all other states.
+    These colors will affect only black elements in the symbol (strokes or filled forms).
+    A label displaying the current state can be activated.
+    </p>
+    <p>
+	The multistate image file name must include the state value in order to be displayed when the variable has this value, otherwise the widget will display "??".
+    </p>
+    <p>
+    The File Path Browser automatically filters the filename with a regular expression which is based on the PV name.
+    This option can be unchecked in the browser. The regular expression is defined in the preferences.ini file (<code>org.csstudio.boy.symbol.filter.regex</code>).
+    </p>
+    
+    <img src="img/ImageMultiSymbolExample1.png" alt="">
+	<img src="img/ImageMultiSymbolExample2.png" alt="">
+    
+    <h3>Special Properties</h3>
+    <ul>   
+    
+    <li>Symbol Image (image_file) <dl><dd>The images used by the widget.</dd></dl></li>
+    <li>Stretch to Fit (stretch_to_fit) <dl><dd>Stretch the images to fit the widget size.</dd></dl></li>
+    <li>Auto Size (auto_size) <dl><dd>Automatically adjust the size of the widget to the images
+    size. This only works if <code>Stretch to Fit</code> is not enabled.</dd></dl></li>
+	<li>Show Symbol Label (show_symbol_label) <dl><dd>If the label should be visible. Label is current state</dd></dl></li>
+	<li>Symbol Label Position (symbol_label_pos) <dl><dd>Label position picked in the following list:
+	<ul>
+	<li>DEFAULT</li>
+	<li>TOP</li>
+	<li>LEFT</li>
+	<li>CENTER</li>
+	<li>RIGHT</li>
+	<li>BOTTOM</li>
+	<li>TOP_LEFT</li>
+	<li>TOP_RIGHT</li>
+	<li>BOTTOM_LEFT</li>
+	<li>BOTTOM_RIGHT</li>
+	</ul></dd></dl></li>
+    </ul>
+    
+    <h3>See Also</h3>
+    <ul>
+      <li><a href="../../../org.csstudio.opibuilder/html/widgets/PVWidgets.html">Properties Common to PV Widgets</a></li>
+      <li><a href="../../../org.csstudio.opibuilder/html/Widget Properties.html">Properties Common to All Widgets</a></li>
+    </ul>
+    <br>
+
+</body>
+</html>

@@ -1,0 +1,516 @@
+package org.csstudio.opibuilder.widgets.symbol.multistate;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.csstudio.data.values.IEnumeratedMetaData;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
+import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
+import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageOperation;
+import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
+import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolImageProperties;
+import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+
+public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart {
+
+	private PVListener loadItemsFromPVListener;
+	private IEnumeratedMetaData meta = null;
+	
+	private int maxAttempts;
+
+	/**
+	 * Returns the casted model. This is just for convenience.
+	 */
+	public CommonMultiSymbolModel getWidgetModel() {
+		return (CommonMultiSymbolModel) getModel();
+	}
+	
+	protected void initializeCommonFigureProperties(CommonMultiSymbolFigure figure) {
+		CommonMultiSymbolModel model = getWidgetModel();
+
+		figure.setExecutionMode(getExecutionMode());
+		figure.setSymbolImagePath(model, model.getSymbolImagePath());
+
+		// Image default parameters
+		SymbolImageProperties sip = new SymbolImageProperties();
+		sip.setTopCrop(model.getTopCrop());
+		sip.setBottomCrop(model.getBottomCrop());
+		sip.setLeftCrop(model.getLeftCrop());
+		sip.setRightCrop(model.getRightCrop());
+		sip.setStretch(model.getStretch());
+		sip.setAutoSize(model.isAutoSize());
+		sip.setDegree(model.getDegree());
+		sip.setFlipH(model.isFlipHorizontal());
+		sip.setFlipV(model.isFlipVertical());
+		sip.setDisposition(model.getDisposition());
+		
+		figure.setSymbolProperties(sip);
+		figure.setOnColor(model.getOnColor());
+		figure.setOffColor(model.getOffColor());
+		
+		// Label parameters
+		figure.setShowSymbolLabel(model.isShowSymbolLabel());
+		figure.setSymbolLabelPosition(model.getSymbolLabelPosition());
+		
+		if (!model.isItemsFromPV()) {
+			List<String> items = getWidgetModel().getItems();
+			if (items != null)
+				figure.setStates(items);
+		}
+	}
+	
+	protected void registerCommonPropertyChangeHandlers() {
+		super.registerBasePropertyChangeHandlers();
+		
+		// Image properties handlers
+		registerSymbolImagePropertyHandlers();
+		registerImageColorPropertyHandlers();
+		registerImageSizePropertyHandlers();
+		registerImageCropPropertyHandlers();
+		registerImageStretchPropertyHandlers();
+		registerImageRotationPropertyHandlers();
+		registerImageBorderPropertyHandlers();
+		
+		// Label change handlers
+		registerLabelPropertyChangeHandlers();
+		
+		// PV properties handlers
+		registerCommonPVChangeHandlers();
+	}
+	
+	@Override
+	public void activate() {
+		super.activate();
+		registerLoadItemsListener();
+	}
+
+	@Override
+	public void deactivate() {
+		super.deactivate();
+		((CommonMultiSymbolFigure) getFigure()).disposeAll();
+		if (getWidgetModel().isItemsFromPV()) {
+			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			if (pv != null && loadItemsFromPVListener != null) {
+				pv.removeListener(loadItemsFromPVListener);
+			}
+		}
+	}
+	
+	// -----------------------------------------------------------------
+	// PV properties handlers
+	// -----------------------------------------------------------------
+	
+	private void registerLoadItemsListener() {
+		// load items from PV
+		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+			if (getWidgetModel().isItemsFromPV()) {
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if (pv != null) {
+					if (loadItemsFromPVListener == null)
+						loadItemsFromPVListener = new PVListener() {
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData) {
+									IEnumeratedMetaData new_meta = (IEnumeratedMetaData) value.getMetaData();
+									if (meta == null || !meta.equals(new_meta)) {
+										meta = new_meta;
+										List<String> itemsFromPV = new ArrayList<String>();
+										for (String writeValue : meta.getStates()) {
+											itemsFromPV.add(writeValue);
+										}
+										getWidgetModel()
+												.setPropertyValue(
+														CommonMultiSymbolModel.PROP_ITEMS,
+														itemsFromPV);
+									}
+								}
+							}
+
+							public void pvDisconnected(PV pv) {
+							}
+						};
+					pv.addListener(loadItemsFromPVListener);
+				}
+			}
+		}
+	}
+
+	private void registerCommonPVChangeHandlers() {
+		// PV_Name
+		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				registerLoadItemsListener();
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
+				pvNameHandler);
+		
+		// PV_Value
+		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				if (newValue != null && newValue instanceof IValue) {
+					String stringValue = ValueUtil.getString((IValue) newValue);
+					((CommonMultiSymbolFigure) refreshableFigure)
+							.setState(stringValue);
+				}
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, pvhandler);
+
+		// Items
+		IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
+			@SuppressWarnings("unchecked")
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				if (newValue != null && newValue instanceof List) {
+					((CommonMultiSymbolFigure) refreshableFigure)
+							.setStates(((List<String>) newValue));
+					if (getWidgetModel().isItemsFromPV())
+						((CommonMultiSymbolFigure) refreshableFigure)
+								.setState(ValueUtil
+										.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+				}
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ITEMS,
+				itemsHandler);
+	}
+	
+	@Override
+	public String getValue() {
+		return ((CommonMultiSymbolFigure) getFigure()).getCurrentState();
+	}
+
+	@Override
+	public void setValue(Object value) {
+		if (value instanceof String)
+			((CommonMultiSymbolFigure) getFigure()).setState((String) value);
+		else if (value instanceof Number)
+			((CommonMultiSymbolFigure) getFigure()).setState(((Number) value)
+					.intValue());
+		else
+			super.setValue(value);
+	}
+	
+	// -----------------------------------------------------------------
+	// Label properties handlers
+	// -----------------------------------------------------------------
+	
+	private void registerLabelPropertyChangeHandlers() {
+		// show symbol label
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
+				figure.setShowSymbolLabel((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SHOW_SYMBOL_LABEL,
+				handler);
+
+		// symbol label position
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
+				figure.setSymbolLabelPosition(SymbolLabelPosition.values()[(Integer) newValue]);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_LABEL_POS,
+				handler);
+	}
+	
+	// -----------------------------------------------------------------
+	// Image properties handlers
+	// -----------------------------------------------------------------
+	
+	/**
+	 * Registers symbol image property change handler
+	 */
+	private void registerSymbolImagePropertyHandlers() {
+		// symbol image filename property
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				IPath newImagePath = (IPath) newValue;
+				imageFigure.setSymbolImagePath(getWidgetModel(), newImagePath);
+				autoSizeWidget(imageFigure);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_SYMBOL_IMAGE_FILE,
+				handler);
+	}
+	
+	private void registerImageColorPropertyHandlers() {
+		// on color
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
+				figure.setOnColor(((OPIColor) newValue).getSWTColor());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_ON_COLOR, handler);
+
+		// off color
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				CommonMultiSymbolFigure figure = (CommonMultiSymbolFigure) refreshableFigure;
+				figure.setOffColor(((OPIColor) newValue).getSWTColor());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_OFF_COLOR, handler);
+	}
+
+	/**
+	 * Registers image size property change handlers
+	 */
+	private void registerImageSizePropertyHandlers() {
+		// image auto-size property
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setAutoSize((Boolean) newValue);
+				CommonMultiSymbolModel model = getWidgetModel();
+				Dimension d = imageFigure.getAutoSizedDimension();
+				if ((Boolean) newValue && !model.getStretch() && d != null) {
+					model.setSize(d.width, d.height);
+				}
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_AUTOSIZE, handler);
+
+		// image size (height/width) property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.resizeImage();
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_HEIGHT, handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_WIDTH, handler);
+	}
+
+	/**
+	 * Registers image border property change handlers
+	 */
+	private void registerImageBorderPropertyHandlers() {
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.resizeImage();
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_WIDTH,
+				handler);
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BORDER_STYLE,
+				handler);
+	}
+
+	/**
+	 * Registers image stretch property change handlers
+	 */
+	private void registerImageStretchPropertyHandlers() {
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setStretch((Boolean) newValue);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_STRETCH, handler);
+	}
+
+	/**
+	 * Registers image rotation property change handlers
+	 */
+	private void registerImageRotationPropertyHandlers() {
+		// degree rotation property
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				int newDegree = (Integer) newValue;
+				if (newDegree != 0 && newDegree != 90 && newDegree != 180
+						&& newDegree != 270) { // Reset with previous value
+					setPropertyValue(CommonMultiSymbolModel.PROP_DEGREE,
+							oldValue);
+				} else {
+					// imageFigure.setDegree(newDegree);
+					int oldDegree = (Integer) oldValue;
+					int direction = ImageUtils.getRotationDirection(oldDegree,
+							newDegree);
+					if (direction != -1) {
+						ImageOperation IOp = null;
+						String disposition = imageFigure.getImageState();
+						switch (direction) {
+						case SWT.LEFT: // left 90 degrees
+							IOp = ImageOperation.RL90;
+							break;
+						case SWT.RIGHT: // right 90 degrees
+							IOp = ImageOperation.RR90;
+							break;
+						case SWT.DOWN: // 180 degrees
+							IOp = ImageOperation.R180;
+							break;
+						}
+						char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), IOp);
+						disposition = String.valueOf(result);
+						setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+						imageFigure.setImageState(disposition);
+					}
+					autoSizeWidget(imageFigure);
+				}
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_DEGREE, handler);
+
+		// flip horizontal rotation property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				// imageFigure.setFlipH((Boolean) newValue);
+				String disposition = imageFigure.getImageState();
+				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FH);
+				disposition = String.valueOf(result);
+				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+				imageFigure.setImageState(disposition);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_HORIZONTAL,
+				handler);
+
+		// flip vertical rotation property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				// imageFigure.setFlipV((Boolean) newValue);
+				String disposition = imageFigure.getImageState();
+				char[] result = ImagePermuter.applyOperation(disposition.toCharArray(), ImageOperation.FV);
+				disposition = String.valueOf(result);
+				setPropertyValue(CommonMultiSymbolModel.PROP_DISPOSITION, disposition);
+				imageFigure.setImageState(disposition);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_FLIP_VERTICAL,
+				handler);
+	}
+
+	/**
+	 * Registers image crop property change handlers
+	 */
+	private void registerImageCropPropertyHandlers() {
+		// top crop property
+		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				if (newValue == null) {
+					return false;
+				}
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setTopCrop((Integer) newValue);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_TOPCROP, handler);
+
+		// bottom crop property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setBottomCrop((Integer) newValue);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_BOTTOMCROP,
+				handler);
+
+		// left crop property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setLeftCrop((Integer) newValue);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_LEFTCROP, handler);
+
+		// right crop property
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure figure) {
+				CommonMultiSymbolFigure imageFigure = (CommonMultiSymbolFigure) figure;
+				imageFigure.setRightCrop((Integer) newValue);
+				autoSizeWidget(imageFigure);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(CommonMultiSymbolModel.PROP_RIGHTCROP, handler);
+	}
+
+	public void autoSizeWidget(final CommonMultiSymbolFigure imageFigure) {
+		maxAttempts = 10;
+		Runnable task = new Runnable() {
+			public void run() {
+				if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
+					Display.getDefault().timerExec(100, this);
+					return;
+				}
+				CommonMultiSymbolModel model = (CommonMultiSymbolModel) getModel();
+				Dimension d = imageFigure.getAutoSizedDimension();
+				if (model.isAutoSize() && !model.getStretch() && d != null) {
+					model.setSize(d.width, d.height);
+				}
+			}
+		};
+		Display.getDefault().timerExec(100, task);
+	}
+	
+}
