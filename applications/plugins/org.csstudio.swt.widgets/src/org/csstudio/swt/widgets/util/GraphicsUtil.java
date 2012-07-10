@@ -54,16 +54,16 @@ public class GraphicsUtil {
 			float x1, float y1, float x2, float y2, Color color1, int alpha1,
 			Color color2, int alpha2) {
 		double scale = graphics.getAbsoluteScale();
-		return new Pattern(device, (int) (x1 * scale), (int) (y1 * scale),
-				(int) (x2 * scale), (int) (y2 * scale), color1, alpha1, color2,
+		return new Pattern(device, (float) (x1 * scale), (float) (y1 * scale),
+				(float) (x2 * scale), (float) (y2 * scale), color1, alpha1, color2,
 				alpha2);
 	}
 	
 	public static Pattern createScaledPattern(Graphics graphics, Device device,
 			float x1, float y1, float x2, float y2, Color color1, Color color2) {
 		double scale = graphics.getAbsoluteScale();
-		return new Pattern(device, (int) (x1 * scale), (int) (y1 * scale),
-				(int) (x2 * scale), (int) (y2 * scale), color1, color2);
+		return new Pattern(device, (float) (x1 * scale), (float) (y1 * scale),
+				(float) (x2 * scale), (float) (y2 * scale), color1, color2);
 	}
 	
 	
