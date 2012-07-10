@@ -51,7 +51,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 	public void init(AlarmNotifier notifier, ActionID id, ItemInfo item, int delay,
 			String details, IActionValidator validator) {
 		super.init(notifier, id, item, delay, details);
-		this.host = org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Host();
+		this.host = org.csstudio.email.Preferences.getSMTP_Host();
 		this.from =  org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Sender();
 
 		try {

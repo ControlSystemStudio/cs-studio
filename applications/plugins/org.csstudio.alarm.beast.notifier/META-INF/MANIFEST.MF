@@ -9,7 +9,7 @@ Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
  org.csstudio.alarm.beast,
  org.csstudio.apputil,
- org.csstudio.email,
+ org.csstudio.email;bundle-version="1.2.0",
  org.csstudio.auth,
  org.csstudio.java,
  org.csstudio.logging
