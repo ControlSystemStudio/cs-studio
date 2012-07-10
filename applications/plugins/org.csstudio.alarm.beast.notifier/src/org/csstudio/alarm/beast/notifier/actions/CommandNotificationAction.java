@@ -16,7 +16,7 @@ import org.csstudio.alarm.beast.notifier.util.CommandExecutorThread;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class DefaultNotificationAction extends AbstractNotificationAction {
+public class CommandNotificationAction extends AbstractNotificationAction {
 
 	protected String command;
 
