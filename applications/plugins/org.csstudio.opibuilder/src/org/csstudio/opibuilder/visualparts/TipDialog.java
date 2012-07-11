@@ -1,7 +1,8 @@
 package org.csstudio.opibuilder.visualparts;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IDialogLabelKeys;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -67,23 +68,23 @@ public class TipDialog extends MessageDialog {
 		case ERROR:
 		case INFORMATION:
 		case WARNING: {
-			dialogButtonLabels = new String[] { IDialogConstants.OK_LABEL };
+			dialogButtonLabels = new String[] {JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY)};
 			break;
 		}
 		case CONFIRM: {
-			dialogButtonLabels = new String[] { IDialogConstants.OK_LABEL,
-					IDialogConstants.CANCEL_LABEL };
+			dialogButtonLabels = new String[] { JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
+					JFaceResources.getString(IDialogLabelKeys.CANCEL_LABEL_KEY)};
 			break;
 		}
 		case QUESTION: {
-			dialogButtonLabels = new String[] { IDialogConstants.YES_LABEL,
-					IDialogConstants.NO_LABEL };
+			dialogButtonLabels = new String[] { JFaceResources.getString(IDialogLabelKeys.YES_LABEL_KEY),
+					JFaceResources.getString(IDialogLabelKeys.NO_LABEL_KEY)};
 			break;
 		}
 		case QUESTION_WITH_CANCEL: {
-			dialogButtonLabels = new String[] { IDialogConstants.YES_LABEL,
-                    IDialogConstants.NO_LABEL,
-                    IDialogConstants.CANCEL_LABEL };
+			dialogButtonLabels = new String[] { JFaceResources.getString(IDialogLabelKeys.YES_LABEL_KEY),
+					JFaceResources.getString(IDialogLabelKeys.NO_LABEL_KEY),
+					JFaceResources.getString(IDialogLabelKeys.CANCEL_LABEL_KEY)};
 			break;
 		}
 		default: {
