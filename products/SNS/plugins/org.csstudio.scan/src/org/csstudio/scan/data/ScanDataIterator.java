@@ -186,7 +186,7 @@ public class ScanDataIterator
                 if (sample == null)
                 	table.addCell("#N/A");
                 else
-                    table.addCell(sample.getValue().toString());
+                    table.addCell(ScanSampleFormatter.asString(sample));
             }
         }
 

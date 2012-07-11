@@ -15,6 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan.data;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.csstudio.scan.server.ScanServer;
@@ -22,12 +23,13 @@ import org.csstudio.scan.server.ScanServer;
 /** Scan sample for numbers
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class NumberScanSample extends ScanSample
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private Number number;
+    final private Number[] values;
 
     /** Initialize
      *  @param timestamp Time stamp
@@ -35,22 +37,38 @@ public class NumberScanSample extends ScanSample
      *  @param number Number
      */
 	public NumberScanSample(final Date timestamp,
-	        final long serial, final Number number)
+	        final long serial, final Number[] values)
 	{
 		super(timestamp, serial);
-		this.number = number;
+		this.values = values;
 	}
 
-	/** @return Number held in this {@link ScanSample} */
-	public Number getNumber()
+	/** @return Array size */
+	public int size()
+	{
+	    return values.length;
+	}
+
+	/** @param index Array index
+	 *  @return Number for that array index
+	 */
+	public Number getNumber(final int index)
     {
-    	return number;
+    	return values[index];
     }
 
 	/** {@inheritDoc} */
 	@Override
-    public Object getValue()
+    public Object[] getValues()
 	{
-		return number;
+		return values;
 	}
+
+    @Override
+    public String toString()
+    {
+        if (size() == 1)
+            return super.toString() + " " + values[0].toString();
+        return super.toString() + " " + Arrays.toString(values);
+    }
 }

@@ -1,4 +1,10 @@
 # Used by JythonSupportTest.java
+
+
+import sys
+
+print "Path: ", sys.path
+
 from org.csstudio.scan.command import ScanScript
 
 class JythonTest(ScanScript):

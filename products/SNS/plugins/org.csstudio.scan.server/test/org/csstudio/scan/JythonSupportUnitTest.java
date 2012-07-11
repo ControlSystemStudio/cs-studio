@@ -9,7 +9,6 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +26,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JythonSupportTest
+public class JythonSupportUnitTest
 {
     @Test(timeout=10000)
     public void testJythonSupport() throws Exception
@@ -36,8 +35,6 @@ public class JythonSupportTest
         System.out.println(System.getProperty("user.dir"));
         // Setup path to other plugins within source tree
         System.setProperty("python.path",
-                "../../../../applications/plugins/org.python/jython.jar/Lib" + File.pathSeparator +
-                "../../../../applications/plugins/org.csstudio.numjy/jython" + File.pathSeparator +
                 "test/org/csstudio/scan");
 
         // Load ScanScript
@@ -70,7 +67,7 @@ public class JythonSupportTest
             @Override
             public void logData(final String device, final Object value) throws Exception
             {
-                log.log(device, ScanSampleFactory.createSample(new Date(), 1, value));
+                log.log(device, ScanSampleFactory.createSample(new Date(), 1, new Number[] { (Number)value }));
             }
         };
         script.run(context);
@@ -79,6 +76,6 @@ public class JythonSupportTest
         System.out.println("Got samples: " + samples.size());
         assertEquals(1, samples.size());
         System.out.println("Value: " + samples.get(0));
-        assertEquals(42.0, (Double) samples.get(0).getValue(), 0.01);
+        assertEquals(42.0, (Double) samples.get(0).getValues()[0], 0.01);
     }
 }

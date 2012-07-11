@@ -45,14 +45,14 @@ public class SampleValue implements Serializable
      */
 	public static SampleValue create(final Double value)
 	{
-	    return new SampleValue(value);
+	    return new SampleValue(new Number[] { value });
 	}
 
 	/** Initialize
 	 *  @param values One or more {@link Number}
 	 *  @throws IllegalArgumentException when values not accepted
 	 */
-    public SampleValue(final Object... values)
+    public SampleValue(final Object[] values)
 	{
         if (! (values[0] instanceof Number))
             throw new IllegalArgumentException("Cannot handle " + values[0].getClass().getName());
@@ -66,6 +66,12 @@ public class SampleValue implements Serializable
 	        return (Number) values[0];
 	    return null;
 	}
+
+	/** @return Values */
+    public Object[] getValues()
+    {
+        return values;
+    }
 
 	/** {@inheritDoc} */
 	@Override

@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.server.Scan;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,7 +29,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DerbyDataLogTest
+public class DerbyDataLogUnitTest
 {
 	private static Scan scan = null;
 	private static long device_id = 1;
@@ -81,18 +81,18 @@ public class DerbyDataLogTest
 		log.close();
 	}
 
-	@Test(timeout=50000)
+	@Test(timeout=80000)
 	public void testSampleLogging() throws Exception
 	{
 		final DerbyDataLogger log = new DerbyDataLogger();
-        // Allows about 19000 samples/second
-		//
+        // Allows about 1900 samples/second
+		// JProfiler shows all time spent in PreparedStatement.executeUpdate()
 		// When value was just a DOUBLE number, no SampleValue:
 		// Allows about 2500 samples/second
 		final long scan_id = scan.getId();
 		final long start = System.nanoTime();
 		for (long serial = 1; serial < 50000; ++serial)
-			log.log(scan_id, "setpoint", new NumberScanSample(new Date(), serial, 3.14 + serial * 0.01));
+			log.log(scan_id, "setpoint", ScanSampleFactory.createSample(new Date(), serial, 3.14 + serial * 0.01));
         final long nanos = System.nanoTime() - start;
 		log.close();
 		final long vals_per_sec = 50000L * 1000000000L / nanos;
@@ -106,7 +106,7 @@ public class DerbyDataLogTest
         final long scan_id = scan.getId();
 
         // Reads about 4400 samples/second
-        //
+        // JProfiler shows all time spent in PreparedStatement.executeQuery()
         // When value was just a DOUBLE number, no SampleValue: >30000/sec
         final long start = System.nanoTime();
 		final ScanData data = log.getScanData(scan_id);
@@ -117,7 +117,6 @@ public class DerbyDataLogTest
 
         final long vals_per_sec = 50000L * 1000000000L / nanos;
         System.out.println("Reading " + vals_per_sec + " vals/sec");
-
 
 		log.close();
 	}
@@ -131,6 +130,6 @@ public class DerbyDataLogTest
             System.out.println(scan);
         log.close();
         assertTrue(scans.length > 0);
-        assertEquals(DerbyDataLogTest.scan, scans[scans.length - 1]);
+        assertEquals(DerbyDataLogUnitTest.scan, scans[scans.length - 1]);
     }
 }

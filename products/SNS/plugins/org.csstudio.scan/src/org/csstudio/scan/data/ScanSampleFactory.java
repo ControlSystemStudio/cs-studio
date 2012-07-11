@@ -26,15 +26,32 @@ public class ScanSampleFactory
     /** Create ScanSample for plain number or text value
 	 *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
-	 *  @param value Value (Number, String)
+	 *  @param numbers {@link Number}s
 	 *  @return {@link ScanSample}
 	 *  @throws IllegalArgumentException if the value type is not handled
 	 */
 	public static ScanSample createSample(final Date timestamp,
-	        final long serial, final Object value) throws IllegalArgumentException
+	        final long serial, final Number... numbers) throws IllegalArgumentException
 	{
-		if (value instanceof Number)
-			return new NumberScanSample(timestamp, serial, (Number)value);
-		throw new IllegalArgumentException("Sample of type " + value.getClass().getName() + " is not handled");
+	    if (numbers.length <= 0)
+	        throw new IllegalArgumentException("Missing values");
+		return new NumberScanSample(timestamp, serial, numbers);
 	}
+
+    /** Create ScanSample for plain number or text value
+     *  @param timestamp Time stamp
+     *  @param serial Serial to identify when the sample was taken
+     *  @param values Values
+     *  @return {@link ScanSample}
+     *  @throws IllegalArgumentException if the value type is not handled
+     */
+    public static ScanSample createSample(final Date timestamp,
+            final long serial, final Object[] values) throws IllegalArgumentException
+    {
+        if (values.length <= 0)
+            throw new IllegalArgumentException("Missing values");
+        if (values[0] instanceof Number)
+            return new NumberScanSample(timestamp, serial, (Number[]) values);
+        throw new IllegalArgumentException("Cannot handle values of type " + values[0].getClass().getName());
+    }
 }

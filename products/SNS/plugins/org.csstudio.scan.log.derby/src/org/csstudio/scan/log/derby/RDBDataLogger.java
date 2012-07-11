@@ -21,9 +21,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.server.Scan;
 
 /** Base for an RDB-based sample logger
@@ -241,7 +241,7 @@ abstract public class RDBDataLogger
 		insert_sample_statement.setInt(2, device_id);
 		insert_sample_statement.setLong(3, sample.getSerial());
 		insert_sample_statement.setTimestamp(4, new Timestamp(sample.getTimestamp().getTime()));
-		insert_sample_statement.setObject(5, new SampleValue(sample.getValue()));
+		insert_sample_statement.setObject(5, new SampleValue(sample.getValues()));
 		final int rows = insert_sample_statement.executeUpdate();
 		if (rows != 1)
 				throw new Exception("Sample insert affected " + rows + " rows");
@@ -290,7 +290,7 @@ abstract public class RDBDataLogger
 				final long serial = result.getLong(1);
 				final Date timestamp = result.getTimestamp(2);
 				final SampleValue value = (SampleValue) result.getObject(3);
-				samples.add(new NumberScanSample(timestamp, serial, value.getNumber()));
+				samples.add(ScanSampleFactory.createSample(timestamp, serial, value.getValues()));
 			}
 			result.close();
 		}

@@ -40,8 +40,9 @@ import org.csstudio.scan.server.ScanServer;
  *  </ul>
  *
  *  @author Kay Kasemir
+ *
+ *  @see NumberScanSample
  */
-@SuppressWarnings("nls")
 abstract public class ScanSample implements Serializable
 {
     /** Serialization ID */
@@ -49,8 +50,6 @@ abstract public class ScanSample implements Serializable
 
 	final private Date timestamp;
 	final private long serial;
-
-	// TODO support array values (see log.derby.SampleValue, ArrayNumber, ...)
 
     /** Initialize
      *  @param timestamp Time stamp
@@ -74,16 +73,16 @@ abstract public class ScanSample implements Serializable
 		return serial;
 	}
 
-	/** Get raw value of the sample
+	/** Get raw values of the sample
 	 *  <p>Derived classes can implement access to
 	 *  the value by other means
-	 *  @return Value of the sample
+	 *  @return Values of the sample. Will be an array of {@link Number} or ...
 	 */
-	abstract public Object getValue();
+	abstract public Object[] getValues();
 
 	@Override
 	public String toString()
 	{
-	    return ScanSampleFormatter.format(timestamp) + " " + getValue();
+	    return ScanSampleFormatter.format(timestamp);
 	}
 }
