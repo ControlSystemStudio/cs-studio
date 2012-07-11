@@ -22,6 +22,8 @@ import org.eclipse.swt.graphics.RGB;
 public class GraphicsUtil {
 
 	public static synchronized boolean testPatternSupported(Graphics graphics){
+		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+			return false;
 		if(!useAdvancedGraphics())
 			return false;
 		
@@ -40,8 +42,6 @@ public class GraphicsUtil {
 	 * If advanced graphics is enabled by system setting.
 	 */
 	public static boolean useAdvancedGraphics() {
-		if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-			return false;
 		if(!Preferences.useAdvancedGraphics())
 			return false;
 		String value = System.getProperty(Preferences.PROHIBIT_ADVANCED_GRAPHICS); //$NON-NLS-1$

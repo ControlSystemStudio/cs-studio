@@ -11,10 +11,8 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.geometry.Insets;
@@ -223,7 +221,8 @@ public final class ImageUtils {
 			break;
 		default:
 			Activator.getLogger().log(Level.WARNING,
-					"ERROR in value of old degree " + oldDegree);
+					"ERROR in value of old degree " + oldDegree + ". The degree can only be " +
+							"0, 90, 180 or 270");
 		}
 		return clockwise;
 	}
@@ -397,7 +396,7 @@ public final class ImageUtils {
 			IPath onImagePath = null;
 			for (String suffix : suffixes) {
 				onImagePath = new Path(tmpPath.replace("***", suffix));
-				if (isWorkspaceFilePathExists(onImagePath)) {
+				if (isFileExists(onImagePath)) {
 					return onImagePath;
 				}
 			}
@@ -426,7 +425,7 @@ public final class ImageUtils {
 			IPath offImagePath = null;
 			for (String suffix : suffixes) {
 				offImagePath = new Path(tmpPath.replace("***", suffix));
-				if (isWorkspaceFilePathExists(offImagePath)) {
+				if (isFileExists(offImagePath)) {
 					return offImagePath;
 				}
 			}
@@ -440,23 +439,24 @@ public final class ImageUtils {
 	 * @param path
 	 * @return the check result
 	 */
-	private static boolean isWorkspaceFilePathExists(IPath path) {
-		try {
-			final IResource fileResource = ResourcesPlugin.getWorkspace()
-					.getRoot().findMember(path, false);
-			if (fileResource != null && fileResource instanceof IFile) {
-				final IFile file = (IFile) fileResource;
-				if (file.exists()) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			Activator.getLogger().log(
-					Level.WARNING,
-					"ERROR in checking if file path exists in the workspace "
-							+ path, e);
-		}
-		return false;
+	private static boolean isFileExists(IPath path) {
+		return ResourceUtil.isExsitingFile(path, false);
+//		try {
+//			final IResource fileResource = ResourcesPlugin.getWorkspace()
+//					.getRoot().findMember(path, false);
+//			if (fileResource != null && fileResource instanceof IFile) {
+//				final IFile file = (IFile) fileResource;
+//				if (file.exists()) {
+//					return true;
+//				}
+//			}
+//		} catch (Exception e) {
+//			Activator.getLogger().log(
+//					Level.WARNING,
+//					"ERROR in checking if file path exists in the workspace "
+//							+ path, e);
+//		}
+//		return false;
 	}
 
 	/**
@@ -607,7 +607,7 @@ public final class ImageUtils {
 			return null;
 		String path = basePath.replace(STATE_MARKER, state);
 		IPath stateImagePath = new Path(path);
-		if (isWorkspaceFilePathExists(stateImagePath)) {
+		if (isFileExists(stateImagePath)) {
 			return stateImagePath;
 		}
 		return null;

@@ -9,6 +9,7 @@ package org.csstudio.opibuilder.widgets.figures;
 
 import java.util.Map;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
@@ -34,6 +35,7 @@ import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -101,8 +103,16 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	 */
 	public AbstractSWTWidgetFigure(final AbstractBaseEditPart editpart, final int style) {
 		super();
-		this.editPart = editpart;
+		this.editPart = editpart;		
 		this.composite = (Composite) editpart.getViewer().getControl();
+		//In RAP, FigureCanvas has an inner canvas wrapped, so everything should be on the inner canvas.
+		if(OPIBuilderPlugin.isRAP()){
+			Control[] children = composite.getChildren();
+			 for(Control control : children){
+				 if(control instanceof Canvas)
+					 composite = (Composite) control;
+			 }
+		}
 		this.parentEditPart = editpart.getParent();
 		this.runmode = editpart.getExecutionMode() == ExecutionMode.RUN_MODE;
 		

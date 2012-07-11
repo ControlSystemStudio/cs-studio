@@ -1,15 +1,14 @@
-package org.csstudio.opibuilder.tools.filebrowser;
+package org.csstudio.opibuilder.visualparts;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.tools.Activator;
 import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
-import org.csstudio.opibuilder.visualparts.FilePathDialogWithFilter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -138,7 +137,7 @@ public final class FilePathCellDialogEditorWithFilter extends
 					filters = (String[]) listToFind
 							.toArray(new String[listToFind.size()]);
 				} else {
-					Activator.getLogger().log(
+					OPIBuilderPlugin.getLogger().log(
 							Level.WARNING,
 							"Pattern " + TTT_REGEX + " can’t be found in PV name " + pvName);
 				}

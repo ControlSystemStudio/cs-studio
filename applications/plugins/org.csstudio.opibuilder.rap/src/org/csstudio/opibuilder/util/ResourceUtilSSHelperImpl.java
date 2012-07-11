@@ -68,8 +68,8 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
             // Does it look like a URL?
             // Eclipse Path collapses "//" into "/", revert that:
             urlString = path.toString();
-            if(!urlString.contains("://"))
-                urlString = urlString.replaceFirst(":/", "://");
+//            if(!urlString.contains("://"))
+//                urlString = urlString.replaceFirst(":/", "://");
             // Does it now look like a URL? If not, report the original local file problem
             if (! isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
