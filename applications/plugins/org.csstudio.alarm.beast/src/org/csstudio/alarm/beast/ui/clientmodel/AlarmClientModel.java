@@ -840,7 +840,7 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, true);
+            parent.maximizeSeverity();
         else
             fireNewAlarmState(pv, true);
     }
@@ -871,7 +871,7 @@ public class AlarmClientModel
         // Maximizing the severity would also fireNewAlarmState
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
-            parent.maximizeSeverity(pv, true);
+            parent.maximizeSeverity();
         else
             fireNewAlarmState(pv, true);
 	}
