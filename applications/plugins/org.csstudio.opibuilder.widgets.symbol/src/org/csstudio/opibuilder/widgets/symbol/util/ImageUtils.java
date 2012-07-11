@@ -396,7 +396,7 @@ public final class ImageUtils {
 			IPath onImagePath = null;
 			for (String suffix : suffixes) {
 				onImagePath = new Path(tmpPath.replace("***", suffix));
-				if (isWorkspaceFilePathExists(onImagePath)) {
+				if (isFileExists(onImagePath)) {
 					return onImagePath;
 				}
 			}
@@ -425,7 +425,7 @@ public final class ImageUtils {
 			IPath offImagePath = null;
 			for (String suffix : suffixes) {
 				offImagePath = new Path(tmpPath.replace("***", suffix));
-				if (isWorkspaceFilePathExists(offImagePath)) {
+				if (isFileExists(offImagePath)) {
 					return offImagePath;
 				}
 			}
@@ -439,8 +439,8 @@ public final class ImageUtils {
 	 * @param path
 	 * @return the check result
 	 */
-	private static boolean isWorkspaceFilePathExists(IPath path) {
-		return ResourceUtil.isExistingWorkspaceFile(path);
+	private static boolean isFileExists(IPath path) {
+		return ResourceUtil.isExsitingFile(path, false);
 //		try {
 //			final IResource fileResource = ResourcesPlugin.getWorkspace()
 //					.getRoot().findMember(path, false);
@@ -607,7 +607,7 @@ public final class ImageUtils {
 			return null;
 		String path = basePath.replace(STATE_MARKER, state);
 		IPath stateImagePath = new Path(path);
-		if (isWorkspaceFilePathExists(stateImagePath)) {
+		if (isFileExists(stateImagePath)) {
 			return stateImagePath;
 		}
 		return null;
