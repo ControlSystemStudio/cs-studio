@@ -7,8 +7,10 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,10 +20,12 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
+import org.python.core.Py;
 import org.python.core.PyException;
 import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PySystemState;
+import org.python.core.imp;
 import org.python.util.PythonInterpreter;
 
 /** Helper for obtaining Jython interpreter
@@ -32,6 +36,7 @@ public class JythonSupport
 {
     private static boolean initialized = false;
     private static List<String> paths = new ArrayList<String>();
+    private static ClassLoader plugin_class_loader;
 
 	final private PythonInterpreter interpreter;
 
@@ -48,6 +53,39 @@ public class JythonSupport
 	        {
 	            final URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
 	            paths.add(FileLocator.resolve(url).getPath() + "/Lib");
+
+	            // Have Platform support, so create combined class loader that
+	            // first uses this plugin's class loaded and has thus access
+	            // to everything that the plugin can reach.
+	            // Fall back to the original Jython class loaded.
+	            plugin_class_loader = new ClassLoader()
+                {
+	                @Override
+	                public Class<?> loadClass(final String name) throws ClassNotFoundException
+	                {
+	                    // Temporarily set class loader to null,
+	                    // which is the original status of SystemState.
+	                    final ClassLoader saveClassLoader = Py.getSystemState().getClassLoader();
+	                    Py.getSystemState().setClassLoader(null);
+	                    try
+	                    {
+	                        return JythonSupport.class.getClassLoader().loadClass(name);
+	                    }
+	                    catch (Exception e)
+	                    {
+	                        return imp.getSyspathJavaLoader().loadClass(name);
+	                    }
+	                    finally {
+	                        Py.getSystemState().setClassLoader(saveClassLoader);
+	                    }
+	                }
+
+	                @Override
+	                public Enumeration<URL> getResources(final String name) throws IOException
+	                {
+	                    return JythonSupport.class.getClassLoader().getResources(name);
+	                }
+                };
 	        }
 
 	        // Add numji
@@ -101,6 +139,8 @@ public class JythonSupport
 	{
 	    init();
 		final PySystemState state = new PySystemState();
+		if (plugin_class_loader != null)
+		    state.setClassLoader(plugin_class_loader);
 
 		// Path to Python standard lib, numjy, scan system
         for (String path : paths)
