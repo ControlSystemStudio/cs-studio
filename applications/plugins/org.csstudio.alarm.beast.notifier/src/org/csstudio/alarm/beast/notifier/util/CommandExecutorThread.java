@@ -67,7 +67,10 @@ abstract public class CommandExecutorThread extends Thread
             final int wait)
     {
         super("CommandExecutor");
-        this.command = command;
+        if (command.startsWith("cmd:"))
+            this.command = command.substring(4);
+        else
+            this.command = command;
         this.dir_name = dir_name;
         this.wait = wait;
     }
