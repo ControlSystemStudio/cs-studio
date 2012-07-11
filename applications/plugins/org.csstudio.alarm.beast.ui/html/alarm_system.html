@@ -990,6 +990,71 @@ command to invoke.
 </p>
 
 
+<h3>Automated Notifications</h3>
+<p>
+If alarms persist for a certain time without being acknowledged or cleared,
+and automated notification can be generated.
+</p>
+<p>
+If you configure a notification for an alarm trigger PV, the default message will
+contain the alarm info for that PV.
+If you configure a notification for a system or area, the default message will list
+the PVs in alarm below that section of the alarm tree.
+</p>
+<p>
+The configuration of an automated notification has three parts:
+<ol>
+<li>Title: The title to be displayed as a context menu item. The max length of title is 30 characters.
+</li>
+<li>Delay: Delay in seconds before the notification is performed.
+    If the alarm is acknowledged or clears before this delay, no notification will be performed.</li>
+<li>Details: Details of the automated action to be executed.
+    The exact format of the notification detail depends on the type of notification,
+    for example email, as listed below.
+</li>
+</li>
+</ol>
+</p>
+
+<h4>Email Notifications</h4>
+<p>
+Email notifications start with "mailto:", using the RFC 6068 URL schema.
+</p>
+<p>
+Examples:
+</p>
+<pre>
+mailto:user@my.org
+mailto:list1@example.com,list2@example.fr
+mailto:user1@my.org?cc=support@my.org&bcc=john.doe@gmail.com
+mailto:user@my.org?cc=rf@my.org&subject=*RF Source 1 in error&body={0} Alarm raised - Water below {1} m3
+</pre>
+
+<p>
+Within the configuration, the text <code>{0}</code> will be replaced with the alarm severity
+and <code>{1}</code> with the value that triggered the alarm.
+</p>
+
+
+<h4>External Command</h4>
+<p>
+The prefix "cmd:" selects an external command to be executed. Examples:
+</p>
+<p>
+Examples:
+</p>
+<pre>cmd:caput SomePV 1
+</pre>
+
+
+<!-- Not implemented:
+SMS: sms URL scheme (RFC 5724). Example: "sms:+15105550101,+15105550102"
+Phone: tel URL scheme (RFC 2806). Example: "tel:+15105550101,+15105550102"s
+ -->
+
+
+
+
 
 <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 <h2><a name=pv_config>Alarm Trigger PV Configuration</a></h2> 
