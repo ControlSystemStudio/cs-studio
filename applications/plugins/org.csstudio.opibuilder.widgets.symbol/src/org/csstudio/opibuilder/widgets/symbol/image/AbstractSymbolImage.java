@@ -14,8 +14,8 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
 import org.csstudio.opibuilder.widgets.symbol.util.ImageUtils;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -491,9 +491,12 @@ public abstract class AbstractSymbolImage extends Figure {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
 		try {
+			IPath workSpacePath=ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
+			
 			String uri = "file://"
-					+ ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
+					+  (workSpacePath == null? "" : workSpacePath.toOSString())//$NON-NLS-1$ //ResourcesPlugin.getWorkspace().getRoot().getRawLocation()
 					+ imagePath.toString();
+		
 			final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
 			svgDocument = factory.createDocument(uri, inputStream);
 			transcoder = new SimpleImageTranscoder(svgDocument);

@@ -11,10 +11,8 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.draw2d.geometry.Insets;
@@ -441,22 +439,23 @@ public final class ImageUtils {
 	 * @return the check result
 	 */
 	private static boolean isWorkspaceFilePathExists(IPath path) {
-		try {
-			final IResource fileResource = ResourcesPlugin.getWorkspace()
-					.getRoot().findMember(path, false);
-			if (fileResource != null && fileResource instanceof IFile) {
-				final IFile file = (IFile) fileResource;
-				if (file.exists()) {
-					return true;
-				}
-			}
-		} catch (Exception e) {
-			Activator.getLogger().log(
-					Level.WARNING,
-					"ERROR in checking if file path exists in the workspace "
-							+ path, e);
-		}
-		return false;
+		return ResourceUtil.isExistingWorkspaceFile(path);
+//		try {
+//			final IResource fileResource = ResourcesPlugin.getWorkspace()
+//					.getRoot().findMember(path, false);
+//			if (fileResource != null && fileResource instanceof IFile) {
+//				final IFile file = (IFile) fileResource;
+//				if (file.exists()) {
+//					return true;
+//				}
+//			}
+//		} catch (Exception e) {
+//			Activator.getLogger().log(
+//					Level.WARNING,
+//					"ERROR in checking if file path exists in the workspace "
+//							+ path, e);
+//		}
+//		return false;
 	}
 
 	/**

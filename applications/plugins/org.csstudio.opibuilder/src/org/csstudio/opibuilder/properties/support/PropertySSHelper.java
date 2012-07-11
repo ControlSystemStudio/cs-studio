@@ -71,5 +71,8 @@ public abstract class PropertySSHelper {
 
 	public abstract PropertyDescriptor getComplexDataPropertyDescriptor(String prop_id,
 			String description, String dialogTitle);
+
+	public abstract PropertyDescriptor FilePathPropertyDescriptorWithFilter(
+			String prop_id, String description, AbstractWidgetModel widgetModel, String[] filters);
 	
 }

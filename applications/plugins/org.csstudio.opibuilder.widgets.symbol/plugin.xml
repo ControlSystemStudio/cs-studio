@@ -10,6 +10,7 @@
             icon="icon/GenericMonitorWidget.png"
             model_class="org.csstudio.opibuilder.widgets.symbol.bool.MonitorBoolSymbolModel"
             name="Boolean Symbol Image Monitor"
+            onlineHelpHtml="html/firststeps/imagebooleansymbolwidget.html"
             typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolMonitorWidget">
       </widget>
       <widget
@@ -19,6 +20,7 @@
             icon="icon/GenericControlWidget.png"
             model_class="org.csstudio.opibuilder.widgets.symbol.bool.ControlBoolSymbolModel"
             name="Boolean Symbol Image Control"
+            onlineHelpHtml="html/firststeps/imagebooleansymbolwidget.html"
             typeId="org.csstudio.opibuilder.widgets.symbol.bool.BoolControlWidget">
       </widget>
       <widget
@@ -28,6 +30,7 @@
             icon="icon/GenericMonitorWidget.png"
             model_class="org.csstudio.opibuilder.widgets.symbol.multistate.MonitorMultiSymbolModel"
             name="Multistate Symbol Image Monitor"
+            onlineHelpHtml="html/firststeps/imagemultisymbolwidget.html"
             typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateMonitorWidget">
       </widget>
       <widget
@@ -37,15 +40,9 @@
             icon="icon/GenericControlWidget.png"
             model_class="org.csstudio.opibuilder.widgets.symbol.multistate.ControlMultiSymbolModel"
             name="Multistate Symbol Image Control"
+            onlineHelpHtml="html/firststeps/imagemultisymbolwidget.html"
             typeId="org.csstudio.opibuilder.widgets.symbol.multistate.MultistateControlWidget">
       </widget>
-   </extension>
-   <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="intro/firststeps.xml"
-            configId="org.eclipse.ui.intro.universalConfig">
-      </configExtension>
    </extension>
    <extension
          point="org.eclipse.help.index">
