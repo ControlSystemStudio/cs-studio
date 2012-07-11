@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelRoot;
 import org.csstudio.apputil.xml.XMLWriter;
 
 /** Root of the alarm configuration tree.
@@ -39,12 +40,24 @@ public class AlarmTreeRoot extends AlarmTreeItem
      *  When calling the public <code>acknowledge()</code> method,
      *  that will descend to all PVs, which in turn invoke this method
      *  on the root.
-     *  The default alarm tree root does nothing, but the AlarmClientModelRoot
+     *  The default alarm tree root does nothing, but the {@link AlarmClientModelRoot}
      *  will forward the request to the alarm server
      *  @param pv PV that needs to be ack'ed
      *  @param acknowledge Ack or un-ack?
      */
     protected void acknowledge(final AlarmTreePV pv, final boolean acknowledge)
+    {
+        // NOP
+    }
+
+    /** Notify listeners to the model that a leaf has changed its alarm state
+     *
+     *  <p>Default implementation has no listeners, so nothing is done.
+     *  {@link AlarmClientModelRoot}, however, has a model that it notifies.
+     *  @param leaf Lead that changed
+     *  @param parent_changed <code>true</code> if this also triggered updates of parents
+     */
+    protected void notifyListeners(final AlarmTreeLeaf leaf, final boolean parent_changed)
     {
         // NOP
     }

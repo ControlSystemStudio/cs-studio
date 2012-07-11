@@ -216,7 +216,10 @@ public class AlarmTreePV extends AlarmTreeLeaf
                 {
                     this.current_message = current_message;
                     this.value = value;
+                    root.notifyListeners(this, true);
                 }
+                else
+                    root.notifyListeners(this, false);
             }
         }
     }
