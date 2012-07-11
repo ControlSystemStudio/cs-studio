@@ -21,7 +21,7 @@ import org.csstudio.logging.JMSLogMessage;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class AlarmNotifier implements NotificationActionListener 
+public class AlarmNotifier implements NotificationActionListener
 {
 	/** Name of alarm tree root element */
     final String root_name = Preferences.getAlarmTreeRoot();
@@ -34,17 +34,17 @@ public class AlarmNotifier implements NotificationActionListener
 
     /** Automated actions factory */
     final private NotificationActionFactory factory;
-    
+
     /** Queue which handles pending actions */
     final private WorkQueue work_queue;
-    
-    private boolean maintenance_mode = false;
-    
 
-    public AlarmNotifier(final String root_name, 
-    		final IAlarmRDBHandler rdbHandler, 
+    private boolean maintenance_mode = false;
+
+
+    public AlarmNotifier(final String root_name,
+    		final IAlarmRDBHandler rdbHandler,
     		final NotificationActionFactory factory,
-    		final int threshold) throws Exception 
+    		final int threshold) throws Exception
     {
 		this.rdb = rdbHandler;
 		this.factory = factory;
@@ -85,12 +85,12 @@ public class AlarmNotifier implements NotificationActionListener
 		rdb.close();
 		Activator.getLogger().log(Level.INFO, "Alarm Notifier stopped");
 	}
-	
+
 	/** @return Action WorkQueue */
 	public WorkQueue getWork_queue() {
 		return work_queue;
 	}
-	
+
 	/**
 	 * Read info about {@link AlarmTreeItem} from model.
 	 * @param path, path of the item
@@ -100,7 +100,7 @@ public class AlarmNotifier implements NotificationActionListener
 		AlarmTreeItem item = rdb.findItem(path);
 		return ItemInfo.fromItem(item);
 	}
-	
+
 	/**
 	 * Handle manual execution of automated actions.
 	 * @param manualInfo, information from JMS message.
@@ -127,7 +127,7 @@ public class AlarmNotifier implements NotificationActionListener
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
 		PVSnapshot snapshot = PVSnapshot.fromPVItem(pvItem);
-		
+
 		// Process PV automated actions
 		if (pvItem.getAutomatedActions() != null) {
 			for (AADataStructure aa : pvItem.getAutomatedActions()) {
@@ -145,9 +145,9 @@ public class AlarmNotifier implements NotificationActionListener
 				break;
 		}
 	}
-	
+
 	private void handleAutomatedAction(PVSnapshot snapshot,
-			AlarmTreeItem aaItem, AADataStructure aa) 
+			AlarmTreeItem aaItem, AADataStructure aa)
 	{
 		INotificationAction action = work_queue.findAction(aaItem, aa);
 		if (action != null && action.isSleeping()) {
@@ -157,8 +157,10 @@ public class AlarmNotifier implements NotificationActionListener
 			// TODO: AA = one/multiple actions ?? separator ?
 			final ItemInfo info = ItemInfo.fromItem(aaItem);
 			final ActionID naID = WorkQueue.getActionID(aaItem, aa);
-			INotificationAction newAction = factory.getNotificationAction(this,
+			final INotificationAction newAction = factory.getNotificationAction(this,
 					naID, info, aa.getDelay(), aa.getDetails());
+			if (newAction == null)
+			    return;
 			newAction.updateAlarms(snapshot);
 			if (!maintenance_mode
 					|| (maintenance_mode && newAction.getActionPriority().equals(
@@ -166,7 +168,7 @@ public class AlarmNotifier implements NotificationActionListener
 				work_queue.add(newAction);
 		}
 	}
-	
+
 	/**
 	 * Remove completed actions from {@link WorkQueue}
 	 */
