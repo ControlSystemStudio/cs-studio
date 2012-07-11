@@ -221,7 +221,8 @@ public final class ImageUtils {
 			break;
 		default:
 			Activator.getLogger().log(Level.WARNING,
-					"ERROR in value of old degree " + oldDegree);
+					"ERROR in value of old degree " + oldDegree + ". The degree can only be " +
+							"0, 90, 180 or 270");
 		}
 		return clockwise;
 	}

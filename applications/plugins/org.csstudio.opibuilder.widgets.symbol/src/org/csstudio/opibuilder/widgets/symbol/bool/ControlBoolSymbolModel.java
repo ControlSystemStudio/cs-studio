@@ -144,9 +144,9 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
 				"Flip Horizontal", WidgetPropertyCategory.Image, false));
 		addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, "Flip Vertical",
 				WidgetPropertyCategory.Image, false));
-		setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
-		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
-		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
+//		setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
+//		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
+//		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
 		
 		addProperty(new StringProperty(PROP_DISPOSITION, "Image Disposition",
 				WidgetPropertyCategory.Image, "1234"));
