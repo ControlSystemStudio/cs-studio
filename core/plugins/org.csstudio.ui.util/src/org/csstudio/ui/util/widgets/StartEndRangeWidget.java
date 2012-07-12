@@ -20,6 +20,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * @author shroffk
@@ -242,7 +243,7 @@ public class StartEndRangeWidget extends Canvas {
 			}
 			this.max = max;
 			recalculateDistancePerPx();
-//			fireRangeChanged();
+			// fireRangeChanged();
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -317,6 +318,8 @@ public class StartEndRangeWidget extends Canvas {
 				followMax = false;
 			} else if ((valueAlongOrientationAxis >= minSelectedOval + 10 && valueAlongOrientationAxis <= maxSelectedOval)) {
 				moveControl = MOVE.RANGE;
+				followMin = false;
+				followMax = false;
 				rangeX = valueAlongOrientationAxis;
 			} else {
 				moveControl = MOVE.NONE;
@@ -341,12 +344,18 @@ public class StartEndRangeWidget extends Canvas {
 			}
 			switch (moveControl) {
 			case SELECTEDMIN:
-				setSelectedMin(Math.max((valueAlongOrientationAxis - zero)
-						/ distancePerPx, getMin()));
+				double newSelectedMin = Math.max(
+						(valueAlongOrientationAxis - zero) / distancePerPx,
+						getMin());
+				setSelectedMin(newSelectedMin);
+//				setToolTipText(String.valueOf(newSelectedMin));
 				break;
 			case SELECTEDMAX:
-				setSelectedMax(Math.min((valueAlongOrientationAxis - zero)
-						/ distancePerPx, getMax()));
+				double newSelectedMax = Math.min(
+						(valueAlongOrientationAxis - zero) / distancePerPx,
+						getMax());
+				setSelectedMax(newSelectedMax);
+//				setToolTipText(String.valueOf(newSelectedMax));
 				break;
 			case RANGE:
 				double increment = ((valueAlongOrientationAxis - rangeX) / distancePerPx);
@@ -407,7 +416,6 @@ public class StartEndRangeWidget extends Canvas {
 			// max selected
 			e.gc.drawOval(maxOval.x, maxOval.y, 10, 10);
 			e.gc.fillOval(maxOval.x + 1, maxOval.y + 1, 9, 9);
-
 		}
 	};
 }
