@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
+import org.csstudio.ui.util.widgets.RangeListener;
+import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
 import org.eclipse.jface.viewers.ISelection;
@@ -54,7 +56,10 @@ import org.epics.pvmanager.expression.DesiredRateExpression;
 import org.epics.pvmanager.graphene.ExpressionLanguage;
 import org.epics.pvmanager.graphene.LineGraphPlot;
 import org.epics.pvmanager.graphene.Plot2DResult;
+import org.epics.pvmanager.graphene.PlotDataRange;
 import org.epics.pvmanager.util.TimeDuration;
+import org.csstudio.ui.util.widgets.StartEndRangeWidget;
+import org.eclipse.swt.widgets.Label;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
@@ -62,6 +67,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	private VImageDisplay imageDisplay;
 	private LineGraphPlot plot;
 	private ErrorBar errorBar;
+	private StartEndRangeWidget yRangeControl;
+	private StartEndRangeWidget xRangeControl;
 
 	public Line2DPlotWidget(Composite parent, int style) {
 		super(parent, style);
@@ -78,12 +85,33 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			}
 		});
 
-		setLayout(new GridLayout(1, false));
+		setLayout(new GridLayout(2, false));
+		new Label(this, SWT.NONE);
 
 		errorBar = new ErrorBar(this, SWT.NONE);
 		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
 				1, 1));
 		errorBar.setMarginBottom(5);
+		yRangeControl = new StartEndRangeWidget(this, SWT.NONE);
+		yRangeControl.setOrientation(ORIENTATION.VERTICAL);
+		GridData gd_yRangeControl = new GridData(SWT.LEFT, SWT.FILL, false,
+				true, 1, 1);
+		gd_yRangeControl.widthHint = 15;
+		yRangeControl.setLayoutData(gd_yRangeControl);
+		yRangeControl.addRangeListener(new RangeListener() {
+
+			@Override
+			public void rangeChanged() {
+				if (plot != null) {
+					double invert = yRangeControl.getMin()
+							+ yRangeControl.getMax();
+					plot.update(new LineGraphRendererUpdate()
+							.rangeFromDataset(false)
+							.startY((invert - yRangeControl.getSelectedMax()))
+							.endY((invert - yRangeControl.getSelectedMin())));
+				}
+			}
+		});
 
 		imageDisplay = new VImageDisplay(this);
 		imageDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
@@ -91,6 +119,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
 		imageDisplay.setStretched(SWT.HORIZONTAL);
+
 		imageDisplay.addControlListener(new ControlListener() {
 
 			@Override
@@ -106,6 +135,25 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			@Override
 			public void controlMoved(ControlEvent e) {
 				// Nothing to do
+			}
+		});
+		new Label(this, SWT.NONE);
+
+		xRangeControl = new StartEndRangeWidget(this, SWT.NONE);
+		GridData gd_xRangeControl = new GridData(SWT.FILL, SWT.CENTER, true,
+				false, 1, 1);
+		gd_xRangeControl.heightHint = 15;
+		xRangeControl.setLayoutData(gd_xRangeControl);
+		xRangeControl.addRangeListener(new RangeListener() {
+
+			@Override
+			public void rangeChanged() {
+				if (plot != null) {
+					plot.update(new LineGraphRendererUpdate()
+							.rangeFromDataset(false)
+							.startX(xRangeControl.getSelectedMin())
+							.endX(xRangeControl.getSelectedMax()));
+				}
 			}
 		});
 
@@ -273,6 +321,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			return;
 		}
 		this.yChannelNames = yChannelNames;
+		this.yWaveformChannelName = null;
 		this.yOrdering = YAxis.CHANNELQUERY;
 		reconnect();
 	}
@@ -287,6 +336,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			return;
 		}
 		this.yWaveformChannelName = yWaveformChannelName;
+		this.yChannelNames = null;
 		this.yOrdering = YAxis.WAVEFORM;
 		reconnect();
 	}
@@ -404,6 +454,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			pv.close();
 			imageDisplay.setVImage(null);
 			plot = null;
+			resetRange(xRangeControl);
+			resetRange(yRangeControl);
 		}
 
 		if ((yChannelNames == null || yChannelNames.isEmpty())
@@ -418,7 +470,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				yValueExpression = vDoubleArrayOf(latestValueOf(channels(
 						yChannelNames, VNumber.class, VNumber.class)));
 		} else if (yOrdering.equals(YAxis.WAVEFORM)) {
-			// create a plot using the yWavefor
 			if (yWaveformChannelName != null && !yWaveformChannelName.isEmpty())
 				yValueExpression = latestValueOf(vDoubleArrayOf(channel(yWaveformChannelName)));
 		}
@@ -466,7 +517,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				.imageHeight(imageDisplay.getSize().y)
 				.imageWidth(imageDisplay.getSize().x)
 				.interpolation(InterpolationScheme.LINEAR));
-		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread()).maxRate(ofHertz(50));
+		pv = PVManager.read(plot).notifyOn(SWTUtil.swtThread())
+				.maxRate(ofHertz(50));
 		pv.addPVReaderListener(new PVReaderListener() {
 
 			@Override
@@ -474,6 +526,8 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				if (pv.lastException() != null)
 					setLastError(pv.lastException());
 				if (pv.getValue() != null) {
+					setRange(xRangeControl, pv.getValue().getxRange());
+					setRange(yRangeControl, pv.getValue().getyRange());
 					imageDisplay.setVImage(pv.getValue().getImage());
 				} else {
 					imageDisplay.setVImage(null);
@@ -481,6 +535,21 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			}
 
 		});
+	}
+
+	/**
+	 * A helper function to set all the appropriate
+	 * 
+	 * @param control
+	 */
+	private void setRange(StartEndRangeWidget control,
+			PlotDataRange plotDataRange) {
+		control.setRange(plotDataRange.getStartIntegratedDataRange(),
+				plotDataRange.getEndIntegratedDataRange());
+	}
+
+	private void resetRange(StartEndRangeWidget control) {
+		control.setRanges(0, 0, 1, 1);
 	}
 
 	private Map<ISelectionChangedListener, PropertyChangeListener> listenerMap = new HashMap<ISelectionChangedListener, PropertyChangeListener>();
@@ -588,5 +657,4 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			}
 		}
 	}
-
 }
