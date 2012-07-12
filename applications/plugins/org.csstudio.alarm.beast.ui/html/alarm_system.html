@@ -969,8 +969,15 @@ Quotes (") can be used to include spaces inside an argument.
 <p>
 The command will be executed with the "current directory"
 set to the "Command Directory" that is configured
-in the alarm system preferences.
+in the alarm system preferences <pre>org.csstudio.alarm.beast/command_directory</pre>.
+Note that the commands are executed by the operating system that runs the notfier.
+Commands in the <pre>command_directory</pre> may not be executed unless
+the PATH variable of the operating system includes the current directory ".",
+the command itself is specified as "./the_command" to select the current directory as set via the <pre>command_directory</pre>,
+or the PATH lists the full path to the <pre>command_directory</pre>.
 </p>
+
+
 <p>
 A suggested setup would probably place all alarm system related
 commands in a directory like <code>/usr/local/css/alarm_scripts</code>,
@@ -1016,6 +1023,12 @@ The configuration of an automated notification has three parts:
 </ol>
 </p>
 
+<p>
+The automated notifications are performed by a designated "alarm-notifier"
+that must be running in parallel to the alarm server.
+</p>
+
+
 <h4>Email Notifications</h4>
 <p>
 Email notifications start with "mailto:", using the RFC 6068 URL schema.
@@ -1044,7 +1057,18 @@ The prefix "cmd:" selects an external command to be executed. Examples:
 Examples:
 </p>
 <pre>cmd:caput SomePV 1
+cmd:my_notifier *
 </pre>
+
+<p>
+Within the configuration, the text <code>*</code> will be replaced with a list
+of alarm PVs and alarm severities.
+</p>
+
+<p>
+The command is executed with the working directory defined by the preference
+<pre>org.csstudio.alarm.beast/command_directory</pre> of the notifier.
+</p>
 
 
 <!-- Not implemented:
