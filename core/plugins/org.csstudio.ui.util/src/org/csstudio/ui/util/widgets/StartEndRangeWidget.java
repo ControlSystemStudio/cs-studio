@@ -35,6 +35,8 @@ public class StartEndRangeWidget extends Canvas {
 	private boolean followMin = true;
 	private boolean followMax = true;
 
+	private boolean isEditable = true;
+
 	private double distancePerPx;
 
 	public enum ORIENTATION {
@@ -107,7 +109,6 @@ public class StartEndRangeWidget extends Canvas {
 		if (followMax) {
 			selectedMax = max;
 		}
-
 		redraw();
 	}
 
@@ -117,11 +118,22 @@ public class StartEndRangeWidget extends Canvas {
 
 	public void setMin(double min) {
 		if (this.min != min) {
-			this.min = min;
-			if (followMin) {
-				this.selectedMin = min;
+			if (min <= this.max) {
+				this.min = min;
+				double oldSelectedRange = getSelectedRange();
+				if (followMin || this.selectedMin < min) {
+					this.selectedMin = min;
+				}
+				if (this.selectedMax < min) {
+					this.selectedMax = min + oldSelectedRange > this.max ? this.max
+							: min + oldSelectedRange;
+				}
+				recalculateDistancePerPx();
+			} else {
+				throw new IllegalArgumentException(
+						"Invalid argument, min value " + min
+								+ " must be smaller than max " + this.max);
 			}
-			recalculateDistancePerPx();
 		}
 	}
 
@@ -131,11 +143,17 @@ public class StartEndRangeWidget extends Canvas {
 
 	public void setMax(double max) {
 		if (this.max != max) {
-			this.max = max;
-			if (followMax) {
-				this.selectedMax = max;
+			if (max >= this.min) {
+				this.max = max;
+				if (followMax || this.selectedMax > max) {
+					this.selectedMax = max;
+				}
+				recalculateDistancePerPx();
+			} else {
+				throw new IllegalArgumentException(
+						"Invalid argument, max value " + max
+								+ " must be larger than minimum " + this.min);
 			}
-			recalculateDistancePerPx();
 		}
 	}
 
@@ -152,6 +170,10 @@ public class StartEndRangeWidget extends Canvas {
 				}
 				fireRangeChanged();
 			} else {
+				throw new IllegalArgumentException(
+						"Invalid value for selectedMin," + selectedMin
+								+ " must be within the range " + this.min + "-"
+								+ this.selectedMax);
 			}
 		}
 	}
@@ -168,16 +190,61 @@ public class StartEndRangeWidget extends Canvas {
 					followMax = true;
 				}
 				fireRangeChanged();
+			} else {
+				throw new IllegalArgumentException(
+						"Invalid value for selectedMax," + selectedMax
+								+ " must be within the range "
+								+ this.selectedMin + "-" + this.max);
 			}
 		}
 	}
 
-	private void setSelectedRange(double selectedMin, double selectedMax) {
+	public void setSelectedRange(double selectedMin, double selectedMax) {
 		if (selectedMax <= this.max && selectedMin >= this.min
 				&& selectedMax >= selectedMin) {
 			this.selectedMin = selectedMin;
 			this.selectedMax = selectedMax;
 			fireRangeChanged();
+		} else {
+			throw new IllegalArgumentException("Invalid range values.");
+		}
+	}
+
+	public void setRange(double min, double max) {
+		if (min <= max) {
+			this.min = min;
+			if (selectedMin < min || followMin) {
+				this.selectedMin = min;
+			}
+			this.max = max;
+			if (selectedMax > max || followMax) {
+				this.selectedMax = max;
+			}
+			recalculateDistancePerPx();
+		} else {
+			throw new IllegalArgumentException(
+					"Invalid range values, minimum cannot be greater than maximum");
+		}
+	}
+
+	public void setRanges(double min, double selectedMin, double selectedMax,
+			double max) {
+		if (min <= selectedMin && selectedMin <= selectedMax
+				&& selectedMax <= max) {
+			this.min = min;
+			this.selectedMin = selectedMin;
+			if (selectedMin == this.min) {
+				followMin = true;
+			}
+			this.selectedMax = selectedMax;
+			if (selectedMax == this.max) {
+				followMax = true;
+			}
+			this.max = max;
+			recalculateDistancePerPx();
+//			fireRangeChanged();
+		} else {
+			throw new IllegalArgumentException();
 		}
 	}
 
@@ -321,13 +388,13 @@ public class StartEndRangeWidget extends Canvas {
 				minOval = new Point(
 						(int) (zero + (selectedMin * distancePerPx)), 0);
 				maxOval = new Point(
-						(int) (zero + (selectedMax * distancePerPx)), 0);
+						(int) (zero + (selectedMax * distancePerPx)) - 1, 0);
 			} else {
 				end = new Point(5, getClientArea().height - 5);
 				minOval = new Point(0,
 						(int) (zero + (selectedMin * distancePerPx)));
 				maxOval = new Point(0,
-						(int) (zero + (selectedMax * distancePerPx)));
+						(int) (zero + (selectedMax * distancePerPx)) - 1);
 			}
 
 			// Draw the line of appropriate size
