@@ -130,7 +130,7 @@ public class DeliverySystemApplication implements IApplication,
             }
             
             boolean restartWorker = false;
-            String badWorker = null;
+            String badWorker = "";
             if (running) {
                 
                 // Check all delivery worker
@@ -148,25 +148,32 @@ public class DeliverySystemApplication implements IApplication,
                 
                 // Now stop and restart ALL workers to avoid problems with the shared JMS connections 
                 if (restartWorker) {
-                    stopDeliveryWorker();
-                    String[] recipients = null;
-                    String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
-                    if (value != null) {
-                        if (value.trim().length() > 0) {
-                            recipients = value.split(",");
-                        }
-                    }
-                    if (startDeliveryWorker()) {
-                        CommonMailer.sendMultiMail("smtp.desy.de",
-                                                   "ams-mks2@desy.de",
-                                                   recipients,
-                                                   "Delivery Worker wurden neu gestartet",
-                                                   "Alle Delivery Worker wurden neu gestartet.\nGrund: Der "
-                                                   + badWorker + " lief nicht.");
-                    } else {
+                    if (badWorker.equalsIgnoreCase("SmsDeliveryWorker")) {
+                        LOG.info("The DeliverySystem has to be restarted, because the {} does not work.",
+                                 badWorker);
                         running = false;
                         restart = true;
-                        LOG.error("Cannot restart the delievery worker. Restart the application.");
+                    } else {
+                        stopDeliveryWorker();
+                        String[] recipients = null;
+                        String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
+                        if (value != null) {
+                            if (value.trim().length() > 0) {
+                                recipients = value.split(",");
+                            }
+                        }
+                        if (startDeliveryWorker()) {
+                            CommonMailer.sendMultiMail("smtp.desy.de",
+                                                       "ams-mks2@desy.de",
+                                                       recipients,
+                                                       "Delivery Worker wurden neu gestartet",
+                                                       "Alle Delivery Worker wurden neu gestartet.\nGrund: Der "
+                                                       + badWorker + " lief nicht.");
+                        } else {
+                            running = false;
+                            restart = true;
+                            LOG.error("Cannot restart the delievery worker. Restart the application.");
+                        }
                     }
                 }
             }
