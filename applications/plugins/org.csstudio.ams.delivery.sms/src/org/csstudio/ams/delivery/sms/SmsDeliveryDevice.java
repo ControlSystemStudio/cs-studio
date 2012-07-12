@@ -340,6 +340,7 @@ public class SmsDeliveryDevice implements Runnable,
         if (modemService != null) {
             try {
                 modemService.stopService();
+                LOG.info("GSM service has been stopped.");
             } catch (final Exception e) {
                 LOG.warn("[*** {} ***]: {}", e.getClass().getSimpleName(), e.getMessage());
             }
