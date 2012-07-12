@@ -1,6 +1,5 @@
 package org.csstudio.alarm.beast.notifier;
 
-import org.csstudio.alarm.beast.Activator;
 import org.csstudio.auth.security.SecureStorage;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -12,17 +11,12 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 @SuppressWarnings("nls")
 public class Preferences {
-	
-	final public static String SMTP_HOST = "smtp_host";
-    final public static String SMTP_USER = "smtp_user";
-    final public static String SMTP_PASSWORD = "smtp_password";
+    final public static String THRESHOLD = "threshold";
     final public static String SMTP_SENDER = "smtp_sender";
     final public static String SMS_URL = "sms_url";
     final public static String SMS_USER = "sms_user";
     final public static String SMS_PASSWORD = "sms_password";
 
-	final public static String THRESHOLD = "threshold";
-	
 	/**
 	 * @param setting Preference identifier
 	 * @return String from preference system, or <code>null</code>
@@ -51,26 +45,11 @@ public class Preferences {
 			return 100; // default
 		return service.getInt(Activator.ID, THRESHOLD, 100, null);
 	}
-    
-	/** @return SMTP URL */
-	public static String getSMTP_Host() {
-		return getString(SMTP_HOST, "localhost");
-	}
 
-	/** @return SMTP User name */
-	public static String getSMTP_User() {
-		return getSecureString(SMTP_USER);
-	}
-
-	/** @return SMTP Password */
-	public static String getSMTP_Password() {
-		return getSecureString(SMTP_PASSWORD);
-	}
-
-	/** @return SMTP Password */
-	public static String getSMTP_Sender() {
-		return getString(SMTP_SENDER, "");
-	}
+    /** @return SMTP Password */
+    public static String getSMTP_Sender() {
+        return getString(SMTP_SENDER, "");
+    }
 
 	/** @return SMS URL */
 	public static String getSMS_URL() {

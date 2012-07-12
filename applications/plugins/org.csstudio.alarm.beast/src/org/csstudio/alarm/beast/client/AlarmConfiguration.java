@@ -42,6 +42,7 @@ import org.eclipse.osgi.util.NLS;
  *  <p>See NOTE ON SYNCHRONIZATION in AlarmClientModel
  *
  *  @author Kay Kasemir, Xihui Chen
+ *  @author Lana Abadie - Disable autocommit as needed.
  */
 public class AlarmConfiguration
 {
@@ -459,6 +460,7 @@ public class AlarmConfiguration
      *  @param guidance Guidance strings
      *  @param displays Related displays
      *  @param commands Commands
+     *  @param automated_actions Automated actions
      *  @throws Exception on error
      */
     public void configureItem(final AlarmTreeItem item,
@@ -540,6 +542,7 @@ public class AlarmConfiguration
      *  @param guidance Guidance strings
      *  @param displays Related displays
      *  @param commands Commands
+     *  @param automated_actions Actions
      *  @throws Exception on error
      */
     public void configurePV(final AlarmTreePV pv, final String description,

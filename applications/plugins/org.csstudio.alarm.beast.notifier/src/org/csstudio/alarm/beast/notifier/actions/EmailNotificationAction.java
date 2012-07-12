@@ -32,27 +32,28 @@ import org.csstudio.alarm.beast.notifier.util.EMailCommandValidator;
  * @author Fred Arnaud (Sopra Group)
  *
  */
+@SuppressWarnings("nls")
 public class EmailNotificationAction extends AbstractNotificationAction {
-	
-	public static final String MAIL_SCHEME = "mailto";
+
+    public static final String MAIL_SCHEME = "mailto";
 
 	private String host, from;
 	private List<String> to, cc, cci;
 	private String subject = "";
 	private String body = "";
-	
+
 	/** <code>true</code> if all field of the action can be filled with command */
 	private boolean isCommandComplete = false;
 
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public void init(AlarmNotifier notifier, ActionID id, ItemInfo item, int delay,
 			String details, IActionValidator validator) {
 		super.init(notifier, id, item, delay, details);
-		this.host = org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Host();
+		this.host = org.csstudio.email.Preferences.getSMTP_Host();
 		this.from =  org.csstudio.alarm.beast.notifier.Preferences.getSMTP_Sender();
-		
+
 		try {
 			EMailCommandValidator ecv = (EMailCommandValidator) validator;
 			validator.validate();
@@ -70,7 +71,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 					new Object[] { details, e.getMessage() });
 		}
 	}
-	
+
 	protected void fill() {
 		if (!isCommandComplete) {
 			if (subject == null || "".equals(subject.trim()))
@@ -79,7 +80,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 				body = buildBody();
 		}
 	}
-	
+
 	private String buildSubject() {
 		StringBuilder builder = new StringBuilder();
 		if(isPV) {
@@ -115,7 +116,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 		builder.append(item.getName());
 		return builder.toString();
 	}
-	
+
 	private String buildBody() {
 		StringBuilder builder = new StringBuilder();
 		if(isPV) {
@@ -131,7 +132,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 		}
 		return builder.toString();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public void execute() {
@@ -139,7 +140,7 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 		if (checkContent())
 			send();
 	}
-	
+
 	private void send() {
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
@@ -176,18 +177,19 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 			message.setSubject(subject);
 			message.setText(body);
 			Transport.send(message);
+            Activator.getLogger().log(Level.FINE, "Sent EMail to {0}", to);
 		} catch (MessagingException e) {
 			Activator.getLogger().log(Level.SEVERE,
 					"Exception durring EMail sending: {0}", e.getMessage());
 		}
 	}
-	
+
 	private boolean checkContent() {
 		return ((to != null && !to.isEmpty())
-				&& (subject != null && !"".equals(subject.trim())) 
+				&& (subject != null && !"".equals(subject.trim()))
 				&& (body != null));
 	}
-	
+
 	public String getHost() {
 		return host;
 	}
@@ -236,11 +238,11 @@ public class EmailNotificationAction extends AbstractNotificationAction {
 	@Override
 	public void dump() {
 		System.out.println("EMailNotificationAction [\n\tto= " + to
-				+ "\n\tcc= " + cc 
-				+ "\n\tcci= " + cci 
-				+ "\n\tsubject= " + subject 
-				+ "\n\tbody= " + body 
+				+ "\n\tcc= " + cc
+				+ "\n\tcci= " + cci
+				+ "\n\tsubject= " + subject
+				+ "\n\tbody= " + body
 				+ "\n]");
 	}
-	
+
 }

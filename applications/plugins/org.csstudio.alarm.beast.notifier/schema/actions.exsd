@@ -1,16 +1,22 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.csstudio.alarm.beast.notifier">
+<schema targetNamespace="org.csstudio.alarm.beast.notifier" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.csstudio.alarm.beast.notifier" id="org.csstudio.alarm.beast.notifier" name="Automated actions"/>
+         <meta.schema plugin="org.csstudio.alarm.beast.notifier" id="action" name="Automated actions"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         Extension point that allows contributing automated action handlers.
+For example, an extension for emails that provides a handler for action specifications starting with &quot;sendto:...&quot;.
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="action"/>
@@ -47,34 +53,32 @@
          <attribute name="scheme" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Prefix of an automated action that identifies the scheme.
+&lt;br&gt;
+For example, a prefix of &quot;mailto&quot; can select an automated action for sending emails:
+&lt;pre&gt;
+mailto:fred@my.org
+&lt;/pre&gt;
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="actionClass" type="string" use="required">
+         <attribute name="action" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Java class that provides the automated action&apos;s validator (optional) and notifier.
+Must implement &lt;code&gt;org.csstudio.alarm.beast.notifier.model.IAutomatedAction&lt;/code&gt;
                </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="validatorClass" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.alarm.beast.notifier.model.IAutomatedAction"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
+
+
+
+
 
 </schema>

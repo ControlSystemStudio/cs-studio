@@ -1,16 +1,16 @@
 package org.csstudio.alarm.beast.notifier.test;
 
-import org.csstudio.alarm.beast.notifier.actions.DefaultNotificationAction;
+import org.csstudio.alarm.beast.notifier.actions.CommandNotificationAction;
 import org.csstudio.alarm.beast.notifier.util.CommandExecutorThread;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Unit test for {@link DefaultNotificationAction}
+ * Unit test for {@link CommandNotificationAction}
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public class DefaultActionUnitTest {
+public class CommandActionUnitTest {
 
 	private String command;
 
