@@ -9,6 +9,11 @@
 -- table. The function provided below automatically creates the necessary
 -- sub-tables. Run this function regularly to generate new tables as time moves
 -- on.
+-- Note: Make sure
+-- SHOW constraint_exclusion;
+-- returns "partition" otherwise your DB server will waste time scanning
+-- sub-tables that do not contain relevant data. Constraint exclusion is enabled
+-- for partitioned tables by default in PostgreSQL 8.4 and later.
 
 -- We only create the master table explicitly. The sub-tables are created by the
 -- function below as they are needed.
