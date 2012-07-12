@@ -39,6 +39,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -60,6 +61,8 @@ import org.epics.pvmanager.graphene.PlotDataRange;
 import org.epics.pvmanager.util.TimeDuration;
 import org.csstudio.ui.util.widgets.StartEndRangeWidget;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
 public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		implements ISelectionProvider, ConfigurableWidget {
@@ -67,6 +70,7 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	private VImageDisplay imageDisplay;
 	private LineGraphPlot plot;
 	private ErrorBar errorBar;
+	private boolean showRange;
 	private StartEndRangeWidget yRangeControl;
 	private StartEndRangeWidget xRangeControl;
 
@@ -85,19 +89,29 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 			}
 		});
 
-		setLayout(new GridLayout(2, false));
-		new Label(this, SWT.NONE);
+		setLayout(new FormLayout());
 
 		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
-				1, 1));
+		FormData fd_errorBar = new FormData();
+		fd_errorBar.left = new FormAttachment(0, 2);
+		fd_errorBar.right = new FormAttachment(100, -2);
+		fd_errorBar.top = new FormAttachment(0, 2);
+		errorBar.setLayoutData(fd_errorBar);
+
 		errorBar.setMarginBottom(5);
+
 		yRangeControl = new StartEndRangeWidget(this, SWT.NONE);
+		FormData fd_yRangeControl = new FormData();
+		fd_yRangeControl.top = new FormAttachment(errorBar, 2);
+		fd_yRangeControl.left = new FormAttachment(0, 2);
+		fd_yRangeControl.bottom = new FormAttachment(100, -15);
+		fd_yRangeControl.right = new FormAttachment(0, 13);
+		yRangeControl.setLayoutData(fd_yRangeControl);
 		yRangeControl.setOrientation(ORIENTATION.VERTICAL);
-		GridData gd_yRangeControl = new GridData(SWT.LEFT, SWT.FILL, false,
-				true, 1, 1);
-		gd_yRangeControl.widthHint = 15;
-		yRangeControl.setLayoutData(gd_yRangeControl);
+		// GridData gd_yRangeControl = new GridData(SWT.LEFT, SWT.FILL, false,
+		// true, 1, 1);
+		// gd_yRangeControl.widthHint = 15;
+		// yRangeControl.setLayoutData(gd_yRangeControl);
 		yRangeControl.addRangeListener(new RangeListener() {
 
 			@Override
@@ -114,10 +128,16 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		});
 
 		imageDisplay = new VImageDisplay(this);
-		imageDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-				true, 1, 1));
-		imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 1));
+		FormData fd_imageDisplay = new FormData();
+		fd_imageDisplay.top = new FormAttachment(errorBar, 2);
+		fd_imageDisplay.right = new FormAttachment(100, -2);
+		fd_imageDisplay.left = new FormAttachment(yRangeControl, 2);
+		imageDisplay.setLayoutData(fd_imageDisplay);
+		// imageDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
+		// true, 1, 1));
+		// imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+		// true,
+		// 1, 1));
 		imageDisplay.setStretched(SWT.HORIZONTAL);
 
 		imageDisplay.addControlListener(new ControlListener() {
@@ -137,13 +157,19 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 				// Nothing to do
 			}
 		});
-		new Label(this, SWT.NONE);
 
 		xRangeControl = new StartEndRangeWidget(this, SWT.NONE);
-		GridData gd_xRangeControl = new GridData(SWT.FILL, SWT.CENTER, true,
-				false, 1, 1);
-		gd_xRangeControl.heightHint = 15;
-		xRangeControl.setLayoutData(gd_xRangeControl);
+		fd_imageDisplay.bottom = new FormAttachment(xRangeControl, -2);
+		FormData fd_xRangeControl = new FormData();
+		fd_xRangeControl.left = new FormAttachment(0, 15);
+		fd_xRangeControl.top = new FormAttachment(100, -13);
+		fd_xRangeControl.right = new FormAttachment(100, -2);
+		fd_xRangeControl.bottom = new FormAttachment(100, -2);
+		xRangeControl.setLayoutData(fd_xRangeControl);
+		// GridData gd_xRangeControl = new GridData(SWT.FILL, SWT.CENTER, true,
+		// false, 1, 1);
+		// gd_xRangeControl.heightHint = 15;
+		// xRangeControl.setLayoutData(gd_xRangeControl);
 		xRangeControl.addRangeListener(new RangeListener() {
 
 			@Override
