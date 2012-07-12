@@ -58,7 +58,7 @@ import org.eclipse.ui.internal.PartStack;
  * The delegate to run an OPI in an editor or view.
  * 
  * @author Xihui Chen
- * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate refresh rate)
+ * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate frame rate)
  * 
  */
 @SuppressWarnings("restriction")
@@ -248,27 +248,27 @@ public class OPIRuntimeDelegate implements IAdaptable{
 
 		/*
 		 * When Figure instance which corresponds to RootEditPart is updated,
-		 * calculate the refresh rate and set the measured rate to "refresh_rate"
+		 * calculate the frame rate and set the measured rate to "frame_rate"
 		 * property of the corresponding DisplayModel instance.
 		 * 
 		 * By default, org.eclipse.draw2d.DeferredUpdateManager is used. This update
 		 * manager queues update requests from figures and others, and it repaints
 		 * requested figures at once when GUI thread is ready to repaint. notifyPainting()
-		 * method of UpdateLister is called when it repaints. The refresh rate is
+		 * method of UpdateLister is called when it repaints. The frame rate is
 		 * calculated based on the timing of notifyPainting().
 		 *
 		 * Note that the update manager repaints only requested figures. It does not 
 		 * repaint all figures at once. For example, if there are only two widgets
 		 * in one display, these widgets might be repainted alternately. In that case,
-		 * the refresh rate indicates the time between the repainting of one widget
-		 * and the repainting of the other widget, which is different from our intuition.
-		 * Thus, you have to be careful about the meaning of "Refresh rate" calculated
-		 * by the following code.
+		 * the frame rate indicates the inverse of the time between the repainting of one
+		 * widget and the repainting of the other widget, which is different from our
+		 * intuition. Thus, you have to be careful about the meaning of "frame rate"
+		 * calculated by the following code.
 		 */
 		UpdateManager updateManager = root.getFigure().getUpdateManager();
 		updateManager.addUpdateListener(new UpdateListener(){
 			
-			private long refreshRate = -1; // in milliseconds
+			private long updateCycle = -1; // in milliseconds
 			private Date previousDate = null;
 
 			@Override
@@ -281,8 +281,8 @@ public class OPIRuntimeDelegate implements IAdaptable{
 				}
 				
 				synchronized (previousDate) {
-					refreshRate = currentDate.getTime() - previousDate.getTime();
-					displayModel.setRefreshRate(refreshRate);
+					updateCycle = currentDate.getTime() - previousDate.getTime();
+					displayModel.setFrameRate(1000.0/updateCycle);
 					previousDate = currentDate;
 				}
 			}
