@@ -67,6 +67,8 @@ public class DeliverySystemApplication implements IApplication,
 
     private Hashtable<AbstractDeliveryWorker, Thread> deliveryWorker;
     
+    private long workerStopTimeout;
+    
     private Object lock;
     
     private boolean running;
@@ -75,6 +77,8 @@ public class DeliverySystemApplication implements IApplication,
     
     public DeliverySystemApplication() {
         deliveryWorker = new Hashtable<AbstractDeliveryWorker, Thread>();
+        workerStopTimeout = DeliverySystemPreference.WORKER_STOP_TIMEOUT.getValue();
+        LOG.info("Timeout for worker shutdown: {}", workerStopTimeout);
         lock = new Object();
         running = true;
         restart = false;
@@ -333,7 +337,7 @@ public class DeliverySystemApplication implements IApplication,
             if (o != null) {
                 o.stopWorking();
                 try {
-                    thread.join(4000L);
+                    thread.join(workerStopTimeout);
                     thread = null;
                 } catch (InterruptedException ie) {
                     // Ignore Me!
