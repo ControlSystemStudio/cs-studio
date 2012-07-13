@@ -18,34 +18,32 @@ import org.csstudio.logging.JMSLogMessage;
 
 /**
  * Main thread for automated actions.
+ * 
  * @author Fred Arnaud (Sopra Group)
- *
+ * 
  */
-public class AlarmNotifier implements NotificationActionListener
-{
+public class AlarmNotifier implements NotificationActionListener {
 	/** Name of alarm tree root element */
-    final String root_name = Preferences.getAlarmTreeRoot();
+	final String root_name = Preferences.getAlarmTreeRoot();
 
-    /** Alarm model handler */
-    final private IAlarmRDBHandler rdb;
+	/** Alarm model handler */
+	final private IAlarmRDBHandler rdb;
 
-    /** Messenger to communicate with clients */
-    final private NotifierCommunicator messenger;
+	/** Messenger to communicate with clients */
+	final private NotifierCommunicator messenger;
 
-    /** Automated actions factory */
-    final private NotificationActionFactory factory;
+	/** Automated actions factory */
+	final private NotificationActionFactory factory;
 
-    /** Queue which handles pending actions */
-    final private WorkQueue work_queue;
+	/** Queue which handles pending actions */
+	final private WorkQueue work_queue;
 
-    private boolean maintenance_mode = false;
+	private boolean maintenance_mode = false;
 
-
-    public AlarmNotifier(final String root_name,
-    		final IAlarmRDBHandler rdbHandler,
-    		final NotificationActionFactory factory,
-    		final int threshold) throws Exception
-    {
+	public AlarmNotifier(final String root_name,
+			final IAlarmRDBHandler rdbHandler,
+			final NotificationActionFactory factory, final int threshold)
+			throws Exception {
 		this.rdb = rdbHandler;
 		this.factory = factory;
 		messenger = new NotifierCommunicator(this, root_name);
@@ -63,13 +61,18 @@ public class AlarmNotifier implements NotificationActionListener
 		System.out.println("Work work_queue size: " + work_queue.size());
 
 		// Log memory usage in MB
-		final double free = Runtime.getRuntime().freeMemory() / (1024.0 * 1024.0);
-		final double total = Runtime.getRuntime().totalMemory() / (1024.0 * 1024.0);
+		final double free = Runtime.getRuntime().freeMemory()
+				/ (1024.0 * 1024.0);
+		final double total = Runtime.getRuntime().totalMemory()
+				/ (1024.0 * 1024.0);
 		final double max = Runtime.getRuntime().maxMemory() / (1024.0 * 1024.0);
 
-		final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-		System.out.format("%s == Alarm Notifer Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
-						format.format(new Date()), max, free, 100.0 * free / max, total, 100.0 * total / max);
+		final DateFormat format = new SimpleDateFormat(
+				JMSLogMessage.DATE_FORMAT);
+		System.out
+				.format("%s == Alarm Notifer Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
+						format.format(new Date()), max, free, 100.0 * free
+								/ max, total, 100.0 * total / max);
 	}
 
 	/** Connect to JMS */
@@ -93,7 +96,9 @@ public class AlarmNotifier implements NotificationActionListener
 
 	/**
 	 * Read info about {@link AlarmTreeItem} from model.
-	 * @param path, path of the item
+	 * 
+	 * @param path
+	 *            , path of the item
 	 * @return ItemInfo
 	 */
 	public ItemInfo getItemInfo(String path) {
@@ -103,7 +108,9 @@ public class AlarmNotifier implements NotificationActionListener
 
 	/**
 	 * Handle manual execution of automated actions.
-	 * @param manualInfo, information from JMS message.
+	 * 
+	 * @param manualInfo
+	 *            , information from JMS message.
 	 */
 	public void handleManualExecution(GUIExecInfo manualInfo) {
 		AlarmTreeItem item = rdb.findItem(manualInfo.getItem_path());
@@ -123,6 +130,7 @@ public class AlarmNotifier implements NotificationActionListener
 
 	/**
 	 * Start automated action for the given PV and its parents.
+	 * 
 	 * @param pvItem
 	 */
 	public void handleAlarmUpdate(AlarmTreePV pvItem) {
@@ -147,8 +155,7 @@ public class AlarmNotifier implements NotificationActionListener
 	}
 
 	private void handleAutomatedAction(PVSnapshot snapshot,
-			AlarmTreeItem aaItem, AADataStructure aa)
-	{
+			AlarmTreeItem aaItem, AADataStructure aa) {
 		INotificationAction action = work_queue.findAction(aaItem, aa);
 		if (action != null && action.isSleeping()) {
 			// Actions are updated only within the sleeping delay.
@@ -157,15 +164,17 @@ public class AlarmNotifier implements NotificationActionListener
 			// TODO: AA = one/multiple actions ?? separator ?
 			final ItemInfo info = ItemInfo.fromItem(aaItem);
 			final ActionID naID = WorkQueue.getActionID(aaItem, aa);
-			final INotificationAction newAction = factory.getNotificationAction(this,
-					naID, info, aa.getDelay(), aa.getDetails());
+			final INotificationAction newAction = factory
+					.getNotificationAction(this, naID, info, aa.getDelay(),
+							aa.getDetails());
 			if (newAction == null)
-			    return;
-			newAction.updateAlarms(snapshot);
+				return;
 			if (!maintenance_mode
-					|| (maintenance_mode && newAction.getActionPriority().equals(
-							EActionPriority.IMPORTANT)))
+					|| (maintenance_mode && newAction.getActionPriority()
+							.equals(EActionPriority.IMPORTANT)))
 				work_queue.add(newAction);
+			// Update only after adding new action in the queue and running it
+			newAction.updateAlarms(snapshot);
 		}
 	}
 
@@ -177,8 +186,8 @@ public class AlarmNotifier implements NotificationActionListener
 	}
 
 	/**
-	 * Cancel all current running automated actions when
-	 * a new configuration is set.
+	 * Cancel all current running automated actions when a new configuration is
+	 * set.
 	 */
 	public void handleNewAlarmConfiguration() {
 		work_queue.interruptAll();
@@ -186,8 +195,8 @@ public class AlarmNotifier implements NotificationActionListener
 	}
 
 	/**
-	 * Cancel all current running automated actions when
-	 * maintenance mode is set to <code>true</code>
+	 * Cancel all current running automated actions when maintenance mode is set
+	 * to <code>true</code>
 	 */
 	public void handleModeUpdate(boolean maintenance_mode) {
 		this.maintenance_mode = maintenance_mode;
