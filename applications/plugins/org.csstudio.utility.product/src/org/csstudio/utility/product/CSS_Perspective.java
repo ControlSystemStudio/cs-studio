@@ -27,7 +27,6 @@ public class CSS_Perspective implements IPerspectiveFactory
     final private static String ID_PROBE = "org.csstudio.diag.probe.Probe";
     final private static String ID_CLOCK = "org.csstudio.utility.clock.ClockView";
     final private static String ID_DATABROWSER_PERSP = "org.csstudio.trends.databrowser.Perspective";
-    final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
     final private static String ID_ALARM_TREE = "org.csstudio.alarm.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE= "org.csstudio.alarm.ui.alarmtable.view";
 
@@ -56,7 +55,8 @@ public class CSS_Perspective implements IPerspectiveFactory
 
         // Stuff for 'left'
         left.addView("org.eclipse.ui.views.ResourceNavigator");
-        left.addPlaceholder(ID_SNS_PV_UTIL);
+        if (isPluginAvailable("org.csstudio.diag.pvutil"))
+            left.addPlaceholder("org.csstudio.diag.pvutil.view.PVUtilView");
         final boolean have_alarm = isPluginAvailable("org.csstudio.alarm.beast");
         if (have_alarm)
         	left.addPlaceholder(ID_ALARM_TREE);
