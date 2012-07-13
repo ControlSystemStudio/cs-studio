@@ -148,20 +148,28 @@ public class DeliverySystemApplication implements IApplication,
                 
                 // Now stop and restart ALL workers to avoid problems with the shared JMS connections 
                 if (restartWorker) {
+                    
+                    String[] recipients = null;
+                    String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
+                    if (value != null) {
+                        if (value.trim().length() > 0) {
+                            recipients = value.split(",");
+                        }
+                    }
+
                     if (badWorker.equalsIgnoreCase("SmsDeliveryWorker")) {
-                        LOG.info("The DeliverySystem has to be restarted, because the {} does not work.",
+                        LOG.info("The DeliverySystem will be restarted, because the {} does not work.",
                                  badWorker);
                         running = false;
                         restart = true;
+                        CommonMailer.sendMultiMail("smtp.desy.de",
+                                                   "ams-mks2@desy.de",
+                                                   recipients,
+                                                   "DeliverySystem wird neu gestartet",
+                                                   "Das DeliverySystem wird neu gestartet.\nGrund: Der "
+                                                   + badWorker + " laeuft nicht.");
                     } else {
                         stopDeliveryWorker();
-                        String[] recipients = null;
-                        String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
-                        if (value != null) {
-                            if (value.trim().length() > 0) {
-                                recipients = value.split(",");
-                            }
-                        }
                         if (startDeliveryWorker()) {
                             CommonMailer.sendMultiMail("smtp.desy.de",
                                                        "ams-mks2@desy.de",
@@ -173,6 +181,12 @@ public class DeliverySystemApplication implements IApplication,
                             running = false;
                             restart = true;
                             LOG.error("Cannot restart the delievery worker. Restart the application.");
+                            CommonMailer.sendMultiMail("smtp.desy.de",
+                                                       "ams-mks2@desy.de",
+                                                       recipients,
+                                                       "DeliverySystem wird neu gestartet",
+                                                       "Die Delivery Worker konnten nicht neu gestartet werden, daher wird das DeliverySystem komplett neu gestartet.\nGrund: Der "
+                                                       + badWorker + " lief nicht.");
                         }
                     }
                 }
