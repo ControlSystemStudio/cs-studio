@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.scriptUtil;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
@@ -135,6 +136,13 @@ public class ScriptUtil {
 		action.setPropertyValue(ExecuteCommandAction.PROP_COMMAND, command);
 		action.setPropertyValue(ExecuteCommandAction.PROP_WAIT_TIME, wait);
 		action.run();
+	}
+	
+	/**
+	 * @return true if it the OPI is running in WebOPI.
+	 */
+	public final static boolean isWebOPI(){
+		return OPIBuilderPlugin.isRAP();
 	}
 
 }
