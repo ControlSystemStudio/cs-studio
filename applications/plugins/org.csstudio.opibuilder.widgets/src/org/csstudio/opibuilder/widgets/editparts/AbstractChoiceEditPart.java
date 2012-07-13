@@ -24,7 +24,6 @@ import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
 import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
-import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -182,7 +181,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
 
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((ChoiceButtonFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
+				((AbstractChoiceFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
 				return false;
 			}
 		};
