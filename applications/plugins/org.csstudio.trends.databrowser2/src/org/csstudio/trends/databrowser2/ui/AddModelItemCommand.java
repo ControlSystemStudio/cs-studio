@@ -133,6 +133,7 @@ public class AddModelItemCommand implements IUndoableCommand
         operations_manager.addCommand(this);
     }
 
+    /** @return {@link ModelItem} (PV, Formula) that this command added */
     public ModelItem getItem()
     {
         return item;
