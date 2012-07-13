@@ -484,9 +484,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart{
 	}
 	
 	private void restoreFigureToOKStatus(IFigure figure) {		
-		editpart.setFigureBorder(editpart.calculateBorder());
-		figure.setBackgroundColor(saveBackColor);
-		figure.setForegroundColor(saveForeColor);
+		if(isBorderAlarmSensitive)
+			editpart.setFigureBorder(editpart.calculateBorder());
+		if(isBackColorrAlarmSensitive)
+			figure.setBackgroundColor(saveBackColor);
+		if(isForeColorAlarmSensitive)
+			figure.setForegroundColor(saveForeColor);
 	}
 
 	private void saveFigureOKStatus(IFigure figure) {
