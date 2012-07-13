@@ -89,6 +89,15 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 					oldSize = size;
 					getWidgetModel().scale(widthRatio, heightRatio);
 //					oldSize = size;					
+					//make sure the display figure repaint everything especially for RAP.
+					UIBundlingThread.getInstance().addRunnable(new Runnable() {
+						
+						@Override
+						public void run() {
+							getFigure().revalidate();
+							
+						}
+					});
 				}
 			};
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
