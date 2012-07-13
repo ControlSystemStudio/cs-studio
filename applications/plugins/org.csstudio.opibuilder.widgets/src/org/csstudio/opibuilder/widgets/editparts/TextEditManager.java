@@ -143,6 +143,9 @@ protected void initCellEditor() {
 	if(textFigure.isOpaque() || textFigure.getBorder() instanceof AbstractBackground){
 		getCellEditor().getControl().setBackground(
 				textFigure.getBackgroundColor());	
+	}else {
+		getCellEditor().getControl().setBackground(
+				textFigure.getParent().getBackgroundColor());	
 	}
 	getCellEditor().getControl().setForeground(textFigure.getForegroundColor());
 	// update font

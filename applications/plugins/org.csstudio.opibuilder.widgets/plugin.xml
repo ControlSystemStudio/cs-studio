@@ -304,7 +304,7 @@
             category="Native Widgets"
             description="A native button which can execute an action when clicked."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.NativeButtonEditPart"
-            icon="icons/nativeButton.png"
+            icon="icons/nativeButton2.png"
             model_class="org.csstudio.opibuilder.widgets.model.NativeButtonModel"
             name="Button"
             typeId="org.csstudio.opibuilder.widgets.NativeButton">
