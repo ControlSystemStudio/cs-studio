@@ -231,6 +231,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 	}
 	
 	private void autoSizeWidget(final ImageFigure imageFigure) {
+		if(!getWidgetModel().isAutoSize())
+			return;
 		maxAttempts = 10;
 		Runnable task = new Runnable() {			
 			public void run() {
