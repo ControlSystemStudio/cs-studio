@@ -27,9 +27,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.util.Util;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.progress.UIJob;
 
 /**
  * A service help to maintain the color macros.
@@ -41,6 +43,11 @@ public final class MediaService {
 
 	public static final String DEFAULT_FONT = "Default"; //$NON-NLS-1$
 
+	public static final String DEFAULT_BOLD_FONT = "Default Bold"; //$NON-NLS-1$
+	
+	public static final String HEADER1 = "Header 1"; //$NON-NLS-1$
+	public static final String HEADER2 = "Header 2"; //$NON-NLS-1$
+	public static final String HEADER3 = "Header 3"; //$NON-NLS-1$
 	/**
 	 * The shared instance of this class.
 	 */
@@ -52,7 +59,7 @@ public final class MediaService {
 	private IPath colorFilePath;
 	private IPath fontFilePath;
 
-	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(240, 240, 240);
+	public final static RGB DEFAULT_UNKNOWN_COLOR = new RGB(0, 0, 0);
 
 	public final static FontData DEFAULT_UNKNOWN_FONT = CustomMediaFactory.FONT_ARIAL;
 
@@ -97,6 +104,15 @@ public final class MediaService {
 		//			defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
 
 		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont));
+		FontData defaultBoldFont = new FontData(defaultFont.getName(), defaultFont.getHeight(), SWT.BOLD);
+		fontMap.put(DEFAULT_BOLD_FONT, new OPIFont(DEFAULT_BOLD_FONT, defaultBoldFont));
+		FontData header1 = new FontData(defaultFont.getName(), 18, SWT.BOLD);
+		fontMap.put(HEADER1, new OPIFont(HEADER1, header1));
+		FontData header2 = new FontData(defaultFont.getName(), 14, SWT.BOLD);
+		fontMap.put(HEADER2, new OPIFont(HEADER2, header2));
+		FontData header3 = new FontData(defaultFont.getName(), 12, SWT.BOLD);
+		fontMap.put(HEADER3, new OPIFont(HEADER3, header3));
+
 	}
 
 	/**
@@ -131,10 +147,10 @@ public final class MediaService {
 	 * Reload predefined fonts from font file.
 	 */
 	public synchronized void reloadFontFile() {
-		Job job = new Job("Load Font File") {
+		UIJob job = new UIJob("Load Font File") {	
 
 			@Override
-			protected IStatus run(IProgressMonitor monitor) {
+			public IStatus runInUIThread(IProgressMonitor monitor) {
 				monitor.beginTask("Connecting to " + fontFilePath,
 						IProgressMonitor.UNKNOWN);
 				fontMap.clear();
@@ -154,8 +170,8 @@ public final class MediaService {
 
 		colorFilePath = PreferencesHelper.getColorFilePath();
 		if (colorFilePath == null || colorFilePath.isEmpty()) {
-			String message = "No color definition file was found.";
-			ConsoleService.getInstance().writeInfo(message);
+//			String message = "No color definition file was found.";
+//			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
@@ -198,19 +214,14 @@ public final class MediaService {
 	}
 
 	private void loadFontFile() {
-		Display.getDefault().syncExec(new Runnable() {
-			
-			public void run() {
-				loadPredefinedFonts();
-				
-			}
-		});
+		
+		loadPredefinedFonts();	
 		Map<String, OPIFont> rawFontMap = new LinkedHashMap<String, OPIFont>();
 		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();
 		if (fontFilePath == null || fontFilePath.isEmpty()) {
-			String message = "No font definition file was found.";
-			ConsoleService.getInstance().writeInfo(message);
+//			String message = "No font definition file was found.";
+//			ConsoleService.getInstance().writeInfo(message);
 			return;
 		}
 
