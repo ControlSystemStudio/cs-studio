@@ -76,6 +76,10 @@ public final class NativeTextModel extends TextInputModel {
 		removeProperty(PROP_FILE_RETURN_PART);
 		removeProperty(PROP_FILE_SOURCE);	
 		removeProperty(PROP_SHOW_SCROLLBAR);
+		//If border is alarm sensitive, redraw the border will also redraw the whole canvas in WebOPI
+		//so make it invisible to make sure user can get best performance.
+		//Maybe border is not frequently changed?
+		//setPropertyVisible(PROP_BORDER_ALARMSENSITIVE, false);
 		
 	}
 	

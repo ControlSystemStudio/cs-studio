@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -18,7 +19,10 @@ import org.csstudio.opibuilder.widgets.model.NativeTextModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.gef.EditPolicy;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Event;
@@ -106,13 +110,20 @@ public class NativeTextEditpart extends TextInputEditpart {
 					}
 				});
 			}
+			//Recover text if editing aborted.
+			text.addFocusListener(new FocusAdapter() {
+				@Override
+				public void focusLost(FocusEvent e) {
+					text.setText(getWidgetModel().getText());
+				}
+			});
 		}
 		
 		getPVWidgetEditpartDelegate().setUpdateSuppressTime(-1);
 		updatePropSheet();
 		return figure;
 	}
-
+	
 	@Override
 	protected void outputText(String newValue) {
 		setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
@@ -132,7 +143,8 @@ public class NativeTextEditpart extends TextInputEditpart {
 	@Override
 	protected void createEditPolicies() {
 		super.createEditPolicies();
-//		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, null);
+		if(getExecutionMode()==ExecutionMode.RUN_MODE)
+			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,	null);
 	}
 
 	
