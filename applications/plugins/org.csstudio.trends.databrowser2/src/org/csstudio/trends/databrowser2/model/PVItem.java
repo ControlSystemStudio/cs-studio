@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -392,30 +393,12 @@ public class PVItem extends ModelItem implements PVListener
 
     /** Add data retrieved from an archive to the 'historic' section
      *  @param server_name Archive server that provided these samples
-     *  @param result Historic data
+     *  @param new_samples Historic data
      */
     synchronized public void mergeArchivedSamples(final String server_name,
-            final ArrayList<IValue> result)
+            final List<IValue> new_samples)
     {
-        samples.mergeArchivedData(server_name, result);
-
-//        // Order check
-//        final int N = samples.getSize();
-//        if (N <= 0)
-//            return;
-//        ITimestamp prev = samples.getSample(0).getTime();
-//        for (int i=1;  i<N;  ++i)
-//        {
-//            final ITimestamp time = samples.getSample(i).getTime();
-//            if (time.isLessThan(prev))
-//            {
-//                System.out.println("Time stamp problem at " + i);
-//                System.out.println(samples.getSample(i));
-//                return;
-//            }
-//            prev = time;
-//        }
-//        System.out.println(N + " Samples in order");
+        samples.mergeArchivedData(server_name, new_samples);
     }
 
     /** Write XML formatted PV configuration

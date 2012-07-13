@@ -24,6 +24,7 @@ import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.Perspective;
 import org.csstudio.trends.databrowser2.exportview.ExportView;
+import org.csstudio.trends.databrowser2.imports.SampleImporters;
 import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.ModelItem;
@@ -45,6 +46,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -339,6 +341,8 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new Separator());
         mm.add(new AddPVAction(op_manager, shell, model, false));
         mm.add(new AddPVAction(op_manager, shell, model, true));
+        for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
+                mm.add(imp);
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
         mm.add(new Separator());
         mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,
