@@ -210,7 +210,7 @@ public class RunModeService {
 					if(position != Position.DETACHED && position != Position.DEFAULT_VIEW &&
 							!(page.getPerspective().getId().equals(OPIRunnerPerspective.ID))){
 						int openCode=0;
-						if(PreferencesHelper.isShowOpiRuntimePerspectiveDialog()){
+						if(!OPIBuilderPlugin.isRAP() && PreferencesHelper.isShowOpiRuntimePerspectiveDialog()){
 							TipDialog dialog = new TipDialog(window.getShell(), MessageDialog.QUESTION, 
 									"Switch to OPI Runtime Perspective", 
 									"To open the OPI View in expected position, you need to switch to OPI Runtime perspective."+
