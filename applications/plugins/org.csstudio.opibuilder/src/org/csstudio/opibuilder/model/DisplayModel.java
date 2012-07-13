@@ -92,6 +92,8 @@ public class DisplayModel extends AbstractContainerModel {
 	private IPath opiFilePath;
 
 	private int displayID;
+	
+	private boolean FreshRateEnabled= false;
 
 	public DisplayModel() {
 		super();
@@ -304,6 +306,13 @@ public class DisplayModel extends AbstractContainerModel {
 			heightRatio = minHeight/(double)getHeight();
 		for(AbstractWidgetModel child : getChildren())
 			child.scale(widthRatio, heightRatio);
+	}
+	
+	/**!!! This is function only for test purpose. It might be removed in future!
+	 * @return true if calculating fresh rate is enabled.
+	 */
+	public boolean isFreshRateEnabled() {
+		return FreshRateEnabled;
 	}
 	
 	/**

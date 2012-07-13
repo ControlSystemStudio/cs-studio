@@ -267,33 +267,36 @@ public class OPIRuntimeDelegate implements IAdaptable{
 		 * intuition. Thus, you have to be careful about the meaning of "frame rate"
 		 * calculated by the following code.
 		 */
-		UpdateManager updateManager = root.getFigure().getUpdateManager();
-		updateManager.addUpdateListener(new UpdateListener(){
-			
-			private long updateCycle = -1; // in milliseconds
-			private Date previousDate = null;
+		if (displayModelFilled && displayModel.isFreshRateEnabled()){
+			UpdateManager updateManager = root.getFigure().getUpdateManager();
+			updateManager.addUpdateListener(new UpdateListener() {
 
-			@Override
-			public void notifyPainting(Rectangle damage, @SuppressWarnings("rawtypes") Map dirtyRegions) {
-				Date currentDate = new Date();
+				private long updateCycle = -1; // in milliseconds
+				private Date previousDate = null;
 
-				if (previousDate == null) {
-					previousDate = currentDate;
-					return;
+				@Override
+				public void notifyPainting(Rectangle damage,
+						@SuppressWarnings("rawtypes") Map dirtyRegions) {
+					Date currentDate = new Date();
+
+					if (previousDate == null) {
+						previousDate = currentDate;
+						return;
+					}
+
+					synchronized (previousDate) {
+						updateCycle = currentDate.getTime() - previousDate.getTime();
+						displayModel.setFrameRate(1000.0 / updateCycle);
+						previousDate = currentDate;
+					}
 				}
-				
-				synchronized (previousDate) {
-					updateCycle = currentDate.getTime() - previousDate.getTime();
-					displayModel.setFrameRate(1000.0/updateCycle);
-					previousDate = currentDate;
-				}
-			}
 
-			@Override
-			public void notifyValidating() {
-				// Do nothing
-			}
-		});
+				@Override
+				public void notifyValidating() {
+					// Do nothing
+				}
+			});
+		}
 	}
 
 	
