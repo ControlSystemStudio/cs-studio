@@ -36,7 +36,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 public class InstallLibraryAction extends Action implements
 		IWorkbenchWindowActionDelegate {
 
-	public static final String PROJECT_NAME = "BOY Symbol Images Library";
+	public static final String PROJECT_NAME = "BOY Images Library";
 	private static final String SRC_FOLDER_TOCOPY = "SymbolLibrary";
 	private static final String JOB_NAME = "Import BOY images library";
 	private static final String TASK_NAME = "Copying BOY images library";
@@ -72,8 +72,8 @@ public class InstallLibraryAction extends Action implements
 					IProject project = root.getProject(PROJECT_NAME);
 					project.create(new NullProgressMonitor());
 					project.open(new NullProgressMonitor());
-					URL url = FileLocator.find(Activator.getDefault()
-							.getBundle(), new Path(SRC_FOLDER_TOCOPY), //$NON-NLS-1$
+					URL url = FileLocator.find(Activator.getDefault().getBundle(), 
+							new Path(SRC_FOLDER_TOCOPY), //$NON-NLS-1$
 							null);
 
 					try {

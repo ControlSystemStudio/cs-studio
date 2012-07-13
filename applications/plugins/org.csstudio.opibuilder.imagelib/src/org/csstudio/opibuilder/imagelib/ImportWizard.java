@@ -20,8 +20,8 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ImportWizard extends Wizard implements IImportWizard {
 
-	private static final String WINDOW_TITLE = "Import BOY Symbol Images Library";
-	private static final String WIZARD_PAGE = "BOY Symbol Images Library";
+	private static final String WINDOW_TITLE = "Import BOY Images Library";
+	private static final String WIZARD_PAGE = "BOY Images Library";
 	private static final String WIZARD_PAGE_TITLE = "Import BOY Symbol Images Library";
 	private static final String WIZARD_PAGE_DESCRIPTION = "Import the library of images come with BOY";
 
