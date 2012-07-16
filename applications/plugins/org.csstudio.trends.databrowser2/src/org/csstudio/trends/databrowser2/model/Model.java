@@ -29,6 +29,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
@@ -735,6 +736,7 @@ public class Model
                 continue;
             final PVItem pv_item = (PVItem) item;
             pv_item.stop();
+            ImportArchiveReaderFactory.removeCachedArchives(pv_item.getArchiveDataSources());
         }
     }
 
