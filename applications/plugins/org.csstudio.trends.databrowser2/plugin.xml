@@ -219,4 +219,12 @@
             file_extension="plt">
       </openDisplay>
    </extension>
+   <extension
+         point="org.csstudio.archive.reader.ArchiveReader">
+      <ArchiveReader
+            class="org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory"
+            name="org.csstudio.trends.databrowser2.import_archive_reader"
+            prefix="import">
+      </ArchiveReader>
+   </extension>
 </plugin>

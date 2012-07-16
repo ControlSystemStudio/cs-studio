@@ -45,6 +45,20 @@ public class CSVSampleImporter implements SampleImporter
 
     /** {@inheritDoc} */
     @Override
+    public String getType()
+    {
+        return "csv";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getDescription()
+    {
+        return "CSV Data File";
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public List<IValue> importValues(final InputStream input) throws Exception
     {
         final List<IValue> values = new ArrayList<IValue>();
