@@ -7,27 +7,39 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import java.io.InputStream;
+import java.util.Iterator;
 import java.util.List;
 
+import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.IValue;
 
-/** API for tool that imports data
- *
+/** {@link ValueIterator} for {@link List} of {@link IValue}
  *  @author Kay Kasemir
  */
-public interface SampleImporter
+public class ArrayValueIterator implements ValueIterator
 {
-    /** @return Type identifier, for example "csv" */
-    public String getType();
+    final private Iterator<IValue> iter;
 
-    /** @return Human-readable description, for example "CSV Data File" */
-    public String getDescription();
+    public ArrayValueIterator(final List<IValue> values)
+    {
+        iter = values.iterator();
+    }
 
-    /** Perform value import
-     *  @param input Input stream
-     *  @return Values
-     *  @throws Exception on error
-     */
-    public List<IValue> importValues(final InputStream input) throws Exception;
+    @Override
+    public boolean hasNext()
+    {
+        return iter.hasNext();
+    }
+
+    @Override
+    public IValue next() throws Exception
+    {
+        return iter.next();
+    }
+
+    @Override
+    public void close()
+    {
+        // NOP
+    }
 }

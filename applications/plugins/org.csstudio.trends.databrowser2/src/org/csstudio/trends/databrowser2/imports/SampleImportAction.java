@@ -7,19 +7,14 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.imports;
 
-import java.io.InputStream;
-import java.util.List;
-
-import org.csstudio.data.values.IValue;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddModelItemCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.window.Window;
@@ -33,19 +28,19 @@ public class SampleImportAction extends Action
 {
     final private OperationsManager op_manager;
     final private Shell shell;
-    final private String type;
     final private Model model;
-    final private SampleImporter importer;
+    final private String type;
+    final private String description;
 
-    public SampleImportAction(final OperationsManager op_manager, final Shell shell, final String type, final Model model, final SampleImporter importer)
+    public SampleImportAction(final OperationsManager op_manager, final Shell shell, final Model model, final String type, final String description)
     {
-        super(NLS.bind("Import {0}", type),
+        super(NLS.bind("Import {0}", description),
             Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif"));
         this.op_manager = op_manager;
         this.shell = shell;
-        this.type = type;
         this.model = model;
-        this.importer = importer;
+        this.type = type;
+        this.description = description;
     }
 
     @Override
@@ -54,7 +49,7 @@ public class SampleImportAction extends Action
         // Prompt for file
         final ResourceSelectionDialog res =
                 new ResourceSelectionDialog(shell,
-                        NLS.bind("Select {0}", type),
+                        NLS.bind("Select {0}", description),
                         new String[] { "*" });
         if (res.open() != Window.OK)
             return;
@@ -63,21 +58,15 @@ public class SampleImportAction extends Action
             return;
         try
         {
-            // Locate file
-            final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-            final InputStream input = file.getContents();
-
-            // Import data
-            final List<IValue> values = importer.importValues(input);
-            final String name = "Imported";
-
             // Add PV Item with data to model
             final AddModelItemCommand command = AddModelItemCommand.forPV(shell, op_manager, model,
-                    name, 0, model.getEmptyAxis(), null);
+                    type, 0, model.getEmptyAxis(), null);
             final PVItem pv = (PVItem) command.getItem();
-            pv.mergeArchivedSamples(type, values);
 
-            // TODO Zoom model to show time range of imported data?
+            // Add archivedatasource for "import:..." and let that load the file
+            final String url = ImportArchiveReaderFactory.createURL(type, path.toString());
+            final ArchiveDataSource imported = new ArchiveDataSource(url, 1, type);
+            pv.setArchiveDataSource(new ArchiveDataSource[] { imported });
         }
         catch (Exception ex)
         {
