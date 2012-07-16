@@ -18,12 +18,6 @@ import org.csstudio.data.values.IValue;
  */
 public interface SampleImporter
 {
-    /** @return Type identifier, for example "csv" */
-    public String getType();
-
-    /** @return Human-readable description, for example "CSV Data File" */
-    public String getDescription();
-
     /** Perform value import
      *  @param input Input stream
      *  @return Values

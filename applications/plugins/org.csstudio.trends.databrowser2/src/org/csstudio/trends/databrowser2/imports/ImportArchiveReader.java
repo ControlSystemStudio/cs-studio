@@ -30,10 +30,10 @@ public class ImportArchiveReader implements ArchiveReader
 {
     final private String url;
     final private String path;
-    final private SampleImporter importer;
+    final private SampleImporterInfo importer;
     private List<IValue> values = null;
 
-    public ImportArchiveReader(final String url, final String path, final SampleImporter importer)
+    public ImportArchiveReader(final String url, final String path, final SampleImporterInfo importer)
     {
         this.url = url;
         this.path = path;

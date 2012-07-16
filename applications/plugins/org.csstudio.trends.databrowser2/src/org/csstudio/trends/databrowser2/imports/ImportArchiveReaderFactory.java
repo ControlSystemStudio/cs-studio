@@ -73,7 +73,7 @@ public class ImportArchiveReaderFactory implements ArchiveReaderFactory
         final String[] type_path = parseURL(url);
         final String type = type_path[0];
         final String path = type_path[1];
-        final SampleImporter importer = SampleImporters.getImporter(type);
+        final SampleImporterInfo importer = SampleImporters.getImporter(type);
         if (importer == null)
             throw new Exception("Unknown import data type " + type);
         final ImportArchiveReader reader = new ImportArchiveReader(url, path, importer);
