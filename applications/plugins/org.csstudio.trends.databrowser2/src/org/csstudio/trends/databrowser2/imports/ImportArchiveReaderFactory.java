@@ -47,6 +47,10 @@ public class ImportArchiveReaderFactory implements ArchiveReaderFactory
         //      so that it can return the known data.
         //      But should do this per-model, not globally, to prevent
         //      running out of memory
+        //
+        // Map<String, ImportArchiveReader>
+        //
+        // Model#stop(): Remove all cache data for items in model
 
         // Get path, importer from URL
         final String[] type_path = parseURL(url);
