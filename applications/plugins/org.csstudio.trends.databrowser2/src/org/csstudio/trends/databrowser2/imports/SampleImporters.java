@@ -20,9 +20,9 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.widgets.Shell;
 
 /** API for tool that imports data
- *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SampleImporters
 {
     /** Extension point for {@link SampleImporter}s */

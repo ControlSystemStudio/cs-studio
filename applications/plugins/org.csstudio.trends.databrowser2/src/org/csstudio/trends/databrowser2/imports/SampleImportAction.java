@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.imports;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.PVItem;
@@ -34,8 +35,8 @@ public class SampleImportAction extends Action
 
     public SampleImportAction(final OperationsManager op_manager, final Shell shell, final Model model, final String type, final String description)
     {
-        super(NLS.bind("Import {0}", description),
-            Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif"));
+        super(NLS.bind(Messages.ImportActionLabelFmt, description),
+            Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif")); //$NON-NLS-1$
         this.op_manager = op_manager;
         this.shell = shell;
         this.model = model;
@@ -49,8 +50,8 @@ public class SampleImportAction extends Action
         // Prompt for file
         final ResourceSelectionDialog res =
                 new ResourceSelectionDialog(shell,
-                        NLS.bind("Select {0}", description),
-                        new String[] { "*" });
+                        NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description),
+                        new String[] { "*" }); //$NON-NLS-1$
         if (res.open() != Window.OK)
             return;
         final IPath path = res.getSelectedResource();
@@ -70,7 +71,7 @@ public class SampleImportAction extends Action
         }
         catch (Exception ex)
         {
-            ExceptionDetailsErrorDialog.openError(shell, "Import failed", ex);
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 }
