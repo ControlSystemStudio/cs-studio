@@ -77,6 +77,7 @@ org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.libs.log4j
 org.csstudio.platform.utility.jms
+org.csstudio.platform.utility.jms.ui
 org.csstudio.platform.utility.rdb
 org.csstudio.remote
 org.csstudio.startup
