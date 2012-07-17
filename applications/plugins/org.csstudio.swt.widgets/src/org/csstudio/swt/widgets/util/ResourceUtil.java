@@ -93,10 +93,11 @@ public class ResourceUtil {
         {
             // Could not open as local file.
             // Does it look like a URL?
-            // Eclipse Path collapses "//" into "/", revert that:
+            //TODO:
+        	// Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.        	
             urlString = path.toString();
-            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
-                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+//            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
+//                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
             // Does it now look like a URL? If not, report the original local file problem
             if (! isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
