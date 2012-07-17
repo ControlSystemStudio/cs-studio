@@ -157,7 +157,7 @@ public class XYGraph extends Figure{
 
 	private OperationsManager operationsManager;
 
-	private ZoomType zoomType;
+	private ZoomType zoomType = ZoomType.NONE;
 
 
 	/**
