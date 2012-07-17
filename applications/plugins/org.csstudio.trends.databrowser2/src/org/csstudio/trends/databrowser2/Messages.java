@@ -134,9 +134,11 @@ public class Messages extends NLS
     public static String HideTraceWarning;
     public static String HideTraceWarningDetail;
     public static String ImportActionFileSelectorTitleFmt;
-
     public static String ImportActionLabelFmt;
-
+    public static String ImportDialogMessage;
+    public static String ImportedChannelBaseName;
+    public static String ImportTitle;
+    public static String ImportTypeLbl;
     public static String Information;
     public static String InspectSamples;
     public static String InvalidScanPeriodError;

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -58,6 +59,18 @@ public class SampleImporters
         }
     }
 
+
+    /** @return Array of supported types
+     *  @throws Exception on error initializing available importers
+     */
+    public static String[] getTypes() throws Exception
+    {
+        init();
+        final Set<String> keys = importers.keySet();
+        return keys.toArray(new String[keys.size()]);
+    }
+
+
     /** Obtain sample importer
      *  @param type
      *  @return {@link SampleImporterInfo} for that type or <code>null</code> if not known
@@ -85,5 +98,4 @@ public class SampleImporters
             actions.add(new SampleImportAction(op_manager, shell, model, importer.getType(), importer.getDescription()));
         return actions.toArray(new IAction[actions.size()]);
     }
-
 }

@@ -11,8 +11,8 @@ import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
-import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddModelItemCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
@@ -59,15 +59,17 @@ public class SampleImportAction extends Action
             return;
         try
         {
-            // Add PV Item with data to model
-            final AddModelItemCommand command = AddModelItemCommand.forPV(shell, op_manager, model,
-                    type, 0, model.getEmptyAxis(), null);
-            final PVItem pv = (PVItem) command.getItem();
-
             // Add archivedatasource for "import:..." and let that load the file
             final String url = ImportArchiveReaderFactory.createURL(type, path.toString());
             final ArchiveDataSource imported = new ArchiveDataSource(url, 1, type);
-            pv.setArchiveDataSource(new ArchiveDataSource[] { imported });
+
+            AxisConfig axis = model.getEmptyAxis();
+            if (axis == null)
+                model.getAxis(0);
+
+            // Add PV Item with data to model
+            AddModelItemCommand.forPV(shell, op_manager, model,
+                    type, 0, axis, imported);
         }
         catch (Exception ex)
         {

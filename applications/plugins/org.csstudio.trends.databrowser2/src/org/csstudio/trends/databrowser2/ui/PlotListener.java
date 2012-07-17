@@ -57,6 +57,9 @@ public interface PlotListener
      */
     public void droppedPVName(ProcessVariable name, ArchiveDataSource archive);
 
+    /** Received a file name */
+    public void droppedFilename(String file_name);
+
     /**
 	 * Called when the user changed graph settings
 	 * @param newValue
