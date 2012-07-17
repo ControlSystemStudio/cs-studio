@@ -8,7 +8,7 @@
             class="org.csstudio.opibuilder.imagelib.ImportWizard"
             icon="icons/symbol-image.png"
             id="org.csstudio.opibuilder.imagelib.importwizard"
-            name="BOY Symbol Image Library folder">
+            name="BOY Image Library">
       </wizard>
    </extension>
    

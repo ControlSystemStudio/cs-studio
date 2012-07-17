@@ -20,10 +20,11 @@ import org.eclipse.ui.IWorkbench;
  */
 public class ImportWizard extends Wizard implements IImportWizard {
 
-	private static final String WINDOW_TITLE = "Import BOY Images Library";
-	private static final String WIZARD_PAGE = "BOY Images Library";
-	private static final String WIZARD_PAGE_TITLE = "Import BOY Symbol Images Library";
-	private static final String WIZARD_PAGE_DESCRIPTION = "Import the library of images come with BOY";
+	private static final String WINDOW_TITLE = "Import BOY Image Library";
+	private static final String WIZARD_PAGE = "BOY Image Library";
+	private static final String WIZARD_PAGE_TITLE = "Import BOY Image Library";
+	private static final String WIZARD_PAGE_DESCRIPTION = "Import the library of images come with BOY. " +
+			"It containes more than 200 electrical and fluid symbols.";
 
 	@Override
 	public boolean performFinish() {

@@ -36,10 +36,10 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 public class InstallLibraryAction extends Action implements
 		IWorkbenchWindowActionDelegate {
 
-	public static final String PROJECT_NAME = "BOY Images Library";
+	public static final String PROJECT_NAME = "BOY Image Library";
 	private static final String SRC_FOLDER_TOCOPY = "SymbolLibrary";
-	private static final String JOB_NAME = "Import BOY images library";
-	private static final String TASK_NAME = "Copying BOY images library";
+	private static final String JOB_NAME = "Import BOY image library";
+	private static final String TASK_NAME = "Copying BOY image library";
 
 	public void dispose() {
 		// NOP
