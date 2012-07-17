@@ -138,7 +138,7 @@
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
       <on_label>ON</on_label>
-      <image_file>../SymbolLibrary/SVG/Fluid/Pumps/PL General.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/PL General.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
@@ -250,7 +250,7 @@ Single Image animated in ON/OFF color</text>
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
       <on_label>ON</on_label>
-      <image_file>../SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/JF Fuse Switch Off.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/JF Fuse Switch Off.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
@@ -435,7 +435,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <degree>0</degree>
       <items />
       <border_width>1</border_width>
-      <image_file>../SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 2.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/SM 4-Positions Switch 2.svg</image_file>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
@@ -598,7 +598,7 @@ Single Image Symbol animated in ON/OFF color</text>
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/SVG/Fluid/Actuators/AT Single-Acting Diaphragm Actuator.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/AT Single-Acting Diaphragm Actuator.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>-330a7b34:1387ba5f1f6:-775a</wuid>
@@ -674,7 +674,7 @@ $(pv_value)</tooltip>
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/SVG/Electrical/Miscellaneous/Closing Push-Button Off.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/Closing Push-Button Off.svg</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>-330a7b34:1387ba5f1f6:-76bd</wuid>
@@ -746,7 +746,7 @@ $(pv_value)</tooltip>
       <crop_bottom>0</crop_bottom>
       <items />
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/SVG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 2.svg</image_file>
+      <image_file>../pictures/SymbolLibrary/SVG/SM 4-Positions Switch 2.svg</image_file>
       <items_from_pv>true</items_from_pv>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -984,7 +984,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
       <on_label>ON</on_label>
-      <image_file>../SymbolLibrary/PNG/Fluid/Pumps/PL General.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/PL General.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
@@ -1096,7 +1096,7 @@ Single Image animated in ON/OFF color</text>
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
       <on_label>ON</on_label>
-      <image_file>../SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/JF Fuse Switch Off.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/JF Fuse Switch Off.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>4982c4ba:136d02e386e:-7fa0</wuid>
@@ -1281,7 +1281,7 @@ Multi Image Symbol animated in ON/OFF color</text>
       <degree>0</degree>
       <items />
       <border_width>1</border_width>
-      <image_file>../SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 2.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/SM 4-Positions Switch 2.png</image_file>
       <border_color>
         <color red="215" green="215" blue="215" />
       </border_color>
@@ -1444,7 +1444,7 @@ Single Image Symbol animated in ON/OFF color</text>
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/PNG/Fluid/Actuators/AT Single-Acting Diaphragm Actuator.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/AT Single-Acting Diaphragm Actuator.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>-330a7b34:1387ba5f1f6:-775a</wuid>
@@ -1520,7 +1520,7 @@ $(pv_value)</tooltip>
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/PNG/Electrical/Miscellaneous/Closing Push-Button Off.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/Closing Push-Button Off.png</image_file>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
       <wuid>-330a7b34:1387ba5f1f6:-76bd</wuid>
@@ -1592,7 +1592,7 @@ $(pv_value)</tooltip>
       <crop_bottom>0</crop_bottom>
       <items />
       <border_width>2</border_width>
-      <image_file>../SymbolLibrary/PNG/Electrical/Protection_and_Cut-Shut_Off-On/SM 4-Positions Switch 2.png</image_file>
+      <image_file>../pictures/SymbolLibrary/PNG/SM 4-Positions Switch 2.png</image_file>
       <items_from_pv>true</items_from_pv>
       <crop_right>0</crop_right>
       <crop_left>0</crop_left>
@@ -2157,7 +2157,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <widget_type>Label</widget_type>
     <text>The symbol widgets are provided by ITER. &#xD;
-The widgets can display On/Off states with On/Off color on a single image or on multiple images based on image names. It supports SVG, PNG and GIF format of images. SVG is vector image which can keep the same definition after it is resized.</text>
+The widgets can display On/Off states with On/Off color on a single image or on multiple images based on image names. It supports SVG, PNG and GIF format of images. SVG is vector image which can keep the same definition after it is resized.&#xD;
+&#xD;
+ITER also contributed more than 200 SVG and PNG symbol images to BOY, which can be imported to workspace from menu File-&gt;Import...-&gt;BOY-&gt;BOY Symbol Library</text>
     <precision>0</precision>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>

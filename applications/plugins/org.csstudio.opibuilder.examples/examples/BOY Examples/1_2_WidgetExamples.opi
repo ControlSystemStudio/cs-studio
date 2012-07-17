@@ -133,7 +133,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>66d1507f:138820a85e5:-6be6</wuid>
       <scripts />
       <height>793</height>
@@ -1565,7 +1565,7 @@ $(pv_value)</tooltip>
             <color red="0" green="128" blue="255" />
           </border_color>
           <level_lolo>10.0</level_lolo>
-          <y>142</y>
+          <y>150</y>
           <actions hook="false" hook_all="false" />
           <x>179</x>
           <tooltip>$(pv_name)
@@ -2561,7 +2561,7 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>272</y>
+          <y>288</y>
           <actions hook="false" hook_all="false" />
           <x>203</x>
           <tooltip>$(pv_name)
@@ -2645,7 +2645,7 @@ $(pv_value)</tooltip>
           <crop_bottom>0</crop_bottom>
           <border_width>1</border_width>
           <on_label>ON</on_label>
-          <image_file>SymbolLibrary/SVG/Fluid/Pumps/PL General.svg</image_file>
+          <image_file>pictures/SymbolLibrary/SVG/PL General.svg</image_file>
           <crop_right>0</crop_right>
           <crop_left>0</crop_left>
           <wuid>5ec8b324:13880ba2d91:-6d93</wuid>
@@ -4222,10 +4222,10 @@ $(pv_value)</tooltip>
           <pv_value />
           <flip_vertical>false</flip_vertical>
           <crop_bottom>0</crop_bottom>
-          <bit>0</bit>
+          <bit>2</bit>
           <on_label>ON</on_label>
           <border_width>2</border_width>
-          <image_file>SymbolLibrary/SVG/Electrical/Miscellaneous/Closing Push-Button Off.svg</image_file>
+          <image_file>pictures/SymbolLibrary/SVG/Closing Push-Button Off.svg</image_file>
           <crop_right>0</crop_right>
           <crop_left>0</crop_left>
           <wuid>5ec8b324:13880ba2d91:-63e6</wuid>
@@ -4924,7 +4924,7 @@ $(pv_value)</tooltip>
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>66d1507f:138820a85e5:-6bdb</wuid>
       <scripts />
       <height>793</height>
