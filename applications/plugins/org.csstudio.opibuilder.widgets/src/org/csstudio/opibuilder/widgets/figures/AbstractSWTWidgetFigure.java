@@ -154,7 +154,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 			public void run() {
 //				final Control swtWidget = getSWTWidget();
 				if (swtWidget == null || swtWidget.isDisposed()) {
-					throw new RuntimeException("getSWTWidget() is null or disposed!");
+					return;
+//					throw new RuntimeException("getSWTWidget() is null or disposed!");
 				}
 				//newly created widget on top	
 				if(wrapComposite==null)
@@ -364,8 +365,13 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	protected void relocateWidget() {
 		if (wrapComposite != null
 				&& getParent().getParent() instanceof Viewport) {
-			isIntersectViewPort = getParent().getParent().getClientArea()
-					.intersects(getClientArea());
+			Rectangle viewPortArea = getParent().getParent().getClientArea();
+			Rectangle clientArea = getClientArea();
+			getParent().translateToAbsolute(viewPortArea);
+			translateToAbsolute(clientArea);
+			isIntersectViewPort = viewPortArea.intersects(clientArea);
+//			isIntersectViewPort = getParent().getParent().getClientArea()
+//					.intersects(getClientArea());
 		}
 		
 		GUIRefreshThread.getInstance(runmode).addIgnorableTask(
@@ -395,12 +401,12 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 		if (wrapComposite != null
 				&& getParent().getParent() instanceof Viewport) {
 			Rectangle viewPortArea = getParent().getParent().getClientArea();
+			getParent().translateToAbsolute(viewPortArea);
+			translateToAbsolute(clientArea);
 			isIntersectViewPort = viewPortArea.intersects(clientArea);
 			if (isIntersectViewPort) {
 				// if the SWT widget is cut by viewPort
-				if (!viewPortArea.contains(clientArea)) {
-					translateToAbsolute(viewPortArea);
-					translateToAbsolute(clientArea);
+				if (!viewPortArea.contains(clientArea)) {					
 					Rectangle intersection = viewPortArea.getIntersection(clientArea);					
 					org.eclipse.swt.graphics.Rectangle oldBounds = wrapComposite.getBounds();
 					if (oldBounds.x != (rect.x + intersection.x	- clientArea.x) ||
