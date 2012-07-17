@@ -887,7 +887,7 @@ public class Model
         XMLWriter.XML(writer, 1, TAG_UPDATE_PERIOD, getUpdatePeriod());
         if (isScrollEnabled())
         {
-            XMLWriter.XML(writer, 1, TAG_START, new RelativeTime(-time_span));
+            XMLWriter.XML(writer, 1, TAG_START, new RelativeTime(-getTimespan()));
             XMLWriter.XML(writer, 1, TAG_END, RelativeTime.NOW);
         }
         else
@@ -968,7 +968,10 @@ public class Model
         if (!root_node.getNodeName().equals(TAG_DATABROWSER))
             throw new Exception("Wrong document type");
 
-        scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
+        synchronized (this)
+        {
+            scroll_enabled = DOMHelper.getSubelementBoolean(root_node, TAG_SCROLL, scroll_enabled);
+        }
         update_period = DOMHelper.getSubelementDouble(root_node, TAG_UPDATE_PERIOD, update_period);
 
         final String start = DOMHelper.getSubelementString(root_node, TAG_START);

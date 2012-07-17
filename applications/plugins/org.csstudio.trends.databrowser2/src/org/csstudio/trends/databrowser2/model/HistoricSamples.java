@@ -47,14 +47,12 @@ public class HistoricSamples extends PlotSamples
     private int waveform_index = 0;
 
     /** @param index Waveform index to show */
-    public void setWaveformIndex(int index)
+    public synchronized void setWaveformIndex(int index)
     {
     	waveform_index = index;
-
     	// change the index of all samples in this instance
-    	for (PlotSample sample: samples) {
+    	for (PlotSample sample: samples)
     		sample.setWaveformIndex(waveform_index);
-    	}
     }
 
     /** Define a new 'border' time beyond which no samples
@@ -73,7 +71,10 @@ public class HistoricSamples extends PlotSamples
         // New border, recompute, mark as 'new data'
         this.border_time = border_time;
         computeVisibleSize();
-        have_new_samples = true;
+        synchronized (this)
+        {
+            have_new_samples = true;
+        }
     }
 
     /** Update visible size */

@@ -233,25 +233,25 @@ public class AddPVDialog  extends TitleAreaDialog
     /** Set initial name. Only effective when called before dialog is opened.
      *  @param name Suggested name
      */
-    public synchronized void setName(final String name)
+    public void setName(final String name)
     {
         this.name = name;
     }
 
     /** @return Entered PV name */
-    public synchronized String getName()
+    public String getName()
     {
         return name;
     }
 
     /** @return Entered scan period in seconds */
-    public synchronized double getScanPeriod()
+    public double getScanPeriod()
     {
         return period;
     }
 
     /** @return Index of Value Axis or -1 for 'create new' */
-    public synchronized int getAxisIndex()
+    public int getAxisIndex()
     {
         return axis_index;
     }
@@ -261,7 +261,7 @@ public class AddPVDialog  extends TitleAreaDialog
      *  This method also updates the message shown in this dialog.
      * @return True if all the values input by the user are valid. Otherwise, false.
      */
-    private synchronized boolean updateAndValidate()
+    private boolean updateAndValidate()
     {
         // Valid name?
     	name = txt_name.getText().trim();
