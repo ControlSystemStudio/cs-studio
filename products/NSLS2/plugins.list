@@ -6,11 +6,11 @@ javax.annotation
 net.coobird.thumbnailator
 org.csstudio.alarm.beast
 org.csstudio.alarm.beast.annunciator
-org.csstudio.alarm.msghist
-org.csstudio.alarm.ui
-org.csstudio.alarm.ui.alarmtable
-org.csstudio.alarm.ui.alarmtree
-org.csstudio.alarm.ui.areapanel
+org.csstudio.alarm.beast.msghist
+org.csstudio.alarm.beast.ui
+org.csstudio.alarm.beast.ui.alarmtable
+org.csstudio.alarm.beast.ui.alarmtree
+org.csstudio.alarm.beast.ui.areapanel
 org.apache.commons.collections
 org.apache.commons.httpclient
 org.apache.jackrabbit
