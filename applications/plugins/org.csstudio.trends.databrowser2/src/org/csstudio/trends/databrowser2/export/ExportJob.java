@@ -85,6 +85,8 @@ abstract public class ExportJob extends Job
      *  @param source Where to get samples
      *  @param optimize_count Used by optimized source
      *  @param filename Name of file to create
+     *                  or <code>null</code> if <code>performExport</code>
+     *                  handles the file
      *  @param error_handler Callback for errors
      */
     public ExportJob(final String comment, final Model model,
@@ -113,8 +115,14 @@ abstract public class ExportJob extends Job
         monitor.beginTask("Data Export", IProgressMonitor.UNKNOWN);
         try
         {
-            final PrintStream out = new PrintStream(filename);
-            printExportInfo(out);
+            final PrintStream out;
+            if (filename != null)
+            {
+                out = new PrintStream(filename);
+                printExportInfo(out);
+            }
+            else
+                out = null;
             // Start thread that checks monitor to cancels readers when
             // user tries to abort the export job
             final CancellationPoll cancel_poll = new CancellationPoll(monitor);
@@ -124,7 +132,8 @@ abstract public class ExportJob extends Job
             cancel_poll.exit = true;
             for (ArchiveReader reader : archive_readers)
                 reader.close();
-            out.close();
+            if (out != null)
+                out.close();
             // Wait for poller to quit
             cancel_poll.join();
         }

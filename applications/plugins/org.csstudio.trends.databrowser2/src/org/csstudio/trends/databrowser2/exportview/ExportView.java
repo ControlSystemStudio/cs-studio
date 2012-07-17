@@ -19,7 +19,8 @@ import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.editor.DataBrowserAwareView;
 import org.csstudio.trends.databrowser2.export.ExportErrorHandler;
-import org.csstudio.trends.databrowser2.export.MatlabExportJob;
+import org.csstudio.trends.databrowser2.export.MatlabFileExportJob;
+import org.csstudio.trends.databrowser2.export.MatlabScriptExportJob;
 import org.csstudio.trends.databrowser2.export.PlainExportJob;
 import org.csstudio.trends.databrowser2.export.Source;
 import org.csstudio.trends.databrowser2.export.SpreadsheetExportJob;
@@ -27,11 +28,14 @@ import org.csstudio.trends.databrowser2.export.ValueFormatter;
 import org.csstudio.trends.databrowser2.export.ValueWithInfoFormatter;
 import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -320,6 +324,15 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         filename.setToolTipText(Messages.ExportFilenameTT);
         filename.setText(Messages.ExportDefaultFilename);
         filename.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        filename.addKeyListener(new KeyAdapter()
+        {
+            @Override
+            public void keyPressed(final KeyEvent e)
+            {
+                if (e.character == '\r')
+                    startExportJob();
+            }
+        });
 
         final Button sel_filename = new Button(group, SWT.PUSH);
         sel_filename.setText(Messages.ExportBrowse);
@@ -481,8 +494,19 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         final Job export;
         if (type_matlab.getSelection())
         {   // Matlab file export
-            export = new MatlabExportJob(model, start_time, end_time, source,
-                    optimize_count, filename, this);
+
+            if (filename.endsWith(".m")) //$NON-NLS-1$
+                export = new MatlabScriptExportJob(model, start_time, end_time, source,
+                        optimize_count, filename, this);
+            else if (filename.endsWith(".mat")) //$NON-NLS-1$
+                export = new MatlabFileExportJob(model, start_time, end_time, source,
+                        optimize_count, filename, this);
+            else
+            {
+                MessageDialog.openError(type_matlab.getShell(), Messages.Error,
+                        Messages.ExportMatlabFilenameError);
+                return;
+            }
         }
         else
         {   // Spreadsheet file export
@@ -541,10 +565,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 if (start.isDisposed())
                     return;
-                MessageDialog.openError(start.getShell(),
-                        Messages.Error,
-                        NLS.bind(Messages.ExportErrorFmt, ex.getMessage()));
-                ex.printStackTrace();
+                ExceptionDetailsErrorDialog.openError(start.getShell(), Messages.Error, ex);
             }
         });
     }

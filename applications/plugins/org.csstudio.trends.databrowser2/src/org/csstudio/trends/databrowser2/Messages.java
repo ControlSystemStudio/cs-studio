@@ -90,7 +90,6 @@ public class Messages extends NLS
     public static String ExportDigitsError;
     public static String ExportDigitsTT;
     public static String ExportEnterFilenameError;
-    public static String ExportErrorFmt;
     public static String ExportFileExists;
     public static String ExportFileExistsFmt;
     public static String ExportFilename;
@@ -101,6 +100,7 @@ public class Messages extends NLS
     public static String ExportGroupFormat;
     public static String ExportGroupOutput;
     public static String ExportGroupSource;
+    public static String ExportMatlabFilenameError;
     public static String ExportMinMaxCol;
     public static String ExportMinMaxColTT;
     public static String ExportOptimizeCountError;

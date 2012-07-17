@@ -24,9 +24,9 @@ import org.eclipse.osgi.util.NLS;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MatlabExportJob extends ExportJob
+public class MatlabScriptExportJob extends ExportJob
 {
-    public MatlabExportJob(final Model model, final ITimestamp start,
+    public MatlabScriptExportJob(final Model model, final ITimestamp start,
             final ITimestamp end, final Source source,
             final int optimize_count, final String filename,
             final ExportErrorHandler error_handler)

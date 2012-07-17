@@ -92,7 +92,7 @@ public class ExportTest implements ExportErrorHandler
     public void matlabExport() throws Exception
     {
         final Model model = getTestModel();
-        final ExportJob export = new MatlabExportJob(model,
+        final ExportJob export = new MatlabScriptExportJob(model,
                 model.getStartTime(), model.getEndTime(),
                 Source.RAW_ARCHIVE, 10,
                 "/tmp/matlab.m", this);
