@@ -50,7 +50,7 @@ public class PlotDemo
     private boolean run = true;
     private volatile boolean scroll = true;
     private ITimestamp start_time, end_time;
-    
+
     final private PlotListener listener = new PlotListener()
     {
         @Override
@@ -92,89 +92,95 @@ public class PlotDemo
             System.out.println("PV Name dropped: " + name);
         }
 
-		@Override
+        @Override
+        public void droppedFilename(final String file_name)
+        {
+            System.out.println("File Name dropped: " + file_name);
+        }
+
+        @Override
 		public void xyGraphConfigChanged(XYGraph newValue) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void removeAnnotationChanged(Annotation oldValue) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void addAnnotationChanged(Annotation newValue) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void backgroundColorChanged(Color newValue) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void timeAxisForegroundColorChanged(Color oldColor,
 				Color newColor) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void valueAxisForegroundColorChanged(int index, Color oldColor,
 				Color newColor) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void valueAxisTitleChanged(int index, String oldTitle,
 				String newTitle) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void valueAxisAutoScaleChanged(int index, boolean oldAutoScale,
 				boolean newAutoScale) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void traceNameChanged(int index, String oldName, String newName) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void traceYAxisChanged(int index, AxisConfig oldConfig,
 				AxisConfig config) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void traceTypeChanged(int index, TraceType old,
 				TraceType newTraceType) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void traceColorChanged(int index, Color old, Color newColor) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		@Override
 		public void valueAxisLogScaleChanged(int index, boolean old,
 				boolean logScale) {
 			// TODO Auto-generated method stub
-			
+
 		}
     };
 
@@ -242,7 +248,7 @@ public class PlotDemo
         start_time = samples.getSample(0).getValue().getTime();
         end_time = samples.getSample(samples.getSize()-1).getValue().getTime();
         plot.setTimeRange(start_time, end_time);
-        
+
         new Thread(new Runnable()
         {
 			@Override

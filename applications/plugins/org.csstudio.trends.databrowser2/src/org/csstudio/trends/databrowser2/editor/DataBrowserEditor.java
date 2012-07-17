@@ -39,6 +39,7 @@ import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.Plot;
 import org.csstudio.trends.databrowser2.ui.ToggleToolbarAction;
 import org.csstudio.trends.databrowser2.waveformview.WaveformView;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -341,8 +342,15 @@ public class DataBrowserEditor extends EditorPart
         mm.add(new Separator());
         mm.add(new AddPVAction(op_manager, shell, model, false));
         mm.add(new AddPVAction(op_manager, shell, model, true));
-        for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
-                mm.add(imp);
+        try
+        {
+            for (IAction imp : SampleImporters.createImportActions(op_manager, shell, model))
+                    mm.add(imp);
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+        }
         mm.add(new RemoveUnusedAxesAction(op_manager, model));
         mm.add(new Separator());
         mm.add(new OpenViewAction(IPageLayout.ID_PROP_SHEET, Messages.OpenPropertiesView,

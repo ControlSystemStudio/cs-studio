@@ -11,44 +11,72 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.model.Model;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.widgets.Shell;
 
 /** API for tool that imports data
- *
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SampleImporters
 {
+    /** Extension point for {@link SampleImporter}s */
+    final private static String IMPORTERS_EXT_POINT = "org.csstudio.trends.databrowser2.SampleImporter";
+
     /** Map of file types to importers */
-    private static Map<String, SampleImporter> importers = null;
+    private static Map<String, SampleImporterInfo> importers = null;
 
     /** Prevent instantiation */
     private SampleImporters()
     {
     }
 
-    /** Locate all available importers */
-    private static synchronized void init()
+    /** Locate all available importers
+     *  @throws Exception on error locating extension points
+     */
+    private static synchronized void init() throws Exception
     {
         if (importers == null)
         {
-            importers = new HashMap<String, SampleImporter>();
+            importers = new HashMap<String, SampleImporterInfo>();
 
-            // TODO Get importers from extension point
-            final SampleImporter importer = new CSVSampleImporter();
-            importers.put(importer.getType(), importer);
+            // Get importers from extension point
+            final IConfigurationElement[] configs =
+                Platform.getExtensionRegistry().getConfigurationElementsFor(IMPORTERS_EXT_POINT);
+            for (IConfigurationElement config : configs)
+            {
+                final String type = config.getAttribute("type");
+                final String description = config.getAttribute("description");
+                final SampleImporter importer = (SampleImporter)config.createExecutableExtension("class");
+                importers.put(type, new SampleImporterInfo(type, description, importer));
+            }
         }
     }
 
+
+    /** @return Array of supported types
+     *  @throws Exception on error initializing available importers
+     */
+    public static String[] getTypes() throws Exception
+    {
+        init();
+        final Set<String> keys = importers.keySet();
+        return keys.toArray(new String[keys.size()]);
+    }
+
+
     /** Obtain sample importer
      *  @param type
-     *  @return {@link SampleImporter} for that type or <code>null</code> if not known
+     *  @return {@link SampleImporterInfo} for that type or <code>null</code> if not known
+     *  @throws Exception on error initializing available importers
      */
-    public static SampleImporter getImporter(final String type)
+    public static SampleImporterInfo getImporter(final String type) throws Exception
     {
         init();
         return importers.get(type);
@@ -58,17 +86,16 @@ public class SampleImporters
      *  @param op_manager
      *  @param shell
      *  @param model
-     *  @return
+     *  @return {@link IAction}
+     *  @throws Exception on error initializing available importers
      */
-    public static IAction[] createImportActions(final OperationsManager op_manager, final Shell shell, final Model model)
+    public static IAction[] createImportActions(final OperationsManager op_manager,
+            final Shell shell, final Model model) throws Exception
     {
         init();
         final List<IAction> actions = new ArrayList<IAction>();
-        for (SampleImporter importer : importers.values())
-        {
+        for (SampleImporterInfo importer : importers.values())
             actions.add(new SampleImportAction(op_manager, shell, model, importer.getType(), importer.getDescription()));
-        }
         return actions.toArray(new IAction[actions.size()]);
     }
-
 }

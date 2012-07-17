@@ -28,6 +28,8 @@ import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
 import org.csstudio.trends.databrowser2.archive.ArchiveFetchJobListener;
+import org.csstudio.trends.databrowser2.imports.FileImportDialog;
+import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.model.AnnotationInfo;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ArchiveRescale;
@@ -40,6 +42,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.trends.databrowser2.propsheet.AddArchiveCommand;
 import org.csstudio.trends.databrowser2.propsheet.AddAxisCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
@@ -265,6 +268,31 @@ public class Controller implements ArchiveFetchJobListener
             }
 
 			@Override
+            public void droppedFilename(String file_name)
+            {
+                final FileImportDialog dlg = new FileImportDialog(shell, file_name);
+                if (dlg.open() != Window.OK)
+                    return;
+
+                final OperationsManager operations_manager = plot.getOperationsManager();
+
+                // Add to first empty axis, or create new axis
+                AxisConfig axis = model.getEmptyAxis();
+                if (axis == null)
+                    axis = new AddAxisCommand(operations_manager, model).getAxis();
+
+                // Add new PV
+                final String type = dlg.getType();
+                file_name = dlg.getFileName();
+                final String url = ImportArchiveReaderFactory.createURL(type, file_name);
+                final ArchiveDataSource imported = new ArchiveDataSource(url, 1, type);
+                AddModelItemCommand.forPV(shell, operations_manager,
+                        model, dlg.getItemName(), Preferences.getScanPeriod(),
+                        axis, imported);
+
+            }
+
+            @Override
 			public void xyGraphConfigChanged(XYGraph newValue)
 			{
 				model.fireGraphConfigChanged();

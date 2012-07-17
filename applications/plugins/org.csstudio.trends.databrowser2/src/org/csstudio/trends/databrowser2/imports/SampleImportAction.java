@@ -9,9 +9,10 @@ package org.csstudio.trends.databrowser2.imports;
 
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser2.Activator;
+import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser2.model.AxisConfig;
 import org.csstudio.trends.databrowser2.model.Model;
-import org.csstudio.trends.databrowser2.model.PVItem;
 import org.csstudio.trends.databrowser2.ui.AddModelItemCommand;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
@@ -34,8 +35,8 @@ public class SampleImportAction extends Action
 
     public SampleImportAction(final OperationsManager op_manager, final Shell shell, final Model model, final String type, final String description)
     {
-        super(NLS.bind("Import {0}", description),
-            Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif"));
+        super(NLS.bind(Messages.ImportActionLabelFmt, description),
+            Activator.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/import.gif")); //$NON-NLS-1$
         this.op_manager = op_manager;
         this.shell = shell;
         this.model = model;
@@ -49,8 +50,8 @@ public class SampleImportAction extends Action
         // Prompt for file
         final ResourceSelectionDialog res =
                 new ResourceSelectionDialog(shell,
-                        NLS.bind("Select {0}", description),
-                        new String[] { "*" });
+                        NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description),
+                        new String[] { "*" }); //$NON-NLS-1$
         if (res.open() != Window.OK)
             return;
         final IPath path = res.getSelectedResource();
@@ -58,19 +59,21 @@ public class SampleImportAction extends Action
             return;
         try
         {
-            // Add PV Item with data to model
-            final AddModelItemCommand command = AddModelItemCommand.forPV(shell, op_manager, model,
-                    type, 0, model.getEmptyAxis(), null);
-            final PVItem pv = (PVItem) command.getItem();
-
             // Add archivedatasource for "import:..." and let that load the file
             final String url = ImportArchiveReaderFactory.createURL(type, path.toString());
             final ArchiveDataSource imported = new ArchiveDataSource(url, 1, type);
-            pv.setArchiveDataSource(new ArchiveDataSource[] { imported });
+
+            AxisConfig axis = model.getEmptyAxis();
+            if (axis == null)
+                model.getAxis(0);
+
+            // Add PV Item with data to model
+            AddModelItemCommand.forPV(shell, op_manager, model,
+                    type, 0, axis, imported);
         }
         catch (Exception ex)
         {
-            ExceptionDetailsErrorDialog.openError(shell, "Import failed", ex);
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 }
