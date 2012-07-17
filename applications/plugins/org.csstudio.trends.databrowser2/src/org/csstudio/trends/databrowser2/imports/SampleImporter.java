@@ -19,6 +19,11 @@ import org.csstudio.data.values.IValue;
 public interface SampleImporter
 {
     /** Perform value import
+     *
+     *  <p>Implementers should note that the same imported instance
+     *  can be called in parallel for multiple files,
+     *  so this method should be re-entrant.
+     *
      *  @param input Input stream
      *  @return Values
      *  @throws Exception on error

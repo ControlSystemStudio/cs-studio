@@ -35,18 +35,20 @@ import org.csstudio.data.values.ValueFactory;
 public class CSVSampleImporter implements SampleImporter
 {
     final private Logger logger = Logger.getLogger(getClass().getName());
-    final private DateFormat date_parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     final private ISeverity ok = ValueFactory.createOKSeverity();
     final private INumericMetaData meta_data =
             ValueFactory.createNumericMetaData(0, 10, 0, 0, 0, 0, -1, "");
-    final private Pattern pattern = Pattern.compile(
-        //    YYYY-MM-DD HH:MM:SS.SSS
-        "\\s*([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])[ \\t,]+([-+0-9.e]+)\\s*");
 
     /** {@inheritDoc} */
     @Override
     public List<IValue> importValues(final InputStream input) throws Exception
     {
+        // To be reentrant, need per-call parsers
+        final DateFormat date_parser = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        final Pattern pattern = Pattern.compile(
+                //    YYYY-MM-DD HH:MM:SS.SSS
+                "\\s*([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9][0-9][0-9])[ \\t,]+([-+0-9.e]+)\\s*");
+
         final List<IValue> values = new ArrayList<IValue>();
 
         final BufferedReader reader = new BufferedReader(new InputStreamReader(input));
