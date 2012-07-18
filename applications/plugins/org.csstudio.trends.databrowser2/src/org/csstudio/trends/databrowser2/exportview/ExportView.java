@@ -184,6 +184,23 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         optimize.setLayoutData(new GridData());
         // Enable only when using optimized export
         optimize.setEnabled(source_opt.getSelection());
+
+        source_plot.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                min_max_col.setEnabled(minMaxAllowed());
+            }
+        });
+        source_raw.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                min_max_col.setEnabled(minMaxAllowed());
+            }
+        });
         source_opt.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -191,7 +208,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
             {
                 final boolean use_optimized = source_opt.getSelection();
                 optimize.setEnabled(use_optimized);
-                min_max_col.setEnabled(use_optimized &&  !type_matlab.getSelection());
+                min_max_col.setEnabled(minMaxAllowed());
                 if (use_optimized)
                     optimize.setFocus();
             }
@@ -276,7 +293,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(true);
                 format_expo.setEnabled(true);
                 format_digits.setEnabled(!format_default.getSelection());
-                min_max_col.setEnabled(source_opt.getSelection());
+                min_max_col.setEnabled(!source_raw.getSelection());
             }
         });
         type_matlab.addSelectionListener(new SelectionAdapter()
@@ -290,7 +307,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 format_decimal.setEnabled(false);
                 format_expo.setEnabled(false);
                 format_digits.setEnabled(false);
-                min_max_col.setEnabled(false);
+                min_max_col.setEnabled(minMaxAllowed());
             }
         });
         final SelectionAdapter digit_enabler = new SelectionAdapter()
@@ -362,6 +379,12 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 startExportJob();
             }
         });
+    }
+
+    /** @return <code>true</code> if the min/max (error) column option should be enabled */
+    private boolean minMaxAllowed()
+    {
+        return !type_matlab.getSelection()  &&   !source_raw.getSelection();
     }
 
     /** {@inheritDoc} */
@@ -538,8 +561,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
                 formatter = new ValueWithInfoFormatter(format, precision);
             else
                 formatter = new ValueFormatter(format, precision);
-            formatter.useMinMaxColumn(source == Source.OPTIMIZED_ARCHIVE  &&
-                                      min_max_col.getSelection());
+            formatter.useMinMaxColumn(minMaxAllowed() && min_max_col.getSelection());
             if (tabular.getSelection())
                 export = new SpreadsheetExportJob(model, start_time, end_time, source,
                         optimize_count, formatter, filename, this);
