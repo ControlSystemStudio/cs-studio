@@ -841,8 +841,8 @@ public class AlarmClientModel
         final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
             parent.maximizeSeverity();
-        else
-            fireNewAlarmState(pv, true);
+        // Update alarm display
+        fireNewAlarmState(pv, true);
     }
 
 	/** Update the enablement of a PV in model.

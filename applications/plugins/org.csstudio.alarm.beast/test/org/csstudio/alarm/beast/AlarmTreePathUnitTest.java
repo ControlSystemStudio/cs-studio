@@ -7,7 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 /** JUnit test of AlarmTreePath
@@ -45,11 +48,38 @@ public class AlarmTreePathUnitTest
     }
 
     @Test
+    public void testSpaces()
+    {
+        String path = AlarmTreePath.makePath("the path", "to");
+        assertEquals("/the path/to", path);
+
+        path = AlarmTreePath.makePath(path, "an item");
+        assertEquals("/the path/to/an item", path);
+
+        path = AlarmTreePath.makePath(path, "with / in it");
+        assertEquals("/the path/to/an item/with \\/ in it", path);
+
+        // Split
+        final String[] items = AlarmTreePath.splitPath(path);
+        assertEquals(4, items.length);
+        assertEquals("the path", items[0]);
+        assertEquals("to", items[1]);
+        assertEquals("an item", items[2]);
+        assertEquals("with / in it", items[3]);
+
+        // Re-assemble
+        path = AlarmTreePath.makePath(items, items.length);
+        assertEquals("/the path/to/an item/with \\/ in it", path);
+    }
+
+
+    @Test
     public void testSpecialChars()
     {
     	String path = AlarmTreePath.makePath("path", "to");
     	assertEquals("/path/to", path);
 
+    	// First element already contains '/'
     	path = AlarmTreePath.makePath("/path", "to");
         assertEquals("/path/to", path);
 
