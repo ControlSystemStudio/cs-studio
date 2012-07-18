@@ -19,30 +19,15 @@ import org.csstudio.opibuilder.visualparts.BorderStyle;
  * 
  */
 public final class NativeTextModel extends TextInputModel {
-	/**
-	 * Show Native Border. This property is not runtime changeable.
-	 */
+
 	public static final String PROP_SHOW_NATIVE_BORDER = "show_native_border"; //$NON-NLS-1$
-	
-	/**
-	 * Password input style. This property is not runtime changeable.
-	 */
-	public static final String PROP_PASSWORD_INPUT = "password_input"; //$NON-NLS-1$
-	
-	/**
-	 * Read only style. This property is not runtime changeable.
-	 */
+
+	public static final String PROP_PASSWORD_INPUT = "password_input"; //$NON-NLS-1$	
+
 	public static final String PROP_READ_ONLY = "read_only"; //$NON-NLS-1$
-	
-	/**
-	 * Show_H_Scroll style. This property is not runtime changeable.
-	 */
-	public static final String PROP_SHOW_H_SCROLL = "show_h_scroll"; //$NON-NLS-1$
-	
-	
-	/**
-	 * Show_V_Scroll style. This property is not runtime changeable.
-	 */
+
+	public static final String PROP_SHOW_H_SCROLL = "show_h_scroll"; //$NON-NLS-1$		
+
 	public static final String PROP_SHOW_V_SCROLL = "show_v_scroll"; //$NON-NLS-1$
 	
 	/**
@@ -59,11 +44,11 @@ public final class NativeTextModel extends TextInputModel {
 	protected void configureProperties() {
 		super.configureProperties();
 		addProperty(new BooleanProperty(PROP_SHOW_NATIVE_BORDER, "Show Native Border",
-				WidgetPropertyCategory.Display, true));		
+				WidgetPropertyCategory.Display, false));		
 		addProperty(new BooleanProperty(PROP_PASSWORD_INPUT, "Password Input",
 				WidgetPropertyCategory.Behavior, false));		
 		addProperty(new BooleanProperty(PROP_READ_ONLY, "Read Only",
-				WidgetPropertyCategory.Behavior, false));
+				WidgetPropertyCategory.Behavior, true));
 		addProperty(new BooleanProperty(PROP_SHOW_H_SCROLL, "Show Horizontal Scrollbar",
 				WidgetPropertyCategory.Display, false));
 		addProperty(new BooleanProperty(PROP_SHOW_V_SCROLL, "Show Vertical Scrollbar",
