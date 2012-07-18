@@ -5,7 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <wuid>-4499eab:1386c3a53ab:-7fd2</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.1.qualifier</boy_version>
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -40,7 +40,7 @@
     <wuid>-4499eab:1386c3a53ab:-7fc9</wuid>
     <scripts />
     <height>44</height>
-    <name>widgets/ShapeWidgets.html</name>
+    <name>widgets/NativeButton.html</name>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -57,7 +57,7 @@
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>185</width>
     <border_style>0</border_style>
@@ -156,7 +156,7 @@
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>120</width>
       <line_style>0</line_style>
@@ -199,7 +199,7 @@ $(pv_value)</tooltip>
       <widget_type>Image</widget_type>
       <enabled>true</enabled>
       <font>
-        <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>42</width>
       <no_animation>false</no_animation>
@@ -243,7 +243,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Native widgets not only have better looking, but also have significantly better performance in WebOPI. </text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>765</width>
     <border_style>14</border_style>
@@ -284,7 +284,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>765</width>
     <border_style>14</border_style>
@@ -323,7 +323,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Native Button</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="18" style="1">Header 1</opifont.name>
+        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
       </font>
       <width>295</width>
       <border_style>0</border_style>
@@ -364,7 +364,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Examples</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="18" style="1">Header 1</opifont.name>
+        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
       </font>
       <width>451</width>
       <border_style>0</border_style>
@@ -405,7 +405,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <text>Best OPI Yet (BOY)</text>
       <font>
-        <opifont.name fontName="Segoe UI" height="18" style="1">Header 1</opifont.name>
+        <opifont.name fontName="Sans" height="18" style="1">Header 1</opifont.name>
       </font>
       <width>451</width>
       <border_style>0</border_style>
@@ -443,9 +443,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Non-Toggle Button</text>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>151</width>
+    <width>161</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../pictures/home-16x16.png</image>
@@ -468,7 +468,7 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>235</x>
+    <x>225</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -491,9 +491,9 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Toggle Button</text>
     <font>
-      <fontdata fontName="Arial" height="9" style="0" />
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>132</width>
+    <width>142</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image></image>
@@ -524,7 +524,7 @@ $(pv_value)</tooltip>
     </actions>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>431</x>
+    <x>421</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -547,7 +547,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Go Home</text>
     <font>
-      <opifont.name fontName="Segoe UI" height="9" style="0">Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>97</width>
     <border_style>0</border_style>
