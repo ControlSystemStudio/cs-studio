@@ -398,7 +398,8 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 		if(Math.abs(scale-1) >0.05){
 			if(Math.abs(scale-lastScale) >=0.05){
 				FontData fontData = getFont().getFontData()[0];
-				FontData newFontData = new FontData(fontData.name, (int)(fontData.height*scale), fontData.style);
+				FontData newFontData = new FontData(fontData.getName(), 
+						(int)(fontData.getHeight()*scale), fontData.getStyle());
 				getSWTWidget().setFont(CustomMediaFactory.getInstance().getFont(newFontData));
 				lastScale=scale;
 			}			
