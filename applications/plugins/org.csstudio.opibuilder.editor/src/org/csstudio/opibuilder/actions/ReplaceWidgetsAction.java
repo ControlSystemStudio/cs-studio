@@ -31,7 +31,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class ReplaceWidgetsAction extends SelectionAction {
 
-	public static final String ID = "org.csstudio.opibuilder.actions.replaceWidgets";	
+	public static final String ID = "org.csstudio.opibuilder.actions.replaceWidgets";	//$NON-NLS-1$
 	
 	
 	public ReplaceWidgetsAction(IWorkbenchPart part) {
@@ -39,7 +39,7 @@ public class ReplaceWidgetsAction extends SelectionAction {
 		setText("Replace Widgets With...");
 		setId(ID);
 		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-				OPIBuilderPlugin.PLUGIN_ID, "icons/paste_properties.png"));
+				OPIBuilderPlugin.PLUGIN_ID, "icons/replace.png")); //$NON-NLS-1$
 	}
 
 	@Override
