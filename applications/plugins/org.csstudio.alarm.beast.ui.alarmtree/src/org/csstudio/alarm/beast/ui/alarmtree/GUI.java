@@ -14,6 +14,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.AlarmTreePosition;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
+import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
@@ -26,6 +27,7 @@ import org.csstudio.alarm.beast.ui.actions.RemoveComponentAction;
 import org.csstudio.alarm.beast.ui.actions.RenameItemAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
+import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -37,6 +39,8 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TreeColumnLayout;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ColumnWeightData;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -181,6 +185,20 @@ public class GUI implements AlarmClientModelListener
         tree_viewer.setContentProvider(new AlarmTreeContentProvider(this));
         tree_viewer.setLabelProvider(new AlarmTreeLabelProvider(tree));
         tree_viewer.setInput(model.getConfigTree());
+
+        // Double-click on item invokes configuration dialog (if allowed)
+        tree_viewer.addDoubleClickListener(new IDoubleClickListener()
+        {
+            @Override
+            public void doubleClick(final DoubleClickEvent event)
+            {
+                if (!SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false))
+                    return;
+                final IStructuredSelection selection = (IStructuredSelection)tree_viewer.getSelection();
+                final AlarmTreeItem item = (AlarmTreeItem) selection.getFirstElement();
+                ConfigureItemAction.performItemConfiguration(tree_viewer.getTree().getShell(), model, item);
+            }
+        });
 
         ColumnViewerToolTipSupport.enableFor(tree_viewer);
     }
