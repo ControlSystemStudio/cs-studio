@@ -7,28 +7,22 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.editor;
 
-import javax.print.attribute.standard.Severity;
-
 import org.csstudio.apputil.ui.elog.ElogDialog;
 import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.csstudio.logbook.ILogbook;
 import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action to send image of plot to logbook.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class SendToElogAction extends SendToElogActionHelper
 {
     final private Shell shell;
@@ -55,7 +49,7 @@ public class SendToElogAction extends SendToElogActionHelper
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(shell, Messages.Error, ex.getMessage());
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
             return;
         }
 
@@ -74,59 +68,41 @@ public class SendToElogAction extends SendToElogActionHelper
                         final String images[])
                         throws Exception
                 {
-                    final ILogbook logbook = getLogbook_factory()
-                                        .connect(logbook_name, user, password);
-					try {
-						Job create = new Job("Creating log entry.") {
-
-							@Override
-							protected IStatus run(IProgressMonitor monitor) {
-								try {
-									logbook.createEntry(title, body, images);
-								} catch (final Exception e) {
-									return new Status(
-											Severity.ERROR.getValue(),
-											Activator.PLUGIN_ID,
-											"Failed to create log entry", e);
-								}
-								return Status.OK_STATUS;
-							}
-						};
-						create.addJobChangeListener(new JobChangeAdapter() {
-							public void done(final IJobChangeEvent event) {
-								if (!event.getResult().isOK()) {
-									Display.getDefault().asyncExec(
-											new Runnable() {
-												public void run() {
-													MessageDialog.openError(
-															shell,
-															Messages.Error,
-															NLS.bind(
-																	Messages.ErrorFmt,
-																	event.getResult()
-																			.getException()));
-
-												}
-											});
-								}
-							}
-						});
-						create.setUser(true);
-						create.schedule();
-					}
-                    finally
+                    final Job create = new Job("Create log entry")
                     {
-                        logbook.close();
-                    }
+						@Override
+						protected IStatus run(final IProgressMonitor monitor)
+						{
+							try
+							{
+							    final ILogbook logbook = getLogbook_factory()
+							            .connect(logbook_name, user, password);
+								logbook.createEntry(title, body, images);
+								logbook.close();
+							}
+							catch (final Exception ex)
+							{
+							    shell.getDisplay().asyncExec(new Runnable()
+							    {
+					                @Override
+                                    public void run()
+					                {
+					                    ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+					                }
+					            });
+							}
+							return Status.OK_STATUS;
+						}
+					};
+					create.setUser(true);
+					create.schedule();
                 }
-
             };
             dialog.open();
         }
         catch (Exception ex)
         {
-            MessageDialog.openError(shell, Messages.Error,
-                    NLS.bind(Messages.ErrorFmt, ex.getMessage()));
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 }
