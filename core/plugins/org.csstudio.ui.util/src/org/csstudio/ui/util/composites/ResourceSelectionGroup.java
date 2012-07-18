@@ -354,7 +354,18 @@ public final class ResourceSelectionGroup extends Composite {
 			_listener.handleEvent(changeEvent);
 		}
 	}
+	
+	public void itemDoubleClicked(final IResource resource) {
+		_selectedResource = resource;
 
+		// fire an event so the parent can update its controls
+		if (_listener != null) {
+			Event changeEvent = new Event();
+			changeEvent.type = SWT.MouseDoubleClick;
+			changeEvent.widget = this;
+			_listener.handleEvent(changeEvent);
+		}
+	}
 	/**
 	 * Creates the contents of the composite.
 	 * 
@@ -435,9 +446,11 @@ public final class ResourceSelectionGroup extends Composite {
 					}
 					if (_treeViewer.getExpandedState(item)) {
 						_treeViewer.collapseToLevel(item, 1);
-					} else {
+					} else if(_treeViewer.isExpandable(item)){
 						_treeViewer.expandToLevel(item, 1);
-					}
+					}else if(!(item instanceof IContainer))
+						itemDoubleClicked((IResource)item);
+						
 				}
 			}
 		});
