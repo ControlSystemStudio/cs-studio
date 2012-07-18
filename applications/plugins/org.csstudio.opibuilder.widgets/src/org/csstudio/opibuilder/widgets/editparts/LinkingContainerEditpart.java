@@ -154,10 +154,19 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					}
 				}
 			}
-			DisplayModel tempDisplayModel = new DisplayModel();
+			final DisplayModel tempDisplayModel = new DisplayModel();
 			tempDisplayModel.setOpiFilePath(path);
 			tempDisplayModel.setViewer((GraphicalViewer) getViewer());
 			tempDisplayModel.setDisplayID(getWidgetModel().getRootDisplayModel().getDisplayID());
+			//This need to be executed after GUI created.
+			UIBundlingThread.getInstance().addRunnable(new Runnable() {				
+				@Override
+				public void run() {
+					tempDisplayModel.setExecutionMode(getExecutionMode());
+					tempDisplayModel.setOpiRuntime(getWidgetModel().getRootDisplayModel().getOpiRuntime());					
+				}
+			});
+
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel,
 					getViewer().getControl().getDisplay());

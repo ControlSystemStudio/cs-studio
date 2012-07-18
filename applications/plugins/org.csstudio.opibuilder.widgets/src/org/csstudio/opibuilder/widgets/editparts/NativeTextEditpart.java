@@ -81,7 +81,7 @@ public class NativeTextEditpart extends TextInputEditpart {
 			break;
 		}		
 		
-		NativeTextFigure figure = new NativeTextFigure(this, style);
+		final NativeTextFigure figure = new NativeTextFigure(this, style);
 		text = figure.getSWTWidget();
 
 		if(!model.isReadOnly()){
@@ -111,10 +111,21 @@ public class NativeTextEditpart extends TextInputEditpart {
 				});
 			}
 			//Recover text if editing aborted.
+			text.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent keyEvent) {
+					if(keyEvent.character == SWT.ESC){
+						text.setText(getWidgetModel().getText());
+					}
+				}
+			});
 			text.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
-					text.setText(getWidgetModel().getText());
+					if(getPV() != null)
+						text.setText(getWidgetModel().getText());
+					else if(figure.isEnabled())
+						outputText(text.getText());
 				}
 			});
 		}

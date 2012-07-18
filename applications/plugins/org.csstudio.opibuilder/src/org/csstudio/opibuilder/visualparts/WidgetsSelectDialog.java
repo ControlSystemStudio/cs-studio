@@ -42,17 +42,22 @@ public class WidgetsSelectDialog extends Dialog {
 	private TableViewer widgetsViewer;
 	private String selectedWidget;
 	private int widgetCount;
+	private String defaultSelectedWidgetID;
 	
 	public WidgetsSelectDialog(Shell parentShell, int widgetCount) {
 		super(parentShell);		
 		this.widgetCount = widgetCount;
 		// Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
-	
+        defaultSelectedWidgetID = "org.csstudio.opibuilder.widgets.TextUpdate"; //$NON-NLS-1$
 	}
 	
 	public String getOutput(){
 		return selectedWidget;
+	}
+	
+	public void setDefaultSelectedWidgetID(String defaultSelectedWidgetID) {
+		this.defaultSelectedWidgetID = defaultSelectedWidgetID;
 	}
 	
 	@Override
@@ -88,9 +93,9 @@ public class WidgetsSelectDialog extends Dialog {
 //			}
 //		});
 		
-		widgetsViewer.setInput(pvWidgetList);
+		widgetsViewer.setInput(pvWidgetList);		
 		widgetsViewer.setSelection(
-				new StructuredSelection("org.csstudio.opibuilder.widgets.TextUpdate")); //$NON-NLS-1$
+				new StructuredSelection(defaultSelectedWidgetID)); 
 		
 		if(widgetCount > 1){
 			Composite bottomComposite = new Composite(parent_Composite, SWT.NONE);

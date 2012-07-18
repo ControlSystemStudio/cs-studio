@@ -47,6 +47,7 @@ import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.csstudio.opibuilder.actions.PastePropertiesAction;
 import org.csstudio.opibuilder.actions.PasteWidgetsAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
+import org.csstudio.opibuilder.actions.ReplaceWidgetsAction;
 import org.csstudio.opibuilder.actions.RunOPIAction;
 import org.csstudio.opibuilder.actions.ShowIndexInTreeViewAction;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
@@ -488,8 +489,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		action = new CopyPropertiesAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
-
-
+		
+		action = new ReplaceWidgetsAction(this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
 	}
 
 	@Override

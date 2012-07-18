@@ -7,7 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <wuid>-3d426973:1382a253902:-70c5</wuid>
-  <boy_version>3.1.0.qualifier</boy_version>
+  <boy_version>3.1.1.qualifier</boy_version>
   <scripts />
   <show_ruler>true</show_ruler>
   <height>600</height>
@@ -60,7 +60,7 @@
     <text>Every widget can have border, which is set by three properties: Border Color, Border Style and Border Width.
 A PV widget may have "Border Alarm Sensitive" property, which will show predefined alarm borders on PV alarms.</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>745</width>
     <border_style>14</border_style>
@@ -199,59 +199,6 @@ A PV widget may have "Border Alarm Sensitive" property, which will show predefin
     <tooltip></tooltip>
     <x>320</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
-    <border_alarm_sensitive>false</border_alarm_sensitive>
-    <visible>true</visible>
-    <wuid>-3d426973:1382a253902:-70c0</wuid>
-    <scripts />
-    <height>28</height>
-    <name>Action Button</name>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <pv_name></pv_name>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
-    <widget_type>Action Button</widget_type>
-    <enabled>true</enabled>
-    <text>Go Home</text>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <font>
-      <fontdata fontName="Arial" height="9" style="1" />
-    </font>
-    <width>79</width>
-    <border_style>0</border_style>
-    <push_action_index>0</push_action_index>
-    <image>pictures/home-16x16.png</image>
-    <rules />
-    <pv_value />
-    <toggle_button>false</toggle_button>
-    <border_width>1</border_width>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>556</y>
-    <actions hook="true" hook_all="false">
-      <action type="OPEN_DISPLAY">
-        <path>main.opi</path>
-        <macros>
-          <include_parent_macros>true</include_parent_macros>
-        </macros>
-        <replace>1</replace>
-        <description></description>
-      </action>
-    </actions>
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>26</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
@@ -277,7 +224,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Line Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>1</border_style>
@@ -318,7 +265,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Raised Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>2</border_style>
@@ -359,7 +306,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Lowered Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>3</border_style>
@@ -400,7 +347,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Etched Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>4</border_style>
@@ -441,7 +388,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Ridged Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>5</border_style>
@@ -482,7 +429,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Button Raised Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>6</border_style>
@@ -523,7 +470,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Button Pressed Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>7</border_style>
@@ -564,7 +511,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dot Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>8</border_style>
@@ -605,7 +552,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dash Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>9</border_style>
@@ -646,7 +593,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dash  Dot Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>10</border_style>
@@ -687,7 +634,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dash  Dot  Dot Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>11</border_style>
@@ -728,7 +675,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Title Bar Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>12</border_style>
@@ -769,7 +716,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Group Box Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>13</border_style>
@@ -811,7 +758,7 @@ $(pv_value)</tooltip>
     <text>Round Rectangle 
 Background Style</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>14</border_style>
@@ -846,7 +793,7 @@ Background Style</text>
     <widget_type>Meter</widget_type>
     <show_minor_ticks>true</show_minor_ticks>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <show_lolo>true</show_lolo>
@@ -881,7 +828,7 @@ Background Style</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <scale_font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </scale_font>
     <level_hihi>90.0</level_hihi>
     <ramp_gradient>true</ramp_gradient>
@@ -930,7 +877,7 @@ $(pv_value)</tooltip>
     <widget_type>Grouping Container</widget_type>
     <enabled>true</enabled>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <border_style>14</border_style>
@@ -978,7 +925,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>29</width>
       <border_style>0</border_style>
@@ -1029,7 +976,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <precision>3</precision>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>85</width>
       <border_style>3</border_style>
@@ -1081,7 +1028,7 @@ $(pv_value)</tooltip>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <precision>3</precision>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>85</width>
       <border_style>3</border_style>
@@ -1135,7 +1082,7 @@ $(pv_value)</tooltip>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
-        <opifont.name>Default</opifont.name>
+        <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
       </font>
       <width>29</width>
       <border_style>0</border_style>
@@ -1163,11 +1110,15 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <wuid>-89f6aea:1383380b141:-7d69</wuid>
+    <bg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </bg_gradient_color>
     <scripts />
     <height>49</height>
     <anti_alias>true</anti_alias>
     <name>Rectangle</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -1183,9 +1134,12 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </fg_gradient_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <line_style>0</line_style>
@@ -1203,6 +1157,7 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>26</x>
+    <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -1229,7 +1184,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Line Alarm Border</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>127</width>
     <border_style>0</border_style>
@@ -1253,11 +1208,15 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <wuid>-89f6aea:1383380b141:-7ce5</wuid>
+    <bg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </bg_gradient_color>
     <scripts />
     <height>49</height>
     <anti_alias>true</anti_alias>
     <name>Rectangle_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -1273,9 +1232,12 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </fg_gradient_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <line_style>0</line_style>
@@ -1293,6 +1255,7 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>208</x>
+    <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -1319,7 +1282,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dash Alarm Border</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>127</width>
     <border_style>0</border_style>
@@ -1343,11 +1306,15 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <wuid>-89f6aea:1383380b141:-7cdf</wuid>
+    <bg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </bg_gradient_color>
     <scripts />
     <height>49</height>
     <anti_alias>true</anti_alias>
     <name>Rectangle_2</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -1363,9 +1330,12 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </fg_gradient_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <line_style>0</line_style>
@@ -1383,6 +1353,7 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>390</x>
+    <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -1409,7 +1380,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dot Alarm Border</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>127</width>
     <border_style>0</border_style>
@@ -1433,11 +1404,15 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <wuid>-89f6aea:1383380b141:-7cad</wuid>
+    <bg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </bg_gradient_color>
     <scripts />
     <height>49</height>
     <anti_alias>true</anti_alias>
     <name>Rectangle_3</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <alpha>255</alpha>
     <scale_options>
       <width_scalable>true</width_scalable>
       <height_scalable>true</height_scalable>
@@ -1453,9 +1428,12 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Rectangle</widget_type>
     <enabled>true</enabled>
+    <fg_gradient_color>
+      <color red="255" green="255" blue="255" />
+    </fg_gradient_color>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>167</width>
     <line_style>0</line_style>
@@ -1473,6 +1451,7 @@ $(pv_value)</tooltip>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <x>568</x>
+    <gradient>false</gradient>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
@@ -1499,7 +1478,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <text>Dash Dot  Dot Alarm Border</text>
     <font>
-      <opifont.name>Default</opifont.name>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
     <width>117</width>
     <border_style>0</border_style>
@@ -1514,5 +1493,54 @@ $(pv_value)</tooltip>
     <wrap_words>true</wrap_words>
     <tooltip></tooltip>
     <x>593</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.NativeButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <wuid>6cc102d7:13895a319f6:-63a8</wuid>
+    <scripts />
+    <height>37</height>
+    <name>Action Button_1</name>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <pv_name></pv_name>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
+    <widget_type>Action Button</widget_type>
+    <enabled>true</enabled>
+    <text>Go Home</text>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="1">Default Bold</opifont.name>
+    </font>
+    <width>104</width>
+    <border_style>0</border_style>
+    <push_action_index>0</push_action_index>
+    <image>pictures/home-16x16.png</image>
+    <rules />
+    <pv_value />
+    <toggle_button>false</toggle_button>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>545</y>
+    <actions hook="true" hook_all="false">
+      <action type="OPEN_DISPLAY">
+        <path>main.opi</path>
+        <macros>
+          <include_parent_macros>true</include_parent_macros>
+        </macros>
+        <replace>1</replace>
+        <description></description>
+      </action>
+    </actions>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>26</x>
   </widget>
 </display>

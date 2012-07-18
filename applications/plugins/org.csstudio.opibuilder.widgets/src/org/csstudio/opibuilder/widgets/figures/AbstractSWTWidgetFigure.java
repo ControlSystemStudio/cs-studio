@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 import org.csstudio.opibuilder.widgets.util.SingleSourceHelper;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AncestorListener;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
@@ -34,6 +35,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
@@ -88,6 +90,9 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 	private Rectangle oldClientArea;
 	
 	private T swtWidget;
+	
+	//The scale factor when it was last scaled.
+	private double lastScale =0;
 
 	/**Construct the figure with SWT.NONE as style bit.
 	 * @param editpart the editpart that holds this figure
@@ -246,8 +251,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 	@Override
 	public void setEnabled(boolean value) {
-		if(!runmode)
-			super.setEnabled(value);
+		super.setEnabled(value);
 		if (getSWTWidget() != null && !getSWTWidget().isDisposed()){
 			getSWTWidget().setEnabled(runmode && value);
 			if(wrapComposite != null)
@@ -257,8 +261,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 	@Override
 	public void setVisible(boolean visible) {
-		if(!runmode)
-			super.setVisible(visible);
+		super.setVisible(visible);
 		updateWidgetVisibility();
 	}
 
@@ -387,9 +390,22 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 	private void doRelocateWidget() {
 		boolean sizeWasSet = false;
-		final Rectangle clientArea = getClientArea();
-		final Rectangle rect = clientArea.getCopy();
+		Rectangle clientArea = getClientArea();
+		Rectangle rect = clientArea.getCopy();
 		translateToAbsolute(rect);
+		//scale the font if necessary
+		double scale = (double)rect.height/(double)clientArea.height;
+		if(Math.abs(scale-1) >0.05){
+			if(Math.abs(scale-lastScale) >=0.05){
+				FontData fontData = getFont().getFontData()[0];
+				FontData newFontData = new FontData(fontData.getName(), 
+						(int)(fontData.getHeight()*scale), fontData.getStyle());
+				getSWTWidget().setFont(CustomMediaFactory.getInstance().getFont(newFontData));
+				lastScale=scale;
+			}			
+		}else if(getSWTWidget().getFont() != getFont())
+			getSWTWidget().setFont(getFont());
+		
 		//The trim should not be added here 
 //		if(getSWTWidget() instanceof Scrollable){
 //			org.eclipse.swt.graphics.Rectangle trim = ((Scrollable)getSWTWidget()).computeTrim(0,
@@ -402,7 +418,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 				&& getParent().getParent() instanceof Viewport) {
 			Rectangle viewPortArea = getParent().getParent().getClientArea();
 			getParent().translateToAbsolute(viewPortArea);
-			translateToAbsolute(clientArea);
+			clientArea=rect;
 			isIntersectViewPort = viewPortArea.intersects(clientArea);
 			if (isIntersectViewPort) {
 				// if the SWT widget is cut by viewPort
@@ -452,8 +468,7 @@ public abstract class AbstractSWTWidgetFigure<T extends Control> extends Figure 
 
 	@Override
 	public void setFont(Font f) {
-		if(!runmode)
-			super.setFont(f);
+		super.setFont(f);
 		if (getSWTWidget() != null)
 			getSWTWidget().setFont(f);
 	}

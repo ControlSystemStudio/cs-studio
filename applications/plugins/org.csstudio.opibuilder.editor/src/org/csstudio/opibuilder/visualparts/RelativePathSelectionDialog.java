@@ -164,7 +164,6 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
         			_resourceSelectionGroup.setSelectedResource(_path);
         	}
         }
-        
         //the check box for relative path
         final Button checkBox = new Button(composite, SWT.CHECK);
         checkBox.setSelection(relative);
@@ -208,14 +207,19 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
 	}
 
     public void handleEvent(Event event) {
-        ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
-        _path = widget.getFullPath();
-        if(_path == null)
-        	return;
-        if(relative)
-        	_resourcePathText.setText(ResourceUtil.buildRelativePath(
-        			refPath, _path).toString());
-        else
-        	_resourcePathText.setText(_path.toString());
+		ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
+
+		_path = widget.getFullPath();
+		if (_path == null)
+			return;
+		if (relative)
+			_resourcePathText.setText(ResourceUtil.buildRelativePath(refPath,
+					_path).toString());
+		else
+			_resourcePathText.setText(_path.toString());
+
+		if (event.type == SWT.MouseDoubleClick) {
+			okPressed();
+		}
     }
 }
