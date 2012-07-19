@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -61,7 +62,7 @@ public class ELogEntryView extends ViewPart
         {
             // Error message, quit
             final Label l = new Label(parent, 0);
-            l.setText(Messages.LogEntry_ErrorNoLog + ex.getMessage());
+            l.setText(NLS.bind(Messages.LogEntry_ErrorNoLogFMT, ex.getMessage()));
             return;
         }
 
