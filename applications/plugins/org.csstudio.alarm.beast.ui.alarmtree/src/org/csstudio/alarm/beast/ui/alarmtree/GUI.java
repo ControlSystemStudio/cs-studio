@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
@@ -42,6 +43,7 @@ import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -406,7 +408,28 @@ public class GUI implements AlarmClientModelListener
                 final Tree tree = tree_viewer.getTree();
                 if (tree.isDisposed())
                     return;
+
+                // Try to preserve the selection
+                AlarmTreeItem select =
+                        (AlarmTreeItem) ((IStructuredSelection)tree_viewer.getSelection()).getFirstElement();
+                String path = select != null ? select.getPathName() : null;
+
+                // Update GUI
                 tree_viewer.setInput(config);
+
+                if (path == null)
+                    return;
+
+                // If item is still in the configuration, select it
+                select = config.getItemByPath(path);
+                if (select == null)
+                {   // Item may have been removed, so try to select the _parent_ of the original item
+                    final String[] segments = AlarmTreePath.splitPath(path);
+                    path = AlarmTreePath.makePath(segments, segments.length - 1);
+                    select = config.getItemByPath(path);
+                }
+                tree_viewer.setSelection(new StructuredSelection(select), true);
+                tree_viewer.expandToLevel(select, 1);
             }
         });
     }
