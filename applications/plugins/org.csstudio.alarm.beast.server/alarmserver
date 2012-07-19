@@ -6,17 +6,22 @@
 #
 # kasemirk@ornl.gov
 
-export JAVA_HOME=/usr/local/java/jdk1.5.0_09
+# Directory where this script is located, where workspace, log file, .. are stored
 DIR=/usr/local/css/AlarmServer
-PROGRAM=AlarmServer
 
-#LOGFILE=$DIR/$PROGRAM.log
+# Java runtime
+export JAVA_HOME=/usr/local/java/jdk1.6.0_21
+
+# Alarm server to use, best with complete path to specific version
+PROGRAM=/usr/local/css/AlarmServer_3.1.1/AlarmServer
+
+INI=$DIR/settings.ini
 LOGFILE=$DIR/$PROGRAM`date +'_%Y-%m-%d_%H:%M:%S'`.log
 PIDFILE=$DIR/$PROGRAM.pid
-DATA=/tmp/$PROGRAM.$$
+DATA=$DIR/workspace
 
 # Could include this to allow telnet access to the console:   -console 4813
-OPT="-data $DATA -consoleLog -vmargs -Djava.awt.headless=true -Xms64m -Xmx256m"
+OPT="-data $DATA -pluginCustomization $INI -consoleLog -vmargs -Djava.awt.headless=true -Xms64m -Xmx256m"
 unset DISPLAY
 
 export PATH=$JAVA_HOME/bin:$PATH
