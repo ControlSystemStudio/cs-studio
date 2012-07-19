@@ -9,7 +9,6 @@ package org.csstudio.navigator.applaunch;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.eclipse.core.runtime.IPath;
@@ -19,20 +18,18 @@ import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorLauncher;
 
-/**
- * Launcher for an (external) application
- * 
- * <p>
- * plugin.xml associates this with application files.
- * 
- * @author Kay Kasemir
+/** Launcher for an (external) application
+ *
+ *  <p>plugin.xml associates this with application files.
+ *
+ *  @author Kay Kasemir
  */
-public class Launcher implements IEditorLauncher {
-	/**
-	 * Invoked by Eclipse with the path to the launcher config {@inheritDoc}
-	 */
+public class Launcher implements IEditorLauncher
+{
+	/** Invoked by Eclipse with the path to the launcher config {@inheritDoc} */
 	@Override
-	public void open(final IPath path) {
+	public void open(final IPath path)
+	{
 		final File file = path.toFile();
 
 		// Ignore empty files
@@ -40,48 +37,49 @@ public class Launcher implements IEditorLauncher {
 		// when adding a new file to the navigator
 		if (file.length() <= 0)
 			return;
-		try {
+		try
+		{
 			final LaunchConfig config = new LaunchConfig(file);
 			launchCommand(config.getCommand());
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		}
+		catch (Exception ex)
+		{
 			MessageDialog.openError(null, Messages.Error, NLS.bind(
 					Messages.ConfigFileErrorFmt, path, ex.getMessage()));
 		}
 	}
 
-	/**
-	 * Execute a command
-	 * 
-	 * @param command
+	/** Execute a command
+	 *  @param command
 	 */
-	private void launchCommand(final String command) {
-	
+	@SuppressWarnings("nls")
+    private void launchCommand(final String command)
+	{
 		// Modify by Laurent PHILIPPE GANIL on Avril 2012
 		// GANIL need to use this for java app with arguments,
 		// and Program mechanism would require wrapper script
- 
-		//If the command have no argument and it is a normal file use Program mechanism (Rely on operating system  file extension/program association).
-		//But if there are arguments or the command is not a file use Runtime.exec mechanism 
-		//that allows argument.
-		
-		
-		// Remove unnecessary space
-		final String commandToLaunch = command.trim().replaceAll(
-				"( )+", " ");
-		//System.out.println("Launcher.launchCommand() " + commandToLaunch);
 
-		final String[] argv = commandToLaunch.split(" ");
-		if (argv.length == 1) {
-			//If no argument and command is a file use OS properties to launch the appropriate program  
-			File file = new File(argv[0]);
-			if (file.isFile()) {
-				//System.out.println("Launcher.launchCommand() FILE");
+		// If the command have no argument and it is a normal file use Program mechanism (Rely on operating system  file extension/program association).
+		// But if there are arguments or the command is not a file use Runtime.exec mechanism
+		// that allows argument.
 
-				String extension = argv[0].substring(argv[0].lastIndexOf("."));
-			
-				if (!Program.launch(command)) {
+	    // Kay: This may work great for GANIL, but breaks the previously supported
+	    //      OS X launch of for example "/Applications/Utilities/Terminal.app"
+	    //      So now we use a wrapper script on OS X ...
 
+	    // Remove unnecessary space
+	    final String commandToLaunch = command.trim();
+	    final String[] argv = commandToLaunch.split(" +");
+		if (argv.length == 1)
+		{
+			// If no argument and command is a file use OS properties to launch the appropriate program
+		    final File file = new File(argv[0]);
+			if (file.isFile())
+			{
+			    final int ext_index = argv[0].lastIndexOf(".");
+			    final String extension = ext_index > 0 ? argv[0].substring(ext_index) : "";
+				if (!Program.launch(command))
+				{
 					MessageDialog.openError(null, Messages.Error, NLS.bind(
 							Messages.LaunchErrorProgram, commandToLaunch,
 							Program.findProgram(extension).getName()));
@@ -91,17 +89,16 @@ public class Launcher implements IEditorLauncher {
 		}
 
 		//ELSE it is a command
-		//Use a runnable due to the output of the command 
-		
-		//System.out.println("Launcher.launchCommand() CMD");
+		//Use a runnable due to the output of the command
+
 		final Display display = Display.getCurrent();
-		Runnable r = new Runnable() {
-
+		final Runnable r = new Runnable()
+		{
 			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-
-				try {
+			public void run()
+			{
+				try
+				{
 					final Process p = Runtime.getRuntime().exec(argv);
 
 					String line;
@@ -112,34 +109,27 @@ public class Launcher implements IEditorLauncher {
 					while ((line = is.readLine()) != null)
 						System.out.println(argv[0] + "=>" + line);
 
-					// System.out.println("In Main after EOF");
 					System.out.flush();
-					
-					p.waitFor(); // wait for process to complete
-					
 
-					if (p.exitValue() != 0) {
-						display.syncExec(new Runnable() {
-							
+					p.waitFor(); // wait for process to complete
+
+					if (p.exitValue() != 0)
+					{
+						display.syncExec(new Runnable()
+						{
 							@Override
 							public void run() {
-								// TODO Auto-generated method stub
 								MessageDialog.openError(null, Messages.Error, NLS.bind(
 										Messages.LaunchErrorCmd, commandToLaunch,
 										p.exitValue()));
 							}
 						});
-						
 					}
-
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
-
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+				}
 			}
 		};
 
@@ -154,5 +144,4 @@ public class Launcher implements IEditorLauncher {
 		// Runtime.getRuntime().exec(
 		// new String[] { programFileName, path });
 	}
-
 }
