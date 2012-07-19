@@ -46,7 +46,7 @@ public class NativeTextFigure extends AbstractSWTWidgetFigure<Text> implements I
 	@Override
 	public void setEnabled(boolean value) {		
 			super.setEnabled(value);
-			if(runmode)
+			if(runmode && getSWTWidget() != null && !getSWTWidget().isDisposed())
 				text.setEnabled(true);
 			if(!readOnly)
 				getSWTWidget().setEditable(value);
