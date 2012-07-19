@@ -57,6 +57,9 @@ public class PVContext
     /** Mask used for CA monitors */
     public static MonitorMask monitor_mask = MonitorMask.VALUE;
 
+    /** Support the DBE_PROPERTY subscription? */
+    public static boolean support_dbe_property = false;
+
     /** The Java CA Library instance. */
     static private JCALibrary jca = null;
 

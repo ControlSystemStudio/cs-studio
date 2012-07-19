@@ -11,7 +11,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.platform.libs.epics.EpicsPlugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.osgi.framework.BundleContext;
 
 /** Plugin-activator for the EPICS PV.
@@ -39,8 +41,12 @@ public class Activator extends Plugin
     {
         try
         {
-            PVContext.use_pure_java = EpicsPlugin.getDefault().usePureJava();
-            PVContext.monitor_mask = EpicsPlugin.getDefault().getMonitorMask();
+            final EpicsPlugin epics = EpicsPlugin.getDefault();
+            PVContext.use_pure_java = epics.usePureJava();
+            PVContext.monitor_mask = epics.getMonitorMask();
+
+            final IPreferencesService prefs = Platform.getPreferencesService();
+            PVContext.support_dbe_property = prefs.getBoolean(EpicsPlugin.ID, "support_dbe_property", false, null);
         }
         catch (Throwable e)
         {
