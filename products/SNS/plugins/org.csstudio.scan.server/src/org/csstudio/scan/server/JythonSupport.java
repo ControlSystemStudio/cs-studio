@@ -89,6 +89,11 @@ public class JythonSupport
 	        }
 
 	        // Add numji
+	        // TODO This only succeeds if the numjy plugin is expanded.
+	        //      If it's zipped up (as default when exporting the server.product)
+	        //      the path will look like
+	        //      file:/path/to/plugins/org.csstudio.numjy.jar!/jython/
+	        //      and Jython won't be able to open it
 	        bundle = Platform.getBundle("org.csstudio.numjy");
 	        if (bundle != null)
 	        {

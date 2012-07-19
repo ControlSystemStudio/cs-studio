@@ -461,16 +461,19 @@ public class EPICS_V3_PV extends PlatformObject
                 return;
             // Subscription for property updates may fail because not
             // all CA servers support it at this point
-            try
+            if (PVContext.support_dbe_property)
             {
-                final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
-                meta_subscription = channel.addMonitor(
-                			meta_type, channel.getElementCount(), Monitor.PROPERTY, meta_update_listener);
-            }
-            catch (final Exception ex)
-            {
-                logger.log(Level.FINE, name + " meta data subscribe error", ex);
-                return;
+                try
+                {
+                    final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
+                    meta_subscription = channel.addMonitor(
+                    			meta_type, channel.getElementCount(), Monitor.PROPERTY, meta_update_listener);
+                }
+                catch (final Exception ex)
+                {
+                    logger.log(Level.FINE, name + " meta data subscribe error", ex);
+                    return;
+                }
             }
 		}
     }
