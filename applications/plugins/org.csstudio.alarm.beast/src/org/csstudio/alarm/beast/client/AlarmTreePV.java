@@ -212,9 +212,9 @@ public class AlarmTreePV extends AlarmTreeLeaf
         {
         	synchronized (this)
             {
-                if (setAlarmState(current_severity, severity, message, timestamp)  &&
-                        ! current_message.equals(this.current_message) )
-                {
+                if (setAlarmState(current_severity, severity, message, timestamp)  ||
+                    ! current_message.equals(this.current_message) )
+                {   // Alarm state or at least message changed
                     this.current_message = current_message;
                     this.value = value;
                     parent_changed = true;
