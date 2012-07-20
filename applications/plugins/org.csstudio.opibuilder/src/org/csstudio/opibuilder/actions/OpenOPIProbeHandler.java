@@ -1,10 +1,8 @@
 package org.csstudio.opibuilder.actions;
 
-import java.net.URL;
 import java.util.LinkedHashMap;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
@@ -14,10 +12,7 @@ import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -37,15 +32,15 @@ public class OpenOPIProbeHandler extends AbstractHandler {
 
 		// When not defined, try built-in probe opi example
 		if(probeOPIPath == null || probeOPIPath.isEmpty()){
-			URL url = FileLocator.find(OPIBuilderPlugin.getDefault().getBundle(),
-					new Path("opi/probe.opi"), null); //$NON-NLS-1$
-			try {
-				url = FileLocator.toFileURL(url);
-			} catch (Throwable e) {
-				MessageDialog.openError(shell, "No Probe OPI",
-						"Cannot open probe OPI.\nPlease define your probe OPI on BOY preference page.");
-			}
-			probeOPIPath = ResourceUtil.getPathFromString(url.getPath());
+//			URL url = FileLocator.find(OPIBuilderPlugin.getDefault().getBundle(),
+//					new Path("opi/probe.opi"), null); //$NON-NLS-1$
+//			try {
+//				url = FileLocator.toFileURL(url);
+//			} catch (Throwable e) {
+//				MessageDialog.openError(shell, "No Probe OPI",
+//						"Cannot open probe OPI.\nPlease define your probe OPI on BOY preference page.");
+//			}
+			probeOPIPath = ResourceUtil.getPathFromString("platform:/plugin/org.csstudio.opibuilder/opi/probe.opi");//$NON-NLS-1$
 		}
 
 		LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
