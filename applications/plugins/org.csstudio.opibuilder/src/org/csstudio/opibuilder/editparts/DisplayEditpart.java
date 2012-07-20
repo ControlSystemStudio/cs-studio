@@ -90,14 +90,16 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 					getWidgetModel().scale(widthRatio, heightRatio);
 //					oldSize = size;					
 					//make sure the display figure repaint everything especially for RAP.
-					UIBundlingThread.getInstance().addRunnable(new Runnable() {
-						
-						@Override
-						public void run() {
-							getFigure().revalidate();
+					if(OPIBuilderPlugin.isRAP())
+						UIBundlingThread.getInstance().addRunnable(new Runnable() {
 							
-						}
-					});
+							@Override
+							public void run() {
+								getFigure().revalidate();
+								getFigure().repaint();
+								
+							}
+						});
 				}
 			};
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {
