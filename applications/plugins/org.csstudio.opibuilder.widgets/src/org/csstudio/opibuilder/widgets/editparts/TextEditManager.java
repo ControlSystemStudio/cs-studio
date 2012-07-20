@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.swt.widgets.figures.ITextFigure;
@@ -90,8 +91,9 @@ protected CellEditor createCellEditorOn(Composite composite) {
 	CellEditor editor =  new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP){
 		@Override
 		protected void focusLost() {		
-			//in run mode, lose focus should cancel the editing
-			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE){
+			//in run mode, lose focus should cancel the editing except mobile.
+			if(editPart.getExecutionMode() == ExecutionMode.RUN_MODE &&
+					!OPIBuilderPlugin.isMobile(getControl().getDisplay())){
 				if (isActivated()) {
 					fireCancelEditor();
 					deactivate();
