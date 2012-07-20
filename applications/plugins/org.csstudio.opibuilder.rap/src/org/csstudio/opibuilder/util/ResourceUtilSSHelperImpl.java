@@ -71,7 +71,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 //            if(!urlString.contains("://"))
 //                urlString = urlString.replaceFirst(":/", "://");
             // Does it now look like a URL? If not, report the original local file problem
-            if (! isURL(urlString))
+            if (! ResourceUtil.isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
         }
 
@@ -154,9 +154,9 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
 	 *  @return <code>true</code> if considered a URL
 	 */
 	@SuppressWarnings("nls")
-    public static boolean isURL(final String url){
+/*    public static boolean isURL(final String url){
 		return url.contains("://");  //$NON-NLS-1$
-	}
+	}*/
 
 	@Override
 	public InputStream getInputStreamFromEditorInput(IEditorInput editorInput) {
