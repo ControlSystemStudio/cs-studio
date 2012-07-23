@@ -428,8 +428,11 @@ public class GUI implements AlarmClientModelListener
                     path = AlarmTreePath.makePath(segments, segments.length - 1);
                     select = config.getItemByPath(path);
                 }
-                tree_viewer.setSelection(new StructuredSelection(select), true);
-                tree_viewer.expandToLevel(select, 1);
+                if (select != null)
+                {   // Anything to restore?
+                    tree_viewer.setSelection(new StructuredSelection(select), true);
+                    tree_viewer.expandToLevel(select, 1);
+                }
             }
         });
     }
