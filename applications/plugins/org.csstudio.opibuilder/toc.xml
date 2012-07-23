@@ -65,13 +65,24 @@
         <topic href="html/widgets/RadioBox.html" label="Radio Box"></topic>
          <topic href="html/widgets/ChoiceButton.html" label="Choice Button"></topic>         
      </topic>
+     <topic href="html/widgets/NativeWidgets.html" label="Native Widgets">
+        <topic href="html/widgets/NativeButton.html" label="Button">
+        </topic>
+        <topic href="html/widgets/NativeText.html" label="Text">
+        </topic>
+        <topic href="html/widgets/Combo.html" label="Combo">
+        </topic>
+        <topic href="html/widgets/Table.html" label="Table">
+        </topic>
+        <topic href="html/widgets/WebBrowser.html" label="Web Brower">
+        </topic>
+     </topic>
      <topic href="html/widgets/ContainerWidgets.html" label="Container Widgets">
       <topic href="html/widgets/Display.html" label="Display"></topic>
         <topic href="html/widgets/GroupingContainer.html" label="Grouping Container"></topic>
         <topic href="html/widgets/LinkingContainer.html" label="Linking Container"></topic>
          <topic href="html/widgets/Tab.html" label="Tabbed Container"></topic>         
      </topic> 
-     <topic href="html/widgets/WebBrowser.html" label="Web Brower"></topic>
      <topic href="html/widgets/GridLayout.html" label="Grid Layout"></topic>
      <anchor id="thirdPartyWidgets"/>
      
