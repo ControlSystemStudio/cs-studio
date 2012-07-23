@@ -52,7 +52,7 @@ public class PlotConfigListener implements PropertyChangeListener {
 				listener.removeAnnotationChanged((Annotation)evt.getOldValue());
 			else
 				listener.addAnnotationChanged((Annotation)evt.getNewValue());
-			System.err.println("ANNOTATION_LIST CHANGED");
+			//System.err.println("ANNOTATION_LIST CHANGED");
 		}
 	}
 
