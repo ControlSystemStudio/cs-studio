@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -122,7 +123,8 @@ public class NativeTextEditpart extends TextInputEditpart {
 			text.addFocusListener(new FocusAdapter() {
 				@Override
 				public void focusLost(FocusEvent e) {
-					if(getPV() != null)
+					//On mobile, lost focus should output text since there is not enter hit or ctrl key. 
+					if(getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
 						text.setText(getWidgetModel().getText());
 					else if(figure.isEnabled())
 						outputText(text.getText());

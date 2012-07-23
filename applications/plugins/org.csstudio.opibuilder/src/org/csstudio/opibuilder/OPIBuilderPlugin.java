@@ -19,6 +19,7 @@ import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.eclipse.core.runtime.Preferences.IPropertyChangeListener;
 import org.eclipse.core.runtime.Preferences.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -47,6 +48,8 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 
 	/** File extension used for OPI files */
 	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
+	
+	public static final String KEY_IS_MOBILE = "org.csstudio.rap.isMobile"; //$NON-NLS-1$
 
 	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
@@ -167,5 +170,18 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	 */
 	public static boolean isRAP() {
 		return isRAP;
+	}
+	
+	/**
+	 * @param display the display attached to the session;
+	 * @return true if the display session is on mobile devices.
+	 */
+	public static boolean isMobile(Display display){
+		if(isRAP){
+			Object data = display.getData(KEY_IS_MOBILE);
+			if(data != null && data instanceof Boolean)
+				return (Boolean)data;
+		}
+		return false;
 	}
 }

@@ -17,6 +17,8 @@ import org.eclipse.swt.widgets.Display;
 
 public class DisplayManager {
 
+	public static final String KEY_IS_MOBILE = "org.csstudio.rap.isMobile"; //$NON-NLS-1$
+
 	private static Map<Display, DisplayResource> displayMap = new HashMap<Display, DisplayResource>();
 
 	private static DisplayManager instance;
@@ -29,6 +31,7 @@ public class DisplayManager {
 
 	private static long displayCounter=0;
 	
+	@SuppressWarnings("nls")
 	private DisplayManager() {
 		RAPCorePlugin.getDefault().getServerHeartBeatThread()
 				.addHeartBeatListener(new HeartBeatListener() {
@@ -92,8 +95,10 @@ public class DisplayManager {
 		if(displayMap.containsKey(display))
 			return;
 		HttpServletRequest request = RWT.getRequest();
+		BrowserInfo browserInfo = BrowserInfo.getBrowserInfo(request.getHeader("User-Agent")); //$NON-NLS-1$
 		String clientInfo = "URL: " + request.getHeader("Referer") +
-				" Browser: " + getBrowserInfo(request.getHeader("User-Agent"));
+				" Browser: " + browserInfo + (browserInfo.isMobile()?"(Mobile)":"(Desktop)");
+		display.setData(KEY_IS_MOBILE, browserInfo.isMobile());
 		displayMap.put(display, new DisplayResource(beatCount, true, 
 				request.getRemoteHost() + " : " + clientInfo)); //$NON-NLS-1$ //$NON-NLS-2$
 		
@@ -119,7 +124,7 @@ public class DisplayManager {
 		RAPCorePlugin.getLogger().log(Level.INFO, sb.toString());		
 	}	
 	
-	
+	 
 	public String getDebugInfo(){
 		StringBuilder sb = new StringBuilder("CSS RAP Debug Info: "); //$NON-NLS-1$
 		sb.append("\nTotal Memory: " + Runtime.getRuntime().totalMemory()/1048576 + "MB");
@@ -195,44 +200,7 @@ public class DisplayManager {
 		objectList.remove(obj);
 	}
 	
-	public static String getBrowserInfo(String userAgentHeader) {
-		String browsername = userAgentHeader;
-		String browserversion = "";
-		String browser = userAgentHeader;
-		String os = userAgentHeader.substring(
-				userAgentHeader.indexOf('(')+1, userAgentHeader.indexOf(')'));
-		if (browser.contains("MSIE")) {
-			String subsString = browser.substring(browser.indexOf("MSIE"));
-			String Info[] = (subsString.split(";")[0]).split(" ");
-			browsername = Info[0];
-			browserversion = Info[1];
-		} else if (browser.contains("Firefox")) {
-
-			String subsString = browser.substring(browser.indexOf("Firefox"));
-			String Info[] = (subsString.split(" ")[0]).split("/");
-			browsername = Info[0];
-			browserversion = Info[1];
-		} else if (browser.contains("Chrome")) {
-
-			String subsString = browser.substring(browser.indexOf("Chrome"));
-			String Info[] = (subsString.split(" ")[0]).split("/");
-			browsername = Info[0];
-			browserversion = Info[1];
-		} else if (browser.contains("Opera")) {
-
-			String subsString = browser.substring(browser.indexOf("Opera"));
-			String Info[] = (subsString.split(" ")[0]).split("/");
-			browsername = Info[0];
-			browserversion = Info[1];
-		} else if (browser.contains("Safari")) {
-
-			String subsString = browser.substring(browser.indexOf("Safari"));
-			String Info[] = (subsString.split(" ")[0]).split("/");
-			browsername = Info[0];
-			browserversion = Info[1];
-		}
-		return browsername + "-" + browserversion + " on " + os;
-	}
+	
 
 	class DisplayResource {
 		private long heartCount;
