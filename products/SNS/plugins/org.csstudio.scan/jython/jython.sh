@@ -4,22 +4,21 @@
 #
 # Kay Kasemir
 
-PLUGINS=../..
+# Configure this --------------------------------------------
+
+# Absolute path of jython.jar
+JYTHON=/home/css/CSS3.1.1/plugins/org.python_*/jython.jar
+
+# Directory that contains scan_client.py, scan*.py
+export JYTHONPATH="/home/css/Share/scan:../jython"
+
+# -----------------------------------------------------------
 
 if [ -r ../../../../../applications/plugins/org.python/jython.jar ]
 then
     # When run from within the source tree,
     # org.python would be under "applications"
     JYTHON=../../../../../applications/plugins/org.python/jython.jar
-elif [ -r $PLUGINS/org.python_*/jython.jar ]
-then
-    # When run with an exported product,
-    # jython would be one of the other plugins of the product
-    JYTHON=$PLUGINS/org.python_*/jython.jar
-else
-    # TODO: Set to the absolute path of jython.jar
-    JYTHON=/home/css/CSS3.1.0/plugins/org.python_*/jython.jar
-    echo "Cannot locate jython.jar"
 fi
 
 # When running jython as a JAR like this...

@@ -28,7 +28,7 @@ for x in range(1, 5):
 # Schedule for execution on server
 id = client.submit("My Scan 1", seq)
 client.waitUntilDone(id)
-client.printData(id, 'xpos', 'ypos')
+client.printData(id, 'xpos', 'readback')
 
 # Equivalent result:
 scan("My Scan 1b",
