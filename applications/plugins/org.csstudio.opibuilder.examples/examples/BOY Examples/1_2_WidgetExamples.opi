@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
-  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <auto_zoom_to_fit_all>true</auto_zoom_to_fit_all>
   <macros>
     <include_parent_macros>true</include_parent_macros>
   </macros>
@@ -25,7 +25,7 @@
   <show_edit_range>true</show_edit_range>
   <grid_space>6</grid_space>
   <auto_scale_widgets>
-    <auto_scale_widgets>true</auto_scale_widgets>
+    <auto_scale_widgets>false</auto_scale_widgets>
     <min_width>-1</min_width>
     <min_height>-1</min_height>
   </auto_scale_widgets>
@@ -133,7 +133,7 @@
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>true</visible>
+      <visible>false</visible>
       <wuid>66d1507f:138820a85e5:-6be6</wuid>
       <scripts />
       <height>791</height>
@@ -462,7 +462,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>102</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -473,9 +473,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>132</y>
           <actions hook="false" hook_all="false" />
-          <x>154</x>
+          <x>144</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -527,7 +527,7 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>132</y>
           <actions hook="false" hook_all="false" />
           <x>21</x>
           <tooltip>$(pv_name)
@@ -570,7 +570,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>92</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -581,9 +581,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>132</y>
           <actions hook="false" hook_all="false" />
-          <x>288</x>
+          <x>276</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -662,7 +662,7 @@ $(pv_value)</tooltip>
           <show_native_border>false</show_native_border>
           <auto_size>false</auto_size>
           <scripts />
-          <height>22</height>
+          <height>29</height>
           <password_input>false</password_input>
           <name>Text_7</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -688,7 +688,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>75</width>
+          <width>92</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -699,9 +699,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>128</y>
           <actions hook="false" hook_all="false" />
-          <x>392</x>
+          <x>388</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -872,7 +872,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>87</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -883,9 +883,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>132</y>
           <actions hook="false" hook_all="false" />
-          <x>595</x>
+          <x>600</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -937,9 +937,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>124</y>
+          <y>132</y>
           <actions hook="false" hook_all="false" />
-          <x>875</x>
+          <x>881</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -1159,60 +1159,6 @@ $(pv_value)</tooltip>
             <tooltip></tooltip>
             <x>0</x>
           </widget>
-          <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
-            <border_alarm_sensitive>false</border_alarm_sensitive>
-            <read_only>true</read_only>
-            <visible>true</visible>
-            <minimum>-1.7976931348623157E308</minimum>
-            <show_units>false</show_units>
-            <multiline_input>false</multiline_input>
-            <wuid>5ec8b324:13880ba2d91:-7eea</wuid>
-            <show_native_border>false</show_native_border>
-            <auto_size>false</auto_size>
-            <scripts />
-            <height>22</height>
-            <password_input>false</password_input>
-            <name>Text_3</name>
-            <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-            <format_type>0</format_type>
-            <scale_options>
-              <width_scalable>true</width_scalable>
-              <height_scalable>true</height_scalable>
-              <keep_wh_ratio>false</keep_wh_ratio>
-            </scale_options>
-            <precision_from_pv>false</precision_from_pv>
-            <pv_name></pv_name>
-            <foreground_color>
-              <color red="0" green="0" blue="0" />
-            </foreground_color>
-            <background_color>
-              <color name="Background" red="240" green="240" blue="240" />
-            </background_color>
-            <enabled>true</enabled>
-            <widget_type>Text</widget_type>
-            <text>Label</text>
-            <precision>0</precision>
-            <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-            <font>
-              <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-            </font>
-            <width>70</width>
-            <border_style>0</border_style>
-            <rules />
-            <pv_value />
-            <maximum>1.7976931348623157E308</maximum>
-            <border_width>1</border_width>
-            <limits_from_pv>false</limits_from_pv>
-            <horizontal_alignment>1</horizontal_alignment>
-            <border_color>
-              <color red="0" green="128" blue="255" />
-            </border_color>
-            <y>91</y>
-            <actions hook="false" hook_all="false" />
-            <x>31</x>
-            <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-          </widget>
         </widget>
         <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
           <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -1267,6 +1213,60 @@ $(pv_value)</tooltip>
           <actions hook="false" hook_all="false" />
           <wrap_words>true</wrap_words>
           <x>494</x>
+          <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        </widget>
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+          <border_alarm_sensitive>false</border_alarm_sensitive>
+          <read_only>true</read_only>
+          <visible>true</visible>
+          <minimum>-1.7976931348623157E308</minimum>
+          <show_units>false</show_units>
+          <multiline_input>false</multiline_input>
+          <wuid>5ec8b324:13880ba2d91:-7eea</wuid>
+          <show_native_border>false</show_native_border>
+          <auto_size>false</auto_size>
+          <scripts />
+          <height>22</height>
+          <password_input>false</password_input>
+          <name>Text_3</name>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <format_type>0</format_type>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <precision_from_pv>false</precision_from_pv>
+          <pv_name></pv_name>
+          <foreground_color>
+            <color red="0" green="0" blue="0" />
+          </foreground_color>
+          <background_color>
+            <color name="Background" red="240" green="240" blue="240" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Text</widget_type>
+          <text>Label</text>
+          <precision>0</precision>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <font>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>70</width>
+          <border_style>0</border_style>
+          <rules />
+          <pv_value />
+          <maximum>1.7976931348623157E308</maximum>
+          <border_width>1</border_width>
+          <limits_from_pv>false</limits_from_pv>
+          <horizontal_alignment>1</horizontal_alignment>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <y>132</y>
+          <actions hook="false" hook_all="false" />
+          <x>741</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -1982,7 +1982,7 @@ $(pv_value)</tooltip>
               <axis_1_log_scale>false</axis_1_log_scale>
               <trace_1_point_style>0</trace_1_point_style>
               <title_font>
-                <opifont.name fontName="Sans" height="12" style="1">Header 3</opifont.name>
+                <opifont.name fontName="Sans" height="10" style="1">Default Bold</opifont.name>
               </title_font>
               <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
               <axis_0_visible>true</axis_0_visible>
@@ -2337,7 +2337,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>94</width>
+          <width>112</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2350,7 +2350,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>91</y>
           <actions hook="false" hook_all="false" />
-          <x>185</x>
+          <x>176</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2402,9 +2402,9 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>111</y>
+          <y>106</y>
           <actions hook="false" hook_all="false" />
-          <x>437</x>
+          <x>441</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2496,7 +2496,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>102</width>
+          <width>136</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2509,7 +2509,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>218</y>
           <actions hook="false" hook_all="false" />
-          <x>30</x>
+          <x>13</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2550,7 +2550,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>63</width>
+          <width>94</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2563,7 +2563,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>288</y>
           <actions hook="false" hook_all="false" />
-          <x>215</x>
+          <x>192</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2719,7 +2719,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>105</width>
+          <width>135</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2732,7 +2732,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>288</y>
           <actions hook="false" hook_all="false" />
-          <x>29</x>
+          <x>14</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2773,7 +2773,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>110</width>
+          <width>122</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2786,7 +2786,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>288</y>
           <actions hook="false" hook_all="false" />
-          <x>308</x>
+          <x>296</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2827,7 +2827,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>51</width>
+          <width>89</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -2840,7 +2840,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>288</y>
           <actions hook="false" hook_all="false" />
-          <x>463</x>
+          <x>445</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2909,7 +2909,7 @@ $(pv_value)</tooltip>
           <show_native_border>false</show_native_border>
           <auto_size>false</auto_size>
           <scripts />
-          <height>35</height>
+          <height>49</height>
           <name>Text_6</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <format_type>0</format_type>
@@ -2947,10 +2947,10 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>88</y>
+          <y>81</y>
           <actions hook="false" hook_all="false" />
           <wrap_words>true</wrap_words>
-          <x>285</x>
+          <x>287</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -2965,7 +2965,7 @@ $(pv_value)</tooltip>
           <show_native_border>false</show_native_border>
           <auto_size>false</auto_size>
           <scripts />
-          <height>40</height>
+          <height>49</height>
           <name>Text_1</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <format_type>0</format_type>
@@ -3003,7 +3003,7 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>85</y>
+          <y>76</y>
           <actions hook="false" hook_all="false" />
           <wrap_words>true</wrap_words>
           <x>66</x>
@@ -3342,7 +3342,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>112</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -3355,7 +3355,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>97</y>
           <actions hook="false" hook_all="false" />
-          <x>138</x>
+          <x>127</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -3903,7 +3903,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>99</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -4202,7 +4202,7 @@ $(pv_value)</tooltip>
           <password></password>
           <auto_size>true</auto_size>
           <scripts />
-          <height>71</height>
+          <height>40</height>
           <data_type>0</data_type>
           <show_boolean_label>true</show_boolean_label>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -4216,7 +4216,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>36</width>
+          <width>75</width>
           <push_action_index>0</push_action_index>
           <border_style>0</border_style>
           <pv_value />
@@ -4409,7 +4409,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>102</width>
+          <width>116</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -4422,7 +4422,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>241</y>
           <actions hook="false" hook_all="false" />
-          <x>693</x>
+          <x>679</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -4627,7 +4627,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>116</width>
+          <width>127</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -4640,61 +4640,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>241</y>
           <actions hook="false" hook_all="false" />
-          <x>256</x>
-          <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-        </widget>
-        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
-          <border_alarm_sensitive>false</border_alarm_sensitive>
-          <read_only>true</read_only>
-          <visible>true</visible>
-          <minimum>-1.7976931348623157E308</minimum>
-          <show_units>false</show_units>
-          <multiline_input>false</multiline_input>
-          <wuid>5ec8b324:13880ba2d91:-61f2</wuid>
-          <show_native_border>false</show_native_border>
-          <auto_size>false</auto_size>
-          <scripts />
-          <height>25</height>
-          <password_input>false</password_input>
-          <name>Text_12</name>
-          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-          <format_type>0</format_type>
-          <scale_options>
-            <width_scalable>true</width_scalable>
-            <height_scalable>true</height_scalable>
-            <keep_wh_ratio>false</keep_wh_ratio>
-          </scale_options>
-          <precision_from_pv>false</precision_from_pv>
-          <pv_name></pv_name>
-          <foreground_color>
-            <color red="0" green="0" blue="0" />
-          </foreground_color>
-          <background_color>
-            <color name="Background" red="240" green="240" blue="240" />
-          </background_color>
-          <enabled>true</enabled>
-          <widget_type>Text</widget_type>
-          <text>Radio Box</text>
-          <precision>0</precision>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-          <font>
-            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-          </font>
-          <width>82</width>
-          <border_style>0</border_style>
-          <rules />
-          <pv_value />
-          <maximum>1.7976931348623157E308</maximum>
-          <border_width>1</border_width>
-          <limits_from_pv>false</limits_from_pv>
-          <horizontal_alignment>1</horizontal_alignment>
-          <border_color>
-            <color red="0" green="128" blue="255" />
-          </border_color>
-          <y>241</y>
-          <actions hook="false" hook_all="false" />
-          <x>371</x>
+          <x>245</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -4817,7 +4763,7 @@ $(pv_value)</tooltip>
           <show_native_border>false</show_native_border>
           <auto_size>false</auto_size>
           <scripts />
-          <height>39</height>
+          <height>56</height>
           <name>Text_9</name>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <format_type>0</format_type>
@@ -4855,7 +4801,7 @@ $(pv_value)</tooltip>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>97</y>
+          <y>80</y>
           <actions hook="false" hook_all="false" />
           <wrap_words>true</wrap_words>
           <x>721</x>
@@ -4918,13 +4864,69 @@ $(pv_value)</tooltip>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
+        <widget typeId="org.csstudio.opibuilder.widgets.NativeText" version="1.0">
+          <border_alarm_sensitive>false</border_alarm_sensitive>
+          <read_only>true</read_only>
+          <visible>true</visible>
+          <minimum>-1.7976931348623157E308</minimum>
+          <show_units>false</show_units>
+          <multiline_input>true</multiline_input>
+          <wuid>5ec8b324:13880ba2d91:-61f2</wuid>
+          <show_native_border>false</show_native_border>
+          <auto_size>false</auto_size>
+          <scripts />
+          <height>22</height>
+          <name>Text_12</name>
+          <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+          <format_type>0</format_type>
+          <scale_options>
+            <width_scalable>true</width_scalable>
+            <height_scalable>true</height_scalable>
+            <keep_wh_ratio>false</keep_wh_ratio>
+          </scale_options>
+          <precision_from_pv>false</precision_from_pv>
+          <pv_name></pv_name>
+          <foreground_color>
+            <color red="0" green="0" blue="0" />
+          </foreground_color>
+          <background_color>
+            <color name="Background" red="240" green="240" blue="240" />
+          </background_color>
+          <enabled>true</enabled>
+          <widget_type>Text</widget_type>
+          <text>Radio Box</text>
+          <precision>0</precision>
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <font>
+            <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+          </font>
+          <width>93</width>
+          <border_style>0</border_style>
+          <rules />
+          <pv_value />
+          <show_h_scroll>false</show_h_scroll>
+          <maximum>1.7976931348623157E308</maximum>
+          <border_width>1</border_width>
+          <show_v_scroll>false</show_v_scroll>
+          <limits_from_pv>false</limits_from_pv>
+          <horizontal_alignment>1</horizontal_alignment>
+          <border_color>
+            <color red="0" green="128" blue="255" />
+          </border_color>
+          <y>241</y>
+          <actions hook="false" hook_all="false" />
+          <wrap_words>true</wrap_words>
+          <x>371</x>
+          <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        </widget>
       </widget>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
       <macros>
         <include_parent_macros>true</include_parent_macros>
       </macros>
-      <visible>false</visible>
+      <visible>true</visible>
       <wuid>66d1507f:138820a85e5:-6bdb</wuid>
       <scripts />
       <height>791</height>
@@ -5129,7 +5131,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>108</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -5142,7 +5144,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>87</y>
           <actions hook="false" hook_all="false" />
-          <x>47</x>
+          <x>33</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -5183,7 +5185,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>102</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -5196,7 +5198,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>78</y>
           <actions hook="false" hook_all="false" />
-          <x>483</x>
+          <x>472</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -5556,7 +5558,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>80</width>
+          <width>179</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -5569,7 +5571,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>254</y>
           <actions hook="false" hook_all="false" />
-          <x>794</x>
+          <x>761</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -6362,7 +6364,7 @@ $(pv_value)</tooltip>
           <font>
             <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
           </font>
-          <width>131</width>
+          <width>183</width>
           <border_style>0</border_style>
           <rules />
           <pv_value />
@@ -6375,7 +6377,7 @@ $(pv_value)</tooltip>
           </border_color>
           <y>184</y>
           <actions hook="false" hook_all="false" />
-          <x>229</x>
+          <x>203</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
         </widget>
@@ -6500,7 +6502,7 @@ $(pv_value)</tooltip>
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>116</width>
+    <width>175</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>pictures/home-16x16.png</image>
