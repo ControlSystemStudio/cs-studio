@@ -47,6 +47,13 @@
             name="Line Plot"
             restorable="true">
       </view>
+      <view
+            category="org.csstudio.channel.application.category"
+            class="org.csstudio.channel.views.TunerView"
+            id="org.csstudio.channel.views.TunerView"
+            name="Tuner"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -101,6 +108,15 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.channel.views.Line2DPlotView">
+            </parameter>
+         </command>
+         <command
+               commandId="org.eclipse.ui.views.showView"
+               label="Tuner"
+               style="push">
+            <parameter
+                  name="org.eclipse.ui.views.showView.viewId"
+                  value="org.csstudio.channel.views.TunerView">
             </parameter>
          </command>
       </menuContribution>
@@ -170,6 +186,11 @@
             defaultHandler="org.csstudio.channel.views.OpenLine2DPlot"
             id="org.csstudio.channel.views.OpenLine2D"
             name="Line2DPlot">
+      </command>
+      <command
+            defaultHandler="org.csstudio.channel.views.OpenTuner"
+            id="org.csstudio.channel.views.command1"
+            name="Tuner">
       </command>
    </extension>
 </plugin>
