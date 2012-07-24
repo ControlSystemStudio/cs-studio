@@ -10,51 +10,14 @@
 
 <h2>WebOPI Developer Manual</h2>
 
-<p><b>Note: </b>This guide is based on Eclipse 3.7.1, RAP 1.4.1. Equal or higher versions
+<p><b>Note: </b>This guide is based on Eclipse 3.7.1, RAP 1.5.0. Equal or higher versions
 are required, but you may experience unpredicted 
 problems with other versions.</p>
 
-<h3>Install RAP platform</h3>
+<h3>Install Eclipse for RCP and RAP developers</h3>
 <p>WebOPI is developed on RAP, so you must have RAP installed in your Eclipse. You can simple download 
 <code>Eclipse for RCP and RAP developers</code> from 
 <a href="http://www.eclipse.org/downloads/">http://www.eclipse.org/downloads/</a>.
-</p>
-
- <p>
-      RAP applications need to be compiled against the RAP runtime.
-      To do so, the runtime needs to be set as the target platform in Eclipse.     
-      <ol>
-        <li>Open <b>Window &gt; Preferences</b> and go to the <b>Plug-in
-          Development &gt; Target Platform</b> preference page.</li>
-        <li>Add a new target definition and initialize it with "nothing".</li>
-        <li>On the next page, click <b>Add</b> and choose <b>Software Site</b>
-          from the Add Content wizard.</li>
-        <li>On the following page, enter the URL to the RAP software repository
-          in the <b>Work with</b> field and press enter. 
-          <ul>
-            <li><b>RAP 1.5</b>: http://download.eclipse.org/rt/rap/1.5/runtime</li>
-          </ul>
-          </li>
-        <li>Select the target to install from the list below.</li>
-        <li>Make sure the checkbox <b>Include required software</b> is <b>not
-          checked</b>.</li>
-        <li>Click <b>Finish</b>. After the download is completed, click <b>Finish</b>
-          again to save the new target definition.</li>
-        <li>Activate the new target on the target platform preference page.</li>
-      </ol>
- 
-    <p>
-      Note: if doing this with a workspace that already contains projects that
-      depend on the target, you may get compile errors. Restarting Eclipse and/or
-      doing a clean build will help.
-    </p>
-
-
-<p>If you got any unpredicted problem, you can resort to following resources: <br>
-<br><code>Eclipse Online Help->Rap Developor Guide</code><br>
-<a href="http://www.eclipse.org/rap/">http://www.eclipse.org/rap/</a><br>
-<a href="http://www.vogella.de/articles/EclipseRAP/article.html">
-http://www.vogella.de/articles/EclipseRAP/article.html</a>
 </p>
 
 <h3>Get WebOPI source code</h3>
@@ -72,42 +35,60 @@ After you got the source code, you need to import these plugins to your workspac
 <li>core\plugins\org.csstudio.rap.core</li>
 <li>core\plugins\org.csstudio.rap.ui.util</li>
 <li>core\plugins\org.csstudio.platform.libs.epics</li>
+<li>core\plugins\org.csstudio.platform.libs.epics.linux</li>
+<li>core\plugins\org.csstudio.platform.libs.epics.macosx</li>
+<li>core\plugins\org.csstudio.platform.libs.epics.win32</li>
 <li>core\plugins\org.csstudio.utility.pv</li>
 <li>core\plugins\org.csstudio.utility.pv.epics</li>
 <li>core\plugins\org.csstudio.utility.pv.simu</li>
+<li>core\plugins\org.csstudio.ui.menu</li>
 <li>applications\plugins\org.csstudio.apputil</li>
 <li>applications\plugins\org.csstudio.opibuilder</li>
 <li>applications\plugins\org.csstudio.opibuilder.rap</li>
 <li>applications\plugins\org.csstudio.opibuilder.widgets</li>
 <li>applications\plugins\org.csstudio.opibuilder.widgets.rap</li>
+<li>applications\plugins\org.csstudio.opibuilder.widgets.symbol</li>
 <li>applications\plugins\org.csstudio.swt.widgets</li>
 <li>applications\plugins\org.csstudio.swt.xygraph</li>
 <li>applications\plugins\org.csstudio.swt.xygraph.rap</li>
+<li>applications\plugins\org.apache.batik</li>
 <li>applications\plugins\org.jdom</li>
+<li>applications\plugins\org.python</li>
 </ul>
 
+<h3>Set Target Platform</h3>
+ <p>
+      RAP applications need to be compiled against the RAP runtime.
+      To do so, the runtime needs to be set as the target platform in Eclipse.     
+      <ol>
+        <li>Open <code>org.csstudio.opibuilder.rap->webopi.target</code>.</li>
+        <li>Select the local folder location, and click <code>Edit...</code> on the right.</li>
+		<li>Change it to the local physical location of 
+		<code>org.csstudio.rap.core/third_party_plugins/GEF_RAP_1.5.0</code>
+        <li>Save and click on <code>Set as Target Platform</code> on the upper right corner.</li>
+      </ol>
+ 
+    <p>
+      Note: if doing this with a workspace that already contains projects that
+      depend on the target, you may get compile errors. Restarting Eclipse and/or
+      doing a clean build will help.
+    </p>
 
-<h3>Add GEF/Draw2D to RAP target platform</h3>
-<p>
-WebOPI also based on the RAP GEF project which is an incubating project under RAP.
-The code has been built to JAR files which are under <code>org.csstudio.rap.core/third_party_plugins</code>.
-So you need to add these plugins to your RAP target platform:
-<ol>
-<li>Go to <code>Eclipse Preferences Window->Plug-in Development->Target Platform</code> page</li>
-<li>Click on RAP Target platform and select <code>Edit...</code></li>
-<li>Select <code>Add...</code> button to add the directory that points to the physical location of
-<code>org.csstudio.rap.core/third_party_plugins/GEF_RAP_1.5.0</code>
-</li>
-<li>Finish.</li>
-</ol>
+
+<p>If you got any unpredicted problem, you can resort to following resources: <br>
+<br><code>Eclipse Online Help->Rap Developer Guide</code><br>
+<a href="http://www.eclipse.org/rap/">http://www.eclipse.org/rap/</a><br>
+<a href="http://www.vogella.de/articles/EclipseRAP/article.html">
+http://www.vogella.de/articles/EclipseRAP/article.html</a>
 </p>
+
 
 
 <h3>Launch WebOPI from Eclipse</h3>
 <ol>
 <li>Make corresponding changes to <code>preferences.ini</code> under <code>org.csstudio.opibuilder</code> and 
 <code>org.csstudio.platform.libs.epics</code> plugin. Alternatively, you can create your own
-<code>css_rap.ini</code> under installation directory of Eclipse.</li>
+<code>css_rap.ini</code> under your home directory.</li>
 <li>Open <code>fragment.xml</code> in <code>org.csstudio.opibuilder.rap</code> plugin and click 
 <code>Launch a RAP application</code>. /li>
 </ol>
@@ -124,8 +105,7 @@ Click <code>Add Required Bundles</code> and then click <code>Validate Bundles</c
 <h3>Build WAR file</h3>
 <p>First, install the WAR Products tooling from this p2 repository 
 <a href="http://download.eclipse.org/releases/indigo">http://download.eclipse.org/releases/indigo</a> into your IDE.
-This tooling is part of Libra and not part of RAP. 
-Anyway it can be used to deploy RAP applications in a very comfortable way.
+Search <code>War products</code> will help to locate it. Restart Eclipse when you are prompted to do so.
 </p>
 <p>Open <code>webopi.warproduct</code> and click on <code>Validate</code> to see
 if any required bundles are missing. If you see any missing required bundles, go to
