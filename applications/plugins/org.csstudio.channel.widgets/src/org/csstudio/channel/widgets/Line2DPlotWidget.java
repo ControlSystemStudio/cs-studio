@@ -166,10 +166,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		fd_xRangeControl.right = new FormAttachment(100, -2);
 		fd_xRangeControl.bottom = new FormAttachment(100, -2);
 		xRangeControl.setLayoutData(fd_xRangeControl);
-		// GridData gd_xRangeControl = new GridData(SWT.FILL, SWT.CENTER, true,
-		// false, 1, 1);
-		// gd_xRangeControl.heightHint = 15;
-		// xRangeControl.setLayoutData(gd_xRangeControl);
 		xRangeControl.addRangeListener(new RangeListener() {
 
 			@Override
