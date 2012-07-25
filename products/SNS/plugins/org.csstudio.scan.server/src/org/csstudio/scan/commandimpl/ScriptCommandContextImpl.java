@@ -9,11 +9,15 @@ package org.csstudio.scan.commandimpl;
 
 import java.util.Date;
 
+import org.csstudio.data.values.IStringValue;
+import org.csstudio.data.values.IValue;
+import org.csstudio.data.values.ValueUtil;
 import org.csstudio.ndarray.NDArray;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFactory;
+import org.csstudio.scan.device.Device;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.epics.util.array.IteratorNumber;
@@ -75,7 +79,18 @@ public class ScriptCommandContextImpl extends ScanScriptContext
         }
 	}
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
+    @Override
+    public Object read(final String device_name) throws Exception
+    {
+        final Device device = context.getDevice(device_name);
+        final IValue value = device.read();
+        if (value instanceof IStringValue)
+            return ValueUtil.getString(value);
+        return ValueUtil.getDouble(value);
+    }
+
+    /** {@inheritDoc} */
 	@Override
 	public void write(final String device_name, final Object value, final String readback,
 	        final boolean wait, final double tolerance, final double timeout) throws Exception
