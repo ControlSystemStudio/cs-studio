@@ -553,72 +553,68 @@ public class EPICS_V3_PV extends PlatformObject
     @Override
     public void setValue(final Object new_value) throws Exception
     {
-        if (!isConnected()) {
+        if (!isConnected())
             throw new Exception(name + " is not connected");
+        final Channel channel = channel_ref.getChannel();
+        if (new_value instanceof String)
+        {
+            if (channel.getFieldType().isBYTE())
+            {
+                // Long string support: Write characters of string as DBF_CHAR array
+                final char[] chars = ((String) new_value).toCharArray();
+                final int[] codes = new int[chars.length];
+                for (int i=0; i<codes.length; ++i)
+                    codes[i] = chars[i];
+                channel.put(codes);
+            }
+            else
+                channel.put((String)new_value);
         }
-        // Send strings as strings..
-        if (new_value instanceof String) {
-            channel_ref.getChannel().put((String)new_value);
-        } else
-        {   // other types as double.
-            if (new_value instanceof Double)
-            {
-                final double val = ((Double)new_value).doubleValue();
-                channel_ref.getChannel().put(val);
-            }
-            else if (new_value instanceof Double [])
-            {
-                final Double dbl[] = (Double [])new_value;
-                final double val[] = new double[dbl.length];
-                for (int i=0; i<val.length; ++i) {
-                    val[i] = dbl[i].doubleValue();
-                }
-                channel_ref.getChannel().put(val);
-            }
-            else if (new_value instanceof Integer)
-            {
-                final int val = ((Integer)new_value).intValue();
-                channel_ref.getChannel().put(val);
-            }
-            else if (new_value instanceof Integer [])
-            {
-                final Integer ival[] = (Integer [])new_value;
-                final int val[] = new int[ival.length];
-                for (int i=0; i<val.length; ++i) {
-                    val[i] = ival[i].intValue();
-                }
-                channel_ref.getChannel().put(val);
-            }
-            else if (new_value instanceof int[])
-            {
-            	channel_ref.getChannel().put((int[])new_value);
-            }
-            else if (new_value instanceof double[])
-            {
-            	channel_ref.getChannel().put((double[])new_value);
-            }
-            else if (new_value instanceof byte[])
-            {
-            	channel_ref.getChannel().put((byte[])new_value);
-            }
-            else if (new_value instanceof short[])
-            {
-            	channel_ref.getChannel().put((short[])new_value);
-            }
-            else if (new_value instanceof float[])
-            {
-            	channel_ref.getChannel().put((float[])new_value);
-            } else {
-                throw new Exception("Cannot handle type "
+        else if (new_value instanceof Double)
+        {
+            final double val = ((Double)new_value).doubleValue();
+            channel.put(val);
+        }
+        else if (new_value instanceof Double [])
+        {
+            final Double dbl[] = (Double [])new_value;
+            final double val[] = new double[dbl.length];
+            for (int i=0; i<val.length; ++i)
+                val[i] = dbl[i].doubleValue();
+            channel.put(val);
+        }
+        else if (new_value instanceof Integer)
+        {
+            final int val = ((Integer)new_value).intValue();
+            channel.put(val);
+        }
+        else if (new_value instanceof Integer [])
+        {
+            final Integer ival[] = (Integer [])new_value;
+            final int val[] = new int[ival.length];
+            for (int i=0; i<val.length; ++i)
+                val[i] = ival[i].intValue();
+            channel.put(val);
+        }
+        else if (new_value instanceof int[])
+        	channel.put((int[])new_value);
+        else if (new_value instanceof double[])
+        	channel.put((double[])new_value);
+        else if (new_value instanceof byte[])
+        	channel.put((byte[])new_value);
+        else if (new_value instanceof short[])
+        	channel.put((short[])new_value);
+        else if (new_value instanceof float[])
+        	channel.put((float[])new_value);
+        else
+            throw new Exception("Cannot handle type "
                                     + new_value.getClass().getName());
-            }
-        }
         // Flush for each write instead of waiting for
         // the JCACommandThread. When performing many consecutive writes,
         // waiting for the JCACommandThread would be more effective
         // because it sends the writes in 'bulk', but in most cases
         // it's probably better to perform each write ASAP
-        channel_ref.getChannel().getContext().flushIO();
+        channel.getContext().flushIO();
     }
 
     /** ConnectionListener interface. */
