@@ -22,13 +22,6 @@
    </url>
 
    <plugin
-         id="org.csstudio.platform"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.easymock"
          download-size="0"
          install-size="0"
@@ -50,20 +43,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.hibernate"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.hibernate.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.jdbc"
          download-size="0"
          install-size="0"
@@ -79,13 +58,6 @@
 
    <plugin
          id="org.csstudio.platform.libs.jms"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -120,13 +92,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.annotation"
          download-size="0"
          install-size="0"
@@ -135,13 +100,6 @@
 
    <plugin
          id="org.csstudio.data"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.simpledal"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -310,27 +268,6 @@
 
    <plugin
          id="org.csstudio.dal.epics"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.dal.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.management.contactscommands.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.management.xmpplogindialog"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -587,6 +524,69 @@
 
    <plugin
          id="org.remotercp.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.product"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.logging.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.ui.menu.app"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.management.xmpplogindialog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.management.contactscommands.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.desy.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"

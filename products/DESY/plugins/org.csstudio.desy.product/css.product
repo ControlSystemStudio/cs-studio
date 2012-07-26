@@ -69,14 +69,14 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.desy.product"/>
-      <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform" fragment=""/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.ldapAuthorization"/>
       <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
-      <plugin id="org.csstudio.platform.libs.dal"/>
-      <plugin id="org.csstudio.platform.libs.dal.epics"/>
-      <plugin id="org.csstudio.platform.libs.dal.tango"/>
-      <plugin id="org.csstudio.platform.libs.dal.tine"/>
+      <plugin id="org.csstudio.platform.libs.dal" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal.epics" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal.tango" fragment=""/>
+      <plugin id="org.csstudio.platform.libs.dal.tine" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dcf" fragment=""/>
       <plugin id="org.csstudio.platform.libs.dcf.ui" fragment=""/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -89,7 +89,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.libs.tine"/>
       <plugin id="org.csstudio.platform.libs.xmpp" fragment=""/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui" fragment=""/>
-      <plugin id="org.csstudio.platform.ui"/>
+      <plugin id="org.csstudio.platform.ui" fragment=""/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
@@ -177,16 +177,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.platform.base.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.platform.user.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.library.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.librarydesy.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.snl.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.dct.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.alarm.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.ioconfigurator.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.ams.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
