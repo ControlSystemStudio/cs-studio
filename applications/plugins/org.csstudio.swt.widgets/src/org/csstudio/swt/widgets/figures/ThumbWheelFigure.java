@@ -34,11 +34,15 @@ import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.FocusEvent;
+import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -46,7 +50,7 @@ import org.eclipse.swt.graphics.Font;
 /**
  * The view for ThumbWheel.
  * 
- * @author Alen Vrecko, Jose Ortega, Xihui Chen
+ * @author Alen Vrecko, Jose Ortega, Xihui Chen, Takashi Nakamoto
  * 
  */
 public class ThumbWheelFigure extends Figure implements Introspectable{
@@ -122,6 +126,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		private Label label;
 		private int thickness;
 		private Color color;
+		private Color colorFocused;
 		ArrowButton up;
 		ArrowButton down;
 
@@ -179,14 +184,62 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
 			add(down, BorderLayout.BOTTOM);
 
+			// Enable focusing and key operation only in run mode.
+			if (runmode) {
+				setRequestFocusEnabled(true);
+				setFocusTraversable(true);
+				
+				// When the user clicks this figure, the focus is requested so that
+				// this widget can get key events.
+				addMouseListener(new MouseListener.Stub() {
+					@Override
+					public void mousePressed(MouseEvent me) {
+						if (!hasFocus())
+							requestFocus();
+						me.consume();
+					}
+				});
+				
+				// Repaint the figure to show or hide focus indicator.
+				addFocusListener(new FocusListener() {
+					public void focusGained(FocusEvent fe) {
+						if (colorFocused == null) {
+							setBorder(null);
+						} else {
+							setBorder(new LineBorder(colorFocused, thickness));
+						}
+					}
+
+					public void focusLost(FocusEvent fe) {
+						if (color == null) {
+							setBorder(null);
+						} else {
+							setBorder(new LineBorder(color, thickness));
+						}
+					}
+				});
+			}
 		}
 
 		public void setBorderColor(Color color) {
 			this.color = color;
-			if (color == null) {
-				setBorder(null);
-			} else {				
-				setBorder(new LineBorder(color, thickness));				
+			if (!hasFocus()) {
+				if (color == null) {
+					setBorder(null);
+				} else {				
+					setBorder(new LineBorder(color, thickness));				
+				}
+			}
+		}
+		
+		public void setFocusedBorderColor(Color colorFocused) {
+			this.colorFocused = colorFocused;
+			if (hasFocus()) {
+				if (colorFocused == null) {
+					setBorder(null);
+				} else {				
+					setBorder(new LineBorder(colorFocused, thickness));				
+				}
 			}
 		}
 
@@ -195,8 +248,10 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			if (thickness == 0) {
 				setBorder(null);
 			} else {
-				if (color != null) {
+				if (!hasFocus() && color != null) {
 					setBorder(new LineBorder(color, thickness));
+				} else if (hasFocus() && colorFocused != null) {
+					setBorder(new LineBorder(colorFocused, thickness));
 				} else {
 					setBorder(new LineBorder(thickness));
 				}
@@ -275,6 +330,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 	private boolean test;
 
 	private Color internalBorderColor;
+	
+	private Color internalFocusedBorderColor;
 
 	private int internalBorderThickness;
 	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
@@ -282,15 +339,19 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 	private Font wheelFont;
 	
 	private boolean showButtons = true;
+	
+	private boolean runmode;
 
 	public ThumbWheelFigure(){
-		this(3,2);
+		this(3,2,false);
 	}
 	
-	public ThumbWheelFigure(int integerWheels, int decimalDigits) {
+	public ThumbWheelFigure(int integerWheels, int decimalDigits, boolean runmode) {
 		integerDigits = integerWheels;
 		this.decimalDigits = decimalDigits;
-
+		
+		this.runmode = runmode;
+		
 		// we will be displaying the widget anyway so I don't see a point in
 		// deferring this till later.
 		createWidgets();
@@ -329,9 +390,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		wholePart = new DigitBox[integerDigits];
 		for (int i = 0; i < integerDigits; i++) {
 			DigitBox box = new DigitBox(i, false);
-			
-			// TODO: set button visibility
-			
+			box.setButtonVisibility(showButtons);
 			add(box);
 			wholePart[integerDigits - i - 1] = box;
 			setConstraint(box, createGridData());
@@ -345,9 +404,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		decimalPart = new DigitBox[decimalDigits];
 		for (int i = 0; i < decimalDigits; i++) {
 			DigitBox box = new DigitBox(i, true);
-			
-			// TODO: set button visibility
-			
+			box.setButtonVisibility(showButtons);
 			add(box);
 			decimalPart[i] = box;
 
@@ -355,6 +412,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		}
 
 		setInternalBorderColor(internalBorderColor);
+		setInternalFocusedBorderColor(internalFocusedBorderColor);
 		setInternalBorderThickness(internalBorderThickness);
 		setWheelFont(wheelFont);
 
@@ -408,6 +466,13 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 	 */
 	public Color getInternalBorderColor() {
 		return internalBorderColor;
+	}
+	
+	/**
+	 * @return the internalFocusedBorderColor
+	 */
+	public Color getInternalFocusedBorderColor() {
+		return internalFocusedBorderColor;
 	}
 
 	/**
@@ -489,12 +554,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 	}
 
 	public void setInternalBorderColor(Color color) {
-		if(this.internalBorderColor != null && this.internalBorderColor.equals(color))
-			return;
 		this.internalBorderColor = color;
-		if(color == null){
-			return;
-		}
 		Color col = color;
 
 		for (DigitBox box : wholePart) {
@@ -508,7 +568,20 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		dot.setBorderColor(col);
 		minus.setBorderColor(col);
 	}
+	
+	public void setInternalFocusedBorderColor(Color color) {
+		this.internalFocusedBorderColor = color;
+		Color col = color;
 
+		for (DigitBox box : wholePart) {
+			box.setFocusedBorderColor(col);
+		}
+
+		for (DigitBox box : decimalPart) {
+			box.setFocusedBorderColor(col);
+		}
+	}
+	
 	public void setInternalBorderThickness(int thickness) {
 		if(thickness <0)
 			throw new IllegalArgumentException();		

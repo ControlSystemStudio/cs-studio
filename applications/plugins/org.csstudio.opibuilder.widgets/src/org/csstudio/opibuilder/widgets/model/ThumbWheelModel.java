@@ -37,6 +37,7 @@ import org.eclipse.swt.graphics.RGB;
  *  @author Alen Vrecko, Jozef Stefan Institute
  *  @author Joerg Rathlev, Universitaet Hamburg
  *  @author Jose Ortega, Xihui Chen
+ *  @author Takashi Nakamoto, Cosylab
  * 
  */
 public class ThumbWheelModel extends AbstractPVWidgetModel {
@@ -48,6 +49,8 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	public static final String PROP_INTERNAL_FRAME_THICKNESS = "internalFrameSize"; //$NON-NLS-1$
 
 	public static final String PROP_INTERNAL_FRAME_COLOR = "internalFrameColor"; //$NON-NLS-1$
+	
+	public static final String PROP_INTERNAL_FOCUSED_FRAME_COLOR = "internalFocusedFrameColor"; //$NON-NLS-1$
 
 	public static final String PROP_INTEGER_DIGITS_PART = "integerDigits"; //$NON-NLS-1$
 
@@ -56,7 +59,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$
 	
 	public static final String PROP_SHOW_BUTTONS = "show_buttons"; //$NON-NLS-1$
-
+	
 	public static final String ID = "org.csstudio.opibuilder.widgets.ThumbWheel"; //$NON-NLS-1$
 
 //	public static final String PROP_VALUE = "value"; //$NON-NLS-1$
@@ -113,6 +116,9 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 		addProperty(new ColorProperty(PROP_INTERNAL_FRAME_COLOR, 
 				"Internal Frame Color", WidgetPropertyCategory.Display,
 				ColorConstants.black.getRGB()));
+		addProperty(new ColorProperty(PROP_INTERNAL_FOCUSED_FRAME_COLOR, 
+				"Internal Focused Frame Color", WidgetPropertyCategory.Display,
+				ColorConstants.blue.getRGB()));
 
 		addProperty(new IntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, 
 				"Internal Frame Thickness", WidgetPropertyCategory.Display, 1));
@@ -156,7 +162,11 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	public RGB getInternalFrameColor() {
 		return getRGBFromColorProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
-
+	
+	public RGB getInternalFocusedFrameColor() {
+		return getRGBFromColorProperty(PROP_INTERNAL_FOCUSED_FRAME_COLOR);
+	}
+	
 	public double getMinimum() {
 		return (Double)getProperty(PROP_MIN).getPropertyValue();
 	}
@@ -169,6 +179,10 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 		return getSWTColorFromColorProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
+	public Color getInternalFocusedBorderColor() {
+		return getSWTColorFromColorProperty(PROP_INTERNAL_FOCUSED_FRAME_COLOR);
+	}
+	
 	public int getInternalBorderWidth() {
 		return (Integer)getProperty(PROP_INTERNAL_FRAME_THICKNESS).getPropertyValue();
 	}
