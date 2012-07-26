@@ -61,7 +61,7 @@
       </locale>
      -->
       <login
-            class="org.csstudio.startuphelper.module.DefaultLoginPrompt">
+            class="org.csstudio.desy.startuphelper.login.DesyLoginPrompt">
       </login>
       <services
             class="org.csstudio.desy.startuphelper.startupservice.DesyServicesStartup">
