@@ -22,8 +22,7 @@ import org.csstudio.scan.server.ScanServer;
 
 /** A sample taken by a scan
  *
- *  <p>All samples have a time stamp
- *  and info about the device that produced the sample.
+ *  <p>All samples have a time stamp.
  *
  *  <p>A serial number is used to track the sequence
  *  in which samples were acquired within a scan.
@@ -48,26 +47,17 @@ abstract public class ScanSample implements Serializable
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private String device_name;
 	final private Date timestamp;
 	final private long serial;
 
     /** Initialize
-     *  @param device_name Name of device that provided the sample
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
      */
-    public ScanSample(final String device_name, final Date timestamp, final long serial)
+    public ScanSample(final Date timestamp, final long serial)
     {
-        this.device_name = device_name;
         this.timestamp = timestamp;
         this.serial = serial;
-    }
-
- 	/** @return Name of the device that provided this sample */
-	public String getDeviceName()
-    {
-    	return device_name;
     }
 
 	/** @return Time when this sample was obtained */
@@ -92,6 +82,6 @@ abstract public class ScanSample implements Serializable
 	@Override
 	public String toString()
 	{
-	    return device_name + ": " + DataFormatter.format(timestamp) + " " + getValue();
+	    return ScanSampleFormatter.format(timestamp) + " " + getValue();
 	}
 }

@@ -7,9 +7,6 @@ from scan_client import *
 
 client = ScanClient()
 
-# TODO: Loop seems mostly affected by monitor from script.
-#       When re-run from GUI, much faster!
-#       Faster when server run in JProfiler??
 
 # Simple 'NOP' commands
 print "Sequences with zero-delay commands"

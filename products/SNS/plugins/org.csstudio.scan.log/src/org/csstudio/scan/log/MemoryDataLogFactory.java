@@ -7,34 +7,55 @@
  ******************************************************************************/
 package org.csstudio.scan.log;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
+
+import org.csstudio.scan.server.Scan;
 
 /** {@link IDataLogFactory} for the {@link MemoryDataLog}
  *  @author Kay Kasemir
  */
 public class MemoryDataLogFactory implements IDataLogFactory
 {
-    /** Provides the next available <code>id</code> */
-    final private static AtomicLong ids = new AtomicLong();
+    /** Available scans. Length of list provides the next available <code>id</code> */
+    final private static List<Scan> scans = new ArrayList<Scan>();
 
     /** Map of scan IDs to logs */
-    final private Map<Long, DataLog> logs = new HashMap<Long, DataLog>();
+    final private Map<Scan, DataLog> logs = new HashMap<Scan, DataLog>();
 
     /** {@inheritDoc} */
 	@Override
-	public long createDataLog(final String scan_name) throws Exception
+	public synchronized Scan createDataLog(final String scan_name) throws Exception
 	{
-		final long id = ids.incrementAndGet();
-		logs.put(id, new MemoryDataLog());
-		return id;
+		final long id = scans.size() + 1;
+		final Scan scan = new Scan(id, scan_name, new Date());
+		scans.add(scan);
+		logs.put(scan, new MemoryDataLog());
+        return scan;
 	}
 
     /** {@inheritDoc} */
+    @Override
+    public synchronized Scan[] getScans() throws Exception
+    {
+        return scans.toArray(new Scan[scans.size()]);
+    }
+
+    /** {@inheritDoc} */
 	@Override
-	public DataLog getDataLog(final long scan_id) throws Exception
+	public synchronized DataLog getDataLog(final Scan scan) throws Exception
 	{
-		return logs.get(scan_id);
+		return logs.get(scan);
 	}
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void deleteDataLog(final Scan scan) throws Exception
+    {
+        scans.remove(scan);
+        logs.remove(scan);
+    }
 }

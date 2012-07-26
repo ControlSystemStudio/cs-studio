@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui.actions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.beast.client.AADataStructure;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
@@ -68,8 +69,8 @@ public class ItemConfigDialog extends TitleAreaDialog
     private boolean latch = true;
     private boolean annunciate = false;
     private String filter = ""; //$NON-NLS-1$
-    private List<String[]> guidance_table_list, displays_table_list, commands_table_list;
-    private StringTableEditor guidance_editor, display_editor, command_editor;
+    private List<String[]> guidance_table_list, displays_table_list, commands_table_list, auto_actions_table_list;
+    private StringTableEditor guidance_editor, display_editor, command_editor, automated_action_editor;
 
     private int delay = 0;
     private int count = 0;
@@ -147,13 +148,17 @@ public class ItemConfigDialog extends TitleAreaDialog
     @Override
     protected Control createDialogArea(final Composite parent)
     {
+    	GridData gd = null;
         final Composite parent_composite = (Composite) super.createDialogArea(parent);
-        final Composite composite = new Composite(parent_composite, 0);
+        // TODO: make scroll work...
+//        final ScrolledComposite sc = new ScrolledComposite(parent_composite, SWT.BORDER | SWT.V_SCROLL);
+//        sc.setExpandVertical(true);
+        final Composite composite = new Composite(parent_composite, SWT.NONE);
+//        sc.setContent(composite);
         composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         final GridLayout layout = new GridLayout();
         layout.numColumns = 4;
         composite.setLayout(layout);
-        GridData gd;
 
         // Set title image, arrange for it to be disposed
         final Image title_image =
@@ -345,6 +350,30 @@ public class ItemConfigDialog extends TitleAreaDialog
                 new int[]{120,120});
         command_editor.setToolTipText(Messages.Config_CommandsTT);
         command_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
+        
+        // Automated Actions:
+        // +------------------+
+        // |     List         |
+        // +------------------+
+		auto_actions_table_list = new ArrayList<String[]>();
+		for (AADataStructure aa : item.getAutomatedActions()) {
+			final String row[] = { aa.getTitle(), aa.getDetails(), String.valueOf(aa.getDelay()) };
+			auto_actions_table_list.add(row);
+		}
+        l = new Label(composite, 0);
+        l.setText(Messages.Config_AutomatedActions);
+        l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
+        // TODO: remove
+//        automated_action_editor = new ActionTableEditor(composite,
+//                new String [] { Messages.Title, Messages.Detail },
+//                auto_actions_table_list, new OldEditAAItemDialog(parent.getShell()),
+//                new int[]{120,120});
+        automated_action_editor = new StringTableEditor(composite,
+                new String [] { Messages.Title, Messages.Detail, Messages.Delay },
+                null, auto_actions_table_list, new EditAAItemDialog(parent.getShell()),
+                new int[]{120,110,10});
+        automated_action_editor.setToolTipText(Messages.Config_AutomatedActionsTT);
+        automated_action_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         // Item info line
         l = new Label(composite, 0);
@@ -353,6 +382,7 @@ public class ItemConfigDialog extends TitleAreaDialog
                            item.getConfigTime()));
         l.setLayoutData(new GridData(0, 0, true, false, layout.numColumns, 1));
 
+//        sc.setMinSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
         return parent_composite;
     }
 
@@ -390,7 +420,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     	    return new GDCDataStructure(title, title);
     	return new GDCDataStructure(title, details);
     }
-
+    
     /** Convert table editor's String table into GDC list */
     private GDCDataStructure[] getGDBArray(final List<String[]> list)
     {
@@ -415,12 +445,38 @@ public class ItemConfigDialog extends TitleAreaDialog
     {
         return getGDBArray(commands_table_list);
     }
-
+    
     /** @return Related displays */
     public GDCDataStructure[] getDisplays()
     {
         return getGDBArray(displays_table_list);
     }
+    
+    /** Create AA from elements
+     *  @param title
+     *  @param details
+     *  @param delay
+     *  @return AADataStructure or <code>null</code>
+     */
+	@SuppressWarnings("nls")
+	private AADataStructure checkAAData(final String title, final String details, final String delay) {
+		// if neither title nor details are configured, ignore this entry
+		if ((title == null || title.equals("")) || (details == null || details.equals("")))
+			return null;
+		if (delay == null || delay.equals(""))
+			return new AADataStructure(title, details, 0);
+		return new AADataStructure(title, details, Integer.valueOf(delay));
+	}
+    
+	/** @return Automated Actions */
+	public AADataStructure[] getAutomatedActions() {
+		final List<AADataStructure> aa_list = new ArrayList<AADataStructure>();
+		for (String[] row : auto_actions_table_list) {
+			final AADataStructure gdc = checkAAData(row[0], row[1], row[2]);
+			if (gdc != null) aa_list.add(gdc);
+		}
+		return aa_list.toArray(new AADataStructure[aa_list.size()]);
+	}
 
     /** Perform basic syntax check of filter formula
      *  @param filter_spec Filter specification

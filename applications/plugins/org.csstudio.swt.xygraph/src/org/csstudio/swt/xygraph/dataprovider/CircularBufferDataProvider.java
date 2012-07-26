@@ -80,7 +80,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	
 	private boolean currentYDataChanged = false;
 	
-	private boolean currentYDataTimestampChanged = false;
+//	private boolean currentYDataTimestampChanged = false;
 	
 	private double[] currentXDataArray = new double[]{};
 	
@@ -131,14 +131,15 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	}
 
 
-	/**Set current YData.
+	/**Set current YData. It will automatically make timestamp disabled.
 	 * @param currentYData the currentYData to set
 	 */
 	public synchronized void setCurrentYData(double newValue) {
 		this.currentYData = newValue;
 		currentYDataChanged = true;
-		if(!xAxisDateEnabled|| (xAxisDateEnabled && currentYDataTimestampChanged))
-			tryToAddDataPoint();
+		xAxisDateEnabled=false;
+//		if(!xAxisDateEnabled|| (xAxisDateEnabled && currentYDataTimestampChanged))
+		tryToAddDataPoint();
 	}
 	
 	public synchronized void addSample(ISample sample){
@@ -157,7 +158,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			xAxisDateEnabled = true;
 		}		
 		this.currentYDataTimestamp = timestamp;
-		currentYDataTimestampChanged = true;
+//		currentYDataTimestampChanged = true;
 		if(currentYDataChanged)
 			tryToAddDataPoint();		
 	}
@@ -171,7 +172,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		this.currentYData = newValue;
 		currentYDataChanged = true;
 		this.currentYDataTimestamp = timestamp;
-		currentYDataTimestampChanged = true;		
+//		currentYDataTimestampChanged = true;		
 		tryToAddDataPoint();
 	}
 	
@@ -236,7 +237,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			traceData.add(new Sample(newXValue, currentYData));
 			currentXDataChanged = false;
 			currentYDataChanged = false;
-			currentYDataTimestampChanged = false;
+//			currentYDataTimestampChanged = false;
 			fireDataChange();			
 	}
 	
@@ -315,7 +316,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 			for(int i=0; i<Math.min(traceData.getBufferSize(), 
 					Math.min(newXValueArray.length, currentYDataArray.length)); i++){
 				traceData.add(new Sample(newXValueArray[i], currentYDataArray[i]));
-			}					
+			}		
 		}else{			
 			//newXValueArray = currentXDataArray;
 			
@@ -329,7 +330,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		
 			currentXDataChanged = false;
 			currentYDataChanged = false;
-			currentYDataTimestampChanged = false;
+//			currentYDataTimestampChanged = false;
 			fireDataChange();		
 	}
 	

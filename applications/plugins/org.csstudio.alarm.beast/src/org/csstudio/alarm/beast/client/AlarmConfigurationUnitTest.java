@@ -124,7 +124,7 @@ public class AlarmConfigurationUnitTest
                     new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
                     new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'")
                 },
-        		null, null);
+        		null, null, null);
         config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV2");

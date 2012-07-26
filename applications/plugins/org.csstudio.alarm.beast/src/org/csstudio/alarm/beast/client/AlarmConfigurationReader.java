@@ -36,7 +36,7 @@ public class AlarmConfigurationReader
     final SQL sql;
 
     /** Re-used statements */
-    private PreparedStatement sel_item_by_parent_and_name_statement, sel_guidance_statement, sel_displays_statement, sel_commands_statement;
+    private PreparedStatement sel_item_by_parent_and_name_statement, sel_guidance_statement, sel_displays_statement, sel_commands_statement, sel_auto_actions_statement;
 
     /** Initialize
      *  @param rdb RDB connection
@@ -74,6 +74,11 @@ public class AlarmConfigurationReader
             {
                 sel_commands_statement.close();
                 sel_commands_statement = null;
+            }
+            if (sel_auto_actions_statement != null)
+            {
+            	sel_auto_actions_statement.close();
+            	sel_auto_actions_statement = null;
             }
         }
         catch (SQLException ex)
@@ -178,6 +183,26 @@ public class AlarmConfigurationReader
         }
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
+    
+    /**Get automated actions from RDB by id
+     * @param id The id of the item in alarmtree
+     * @return the display links
+     * @throws Exception on error
+     */
+	private AADataStructure[] readAutomatedActions(final int id) throws Exception {
+		final List<AADataStructure> aaList = new ArrayList<AADataStructure>();
+		if (sel_auto_actions_statement == null)
+			sel_auto_actions_statement = rdb.getConnection().prepareStatement(sql.sel_auto_actions_by_id);
+		sel_auto_actions_statement.setInt(1, id);
+		final ResultSet result = sel_auto_actions_statement.executeQuery();
+		while (result.next()) {
+			final String title = result.getString(1);
+			final String details = result.getString(2);
+			final Integer delay = result.getInt(3);
+			aaList.add(new AADataStructure(title, details, delay));
+		}
+		return aaList.toArray(new AADataStructure[aaList.size()]);
+	}
 
     /** Read GUI info (guidance, displays, commands)
      *  @param item Item to update with GUI info
@@ -189,6 +214,7 @@ public class AlarmConfigurationReader
         item.setGuidance(readGuidance(id));
         item.setDisplays(readDisplays(id));
         item.setCommands(readCommands(id));
+        item.setAutomatedActions(readAutomatedActions(id));
     }
 
     /** Read alarm tree component or PV.

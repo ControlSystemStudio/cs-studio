@@ -72,12 +72,12 @@ public class LinearScale extends AbstractScale {
 	private void calcMargin() {
 		if(isHorizontal()) {			
 			margin = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
-					format(getRange().getLower()),getFont()).width, 
-					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).width)/2.0);
+					format(getRange().getLower(), true),getFont()).width, 
+					FigureUtilities.getTextExtents(format(getRange().getUpper(), true), getFont()).width)/2.0);
 		}else
 			margin = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
-					format(getRange().getLower()), getFont()).height, 
-					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).height)/2.0);
+					format(getRange().getLower(), true), getFont()).height, 
+					FigureUtilities.getTextExtents(format(getRange().getUpper(), true), getFont()).height)/2.0);
 	}
 	
 	/**

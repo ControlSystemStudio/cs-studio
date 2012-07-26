@@ -13,6 +13,7 @@ CONNECT 'jdbc:derby:/tmp/scan_log_db/scan;create=true';
 -- Connect to network data server
 CONNECT 'jdbc:derby://localhost:1527//tmp/scan_log_db/scan';
 
+DESCRIBE scans;
 DESCRIBE samples;
 
 INSERT INTO scans(name) VALUES ('First');

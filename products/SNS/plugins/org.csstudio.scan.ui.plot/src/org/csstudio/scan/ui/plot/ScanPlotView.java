@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.plot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -32,7 +35,7 @@ public class ScanPlotView extends ViewPart
     @SuppressWarnings("nls")
     final private static String TAG_SCAN = "scan",
                                 TAG_XDEVICE = "xdevice",
-                                TAG_YDEVICE = "ydevice";
+                                TAG_YDEVICE = "ydevice"; // used with added 0, 1, 2, ...
 
     /** Instance of this view, used to create the secondary view ID
      *  necessary to allow multiple views
@@ -50,6 +53,7 @@ public class ScanPlotView extends ViewPart
     private ScanSelectorAction scan_selector;
     private DeviceSelectorAction y_selector;
     private DeviceSelectorAction x_selector;
+    private Action y_removal;
 
     /** @return Next secondary view ID for creating multiple plot views */
     public static String getNextViewID()
@@ -67,24 +71,11 @@ public class ScanPlotView extends ViewPart
 
     /** {@inheritDoc} */
     @Override
-    public void saveState(final IMemento memento)
-    {
-        if (scan_selector.getSelection() != null)
-            memento.putString(TAG_SCAN, scan_selector.getSelection());
-        if (x_selector.getSelection() != null)
-            memento.putString(TAG_XDEVICE, x_selector.getSelection());
-        if (y_selector.getSelection() != null)
-            memento.putString(TAG_YDEVICE, y_selector.getSelection());
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void createPartControl(final Composite parent)
     {
         try
         {
             model = new PlotDataModel(parent.getDisplay());
-            model.start();
         }
         catch (Exception ex)
         {
@@ -95,6 +86,11 @@ public class ScanPlotView extends ViewPart
             return;
         }
 
+        createComponents(parent);
+        restoreState();
+
+        // Start model after GUI has been created and updated to saved state
+        model.start();
         parent.addDisposeListener(new DisposeListener()
         {
             @Override
@@ -104,44 +100,71 @@ public class ScanPlotView extends ViewPart
                 model = null;
             }
         });
-
-        createComponents(parent);
-
-        // Restore saved state
-        if (memento != null)
-        {
-            updateSelection(scan_selector, memento.getString(TAG_SCAN));
-            updateSelection(x_selector, memento.getString(TAG_XDEVICE));
-            updateSelection(y_selector, memento.getString(TAG_YDEVICE));
-            memento = null;
-        }
-    }
-
-    /** Update a selector as if user had entered a value
-     *  @param selector {@link DropdownToolbarAction}
-     *  @param selection Desired value or <code>null</code>
-     */
-    private void updateSelection(final DropdownToolbarAction selector, final String selection)
-    {
-        if (selection == null)
-            return;
-        selector.setSelection(selection);
-        selector.handleSelection(selection);
     }
 
     /** @param parent Parent composite under which to create GUI elements */
     private void createComponents(final Composite parent)
     {
         plot = new Plot(parent);
-        plot.addTrace(model.getPlotData());
 
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         scan_selector = new ScanSelectorAction(model, plot);
         x_selector = DeviceSelectorAction.forXAxis(model, plot);
-        y_selector = DeviceSelectorAction.forYAxis(model, plot);
+        y_selector = DeviceSelectorAction.forYAxis(model, 0, plot);
+        y_removal = DeviceSelectorAction.forYAxisRemoval(model, plot, this);
         toolbar.add(scan_selector);
         toolbar.add(x_selector);
         toolbar.add(y_selector);
+        toolbar.add(DeviceSelectorAction.forNewYAxis(model, plot, this));
+        toolbar.add(y_removal);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void saveState(final IMemento memento)
+    {
+        if (scan_selector.getSelection() != null)
+            memento.putString(TAG_SCAN, scan_selector.getSelection());
+        if (x_selector.getSelection() != null)
+            memento.putString(TAG_XDEVICE, x_selector.getSelection());
+        final String[] devices = model.getYDevices();
+        for (int i=0; i<devices.length; ++i)
+            memento.putString(TAG_YDEVICE + i, devices[i]);
+    }
+
+    /** Restore saved state from memento */
+    private void restoreState()
+    {
+        if (memento == null)
+            return;
+        String value = memento.getString(TAG_SCAN);
+        if (value != null)
+        {
+            scan_selector.setSelection(value);
+            scan_selector.handleSelection(value);
+        }
+
+        value = memento.getString(TAG_XDEVICE);
+        if (value != null)
+        {
+            x_selector.setSelection(value);
+            model.selectXDevice(value);
+        }
+
+        final List<String> devices = new ArrayList<String>();
+        String device = memento.getString(TAG_YDEVICE + devices.size());
+        while (device != null)
+        {
+            devices.add(device);
+            device = memento.getString(TAG_YDEVICE + devices.size());
+        }
+        model.selectYDevices(devices);
+
+        // Update selectors in toolbar to show devices
+        updateToolbar();
+
+        // Now that model has been configured, set plot's data
+        plot.setDataProviders(model.getPlotDataProviders());
     }
 
     /** {@inheritDoc} */
@@ -166,16 +189,65 @@ public class ScanPlotView extends ViewPart
             option = ScanSelectorAction.encode(scan);
         else
             option = ScanSelectorAction.encode(name, id);
-        updateSelection(scan_selector, option);
+
+        scan_selector.setSelection(option);
+        scan_selector.handleSelection(option);
+        model.selectXDevice(option);
+        plot.setDataProviders(this.model.getPlotDataProviders());
     }
 
-    /** Select the devices to use for the plot's axes
-     *  @param xdevice Name of X axis device
-     *  @param ydevice .. Y axis ...
+    /** Select the devices to show
+     *  @param devices X device, Y devices...
      */
-    public void selectDevices(final String xdevice, final String ydevice)
+    public void selectDevices(final String... devices)
     {
-        updateSelection(x_selector, xdevice);
-        updateSelection(y_selector, ydevice);
+        if (devices.length > 0)
+            model.selectXDevice(devices[0]);
+        final List<String> y_devices = new ArrayList<String>();
+        for (int i=1; i<devices.length; ++i)
+            y_devices.add(devices[i]);
+        model.selectYDevices(y_devices);
+        plot.setDataProviders(this.model.getPlotDataProviders());
+        updateToolbar();
+    }
+
+    /** Update toolbar to display selectors for the devices shown in the plot */
+    void updateToolbar()
+    {
+        final String[] devices = model.getYDevices();
+        final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
+        // Add/update Y axis selectors
+        for (int i=0; i<devices.length; ++i)
+        {
+            final ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
+            final DeviceSelectorAction selector;
+            if (item != null)
+                selector = (DeviceSelectorAction) item.getAction();
+            else
+            {
+                selector = DeviceSelectorAction.forYAxis(model, i, plot);
+                toolbar.insertBefore(DeviceSelectorAction.ID_ADD, selector);
+                toolbar.update(true);
+            }
+            selector.setSelection(devices[i]);
+        }
+        // Remove extra Y selectors, if there are any
+        int i = devices.length;
+        ActionContributionItem item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
+        while (item != null)
+        {
+            final DeviceSelectorAction selector = (DeviceSelectorAction) item.getAction();
+            if (devices.length <= 0)
+                selector.setSelection(""); //$NON-NLS-1$
+            else
+            {
+                toolbar.remove(item);
+                toolbar.update(true);
+            }
+            ++i;
+            item = (ActionContributionItem) toolbar.find(DeviceSelectorAction.ID_Y + i);
+        }
+
+        y_removal.setEnabled(devices.length > 1);
     }
 }

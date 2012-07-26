@@ -22,19 +22,9 @@ import java.util.List;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.device.DeviceInfo;
 
-/** RMI interface for the scan server engine
+/** Interface to the scan server
  *
- *  <p>Used by the (remote) client to communicate
- *  with the scan server.
- *
- *  <p>Default host and port are defined in here.
- *  They can be overriddden via Java system preferences
- *  to allow doing this from any Java tool (jython, Matlab, ...).
- *
- *  Eclipse-based tools set the system properties from Eclipse preferences,
- *  so what's used in the end are the system preference values,
- *  but they can be configured from Eclipse preferences
- *  and the GUI tools include preference pages.
+ *  <p>Used by (remote) clients to communicate with the scan server.
  *
  *  @author Kay Kasemir
  */

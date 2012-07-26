@@ -22,21 +22,19 @@ import org.csstudio.scan.data.ScanSampleFactory;
 public class ValueConverter
 {
     /** Create ScanSample for control system value
-     *  @param device_name Name of the device that provided the sample
      *  @param serial Serial to identify when the sample was taken
      *  @param value IValue
      *  @return {@link ScanSample}
      *  @throws IllegalArgumentException if the value type is not handled
      */
-    public static ScanSample createSample(final String device_name,
-            final long serial, final IValue value) throws IllegalArgumentException
+    public static ScanSample createSample(final long serial, final IValue value) throws IllegalArgumentException
     {
         final Date date = getDate(value.getTime());
         // Log strings as text, rest as double
         if (value instanceof IStringValue)
-            return ScanSampleFactory.createSample(device_name, date, serial, ValueUtil.getString(value));
+            return ScanSampleFactory.createSample(date, serial, ValueUtil.getString(value));
         else
-            return ScanSampleFactory.createSample(device_name, date, serial, ValueUtil.getDouble(value));
+            return ScanSampleFactory.createSample(date, serial, ValueUtil.getDouble(value));
     }
 
     /** @param time IValue timestamp

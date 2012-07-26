@@ -32,16 +32,16 @@ import org.csstudio.scan.command.SetCommand;
 import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.commandimpl.LoopCommandImpl;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ExecutableScan;
 import org.junit.Test;
 
-/** [Headless] JUnit Plug-in test of the {@link Scan}
+/** [Headless] JUnit Plug-in test of the {@link ExecutableScan}
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -56,11 +56,11 @@ public class ScanHeadlessTest
         // Scan that requires 2 devices
         final LoopCommand command = new LoopCommand("motor_x", 1.0, 5.0, 1.0,
                     new LogCommand("setpoint"));
-        final Scan scan = new Scan("Scan Device Test", devices, new LoopCommandImpl(command));
+        final ExecutableScan scan = new ExecutableScan("Scan Device Test", devices, new LoopCommandImpl(command));
 
         // Execute the scan
         assertEquals(0, devices.getDevices().length);
-        scan.execute();
+        scan.call();
 
         // Devices should have been added by scan as needed
         final Device[] device_infos = devices.getDevices();
@@ -107,7 +107,7 @@ public class ScanHeadlessTest
                 )
             );
 
-        final Scan scan = new Scan("Scan Test", devices, new LoopCommandImpl(command));
+        final ExecutableScan scan = new ExecutableScan("Scan Test", devices, new LoopCommandImpl(command));
         final List<ScanCommand> commands = scan.getScanCommands();
         assertEquals(1, commands.size());
         assertSame(command, commands.get(0));
@@ -123,15 +123,15 @@ public class ScanHeadlessTest
         assertEquals(ScanState.Idle, info.getState());
         assertEquals(0, info.getPercentage());
         // Execute the scan
-        scan.execute();
+        scan.call();
         // Check Finish state
         info = scan.getScanInfo();
         assertEquals(ScanState.Finished, info.getState());
         assertEquals(100, info.getPercentage());
 
         // Dump data
-        final ScanData data = scan.getDataLogger().getScanData();
-        new SpreadsheetScanDataIterator(data).printTable(System.out);
+        final ScanData data = scan.getScanData();
+        new ScanDataIterator(data).printTable(System.out);
         assertTrue(data.getSamples("xpos").size() > 1);
         assertTrue(data.getSamples("ypos").size() > 1);
     }

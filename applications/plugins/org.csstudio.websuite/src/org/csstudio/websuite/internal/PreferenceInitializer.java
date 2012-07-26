@@ -62,7 +62,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.ACTIVATE_CHANNEL_XML_SERVLET, "true");
         prefs.put(PreferenceConstants.HTML_CHANNEL_SERVLET_ADDRESS, "/RecordViewer");
         prefs.put(PreferenceConstants.ACTIVATE_CHANNEL_HTML_SERVLET, "true");
+        
         prefs.put(PreferenceConstants.HOST_NAME, "localhost");
+        prefs.put(PreferenceConstants.EXTERN_HOST_NAME, "localhost");
+        prefs.put(PreferenceConstants.EXTERN_HOST_PORT, "8080");
+        
         prefs.put(PreferenceConstants.EPICS_WEB_APP, "http://localhost:8080/epics/EpicsCa");
         prefs.put(PreferenceConstants.AAPI_WEB_APP, "http://localhost:8080/AAPI-web/archivereader.jsp");
 

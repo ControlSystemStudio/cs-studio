@@ -15,11 +15,12 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.client.ScanInfoModelListener;
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
@@ -112,7 +113,7 @@ public class GUI implements ScanInfoModelListener
         final TableColumnLayout table_layout = new TableColumnLayout();
         table_box.setLayout(table_layout);
 
-        table_viewer = new TableViewer(table_box, SWT.SINGLE | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+        table_viewer = new TableViewer(table_box, SWT.MULTI | SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
@@ -139,14 +140,14 @@ public class GUI implements ScanInfoModelListener
             {
                 final ScanInfo info = (ScanInfo) element;
                 return NLS.bind(Messages.CreateTimeFmt,
-                        DataFormatter.format(info.getCreated()));
+                        ScanSampleFormatter.format(info.getCreated()));
             }
 
             @Override
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(DataFormatter.format(info.getCreated()));
+                cell.setText(ScanSampleFormatter.format(info.getCreated()));
             }
         });
         createColumn(table_viewer, table_layout, Messages.Name, 120, 100, new CellLabelProvider()
@@ -218,7 +219,8 @@ public class GUI implements ScanInfoModelListener
             public void update(final ViewerCell cell)
             {
                 final ScanInfo info = (ScanInfo) cell.getElement();
-                cell.setText(info.getRuntimeText());
+                if (info.getState() != ScanState.Logged)
+                    cell.setText(info.getRuntimeText());
             }
         });
         createColumn(table_viewer, table_layout, Messages.CurrentCommand, 80, 100, new CellLabelProvider()
@@ -279,6 +281,9 @@ public class GUI implements ScanInfoModelListener
                 final GC gc = event.gc;
                 final TableItem item = (TableItem) event.item;
                 final ScanInfo info = (ScanInfo) item.getData();
+                if (info.getState() == ScanState.Logged)
+                    return;
+
                 final Color foreground = gc.getForeground();
                 final Color background = gc.getBackground();
                 gc.setForeground(getStateColor(display, info));
@@ -370,12 +375,17 @@ public class GUI implements ScanInfoModelListener
     }
 
     /** @return Currently selected {@link ScanInfo} or <code>null</code> */
-    private ScanInfo getSelectedScan()
+    @SuppressWarnings("unchecked")
+    private ScanInfo[] getSelectedScans()
     {
         final IStructuredSelection selection = (IStructuredSelection) table_viewer.getSelection();
         if (selection.isEmpty())
             return null;
-        return (ScanInfo) selection.getFirstElement();
+        final ScanInfo[] infos = new ScanInfo[selection.size()];
+        final Iterator<ScanInfo> iter = selection.iterator();
+        for (int i=0; i<infos.length; ++i)
+            infos[i] = iter.next();
+        return infos;
     }
 
     /** Add context menu to table
@@ -391,29 +401,42 @@ public class GUI implements ScanInfoModelListener
             @Override
             public void menuAboutToShow(final IMenuManager manager)
             {
-                final ScanInfo info = getSelectedScan();
-                if (info == null)
+                final ScanInfo[] infos = getSelectedScans();
+                if (infos == null)
                     return;
-                if (info.getState() == ScanState.Paused)
-                {
-                    manager.add(new ResumeAction(shell, model, info));
-                    manager.add(new AbortAction(shell, model, info));
-                }
-                else if (info.getState() == ScanState.Running)
-                {
-                    manager.add(new PauseAction(shell, model, info));
-                    manager.add(new AbortAction(shell, model, info));
-                }
-                else if (info.getState() == ScanState.Idle)
-                {
-                    manager.add(new AbortAction(shell, model, info));
-                }
-                else
-                    manager.add(new RemoveAction(shell, model, info));
+                // Allow resume if anything's paused
+                for (ScanInfo info : infos)
+                    if (info.getState() == ScanState.Paused)
+                    {
+                        manager.add(new ResumeAction(shell, model, infos));
+                        break;
+                    }
+                // Allow pause when anything's running
+                for (ScanInfo info : infos)
+                    if (info.getState() == ScanState.Running)
+                    {
+                        manager.add(new PauseAction(shell, model, infos));
+                        break;
+                    }
+                // Abort if anything is not done
+                for (ScanInfo info : infos)
+                    if (! info.getState().isDone())
+                    {
+                        manager.add(new AbortAction(shell, model, infos));
+                        break;
+                    }
+                // Remove if anything is done
+                for (ScanInfo info : infos)
+                    if (info.getState().isDone())
+                    {
+                        manager.add(new RemoveAction(shell, model, infos));
+                        break;
+                    }
                 manager.add(new Separator());
                 manager.add(new RemoveCompletedAction(shell, model));
                 manager.add(new Separator());
-                manager.add(new ShowDevicesAction(shell, model, info));
+                if (infos.length > 1)
+                    manager.add(new ShowDevicesAction(shell, model, infos));
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
@@ -463,7 +486,7 @@ public class GUI implements ScanInfoModelListener
                 // Received update -> enable table and display info
                 if (! table.getEnabled())
                 	table.setEnabled(true);
-                table_viewer.refresh();
+                table_viewer.refresh(false);
             }
         });
     }

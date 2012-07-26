@@ -41,6 +41,8 @@ import org.csstudio.websuite.servlet.ChannelViewServletXml;
 import org.csstudio.websuite.servlet.DataExporter;
 import org.csstudio.websuite.servlet.FlashInfoServlet;
 import org.csstudio.websuite.servlet.Halle55;
+import org.csstudio.websuite.servlet.HowToSearchServlet;
+import org.csstudio.websuite.servlet.HowToServlet;
 import org.csstudio.websuite.servlet.HowToViewServletHtml;
 import org.csstudio.websuite.servlet.InfoServlet;
 import org.csstudio.websuite.servlet.IocViewServlet;
@@ -200,6 +202,8 @@ public class WebSuiteApplication implements IApplication, Stoppable,
         http.registerServlet("/ChannelViewer", new ChannelViewServlet(), null, httpContext);
         http.registerServlet("/IocViewer", new IocViewServlet(), null, httpContext);
         http.registerServlet("/HowToViewer", new HowToViewServletHtml(), null, httpContext);
+        http.registerServlet("/HowToSearch", new HowToServlet(), null, httpContext);
+        http.registerServlet("/HowToSearchHandler", new HowToSearchServlet(), null, httpContext);
         http.registerServlet("/Info", new InfoServlet(), null, httpContext);
         http.registerServlet("/FlashInfo", new FlashInfoServlet(), null, httpContext);
         http.registerServlet("/PersonalPVInfo", new PersonalPVInfoServlet(), null, httpContext);

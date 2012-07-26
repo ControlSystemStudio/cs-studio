@@ -27,6 +27,9 @@ public class Messages extends NLS
     public static String PercentFmt;
     public static String Remove;
     public static String RemoveCompleted;
+    public static String RemoveCompletedScans;
+    public static String RemoveScan;
+    public static String RemoveSelectedScan;
     public static String Resume;
     public static String Runtime;
     public static String Runtime_TT;

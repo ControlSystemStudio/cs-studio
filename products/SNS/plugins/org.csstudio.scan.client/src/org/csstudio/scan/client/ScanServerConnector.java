@@ -23,6 +23,27 @@ import org.csstudio.scan.SystemSettings;
 import org.csstudio.scan.server.ScanServer;
 
 /** Connect to a {@link ScanServer}
+ *
+ *  <p>Example for connecting to scan server:
+ *  <pre>
+ *  ScanServer server = ScanServerConnector.connect();
+ *  ...
+ *  ... server.getScanInfos();
+ *  ...
+ *  ScanServerConnector.disconnect(server);
+ *  </pre>
+ *
+ *  <p>Default host and port to which to connect are defined in the {@link ScanServer} class.
+ *  For generic Java tools, including Jython, Matlab, ...
+ *  they can be overriddden via Java system preferences <code>ScanServerHost</code>
+ *  and <code>ScanServerPort</code>.
+ *
+ *  <p>Eclipse-based tools set the system properties from Eclipse preferences,
+ *  so what's used in the end are the system preference values,
+ *  but they can be configured from Eclipse preferences
+ *  and the GUI tools include preference pages.
+ *
+ *  @see ScanServer
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -30,7 +51,8 @@ public class ScanServerConnector
 {
     /** Connect to {@link ScanServer} on host and port
      *  provided via system properties <code>ScanServerHost</code>
-     *  and <code>ScanServerPort</code>
+     *  and <code>ScanServerPort</code>.
+     *  If not set, it defaults to "localhost" and the default server port.
      *
      *  @return {@link ScanServer}
      *  @throws Exception on error

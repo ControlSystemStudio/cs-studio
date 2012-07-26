@@ -13,7 +13,9 @@ import org.csstudio.scan.log.DataLog;
 
 /** Data log for Derby
  *
- *  <p>Uses the {@link DerbyDataLogger} for a specfic scan ID.
+ *  <p>Uses the {@link DerbyDataLogger} for a specific scan ID.
+ *  Creates a logger on <code>doLog()</code> and keeps that open
+ *  until <code>close()</code>
  *
  *  @author Kay Kasemir
  */
@@ -33,17 +35,18 @@ public class DerbyDataLog extends DataLog
 
     /** {@inheritDoc} */
 	@Override
-	public void doLog(final ScanSample sample) throws Exception
+	public void doLog(final String device, final ScanSample sample) throws Exception
 	{
 		if (logger == null)
 			logger = new DerbyDataLogger();
-		logger.log(scan_id, sample);
+		logger.log(scan_id, device, sample);
 	}
 
     /** {@inheritDoc} */
 	@Override
 	public ScanData getScanData() throws Exception
 	{
+	    // Can be called without doLog(), so use separate logger just for this call
 		final RDBDataLogger logger = new DerbyDataLogger();
 		try
 		{

@@ -26,6 +26,7 @@ import org.csstudio.scan.condition.DeviceValueCondition;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.SimulatedDevice;
 import org.csstudio.scan.device.ValueConverter;
+import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanCommandImplTool;
 import org.csstudio.scan.server.ScanContext;
@@ -206,8 +207,9 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         // Log the device's value?
         if (context.isAutomaticLogMode())
         {
-	        final long serial = context.getNextScanDataSerial();
-	        context.logSample(ValueConverter.createSample(readback.getInfo().getAlias(), serial, readback.read()));
+            final DataLog log = context.getDataLog();
+	        final long serial = log.getNextScanDataSerial();
+	        log.log(readback.getInfo().getAlias(), ValueConverter.createSample(serial, readback.read()));
         }
 
         // Execute loop body

@@ -59,7 +59,7 @@ public class SimpleFilterWorker {
                              WildcardStringCompare.compare(alarmContents
                                      .get(stringFilterConditionDTO.getKeyValueEnum()), filterValue);
             } catch (Exception wildCardCompareException) {
-                logger.logErrorMessage(this, wildCardCompareException.getMessage());
+                logger.logErrorMessage(SimpleFilterWorker.class, wildCardCompareException.getMessage());
                 shouldSend = true;
             }
             if (shouldSend) {

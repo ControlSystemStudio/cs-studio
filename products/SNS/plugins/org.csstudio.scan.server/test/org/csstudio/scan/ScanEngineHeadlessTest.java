@@ -17,9 +17,9 @@ package org.csstudio.scan;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -38,7 +38,8 @@ import org.csstudio.scan.device.DeviceContext;
 import org.csstudio.scan.device.DeviceInfo;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.server.internal.Scan;
+import org.csstudio.scan.server.internal.ExecutableScan;
+import org.csstudio.scan.server.internal.LoggedScan;
 import org.csstudio.scan.server.internal.ScanEngine;
 import org.junit.Test;
 
@@ -48,7 +49,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanEngineHeadlessTest
 {
-    private void waitForState(final Scan scan, final ScanState state) throws InterruptedException
+    private void waitForState(final ExecutableScan scan, final ScanState state) throws InterruptedException
     {
         do
         {
@@ -66,13 +67,24 @@ public class ScanEngineHeadlessTest
         return devices;
     }
 
+    /** @param engine
+     *  @return <code>true</code> if all scans on engine are 'done'
+     */
+    private static boolean isIdle(final ScanEngine engine)
+    {
+        for (LoggedScan scan : engine.getScans())
+            if (!scan.getScanState().isDone())
+                return false;
+        return true;
+    }
+
     /** Test scans with pause/resume (15 secs) */
     @Test(timeout=30000)
     public void testScanEngine() throws Exception
     {
         final DeviceContext devices = getDemoDevices();
 
-        final Scan scan_x = new Scan("Scan Motor X",
+        final ExecutableScan scan_x = new ExecutableScan("Scan Motor X",
             devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
@@ -83,7 +95,7 @@ public class ScanEngineHeadlessTest
             )
         );
 
-        final Scan scan_y = new Scan("Scan Motor Y",
+        final ExecutableScan scan_y = new ExecutableScan("Scan Motor Y",
                 devices,
             new LoopCommandImpl(
                 new LoopCommand("ypos", 1.0, 5.0, 1.0,
@@ -91,13 +103,13 @@ public class ScanEngineHeadlessTest
                     new LogCommand("ypos"))));
 
         final ScanEngine engine = new ScanEngine();
-        engine.start();
+        engine.start(false);
 
         engine.submit(scan_x);
         engine.submit(scan_y);
 
         // List scans and their state
-        List<Scan> scans = engine.getScans();
+        List<ExecutableScan> scans = engine.getExecutableScans();
         assertEquals(2, scans.size());
 
         // Second scan should be idle.
@@ -107,10 +119,10 @@ public class ScanEngineHeadlessTest
         // Wait for 1st scan to start
         do
         {
-            scans = engine.getScans();
+            scans = engine.getExecutableScans();
             System.out.println(scans.get(0).getScanInfo());
             assertSame(scan_x, scans.get(0));
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             Thread.sleep(200);
         }
         while (scan_x.getScanInfo().getState() != ScanState.Running);
@@ -121,7 +133,7 @@ public class ScanEngineHeadlessTest
         for (int i=0; i<4; ++i)
         {
             System.out.println(scan_x.getScanInfo());
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             assertEquals(ScanState.Paused, scan_x.getScanInfo().getState());
             Thread.sleep(200);
         }
@@ -133,7 +145,7 @@ public class ScanEngineHeadlessTest
         scan_x.resume();
         do
         {
-            scans = engine.getScans();
+            scans = engine.getExecutableScans();
             final ScanInfo info = scans.get(0).getScanInfo();
             System.out.println(info + ", command " + info.getCurrentCommand() + " @ " + info.getCurrentAddress());
 
@@ -142,7 +154,7 @@ public class ScanEngineHeadlessTest
                 assertTrue(info.getCurrentAddress() == 1  ||
                            info.getCurrentAddress() == 2);
             assertSame(scan_x, scans.get(0));
-            assertFalse(engine.isIdle());
+            assertFalse(isIdle(engine));
             Thread.sleep(200);
         }
         while (scan_x.getScanInfo().getState() != ScanState.Finished);
@@ -151,18 +163,18 @@ public class ScanEngineHeadlessTest
         // Wait for 2nd scan to finish
         do
         {
-            scans = engine.getScans();
+            scans = engine.getExecutableScans();
             System.out.println(scans.get(1).getScanInfo());
             assertSame(scan_y, scans.get(1));
             Thread.sleep(200);
         }
-        while (! engine.isIdle());
+        while (! isIdle(engine));
 
         System.out.println(scan_x.getScanInfo());
         System.out.println(scan_y.getScanInfo());
 
         engine.stop();
-        scans = engine.getScans();
+        scans = engine.getExecutableScans();
         assertEquals(0, scans.size());
     }
 
@@ -171,7 +183,7 @@ public class ScanEngineHeadlessTest
     {
         final DeviceContext devices = getDemoDevices();
 
-        final Scan scan = new Scan("Scan Motor X",
+        final ExecutableScan scan = new ExecutableScan("Scan Motor X",
             devices,
             new LoopCommandImpl(
                 new LoopCommand("xpos", 1.0, 5.0, 1.0,
@@ -181,22 +193,22 @@ public class ScanEngineHeadlessTest
         );
 
         final ScanEngine engine = new ScanEngine();
-        engine.start();
+        engine.start(false);
         engine.submit(scan);
 
         waitForState(scan, ScanState.Finished);
 
         // Submit same scan again, which causes error
-        engine.submit(scan);
-
-        // Wait for failure...
-        waitForState(scan, ScanState.Failed);
-
-        final String error = scan.getScanInfo().getError();
-        assertNotNull(error);
-        System.out.println("Received expected error: " + error);
-        assertTrue(error.toLowerCase().contains("cannot"));
-        assertTrue(error.toLowerCase().contains("finished"));
+        try
+        {
+            engine.submit(scan);
+            fail("Submit scan twice?");
+        }
+        catch (IllegalStateException ex)
+        {
+            System.out.println("Received expected error: " + ex.getMessage());
+            assertTrue(ex.getMessage().contains("submitted"));
+        }
 
         engine.stop();
     }
@@ -207,7 +219,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
-        final Scan scan = new Scan("Scan Motor X",
+        final ExecutableScan scan = new ExecutableScan("Scan Motor X",
                 devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),
@@ -216,7 +228,7 @@ public class ScanEngineHeadlessTest
         );
 
         final ScanEngine engine = new ScanEngine();
-        engine.start();
+        engine.start(false);
         engine.submit(scan);
 
         // Wait for scan to start
@@ -229,7 +241,7 @@ public class ScanEngineHeadlessTest
         // Thread should not continue...
         Thread.sleep(1000);
 
-        final List<Scan> scans = engine.getScans();
+        final List<ExecutableScan> scans = engine.getExecutableScans();
         assertEquals(0, scans.size());
 
         System.out.println(scan.getScanInfo());
@@ -242,7 +254,7 @@ public class ScanEngineHeadlessTest
         final DeviceContext devices = getDemoDevices();
 
         // Scan that will hang
-        final Scan scan = new Scan("Scan Motor X",
+        final ExecutableScan scan = new ExecutableScan("Scan Motor X",
                 devices,
                 new SetCommandImpl(new SetCommand("xpos", 2.0)),
                 new WaitCommandImpl(new WaitCommand("xpos", Comparison.EQUALS, 2.0, 0.1, 0.0)),
@@ -251,7 +263,7 @@ public class ScanEngineHeadlessTest
         );
 
         final ScanEngine engine = new ScanEngine();
-        engine.start();
+        engine.start(false);
         engine.submit(scan);
 
         // Wait for scan to start
@@ -259,7 +271,7 @@ public class ScanEngineHeadlessTest
         // Allow it to do a little work
         Thread.sleep(1000);
 
-        engine.abortScan(scan);
+        scan.abort();
 
         // Thread should not continue...
         Thread.sleep(1000);

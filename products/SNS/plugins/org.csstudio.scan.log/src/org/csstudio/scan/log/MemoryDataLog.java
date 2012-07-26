@@ -41,18 +41,18 @@ public class MemoryDataLog extends DataLog
 
     /** {@inheritDoc} */
 	@Override
-    public synchronized void doLog(final ScanSample sample) throws Exception
+    public synchronized void doLog(final String device, final ScanSample sample) throws Exception
     {
 		// Check Memory usage
 		final MemoryInfo mem = new MemoryInfo();
 		if (mem.getMemoryPercentage() > threshold)
     		return;
 
-		List<ScanSample> samples = device_logs.get(sample.getDeviceName());
+		List<ScanSample> samples = device_logs.get(device);
 		if (samples == null)
 		{
 			samples = new ArrayList<ScanSample>();
-			device_logs.put(sample.getDeviceName(), samples);
+			device_logs.put(device, samples);
 		}
 		samples.add(sample);
     }

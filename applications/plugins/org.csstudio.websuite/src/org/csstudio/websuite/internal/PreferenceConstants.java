@@ -50,6 +50,8 @@ public class PreferenceConstants
     public static final String HTML_CHANNEL_SERVLET_ADDRESS = "htmlChannelServletAddress";
     
     public static final String HOST_NAME = "hostName";
+    public static final String EXTERN_HOST_NAME = "externHostName";
+    public static final String EXTERN_HOST_PORT = "externHostPort";
     
     public static final String EPICS_WEB_APP = "epicsWebApp";
     public static final String AAPI_WEB_APP = "aapiWebApp";

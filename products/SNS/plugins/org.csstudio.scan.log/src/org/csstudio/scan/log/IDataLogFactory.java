@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.log;
 
+import org.csstudio.scan.server.Scan;
+
 /** Interface to be implemented by log providers
  *
  *  @author Kay Kasemir
@@ -15,14 +17,30 @@ public interface IDataLogFactory
 {
 	/** Create new log for a new scan
 	 *  @param scan_name Name of the scan (doesn't need to be unique)
-	 *  @return Unique scan ID that can now and later be used to access the data log
+	 *  @return Scan with ID that can now and later be used to access the data log
 	 *  @throws Exception on error
 	 */
-    public long createDataLog(final String scan_name) throws Exception;
+    public Scan createDataLog(final String scan_name) throws Exception;
+
+    /** Obtain all available scans
+     *  @return Scans that have been logged
+     *  @throws Exception on error
+     */
+    public Scan[] getScans() throws Exception;
 
 	/** Get log for a scan
-	 *  @return Unique scan ID
+	 *
+	 *  <p>Caller needs to <code>close()</code>
+	 *  @param scan Scan
+	 *  @return DataLog for Scan, or <code>null</code> if there is none
 	 *  @throws Exception on error
+	 *  @see DataLog#close()
 	 */
-    public DataLog getDataLog(final long scan_id) throws Exception;
+    public DataLog getDataLog(final Scan scan) throws Exception;
+
+    /** Delete logged data for a scan
+     *  @param scan Scan
+     *  @throws Exception on error
+     */
+    public void deleteDataLog(final Scan scan) throws Exception;
 }

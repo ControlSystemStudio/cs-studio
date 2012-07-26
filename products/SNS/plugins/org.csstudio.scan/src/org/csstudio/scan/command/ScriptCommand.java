@@ -57,13 +57,13 @@ public class ScriptCommand extends ScanCommand
         return properties;
     }
 
-	/** @return Script */
+	/** @return Name of script class */
     public String getScript()
     {
         return script;
     }
 
-    /** @param device_names Names of devices to read and log */
+    /** @param script Name of the script class */
     public void setScript(final String script)
     {
         this.script = script;

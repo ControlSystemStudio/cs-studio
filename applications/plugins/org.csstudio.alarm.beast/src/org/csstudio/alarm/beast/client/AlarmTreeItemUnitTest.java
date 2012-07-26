@@ -41,6 +41,11 @@ public class AlarmTreeItemUnitTest
         {
                 new GDCDataStructure("reset PV123", "caput PV123 Reset")
         };
+        
+        final AADataStructure automated_actions[] = new AADataStructure[]
+        {
+                new AADataStructure("Send Mail", "paul@home.there", 30)
+        };
 
         // Root
         //    DTL
@@ -61,6 +66,7 @@ public class AlarmTreeItemUnitTest
         pv.setGuidance(guidance);
         pv.setDisplays(displays);
         pv.setCommands(commands);
+        pv.setAutomatedActions(automated_actions);
         pv = new AlarmTreePV(dtl_vac, "DTL_Vac:Sensor2:Pressure", 0);
 
         assertEquals("/Root/DTL/Vacuum/DTL_Vac:Sensor2:Pressure", pv.getPathName());

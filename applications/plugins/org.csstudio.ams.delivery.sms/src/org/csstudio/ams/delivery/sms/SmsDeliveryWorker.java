@@ -157,8 +157,8 @@ public class SmsDeliveryWorker extends AbstractDeliveryWorker implements Message
                 }
             }
 
-            while (outgoingQueue.hasContent()
-                   || incomingQueue.hasContent()) {
+            while ((outgoingQueue.hasContent() || incomingQueue.hasContent())
+                    && running) {
 
                 if (incomingQueue.hasContent()) {
                     final BaseIncomingMessage inMsg = incomingQueue.nextMessage();

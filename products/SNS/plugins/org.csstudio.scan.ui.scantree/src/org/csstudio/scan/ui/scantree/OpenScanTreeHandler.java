@@ -23,6 +23,7 @@ import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
+import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.ScanHandlerUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -31,6 +32,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -49,6 +52,13 @@ public class OpenScanTreeHandler extends AbstractHandler
 			return null;
 
 		final Shell shell = HandlerUtil.getActiveShellChecked(event);
+		if (info.getState() == ScanState.Logged)
+		{
+		    MessageDialog.openInformation(shell, Messages.OpenScanTreeError,
+		          NLS.bind(Messages.NoScanCommandsFmt, info.getName()));
+		    return null;
+		}
+
 		final Display display = shell.getDisplay();
 
 		// Use Job to read commands from server

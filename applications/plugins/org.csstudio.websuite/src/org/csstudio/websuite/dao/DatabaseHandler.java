@@ -29,6 +29,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
+
 import oracle.jdbc.OracleDriver;
 
 /**
@@ -42,43 +44,38 @@ public class DatabaseHandler {
     private String dbPassword;
     
     public DatabaseHandler(String url, String user, String password) throws SQLException {
-        
         this.dbUrl = url;
         this.dbUser = user;
         this.dbPassword = password;
-        
         DriverManager.registerDriver(new OracleDriver());
     }
 
-    public String getHowToEntryText(String strId) throws SQLException {
-        
+    public HowToEntry getHowToEntryText(String strId) throws SQLException {
         long id;
-        
         try {
             id = Long.parseLong(strId);
         } catch(NumberFormatException nfe) {
             id = 0;
         }
-        
         return this.getHowToEntryText(id);
     }
     
-    public String getHowToEntryText(long id) throws SQLException {
+    public HowToEntry getHowToEntryText(long id) throws SQLException {
         
         Connection c = null;
         PreparedStatement query = null;
         ResultSet rs = null;
-        String result = null;
+        HowToEntry result = null;
         
         try {
             c = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
-            query = c.prepareStatement("SELECT desclong FROM howto WHERE howtoid = ?");
+            query = c.prepareStatement("SELECT howtoid,desclong FROM howto WHERE howtoid = ?");
             
             query.setLong(1, id);
             rs = query.executeQuery();
             
-            if(rs.next()) {
-                result = rs.getString("desclong");
+            if (rs.next()) {
+                result = new HowToEntry(rs.getLong("howtoid"), rs.getString("desclong"));
             }
         } catch(SQLException sqle) {
             throw sqle;
@@ -88,6 +85,38 @@ public class DatabaseHandler {
             if(c!=null){try{c.close();}catch(Exception e){/* Can be ignored */}c=null;}
         }
         
+        return result;
+    }
+    
+    public HowToEntry[] searchHowToEntryText(HowToSearchWords search, boolean orMode) throws SQLException {
+        
+        Connection c = null;
+        PreparedStatement query = null;
+        ResultSet rs = null;
+        Vector<HowToEntry> entries = new Vector<HowToEntry>();
+        
+        try {
+            c = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+            query = c.prepareStatement("SELECT howtoid,desclong FROM howto " + search.getWhereClause(orMode) + " ORDER BY howtoid");
+            if (search.hasKeywords()) {
+                for (int i = 0;i < search.size();i++) {
+                    query.setString((i + 1), "%" + search.getKeyword(i) + "%");
+                }
+            }
+            rs = query.executeQuery();
+            while (rs.next()) {
+                entries.add(new HowToEntry(rs.getLong("howtoid"), rs.getString("desclong")));
+            }
+        } catch(SQLException sqle) {
+            throw sqle;
+        } finally {
+            if(rs!=null){try{rs.close();}catch(Exception e){/* Can be ignored */}rs=null;}
+            if(query!=null){try{query.close();}catch(Exception e){/* Can be ignored */}query=null;}
+            if(c!=null){try{c.close();}catch(Exception e){/* Can be ignored */}c=null;}
+        }
+        
+        HowToEntry[] result = new HowToEntry[entries.size()];
+        result = entries.toArray(result);
         return result;
     }
 }

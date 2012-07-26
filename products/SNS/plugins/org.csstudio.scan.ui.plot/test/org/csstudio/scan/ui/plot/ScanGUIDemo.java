@@ -35,23 +35,51 @@ public class ScanGUIDemo
         shell.setLayout(new GridLayout(1, false));
 
         final Plot plot = new Plot(shell);
-        
+
         final Map<String, List<ScanSample>> data = new HashMap<String, List<ScanSample>>();
         data.put("xpos", Arrays.asList(new ScanSample[]
         {
-                new NumberScanSample("xpos", new Date(), 1, 1),
-                new NumberScanSample("xpos", new Date(), 2, 2),
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 2),
+                new NumberScanSample(new Date(), 3, 3),
+                new NumberScanSample(new Date(), 4, 4),
         }));
         data.put("readback", Arrays.asList(new ScanSample[]
         {
-                new NumberScanSample("readback", new Date(), 1, 3),
-                new NumberScanSample("readback", new Date(), 2, 4),
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 2),
+                new NumberScanSample(new Date(), 3, 4),
+                new NumberScanSample(new Date(), 4, 1),
         }));
+        data.put("fit", Arrays.asList(new ScanSample[]
+        {
+                new NumberScanSample(new Date(), 1, 1),
+                new NumberScanSample(new Date(), 2, 3),
+                new NumberScanSample(new Date(), 3, 3),
+                new NumberScanSample(new Date(), 4, 1),
+        }));
+        final ScanData scan_data = new ScanData(data);
 
-        final PlotDataProvider trace = new PlotDataProvider(display);
-        trace.update(1, new ScanData(data), "xpos", "readback");
-        plot.addTrace(trace);
-        
+        final PlotDataProvider readback = new PlotDataProvider(display, "xpos", "readback");
+        final PlotDataProvider fit = new PlotDataProvider(display, "xpos", "fit");
+        plot.setDataProviders(readback, fit);
+        // OK to update the data providers
+        plot.setDataProviders(readback, fit);
+        plot.setDataProviders(readback, fit);
+
+        // Update data after some delay in thread
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try { sleep(5000); }  catch (InterruptedException e) { }
+                readback.update(scan_data);
+                try { sleep(5000); }  catch (InterruptedException e) { }
+                fit.update(scan_data);
+            }
+        }.start();
+
         shell.setSize(800, 600);
         shell.open();
         while (!shell.isDisposed())

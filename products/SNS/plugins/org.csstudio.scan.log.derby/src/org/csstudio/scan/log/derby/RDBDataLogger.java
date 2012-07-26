@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import org.csstudio.scan.data.NumberScanSample;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
+import org.csstudio.scan.server.Scan;
 
 /** Base for an RDB-based sample logger
  *
@@ -62,14 +63,16 @@ abstract public class RDBDataLogger
 	 *  @return Scan ID, unique within the database
 	 *  @throws Exception on error
 	 */
-	public long createScan(final String scan_name) throws Exception
+	public Scan createScan(final String scan_name) throws Exception
     {
+	    final Date now = new Date();
 		final PreparedStatement statement = connection.prepareStatement(
-				"INSERT INTO scans(name) VALUES (?)",
+				"INSERT INTO scans(name, created) VALUES (?,?)",
 				Statement.RETURN_GENERATED_KEYS);
 		try
 		{
 			statement.setString(1, scan_name);
+			statement.setTimestamp(2, new Timestamp(now.getTime()));
 			statement.executeUpdate();
 			final ResultSet result = statement.getGeneratedKeys();
 			try
@@ -77,7 +80,7 @@ abstract public class RDBDataLogger
 				if (! result.next())
 					throw new Exception("Missing new scan ID");
 				final long id = result.getLong(1);
-				return id;
+				return new Scan(id, scan_name, now);
 			}
 			finally
 			{
@@ -88,6 +91,60 @@ abstract public class RDBDataLogger
 		{
 			statement.close();
 		}
+    }
+
+    /** Locate scan
+     *  @param id Scan ID
+     *  @return Scan for ID or <code>null</code>
+     *  @throws Exception on error
+     */
+    public Scan getScan(final long id) throws Exception
+    {
+        final Scan scan;
+        final PreparedStatement statement = connection.prepareStatement(
+                "SELECT id, name, created FROM scans WHERE id=?");
+        try
+        {
+            statement.setLong(1, id);
+            final ResultSet result = statement.executeQuery();
+            if (result.next())
+                scan = new Scan(result.getLong(1),
+                                result.getString(2),
+                                result.getTimestamp(3));
+            else
+                scan = null;
+            result.close();
+        }
+        finally
+        {
+            statement.close();
+        }
+        return scan;
+    }
+
+    /** Obtain all available scans
+     *  @return Scans that have been logged
+     *  @throws Exception on error
+     */
+    public Scan[] getScans() throws Exception
+    {
+        final List<Scan> scans = new ArrayList<Scan>();
+        final PreparedStatement statement = connection.prepareStatement(
+                "SELECT id, name, created FROM scans ORDER BY id");
+        try
+        {
+            final ResultSet result = statement.executeQuery();
+            while (result.next())
+                scans.add(new Scan(result.getLong(1),
+                                   result.getString(2),
+                                   result.getTimestamp(3)));
+            result.close();
+        }
+        finally
+        {
+            statement.close();
+        }
+        return scans.toArray(new Scan[scans.size()]);
     }
 
 	/** Find (or create) a device in the database
@@ -168,12 +225,13 @@ abstract public class RDBDataLogger
 
 	/** Log a sample
 	 *  @param scan_id ID of associated scan
+	 *  @param device Device name
 	 *  @param sample Sample to log
 	 *  @throws Exception on error
 	 */
-    public void log(final long scan_id, final ScanSample sample) throws Exception
+    public void log(final long scan_id, final String device, final ScanSample sample) throws Exception
     {
-    	final int device_id = getDevice(sample.getDeviceName());
+    	final int device_id = getDevice(device);
 
     	if (insert_sample_statement == null)
 			insert_sample_statement = connection.prepareStatement(
@@ -234,7 +292,7 @@ abstract public class RDBDataLogger
 				final long serial = result.getLong(1);
 				final Date timestamp = result.getTimestamp(2);
 				final double number = result.getDouble(3);
-				samples.add(new NumberScanSample(device_name, timestamp, serial, number));
+				samples.add(new NumberScanSample(timestamp, serial, number));
 			}
 			result.close();
 		}
@@ -268,6 +326,52 @@ abstract public class RDBDataLogger
 			statement.close();
 		}
 		return devices.toArray(new String[devices.size()]);
+    }
+
+    /** Delete logged data for a scan
+     *  @param scan_id ID of the scan
+     *  @throws SQLException on error
+     */
+    public void deleteDataLog(final long scan_id) throws SQLException
+    {
+        connection.setAutoCommit(false);
+        try
+        {
+            PreparedStatement statement = connection.prepareStatement(
+                    "DELETE FROM samples WHERE scan_id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            statement = connection.prepareStatement(
+                    "DELETE FROM scans WHERE id=?");
+            try
+            {
+                statement.setLong(1, scan_id);
+                statement.executeUpdate();
+            }
+            finally
+            {
+                statement.close();
+            }
+
+            connection.commit();
+        }
+        catch (SQLException ex)
+        {
+            connection.rollback();
+            throw ex;
+        }
+        finally
+        {
+            connection.setAutoCommit(true);
+        }
     }
 
 	/** Close database.

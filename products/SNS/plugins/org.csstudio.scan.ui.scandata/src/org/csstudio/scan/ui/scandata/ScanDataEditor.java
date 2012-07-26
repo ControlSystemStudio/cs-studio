@@ -10,9 +10,9 @@ package org.csstudio.scan.ui.scandata;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.scan.data.DataFormatter;
+import org.csstudio.scan.data.ScanSampleFormatter;
 import org.csstudio.scan.data.ScanData;
-import org.csstudio.scan.data.SpreadsheetScanDataIterator;
+import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -140,7 +140,7 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
 		    public String getToolTipText(Object element)
 		    {
 			    final ScanDataRow row = (ScanDataRow) element;
-			    return DataFormatter.format(row.getTimestamp());
+			    return ScanSampleFormatter.format(row.getTimestamp());
 		    }
 
 			@Override
@@ -285,7 +285,7 @@ public class ScanDataEditor extends EditorPart implements ScanDataModelListener
     {
 		// Transform data in update thread
 		final List<ScanDataRow> rows = new ArrayList<ScanDataRow>();
-		SpreadsheetScanDataIterator sheet = new SpreadsheetScanDataIterator(data);
+		ScanDataIterator sheet = new ScanDataIterator(data);
 		final String[] devices = sheet.getDevices();
         while (sheet.hasNext())
         {

@@ -22,13 +22,17 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/** Engine that accepts {@link Scan}s, queuing them and executing
+import org.csstudio.scan.log.DataLogFactory;
+import org.csstudio.scan.server.Scan;
+import org.csstudio.scan.server.UnknownScanException;
+
+/** Engine that accepts {@link ExecutableScan}s, queuing them and executing
  *  them in order
  *  @author Kay Kasemir
  */
 public class ScanEngine
 {
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
+    final private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /** All the scans handled by this engine
      *
@@ -37,14 +41,21 @@ public class ScanEngine
      *  Scans that either Finished, Failed or were Aborted
      *  are kept around for a little while.
      */
-    final private List<ScanQueueItem> scan_queue = new LinkedList<ScanQueueItem>();
+    final private List<LoggedScan> scan_queue = new LinkedList<LoggedScan>();
 
     /** Start the scan engine, i.e. create thread that will process
      *  scans
+     *  @param load_existing_scans Load info about existing scans?
+     *  @throws Exception on error
      */
-    public void start()
+    public void start(final boolean load_existing_scans) throws Exception
     {
-        executor = Executors.newSingleThreadExecutor();
+        if (! load_existing_scans)
+            return;
+
+        final Scan[] scans = DataLogFactory.getScans();
+        for (Scan scan : scans)
+            scan_queue.add(new LoggedScan(scan));
     }
 
     /** Stop the scan engine, aborting scans
@@ -59,92 +70,105 @@ public class ScanEngine
         }
     }
 
-    /** @return <code>true</code> if the engine is idle, i.e. all
-     *          there is currently no active scan
-     */
-    public boolean isIdle()
-    {
-        synchronized (scan_queue)
-        {
-            for (ScanQueueItem item : scan_queue)
-                if (! item.isDone())
-                    return false;
-        }
-        return true;
-    }
-
     /** Submit a scan to the engine for execution
-     *  @param scan The {@link Scan}
+     *  @param scan The {@link ExecutableScan}
+     *  @throws IllegalStateException if scan had been submitted before
      */
-    public void submit(final Scan scan)
+    public void submit(final ExecutableScan scan)
     {
+        scan.submit(executor);
         synchronized (scan_queue)
         {
-            scan_queue.add(new ScanQueueItem(executor, scan));
+            scan_queue.add(scan);
         }
     }
 
     /** @return List of scans */
-    public List<Scan> getScans()
+    public List<LoggedScan> getScans()
     {
-        final List<Scan> scans = new ArrayList<Scan>();
+        final List<LoggedScan> scans = new ArrayList<LoggedScan>();
         synchronized (scan_queue)
         {
-            for (ScanQueueItem item : scan_queue)
-                scans.add(item.getScan());
+            scans.addAll(scan_queue);
         }
         return scans;
     }
 
-    /** Locate scan queue item
-     *  @param scan Scan
-     *  @return {@link ScanQueueItem} or <code>null</code> when scan not found
+    /** @return List of executable scans */
+    public List<ExecutableScan> getExecutableScans()
+    {
+        final List<ExecutableScan> scans = new ArrayList<ExecutableScan>();
+        synchronized (scan_queue)
+        {
+            for (LoggedScan scan : scan_queue)
+                if (scan instanceof ExecutableScan)
+                    scans.add((ExecutableScan) scan);
+        }
+        return scans;
+    }
+
+    /** Find scan by ID
+     *  @param id Scan ID
+     *  @return {@link ExecutableScan}
+     *  @throws UnknownScanException if scan ID not valid
      */
-    private ScanQueueItem getScanItem(final Scan scan)
+    public LoggedScan getScan(final long id) throws UnknownScanException
     {
         synchronized (scan_queue)
         {
-            for (ScanQueueItem item : scan_queue)
-                if (item.getScan() == scan) // Really exact scan, not equals() !
-                    return item;
+            // Linear lookup. Good enough?
+            for (LoggedScan scan : scan_queue)
+                if (scan.getId() == id)
+                    return scan;
         }
+        throw new UnknownScanException(id);
+    }
+
+    /** Find executable scan by ID
+     *  @param id Scan ID
+     *  @return {@link ExecutableScan} or <code>null</code> if scan is not executable
+     *  @throws UnknownScanException if scan ID not valid
+     */
+    public ExecutableScan getExecutableScan(final long id) throws UnknownScanException
+    {
+        final LoggedScan scan = getScan(id);
+        if (scan instanceof ExecutableScan)
+            return (ExecutableScan) scan;
         return null;
     }
 
-    /** @param scan Scan to abort */
-    public void abortScan(final Scan scan)
+    /** @param scan Scan to remove (if it's 'done')
+     *  @throws Exception on error
+     */
+    public void removeScan(final LoggedScan scan) throws Exception
     {
-        final ScanQueueItem item = getScanItem(scan);
-        if (item != null)
-            item.abort();
-    }
-
-    /** @param scan Scan to remove (if it's 'done') */
-    public void removeScan(final Scan scan)
-    {
-        final ScanQueueItem item = getScanItem(scan);
-        if (item == null)
-            return;
         // Only remove scans that are 'done'
-        if (item.isDone())
+        if (scan.getScanState().isDone())
         {
+            DataLogFactory.deleteDataLog(scan);
             synchronized (scan_queue)
             {
-                scan_queue.remove(item);
+                scan_queue.remove(scan);
             }
         }
     }
 
-    /** Remove completed scans */
-    public void removeCompletedScans()
+    /** Remove completed scans
+     *  @throws Exception on error
+     */
+    public void removeCompletedScans() throws Exception
     {
         synchronized (scan_queue)
         {
-            final Iterator<ScanQueueItem> iterator = scan_queue.iterator();
+            final Iterator<LoggedScan> iterator = scan_queue.iterator();
             while (iterator.hasNext())
             {
-                if (iterator.next().isDone())
+                final LoggedScan scan = iterator.next();
+                if (scan.getScanState().isDone())
+                {
+                    DataLogFactory.deleteDataLog(scan);
                     iterator.remove();
+                }
             }
         }
     }
@@ -156,10 +180,10 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-        	for (ScanQueueItem item : scan_queue)
-        		if (item.isDone())
+        	for (LoggedScan scan : scan_queue)
+        		if (scan.getScanState().isDone())
         		{
-        			scan_queue.remove(item);
+        			scan_queue.remove(scan);
         			return true;
         		}
         }

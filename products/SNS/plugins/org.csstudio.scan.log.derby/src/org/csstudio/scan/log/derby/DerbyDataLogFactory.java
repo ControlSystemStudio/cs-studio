@@ -10,14 +10,16 @@ package org.csstudio.scan.log.derby;
 import org.csstudio.scan.log.DataLog;
 import org.csstudio.scan.log.IDataLogFactory;
 import org.csstudio.scan.log.MemoryDataLog;
+import org.csstudio.scan.server.Scan;
 
 /** {@link IDataLogFactory} for the {@link MemoryDataLog}
  *  @author Kay Kasemir
  */
 public class DerbyDataLogFactory implements IDataLogFactory
 {
+    /** {@inheritDoc} */
 	@Override
-    public long createDataLog(final String scan_name) throws Exception
+    public Scan createDataLog(final String scan_name) throws Exception
     {
 		final DerbyDataLogger logger = new DerbyDataLogger();
 		try
@@ -30,9 +32,50 @@ public class DerbyDataLogFactory implements IDataLogFactory
 		}
     }
 
+    /** {@inheritDoc} */
 	@Override
-    public DataLog getDataLog(final long scan_id) throws Exception
+    public Scan[] getScans() throws Exception
     {
-	    return new DerbyDataLog(scan_id);
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            return logger.getScans();
+        }
+        finally
+        {
+            logger.close();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DataLog getDataLog(final Scan scan) throws Exception
+    {
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            if (logger.getScan(scan.getId()) != null)
+                return new DerbyDataLog(scan.getId());
+        }
+        finally
+        {
+            logger.close();
+        }
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void deleteDataLog(final Scan scan) throws Exception
+    {
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            logger.deleteDataLog(scan.getId());
+        }
+        finally
+        {
+            logger.close();
+        }
     }
 }

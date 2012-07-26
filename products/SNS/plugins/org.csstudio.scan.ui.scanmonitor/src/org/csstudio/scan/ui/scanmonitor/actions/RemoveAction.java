@@ -15,10 +15,19 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scanmonitor.actions;
 
+import java.rmi.RemoteException;
+
 import org.csstudio.scan.client.ScanInfoModel;
 import org.csstudio.scan.server.ScanInfo;
+import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.ui.scanmonitor.Activator;
 import org.csstudio.scan.ui.scanmonitor.Messages;
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that removes a scan
@@ -29,17 +38,47 @@ public class RemoveAction extends AbstractGUIAction
     /** Initialize
      *  @param shell Parent shell
      *  @param model
-     *  @param info
+     *  @param infos
      */
-    public RemoveAction(final Shell shell, final ScanInfoModel model, final ScanInfo info)
+    public RemoveAction(final Shell shell, final ScanInfoModel model, final ScanInfo[] infos)
     {
-        super(shell, model, info, Messages.Remove, Activator.getImageDescriptior("icons/remove.gif")); //$NON-NLS-1$
+        super(shell, model, infos, Messages.Remove, Activator.getImageDescriptior("icons/remove.gif")); //$NON-NLS-1$
     }
 
     /** {@inheritDoc} */
     @Override
     protected void runModelAction() throws Exception
     {
-        model.getServer().remove(info.getId());
+        if (! MessageDialog.openConfirm(shell, Messages.RemoveScan, Messages.RemoveSelectedScan))
+            return;
+
+        // Job because removal of many scans and data in log can be slow
+        final ScanServer server = model.getServer();
+        final Job job = new Job( Messages.RemoveScan)
+        {
+            @Override
+            protected IStatus run(final IProgressMonitor monitor)
+            {
+                try
+                {
+                    for (ScanInfo info : infos)
+                        server.remove(info.getId());
+                }
+                catch (final RemoteException ex)
+                {
+                    shell.getDisplay().asyncExec(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+                        }
+                    });
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.setUser(true);
+        job.schedule();
     }
 }

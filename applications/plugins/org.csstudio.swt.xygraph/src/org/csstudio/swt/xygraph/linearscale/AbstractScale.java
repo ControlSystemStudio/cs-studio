@@ -38,7 +38,7 @@ public abstract class AbstractScale extends Figure{
 	public static final double DEFAULT_MIN = 0d;
 
 
-	public static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0";
+	public static final String DEFAULT_ENGINEERING_FORMAT = "0.####E0";//$NON-NLS-1$
 
 
 	/**
@@ -46,7 +46,7 @@ public abstract class AbstractScale extends Figure{
 	 */
 	private static final int ENGINEERING_LIMIT = 4;
 
-	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	
+	private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd\nHH:mm:ss";    	//$NON-NLS-1$
     
     /** ticks label position */
     private LabelSide tickLableSide = LabelSide.Primary;   
@@ -59,7 +59,7 @@ public abstract class AbstractScale extends Figure{
     public final static double DEFAULT_LOG_SCALE_MAX = 100d;
     
     /** the default label format */
-    private String default_decimal_format = "############.##";    
+    private String default_decimal_format = "############.##";    //$NON-NLS-1$
 	
     /** the state if the axis scale is log scale */
     protected boolean logScaleEnabled = false;
@@ -98,6 +98,8 @@ public abstract class AbstractScale extends Figure{
 	
     private Range range = new Range(min, max);
     
+    
+    
 	/**
      * Formats the given object.
      * 
@@ -105,31 +107,49 @@ public abstract class AbstractScale extends Figure{
      *            the object
      * @return the formatted string
      */
-    public String format(Object obj) {     
+    public String format(Object obj) {
+    	return format(obj, false);
+    }
+    
+	/**
+     * Formats the given object.
+     * 
+     * @param obj
+     *            the object
+     * @param minOrMaxDate
+     * 			true if it is the min or max date on the scale.
+     * @return the formatted string
+     */
+    public String format(Object obj, boolean minOrMaxDate) {     
         	
             if (isDateEnabled()) {
               	if (autoFormat || formatPattern == null || formatPattern.equals("")
             			|| formatPattern.equals(default_decimal_format)
             			|| formatPattern.equals(DEFAULT_ENGINEERING_FORMAT)) {            		
             		formatPattern =  DEFAULT_DATE_FORMAT;     
-            		double length = Math.abs(max - min);
-	                if (length <=1000 || timeUnit == Calendar.MILLISECOND) { //less than a second
-	                	formatPattern = "HH:mm:ss.SSS";
-	                } else if (length <=3600000d || timeUnit == Calendar.SECOND) { //less than a hour
-	                	formatPattern = "HH:mm:ss";
+            		double length = Math.abs(max - min);            		
+	                if (length <=5000 || timeUnit == Calendar.MILLISECOND) { //less than five second
+	                	formatPattern = "ss.SSS";//$NON-NLS-1$
+	                } else if (length <=1800000d || timeUnit == Calendar.SECOND) { //less than 30 min
+	                	formatPattern = "HH:mm:ss";//$NON-NLS-1$
 	                } else if (length <= 86400000d || timeUnit == Calendar.MINUTE) { // less than a day
-	                	formatPattern = "HH:mm";
+	                	formatPattern = "HH:mm";//$NON-NLS-1$
 	                } else if (length <= 604800000d || timeUnit == Calendar.HOUR_OF_DAY) { //less than a week
-	                	formatPattern = "dd HH:mm";
+	                	formatPattern = "MM-dd\nHH:mm";//$NON-NLS-1$
 	                } else if (length <= 2592000000d || timeUnit == Calendar.DATE) { //less than a month
-	                	formatPattern = "MMMMM d";
-	                } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
-	                	formatPattern = "yyyy MMMMM";
-	                } else {//if (timeUnit == Calendar.YEAR) {
-	                	formatPattern = "yyyy";
+	                	formatPattern = "MM-dd";//$NON-NLS-1$
+//	                } else if (length <= 31536000000d ||timeUnit == Calendar.MONTH) { //less than a year
+//	                	formatPattern = "yyyy-MM-dd";//$NON-NLS-1$
+	                } else {		//more than a month
+	                	formatPattern = "yyyy-MM-dd"; //$NON-NLS-1$
 	                } 
 	                autoFormat = true;
             	}
+              	if(minOrMaxDate){
+              			if(Math.abs(max - min)<5000)
+              				return new SimpleDateFormat("yyyy-MM-dd\nHH:mm:ss.SSS").format(obj); //$NON-NLS-1$
+           			return new SimpleDateFormat(DEFAULT_DATE_FORMAT).format(obj);
+              	}
             	return new SimpleDateFormat(formatPattern).format(obj);
             }
             

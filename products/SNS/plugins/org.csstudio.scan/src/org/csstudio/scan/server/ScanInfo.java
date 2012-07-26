@@ -16,20 +16,16 @@
 package org.csstudio.scan.server;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /** Information about a Scan
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScanInfo implements Serializable
+public class ScanInfo extends Scan implements Serializable
 {
     /** Serialization ID */
     final private static long serialVersionUID = ScanServer.SERIAL_VERSION;
 
-    final private long id;
-    final private String name;
-    final private Date created;
     final private ScanState state;
     final private String error;
     final private long runtime_ms;
@@ -39,9 +35,16 @@ public class ScanInfo implements Serializable
     final private String current_commmand;
 
     /** Initialize
-     *  @param id Scan ID
-     *  @param name Name
-     *  @param created Time when scan was created (submitted to server)
+     *  @param scan {@link Scan}
+     *  @param state Scan state
+     */
+    public ScanInfo(final Scan scan, final ScanState state)
+    {
+        this(scan, state, null, 0, 0, 0, 0, "");
+    }
+
+    /** Initialize
+     *  @param scan Scan
      *  @param state Scan state
      *  @param error Error or <code>null</code>
      *  @param runtime_ms Runtime in millisecs
@@ -49,14 +52,12 @@ public class ScanInfo implements Serializable
      *  @param total_work_units Total number of work units
      *  @param current_commmand Description of current command
      */
-    public ScanInfo(final long id, final String name, final Date created, final ScanState state,
+    public ScanInfo(final Scan scan, final ScanState state,
             final String error, final long runtime_ms,
             final long performed_work_units, final long total_work_units,
             final long current_address, final String current_commmand)
     {
-        this.id = id;
-        this.name = name;
-        this.created = created;
+        super(scan);
         this.state = state;
         this.error = error;
         this.runtime_ms = runtime_ms;
@@ -64,24 +65,6 @@ public class ScanInfo implements Serializable
         this.total_work_units = total_work_units;
         this.current_address = current_address;
         this.current_commmand = current_commmand;
-    }
-
-    /** @return Unique scan identifier (within JVM of the scan engine) */
-    public long getId()
-    {
-        return id;
-    }
-
-    /** @return Name of the scan */
-    public String getName()
-    {
-        return name;
-    }
-
-    /** @return Time when scan was created on server */
-    public Date getCreated()
-    {
-        return created;
     }
 
     /** @return State of the scan */
@@ -157,9 +140,7 @@ public class ScanInfo implements Serializable
     public int hashCode()
     {
         final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + name.hashCode();
+        int result = super.hashCode();
         result = prime * result + state.hashCode();
         return result;
     }
@@ -173,13 +154,11 @@ public class ScanInfo implements Serializable
         if (! (obj instanceof ScanInfo))
             return false;
         final ScanInfo other = (ScanInfo) obj;
-        return id == other.id  &&
+        return getId() == other.getId()  &&
                state == other.state  &&
                runtime_ms == other.runtime_ms &&
                performed_work_units == other.performed_work_units  &&
                total_work_units == other.total_work_units  &&
-               name.equals(other.name)  &&
-               created.equals(other.created) &&
                current_commmand.equals(other.current_commmand) &&
                ((error == null  && other.error == null) ||
                 (error != null  && error.equals(other.error))
@@ -191,10 +170,11 @@ public class ScanInfo implements Serializable
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append("Scan '").append(name).append("' [").append(id).append("]: ").append(state);
+        buf.append("Scan '").append(getName()).append("' [").append(getId()).append("]: ").append(state);
         if (error != null)
             buf.append(" (").append(error).append(")");
-        buf.append(", ").append(getPercentage()).append("% done");
+        if (state.isActive())
+            buf.append(", ").append(getPercentage()).append("% done");
         return buf.toString();
     }
 }
