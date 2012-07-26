@@ -18,6 +18,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.service.configurationaccess.localstore.Mapper;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterAction2FilterDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.FilterConditionDTO;
@@ -25,6 +26,7 @@ import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fil
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.HasManuallyJoinedElements;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.JunctorCondForFilterTreeDTO;
 import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.NegationCondForFilterTreeDTO;
+import org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.filterConditionSpecifics.StringFilterConditionDTO;
 
 /**
  * Dieses Daten-Transfer-Objekt stellt hält die Konfiguration eines Filters dar
@@ -330,6 +332,23 @@ public class FilterDTO implements NewAMSConfigurationElementDTO,
 			iPos++;
 		}
 	}
+	
+	public boolean isSimpleStringBasedFilter() {
+		boolean result = false;
+
+		final List<FilterConditionDTO> filterConditions = this.getFilterConditions();
+
+		if (filterConditions.size() == 1) {
+			FilterConditionDTO aFilterConditionDTO = filterConditions.get(0);
+			if(aFilterConditionDTO instanceof StringFilterConditionDTO) {
+				result = ((StringFilterConditionDTO) aFilterConditionDTO).getOperatorEnum() == StringRegelOperator.OPERATOR_TEXT_EQUAL;
+			}
+		}
+
+		return result;
+	}
+
+
 
 	@Override
 	public String toString() {

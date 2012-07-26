@@ -30,10 +30,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.Enumeration;
+
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.Topic;
+
 import org.csstudio.ams.AmsActivator;
 import org.csstudio.ams.Log;
 import org.csstudio.ams.configReplicator.ConfigReplicator;
@@ -154,11 +156,13 @@ public class DistributorStart implements IApplication,
                 
                 try {
                     URL fileUrl = FileLocator.toFileURL(entries.nextElement());
-                    URI fileUri = fileUrl.toURI();
-                    Log.log(Log.DEBUG, fileUri.toString());
-                    sqlFile = new File(fileUri);
-                } catch (URISyntaxException e) {
-                    throw new ReplicationException(e);
+					Log.log(Log.DEBUG, fileUrl.toString());
+					try {
+						URI fileUri = fileUrl.toURI();
+						sqlFile = new File(fileUri);
+					} catch(URISyntaxException uriException) {
+						sqlFile = new File(fileUrl.getPath());
+					}
                 } catch (IOException e) {
                     throw new ReplicationException(e);
                 }

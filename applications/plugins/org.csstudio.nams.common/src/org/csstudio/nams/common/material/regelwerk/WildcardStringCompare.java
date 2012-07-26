@@ -64,7 +64,7 @@ import java.util.regex.Pattern;
  * System.out.println();
  */
 // TODO Ist diese Klasse wirklich n�tig?
-abstract class WildcardStringCompare {
+public abstract class WildcardStringCompare {
 	/**
 	 * Compare two Strings (ignore case)
 	 * 

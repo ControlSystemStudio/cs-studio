@@ -16,4 +16,12 @@ public interface RegelwerkBuilderService {
 	 */
 	public List<Regelwerk> gibAlleRegelwerke()
 			throws RegelwerksBuilderException;
+	
+	/**
+	 * Gib alle {@link Regelwerk}-elemente der Konfiguration, außer denen, deren Filter 
+	 * genau eine Filterbedingung hat, die vom Typ "StringFilter" ist und dessen 
+	 * Filter-Operator "OPERATOR_TEXT_EQUAL" ist.
+	 */ 
+	public List<Regelwerk> gibKomplexeRegelwerke()
+			throws RegelwerksBuilderException;
 }
