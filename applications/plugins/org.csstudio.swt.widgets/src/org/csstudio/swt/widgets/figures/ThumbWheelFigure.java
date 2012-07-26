@@ -230,7 +230,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 				// the user releases left/right arrow key.
 				addKeyListener(new KeyListener.Stub() {
 					@Override
-					public void keyReleased(KeyEvent ke) {
+					public void keyPressed(KeyEvent ke) {
 						if (ke.keycode == SWT.ARROW_UP) {
 							if (isDecimal) {
 								fireIncrementDecimalListeners(positionIndex);
