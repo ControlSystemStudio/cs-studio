@@ -53,7 +53,9 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	public static final String PROP_DECIMAL_DIGITS_PART = "decimalDigits"; //$NON-NLS-1$
 	/** Load limit from PV. */
-	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$	
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$
+	
+	public static final String PROP_SHOW_BUTTONS = "show_buttons"; //$NON-NLS-1$
 
 	public static final String ID = "org.csstudio.opibuilder.widgets.ThumbWheel"; //$NON-NLS-1$
 
@@ -116,6 +118,9 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 				"Internal Frame Thickness", WidgetPropertyCategory.Display, 1));
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, false));
+		
+		addProperty(new BooleanProperty(PROP_SHOW_BUTTONS, "Show Buttons",
+				WidgetPropertyCategory.Display, true));
 
 	}
 
