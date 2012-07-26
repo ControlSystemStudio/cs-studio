@@ -17,6 +17,7 @@ package org.csstudio.scan.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /** Helper for creating a sequence of commands
@@ -36,14 +37,6 @@ public class CommandSequence
 {
     final private List<ScanCommand> commands;
 
-    /** Initialize empty command sequence
-     *  to which commands can then be added.
-     */
-    public CommandSequence()
-    {
-        commands = new ArrayList<ScanCommand>();
-    }
-
     /** Initialize with a command.
      *
      * 	<p>This constructor simplifies invocation from Matlab.
@@ -61,12 +54,20 @@ public class CommandSequence
     }
 
     /** Initialize with a given sequence of commands.
-     *  <p>The command sequence is then immutable.
      *  @param commands Sequence of commands
      */
     public CommandSequence(final ScanCommand... commands)
     {
         this.commands = Arrays.asList(commands);
+    }
+
+    /** Initialize with a given sequence of commands.
+     *  @param commands Sequence of commands
+     */
+    public CommandSequence(final Collection<ScanCommand> commands)
+    {
+        this.commands = new ArrayList<ScanCommand>();
+        this.commands.addAll(commands);
     }
 
     /** Assign consecutive addresses
