@@ -39,11 +39,14 @@ import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
+import org.eclipse.draw2d.KeyEvent;
+import org.eclipse.draw2d.KeyListener;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
@@ -127,10 +130,10 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		private int thickness;
 		private Color color;
 		private Color colorFocused;
-		ArrowButton up;
-		ArrowButton down;
+		private ArrowButton up;
+		private ArrowButton down;
 
-		public DigitBox(final int positionIndex, boolean isDecimal) {
+		public DigitBox(final int positionIndex, final boolean isDecimal) {
 
 			BorderLayout layout = new BorderLayout();
 			layout.setVerticalSpacing(0);
@@ -215,6 +218,29 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 							setBorder(null);
 						} else {
 							setBorder(new LineBorder(color, thickness));
+						}
+					}
+				});
+				
+				// Increment or decrement the focused digit when the user
+				// releases up/down arrow key.
+				addKeyListener(new KeyListener.Stub() {
+					@Override
+					public void keyReleased(KeyEvent ke) {
+						if (ke.keycode == SWT.ARROW_UP) {
+							if (isDecimal) {
+								fireIncrementDecimalListeners(positionIndex);
+							} else {
+								fireIncrementIntegerListeners(integerDigits
+										- positionIndex - 1);
+							}
+						} else if (ke.keycode == SWT.ARROW_DOWN) {
+							if (isDecimal) {
+								fireDecrementDecimalListeners(positionIndex);
+							} else {
+								fireDecrementIntegerListeners(integerDigits
+										- positionIndex - 1);
+							}
 						}
 					}
 				});
