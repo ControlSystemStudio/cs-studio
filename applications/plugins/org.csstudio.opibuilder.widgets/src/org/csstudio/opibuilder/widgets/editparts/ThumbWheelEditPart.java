@@ -45,7 +45,7 @@ import org.eclipse.swt.graphics.FontData;
 /**
  * Controller for the ThumbWheel.
  *
- * @author Alen Vrecko, Jose Ortega, Xihui Chen
+ * @author Alen Vrecko, Jose Ortega, Xihui Chen, Takashi Nakamoto
  *
  */
 public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
@@ -71,7 +71,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		logic.setMin(model.getMinimum());
 
 		figure = new ThumbWheelFigure(logic.getIntegerWheels(),
-				logic.getDecimalWheels());
+				logic.getDecimalWheels(), this.getExecutionMode() == ExecutionMode.RUN_MODE);
 		model.setWholePartDigits(logic.getIntegerWheels());
 		model.setDecimalPartDigits(logic.getDecimalWheels());
 		FontData fontData = model.getFont().getFontData();
@@ -79,7 +79,9 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				fontData.getName(), fontData.getHeight(),
 				fontData.getStyle()));
 		figure.setInternalBorderColor(model.getInternalBorderColor());
+		figure.setInternalFocusedBorderColor(model.getInternalFocusedBorderColor());
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
+		figure.setButtonVisibility(model.isButtonVisible());
 
 		figure.addWheelListener(new WheelListener() {
 
@@ -342,6 +344,18 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_COLOR,
 				handler);
 
+		// focused border color
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
+				figure.setInternalFocusedBorderColor(((OPIColor)newValue).getSWTColor());
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FOCUSED_FRAME_COLOR,
+				handler);
+		
 		// border width
 		handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -354,6 +368,17 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
 				handler);
 
+		// show button
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
+				figure.setButtonVisibility((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ThumbWheelModel.PROP_SHOW_BUTTONS,
+				handler);
 	}
 
 	/**
