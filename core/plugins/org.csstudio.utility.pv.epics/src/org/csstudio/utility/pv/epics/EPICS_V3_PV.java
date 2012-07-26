@@ -562,9 +562,10 @@ public class EPICS_V3_PV extends PlatformObject
             {
                 // Long string support: Write characters of string as DBF_CHAR array
                 final char[] chars = ((String) new_value).toCharArray();
-                final int[] codes = new int[chars.length];
-                for (int i=0; i<codes.length; ++i)
+                final int[] codes = new int[chars.length+1];
+                for (int i=0; i<chars.length; ++i)
                     codes[i] = chars[i];
+                codes[chars.length] = 0;
                 channel.put(codes);
             }
             else
