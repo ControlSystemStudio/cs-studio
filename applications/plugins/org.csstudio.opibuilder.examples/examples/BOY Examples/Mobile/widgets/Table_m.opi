@@ -37,7 +37,7 @@
     <visible>true</visible>
     <wuid>-4a6725d4:1389ff63d20:-7d3b</wuid>
     <scripts />
-    <height>49</height>
+    <height>37</height>
     <name>Action Button</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <scale_options>
@@ -66,7 +66,7 @@
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>228</y>
+    <y>240</y>
     <actions hook="true" hook_all="false">
       <action type="OPEN_DISPLAY">
         <path>../Widgets_m.opi</path>
@@ -78,7 +78,7 @@
       </action>
     </actions>
     <tooltip></tooltip>
-    <x>96</x>
+    <x>84</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.table" version="1.0">
     <visible>true</visible>
@@ -93,7 +93,7 @@
         <pv trig="true">sim://noise(-10, 10, 0.2)</pv>
       </path>
     </scripts>
-    <height>199</height>
+    <height>217</height>
     <name>Table              </name>
     <scale_options>
       <width_scalable>true</width_scalable>

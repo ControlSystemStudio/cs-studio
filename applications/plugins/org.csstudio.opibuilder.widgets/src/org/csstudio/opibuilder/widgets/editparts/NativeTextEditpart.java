@@ -139,7 +139,14 @@ public class NativeTextEditpart extends TextInputEditpart {
 	
 	@Override
 	protected void outputText(String newValue) {
-		setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
+		if(getPV() == null)
+			setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
+		else{ 
+			//PV may not be changed instantly, so recover it to old text first.	
+			text.setText(getWidgetModel().getText());	
+			//Write PV and update the text with new PV value if writing succeed.
+			outputPVValue(newValue);
+		}
 	}
 	
 	@Override

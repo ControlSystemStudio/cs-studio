@@ -58,6 +58,13 @@ public class JythonSupportUnitTest
             }
 
             @Override
+            public Object read(String device_name) throws Exception
+            {
+                // NOP
+                return null;
+            }
+
+            @Override
             public void write(String device_name, Object value, String readback,
                     boolean wait, double tolerance, double timeout) throws Exception
             {
