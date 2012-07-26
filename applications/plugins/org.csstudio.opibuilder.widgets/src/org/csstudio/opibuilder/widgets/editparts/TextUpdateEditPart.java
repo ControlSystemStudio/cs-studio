@@ -16,6 +16,7 @@ import org.csstudio.data.values.IValue.Format;
 import org.csstudio.data.values.ValueFactory;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -260,6 +261,20 @@ public class TextUpdateEditPart extends AbstractPVWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(TextUpdateModel.PROP_ROTATION, handler);
+		
+		handler = new IWidgetPropertyChangeHandler() {
+			
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				AbstractWidgetModel model = getWidgetModel();
+				AbstractContainerModel parent = model.getParent();
+				parent.removeChild(model);
+				parent.addChild(model);
+				parent.selectWidget(model, true);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(TextUpdateModel.PROP_WRAP_WORDS, handler);
 	}
 
 	@Override
