@@ -132,6 +132,9 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		private Color colorFocused;
 		private ArrowButton up;
 		private ArrowButton down;
+		
+		private DigitBox right = null;
+		private DigitBox left = null;
 
 		public DigitBox(final int positionIndex, final boolean isDecimal) {
 
@@ -223,7 +226,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 				});
 				
 				// Increment or decrement the focused digit when the user
-				// releases up/down arrow key.
+				// releases up/down arrow key. Focus adjacent digit when
+				// the user releases left/right arrow key.
 				addKeyListener(new KeyListener.Stub() {
 					@Override
 					public void keyReleased(KeyEvent ke) {
@@ -241,6 +245,10 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 								fireDecrementIntegerListeners(integerDigits
 										- positionIndex - 1);
 							}
+						} else if (ke.keycode == SWT.ARROW_LEFT && left != null) {
+							left.requestFocus();
+						} else if (ke.keycode == SWT.ARROW_RIGHT && right != null) {
+							right.requestFocus();
 						}
 					}
 				});
@@ -298,6 +306,14 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		public void setButtonVisibility(boolean b) {
 			up.setVisible(b);
 			down.setVisible(b);
+		}
+		
+		public void setLeftDigitBox(DigitBox box) {
+			this.left = box;
+		}
+		
+		public void setRightDigitBox(DigitBox box) {
+			this.right = box;
 		}
 
 	}
@@ -441,6 +457,31 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		setInternalFocusedBorderColor(internalFocusedBorderColor);
 		setInternalBorderThickness(internalBorderThickness);
 		setWheelFont(wheelFont);
+		
+		// Set the order to be able to change focus when left/right
+		// key is pressed.
+		for (int i = 0; i < integerDigits; i++) {
+			if (i != integerDigits - 1) {
+				wholePart[i].setLeftDigitBox(wholePart[i+1]);
+			}
+			if (i != 0) {
+				wholePart[i].setRightDigitBox(wholePart[i-1]);
+			}
+		}
+		
+		if (integerDigits > 0 && decimalDigits > 0) {
+			wholePart[0].setRightDigitBox(decimalPart[0]);
+			decimalPart[0].setLeftDigitBox(wholePart[0]);
+		}
+		
+		for (int i = 0; i < decimalDigits; i++) {
+			if (i != 0) {
+				decimalPart[i].setLeftDigitBox(decimalPart[i-1]);
+			}
+			if (i != decimalDigits - 1) {
+				decimalPart[i].setRightDigitBox(decimalPart[i+1]);
+			}
+		}
 
 		revalidate();
 	}
