@@ -271,6 +271,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 	private ArrayList<WheelListener> listeners = new ArrayList<WheelListener>();
 
 	private Font wheelFont;
+	
+	private boolean showButtons = true;
 
 	public ThumbWheelFigure(){
 		this(3,2);
@@ -318,6 +320,9 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		wholePart = new DigitBox[integerDigits];
 		for (int i = 0; i < integerDigits; i++) {
 			DigitBox box = new DigitBox(i, false);
+			
+			// TODO: set button visibility
+			
 			add(box);
 			wholePart[integerDigits - i - 1] = box;
 			setConstraint(box, createGridData());
@@ -331,6 +336,9 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		decimalPart = new DigitBox[decimalDigits];
 		for (int i = 0; i < decimalDigits; i++) {
 			DigitBox box = new DigitBox(i, true);
+			
+			// TODO: set button visibility
+			
 			add(box);
 			decimalPart[i] = box;
 
@@ -546,5 +554,15 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		} else {
 			minus.setChar(' ');
 		}
+	}
+	
+	public void setButtonVisibility(boolean b) {
+		if (showButtons == b)
+			return;
+		
+		showButtons = b;
+		
+		// TODO: Implement this method
+		System.out.println("Button visibility: " + b);
 	}
 }

@@ -179,4 +179,8 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 	public boolean isLimitsFromPV() {
 		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
 	}
+	
+	public boolean isButtonVisible() {
+		return (Boolean) getProperty(PROP_SHOW_BUTTONS).getPropertyValue();
+	}
 }

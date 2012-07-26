@@ -80,6 +80,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				fontData.getStyle()));
 		figure.setInternalBorderColor(model.getInternalBorderColor());
 		figure.setInternalBorderThickness(model.getInternalBorderWidth());
+		figure.setButtonVisibility(model.isButtonVisible());
 
 		figure.addWheelListener(new WheelListener() {
 
@@ -354,6 +355,17 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(ThumbWheelModel.PROP_INTERNAL_FRAME_THICKNESS,
 				handler);
 
+		// show button
+		handler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
+				figure.setButtonVisibility((Boolean) newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ThumbWheelModel.PROP_SHOW_BUTTONS,
+				handler);
 	}
 
 	/**
