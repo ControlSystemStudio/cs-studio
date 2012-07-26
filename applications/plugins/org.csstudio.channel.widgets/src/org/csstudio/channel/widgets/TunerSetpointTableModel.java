@@ -56,6 +56,18 @@ public class TunerSetpointTableModel {
 		return calculatedSetpoints;
 	}
 
+	public void setCalculatedSetpoint(int columnIndex, String rowIdentifier,
+			Double value) {
+		if (this.calculatedSetpoints != null) {
+			if (this.calculatedSetpoints.get(columnIndex).containsKey(
+					rowIdentifier)) {
+				this.calculatedSetpoints.get(columnIndex).put(rowIdentifier,
+						value);
+				firesetpointsChanged();
+			}
+		}
+	}
+
 	public Map<String, Double> getNextSetpoints() {
 		if (calculatedSetpoints.size() > 0) {
 			Map<String, Double> setPoints = Collections

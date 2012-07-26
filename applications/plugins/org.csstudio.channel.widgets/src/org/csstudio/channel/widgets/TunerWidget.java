@@ -36,10 +36,13 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
 import org.epics.pvmanager.PV;
@@ -47,6 +50,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VDouble;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -63,10 +67,13 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 
+import com.swtdesigner.TableViewerColumnSorter;
+
 public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 	private boolean editingDone = false;
-
+	private boolean setpointEditingDone = false;
+	
 	private Table channelTable;
 	private Table stepValueTable;
 	private Text stepCount;
@@ -105,14 +112,15 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		fd_channelTableComposite.top = new FormAttachment(0, 2);
 		fd_channelTableComposite.left = new FormAttachment(0, 2);
 		channelTableComposite.setLayoutData(fd_channelTableComposite);
-		
+
 		TableColumnLayout channelTablelayout = new TableColumnLayout();
 		channelTableComposite.setLayout(channelTablelayout);
-		
+
 		channelTableViewer = new TableViewer(channelTableComposite, SWT.BORDER
 				| SWT.FULL_SELECTION);
 		channelTable = channelTableViewer.getTable();
-		channelTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		channelTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				1, 1));
 		channelTable.setLinesVisible(true);
 		channelTable.setHeaderVisible(true);
 		channelTableViewer
@@ -130,7 +138,10 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		TableColumn tblclmnChannel = tableViewerColumnChannel.getColumn();
 		tblclmnChannel.setWidth(100);
 		tblclmnChannel.setText("Channel");
-		channelTablelayout.setColumnData(tblclmnChannel, new ColumnWeightData(60));
+		channelTablelayout.setColumnData(tblclmnChannel, new ColumnWeightData(
+				60));
+
+		// create a set of channels based on the properties/tags selected
 
 		TableViewerColumn tableViewerColumnMin = new TableViewerColumn(
 				channelTableViewer, SWT.NONE);
@@ -163,7 +174,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		TableColumn tblclmnValue = tableViewerColumnValue.getColumn();
 		tblclmnValue.setWidth(60);
 		tblclmnValue.setText("Value");
-		channelTablelayout.setColumnData(tblclmnValue, new ColumnWeightData(30));
+		channelTablelayout
+				.setColumnData(tblclmnValue, new ColumnWeightData(30));
 
 		TableViewerColumn tableViewerColumnMax = new TableViewerColumn(
 				channelTableViewer, SWT.NONE);
@@ -192,10 +204,12 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 				channelTableViewer) {
 			private boolean initialized = false;
 
+			@Override
 			protected boolean canEdit(Object element) {
 				return true;
 			}
 
+			@Override
 			protected CellEditor getCellEditor(Object element) {
 				TextCellEditor editor = new TextCellEditor(channelTable) {
 					@Override
@@ -215,14 +229,17 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 				return editor;
 			}
 
+			@Override
 			protected Object getValue(Object element) {
 				Double value = weights.get(((Entry<String, VDouble>) element)
 						.getKey());
 				return String.valueOf(value);
 			}
 
+			@Override
 			protected void setValue(Object element, Object value) {
 				try {
+					editingDone = true;
 					String channel = ((Entry<String, VDouble>) element)
 							.getKey();
 					if (channel != null && weights != null) {
@@ -253,9 +270,9 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		TableColumn tblclmnWeight = tableViewerColumnWeight.getColumn();
 		tblclmnWeight.setWidth(100);
 		tblclmnWeight.setText("Weight");
-		channelTablelayout.setColumnData(tblclmnWeight, new ColumnWeightData(30));
+		channelTablelayout.setColumnData(tblclmnWeight,
+				new ColumnWeightData(30));
 
-		
 		Composite stepTableComposite = new Composite(this, SWT.NONE);
 		FormData fd_stepValueTable = new FormData();
 		fd_stepValueTable.right = new FormAttachment(100, -2);
@@ -264,7 +281,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 				SWT.BOTTOM);
 		fd_stepValueTable.left = new FormAttachment(channelTableComposite, 2);
 		stepTableComposite.setLayoutData(fd_stepValueTable);
-		
+
 		setpointTableViewer = new TableViewer(stepTableComposite, SWT.BORDER
 				| SWT.FULL_SELECTION);
 		setpointTableViewer
@@ -274,7 +291,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 						@Override
 						public void setpointsChanged() {
-							if (!setpointTableViewer.isCellEditorActive()) {
+							if (!setpointTableViewer.isCellEditorActive() || setpointEditingDone) {
 								updateStepValueTable();
 								setpointTableViewer.refresh();
 							}
@@ -306,7 +323,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 					}
 				});
 		stepValueTable = setpointTableViewer.getTable();
-		stepValueTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		stepValueTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
 		stepValueTable.setLinesVisible(true);
 		stepValueTable.setHeaderVisible(true);
 
@@ -319,7 +337,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		fd_lblStepCount.top = new FormAttachment(channelTableComposite, 5);
 		lblStepCount.setLayoutData(fd_lblStepCount);
 		lblStepCount.setText("Step Count:");
-		
 
 		stepCount = new Text(this, SWT.BORDER);
 		FormData fd_stepCount = new FormData();
@@ -371,7 +388,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		fd_btnApply.right = new FormAttachment(100, -2);
 		fd_btnApply.bottom = new FormAttachment(100, -2);
 		fd_btnApply.top = new FormAttachment(stepSize, 6);
-		
+
 		btnApply.setLayoutData(fd_btnApply);
 		btnApply.setText("Apply");
 		btnApply.setEnabled(false);
@@ -386,7 +403,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		}
 		TableColumnLayout stepTablelayout = new TableColumnLayout();
 		setpointTableViewer.getTable().getParent().setLayout(stepTablelayout);
-		
+
 		if (tunerSetpointTableModel != null
 				&& tunerSetpointTableModel.getCalculatedSetpoints() != null
 				&& tunerSetpointTableModel.getNumberOfSteps() > 0) {
@@ -398,16 +415,21 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 				tableViewerColumnValue
 						.setLabelProvider(new SetpointTableLabelProvider(
 								columnCount - 1));
+				tableViewerColumnValue
+						.setEditingSupport(new SetpointTableCellEditor(
+								setpointTableViewer, columnCount - 1));
 				TableColumn tblclmnValue = tableViewerColumnValue.getColumn();
 				tblclmnValue.setWidth(60);
 				tblclmnValue.setText("Step" + columnCount);
-				stepTablelayout.setColumnData(tblclmnValue, new ColumnWeightData(20));
+				stepTablelayout.setColumnData(tblclmnValue,
+						new ColumnWeightData(20));
 				columnCount++;
 			}
 			setpointTableViewer.setInput(tunerSetpointTableModel);
-		}else{
-		setpointTableViewer.setInput(null);
+		} else {
+			setpointTableViewer.setInput(null);
 		}
+		setpointTableViewer.getTable().getParent().layout();
 		setpointTableViewer.refresh();
 	}
 
@@ -425,9 +447,81 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		}
 	}
 
+	private class SetpointTableCellEditor extends EditingSupport {
+		final int columnCount;
+
+		private boolean initialized = false;
+
+		public SetpointTableCellEditor(ColumnViewer viewer, int columntCount) {
+			super(viewer);
+			this.columnCount = columntCount;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+
+			TextCellEditor editor = new TextCellEditor(stepValueTable) {
+				@Override
+				public void activate(
+						ColumnViewerEditorActivationEvent activationEvent) {
+					if (activationEvent.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION) {
+						super.activate(activationEvent);
+					} else if (activationEvent.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) {
+						this.setValue(String.valueOf(activationEvent.character));
+					}
+				}
+			};
+			CellEditor[] editors = new CellEditor[1];
+			editors[0] = editor;
+			setpointTableViewer.setCellEditors(editors);
+			return editor;
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			return true;
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			return String.valueOf(((TableItem) element).getValue().get(
+					columnCount));
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			try {
+				setpointEditingDone = true;
+				String rowIdentifier = ((TableItem) element).channelName;
+				if (rowIdentifier != null && tunerSetpointTableModel != null) {
+					if (value == null || value.toString().trim().isEmpty()) {
+//						tunerSetpointTableModel.setCalculatedSetpoint(columnCount, rowIdentifier, value);
+					} else {
+						tunerSetpointTableModel.setCalculatedSetpoint(columnCount, rowIdentifier, Double.valueOf(value.toString()));
+					}
+					if (!initialized) {
+						((Text) getCellEditor(element).getControl())
+								.setSelection(1);
+					}
+				}
+			} finally {
+				setpointEditingDone = false;
+				channelTableViewer.refresh();
+			}
+		}
+
+	}
+
 	// list of channels
 	private Collection<Channel> channels;
 	private List<String> channelNames;
+	//
+	private Collection<String> allProperties;
+	private Collection<String> visibleProperties;
+
+	// the channelName, tagName, propertyName
+	private String sortElement;
+
 	// pv
 	private PV<Map<String, VDouble>, Map<String, Double>> pv;
 
@@ -453,7 +547,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		if (finalChannels != null && !finalChannels.isEmpty()) {
 			setChannelNames(finalChannels);
 		} else if (finalChannels == null) {
-			// assumes the entered string to be an waveform pv
+
 		}
 
 	}
@@ -469,7 +563,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 		if (result == null)
 			return null;
-
 		// setLastError(result.exception);
 		this.channelQueryResult = result;
 		final List<String> channelNames = new ArrayList<String>();
@@ -508,8 +601,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 			@Override
 			public void pvWritten() {
-				// TODO Auto-generated method stub
-
 				System.out.println("write completed");
 			}
 		});
@@ -558,7 +649,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		this.weights.clear();
 		if (this.channelNames != null && !this.channelNames.isEmpty()) {
 			for (String channelName : channelNames) {
-				this.weights.put(channelName, (double) 0);
+				this.weights.put(channelName, (double) 1);
 			}
 			reconnect();
 		}
