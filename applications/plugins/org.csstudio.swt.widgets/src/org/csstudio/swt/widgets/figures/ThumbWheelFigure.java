@@ -122,6 +122,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		private Label label;
 		private int thickness;
 		private Color color;
+		ArrowButton up;
+		ArrowButton down;
 
 		public DigitBox(final int positionIndex, boolean isDecimal) {
 
@@ -131,7 +133,7 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			setLayoutManager(layout);
 
 			label = new Label("0");
-			ArrowButton up = new RapArrowButton(ArrowButton.NORTH);
+			up = new RapArrowButton(ArrowButton.NORTH);
 			up.setFiringMethod(ArrowButton.REPEAT_FIRING);
 			up.setPreferredSize(20, 20);
 			if (isDecimal) {
@@ -152,10 +154,12 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
 			add(up);
 			setConstraint(up, BorderLayout.TOP);
+			
 			label.setPreferredSize(20, 10);
 			add(label);
 			setConstraint(label, BorderLayout.CENTER);
-			ArrowButton down = new RapArrowButton(ArrowButton.SOUTH);
+			
+			down = new RapArrowButton(ArrowButton.SOUTH);
 			down.setFiringMethod(ArrowButton.REPEAT_FIRING);
 			down.setPreferredSize(20, 20);
 			if (isDecimal) {
@@ -208,6 +212,11 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 
 		public void setValue(String value) {
 			label.setText("" + value);
+		}
+		
+		public void setButtonVisibility(boolean b) {
+			up.setVisible(b);
+			down.setVisible(b);
 		}
 
 	}
@@ -562,7 +571,12 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 		
 		showButtons = b;
 		
-		// TODO: Implement this method
-		System.out.println("Button visibility: " + b);
+		for (DigitBox box : wholePart) {
+			box.setButtonVisibility(b);
+		}
+
+		for (DigitBox box : decimalPart) {
+			box.setButtonVisibility(b);
+		}
 	}
 }
