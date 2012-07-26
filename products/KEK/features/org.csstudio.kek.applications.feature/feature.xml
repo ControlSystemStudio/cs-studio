@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.kek.applications.feature"
       label="KEK Applications Feature"
-      version="3.1.0.qualifier"
+      version="3.1.1.qualifier"
       provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS, Takashi Nakamoto &lt;takashi.nakamoto@cosylab.com&gt;">
 
    <description url="http://www.example.com/description">
@@ -44,30 +44,19 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.help.base"/>
       <import plugin="org.eclipse.help.ui"/>
       <import plugin="org.eclipse.help.webapp"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.csstudio.csdata" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="1.2.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.ui.util" version="3.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.5" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.junit4"/>
-      <import plugin="org.csstudio.apputil"/>
       <import plugin="org.junit4" version="4.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.utility.rdb" version="1.2.2" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
       <import plugin="org.csstudio.auth.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.6.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.5.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.ide" version="3.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.7" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="1.0.6" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="1.0.5" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.trends.databrowser2" version="3.0.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.trends.databrowser2" version="3.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.kek.product" version="3.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="3.0.0" match="greaterOrEqual"/>
@@ -141,6 +130,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.archive.reader.kblog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.sns.startuphelper"
          download-size="0"
          install-size="0"
          version="0.0.0"
