@@ -18,12 +18,14 @@ scan('Simple 2D', ('xpos', 1, 10), ('ypos', 1, 10, 0.5), 'readback')
 client = ScanClient()
 
 # Create some scan by adding commands to sequence
-seq = CommandSequence()
-seq.set('ypos', 5)
+cmds = []
+cmds.append(SetCommand('ypos', 5))
 for x in range(1, 5):
-    seq.set('xpos', x)
-    seq.delay(1)
-    seq.log('xpos', 'readback')
+    cmds.append(SetCommand('xpos', x))
+    cmds.append(DelayCommand(1))
+    cmds.append(LogCommand([ 'xpos', 'readback' ]))
+
+seq = CommandSequence(cmds)
 
 # Schedule for execution on server
 id = client.submit("My Scan 1", seq)

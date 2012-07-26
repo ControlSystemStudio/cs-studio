@@ -20,7 +20,11 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 
 import org.csstudio.scan.command.CommandSequence;
+import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.command.LogCommand;
+import org.csstudio.scan.command.LoopCommand;
+import org.csstudio.scan.command.SetCommand;
+import org.csstudio.scan.command.WaitCommand;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServer;
 import org.csstudio.scan.server.ScanState;
@@ -56,14 +60,15 @@ public class ScanClientDemo
         final ScanServer server = ScanServerConnector.connect();
         System.out.println(server.getInfo());
 
-        final CommandSequence commands = new CommandSequence();
-        commands.set("xpos", 2);
-        commands.set("ypos", 3);
-        commands.set("setpoint", 5);
-        commands.delay(1.0);
-        commands.log("xpos", "ypos", "setpoint", "readback");
-        commands.wait("readback", 5.0, 0.1);
-        commands.log("xpos", "ypos", "setpoint", "readback");
+        final CommandSequence commands = new CommandSequence(
+            new SetCommand("xpos", 2),
+            new SetCommand("ypos", 3),
+            new SetCommand("setpoint", 5),
+            new DelayCommand(1.0),
+            new LogCommand("xpos", "ypos", "setpoint", "readback"),
+            new WaitCommand("readback", 5.0),
+            new LogCommand("xpos", "ypos", "setpoint", "readback")
+        );
 
         final long id = server.submitScan("Client Demo", commands.getXML());
 
@@ -85,8 +90,8 @@ public class ScanClientDemo
     {
         final ScanServer server = ScanServerConnector.connect();
 
-        final CommandSequence commands = new CommandSequence();
-        commands.loop("xpos", 1, 5, 1, new LogCommand("xpos"));
+        final CommandSequence commands = new CommandSequence(
+            new LoopCommand("xpos", 1, 5, 1, new LogCommand("xpos")) );
 
         final long id = server.submitScan("Pause Demo", commands.getXML());
 
@@ -136,8 +141,8 @@ public class ScanClientDemo
     {
         final ScanServer server = ScanServerConnector.connect();
 
-        final CommandSequence commands = new CommandSequence();
-        commands.loop("xpos", 1, 5, 1, new LogCommand("xpos"));
+        final CommandSequence commands = new CommandSequence(
+            new LoopCommand("xpos", 1, 5, 1, new LogCommand("xpos")) );
 
         // Try to abort a scan right away
         long id = server.submitScan("Abort Demo1", commands.getXML());

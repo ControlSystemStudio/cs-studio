@@ -15,5 +15,5 @@ data.time=[];
 data.val=[];
 for i=1:samples.size()
     data.time(i) = scan_jdate2mdate(samples.get(i-1).getTimestamp());
-    data.val(i) = samples.get(i-1).getValue();
+    data.val(i) = samples.get(i-1).getNumber(0);
 end

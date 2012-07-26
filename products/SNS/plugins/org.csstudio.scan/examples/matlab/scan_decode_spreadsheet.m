@@ -18,7 +18,7 @@ while sheet.hasNext()
     for i=1:length(samples)
         s = samples(i);
         if length(s) > 0
-            row(i) = s.getValue();
+            row(i) = s.getNumber(0);
         else
             row(i) = NaN;
         end

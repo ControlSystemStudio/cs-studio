@@ -38,30 +38,25 @@ public class CommandSequenceUnitTest
     @Test
     public void testCommandSequence()
     {
-    	final CommandSequence commands = new CommandSequence();
-    	// Add commands
-    	commands.add(new SetCommand("setpoint", 1));
-    	commands.add(new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0));
-    	// Add same commands via shortcut
-    	commands.set("setpoint", 1);
-    	commands.wait("readback", 1.0, 0.1);
-    	// Add a loop
-    	commands.loop("setpoint", 1, 5, 1, new LogCommand("readback"));
-    	// and another root command
-        commands.log("readback");
+    	final CommandSequence commands = new CommandSequence(
+    	    new SetCommand("setpoint", 1),
+    	    new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0),
+    	    new LoopCommand("setpoint", 1, 5, 1, new LogCommand("readback")),
+    	    new LogCommand("readback")
+        );
     	commands.dump();
     	// Check the list
     	final List<ScanCommand> list = commands.getCommands();
-        assertEquals(6, list.size());
-        assertSame(list.get(0).getClass(), list.get(2).getClass());
-        assertSame(list.get(1).getClass(), list.get(3).getClass());
-        // Addresses should be 0, 1, ..., 4
-        for (int i=0; i<5; ++i)
+        assertEquals(4, list.size());
+        assertEquals(SetCommand.class, list.get(0).getClass());
+        assertEquals(WaitCommand.class, list.get(1).getClass());
+        // Addresses should be 0, 1, 2
+        for (int i=0; i<3; ++i)
             assertEquals(i, list.get(i).getAddress());
         // .. continuing inside the loop
-        assertSame(LoopCommand.class, list.get(4).getClass());
-        assertEquals(5, ((LoopCommand)list.get(4)).getBody().get(0).getAddress());
+        assertSame(LoopCommand.class, list.get(2).getClass());
+        assertEquals(3, ((LoopCommand)list.get(2)).getBody().get(0).getAddress());
         // .. and then back to the root list
-        assertEquals(6, list.get(5).getAddress());
+        assertEquals(4, list.get(3).getAddress());
     }
 }

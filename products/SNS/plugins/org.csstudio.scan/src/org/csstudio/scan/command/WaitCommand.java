@@ -49,6 +49,16 @@ public class WaitCommand extends ScanCommand
 
     /** Initialize with default tolerance and no timeout
      *  @param device_name Name of device to check
+     *  @param desired_value Desired value of the device for equality comparison
+     */
+    public WaitCommand(final String device_name,
+            final double desired_value)
+    {
+        this(device_name, Comparison.EQUALS, desired_value, 0.1, 0.0);
+    }
+
+    /** Initialize with default tolerance and no timeout
+     *  @param device_name Name of device to check
      *  @param comparison Comparison to use
      *  @param desired_value Desired value of the device
      */
