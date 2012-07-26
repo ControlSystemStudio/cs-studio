@@ -111,9 +111,6 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         LOG.info("Max store time difference: {}", maxStoreDiffTime);
 
         errorState = this.readErrorState();
-        if (errorState != null) {
-            this.deleteErrorFile();
-        }
         xmppSession = null;
     }
 
@@ -123,7 +120,9 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
      * @param host
      * @param user
      */
-    public boolean checkExternInstance(final String applicationName, final String host, final String user) {
+    public boolean checkExternInstance(final String applicationName,
+                                       final String host,
+                                       final String user) throws XmppLoginException {
 
         Vector<IRosterItem> rosterItems = null;
         IRosterGroup jmsApplics = null;
@@ -142,8 +141,8 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
         }
 
         if (xmppSession == null) {
-            LOG.info("XMPP login failed. Stopping application.");
-            return success;
+            LOG.warn("XMPP login failed. Stopping application.");
+            throw new XmppLoginException("Cannot check the status of Jms2Ora.");
         }
 
         rosterItems = getRosterItems();
@@ -162,6 +161,10 @@ public class ApplicationChecker implements IGenericServiceListener<ISessionServi
 
             // Allways 'false' here
             return success;
+        }
+
+        if (errorState != null) {
+            this.deleteErrorFile();
         }
 
         LOG.info("Manager initialized");

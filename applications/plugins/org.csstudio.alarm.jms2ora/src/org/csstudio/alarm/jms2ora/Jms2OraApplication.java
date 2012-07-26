@@ -152,12 +152,16 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
             user = cmd.value("username", "");
 
             final ApplicationChecker checker = new ApplicationChecker();
-            final boolean success = checker.checkExternInstance("jms2oracle", host, user);
-
-            if(success) {
-                LOG.info("jms2ora is working.");
-            } else {
-                LOG.error("jms2ora is NOT working.");
+            
+            try {
+                final boolean success = checker.checkExternInstance("jms2oracle", host, user);
+                if(success) {
+                    LOG.info("jms2ora is working.");
+                } else {
+                    LOG.error("jms2ora is NOT working.");
+                }
+            } catch (XmppLoginException e) {
+                LOG.error("[*** XmppLoginException ***]: {}", e.getMessage());
             }
 
             return IApplication.EXIT_OK;
