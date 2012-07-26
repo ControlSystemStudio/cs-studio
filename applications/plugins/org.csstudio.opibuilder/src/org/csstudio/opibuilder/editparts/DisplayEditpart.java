@@ -132,6 +132,13 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 			});
 			getViewer().getControl().addControlListener(zoomListener);
 		}
+		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
+			@Override
+			public void run() {
+				getViewer().getControl().forceFocus();
+			}
+		});
+		
 	}
 	
 	@Override
