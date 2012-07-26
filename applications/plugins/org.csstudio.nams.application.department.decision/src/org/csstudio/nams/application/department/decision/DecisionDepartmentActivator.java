@@ -34,6 +34,7 @@ import org.csstudio.nams.application.department.decision.management.Restart;
 import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
+import org.csstudio.nams.application.department.decision.simplefilter.SimpleFilterWorker;
 import org.csstudio.nams.common.activatorUtils.AbstractBundleActivator;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleActivationMethod;
 import org.csstudio.nams.common.activatorUtils.OSGiBundleDeactivationMethod;
@@ -337,6 +338,8 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
      */
     private static boolean _hasReceivedSynchronizationRequest;
 
+	private SimpleFilterWorker simpleFilterWorker;
+
     /**
      * Starts the bundle application instance. Second Step.
      *
@@ -438,7 +441,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
             DecisionDepartmentActivator._hasReceivedSynchronizationRequest = false;
 
             if (this._continueWorking) {
-                createDecissionOffice();
+                createDecisionOffice();
+            }
+            if (this._continueWorking) {
+            	createSimpleFilterWorker();
             }
 
             if (this._continueWorking) {
@@ -570,14 +576,14 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
                 .receiveMessagesUntilApplicationQuits(this.eingangskorbDesDecisionOffice);
     }
 
-    private void createDecissionOffice() {
+    private void createDecisionOffice() {
         try {
             DecisionDepartmentActivator.logger
                     .logInfoMessage(this,
                             "Decision department application is creating decision office...");
 
             final List<Regelwerk> alleRegelwerke = DecisionDepartmentActivator.regelwerkBuilderService
-                    .gibAlleRegelwerke();
+                    .gibKomplexeRegelwerke();
 
             DecisionDepartmentActivator.logger.logDebugMessage(this,
                     "alleRegelwerke size: " + alleRegelwerke.size());
@@ -609,7 +615,22 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
         }
     }
 
-    private void createMessagingProducer() {
+	private void createSimpleFilterWorker() {
+		try {
+			simpleFilterWorker = new SimpleFilterWorker(localStoreConfigurationService
+					.getEntireFilterConfiguration().gibAlleFilter(),
+					ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice, DecisionDepartmentActivator.logger);
+		} catch (final Throwable e) {
+			DecisionDepartmentActivator.logger
+					.logFatalMessage(
+							this,
+							"Exception while initializing the alarm decision department.",
+							e);
+			this._continueWorking = false;
+		}
+	}
+
+	private void createMessagingProducer() {
         try {
 
             DecisionDepartmentActivator.logger.logInfoMessage(this,
@@ -932,6 +953,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
                                                                  * benutzen
                                                                  */
                                     new Date()), message.alsAlarmnachricht()));
+                            simpleFilterWorker.bearbeiteAlarmnachricht(message.alsAlarmnachricht());
                         } catch (final UnknownHostException e) {
                             DecisionDepartmentActivator.logger.logFatalMessage(
                                     this, "Host unreachable", e);
