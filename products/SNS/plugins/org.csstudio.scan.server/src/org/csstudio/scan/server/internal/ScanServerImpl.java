@@ -24,7 +24,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -229,19 +228,13 @@ public class ScanServerImpl implements ScanServer
             final List<ScanCommand> commands = reader.readXMLString(commands_as_xml);
 
             // Read pre- and post-scan commands
-            String path = ScanSystemPreferences.getPreScanPath();
-            final List<ScanCommand> pre_commands;
-            if (path.isEmpty())
-                pre_commands = Collections.<ScanCommand>emptyList();
-            else
-                pre_commands = reader.readXMLStream(PathStreamTool.openStream(path));
+            final List<ScanCommand> pre_commands = new ArrayList<ScanCommand>();
+            for (String path : ScanSystemPreferences.getPreScanPaths())
+                pre_commands.addAll(reader.readXMLStream(PathStreamTool.openStream(path)));
 
-            path = ScanSystemPreferences.getPostScanPath();
-            final List<ScanCommand> post_commands;
-            if (path.isEmpty())
-                post_commands = Collections.<ScanCommand>emptyList();
-            else
-                post_commands = reader.readXMLStream(PathStreamTool.openStream(path));
+            final List<ScanCommand> post_commands = new ArrayList<ScanCommand>();
+            for (String path : ScanSystemPreferences.getPostScanPaths())
+                post_commands.addAll(reader.readXMLStream(PathStreamTool.openStream(path)));
 
             // Obtain implementations for the requested commands as well as pre/post scan
             final ScanCommandImplTool implementor = ScanCommandImplTool.getInstance();
