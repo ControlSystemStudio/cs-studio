@@ -50,7 +50,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 
 	public static final String PROP_INTERNAL_FRAME_COLOR = "internalFrameColor"; //$NON-NLS-1$
 	
-	public static final String PROP_INTERNAL_FOCUSED_FRAME_COLOR = "internalFocusedFrameColor"; //$NON-NLS-1$
+	public static final String PROP_INTERNAL_FOCUSED_FRAME_COLOR = "focusedFrameColor"; //$NON-NLS-1$
 
 	public static final String PROP_INTEGER_DIGITS_PART = "integerDigits"; //$NON-NLS-1$
 
@@ -117,7 +117,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 				"Internal Frame Color", WidgetPropertyCategory.Display,
 				ColorConstants.black.getRGB()));
 		addProperty(new ColorProperty(PROP_INTERNAL_FOCUSED_FRAME_COLOR, 
-				"Internal Focused Frame Color", WidgetPropertyCategory.Display,
+				"Focused Frame Color", WidgetPropertyCategory.Display,
 				ColorConstants.blue.getRGB()));
 
 		addProperty(new IntegerProperty(PROP_INTERNAL_FRAME_THICKNESS, 
