@@ -53,7 +53,7 @@ public class TunerSetpointTableModel {
 	}
 
 	public List<Map<String, Double>> getCalculatedSetpoints() {
-		return calculatedSetpoints;
+		return Collections.unmodifiableList(calculatedSetpoints);
 	}
 
 	public void setCalculatedSetpoint(int columnIndex, String rowIdentifier,
