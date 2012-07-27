@@ -65,7 +65,11 @@
          </property>
          <property
                name="aboutText"
-               value="Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net&#x0A;version: 3.0.1.qualifier">
+               value="Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net&#x0A;version: 3.1.0.qualifier">
+         </property>
+         <property
+               name="introBrandingImage"
+               value="product:icons/welcome.png">
          </property>
       </product>
    </extension>

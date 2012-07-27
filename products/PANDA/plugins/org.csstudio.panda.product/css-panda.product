@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Css-panda" id="org.csstudio.panda.product.product" application="org.csstudio.panda.product.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="Css-panda" id="org.csstudio.panda.product.product" application="org.csstudio.panda.product.application" version="3.1.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.panda.product/icons/about.png"/>
       <text>
          Control System Studio is an Eclipse-based collections of tools to monitor and operate large scale control systems, such as the ones in the accelerator community. http://cs-studio.sourceforge.net
-version: 3.0.1.qualifier
+version: 3.1.0.qualifier
       </text>
    </aboutInfo>
 
@@ -32,16 +32,20 @@ version: 3.0.1.qualifier
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>
 
    <features>
-      <feature id="org.csstudio.panda.applications.feature" version="3.0.0.qualifier"/>
-      <feature id="org.csstudio.panda.core.feature" version="3.0.0.qualifier"/>
+      <feature id="org.csstudio.panda.applications.feature" version="3.1.0.qualifier"/>
+      <feature id="org.csstudio.panda.core.feature" version="3.1.0.qualifier"/>
       <feature id="org.csstudio.panda.eclipse.feature" version="3.0.0.qualifier"/>
+      <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.equinox.p2.user.ui"/>
    </features>
 
 

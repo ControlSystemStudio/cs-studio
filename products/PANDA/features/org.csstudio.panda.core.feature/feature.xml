@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.panda.core.feature"
       label="CSS-PANDA Core"
-      version="3.0.0.qualifier"
+      version="3.1.0.qualifier"
       provider-name="Florian Feldbauer &lt;florian@ep1.ruhr-uni-bochum.de&gt; - RUB">
 
    <description url="http://www.example.com/description">
@@ -199,13 +199,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jdom"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.utility.rdb"
          download-size="0"
          install-size="0"
@@ -283,13 +276,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.log4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.ui"
          download-size="0"
          install-size="0"
@@ -340,6 +326,13 @@
 
    <plugin
          id="org.csstudio.ui.menu.web"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.log4j"
          download-size="0"
          install-size="0"
          version="0.0.0"
