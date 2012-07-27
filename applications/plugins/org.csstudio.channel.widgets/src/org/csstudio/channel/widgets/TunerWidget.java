@@ -73,7 +73,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 	private boolean editingDone = false;
 	private boolean setpointEditingDone = false;
-	
+
 	private Table channelTable;
 	private Table stepValueTable;
 	private Text stepCount;
@@ -273,6 +273,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 		channelTablelayout.setColumnData(tblclmnWeight,
 				new ColumnWeightData(30));
 
+		// setpoint table
 		Composite stepTableComposite = new Composite(this, SWT.NONE);
 		FormData fd_stepValueTable = new FormData();
 		fd_stepValueTable.right = new FormAttachment(100, -2);
@@ -291,7 +292,13 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 						@Override
 						public void setpointsChanged() {
-							if (!setpointTableViewer.isCellEditorActive() || setpointEditingDone) {
+							if (!setpointTableViewer.isCellEditorActive()
+									|| setpointEditingDone) {
+								if (tunerSetpointTableModel.getNumberOfSteps() > 0) {
+									btnApply.setEnabled(true);
+								} else {
+									btnApply.setEnabled(false);
+								}
 								updateStepValueTable();
 								setpointTableViewer.refresh();
 							}
@@ -364,9 +371,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				calculateSetpoints();
-				if (tunerSetpointTableModel.getNumberOfSteps() > 0) {
-					btnApply.setEnabled(true);
-				}
 			}
 		});
 		FormData fd_btnGenerate = new FormData();
@@ -396,6 +400,10 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 
 	//
 
+	/**
+	 * Based on the calculated setpoint this method creates and populates the
+	 * setpoint table
+	 */
 	@SuppressWarnings("unused")
 	private void updateStepValueTable() {
 		for (TableColumn column : setpointTableViewer.getTable().getColumns()) {
@@ -495,9 +503,12 @@ public class TunerWidget extends AbstractChannelQueryResultWidget {
 				String rowIdentifier = ((TableItem) element).channelName;
 				if (rowIdentifier != null && tunerSetpointTableModel != null) {
 					if (value == null || value.toString().trim().isEmpty()) {
-//						tunerSetpointTableModel.setCalculatedSetpoint(columnCount, rowIdentifier, value);
+						// tunerSetpointTableModel.setCalculatedSetpoint(columnCount,
+						// rowIdentifier, value);
 					} else {
-						tunerSetpointTableModel.setCalculatedSetpoint(columnCount, rowIdentifier, Double.valueOf(value.toString()));
+						tunerSetpointTableModel.setCalculatedSetpoint(
+								columnCount, rowIdentifier,
+								Double.valueOf(value.toString()));
 					}
 					if (!initialized) {
 						((Text) getCellEditor(element).getControl())
