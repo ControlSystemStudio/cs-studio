@@ -4,7 +4,7 @@
 <product name="Control System Studio for KEK" uid="kek" id="org.csstudio.kek.product.product" application="org.csstudio.kek.product.application" version="3.1.1.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/org.csstudio.kek.product/icons/aboutSide.png"/>
+      <image path="/org.csstudio.utility.product/icons/aboutSide.png"/>
       <text>
          Control System Studio (CSS) is a combined
 effort of several parties, including
@@ -18,6 +18,7 @@ tools in a common environment, based
 on Eclipse.
 
 http://sourceforge.net/apps/trac/cs-studio/wiki
+http://www-linac.kek.jp/cont/css/
       </text>
    </aboutInfo>
 
@@ -34,7 +35,7 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages i16="/org.csstudio.kek.product/icons/css16.png" i32="/org.csstudio.kek.product/icons/css32.png" i48="/org.csstudio.kek.product/icons/css48.png" i64="/org.csstudio.kek.product/icons/css64.png" i128="/org.csstudio.kek.product/icons/css128.png"/>
+   <windowImages i16="/org.csstudio.utility.product/icons/css16.png" i32="/org.csstudio.utility.product/icons/css32.png" i48="/org.csstudio.utility.product/icons/css48.png" i64="/org.csstudio.utility.product/icons/css64.png" i128="/org.csstudio.utility.product/icons/css128.png"/>
 
    <splash
       location="org.csstudio.kek.product"
@@ -42,14 +43,15 @@ http://sourceforge.net/apps/trac/cs-studio/wiki
       startupMessageRect="20,200,340,20"
       startupForegroundColor="FFFFFF" />
    <launcher name="css">
-      <linux icon="/org.csstudio.kek.product/icons/css48.xpm"/>
-      <macosx icon="/org.csstudio.kek.product/icons/css.icns"/>
+      <linux icon="/org.csstudio.utility.product/icons/css48.xpm"/>
+      <macosx icon="/org.csstudio.utility.product/icons/css.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/org.csstudio.kek.product/icons/css.ico"/>
+         <ico path="/org.csstudio.utility.product/icons/css.ico"/>
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
