@@ -29,8 +29,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
-import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
@@ -38,6 +36,7 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -119,8 +118,8 @@ public class CSSView extends Composite implements Observer {
          */
         @Override
         public String getText(final Object element) {
-            if (element instanceof IControlSystemItem) {
-                final String[] name = ((IControlSystemItem) element).getName().split("[/ ]");
+            if (element instanceof ProcessVariable) {
+                final String[] name = ((ProcessVariable) element).getName().split("[/ ]");
                 return name[name.length - 1];
             }
             return element.toString();
@@ -585,8 +584,8 @@ public class CSSView extends Composite implements Observer {
                 final ArrayList<Object> al = new ArrayList<Object>();
                 for (final Object element : elements) {
                     String name = ""; //$NON-NLS-1$
-                    if (element instanceof IControlSystemItem) {
-                        final String[] names = ((IControlSystemItem) element).getName().split("[/ ]");
+                    if (element instanceof ProcessVariable) {
+                        final String[] names = ((ProcessVariable) element).getName().split("[/ ]");
                         name = names[names.length - 1];
                         // name= ((IControlSystemItem) element).getName();
                     }
@@ -630,7 +629,7 @@ public class CSSView extends Composite implements Observer {
         // Make List Drageble
         //        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
         //        new ProcessVariableDragSource(listViewer.getList(), listViewer);
-        new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
+//        new ProcessVariableDragSource(_tableViewer.getTable(), _tableViewer);
         // MB3
         makeContextMenu();
 

@@ -149,8 +149,8 @@ public class LdapNameSpace extends NameSpace {
             }
             
             if(cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
-                tmpList.add(new ProcessVariable(token[1], cleanList));
-            } else {
+//                tmpList.add(new ProcessVariable(token[1], cleanList));
+//            } else {
                 tmpList.add(new ControlSystemItem(token[1], cleanList, attribute));
             }
             
