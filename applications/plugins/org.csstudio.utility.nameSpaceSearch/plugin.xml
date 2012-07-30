@@ -63,17 +63,22 @@
          </viewShortcut>
       </perspectiveExtension>
    </extension>
-        <extension
+      <extension
            point="org.eclipse.ui.commands">
-          <command
+      <command
             defaultHandler="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
             id="org.csstudio.utility.namespacesearch.newnamespacesearch"
             name="New NamespaceSearch">
       </command>
+      <command
+            defaultHandler="org.csstudio.utility.nameSpaceSearch.PVpopupAction"
+            id="org.csstudio.utility.namespacesearch.pvpopup"
+            name="Popup Name Space Search">
+      </command>
      </extension>
       <extension
            point="org.eclipse.ui.menus">    
-             <menuContribution
+       <menuContribution
             allPopups="false"
             locationURI="menu:configuration">
          <command
@@ -84,5 +89,26 @@
                tooltip="NameSpaceSearch">
          </command>
       </menuContribution>
+            <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.utility.namespacesearch.pvpopup"
+               icon="icons/LDAPLupe.gif"
+               label="Name Space Search"
+               style="push"
+               tooltip="Name Space Search">
+         </command>
+      </menuContribution>
      </extension>
+        <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.utility.nameSpaceSearch.ui.ProcessVariableItem"
+            class="org.csstudio.utility.nameSpaceSearch.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>
