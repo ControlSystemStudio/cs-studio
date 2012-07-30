@@ -21,12 +21,11 @@
  */
 package org.csstudio.utility.namespace.utility;
 
-import org.csstudio.platform.model.IProcessVariable;
 
 //public class ProcessVariable implements IProcessVariable {
-public class ProcessVariable extends ControlSystemItem implements IProcessVariable {
+public class ProcessVariable {//extends ControlSystemItem implements IProcessVariable {
 
 	public ProcessVariable(String name, String path) {
-		super(name, path);
+//		super(name, path);
 	}
 }

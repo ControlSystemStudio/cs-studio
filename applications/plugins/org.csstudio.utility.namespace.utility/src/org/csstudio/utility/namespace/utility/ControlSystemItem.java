@@ -24,11 +24,10 @@ package org.csstudio.utility.namespace.utility;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
-import org.csstudio.platform.model.IControlSystemItem;
+import org.csstudio.csdata.ProcessVariable;
 
-public class ControlSystemItem implements IControlSystemItem {
+public class ControlSystemItem extends ProcessVariable {
 
-	private final String _name;
 	private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
 	private final String _path;
     private boolean _redundant;
@@ -45,7 +44,7 @@ public class ControlSystemItem implements IControlSystemItem {
      * @param attribute
      */
     public ControlSystemItem(String name, String path, Attribute attribute) {
-        this._name = name;
+    	super(name);
         this._path = path;
         setRedundant(attribute);
     }
@@ -68,28 +67,9 @@ public class ControlSystemItem implements IControlSystemItem {
         }
     }
 
-    @Override
-    public String getName() {
-		return _name;
-	}
 
 	public String getPath() {
 		return _path;
-	}
-
-	@Override
-    public String getTypeId() {
-		return TYPE_ID;
-	}
-
-	@Override
-	public Object getAdapter(final Class adapter) {
-		return null;
-	}
-
-	@Override
-    public String toString(){
-		return _name;
 	}
 
     public boolean isRedundant() {
