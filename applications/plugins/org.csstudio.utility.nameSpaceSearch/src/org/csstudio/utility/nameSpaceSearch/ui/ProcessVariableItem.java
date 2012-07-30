@@ -21,35 +21,22 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.csdata.ProcessVariable;
 
-public class ProcessVariable implements IProcessVariable {
+public class ProcessVariableItem extends ProcessVariable {
 
-	private String name;
 	private String[] path;
 
-	public ProcessVariable(String name, String[] path) {
-		this.name = name;
+	public ProcessVariableItem(String name, String[] path) {
+		super(name);
 		this.path = path;
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public String[] getPath() {
 		return path;
 	}
 
-	public String getTypeId() {
-		return TYPE_ID;
-	}
-
 	public Object getAdapter(Class adapter) {
 		return null;
-	}
-
-	public String toString(){
-		return name;
 	}
 }

@@ -22,6 +22,7 @@
 package org.csstudio.utility.nameSpaceSearch.ui;
 
 import static org.csstudio.utility.ldap.service.util.LdapUtils.createLdapName;
+
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
@@ -37,9 +38,7 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.platform.model.IControlSystemItem;
-import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapReaderJob;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
@@ -132,8 +131,8 @@ public class MainView extends ViewPart {
 
 		@Override
 		public String getColumnText(final Object element, final int columnIndex) {
-			if (element instanceof ProcessVariable) {
-				final ProcessVariable pv = (ProcessVariable) element;
+			if (element instanceof ProcessVariableItem) {
+				final ProcessVariableItem pv = (ProcessVariableItem) element;
 				try {
 					if (pv.getPath() != null) {
 						return pv.getPath()[columnIndex].split("=")[1]; //$NON-NLS-1$
@@ -145,7 +144,7 @@ public class MainView extends ViewPart {
 
 			} else if (element instanceof ArrayList) {
 				@SuppressWarnings("unchecked")
-				final IProcessVariable o = ((ArrayList<IProcessVariable>) element)
+				final ProcessVariableItem o = ((ArrayList<ProcessVariableItem>) element)
 						.get(columnIndex);
 				return o.getName();
 			}
@@ -305,8 +304,8 @@ public class MainView extends ViewPart {
 
 		// Make Table row Drageble
 
-		new ProcessVariableDragSource(getResultTableView().getControl(),
-				getResultTableView());
+//TODO jhatje		new ProcessVariableDragSource(getResultTableView().getControl(),
+//				getResultTableView());
 		// MB3
 		makeContextMenu();
 		getSearchText().forceFocus();
@@ -401,7 +400,7 @@ public class MainView extends ViewPart {
 
 	protected void getText(ILdapSearchResult searchResult) {
 		getResultTableView().refresh(false);
-		final ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
+		final ArrayList<ProcessVariable> tableElements = new ArrayList<ProcessVariable>();
 
 		int i = 0;
 		for (final SearchResult result : searchResult.getAnswerSet()) {
@@ -483,7 +482,7 @@ public class MainView extends ViewPart {
 					elements[k] = elements[0];
 				}
 			}
-			tableElements.add(new ProcessVariable(
+			tableElements.add(new ProcessVariableItem(
 					elements[0].split("=")[1], elements)); //$NON-NLS-1$
 			i++;
 		}

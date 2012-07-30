@@ -14,22 +14,6 @@
             name="CSS"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.utility.nameSpaceSearch.ui.ActionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
-               icon="icons/LDAPLupe.gif"
-               id="org.csstudio.utility.nameSpaceSearch.ui.action2"
-               label="Namespace Search"
-               menubarPath="css/utility/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"
@@ -79,4 +63,26 @@
          </viewShortcut>
       </perspectiveExtension>
    </extension>
+        <extension
+           point="org.eclipse.ui.commands">
+          <command
+            defaultHandler="org.csstudio.utility.nameSpaceSearch.ui.ShowNamespaceSearch"
+            id="org.csstudio.utility.namespacesearch.newnamespacesearch"
+            name="New NamespaceSearch">
+      </command>
+     </extension>
+      <extension
+           point="org.eclipse.ui.menus">    
+             <menuContribution
+            allPopups="false"
+            locationURI="menu:configuration">
+         <command
+               commandId="org.csstudio.utility.namespacesearch.newnamespacesearch"
+               icon="icons/LDAPLupe.gif"
+               label="NameSpaceSearch"
+               style="push"
+               tooltip="NameSpaceSearch">
+         </command>
+      </menuContribution>
+     </extension>
 </plugin>
