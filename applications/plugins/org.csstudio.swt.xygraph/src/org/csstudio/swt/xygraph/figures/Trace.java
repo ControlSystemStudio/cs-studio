@@ -8,8 +8,11 @@
 package org.csstudio.swt.xygraph.figures;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.Preferences;
@@ -545,8 +548,13 @@ public class Trace extends Figure implements IDataProviderListener,
 				// Set of points which were already drawn
 				HashSet<Point> hsPoint = new HashSet<Point>();
 				
-				// List of points for drawing polyline
-				PointList plPolyline = new PointList(); 
+				// List of points for drawing polyline. 
+				PointList plPolyline = new PointList();
+				
+				// List of bottom/top point in a certain horizontal
+				// pixel location for the BAR line type.
+				HashMap<Integer,Integer> bottomPoints = new HashMap<Integer,Integer>();
+				HashMap<Integer,Integer> topPoints = new HashMap<Integer,Integer>();
 				
 				Point maxInRegion = null;
 				Point minInRegion = null;
@@ -785,6 +793,38 @@ public class Trace extends Figure implements IDataProviderListener,
 							}
 							
 							break;
+						case BAR:
+							if (!use_advanced_graphics && predpPos.x() == dpPos.x()) {
+								// Stores bar line infomration in memory, and draw lines later.
+								Integer posX = new Integer(predpPos.x());
+								Integer highY;
+								Integer lowY;
+								
+								if (dpPos.y() > predpPos.y()) {
+									highY = new Integer(dpPos.y());
+									lowY = new Integer(predpPos.y());
+								} else {
+									highY = new Integer(predpPos.y());
+									lowY = new Integer(dpPos.y());
+								}
+								
+								if (bottomPoints.containsKey(posX)) {
+									if (lowY.compareTo(bottomPoints.get(posX)) < 0) { 
+										bottomPoints.put(posX, lowY);
+									}
+									if (highY.compareTo(topPoints.get(posX)) > 0) {
+										topPoints.put(posX, highY);
+									}
+								} else {
+									bottomPoints.put(posX, lowY);
+									topPoints.put(posX, highY);
+								}
+							} else {
+								// IF the X value is different for some reason, or the advanced graphics is
+								// turned on. Fallback to the original drawing algorithm.
+								drawLine(graphics, predpPos, dpPos);			
+							}
+							break;
 						default:
 							drawLine(graphics, predpPos, dpPos);
 							break;
@@ -795,11 +835,21 @@ public class Trace extends Figure implements IDataProviderListener,
 					predpInRange = origin_dpInRange;
 				}
 				
-				// Draw polyline which was not drawn yet.
 				switch (traceType) {
 				case SOLID_LINE:
 				case DASH_LINE:
+					// Draw polyline which was not drawn yet.
 					drawPolyline(graphics, plPolyline);
+					break;
+				case BAR:
+					// Draw bar lines
+					Set<Integer> xSet = bottomPoints.keySet();
+					for (Iterator<Integer> i = xSet.iterator(); i.hasNext(); ) {
+						Integer posX = (Integer) i.next();
+						Point p1 = new Point(posX.intValue(), bottomPoints.get(posX).intValue());
+						Point p2 = new Point(posX.intValue(), topPoints.get(posX).intValue());
+						drawLine(graphics, p1, p2);
+					}
 					break;
 				default:
 					break;
