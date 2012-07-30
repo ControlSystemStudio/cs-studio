@@ -49,7 +49,7 @@
         </command>
         <command
             defaultHandler="org.csstudio.config.kryonamebrowser.ui.ShowKryoNameBrowser"
-            id="org.csstudio.display.pvtable.newkryobrowser"
+            id="org.csstudio.config.kryonamebrowser.newkryobrowser"
             name="New Kryo Name Browser">
       </command>
      </extension>
@@ -110,7 +110,7 @@
             allPopups="false"
             locationURI="menu:configuration">
          <command
-               commandId="org.csstudio.display.pvtable.newkryobrowser"
+               commandId="org.csstudio.config.kryonamebrowser.newkryobrowser"
                icon="icons/browser.png"
                label="KryoNameBrowser"
                style="push"
