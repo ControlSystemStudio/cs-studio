@@ -19,20 +19,20 @@ import java.util.Set;
 public class TunerSetpointTableModel {
 
 	private List<Map<String, Double>> calculatedSetpoints;
-	private Set<SetpointTableModelListener> listeners = new HashSet<SetpointTableModelListener>();
+	private Set<TunerSetpointTableModelListener> listeners = new HashSet<TunerSetpointTableModelListener>();
 
 	public void addSetpointTableModelListener(
-			SetpointTableModelListener listener) {
+			TunerSetpointTableModelListener listener) {
 		listeners.add(listener);
 	}
 
 	public void removeSetpointTableModelListener(
-			SetpointTableModelListener listener) {
+			TunerSetpointTableModelListener listener) {
 		listeners.remove(listener);
 	}
 
 	private void firesetpointsChanged() {
-		for (SetpointTableModelListener listener : listeners) {
+		for (TunerSetpointTableModelListener listener : listeners) {
 			listener.setpointsChanged();
 		}
 	}

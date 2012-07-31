@@ -15,14 +15,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
+import org.csstudio.channel.widgets.TunerChannelTableModel.Item;
 import org.csstudio.channel.widgets.TunerSetpointTableModel.TableItem;
-import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
@@ -57,9 +55,6 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VDouble;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-
 public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		ConfigurableWidget {
 
@@ -88,7 +83,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				}
 			}
 		});
-
 		draw();
 
 	}
@@ -137,14 +131,14 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		setpointTableViewer
 				.setContentProvider(new IStructuredContentProvider() {
 
-					private SetpointTableModelListener listener = new SetpointTableModelListener() {
+					private TunerSetpointTableModelListener listener = new TunerSetpointTableModelListener() {
 
 						@Override
 						public void setpointsChanged() {
 							if (!setpointTableViewer.isCellEditorActive()
 									|| setpointEditingDone) {
 								// TODO A minor edit to a single value should
-								// not result is redrawing the entire table
+								// not result is redrawing the entire table.
 								updateStepValueTable();
 								setpointTableViewer.refresh();
 								enableApplyButton();
@@ -217,7 +211,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		btnGenerate.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				calculateSetpoints();
+				setTunerSetpointTableModel(new TunerSetpointTableModel(
+						calculateSetpoints()));
 			}
 		});
 		FormData fd_btnGenerate = new FormData();
@@ -259,6 +254,10 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				if (evt.getPropertyName().equals("channels")) {
 					setTunerSetpointTableModel(null);
 				}
+				if (evt.getPropertyName().equals("setpoints")) {
+					updateStepValueTable();
+					enableApplyButton();
+				}
 			}
 
 		});
@@ -268,11 +267,16 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 					@Override
 					public void dataChanged() {
+						channelTableViewer.setInput(tunerChannelTableModel);
 						channelTableViewer.refresh();
 					}
 				});
 	}
 
+	/**
+	 * Determine is the apply button should be enabled based on the avaliability
+	 * of setpoints to be written.
+	 */
 	private void enableApplyButton() {
 		if (tunerSetpointTableModel != null) {
 			if (tunerSetpointTableModel.getNumberOfSteps() > 0) {
@@ -283,7 +287,11 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		}
 	}
 
+	/**
+	 * redraws the channelTable
+	 */
 	private void updateChannelTable() {
+		// Dispose existing columns
 		for (TableColumn column : channelTableViewer.getTable().getColumns()) {
 			column.dispose();
 		}
@@ -295,9 +303,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				channelTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnChannel.setLabelProvider(new ColumnLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			public String getText(Object element) {
-				TunerChannelTableModel.Item item = ((TunerChannelTableModel.Item) element);
+				Item item = ((Item) element);
 				return item == null ? "" : item.getChannelName();
 			}
 		});
@@ -307,7 +314,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		channelTablelayout.setColumnData(tblclmnChannel, new ColumnWeightData(
 				60));
 
-		// create a set of channels based on the properties/tags selected
+		// create columns based on the properties/tags selected to be show.
 		for (String property : this.properties) {
 			TableViewerColumn tableViewerColumnProperty = new TableViewerColumn(
 					channelTableViewer, SWT.DOUBLE_BUFFERED);
@@ -316,11 +323,10 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 			tableViewerColumnProperty
 					.setLabelProvider(new ColumnLabelProvider() {
 
-						@SuppressWarnings("unchecked")
 						public String getText(Object element) {
-							return element == null ? ""
-									: ((TunerChannelTableModel.Item) element)
-											.getChannel()
+							Item item = ((Item) element);
+							return element == null || item.getChannel() == null ? ""
+									: item.getChannel()
 											.getProperty(propertyName)
 											.getValue();
 						}
@@ -339,12 +345,11 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 			final String tagName = tag;
 			tableViewerColumnTag.setLabelProvider(new ColumnLabelProvider() {
 
-				@SuppressWarnings("unchecked")
 				public String getText(Object element) {
-					return element == null ? ""
-							: ((TunerChannelTableModel.Item) element)
-									.getChannel().getTag(tagName) == null ? ""
-									: "tagged";
+					Item item = (Item) element;
+					return element != null && item.getChannel() != null ? ((Item) element)
+							.getChannel().getTag(tagName) == null ? ""
+							: "tagged" : "";
 				}
 			});
 			TableColumn tblclmnTag = tableViewerColumnTag.getColumn();
@@ -359,13 +364,12 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				channelTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnMin.setLabelProvider(new ColumnLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			public String getText(Object element) {
-				TunerChannelTableModel.Item item = (TunerChannelTableModel.Item) element;
+				Item item = (Item) element;
 				if (item != null) {
 					VDouble value = item.getValue();
-					return value.getLowerCtrlLimit() == null ? "N/A" : value
-							.getLowerCtrlLimit().toString();
+					return value != null && value.getLowerCtrlLimit() != null ? value
+							.getLowerCtrlLimit().toString() : "N/A";
 				}
 				return "";
 			}
@@ -378,11 +382,10 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		TableViewerColumn tableViewerColumnValue = new TableViewerColumn(
 				channelTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnValue.setLabelProvider(new ColumnLabelProvider() {
-			@SuppressWarnings("unchecked")
 			public String getText(Object element) {
-				return element == null ? ""
-						: ((TunerChannelTableModel.Item) element).getValue()
-								.getValue().toString();
+				Item item = ((Item) element);
+				return item != null && item.getValue() != null ? item
+						.getValue().getValue().toString() : "";
 			}
 		});
 		TableColumn tblclmnValue = tableViewerColumnValue.getColumn();
@@ -395,13 +398,11 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				channelTableViewer, SWT.DOUBLE_BUFFERED);
 		tableViewerColumnMax.setLabelProvider(new ColumnLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			public String getText(Object element) {
 				if (element != null) {
-					VDouble value = ((TunerChannelTableModel.Item) element)
-							.getValue();
-					return value.getUpperCtrlLimit() == null ? "N/A" : value
-							.getUpperCtrlLimit().toString();
+					VDouble value = ((Item) element).getValue();
+					return value != null && value.getUpperCtrlLimit() != null ? value
+							.getUpperCtrlLimit().toString() : "N/A";
 				}
 				return "";
 			}
@@ -446,17 +447,15 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 			@Override
 			protected Object getValue(Object element) {
-				Double value = ((TunerChannelTableModel.Item) element)
-						.getWeight();
+				Double value = ((Item) element).getWeight();
 				return String.valueOf(value);
 			}
 
-			@SuppressWarnings("unchecked")
 			@Override
 			protected void setValue(Object element, Object value) {
 				try {
 					editingDone = true;
-					TunerChannelTableModel.Item item = ((TunerChannelTableModel.Item) element);
+					Item item = ((Item) element);
 					if (tunerChannelTableModel != null) {
 						if (value == null || value.toString().trim().isEmpty()) {
 							tunerChannelTableModel.updateWeight(item, 0.0);
@@ -477,11 +476,9 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		});
 		tableViewerColumnWeight.setLabelProvider(new ColumnLabelProvider() {
 
-			@SuppressWarnings("unchecked")
 			public String getText(Object element) {
-				return element == null ? ""
-						: ((TunerChannelTableModel.Item) element).getWeight()
-								.toString();
+				return element == null ? "" : ((Item) element).getWeight()
+						.toString();
 			}
 		});
 		TableColumn tblclmnWeight = tableViewerColumnWeight.getColumn();
@@ -617,143 +614,12 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 	}
 
-	private interface TunerChannelTableModelListener {
-		public void dataChanged();
-	}
-
-	class TunerChannelTableModel {
-		private Map<String, Channel> channels;
-		private Map<String, VDouble> values;
-		private Map<String, Double> weights;
-		private Set<TunerChannelTableModelListener> listeners = new HashSet<TunerChannelTableModelListener>();
-
-		public TunerChannelTableModel(List<Channel> channels) {
-			super();
-			this.values = Collections.emptyMap();
-			if (channels == null) {
-				this.channels = Collections.emptyMap();
-				this.weights = Collections.emptyMap();
-			} else {
-				this.channels = new HashMap<String, Channel>();
-				this.weights = new HashMap<String, Double>();
-				for (Channel channel : channels) {
-					this.channels.put(channel.getName(), channel);
-					this.weights.put(channel.getName(), 1.0);
-				}
-			}
-		}
-
-		public void setChannels(List<Channel> channels) {
-			this.values = Collections.emptyMap();
-			if (channels != null) {
-				this.channels = new HashMap<String, Channel>();
-				this.weights = new HashMap<String, Double>();
-				for (Channel channel : channels) {
-					this.channels.put(channel.getName(), channel);
-					this.weights.put(channel.getName(), 1.0);
-				}
-			} else {
-				this.channels = Collections.emptyMap();
-				this.weights = Collections.emptyMap();
-			}
-			fireDataChanged();
-		}
-
-		public Collection<String> getChannelNames() {
-			return Collections.unmodifiableSet(channels.keySet());
-		}
-
-		public Collection<Channel> getChannels() {
-			return Collections.unmodifiableCollection(channels.values());
-		}
-
-		public int getRowsize() {
-			return this.channels.size();
-		}
-
-		public void addPVTableModelListener(
-				TunerChannelTableModelListener listener) {
-			listeners.add(listener);
-		}
-
-		public void removePVTableModelListener(
-				TunerChannelTableModelListener listener) {
-			listeners.remove(listener);
-		}
-
-		private void fireDataChanged() {
-			for (TunerChannelTableModelListener listener : listeners) {
-				listener.dataChanged();
-			}
-		}
-
-		public void updateValues(Map<String, VDouble> values) {
-			this.values = values;
-			fireDataChanged();
-		}
-
-		public void updateWeight(Item item, Double weight) {
-			weights.put(item.getChannelName(), weight);
-			fireDataChanged();
-		}
-
-		private class Item {
-
-			private String channelName;
-
-			private Item(String channelName) {
-				this.channelName = channelName;
-			}
-
-			public String getChannelName() {
-				return channelName;
-			}
-
-			public Channel getChannel() {
-				if (channels != null)
-					return channels.get(channelName);
-				else
-					return null;
-
-			}
-
-			public VDouble getValue() {
-				if (values != null && values.containsKey(channelName))
-					return values.get(channelName);
-				else
-					return null;
-			}
-
-			public Double getWeight() {
-				if (weights != null && weights.containsKey(channelName)) {
-					return weights.get(channelName);
-				} else {
-					return null;
-				}
-			}
-
-		}
-
-		public Item[] getItems() {
-			Collection<Item> result = Collections2.transform(
-					this.channels.keySet(), new Function<String, Item>() {
-
-						@Override
-						public Item apply(String input) {
-							return new Item(input);
-						}
-					});
-			return result.toArray(new Item[channels.size()]);
-		}
-	}
-
 	// Model for the channel, property, value and weight
 	private TunerChannelTableModel tunerChannelTableModel = new TunerChannelTableModel(
 			null);
 
-	// list of channels
-	// private Collection<Channel> channels;
-	// private List<String> channelNames;
+	// Model for the setpoints
+	private TunerSetpointTableModel tunerSetpointTableModel;
 
 	// List of properties and tags selected to be displayed
 	private List<String> properties = Collections.emptyList();
@@ -852,8 +718,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		return Collections.unmodifiableList(channelNames);
 	}
 
-	private TunerSetpointTableModel tunerSetpointTableModel;
-
 	private void reconnect() {
 
 		pv = PVManager
@@ -884,17 +748,16 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		});
 	}
 
-	private void calculateSetpoints() {
+	private List<Map<String, Double>> calculateSetpoints() {
 		int stepCount = Integer.valueOf(this.stepCount.getText());
 		List<Map<String, Double>> calculatedSetpoints = new ArrayList<Map<String, Double>>(
 				stepCount);
 		int stepSize = Integer.valueOf(this.stepSize.getText());
 		for (int i = 0; i < stepCount; i++) {
-			Map<String, Double> calculatedSetpointMap = new HashMap<String, Double>(
+			Map<String, Double> calculatedSetpointMap = new LinkedHashMap<String, Double>(
 					tunerChannelTableModel.getRowsize());
-			TunerChannelTableModel.Item[] tableItems = tunerChannelTableModel
-					.getItems();
-			for (TunerChannelTableModel.Item item : tableItems) {
+			Item[] tableItems = tunerChannelTableModel.getItems();
+			for (Item item : tableItems) {
 				String key = item.getChannel().getName();
 				double value = item.getValue().getValue()
 						+ (item.getWeight() * stepSize * (i + 1));
@@ -902,30 +765,25 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 			}
 			calculatedSetpoints.add(calculatedSetpointMap);
 		}
-		setTunerSetpointTableModel(new TunerSetpointTableModel(
-				calculatedSetpoints));
+		return calculatedSetpoints;
 	}
 
 	private void setTunerSetpointTableModel(
 			TunerSetpointTableModel tunerSetpointTableModel) {
+		TunerSetpointTableModel oldValue = this.tunerSetpointTableModel;
 		if (this.tunerSetpointTableModel != null
 				&& this.tunerSetpointTableModel.equals(tunerSetpointTableModel)) {
 			return;
 		}
 		this.tunerSetpointTableModel = tunerSetpointTableModel;
-		updateStepValueTable();
-		enableApplyButton();
+		changeSupport.firePropertyChange("setpoints", oldValue,
+				this.tunerSetpointTableModel);
 	}
 
 	private void setLastResult(Map<String, VDouble> value) {
 		if (!channelTableViewer.isCellEditorActive() || editingDone) {
-			if (value != null) {
-				tunerChannelTableModel.updateValues(value);
-				channelTableViewer.setInput(tunerChannelTableModel.getItems());
-			} else {
-				// TODO
-				tunerChannelTableModel.updateValues(null);
-			}
+			tunerChannelTableModel.updateValues(value);
+			channelTableViewer.setInput(tunerChannelTableModel);
 		}
 	}
 
@@ -944,7 +802,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 		@Override
 		public Object[] getElements(Object inputElement) {
-			return (Object[]) inputElement;
+			return ((TunerChannelTableModel) inputElement).getItems();
 		}
 	}
 
