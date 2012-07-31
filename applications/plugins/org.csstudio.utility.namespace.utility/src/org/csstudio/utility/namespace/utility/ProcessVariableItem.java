@@ -23,9 +23,9 @@ package org.csstudio.utility.namespace.utility;
 
 
 //public class ProcessVariable implements IProcessVariable {
-public class ProcessVariable {//extends ControlSystemItem implements IProcessVariable {
+public class ProcessVariableItem extends ControlSystemItem {
 
-	public ProcessVariable(String name, String path) {
-//		super(name, path);
+	public ProcessVariableItem(String name, String path) {
+		super(name, path);
 	}
 }

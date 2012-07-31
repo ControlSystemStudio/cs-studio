@@ -52,7 +52,7 @@ import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.LdapNamespaceSearchResult;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
-import org.csstudio.utility.namespace.utility.ProcessVariable;
+import org.csstudio.utility.namespace.utility.ProcessVariableItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -149,8 +149,8 @@ public class LdapNameSpace extends NameSpace {
             }
             
             if(cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
-//                tmpList.add(new ProcessVariable(token[1], cleanList));
-//            } else {
+                tmpList.add(new ProcessVariableItem(token[1], cleanList));
+            } else {
                 tmpList.add(new ControlSystemItem(token[1], cleanList, attribute));
             }
             

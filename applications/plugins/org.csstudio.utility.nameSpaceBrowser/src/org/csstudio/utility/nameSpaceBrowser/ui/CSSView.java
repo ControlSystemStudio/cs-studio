@@ -346,8 +346,15 @@ public class CSSView extends Composite implements Observer {
 
             final String selectionString = _tableViewer.getSelection().toString();
             final String stringWithoutBrackets = selectionString.substring(1, selectionString.length() - 1);
-            final ControlSystemItem csi = _itemList.get(stringWithoutBrackets);
-
+            final String stringWithoutPrefix[] = stringWithoutBrackets.split("\\s+");
+            final ControlSystemItem csi;
+            if (stringWithoutPrefix.length>1) {
+            	final String stringWithoutColon = stringWithoutPrefix[1].substring(1, stringWithoutPrefix[1].length() - 1);
+            	System.out.println(stringWithoutColon);
+            	csi = _itemList.get(stringWithoutColon);
+            } else {
+            	csi = new ControlSystemItem("","");
+            }
             _child = new CSSView(_parent,
                                  _automat,
                                  _nameSpace.createNew(),
