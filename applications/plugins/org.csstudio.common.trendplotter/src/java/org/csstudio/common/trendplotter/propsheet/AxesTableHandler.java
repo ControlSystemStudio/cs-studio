@@ -40,7 +40,7 @@ import org.eclipse.swt.widgets.Table;
  */
 public class AxesTableHandler implements ILazyContentProvider
 {
-	final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
+    final private XYGraphMediaFactory color_registry = XYGraphMediaFactory.getInstance();
     final private OperationsManager operations_manager;
     final private TableViewer axes_table;
     private Model model;
@@ -85,6 +85,11 @@ public class AxesTableHandler implements ILazyContentProvider
         public void changedItemDataConfig(PVItem item)   { /* NOP */ }
         @Override
         public void scrollEnabled(boolean scrollEnabled) { /* NOP */ }
+
+        @Override
+        public void changedAnnotations()                 { /* NOP */ }
+        @Override
+        public void changedXYGraphConfig()               { /* NOP */ }
     };
 
     /** Initialize

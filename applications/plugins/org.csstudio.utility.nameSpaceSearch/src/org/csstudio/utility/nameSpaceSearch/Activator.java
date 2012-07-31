@@ -21,15 +21,15 @@
  */
 package org.csstudio.utility.nameSpaceSearch;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceSearch"; //$NON-NLS-1$
@@ -54,7 +54,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+		super.start(context);
 	    _ldapServiceTracker = new LdapServiceTracker(context);
 	    _ldapServiceTracker.open();
 	}
@@ -64,7 +65,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
+    public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		_ldapServiceTracker.close();
 	}
 
@@ -75,11 +77,6 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	public static Activator getDefault() {
 		return INSTANCE;
-	}
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
 	}
 
     /**

@@ -1,6 +1,7 @@
 package org.csstudio.management.internal.xmpplogindialog;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.tracker.GenericServiceTracker;
 import org.remotercp.common.tracker.IGenericServiceListener;
@@ -9,7 +10,7 @@ import org.remotercp.service.connection.session.ISessionService;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.management.xmpplogindialog";
@@ -29,7 +30,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStart(BundleContext context) throws Exception {
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
 		_genericServiceTracker = new GenericServiceTracker<ISessionService>(context, ISessionService.class);
 		_genericServiceTracker.open();
 		plugin = this;
@@ -39,7 +41,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
 		_genericServiceTracker.close();
 		plugin = null;
 	}
@@ -53,13 +56,6 @@ public class Activator extends AbstractCssUiPlugin {
 		return plugin;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
 
 	public void addSessionServiceListener(IGenericServiceListener<ISessionService> sessionServiceListener) {
 		_genericServiceTracker.addServiceListener(sessionServiceListener);

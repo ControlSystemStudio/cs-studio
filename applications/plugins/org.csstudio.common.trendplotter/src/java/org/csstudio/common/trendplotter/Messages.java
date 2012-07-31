@@ -107,6 +107,8 @@ public class Messages extends NLS
     public static String ExportGroupFormat;
     public static String ExportGroupOutput;
     public static String ExportGroupSource;
+    public static String ExportMinMaxCol;
+    public static String ExportMinMaxColTT;
     public static String ExportOptimizeCountError;
     public static String ExportOptimizationTT;
     public static String ExportPlotStartEnd;
@@ -155,6 +157,7 @@ public class Messages extends NLS
     public static String Model_Disconnected;
     public static String Name;
     public static String NameLbl;
+    public static String NegErrColumn;
     public static String NotApplicable;
     public static String NotSaved;
     public static String NotSavedTT;
@@ -168,6 +171,7 @@ public class Messages extends NLS
     public static String Plot_TimeAxisName;
     public static String Plot_ValueAxisName;
     public static String Plot_ValueAxisNameFMT;
+    public static String PosErrColumn;
     public static String PrefPage_ArchiveFetchDelay;
     public static String PrefPage_Archives;
     public static String PrefPage_DataServerURLs;
@@ -179,6 +183,7 @@ public class Messages extends NLS
     public static String PrefPage_TraceLineWidth;
     public static String PrefPage_UpdatePeriod;
     public static String PrintSnapshot;
+    public static String PromptForErrors_Label;
     public static String PVName;
     public static String PVUsedInFormulaFmt;
     public static String RegularExpression;
@@ -209,6 +214,7 @@ public class Messages extends NLS
     public static String SearchArchiveConfirmFmt;
     public static String SearchChannelFmt;
     public static String SearchPatternConfirmMessage;
+    public static String SearchPatternEmptyMessage;
     public static String Search_URL;
     public static String Search_URL_TT;
     public static String SearchPattern;
@@ -248,10 +254,13 @@ public class Messages extends NLS
     public static String URL;
     public static String URL_Lbl;
     public static String UseDefaultArchives;
+    public static String UseDefaultArchives_Label;
     public static String ValueAxes;
     public static String ValueAxisName;
     public static String ValueColumn;
     public static String WaveformAmplitude;
+    public static String WaveformIndexCol;
+    public static String WaveformIndexColTT;
     public static String WaveformIndex;
     public static String WaveformStatus;
     public static String WaveformTimeSelector;

@@ -21,13 +21,11 @@
  */
  package org.csstudio.utility.namespace.utility;
 
-import org.csstudio.platform.AbstractCssPlugin;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
-/**
- * The activator class controls the plug-in life cycle
- */
-public class Activator extends AbstractCssPlugin{
+
+public class Activator extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.namespace.utility";
@@ -45,8 +43,9 @@ public class Activator extends AbstractCssPlugin{
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void doStart(BundleContext context) throws Exception {
-		plugin = this;
+	@Override
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
 	}
 
 	/*
@@ -54,7 +53,7 @@ public class Activator extends AbstractCssPlugin{
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void doStop(BundleContext context) throws Exception {
-		plugin = null;
+		super.stop(context);
 	}
 
 	/**
@@ -65,10 +64,4 @@ public class Activator extends AbstractCssPlugin{
 	public static Activator getDefault() {
 		return plugin;
 	}
-
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
-
 }

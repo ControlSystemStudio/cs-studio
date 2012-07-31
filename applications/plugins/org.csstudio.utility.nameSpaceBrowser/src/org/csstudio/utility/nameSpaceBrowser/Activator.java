@@ -21,21 +21,22 @@
  */
 package org.csstudio.utility.nameSpaceBrowser;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractCssUiPlugin {
+public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
 	private static final String PLUGIN_ID = "org.csstudio.utility.nameSpaceBrowser"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	public static Activator plugin;
 
 	/**
 	 * The constructor
@@ -49,8 +50,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
-//		super.start(context);
+    public void start(final BundleContext context) throws Exception {
+		super.start(context);
 	}
 
 	/*
@@ -58,8 +59,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
-//		super.stop(context);
+    public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		plugin = null;
 	}
 
@@ -72,10 +73,6 @@ public class Activator extends AbstractCssUiPlugin {
 		return plugin;
 	}
 
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
 
 	/** Add informational message to the plugin log. */
     public static void logInfo(final String message)
