@@ -178,6 +178,9 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.platform.user.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.library.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.snl.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
@@ -193,5 +196,5 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.remotercp.service.preferences" autoStart="true" startLevel="0" />
       <plugin id="org.remotercp.service.provisioning" autoStart="true" startLevel="0" />
    </configurations>
-
+   
 </product>
