@@ -29,6 +29,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.csstudio.apputil.ui.dialog.ErrorDetailDialog;
+import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.utility.nameSpaceBrowser.Messages;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat;
 import org.csstudio.utility.nameSpaceBrowser.utility.Automat.NameSpaceBrowserState;
@@ -36,6 +37,7 @@ import org.csstudio.utility.nameSpaceBrowser.utility.CSSViewParameter;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+import org.csstudio.utility.namespace.utility.ProcessVariableItem;
 import org.csstudio.csdata.ProcessVariable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,6 +48,8 @@ import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -633,6 +637,19 @@ public class CSSView extends Composite implements Observer {
         _parent.layout();
         _parent.pack();
 
+        new ControlSystemDragSource(_tableViewer.getControl()) {
+			
+			@Override
+			public Object getSelection() {
+                final Object[] obj = ((IStructuredSelection)_tableViewer.getSelection()).toArray();
+                final ProcessVariable[] pvs = new ProcessVariable[obj.length];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(((ProcessVariableItem)obj[i]).getName());
+                return pvs;
+			}
+		};
+        
+		
         // Make List Drageble
         //        new ProcessVariableDragSource(listViewer.getControl(), listViewer);
         //        new ProcessVariableDragSource(listViewer.getList(), listViewer);

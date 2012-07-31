@@ -68,4 +68,14 @@
          </command>
       </menuContribution>
       </extension>
+              <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.csstudio.utility.namespace.utility.ProcessVariableItem"
+            class="org.csstudio.utility.namespace.utility.AdapterFactory">
+         <adapter
+               type="org.csstudio.csdata.ProcessVariable">
+         </adapter>
+      </factory>
+   </extension>
 </plugin>
