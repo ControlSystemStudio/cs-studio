@@ -63,7 +63,8 @@ public class TunerSetpointTableModel {
 					rowIdentifier)) {
 				this.calculatedSetpoints.get(columnIndex).put(rowIdentifier,
 						value);
-				firesetpointsChanged();
+				// TODO
+				// firesetpointsChanged();
 			}
 		}
 	}
