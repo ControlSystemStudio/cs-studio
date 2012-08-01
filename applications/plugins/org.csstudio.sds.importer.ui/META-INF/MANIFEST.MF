@@ -6,7 +6,6 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.sds.importer.ui.ImporterUiPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform.ui,
  org.csstudio.sds.importer,
  org.eclipse.ui;bundle-version="3.5.1"
 Eclipse-LazyStart: true

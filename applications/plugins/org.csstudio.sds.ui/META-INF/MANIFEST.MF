@@ -8,7 +8,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.sds;visibility:=reexport,
- org.csstudio.platform.ui;visibility:=reexport,
  org.csstudio.dal.ui;bundle-version="1.0.0",
  org.junit4,
  org.eclipse.gef;visibility:=reexport,
