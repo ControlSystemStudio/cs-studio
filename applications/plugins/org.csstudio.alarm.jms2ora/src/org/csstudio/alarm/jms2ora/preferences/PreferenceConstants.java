@@ -53,6 +53,7 @@ public class PreferenceConstants {
     public static final String WATCHDOG_PERIOD = "watchdogPeriod";
     public static final String FILTER_SEND_BOUND = "filterSendBound";
     public static final String FILTER_MAX_SENT_MESSAGES = "filterMaxSentMessages";
+    public static final String LOG_STATISTIC = "logStatistic";
     
     /** Waiting time (in ms) of the MessageProcessor thread */
     public static final String MESSAGE_PROCESSOR_SLEEPING_TIME = "msgProcessorSleepingTime";

@@ -27,17 +27,15 @@ package org.csstudio.alarm.jms2ora;
 import java.util.Collection;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
 import org.csstudio.alarm.jms2ora.service.ArchiveMessage;
 import org.csstudio.alarm.jms2ora.service.IMessageWriter;
 import org.csstudio.alarm.jms2ora.service.IPersistenceHandler;
 import org.csstudio.alarm.jms2ora.util.MessageConverter;
 import org.csstudio.alarm.jms2ora.util.StatisticCollector;
 import org.csstudio.domain.desy.service.osgi.OsgiServiceUnavailableException;
-import org.joda.time.LocalTime;
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +94,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
     private int timeBetweenStorage;
 
     /** The object holds the last processing time of the messages */
-    private LocalTime nextStorageTime;
+    private LocalDateTime nextStorageTime;
 
     /** Indicates if the application was initialized or not */
     private final boolean initialized;
@@ -107,12 +105,14 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
     /** Indicates whether or not this thread stopped clean */
     private boolean stoppedClean;
 
+    private boolean logStatistic;
+    
     /**
      * The constructor
      *
      * Oh, really
      */
-    public MessageProcessor(long sleepingTime, int storageWaitTime) throws ServiceNotAvailableException {
+    public MessageProcessor(long sleepingTime, int storageWaitTime, boolean log) throws ServiceNotAvailableException {
 
         try {
             writerService = Jms2OraActivator.getDefault().getMessageWriterService();
@@ -134,22 +134,23 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
             throw new ServiceNotAvailableException("Persistence writer service not available: " + e.getMessage());
         }
         
+        
         collector = new StatisticCollector();
         messageConverter = new MessageConverter(this, collector);
         
         timeBetweenStorage = storageWaitTime;
         msgProcessorSleepingTime = sleepingTime;
         
-        nextStorageTime = new LocalTime();
+        nextStorageTime = new LocalDateTime();
         nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
 
         archiveMessages = new ConcurrentLinkedQueue<ArchiveMessage>();
 
-
         running = true;
         stoppedClean = false;
         initialized = false;
-
+        logStatistic = log;
+        
         this.setName("MessageProcessor-Thread");
     }
 
@@ -199,7 +200,7 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
 
         while(running) {
             
-            final LocalTime now = new LocalTime();
+            final LocalDateTime now = new LocalDateTime();
 
             if ((now.isAfter(nextStorageTime) || archiveMessages.size() >= 1000) && running) {
 
@@ -223,13 +224,15 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                 storeMe.clear();
                 storeMe = null;
                 
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(createStatisticString());
+                if (logStatistic) {
+                    LOG.info(createStatisticString());
                 }
-
-                nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
             }
 
+            if (now.isAfter(nextStorageTime)) {
+                nextStorageTime = nextStorageTime.plusSeconds(timeBetweenStorage);
+            }
+            
             if(running) {
                 synchronized (this) {
                     try {
@@ -239,8 +242,8 @@ public class MessageProcessor extends Thread implements IMessageProcessor {
                         running = false;
                     }
                 }
-                LOG.debug("Waked up...");
-                LOG.debug("Next processing time: {}", nextStorageTime.toString());
+                LOG.info("Waked up...");
+                LOG.info("Next processing time: {}", nextStorageTime.toString());
             }
         }
 

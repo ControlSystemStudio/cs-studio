@@ -45,21 +45,22 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.XMPP_SERVER, "xmppserver.where.ever");
         prefs.put(PreferenceConstants.XMPP_REMOTE_USER_NAME, "anonymous");
         prefs.put(PreferenceConstants.XMPP_REMOTE_PASSWORD, "anonymous");
-        prefs.put(PreferenceConstants.XMPP_SHUTDOWN_PASSWORD , "");
+        prefs.put(PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "");
         prefs.put(PreferenceConstants.JMS_PROVIDER_URLS, "");
         prefs.put(PreferenceConstants.JMS_PRODUCER_URL, "");
-        prefs.put(PreferenceConstants.JMS_TOPIC_NAMES , "");
-        prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS , "");
-        prefs.put(PreferenceConstants.DISCARD_TYPES , "");
+        prefs.put(PreferenceConstants.JMS_TOPIC_NAMES, "");
+        prefs.put(PreferenceConstants.JMS_CONTEXT_FACTORY_CLASS, "");
+        prefs.put(PreferenceConstants.DISCARD_TYPES, "");
         prefs.put(PreferenceConstants.DISCARD_NAMES, "");
-        prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION , "");
-        prefs.put(PreferenceConstants.MESSAGE_PROCESSOR_SLEEPING_TIME , "30000");
-        prefs.put(PreferenceConstants.TIME_BETWEEN_STORAGE , "60");
+        prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION, "");
+        prefs.put(PreferenceConstants.MESSAGE_PROCESSOR_SLEEPING_TIME, "30000");
+        prefs.put(PreferenceConstants.TIME_BETWEEN_STORAGE, "60");
         prefs.put(PreferenceConstants.WATCHDOG_WAIT, "");
-        prefs.put(PreferenceConstants.WATCHDOG_PERIOD , "");
+        prefs.put(PreferenceConstants.WATCHDOG_PERIOD, "");
         prefs.put(PreferenceConstants.FILTER_SEND_BOUND, "");
-        prefs.put(PreferenceConstants.FILTER_MAX_SENT_MESSAGES , "");
-        prefs.put(PreferenceConstants.STORE_EMPTY_VALUES , "false");
-        prefs.put(PreferenceConstants.DESCRIPTION , "I am a simple but happy application.");
+        prefs.put(PreferenceConstants.FILTER_MAX_SENT_MESSAGES, "");
+        prefs.put(PreferenceConstants.STORE_EMPTY_VALUES, "false");
+        prefs.put(PreferenceConstants.DESCRIPTION, "I am a simple but happy application.");
+        prefs.putBoolean(PreferenceConstants.LOG_STATISTIC, true);
     }
 }
