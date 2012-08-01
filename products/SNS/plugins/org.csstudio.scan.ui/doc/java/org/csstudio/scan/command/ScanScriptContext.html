@@ -160,6 +160,14 @@ Context in which a <A HREF="../../../../org/csstudio/scan/command/ScriptCommand.
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>abstract &nbsp;java.lang.Object</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/ScanScriptContext.html#read(java.lang.String)">read</A></B>(java.lang.String&nbsp;device_name)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Read value from a device</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;void</CODE></FONT></TD>
 <TD><CODE><B><A HREF="../../../../org/csstudio/scan/command/ScanScriptContext.html#write(java.lang.String, java.lang.Object)">write</A></B>(java.lang.String&nbsp;device_name,
       java.lang.Object&nbsp;value)</CODE>
@@ -304,6 +312,23 @@ public abstract void <B>logData</B>(java.lang.String&nbsp;device,
 <P>
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>device</CODE> - Device name<DD><CODE>data</CODE> - Data to log for the device
+<DT><B>Throws:</B>
+<DD><CODE>java.lang.Exception</CODE> - on error</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="read(java.lang.String)"><!-- --></A><H3>
+read</H3>
+<PRE>
+public abstract java.lang.Object <B>read</B>(java.lang.String&nbsp;device_name)
+                               throws java.lang.Exception</PRE>
+<DL>
+<DD>Read value from a device
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>device_name</CODE> - Name of device
+<DT><B>Returns:</B><DD>Value of the device: String, Double, ...
 <DT><B>Throws:</B>
 <DD><CODE>java.lang.Exception</CODE> - on error</DL>
 </DD>

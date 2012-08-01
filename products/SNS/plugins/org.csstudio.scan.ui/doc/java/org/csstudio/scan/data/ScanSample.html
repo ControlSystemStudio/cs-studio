@@ -126,7 +126,8 @@ A sample taken by a scan
 
 <P>
 <DL>
-<DT><B>See Also:</B><DD><A HREF="../../../../serialized-form.html#org.csstudio.scan.data.ScanSample">Serialized Form</A></DL>
+<DT><B>See Also:</B><DD><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html" title="class in org.csstudio.scan.data"><CODE>NumberScanSample</CODE></A>, 
+<A HREF="../../../../serialized-form.html#org.csstudio.scan.data.ScanSample">Serialized Form</A></DL>
 <HR>
 
 <P>
@@ -174,11 +175,11 @@ A sample taken by a scan
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>abstract &nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getValue()">getValue</A></B>()</CODE>
+<CODE>abstract &nbsp;java.lang.Object[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getValues()">getValues</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get raw value of the sample</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get raw values of the sample</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
@@ -263,12 +264,12 @@ public long <B>getSerial</B>()</PRE>
 </DL>
 <HR>
 
-<A NAME="getValue()"><!-- --></A><H3>
-getValue</H3>
+<A NAME="getValues()"><!-- --></A><H3>
+getValues</H3>
 <PRE>
-public abstract java.lang.Object <B>getValue</B>()</PRE>
+public abstract java.lang.Object[] <B>getValues</B>()</PRE>
 <DL>
-<DD>Get raw value of the sample
+<DD>Get raw values of the sample
   <p>Derived classes can implement access to
   the value by other means
 <P>
@@ -277,7 +278,7 @@ public abstract java.lang.Object <B>getValue</B>()</PRE>
 </DD>
 <DD><DL>
 
-<DT><B>Returns:</B><DD>Value of the sample</DL>
+<DT><B>Returns:</B><DD>Values of the sample. Will be an array of <CODE>Number</CODE> or ...</DL>
 </DD>
 </DL>
 <HR>
