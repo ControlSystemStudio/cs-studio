@@ -121,7 +121,7 @@ public class PVTupleTableEditor extends Composite {
 		final TableViewerColumn TrigColumn = new TableViewerColumn(viewer, SWT.NONE);
 		TrigColumn.getColumn().setText("Trigger");
 		TrigColumn.getColumn().setMoveable(false);
-		TrigColumn.getColumn().setWidth(50);
+		TrigColumn.getColumn().pack();
 		TrigColumn.setEditingSupport(new TriggerColumnEditingSupport(viewer, viewer.getTable()));	
 		
 		viewer.setContentProvider(new ArrayContentProvider());

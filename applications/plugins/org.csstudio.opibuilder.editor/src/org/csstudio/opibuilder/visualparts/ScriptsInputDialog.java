@@ -35,6 +35,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -222,9 +223,6 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 		optionTabComposite.setLayout(new GridLayout(1, false));
 		optionTab.setControl(optionTabComposite);
 		skipFirstExecutionButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
-		gd.minimumWidth = 300;
-		skipFirstExecutionButton.setLayoutData(gd);
 		skipFirstExecutionButton.setText("Skip executions triggered by PVs' first connections.");
 		skipFirstExecutionButton.setToolTipText(
 			"Skip the script executions triggered by PVs' first connections during OPI startup.\n" +
@@ -241,10 +239,14 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 							skipFirstExecutionButton.getSelection());
 				}				
 			}
-		});	
+		});
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		Point preferredSize = skipFirstExecutionButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		gd.widthHint = preferredSize.x;
+		gd.minimumHeight = preferredSize.y;
+		skipFirstExecutionButton.setLayoutData(gd);
 		
 		checkConnectivityButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
-		checkConnectivityButton.setLayoutData(gd);
 		checkConnectivityButton.setSelection(false);
 		checkConnectivityButton.setText(
 				"Execute anyway even if some PVs are disconnected.");
@@ -269,9 +271,13 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 				}
 			}
 		});
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		preferredSize = checkConnectivityButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		gd.widthHint = preferredSize.x;
+		gd.minimumHeight = preferredSize.y;
+		checkConnectivityButton.setLayoutData(gd);
 		
 		stopExecuteOnErrorButton = new Button(optionTabComposite, SWT.CHECK|SWT.WRAP);
-		stopExecuteOnErrorButton.setLayoutData(gd);
 		stopExecuteOnErrorButton.setSelection(false);
 		stopExecuteOnErrorButton.setText(
 				"Do not execute the script if error was detected.");
@@ -290,7 +296,11 @@ public class ScriptsInputDialog extends HelpTrayDialog {
 				}				
 			}
 		});
-		
+		gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+		preferredSize = stopExecuteOnErrorButton.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		gd.widthHint = preferredSize.x;
+		gd.minimumHeight = preferredSize.y;
+		stopExecuteOnErrorButton.setLayoutData(gd);
 		
 		if(scriptDataList.size() > 0){
 			setScriptsViewerSelection(scriptDataList.get(0));
