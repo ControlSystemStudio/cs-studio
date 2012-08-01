@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,13 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationEvent;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -46,6 +51,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
@@ -55,8 +61,11 @@ import org.epics.pvmanager.PVReaderListener;
 import org.epics.pvmanager.PVWriterListener;
 import org.epics.pvmanager.data.VDouble;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+
 public class TunerWidget extends AbstractChannelQueryResultWidget implements
-		ConfigurableWidget {
+		ConfigurableWidget, ISelectionProvider {
 
 	private boolean editingDone = false;
 	private boolean setpointEditingDone = false;
@@ -69,6 +78,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 	private TableViewer setpointTableViewer;
 
 	private Button btnApply;
+
+	private AbstractSelectionProviderWrapper selectionProvider;
 
 	public TunerWidget(Composite parent, int style) {
 		super(parent, style);
@@ -102,8 +113,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		channelTableComposite.setLayoutData(fd_channelTableComposite);
 
 		// create the channel/property/value/weight table
-		channelTableViewer = new TableViewer(channelTableComposite, SWT.BORDER
-				| SWT.FULL_SELECTION);
+		channelTableViewer = new TableViewer(channelTableComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		channelTable = channelTableViewer.getTable();
 		channelTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
@@ -113,6 +123,25 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				.setContentProvider(new TunerStructuredContentProvider());
 
 		updateChannelTable();
+		
+		selectionProvider = new AbstractSelectionProviderWrapper(
+				channelTableViewer, this) {
+			@Override
+			protected ISelection transform(IStructuredSelection selection) {
+				if (selection != null){
+					Collection<Channel> channels = new ArrayList<Channel>();
+					for (Object o : selection.toList()) {
+						Item item = (Item)o;
+						if(item!=null){
+							channels.add(item.getChannel());
+						}
+					}
+					return new StructuredSelection(new ChannelViewerAdaptable(
+							channels, TunerWidget.this));
+				}else
+					return new StructuredSelection();
+			}
+		};
 
 		// create setpoint table composite
 		Composite stepTableComposite = new Composite(this, SWT.DOUBLE_BUFFERED);
@@ -608,13 +637,14 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				}
 			} finally {
 				setpointEditingDone = false;
-				channelTableViewer.refresh();
+				setpointTableViewer.refresh();
 			}
 		}
 
 	}
 
 	// Model for the channel, property, value and weight
+	// TODO simply this model
 	private TunerChannelTableModel tunerChannelTableModel = new TunerChannelTableModel(
 			null);
 
@@ -843,5 +873,33 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 	@Override
 	public void configurationDialogClosed() {
 		dialog = null;
+	}
+
+	@Override
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		selectionProvider.addSelectionChangedListener(listener);
+
+	}
+
+	@Override
+	public ISelection getSelection() {
+		return selectionProvider.getSelection();
+	}
+
+	@Override
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		selectionProvider.removeSelectionChangedListener(listener);
+	}
+
+	@Override
+	public void setSelection(ISelection selection) {
+		selectionProvider.setSelection(selection);
+	}
+	
+	@Override
+	public void setMenu(Menu menu) {
+		super.setMenu(menu);
+		channelTable.setMenu(menu);
 	}
 }
