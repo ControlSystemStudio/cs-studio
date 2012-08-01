@@ -3,7 +3,6 @@ package org.csstudio.sds.internal.eventhandling;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
 import org.csstudio.sds.eventhandling.EventType;
@@ -14,11 +13,14 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.commands.CompoundCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
 public class WidgetPropertyPostProcessingService implements IWidgetPropertyPostProcessingService {
 	private static IWidgetPropertyPostProcessingService instance;
 	private List<AbstractWidgetPropertyPostProcessor> processors;
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetPropertyPostProcessingService.class);
 
 	public WidgetPropertyPostProcessingService() {
 		processors = lookup();
@@ -59,9 +61,7 @@ public class WidgetPropertyPostProcessingService implements IWidgetPropertyPostP
 				assert processor != null;
 				processors.add(processor);
 			} catch (CoreException e) {
-				CentralLogger.getInstance().warn(
-						null,
-						"Cannot instantiate extension class [" + element.getAttribute("class") + "] for extension point ["
+				LOG.warn("Cannot instantiate extension class [" + element.getAttribute("class") + "] for extension point ["
 								+ SdsPlugin.EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS + "]");
 			}
 		}

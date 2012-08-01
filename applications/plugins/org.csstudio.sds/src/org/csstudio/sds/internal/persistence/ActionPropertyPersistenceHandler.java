@@ -21,13 +21,14 @@
  */
 package org.csstudio.sds.internal.persistence;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.ActionType;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Persistence handler for the property type <code>sds.map</code>.
@@ -37,6 +38,8 @@ import org.jdom.Element;
  */
 public final class ActionPropertyPersistenceHandler extends
 		AbstractPropertyPersistenceHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ActionPropertyPersistenceHandler.class);
 
 	/**
 	 * XML tag name <code>actiondata</code>.
@@ -180,8 +183,7 @@ public final class ActionPropertyPersistenceHandler extends
 					.getPersistenceHandler(
 							PropertyTypesEnum.createFromPortable(propertyType));
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this,
-					"Unknown property type <" + propertyType + ">");
+			LOG.error("Unknown property type <" + propertyType + ">");
 		}
 
 		return result;

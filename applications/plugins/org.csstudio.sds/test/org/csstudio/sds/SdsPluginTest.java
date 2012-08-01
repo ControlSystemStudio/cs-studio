@@ -36,14 +36,6 @@ import org.junit.Test;
 public final class SdsPluginTest {
 
 	/**
-	 * Test method for {@link org.csstudio.sds.SdsPlugin#getPluginId()}.
-	 */
-	@Test
-	public void testGetPluginId() {
-		assertEquals(SdsPlugin.PLUGIN_ID, SdsPlugin.getDefault().getPluginId());
-	}
-
-	/**
 	 * Test method for {@link org.csstudio.sds.SdsPlugin#getDefault()}.
 	 */
 	@Test

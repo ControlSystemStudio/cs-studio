@@ -27,9 +27,10 @@ import java.io.InputStream;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ErrorMessagesTracker;
 import org.csstudio.sds.model.DisplayModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Reader for the XML representation of display models.
@@ -39,6 +40,8 @@ import org.csstudio.sds.model.DisplayModel;
  * 
  */
 public final class DisplayModelReader extends ErrorMessagesTracker {
+    private static final Logger LOG = LoggerFactory.getLogger(DisplayModelReader.class);
+
 	/**
 	 * This class is not intended to be instantiated by clients.
 	 */
@@ -73,7 +76,7 @@ public final class DisplayModelReader extends ErrorMessagesTracker {
 
 		} catch (Exception e) {
 			trackErrorMessage("Exception: " + e.getMessage()); //$NON-NLS-1$
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug(e.toString());
 		} finally {
 			// Important - close the stream
 			closeStream(inputStream);
@@ -84,7 +87,7 @@ public final class DisplayModelReader extends ErrorMessagesTracker {
 		try {
 			stream.close();
 		} catch (IOException e) {
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug(e.toString());
 		}
 	}
 }

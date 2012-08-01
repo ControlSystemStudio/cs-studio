@@ -6,7 +6,6 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.sds.SdsPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.platform;visibility:=reexport,
  org.csstudio.platform.simpledal;bundle-version="1.0.0";visibility:=reexport,
  org.junit4,
  org.eclipse.draw2d,
@@ -19,7 +18,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.auth.ui;bundle-version="1.0.0",
  org.mockito;bundle-version="1.8.5",
  org.csstudio.domain.desy;bundle-version="1.0.0",
- org.csstudio.domain.desy.softioc;bundle-version="1.0.0"
+ org.csstudio.domain.desy.softioc;bundle-version="1.0.0",
+ org.slf4j;bundle-version="1.6.1",
+ org.csstudio.domain.common;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds,
  org.csstudio.sds.cursorservice,

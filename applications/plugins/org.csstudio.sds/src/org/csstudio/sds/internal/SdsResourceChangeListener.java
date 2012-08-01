@@ -21,7 +21,6 @@
  */
  package org.csstudio.sds.internal;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.RuleService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -31,9 +30,13 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Deprecated
 public class SdsResourceChangeListener implements IResourceChangeListener {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SdsResourceChangeListener.class);
 
 	/**
 	 * The used resource delta visitor.
@@ -54,7 +57,7 @@ public class SdsResourceChangeListener implements IResourceChangeListener {
 		try {
 			event.getDelta().accept(_visitor);
 		} catch (CoreException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		}
 	}
 
