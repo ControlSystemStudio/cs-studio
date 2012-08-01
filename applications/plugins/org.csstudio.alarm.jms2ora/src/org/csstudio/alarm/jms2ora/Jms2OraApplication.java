@@ -177,8 +177,13 @@ public class Jms2OraApplication implements IApplication, Stoppable, RemotelyAcce
                                        60,
                                        null);
         
+        boolean logStatistic = prefs.getBoolean(Jms2OraActivator.PLUGIN_ID,
+                                                PreferenceConstants.LOG_STATISTIC,
+                                                true,
+                                                null);
+        
         // Create an object from this class
-        messageProcessor = new MessageProcessor(sleep, storageWait);
+        messageProcessor = new MessageProcessor(sleep, storageWait, logStatistic);
         messageProcessor.start();
 
         Jms2OraActivator.getDefault().addSessionServiceListener(this);
