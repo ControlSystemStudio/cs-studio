@@ -121,9 +121,9 @@ Scan sample for numbers
 <B>Constructor Summary</B></FONT></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number)">NumberScanSample</A></B>(java.util.Date&nbsp;timestamp,
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#NumberScanSample(java.util.Date, long, java.lang.Number[])">NumberScanSample</A></B>(java.util.Date&nbsp;timestamp,
                  long&nbsp;serial,
-                 java.lang.Number&nbsp;number)</CODE>
+                 java.lang.Number[]&nbsp;values)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initialize</TD>
@@ -141,18 +141,34 @@ Scan sample for numbers
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>&nbsp;java.lang.Number</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#getNumber()">getNumber</A></B>()</CODE>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#getNumber(int)">getNumber</A></B>(int&nbsp;index)</CODE>
 
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
-<CODE>&nbsp;java.lang.Object</CODE></FONT></TD>
-<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#getValue()">getValue</A></B>()</CODE>
+<CODE>&nbsp;java.lang.Object[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#getValues()">getValues</A></B>()</CODE>
 
 <BR>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get raw value of the sample</TD>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get raw values of the sample</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;int</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#size()">size</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>&nbsp;java.lang.String</CODE></FONT></TD>
+<TD><CODE><B><A HREF="../../../../org/csstudio/scan/data/NumberScanSample.html#toString()">toString</A></B>()</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_org.csstudio.scan.data.ScanSample"><!-- --></A>
@@ -161,7 +177,7 @@ Scan sample for numbers
 <TH ALIGN="left"><B>Methods inherited from class org.csstudio.scan.data.<A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></B></TH>
 </TR>
 <TR BGCOLOR="white" CLASS="TableRowColor">
-<TD><CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial</A>, <A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getTimestamp()">getTimestamp</A>, <A HREF="../../../../org/csstudio/scan/data/ScanSample.html#toString()">toString</A></CODE></TD>
+<TD><CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getSerial()">getSerial</A>, <A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getTimestamp()">getTimestamp</A></CODE></TD>
 </TR>
 </TABLE>
 &nbsp;<A NAME="methods_inherited_from_class_java.lang.Object"><!-- --></A>
@@ -186,12 +202,12 @@ Scan sample for numbers
 </TR>
 </TABLE>
 
-<A NAME="NumberScanSample(java.util.Date, long, java.lang.Number)"><!-- --></A><H3>
+<A NAME="NumberScanSample(java.util.Date, long, java.lang.Number[])"><!-- --></A><H3>
 NumberScanSample</H3>
 <PRE>
 public <B>NumberScanSample</B>(java.util.Date&nbsp;timestamp,
                         long&nbsp;serial,
-                        java.lang.Number&nbsp;number)</PRE>
+                        java.lang.Number[]&nbsp;values)</PRE>
 <DL>
 <DD>Initialize
 <P>
@@ -209,33 +225,59 @@ public <B>NumberScanSample</B>(java.util.Date&nbsp;timestamp,
 </TR>
 </TABLE>
 
-<A NAME="getNumber()"><!-- --></A><H3>
-getNumber</H3>
+<A NAME="size()"><!-- --></A><H3>
+size</H3>
 <PRE>
-public java.lang.Number <B>getNumber</B>()</PRE>
+public int <B>size</B>()</PRE>
 <DL>
 <DD><DL>
 
-<DT><B>Returns:</B><DD>Number held in this <A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data"><CODE>ScanSample</CODE></A></DL>
+<DT><B>Returns:</B><DD>Array size</DL>
 </DD>
 </DL>
 <HR>
 
-<A NAME="getValue()"><!-- --></A><H3>
-getValue</H3>
+<A NAME="getNumber(int)"><!-- --></A><H3>
+getNumber</H3>
 <PRE>
-public java.lang.Object <B>getValue</B>()</PRE>
+public java.lang.Number <B>getNumber</B>(int&nbsp;index)</PRE>
 <DL>
-<DD>Get raw value of the sample
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>index</CODE> - Array index
+<DT><B>Returns:</B><DD>Number for that array index</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="getValues()"><!-- --></A><H3>
+getValues</H3>
+<PRE>
+public java.lang.Object[] <B>getValues</B>()</PRE>
+<DL>
+<DD>Get raw values of the sample
   <p>Derived classes can implement access to
   the value by other means
 <P>
 <DD><DL>
-<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getValue()">getValue</A></CODE> in class <CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></CODE></DL>
+<DT><B>Specified by:</B><DD><CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#getValues()">getValues</A></CODE> in class <CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></CODE></DL>
 </DD>
 <DD><DL>
 
-<DT><B>Returns:</B><DD>Value of the sample</DL>
+<DT><B>Returns:</B><DD>Values of the sample. Will be an array of <CODE>Number</CODE> or ...</DL>
+</DD>
+</DL>
+<HR>
+
+<A NAME="toString()"><!-- --></A><H3>
+toString</H3>
+<PRE>
+public java.lang.String <B>toString</B>()</PRE>
+<DL>
+<DD><DL>
+<DT><B>Overrides:</B><DD><CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html#toString()">toString</A></CODE> in class <CODE><A HREF="../../../../org/csstudio/scan/data/ScanSample.html" title="class in org.csstudio.scan.data">ScanSample</A></CODE></DL>
+</DD>
+<DD><DL>
+</DL>
 </DD>
 </DL>
 <!-- ========= END OF CLASS DATA ========= -->
