@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.StringMapProperty;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetProperty;
@@ -13,6 +12,7 @@ import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ColumnConfig;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ConvenienceTableWrapper;
 import org.csstudio.sds.ui.internal.editor.newproperties.table.ITableRow;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;

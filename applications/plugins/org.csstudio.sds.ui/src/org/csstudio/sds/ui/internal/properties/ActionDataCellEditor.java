@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.StringProperty;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.ActionType;
@@ -35,6 +34,7 @@ import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.csstudio.sds.ui.properties.IPropertyDescriptorFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuCreator;

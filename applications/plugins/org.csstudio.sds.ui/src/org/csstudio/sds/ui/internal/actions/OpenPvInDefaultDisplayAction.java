@@ -24,12 +24,13 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.dal.ui.dnd.rfc.ProcessVariablePopupAction;
 import org.csstudio.platform.model.IProcessVariable;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariablePopupAction;
 import org.csstudio.sds.ui.internal.preferences.DefaultDisplayPreference;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.eclipse.core.runtime.IPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Action to open a process variable in the default CSS display. The default
@@ -39,6 +40,8 @@ import org.eclipse.core.runtime.IPath;
  */
 public class OpenPvInDefaultDisplayAction extends ProcessVariablePopupAction {
 	
+    private static final Logger LOG = LoggerFactory.getLogger(OpenPvInDefaultDisplayAction.class);
+
 	/**
 	 * Opens the received process variable names in the default display.
 	 * @param pv_names the process variable names on which this action is
@@ -55,8 +58,7 @@ public class OpenPvInDefaultDisplayAction extends ProcessVariablePopupAction {
 			Map<String, String> aliases = new HashMap<String, String>();
 			String pvname = pv.getName();
 			aliases.put(alias, pvname);
-			CentralLogger.getInstance().debug(this,
-					"Opening display " + displayPath + " with alias " + alias + "=" + pvname);
+			LOG.debug("Opening display " + displayPath + " with alias " + alias + "=" + pvname);
 			if (openAsShell) {
 				runner.openDisplayShellInRunMode(displayPath, aliases);
 			} else {

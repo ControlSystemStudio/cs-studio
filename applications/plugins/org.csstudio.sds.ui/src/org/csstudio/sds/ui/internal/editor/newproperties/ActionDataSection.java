@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.ActionDataProperty;
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.ActionType;
@@ -19,6 +18,7 @@ import org.csstudio.sds.ui.internal.editor.newproperties.table.ITableRow;
 import org.csstudio.sds.ui.internal.properties.PropertyDescriptorFactoryService;
 import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.csstudio.sds.ui.properties.IPropertyDescriptorFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.layout.GridDataFactory;

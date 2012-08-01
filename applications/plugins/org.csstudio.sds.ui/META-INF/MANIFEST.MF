@@ -26,7 +26,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ltk.core.refactoring;bundle-version="3.5.100",
  org.slf4j;bundle-version="1.6.1",
  org.csstudio.ui.util;bundle-version="3.1.0",
- org.csstudio.csdata;bundle-version="3.1.0"
+ org.csstudio.csdata;bundle-version="3.1.0",
+ org.csstudio.platform;bundle-version="1.2.0",
+ org.csstudio.platform.ui;bundle-version="1.2.0"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  libaries/jl1.0.jar

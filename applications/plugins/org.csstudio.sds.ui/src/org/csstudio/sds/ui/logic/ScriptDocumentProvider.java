@@ -28,7 +28,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -38,9 +37,9 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Document provider for SDS script rules.
@@ -50,6 +49,9 @@ import org.eclipse.ui.texteditor.AbstractDocumentProvider;
  * 
  */
 public class ScriptDocumentProvider extends AbstractDocumentProvider {
+	
+    private static final Logger LOG = LoggerFactory.getLogger(ScriptDocumentProvider.class);
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -132,12 +134,12 @@ public class ScriptDocumentProvider extends AbstractDocumentProvider {
 				document.set(buffer.toString());
 				result = true;
 			} catch (IOException e) {
-				CentralLogger.getInstance().error(this, e);
+				LOG.error(e.toString());
 			} finally {
 				try {
 					inReader.close();
 				} catch (IOException e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.error(e.toString());
 				}
 			}
 		}
@@ -170,12 +172,12 @@ public class ScriptDocumentProvider extends AbstractDocumentProvider {
 					writer.close();
 					monitor.done();
 				} catch (IOException e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.error(e.toString());
 					monitor.setCanceled(true);
 				}
 			}
 		} catch (CoreException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 			monitor.setCanceled(true);
 		}
 	}

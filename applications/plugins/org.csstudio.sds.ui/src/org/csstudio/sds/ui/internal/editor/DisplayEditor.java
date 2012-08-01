@@ -35,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.dialogs.SaveAsDialog;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.model.LayerSupport;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
@@ -138,12 +136,12 @@ import org.eclipse.ui.IKeyBindingService;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
-import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The editor for synoptic displays.
@@ -154,7 +152,9 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implements
         ITabbedPropertySheetPageContributor {
-    
+
+	private static final Logger LOG = LoggerFactory.getLogger(DisplayEditor.class);
+
     /**
      * The default value for the grid spacing property.
      */
@@ -918,7 +918,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
             }
         } catch (CoreException e) {
             MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error(e.toString());
         }
     }
     
@@ -960,7 +960,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
                         writer.close();
                     } catch (IOException e) {
                         MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-                        CentralLogger.getInstance().error(this, e);
+                        LOG.error(e.toString());
                     }
                 }
                 
@@ -970,7 +970,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
             }
         } catch (CoreException e) {
             MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
-            CentralLogger.getInstance().error(this, e);
+            LOG.error(e.toString());
         }
     }
     

@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -41,6 +40,8 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
@@ -51,6 +52,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class ViewRunModeBox extends AbstractRunModeBox implements
 		IPartListener2, IPerspectiveListener2 {
+    private static final Logger LOG = LoggerFactory.getLogger(ViewRunModeBox.class);
+
 	private DisplayViewPart _viewPart;
 
 	/**
@@ -127,7 +130,7 @@ public final class ViewRunModeBox extends AbstractRunModeBox implements
 						IWorkbenchPage.VIEW_ACTIVATE);
 			}
 		} catch (PartInitException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		}
 
 	}

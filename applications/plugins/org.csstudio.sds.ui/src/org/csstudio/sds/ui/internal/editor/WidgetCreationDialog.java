@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.eventhandling.BehaviorDescriptor;
 import org.csstudio.sds.model.WidgetModelFactoryService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;

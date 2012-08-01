@@ -25,13 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Logger;
 
 import org.csstudio.dal.simple.ChannelListener;
 import org.csstudio.dal.simple.ConnectionParameters;
 import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
@@ -75,6 +73,8 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.progress.UIJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.cosylab.util.CommonException;
 
@@ -94,6 +94,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	enum ConnectionStatus {
 		DISCONNECTED, CONNECTED, CONNECTING, DISCONNECTING
 	}
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractBaseEditPart.class);
 
 	private ConnectionStatus _connectionStatus = ConnectionStatus.DISCONNECTED;
 
@@ -857,7 +859,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 
 					_connectionStatus = ConnectionStatus.DISCONNECTED;
 				} catch (Exception e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.error(e.toString());
 				} finally {
 					_semaphore.release();
 				}
@@ -913,7 +915,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 					}
 
 				} catch (InterruptedException e) {
-					CentralLogger.getInstance().error(this, e);
+					LOG.error(e.toString());
 				} finally {
 					_semaphore.release();
 				}
@@ -1039,9 +1041,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 				broker.registerListener(parameters, listener);
 			}
 		} catch (InstantiationException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		} catch (CommonException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		}
 	}
 

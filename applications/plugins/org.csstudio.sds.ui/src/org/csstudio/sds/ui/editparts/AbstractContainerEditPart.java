@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.model.ILayerModelListener;
 import org.csstudio.sds.internal.model.Layer;
 import org.csstudio.sds.internal.model.LayerSupport;
@@ -62,6 +61,8 @@ import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditPart implementation with container semantics. Can be used as controller
@@ -72,6 +73,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
  */
 public abstract class AbstractContainerEditPart extends AbstractBaseEditPart implements IAdaptable, ILayerModelListener {
 
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractContainerEditPart.class);
+	
 	/**
 	 * Flag which indicates that the layers are already initialized on the
 	 * content pane.
@@ -421,7 +424,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 			LayeredWidgetPane contentPane = (LayeredWidgetPane) getContentPane();
 			if (!contentPane.hasLayer(newLayerName)) {
 				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, getContainerModel().getLayerSupport().getDefaultLayer().getId());
-				CentralLogger.getInstance().warn(this, "Tried to move widget into not existing layer '" + newLayerName + "'");
+				LOG.warn("Tried to move widget into not existing layer '" + newLayerName + "'");
 			} else {
 				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, newLayerName);
 			}

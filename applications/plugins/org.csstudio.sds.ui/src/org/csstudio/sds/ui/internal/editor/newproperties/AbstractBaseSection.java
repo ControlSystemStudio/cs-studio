@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.IPropertyChangeListener;
@@ -19,6 +18,7 @@ import org.csstudio.sds.ui.internal.properties.view.DynamicAspectsWizard;
 import org.csstudio.sds.ui.internal.properties.view.ModalWizardDialog;
 import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.csstudio.sds.ui.properties.IPropertyDescriptorFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.commands.CommandStack;

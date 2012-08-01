@@ -23,7 +23,6 @@
 
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
@@ -57,6 +56,8 @@ import org.eclipse.gef.editpolicies.XYLayoutEditPolicy;
 import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The EditPolicy for {@link DisplayModel}. It can be used with
@@ -66,6 +67,9 @@ import org.eclipse.gef.rulers.RulerProvider;
  * @author Sven Wende, Kai Meyer
  */
 final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
+
+	
+    private static final Logger LOG = LoggerFactory.getLogger(ModelXYLayoutEditPolicy.class);
 
 	/**
 	 * Overriden, to provide a generic EditPolicy for children, which is aware
@@ -299,9 +303,9 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 			instance = (AbstractWidgetModel) newObject.newInstance();
 			typeId = instance.getTypeID();
 		} catch (InstantiationException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		} catch (IllegalAccessException e) {
-			CentralLogger.getInstance().error(this, e);
+			LOG.error(e.toString());
 		}
 
 		return typeId;
