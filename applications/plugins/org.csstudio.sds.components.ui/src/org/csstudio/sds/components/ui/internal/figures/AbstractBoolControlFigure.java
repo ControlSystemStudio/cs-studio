@@ -3,8 +3,8 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.editparts.IBoolControlListener;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.jface.dialogs.IInputValidator;

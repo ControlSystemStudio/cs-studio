@@ -24,7 +24,6 @@
 import java.util.HashMap;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.common.CosySwitch;
 import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
@@ -35,6 +34,7 @@ import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Shape;

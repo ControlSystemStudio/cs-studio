@@ -24,7 +24,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -32,6 +31,7 @@ import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
