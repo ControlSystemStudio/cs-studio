@@ -81,6 +81,7 @@ import org.eclipse.swt.widgets.Text;
  */
 public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart implements IProcessVariableWithSamples {
 
+	private static final Logger LOG = LoggerFactory.getLogger(TextInputEditPart.class);
 
 	/**
 	 * {@inheritDoc}
@@ -226,7 +227,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 						InvalidFormatDialog dialog = new InvalidFormatDialog(Display.getCurrent().getActiveShell());
 						dialog.setText(text.getText());
 						dialog.open();
-						CentralLogger.getInstance().warn(this, "Invalid value format: " + text.getText());
+						LOG.warn("Invalid value format: " + text.getText());
 						return;
 					}
 					DirectEditCommand cmd = new DirectEditCommand(text.getText(), getExecutionMode());

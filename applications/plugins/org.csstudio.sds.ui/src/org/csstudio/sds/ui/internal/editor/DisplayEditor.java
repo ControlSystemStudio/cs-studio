@@ -68,6 +68,10 @@ import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
 import org.csstudio.sds.ui.internal.commands.AssociableCommandListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableAddressDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariablesDropTargetListener;
+import org.csstudio.sds.ui.internal.editor.dnd.TextTransferDropTargetListener;
 import org.csstudio.sds.ui.internal.editor.outline.ThumbnailViewOutlinePage;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
@@ -518,20 +522,17 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         
         // initialize context menu
         ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer, getActionRegistry());
-        
         viewer.setContextMenu(cmProvider);
         getSite().registerContextMenu(cmProvider, viewer);
         
         // load the model
         loadModelAsynchroniously();
         
-        // initialize drop support
-        viewer.addDropTargetListener(new EditorDropTargetListener(viewer));
-        
-        // initialize background color
-        // this.getGraphicalViewer().getControl().setBackground(
-        // CustomMediaFactory.getInstance().getColor(
-        // _displayModel.getBackgroundColor()));
+        // initialize drop support (order matters!)
+        viewer.addDropTargetListener(new ProcessVariablesDropTargetListener(viewer));
+        viewer.addDropTargetListener(new ProcessVariableDropTargetListener(viewer));
+        viewer.addDropTargetListener(new TextTransferDropTargetListener(viewer));
+        viewer.addDropTargetListener(new ProcessVariableAddressDropTargetListener(viewer));
     }
     
     private void initCommandStackListeners() {
@@ -1045,7 +1046,6 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implem
         } else if (adapter == IPropertySheetPage.class) {
             PropertySheetPage page = new PropertySheetPage();
             page.setRootEntry(new UndoablePropertySheetEntry(getCommandStack()));
-            
             return page;
         } else if (adapter == ZoomManager.class) {
             return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart())

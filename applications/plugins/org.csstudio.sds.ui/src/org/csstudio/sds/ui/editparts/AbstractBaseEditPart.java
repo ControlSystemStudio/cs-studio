@@ -840,8 +840,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 							if (broker != null) {
 								broker.deregisterListener(info.getParameters(),
 										info.getListener());
-							} else {
-								System.out.println("ss");
 							}
 						} catch (Exception e) {
 							// die silently

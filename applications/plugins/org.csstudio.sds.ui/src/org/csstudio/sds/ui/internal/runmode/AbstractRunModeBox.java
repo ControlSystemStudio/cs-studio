@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
@@ -42,7 +43,9 @@ import org.csstudio.sds.model.RuntimeContext;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
-import org.csstudio.sds.ui.internal.editor.ProcessVariableDragSourceListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableDragSourceListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariablesDragSourceListener;
+import org.csstudio.sds.ui.internal.editor.dnd.TextTransferDragSourceListener;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
 import org.csstudio.sds.ui.runmode.IDisplayLoadedCallback;
@@ -58,7 +61,6 @@ import org.eclipse.gef.tools.SelectionTool;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.csstudio.dal.simple.SimpleDALBroker;
 
 /**
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
@@ -363,9 +365,11 @@ public abstract class AbstractRunModeBox {
 		editDomain.setDefaultTool(tool);
 		editDomain.addViewer(viewer);
 
-		// initialize drag support
-		viewer.addDragSourceListener(new DragSourceListener(viewer));
+		// initialize drag support (order matters!)
 		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+		viewer.addDragSourceListener(new ProcessVariablesDragSourceListener(viewer));
+//		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+//		viewer.addDragSourceListener(new TextTransferDragSourceListener(viewer));
 
 		return viewer;
 	}
