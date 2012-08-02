@@ -108,10 +108,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		fd_yRangeControl.right = new FormAttachment(0, 13);
 		yRangeControl.setLayoutData(fd_yRangeControl);
 		yRangeControl.setOrientation(ORIENTATION.VERTICAL);
-		// GridData gd_yRangeControl = new GridData(SWT.LEFT, SWT.FILL, false,
-		// true, 1, 1);
-		// gd_yRangeControl.widthHint = 15;
-		// yRangeControl.setLayoutData(gd_yRangeControl);
 		yRangeControl.addRangeListener(new RangeListener() {
 
 			@Override
@@ -133,11 +129,6 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 		fd_imageDisplay.right = new FormAttachment(100, -2);
 		fd_imageDisplay.left = new FormAttachment(yRangeControl, 2);
 		imageDisplay.setLayoutData(fd_imageDisplay);
-		// imageDisplay.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true,
-		// true, 1, 1));
-		// imageDisplay.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-		// true,
-		// 1, 1));
 		imageDisplay.setStretched(SWT.HORIZONTAL);
 
 		imageDisplay.addControlListener(new ControlListener() {
@@ -198,11 +189,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 	@Override
 	protected void queryCleared() {
-		setYChannelNames(null);
-		// setxChannelNames(null);
-
-		imageDisplay.setVImage(null);
 		setLastError(null);
+		setYChannelNames(null);
+		imageDisplay.setVImage(null);
 	}
 
 	private Result result;
@@ -418,9 +407,9 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 	}
 
 	private void xChannelQueryCleared() {
+		setLastError(null);
 		setxChannelNames(null);
 		imageDisplay.setVImage(null);
-		setLastError(null);
 		// reconnect();
 	}
 
@@ -545,8 +534,11 @@ public class Line2DPlotWidget extends AbstractChannelQueryResultWidget
 
 			@Override
 			public void pvChanged() {
-				if (pv.lastException() != null)
-					setLastError(pv.lastException());
+				Exception ex = pv.lastException();
+
+				if (ex != null) {
+					setLastError(ex);
+				}
 				if (pv.getValue() != null) {
 					setRange(xRangeControl, pv.getValue().getxRange());
 					setRange(yRangeControl, pv.getValue().getyRange());
