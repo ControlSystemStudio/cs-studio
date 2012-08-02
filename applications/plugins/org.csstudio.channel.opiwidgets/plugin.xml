@@ -43,5 +43,13 @@
             name="Line2d Plot"
             typeId="org.csstudio.channel.opiwidgets.Line2DPlot">
       </widget>
+      <widget
+            category="Multi-channel"
+            editpart_class="org.csstudio.channel.opiwidgets.TunerEditPart"
+            icon="org.csstudio.channel.opiwidgets.widget2"
+            model_class="org.csstudio.channel.opiwidgets.TunerModel"
+            name="Tuner"
+            typeId="org.csstudio.channel.opiwidgets.AbstractChannelWidget">
+      </widget>
    </extension>
 </plugin>
