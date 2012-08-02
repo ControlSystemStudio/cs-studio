@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.csstudio.channel.widgets.TunerChannelTableModel.Item;
 import org.csstudio.channel.widgets.TunerSetpointTableModel.TableItem;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
@@ -77,6 +78,8 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 	private TableViewer channelTableViewer;
 	private TableViewer setpointTableViewer;
 
+	private ErrorBar errorBar;
+
 	private Button btnApply;
 
 	private AbstractSelectionProviderWrapper selectionProvider;
@@ -102,18 +105,27 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 		setLayout(new FormLayout());
 
+		errorBar = new ErrorBar(this, SWT.NONE);
+		FormData fd_errorBar = new FormData();
+		fd_errorBar.top = new FormAttachment(0, 0);
+		fd_errorBar.left = new FormAttachment(0, 2);
+		fd_errorBar.right = new FormAttachment(100, -2);
+		errorBar.setLayoutData(fd_errorBar);
+		errorBar.setMarginBottom(5);
+
 		// create the composite for the channel table
 		Composite channelTableComposite = new Composite(this,
 				SWT.DOUBLE_BUFFERED);
 		FormData fd_channelTableComposite = new FormData();
 		fd_channelTableComposite.bottom = new FormAttachment(100, -70);
 		fd_channelTableComposite.right = new FormAttachment(60);
-		fd_channelTableComposite.top = new FormAttachment(0, 2);
+		fd_channelTableComposite.top = new FormAttachment(errorBar, 2);
 		fd_channelTableComposite.left = new FormAttachment(0, 2);
 		channelTableComposite.setLayoutData(fd_channelTableComposite);
 
 		// create the channel/property/value/weight table
-		channelTableViewer = new TableViewer(channelTableComposite, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		channelTableViewer = new TableViewer(channelTableComposite, SWT.BORDER
+				| SWT.FULL_SELECTION | SWT.MULTI);
 		channelTable = channelTableViewer.getTable();
 		channelTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
 				1, 1));
@@ -123,22 +135,22 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 				.setContentProvider(new TunerStructuredContentProvider());
 
 		updateChannelTable();
-		
+
 		selectionProvider = new AbstractSelectionProviderWrapper(
 				channelTableViewer, this) {
 			@Override
 			protected ISelection transform(IStructuredSelection selection) {
-				if (selection != null){
+				if (selection != null) {
 					Collection<Channel> channels = new ArrayList<Channel>();
 					for (Object o : selection.toList()) {
-						Item item = (Item)o;
-						if(item!=null){
+						Item item = (Item) o;
+						if (item != null) {
 							channels.add(item.getChannel());
 						}
 					}
 					return new StructuredSelection(new ChannelViewerAdaptable(
 							channels, TunerWidget.this));
-				}else
+				} else
 					return new StructuredSelection();
 			}
 		};
@@ -147,7 +159,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 		Composite stepTableComposite = new Composite(this, SWT.DOUBLE_BUFFERED);
 		FormData fd_stepValueTable = new FormData();
 		fd_stepValueTable.right = new FormAttachment(100, -2);
-		fd_stepValueTable.top = new FormAttachment(0, 2);
+		fd_stepValueTable.top = new FormAttachment(errorBar, 2);
 		fd_stepValueTable.bottom = new FormAttachment(channelTableComposite, 0,
 				SWT.BOTTOM);
 		fd_stepValueTable.left = new FormAttachment(channelTableComposite, 2);
@@ -713,7 +725,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 	@Override
 	protected void queryCleared() {
-		// setLastResult(null);
+		errorBar.setException(null);
 		setChannels(null);
 		setTunerSetpointTableModel(null);
 		resetWidget();
@@ -721,7 +733,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 	@Override
 	protected void queryExecuted(Result result) {
-		// setLastResult(null);
+		errorBar.setException(result.exception);
 		setChannels(result.channels);
 		setTunerSetpointTableModel(null);
 		resetWidget();
@@ -773,7 +785,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 			@Override
 			public void pvWritten() {
-				System.out.println("write completed");
 			}
 		});
 	}
@@ -896,7 +907,7 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 	public void setSelection(ISelection selection) {
 		selectionProvider.setSelection(selection);
 	}
-	
+
 	@Override
 	public void setMenu(Menu menu) {
 		super.setMenu(menu);
