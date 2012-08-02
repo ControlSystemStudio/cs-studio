@@ -22,6 +22,7 @@ import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.scriptUtil.GUIUtil;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
@@ -170,7 +171,12 @@ public class TextInputEditpart extends TextUpdateEditPart {
 	 * @param text
 	 */
 	protected void outputPVValue(String text) {
-		try {						
+		if(!getWidgetModel().getConfirmMessage().isEmpty())
+			if(!GUIUtil.openConfirmDialog("PV Name: " + getPVName() +
+					"\nNew Value: "+ text+ "\n\n"+
+					getWidgetModel().getConfirmMessage()))
+				return;
+		try {			
 			Object result;
 			if(getWidgetModel().getFormat() != FormatEnum.STRING
 					&& text.trim().indexOf(SPACE)!=-1){
@@ -486,7 +492,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
 			iString[ii] = Integer.valueOf(textChars[ii]);
 		}
 		for (int ii = text.length(); ii < currentLength; ii++) {
-			iString[ii] = (char)0;
+			iString[ii] = 0;
 		}
 		return iString;
 	}
