@@ -229,10 +229,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			graphics.setAntialias(SWT.ON);
 			Pattern pattern = null;
 			graphics.setBackgroundColor(GRAY_COLOR);
-			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(support3D == null)
+				support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D){		
 				//add this to eliminate the repaint bug on Mac
-				graphics.fillOval(new Rectangle());
+//				graphics.fillOval(new Rectangle());
 
 					pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), bounds.x, bounds.y,
 							bounds.x + bounds.width, bounds.y + bounds.height, WHITE_COLOR, BORDER_COLOR);
