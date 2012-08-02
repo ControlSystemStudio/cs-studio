@@ -750,7 +750,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 		if (result == null)
 			return null;
-		// setLastError(result.exception);
 		this.channelQueryResult = result;
 		final List<String> channelNames = new ArrayList<String>();
 		Exception ex = result.exception;
@@ -774,7 +773,6 @@ public class TunerWidget extends AbstractChannelQueryResultWidget implements
 
 			@Override
 			public void pvChanged() {
-				// setLastError(pv.lastException());
 				if (pv.getValue() != null) {
 					setLastResult(pv.getValue());
 				}
