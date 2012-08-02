@@ -148,7 +148,8 @@ public class DisplayEditpart extends AbstractContainerEditpart {
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {			
 			@Override
 			public void run() {
-				getViewer().getControl().forceFocus();
+				if(getViewer()!=null && !getViewer().getControl().isDisposed())
+					getViewer().getControl().forceFocus();
 			}
 		});
 		
