@@ -266,7 +266,7 @@ public class DataBrowserEditor extends EditorPart
         parent.setLayout(layout);
 
         // Canvas that holds the graph
-        final Canvas plot_box = new Canvas(parent, 0);
+        final Canvas plot_box = new Canvas(parent, SWT.DOUBLE_BUFFERED | SWT.NO_REDRAW_RESIZE);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
 
         plot = Plot.forCanvas(plot_box);
