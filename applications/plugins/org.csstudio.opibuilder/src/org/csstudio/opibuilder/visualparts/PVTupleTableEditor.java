@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -41,12 +42,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.ToolBar;
 
 /**A table editor which can edit string boolean pair.
  * @author Xihui Chen
- *
+ * @author Takashi Nakamoto (Cosylab)
  */
 public class PVTupleTableEditor extends Composite {
 	
@@ -54,6 +56,8 @@ public class PVTupleTableEditor extends Composite {
 	private Action removeAction;
 	private Action moveUpAction;
 	private Action moveDownAction;
+	private Action checkTriggerAction;
+	private Action uncheckTriggerAction;
 	
 	private TableViewer pvTupleListTableViewer;
 	
@@ -90,8 +94,15 @@ public class PVTupleTableEditor extends Composite {
 		toolbarManager.update(true);
 		
 		pvTupleListTableViewer = createPVTupleListTableViewer(this);
-		pvTupleListTableViewer.setInput(pvTupleList);		
-
+		pvTupleListTableViewer.setInput(pvTupleList);	
+		
+		// Context menu
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(removeAction);
+		menuManager.add(checkTriggerAction);
+		menuManager.add(uncheckTriggerAction);
+		Menu contextMenu = menuManager.createContextMenu(pvTupleListTableViewer.getTable());
+		pvTupleListTableViewer.getTable().setMenu(contextMenu);
 	}
 	
 	@Override
@@ -170,6 +181,7 @@ public class PVTupleTableEditor extends Composite {
 				for (String name : names) {
 					tuples[i] =  new PVTuple(name, true);
 					pvTupleList.add(tuples[i]);
+					i++;
 				}
 				
 				refreshTableViewerFromAction(tuples);
@@ -201,14 +213,20 @@ public class PVTupleTableEditor extends Composite {
 			removeAction.setEnabled(false);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
+			checkTriggerAction.setEnabled(false);
+			uncheckTriggerAction.setEnabled(false);
 		} else if (num_tuple == 1) {
 			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(true);
 			moveDownAction.setEnabled(true);
+			checkTriggerAction.setEnabled(true);
+			uncheckTriggerAction.setEnabled(true);
 		} else {
 			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
+			checkTriggerAction.setEnabled(true);
+			uncheckTriggerAction.setEnabled(true);
 		}
 	}
 	
@@ -217,12 +235,12 @@ public class PVTupleTableEditor extends Composite {
 	 */
 	private void refreshTableViewerFromAction(PVTuple[] tuples){
 		pvTupleListTableViewer.refresh();
-		if(tuples == null) {
+		if(tuples == null || tuples.length == 0) {
 			pvTupleListTableViewer.setSelection(StructuredSelection.EMPTY);
 		} else if (tuples.length == 1) {
-			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples[0]));
+			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples[0]), true);
 		} else {
-			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples));
+			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples), true);
 		}
 	}
 	
@@ -266,7 +284,7 @@ public class PVTupleTableEditor extends Composite {
 		};
 		removeAction.setText("Remove");
 		removeAction
-				.setToolTipText("Remove the selected PV from the list");
+				.setToolTipText("Remove the selected PVs from the list");
 		removeAction.setImageDescriptor(CustomMediaFactory.getInstance()
 				.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
 						"icons/delete.gif"));
@@ -322,6 +340,55 @@ public class PVTupleTableEditor extends Composite {
 						"icons/search_next.gif"));
 		moveDownAction.setEnabled(false);		
 	
+		checkTriggerAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) pvTupleListTableViewer.getSelection();
+				if (!selection.isEmpty()) {
+					@SuppressWarnings("rawtypes")
+					Iterator iter = selection.iterator();
+					ArrayList<PVTuple> tuples = new ArrayList<PVTuple>();
+					while (iter.hasNext()) {
+						Object item = iter.next();
+						if (item instanceof PVTuple) {
+							PVTuple tuple = (PVTuple) item;
+							tuple.trigger = true;
+							tuples.add(tuple);
+						}
+					}
+					
+					refreshTableViewerFromAction(tuples.toArray(new PVTuple[tuples.size()]));
+				}
+			}
+		};
+		checkTriggerAction.setText("Check Trigger");
+		checkTriggerAction.setToolTipText("Check trigger option of the selected PVs");
+		checkTriggerAction.setEnabled(false);
+		
+		uncheckTriggerAction = new Action() {
+			@Override
+			public void run() {
+				IStructuredSelection selection = (IStructuredSelection) pvTupleListTableViewer.getSelection();
+				if (!selection.isEmpty()) {
+					@SuppressWarnings("rawtypes")
+					Iterator iter = selection.iterator();
+					ArrayList<PVTuple> tuples = new ArrayList<PVTuple>();
+					while (iter.hasNext()) {
+						Object item = iter.next();
+						if (item instanceof PVTuple) {
+							PVTuple tuple = (PVTuple) item;
+							tuple.trigger = false;
+							tuples.add(tuple);
+						}
+					}
+					
+					refreshTableViewerFromAction(tuples.toArray(new PVTuple[tuples.size()]));
+				}
+			}
+		};
+		uncheckTriggerAction.setText("Uncheck Trigger");
+		uncheckTriggerAction.setToolTipText("Uncheck trigger option of the selected PVs");
+		uncheckTriggerAction.setEnabled(false);
 	}
 	
 	
