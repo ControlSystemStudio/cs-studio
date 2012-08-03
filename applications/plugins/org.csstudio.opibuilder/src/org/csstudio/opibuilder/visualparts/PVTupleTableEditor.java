@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -83,7 +84,7 @@ public class PVTupleTableEditor extends Composite {
 		
 		pvTupleListTableViewer = createPVTupleListTableViewer(this);
 		pvTupleListTableViewer.setInput(pvTupleList);		
-		
+
 	}
 	
 	@Override
@@ -107,7 +108,7 @@ public class PVTupleTableEditor extends Composite {
 	 */
 	private TableViewer createPVTupleListTableViewer(final Composite parent) {
 		final TableViewer viewer = new TableViewer(parent, SWT.V_SCROLL
-				| SWT.H_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+				| SWT.H_SCROLL | SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		viewer.getTable().setLinesVisible(true);
 		viewer.getTable().setHeaderVisible(true);
 		
@@ -146,14 +147,23 @@ public class PVTupleTableEditor extends Composite {
 		
 		IStructuredSelection selection = (IStructuredSelection) pvTupleListTableViewer
 				.getSelection();
-		if (!selection.isEmpty()
-				&& selection.getFirstElement() instanceof PVTuple) {
+		
+		int num_tuple = 0;
+		for (Object obj : selection.toArray()) {
+			if (obj instanceof PVTuple)
+				num_tuple++;
+		}
+		
+		if (num_tuple == 0) {
+			removeAction.setEnabled(false);
+			moveUpAction.setEnabled(false);
+			moveDownAction.setEnabled(false);
+		} else if (num_tuple == 1) {
 			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(true);
 			moveDownAction.setEnabled(true);
-			
 		} else {
-			removeAction.setEnabled(false);
+			removeAction.setEnabled(true);
 			moveUpAction.setEnabled(false);
 			moveDownAction.setEnabled(false);
 		}
@@ -194,9 +204,16 @@ public class PVTupleTableEditor extends Composite {
 			public void run() {
 				IStructuredSelection selection = (IStructuredSelection) pvTupleListTableViewer
 						.getSelection();
-				if (!selection.isEmpty()
-						&& selection.getFirstElement() instanceof PVTuple) {
-					pvTupleList.remove(selection.getFirstElement());
+				if (!selection.isEmpty()) {
+					@SuppressWarnings("rawtypes")
+					Iterator iter = selection.iterator();
+					while (iter.hasNext()) {
+						Object item = iter.next();
+						if (item instanceof PVTuple) {
+							pvTupleList.remove(item);
+						}
+					}
+					
 					refreshTableViewerFromAction(null);
 					super.setEnabled(false);
 				}
