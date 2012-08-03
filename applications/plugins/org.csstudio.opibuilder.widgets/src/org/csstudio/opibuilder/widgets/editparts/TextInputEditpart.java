@@ -215,8 +215,9 @@ public class TextInputEditpart extends TextUpdateEditPart {
 								}
 							});
 						}
-					}else
-						outputPVValue(text);
+					}
+					//Output pv value even if pv name is empty, so setPVValuelistener can be triggered.
+					outputPVValue(text);
 					return false;
 				}			
 			};
