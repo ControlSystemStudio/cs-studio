@@ -118,9 +118,7 @@ public class MessageContentCreator {
 
         final String[] list = prefs.getString(Jms2OraActivator.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
         if(list != null) {
-
             for(final String s : list) {
-
                 temp = s.trim().toLowerCase();
                 if(temp.length() > 0) {
                     discardTypes.add(temp);
