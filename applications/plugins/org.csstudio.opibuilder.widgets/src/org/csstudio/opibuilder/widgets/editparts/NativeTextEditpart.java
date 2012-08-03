@@ -107,7 +107,20 @@ public class NativeTextEditpart extends TextInputEditpart {
 				text.addListener (SWT.DefaultSelection, new Listener () {
 					public void handleEvent (Event e) {
 						outputText(text.getText());
-		                text.getShell().setFocus();
+						switch (getWidgetModel().getFocusTraverse()) {
+						case LOSE:
+							 text.getShell().setFocus();
+							 break;
+						case NEXT:
+							text.traverse(SWT.TRAVERSE_TAB_PREVIOUS);
+							break;
+						case PREVIOUS:
+							text.traverse(SWT.TRAVERSE_TAB_NEXT);
+							break;
+						case KEEP:
+						default:
+							break;
+						}						
 					}
 				});
 			}
@@ -139,8 +152,10 @@ public class NativeTextEditpart extends TextInputEditpart {
 	
 	@Override
 	protected void outputText(String newValue) {
-		if(getPV() == null)
+		if(getPV() == null){
 			setPropertyValue(NativeTextModel.PROP_TEXT, newValue);
+			outputPVValue(newValue);
+		}
 		else{ 
 			//PV may not be changed instantly, so recover it to old text first.	
 			text.setText(getWidgetModel().getText());	
