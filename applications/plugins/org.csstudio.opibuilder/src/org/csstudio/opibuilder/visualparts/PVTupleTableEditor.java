@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.visualparts;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +31,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.DropTargetListener;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -128,7 +135,6 @@ public class PVTupleTableEditor extends Composite {
 		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new PVTupleLabelProvider());
 		
-		
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(final SelectionChangedEvent event) {
 				refreshToolbarOnSelection();
@@ -136,6 +142,43 @@ public class PVTupleTableEditor extends Composite {
 		});
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		DropTarget target = new DropTarget(viewer.getControl(), DND.DROP_MOVE | DND.DROP_COPY);
+		target.setTransfer(new Transfer[] { TextTransfer.getInstance() });
+		target.addDropListener(new DropTargetListener() {
+			@Override
+			public void dragEnter(DropTargetEvent event) {}
+			
+			@Override
+			public void dragLeave(DropTargetEvent event) {}
+			
+			@Override
+			public void dragOperationChanged(DropTargetEvent event) {}
+			
+			@Override
+			public void dragOver(DropTargetEvent event) {}
+			
+			@Override
+			public void drop(DropTargetEvent event) {
+				if (event == null || !(event.data instanceof String))
+					return;
+				
+				String txt = (String) event.data;
+				String[] names = txt.split("[\r\n]+");
+				PVTuple[] tuples = new PVTuple[names.length];
+				int i = 0;
+				for (String name : names) {
+					tuples[i] =  new PVTuple(name, true);
+					pvTupleList.add(tuples[i]);
+				}
+				
+				refreshTableViewerFromAction(tuples);
+			}
+
+			@Override
+			public void dropAccept(DropTargetEvent event) {}
+		});
+		
 		return viewer;
 	}
 
@@ -172,12 +215,14 @@ public class PVTupleTableEditor extends Composite {
 	/**
 	 * @param tuple the tuple to be selected
 	 */
-	private void refreshTableViewerFromAction(PVTuple tuple){
+	private void refreshTableViewerFromAction(PVTuple[] tuples){
 		pvTupleListTableViewer.refresh();
-		if(tuple == null)
+		if(tuples == null) {
 			pvTupleListTableViewer.setSelection(StructuredSelection.EMPTY);
-		else {
-			pvTupleListTableViewer.setSelection(new StructuredSelection(tuple));
+		} else if (tuples.length == 1) {
+			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples[0]));
+		} else {
+			pvTupleListTableViewer.setSelection(new StructuredSelection(tuples));
 		}
 	}
 	
@@ -190,7 +235,7 @@ public class PVTupleTableEditor extends Composite {
 			public void run() {	
 				PVTuple tuple = new PVTuple("", true);
 				pvTupleList.add(tuple);
-				refreshTableViewerFromAction(tuple);
+				refreshTableViewerFromAction(new PVTuple[]{tuple});
 			}
 		};
 		addAction.setToolTipText("Add a PV");
@@ -240,7 +285,7 @@ public class PVTupleTableEditor extends Composite {
 					if(i>0){
 						pvTupleList.remove(tuple);
 						pvTupleList.add(i-1, tuple);
-						refreshTableViewerFromAction(tuple);
+						refreshTableViewerFromAction(new PVTuple[]{tuple});
 					}	
 				}
 			}
@@ -265,7 +310,7 @@ public class PVTupleTableEditor extends Composite {
 					if(i<pvTupleList.size()-1){
 						pvTupleList.remove(tuple);
 						pvTupleList.add(i+1, tuple);
-						refreshTableViewerFromAction(tuple);
+						refreshTableViewerFromAction(new PVTuple[]{tuple});
 					}			
 				}
 			}
