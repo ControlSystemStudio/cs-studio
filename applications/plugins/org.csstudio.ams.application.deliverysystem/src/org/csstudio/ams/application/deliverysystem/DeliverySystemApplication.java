@@ -35,6 +35,7 @@ import org.csstudio.ams.application.deliverysystem.management.RestartWorker;
 import org.csstudio.ams.application.deliverysystem.management.Stop;
 import org.csstudio.ams.application.deliverysystem.management.StopWorker;
 import org.csstudio.ams.application.deliverysystem.util.CommonMailer;
+import org.csstudio.ams.application.deliverysystem.util.Environment;
 import org.csstudio.ams.delivery.AbstractDeliveryWorker;
 import org.csstudio.ams.internal.AmsPreferenceKey;
 import org.csstudio.utility.jms.sharedconnection.SharedJmsConnections;
@@ -149,6 +150,7 @@ public class DeliverySystemApplication implements IApplication,
                 // Now stop and restart ALL workers to avoid problems with the shared JMS connections 
                 if (restartWorker) {
                     
+                    String host = Environment.getInstance().getHostName();
                     String[] recipients = null;
                     String value = DeliverySystemPreference.WORKER_STATUS_MAIL.getValue();
                     if (value != null) {
@@ -165,7 +167,7 @@ public class DeliverySystemApplication implements IApplication,
                         CommonMailer.sendMultiMail("smtp.desy.de",
                                                    "ams-mks2@desy.de",
                                                    recipients,
-                                                   "DeliverySystem wird neu gestartet",
+                                                   "DeliverySystem auf " + host + " wird neu gestartet",
                                                    "Das DeliverySystem wird neu gestartet.\nGrund: Der "
                                                    + badWorker + " laeuft nicht.");
                     } else {
@@ -174,7 +176,7 @@ public class DeliverySystemApplication implements IApplication,
                             CommonMailer.sendMultiMail("smtp.desy.de",
                                                        "ams-mks2@desy.de",
                                                        recipients,
-                                                       "Delivery Worker wurden neu gestartet",
+                                                       "Delivery Worker auf " + host + " wurden neu gestartet",
                                                        "Alle Delivery Worker wurden neu gestartet.\nGrund: Der "
                                                        + badWorker + " lief nicht.");
                         } else {
@@ -184,7 +186,7 @@ public class DeliverySystemApplication implements IApplication,
                             CommonMailer.sendMultiMail("smtp.desy.de",
                                                        "ams-mks2@desy.de",
                                                        recipients,
-                                                       "DeliverySystem wird neu gestartet",
+                                                       "DeliverySystem auf " + host + " wird neu gestartet",
                                                        "Die Delivery Worker konnten nicht neu gestartet werden, daher wird das DeliverySystem komplett neu gestartet.\nGrund: Der "
                                                        + badWorker + " lief nicht.");
                         }
