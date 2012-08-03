@@ -29,8 +29,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.SimpleSliderModel;
 import org.csstudio.sds.components.ui.internal.figures.SimpleSliderFigure;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
@@ -42,6 +40,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.progress.UIJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditPart controller for the Slider widget. The controller mediates between
@@ -50,8 +50,9 @@ import org.eclipse.ui.progress.UIJob;
  * @author Sven Wende & Stefan Hofer
  *
  */
-public final class SimpleSliderEditPart extends AbstractWidgetEditPart
-		implements IProcessVariableWithSamples {
+public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SimpleSliderEditPart.class);
 
 	/**
 	 * A UI job, which is used to reset the manual value of the slider figure
@@ -88,8 +89,7 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart
 					}
 					_resetManualValueDisplayJob.schedule(5000);
 				} else {
-					CentralLogger.getInstance().info(this,
-							"Slider value changed");
+					LOG.info("Slider value changed");
 				}
 			}
 		});

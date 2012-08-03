@@ -23,7 +23,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableActionButtonFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -51,6 +50,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
@@ -60,6 +61,9 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
+	
+    private static final Logger LOG = LoggerFactory.getLogger(ActionButtonEditPart.class);
+
     /**
      * The actual figure will be surrounded with a small frame that can be used
      * to drag the figure around (even if the cell editor is activated).
@@ -142,8 +146,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
             @Override
             public void handleStateChanged(final ChangeEvent event) {
                 final String propertyName = event.getPropertyName();
-                CentralLogger.getInstance().debug(this,
-                                                  "ChangeEvent received, event.property="
+                LOG.debug("ChangeEvent received, event.property="
                                                           + propertyName);
 
                 // If the display is not in run mode or the button is not armed,
@@ -171,13 +174,11 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
 
                         if (buttonFigure.isSelected()) {
                             actionIndex = widget.getChoosenPressedActionIndex();
-                            CentralLogger.getInstance().debug(this,
-                                                              "toggle=true, selected=true => using pressed action index: "
+                            LOG.debug("toggle=true, selected=true => using pressed action index: "
                                                                       + actionIndex);
                         } else {
                             actionIndex = widget.getChoosenReleasedActionIndex();
-                            CentralLogger.getInstance().debug(this,
-                                                              "toggle=true, selected=false => using released action index: "
+                            LOG.debug("toggle=true, selected=false => using released action index: "
                                                                       + actionIndex);
                         }
                     }
@@ -185,13 +186,11 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                     if (ButtonModel.PRESSED_PROPERTY.equals(propertyName)) {
                         if (buttonFigure.getModel().isPressed()) {
                             actionIndex = widget.getChoosenPressedActionIndex();
-                            CentralLogger.getInstance().debug(this,
-                                                              "toggle=false, pressed=true => using pressed action index: "
+                            LOG.debug("toggle=false, pressed=true => using pressed action index: "
                                                                       + actionIndex);
                         } else {
                             actionIndex = widget.getChoosenReleasedActionIndex();
-                            CentralLogger.getInstance().debug(this,
-                                                              "toggle=false, pressed=false => using released action index: "
+                            LOG.debug("toggle=false, pressed=false => using released action index: "
                                                                       + actionIndex);
                         }
                     }
@@ -213,8 +212,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
                     Display.getCurrent().asyncExec(new Runnable() {
                         @Override
                         public void run() {
-                            CentralLogger.getInstance()
-                                    .debug(this, "Performing widget action: " + action);
+                            LOG.debug("Performing widget action: " + action);
                             WidgetActionHandlerService.getInstance().performAction(widget, action);
                         }
                     });

@@ -3,9 +3,9 @@ package org.csstudio.sds.ui.internal.editor.dnd;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
+import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.dnd.AbstractTransferDragSourceListener;
 import org.eclipse.gef.editparts.AbstractEditPart;
@@ -21,7 +21,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 public class ProcessVariableAddressDragSourceListener extends AbstractTransferDragSourceListener {
 
 	public ProcessVariableAddressDragSourceListener(EditPartViewer viewer) {
-		super(viewer, ProcessVariableNameTransfer.getInstance());
+		super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable.class));
 	}
 
 	/**
@@ -29,13 +29,13 @@ public class ProcessVariableAddressDragSourceListener extends AbstractTransferDr
 	 */
 	@SuppressWarnings("unchecked")
 	public void dragSetData(DragSourceEvent event) {
-		List<IProcessVariable> pvs = new ArrayList<IProcessVariable>();
+		List<ProcessVariable> pvs = new ArrayList<ProcessVariable>();
 		List<AbstractEditPart> controllers = getViewer().getSelectedEditParts();
 
 		for (AbstractEditPart c : controllers) {
-			if (c instanceof IProcessVariable) {
-				pvs.add((IProcessVariable) c);
-			}
+//			if (c instanceof ProcessVariable) {
+//				pvs.add((ProcessVariable) c);
+//			}
 		}
 
 		if (!pvs.isEmpty()) {

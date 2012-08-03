@@ -41,6 +41,7 @@ public class Messages extends NLS {
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
 			.getBundle(BUNDLE_NAME);
 
+
 	public static String SetPropertyValueCommand_label;
 
 	public static String SetDynamicsDescriptorCommand_label;
@@ -77,6 +78,20 @@ public class Messages extends NLS {
 	public static String CopyToClipboardProblemDialog_title;
 
 	public static String CopyToClipboardProblemDialog_message;
+
+	public static String SaveAsDialog_QUESTION;
+
+	public static String SaveAsDialog_OVERWRITE_QUESTION;
+
+	public static String SaveAsDialog_FILE_LABEL;
+
+	public static String SaveAsDialog_FILE;
+
+	public static String SaveAsDialog_TITLE;
+
+	public static String SaveAsDialog_MESSAGE;
+
+	public static String CSSApplicationsPreferencePage_MESSAGE;
 
 	/**
 	 * Static constructor.

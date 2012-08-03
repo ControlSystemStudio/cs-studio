@@ -25,7 +25,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
 import org.csstudio.sds.internal.model.logic.ScriptEngine;
@@ -40,6 +39,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * EditPart controller for the Rectangle widget. The controller mediates between
@@ -49,6 +50,8 @@ import org.eclipse.draw2d.IFigure;
  * 
  */
 public final class TimerEditPart extends AbstractWidgetEditPart {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TimerEditPart.class);
 
 	private long _lastExecution;
 
@@ -170,8 +173,7 @@ public final class TimerEditPart extends AbstractWidgetEditPart {
 									r2, 100, 100, TimeUnit.MILLISECONDS);
 
 				} catch (Exception e) {
-					CentralLogger.getInstance().error(e,
-							"Could not start timer.");
+					LOG.error("Could not start timer.");
 				}
 			}
 		}

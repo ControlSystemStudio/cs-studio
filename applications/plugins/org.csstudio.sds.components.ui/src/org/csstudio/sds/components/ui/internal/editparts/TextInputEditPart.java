@@ -28,7 +28,6 @@ import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.IValue.Quality;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.csstudio.platform.model.IProcessVariableWithSamples;
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -80,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * @author Alexander Will
  *
  */
-public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart implements IProcessVariableWithSamples {
+public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {// implements IProcessVariableWithSamples {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TextInputEditPart.class);
 

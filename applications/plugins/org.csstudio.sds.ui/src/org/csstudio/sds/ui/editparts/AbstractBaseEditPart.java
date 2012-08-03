@@ -30,7 +30,6 @@ import org.csstudio.dal.simple.ChannelListener;
 import org.csstudio.dal.simple.ConnectionParameters;
 import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.sds.cursorservice.CursorService;
@@ -89,7 +88,7 @@ import com.cosylab.util.CommonException;
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		implements NodeEditPart, PropertyChangeListener,
-		IProcessVariableAdressProvider, IProcessVariable, IListenerRegistry {
+		IProcessVariableAdressProvider, IListenerRegistry {
 
 	enum ConnectionStatus {
 		DISCONNECTED, CONNECTED, CONNECTING, DISCONNECTING
@@ -996,7 +995,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public String getName() {
 		try {
 			AbstractWidgetModel castedModel = getCastedModel();
@@ -1007,14 +1005,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
-	}
-
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public String getTypeId() {
+//		return IProcessVariable.TYPE_ID;
+//	}
+//
 	/**
 	 * {@inheritDoc}
 	 */

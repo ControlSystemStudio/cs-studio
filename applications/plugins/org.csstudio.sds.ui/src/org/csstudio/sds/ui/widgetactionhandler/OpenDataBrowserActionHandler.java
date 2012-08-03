@@ -1,5 +1,6 @@
 package org.csstudio.sds.ui.widgetactionhandler;
 
+import org.csstudio.desy.startuphelper.IStripTool;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.model.properties.actions.OpenDataBrowserActionModel;

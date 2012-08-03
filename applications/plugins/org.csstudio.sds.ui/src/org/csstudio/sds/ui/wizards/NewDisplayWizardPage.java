@@ -23,10 +23,10 @@ package org.csstudio.sds.ui.wizards;
 
 import java.io.InputStream;
 
-import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.internal.editor.DisplayEditor;
+import org.csstudio.ui.util.wizards.WizardNewFileCreationPage;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**

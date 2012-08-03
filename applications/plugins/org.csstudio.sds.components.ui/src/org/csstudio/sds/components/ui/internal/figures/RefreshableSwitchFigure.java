@@ -23,7 +23,6 @@
 
 import java.util.HashMap;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.common.CosySwitch;
 import org.csstudio.sds.components.common.SwitchPlugins;
 import org.csstudio.sds.components.ui.internal.utils.Trigonometry;
@@ -41,6 +40,8 @@ import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A switch figure.
@@ -49,6 +50,8 @@ import org.eclipse.swt.graphics.RGB;
  *
  */
 public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(RefreshableSwitchFigure.class);
 
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -168,7 +171,7 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 		try {
 			gfx.rotate(_rotAngle);
 		} catch (RuntimeException e) {
-			CentralLogger.getInstance().error(this, "Error occured during ratation");
+			LOG.error("Error occured during ratation");
 		}
 		gfx.translate(-(int)(_scaling*figureBounds.width*0.5),-(int)(_scaling*figureBounds.height*0.5));
 		
@@ -187,7 +190,7 @@ public final class RefreshableSwitchFigure extends Shape implements IAdaptable {
 			try {
 				gfx.rotate(-(float)_rotAngle);
 			} catch (RuntimeException e) {
-				CentralLogger.getInstance().error(this, "Error occured during rotation");
+				LOG.error("Error occured during rotation");
 			}
 			gfx.translate(-figureBounds.width/2,-figureBounds.height/2);
 		}

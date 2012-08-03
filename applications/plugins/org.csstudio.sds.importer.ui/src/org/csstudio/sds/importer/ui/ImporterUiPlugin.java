@@ -21,13 +21,13 @@
  */
 package org.csstudio.sds.importer.ui;
 
-import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle.
  */
-public final class ImporterUiPlugin extends AbstractCssUiPlugin {
+public final class ImporterUiPlugin extends AbstractUIPlugin {
 
 	/**
 	 * The plug-in ID.
@@ -59,21 +59,15 @@ public final class ImporterUiPlugin extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStart(final BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
+		super.start(context);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void doStop(final BundleContext context) throws Exception {
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getPluginId() {
-		return PLUGIN_ID;
+	public void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 	}
 }
