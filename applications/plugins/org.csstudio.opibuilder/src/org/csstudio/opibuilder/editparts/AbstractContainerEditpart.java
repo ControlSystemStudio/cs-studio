@@ -289,6 +289,23 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		}
 	}
 	
+	@Override
+	public Object getValue() {
+		if(getChildren().size()>0){
+			return ((AbstractBaseEditPart)getChildren().get(0)).getValue();
+		}
+		return super.getValue();
+	}
+	
+	@Override
+	public void setValue(Object value) {
+		for (Object child : getChildren()) {
+			if(child instanceof AbstractBaseEditPart)
+				((AbstractBaseEditPart)child).setValue(value);
+		}
+	}
+	
+	
 
 	/**
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
