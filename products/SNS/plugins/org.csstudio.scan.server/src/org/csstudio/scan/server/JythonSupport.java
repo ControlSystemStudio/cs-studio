@@ -40,6 +40,34 @@ public class JythonSupport
 
 	final private PythonInterpreter interpreter;
 
+	/** Locate a path inside a bundle.
+	 *
+	 *  <p>If the bundle is JAR-ed up, the {@link FileLocator} will
+	 *  return a location with "file:" and "..jar!/path".
+	 *  This method patches the location such that it can be used
+	 *  on the Jython path.
+	 *
+	 *  @param bundle_name Name of bundle
+	 *  @param path_in_bundle Path within bundle
+	 *  @return Location of that path within bundle, or <code>null</code> if not found or no bundle support
+	 *  @throws IOException on error
+	 */
+	private static String getPluginPath(final String bundle_name, final String path_in_bundle) throws IOException
+	{
+	    final Bundle bundle = Platform.getBundle(bundle_name);
+        if (bundle == null)
+            return null;
+        final URL url = FileLocator.find(bundle, new Path(path_in_bundle), null);
+        if (url == null)
+            return null;
+        String path = FileLocator.resolve(url).getPath();
+
+        path = path.replace("file:/", "/");
+        path = path.replace(".jar!/", ".jar/");
+
+        return path;
+	}
+
 	/** Perform static, one-time initialization
 	 *  @throws Exception on error
 	 */
@@ -48,11 +76,10 @@ public class JythonSupport
 	    if (!initialized)
 	    {
 	        // Add org.python/jython.jar/Lib to Python path
-	        Bundle bundle = Platform.getBundle("org.python");
-	        if (bundle != null)
+	        String path = getPluginPath("org.python", "jython.jar");
+	        if (path != null)
 	        {
-	            final URL url = FileLocator.find(bundle, new Path("jython.jar"), null);
-	            paths.add(FileLocator.resolve(url).getPath() + "/Lib");
+	            paths.add(path + "/Lib");
 
 	            // Have Platform support, so create combined class loader that
 	            // first uses this plugin's class loaded and has thus access
@@ -89,17 +116,9 @@ public class JythonSupport
 	        }
 
 	        // Add numji
-	        // TODO This only succeeds if the numjy plugin is expanded.
-	        //      If it's zipped up (as default when exporting the server.product)
-	        //      the path will look like
-	        //      file:/path/to/plugins/org.csstudio.numjy.jar!/jython/
-	        //      and Jython won't be able to open it
-	        bundle = Platform.getBundle("org.csstudio.numjy");
-	        if (bundle != null)
-	        {
-	            final URL url = FileLocator.find(bundle, new Path("jython"), null);
-	            paths.add(FileLocator.resolve(url).getPath());
-	        }
+	        path = getPluginPath("org.csstudio.numjy", "jython");
+	        if (path != null)
+                paths.add(path);
 
 	        // Add scan script paths
 	        final String[] pref_paths = ScanSystemPreferences.getScriptPaths();
@@ -110,7 +129,7 @@ public class JythonSupport
 	                final String plugin_path = pref_path.substring(17);
 	                // Locate name of plugin and path within plugin
 	                final int sep = plugin_path.indexOf('/');
-	                final String plugin, path;
+	                final String plugin;
 	                if (sep < 0)
 	                {
 	                    plugin = plugin_path;
@@ -121,13 +140,11 @@ public class JythonSupport
 	                    plugin = plugin_path.substring(0, sep);
 	                    path = plugin_path.substring(sep + 1);
 	                }
-	                bundle = Platform.getBundle(plugin);
-	                if (bundle == null)
+	                path = getPluginPath(plugin, path);
+	                if (path == null)
 	                    throw new Exception("Error in scan script path " + pref_path);
-	                final URL url = FileLocator.find(bundle, new Path(path), null);
-	                if (url == null)
-                        throw new Exception("Plugin path error in scan script path " + pref_path);
-	                paths.add(FileLocator.resolve(url).getPath());
+	                else
+	                    paths.add(path);
 	            }
 	            else // Add as-is
 	                paths.add(pref_path);

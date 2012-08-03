@@ -60,7 +60,9 @@ public class StringProperty extends AbstractWidgetProperty {
 		else
 			acceptedValue = value.toString();
 		
-		
+		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
+			return OPIBuilderMacroUtil.replaceMacros(
+					widgetModel, acceptedValue);
 		return acceptedValue;
 	}
 

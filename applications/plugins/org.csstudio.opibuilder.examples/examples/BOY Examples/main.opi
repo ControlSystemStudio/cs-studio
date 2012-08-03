@@ -73,48 +73,6 @@
     <tooltip></tooltip>
     <x>23</x>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
-    <crop_right>0</crop_right>
-    <crop_left>0</crop_left>
-    <visible>true</visible>
-    <wuid>553ac269:135b01240d5:-6925</wuid>
-    <auto_size>false</auto_size>
-    <scripts />
-    <height>83</height>
-    <name>Image</name>
-    <stretch_to_fit>true</stretch_to_fit>
-    <scale_options>
-      <width_scalable>true</width_scalable>
-      <height_scalable>true</height_scalable>
-      <keep_wh_ratio>false</keep_wh_ratio>
-    </scale_options>
-    <background_color>
-      <color red="26" green="161" blue="225" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
-    <widget_type>Image</widget_type>
-    <enabled>true</enabled>
-    <font>
-      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
-    </font>
-    <width>735</width>
-    <no_animation>false</no_animation>
-    <crop_top>0</crop_top>
-    <border_style>0</border_style>
-    <rules />
-    <crop_bottom>0</crop_bottom>
-    <border_width>1</border_width>
-    <image_file>pictures/sns4t.gif</image_file>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <actions hook="false" hook_all="false" />
-    <y>464</y>
-    <tooltip></tooltip>
-    <x>42</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <visible>true</visible>
     <vertical_alignment>1</vertical_alignment>
@@ -685,5 +643,47 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
       <x>125</x>
     </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
+    <crop_right>0</crop_right>
+    <crop_left>0</crop_left>
+    <visible>true</visible>
+    <wuid>553ac269:135b01240d5:-6925</wuid>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>83</height>
+    <name>Image</name>
+    <stretch_to_fit>true</stretch_to_fit>
+    <scale_options>
+      <width_scalable>true</width_scalable>
+      <height_scalable>true</height_scalable>
+      <keep_wh_ratio>false</keep_wh_ratio>
+    </scale_options>
+    <background_color>
+      <color red="26" green="161" blue="225" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Image</widget_type>
+    <enabled>true</enabled>
+    <font>
+      <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
+    </font>
+    <width>735</width>
+    <no_animation>false</no_animation>
+    <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules />
+    <crop_bottom>0</crop_bottom>
+    <border_width>1</border_width>
+    <image_file>pictures/sns4t.gif</image_file>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" hook_all="false" />
+    <y>464</y>
+    <tooltip></tooltip>
+    <x>42</x>
   </widget>
 </display>

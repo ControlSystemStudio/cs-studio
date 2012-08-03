@@ -90,6 +90,13 @@ abstract public class ScanScriptContext
      */
     abstract public void logData(final String device, final Object data) throws Exception;
 
+    /** Read value from a device
+     *  @param device_name Name of device
+     *  @return Value of the device: String, Double, ...
+     *  @throws Exception on error
+     */
+    abstract public Object read(final String device_name) throws Exception;
+
     /** Write to device, waiting for readback with default tolerance and timeout
      *  @param device_name Name of device and readback
      *  @param value Value to write to the device

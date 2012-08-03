@@ -133,6 +133,12 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
         queuemanager.start();
     }
 
+    /** @param enabled Enable the voice annunciations? */
+    public void setEnabled(final boolean enabled)
+    {
+        queuemanager.setEnabled(enabled);
+    }
+
     /** {@inhericDoc} */
     @Override
     public void onMessage(final Message msg)

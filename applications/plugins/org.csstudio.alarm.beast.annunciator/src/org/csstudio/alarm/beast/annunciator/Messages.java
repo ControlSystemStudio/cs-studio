@@ -15,8 +15,10 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.annunciator.messages"; //$NON-NLS-1$
-    
+
     public static String Annunciator;
+    public static String Clear;
+    public static String ClearTT;
     public static String ConnectMsg;
     public static String Message;
 	public static String MoreMessagesFmt;
@@ -27,8 +29,10 @@ public class Messages extends NLS
     public static String Prefs_Translations;
     public static String Prefs_URL;
     public static String Severity;
+    public static String Silence;
+    public static String SilenceTT;
     public static String Time;
-    
+
     static
     {
         // initialize resource bundle

@@ -156,12 +156,14 @@ public final class PolygonFigure extends Polygon implements HandleBounds, Intros
 	@Override
 	public void setBounds(final Rectangle rect) {
 		PointList points = getPoints();
-		int oldX = getLocation().x;
-		int oldY = getLocation().y;
-		points.translate(rect.x - oldX, rect.y - oldY);		
-		
-		setPoints(PointsUtil.scalePointsBySize(points, rect.width, rect.height));
-		
+		if (!points.getBounds().equals(rect)) {
+			int oldX = getLocation().x;
+			int oldY = getLocation().y;
+			points.translate(rect.x - oldX, rect.y - oldY);
+
+			setPoints(PointsUtil.scalePointsBySize(points, rect.width,
+					rect.height));
+		}
 		invalidate();
 		fireFigureMoved();
 		repaint();

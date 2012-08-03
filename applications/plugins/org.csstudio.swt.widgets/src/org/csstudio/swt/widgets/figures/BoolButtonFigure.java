@@ -61,7 +61,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			if(effect3D && support3D){
 				graphics.setBackgroundColor(WHITE_COLOR);	
 				graphics.fillOval(clientArea);
-				graphics.fillRectangle(new Rectangle());
+//				graphics.fillRectangle(new Rectangle());
 				Pattern pattern;
 				int a = clientArea.width/2;
 				int b = clientArea.height/2;
@@ -143,7 +143,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			Rectangle clientArea = getClientArea().getCopy();
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D){			
-				graphics.fillRectangle(new Rectangle());
+//				graphics.fillRectangle(new Rectangle());
 
 				//draw up border			
 				Pattern pattern;

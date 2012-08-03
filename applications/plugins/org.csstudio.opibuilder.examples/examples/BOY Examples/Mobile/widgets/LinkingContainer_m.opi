@@ -271,7 +271,7 @@
     <font>
       <opifont.name fontName="Sans" height="10" style="0">Default</opifont.name>
     </font>
-    <width>96</width>
+    <width>159</width>
     <border_style>0</border_style>
     <push_action_index>0</push_action_index>
     <image>../../pictures/home-16x16.png</image>
@@ -294,6 +294,6 @@
       </action>
     </actions>
     <tooltip></tooltip>
-    <x>100</x>
+    <x>66</x>
   </widget>
 </display>

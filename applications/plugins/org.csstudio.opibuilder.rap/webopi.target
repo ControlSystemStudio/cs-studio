@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="webopi" sequenceNumber="13">
+<locations>
+<location includeAllPlatforms="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.rap.runtime.requirements.feature.group" version="1.5.0.20120612-1510"/>
+<unit id="org.eclipse.rap.runtime.feature.group" version="1.5.0.20120612-1510"/>
+<repository location="http://download.eclipse.org/rt/rap/1.5/runtime"/>
+</location>
+<location path="/home/5hz/work/java/css_repository/cs-studio-3.1/core/plugins/org.csstudio.rap.core/third_party_plugins/RAP_GEF_1.5.0" type="Directory"/>
+</locations>
+</target>
