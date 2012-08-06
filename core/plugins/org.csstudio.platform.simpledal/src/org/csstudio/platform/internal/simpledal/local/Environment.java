@@ -21,18 +21,18 @@
  */
 package org.csstudio.platform.internal.simpledal.local;
 
-import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.csstudio.platform.CSSPlatformInfo;
+import org.csstudio.desy.startuphelper.CSSPlatformInfo;
 import org.csstudio.platform.ExecutionService;
-import org.csstudio.platform.internal.simpledal.ProcessVariableConnectionService;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.simpledal.IConnector;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.eclipse.core.runtime.Platform;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Environment {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Environment.class);
+
 	public static LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 
 	public static String getApplicationId() {
