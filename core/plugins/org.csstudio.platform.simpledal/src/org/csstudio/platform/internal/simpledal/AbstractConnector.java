@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider, IProcessVariable {
+public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider {// TODO jhatje , IProcessVariable {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);
 
@@ -761,12 +761,12 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		return _processVariableAddress.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public String getTypeId() {
+//		return IProcessVariable.TYPE_ID;
+//	}
 
 	public void block() {
 		_keepAliveUntil = System.currentTimeMillis() + BLOCKING_TIMEOUT;
