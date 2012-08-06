@@ -8,9 +8,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.startup;bundle-version="3.1.0",
  org.csstudio.auth;bundle-version="3.1.0",
- org.csstudio.auth.ui;bundle-version="3.1.0"
+ org.csstudio.auth.ui;bundle-version="3.1.0",
+ org.eclipse.core.resources;bundle-version="3.7.101"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Desy, Jan Hatje <css-developer@desy.de>
-Export-Package: org.csstudio.desy.startuphelper.login,
+Export-Package: org.csstudio.desy.startuphelper,
+ org.csstudio.desy.startuphelper.login,
  org.csstudio.desy.startuphelper.startupservice
