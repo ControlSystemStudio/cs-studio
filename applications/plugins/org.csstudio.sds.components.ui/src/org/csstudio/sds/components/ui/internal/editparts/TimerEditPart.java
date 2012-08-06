@@ -24,7 +24,6 @@ package org.csstudio.sds.components.ui.internal.editparts;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.platform.ExecutionService;
 import org.csstudio.sds.components.model.TimerModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableTimerFigure;
 import org.csstudio.sds.internal.model.logic.ScriptEngine;
@@ -35,6 +34,7 @@ import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
 import org.csstudio.sds.ui.scripting.RunnableScript;
+import org.csstudio.sds.util.ExecutionService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;

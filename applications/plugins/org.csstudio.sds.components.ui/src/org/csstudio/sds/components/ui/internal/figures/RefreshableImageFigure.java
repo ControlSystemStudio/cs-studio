@@ -24,7 +24,6 @@ package org.csstudio.sds.components.ui.internal.figures;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.platform.ExecutionService;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.figures.BorderAdapter;
@@ -33,6 +32,7 @@ import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
 import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.csstudio.sds.util.ExecutionService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

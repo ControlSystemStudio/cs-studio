@@ -594,7 +594,7 @@ auskommentiert ende
              plugin="org.csstudio.sds.ui">
        </contexts>
     </extension>
-    <extension
+<!--    <extension
           point="org.eclipse.ui.popupMenus">
        <objectContribution
              adaptable="false"
@@ -621,6 +621,7 @@ auskommentiert ende
           </action>
        </objectContribution>
     </extension>
+    -->
     <extension
           point="org.eclipse.ui.keywords">
        <keyword
