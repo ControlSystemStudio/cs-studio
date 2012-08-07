@@ -13,13 +13,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.ide,
  org.eclipse.ui.views,
- org.csstudio.platform,
  org.csstudio.platform.simpledal;bundle-version="1.0.0",
- org.csstudio.platform.ui,
  org.eclipse.gef,
  org.csstudio.dct;bundle-version="1.0.0",
  org.junit,
  org.slf4j;bundle-version="1.6.1",
- org.slf4j-log4j12;bundle-version="1.6.1"
+ org.slf4j-log4j12;bundle-version="1.6.1",
+ org.csstudio.domain.common;bundle-version="1.0.0",
+ org.csstudio.ui.util;bundle-version="3.1.0"
 
 

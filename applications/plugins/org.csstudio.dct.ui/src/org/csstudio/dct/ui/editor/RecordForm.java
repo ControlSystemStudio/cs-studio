@@ -13,8 +13,7 @@ import org.csstudio.dct.util.AliasResolutionException;
 import org.csstudio.dct.util.AliasResolutionUtil;
 import org.csstudio.dct.util.CompareUtil;
 import org.csstudio.dct.util.ResolutionUtil;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.LayoutUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -36,6 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ExpandBar;
 import org.eclipse.swt.widgets.ExpandItem;
 import org.eclipse.swt.widgets.Label;
+import org.csstudio.domain.common.LayoutUtil;
 
 /**
  * Editing component for {@link IRecord}.

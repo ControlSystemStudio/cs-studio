@@ -1,8 +1,8 @@
 package org.csstudio.dct.ui.editor;
 
 import org.csstudio.dct.ui.editor.tables.ITableRow;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;

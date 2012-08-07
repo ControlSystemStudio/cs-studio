@@ -6,7 +6,6 @@ import java.util.List;
 import org.csstudio.dct.model.IElement;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.views.contentoutline.ContentOutline;

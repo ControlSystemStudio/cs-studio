@@ -5,16 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.DailyRollingFileAppender;
 import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IFolderMember;
 import org.csstudio.dct.model.IInstance;
-import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
 import org.csstudio.dct.model.commands.RemoveFolderCommand;
 import org.csstudio.dct.model.commands.RemoveInstanceCommand;
 import org.csstudio.dct.model.commands.RemovePrototypeCommand;
@@ -24,7 +21,6 @@ import org.csstudio.dct.util.CompareUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 

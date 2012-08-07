@@ -25,7 +25,6 @@ package org.csstudio.dct.ui.editor.outline.internal;
 import java.util.List;
 
 import org.csstudio.dct.metamodel.IRecordDefinition;
-import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.IOpenListener;
@@ -40,6 +39,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.csstudio.domain.common.LayoutUtil;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
