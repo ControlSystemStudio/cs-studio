@@ -135,20 +135,30 @@ public class SmsDeliveryDevice implements Runnable,
             if (count > 0) {
                 
                 for (InboundMessage message : inMsgs) {
-                    final Object[] param = { message.getText(),
-                                             message.getOriginator(),
-                                             message.getGatewayId() };
-                    LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
                     
-                    final IncomingSmsMessage inMsg = new IncomingSmsMessage(message);
-                    for (final DeviceListener o : listener) {
-                        o.onIncomingMessage(new DeviceObject(this, inMsg));
-                    }
-            
-                    if (deleteMessage(message)) {
-                        LOG.info("Message has been deleted.");
+                    if (message instanceof InboundBinaryMessage) {
+                        LOG.warn("Incoming message has type InboundBinaryMessage");
+                        if (deleteMessage(message)) {
+                            LOG.info("Message has been deleted.");
+                        } else {
+                            LOG.warn("Message CANNOT be deleted.");
+                        }
                     } else {
-                        LOG.warn("Message CANNOT be deleted.");
+                        final Object[] param = { message.getText(),
+                                                 message.getOriginator(),
+                                                 message.getGatewayId() };
+                        LOG.info("Incoming message: {} from phone number {} received by gateway {}", param);
+                        
+                        final IncomingSmsMessage inMsg = new IncomingSmsMessage(message);
+                        for (final DeviceListener o : listener) {
+                            o.onIncomingMessage(new DeviceObject(this, inMsg));
+                        }
+                
+                        if (deleteMessage(message)) {
+                            LOG.info("Message has been deleted.");
+                        } else {
+                            LOG.warn("Message CANNOT be deleted.");
+                        }
                     }
                 }
             }
