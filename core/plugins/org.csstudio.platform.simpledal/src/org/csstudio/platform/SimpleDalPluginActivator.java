@@ -22,12 +22,13 @@
 package org.csstudio.platform;
 
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator for the simple dal plugin.
  */
-public class SimpleDalPluginActivator extends AbstractCssPlugin {
+public class SimpleDalPluginActivator extends Plugin {
 	/**
 	 * The shared instance of this _plugin class.
 	 */
@@ -49,7 +50,8 @@ public class SimpleDalPluginActivator extends AbstractCssPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void doStart(final BundleContext context) throws Exception {
+	public final void start(final BundleContext context) throws Exception {
+		super.start(context);
 		offerProcessVariableConnectionServiceFactoryAsOSGiService(context);
 	}
 
@@ -73,7 +75,8 @@ public class SimpleDalPluginActivator extends AbstractCssPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void doStop(final BundleContext context) throws Exception {
+	public final void stop(final BundleContext context) throws Exception {
+		super.stop(context);
 		// do nothing specific
 	}
 
@@ -84,14 +87,6 @@ public class SimpleDalPluginActivator extends AbstractCssPlugin {
 	 */
 	public static SimpleDalPluginActivator getDefault() {
 		return _plugin;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String getPluginId() {
-		return ID;
 	}
 
 }

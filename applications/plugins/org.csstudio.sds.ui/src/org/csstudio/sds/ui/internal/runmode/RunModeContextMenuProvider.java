@@ -23,12 +23,12 @@ package org.csstudio.sds.ui.internal.runmode;
 
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;

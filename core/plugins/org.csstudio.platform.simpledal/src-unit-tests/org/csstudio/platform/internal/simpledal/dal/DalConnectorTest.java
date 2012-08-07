@@ -3,30 +3,27 @@
  */
 package org.csstudio.platform.internal.simpledal.dal;
 
-import static org.junit.Assert.*;
 
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
-import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
+import org.csstudio.dal.DynamicValueProperty;
+import org.csstudio.dal.Timestamp;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.model.pvs.ValueType;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.simpledal.IProcessVariableValueListener;
-import org.csstudio.platform.simpledal.ProcessVariableValueAdapter;
 import org.csstudio.platform.simpledal.SettableState;
-import org.csstudio.platform.util.StringUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.csstudio.dal.DynamicValueProperty;
-import org.csstudio.dal.Timestamp;
-import org.csstudio.dal.spi.PropertyFactory;
 import org.junit.Before;
 import org.junit.Test;
 

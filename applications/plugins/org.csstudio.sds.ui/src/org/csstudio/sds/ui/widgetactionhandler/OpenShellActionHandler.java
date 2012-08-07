@@ -23,7 +23,6 @@ package org.csstudio.sds.ui.widgetactionhandler;
 
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.csstudio.sds.model.AbstractWidgetModel;
@@ -34,6 +33,8 @@ import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.core.runtime.IPath;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Opens a display in a shell.
@@ -43,6 +44,8 @@ import org.eclipse.core.runtime.IPath;
  * @deprecated we use {@link OpenDisplayActionHandler} instead 
  */
 public final class OpenShellActionHandler implements IWidgetActionHandler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OpenShellActionHandler.class);
 
 	/**
 	 * {@inheritDoc}
@@ -69,8 +72,7 @@ public final class OpenShellActionHandler implements IWidgetActionHandler {
 				forwardedAliases.put(key, resolved);
 			} catch (ChannelReferenceValidationException e) {
 				// ignore
-				CentralLogger.getInstance().info(null,
-						"Cannot resolve alias [" + raw + "]");
+				LOG.info("Cannot resolve alias [" + raw + "]");
 			}
 
 		}

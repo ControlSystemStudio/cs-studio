@@ -1,18 +1,19 @@
 package org.csstudio.sds.ui.cursors.internal;
 
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.ImageUtil;
 import org.csstudio.sds.cursorservice.AbstractCursor;
 import org.csstudio.sds.cursorservice.ContributedCursor;
 import org.csstudio.sds.cursorservice.CursorService;
 import org.csstudio.sds.cursorservice.ICursorService;
 import org.csstudio.sds.cursorservice.SWTCursor;
 import org.csstudio.sds.cursorservice.WorkspaceCursor;
+import org.csstudio.ui.util.ImageUtil;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Cursor helper methods.
@@ -21,6 +22,8 @@ import org.eclipse.swt.widgets.Display;
  * 
  */
 public class CursorHelper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CursorHelper.class);
 
 	/**
 	 * Private to prevent instantiation of this class.
@@ -62,8 +65,7 @@ public class CursorHelper {
 								wc.getGraphicsFile()).getImageData();
 				cursor = new Cursor(Display.getCurrent(), imageData, 1, 1);
 			} else {
-				CentralLogger.getInstance().warn(CursorHelper.class,
-						"Unknown cursor type: " + d.getClass());
+				LOG.warn("Unknown cursor type: " + d.getClass());
 				cursor = null;
 			}
 		}

@@ -6,7 +6,7 @@ import org.csstudio.dct.model.IProject;
 import org.csstudio.dct.model.commands.ChangeDbdFileCommand;
 import org.csstudio.dct.ui.editor.tables.ITableRow;
 import org.csstudio.dct.ui.editor.tables.WorkspaceResourceCellEditor;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.viewers.CellEditor;

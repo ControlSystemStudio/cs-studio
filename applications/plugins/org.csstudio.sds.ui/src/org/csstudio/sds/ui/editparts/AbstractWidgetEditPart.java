@@ -23,14 +23,11 @@ package org.csstudio.sds.ui.editparts;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.ui.internal.commands.ChangeSettingsFromDroppedPvCommand;
 import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
-import org.csstudio.sds.ui.internal.editor.DropPvRequest;
-import org.csstudio.sds.ui.internal.editparts.DisplayEditPart;
+import org.csstudio.sds.ui.internal.editor.dnd.DropPvRequest;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;

@@ -26,9 +26,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.dal.Timestamp;
 import org.csstudio.platform.internal.simpledal.converters.ConverterUtil;
-import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.platform.model.pvs.ValueType;
@@ -38,7 +37,8 @@ import org.csstudio.platform.simpledal.IProcessVariableValueListener;
 import org.csstudio.platform.simpledal.IProcessVariableWriteListener;
 import org.csstudio.platform.simpledal.SettableState;
 import org.eclipse.core.runtime.Platform;
-import org.csstudio.dal.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for connectors. A connector encapsulates all program logic that is
@@ -58,7 +58,9 @@ import org.csstudio.dal.Timestamp;
  * 
  */
 @SuppressWarnings("unchecked")
-public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider, IProcessVariable {
+public abstract class AbstractConnector implements IConnector, IProcessVariableAdressProvider {// TODO jhatje , IProcessVariable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractConnector.class);
 
 	public static final int BLOCKING_TIMEOUT = 5000;
 
@@ -127,7 +129,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 			try {
 				doInit();
 			} catch (Exception e) {
-				CentralLogger.getInstance().error(null, e);
+				LOG.error(e.toString());
 			}
 			initialized = true;
 		}
@@ -297,7 +299,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		try {
 			state = doIsSettable();
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 
 		return state != null ? state : SettableState.UNKNOWN;
@@ -310,7 +312,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		try {
 			doDispose();
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 	}
 
@@ -352,7 +354,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		try {
 			doGetValueAsynchronously(listener);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 	}
 
@@ -398,7 +400,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		try {
 			doGetCharacteristicAsynchronously(characteristicId, valueType, listener);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 	}
 
@@ -414,7 +416,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		try {
 			doSetValueAsynchronously(value, listener);
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 	}
 
@@ -588,7 +590,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 						_latestValue = value;
 					} catch (NumberFormatException nfe) {
 						// Do nothing! Is a invalid value format!
-						CentralLogger.getInstance().warn(this, "Invalid value format. (" + value + ") is not set to " + getName() + ".");
+						LOG.warn("Invalid value format. (" + value + ") is not set to " + getName() + ".");
 					}
 				}
 			});
@@ -680,7 +682,7 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		sb.append(": ");
 		sb.append(message);
 
-		CentralLogger.getInstance().debug(null, sb.toString());
+		LOG.debug(sb.toString());
 	}
 
 	/**
@@ -759,12 +761,12 @@ public abstract class AbstractConnector implements IConnector, IProcessVariableA
 		return _processVariableAddress.toString();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
-	}
+//	/**
+//	 * {@inheritDoc}
+//	 */
+//	public String getTypeId() {
+//		return IProcessVariable.TYPE_ID;
+//	}
 
 	public void block() {
 		_keepAliveUntil = System.currentTimeMillis() + BLOCKING_TIMEOUT;

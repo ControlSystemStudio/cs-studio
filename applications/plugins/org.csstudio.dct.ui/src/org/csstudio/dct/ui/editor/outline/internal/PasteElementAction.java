@@ -1,26 +1,16 @@
 package org.csstudio.dct.ui.editor.outline.internal;
 
 import java.util.List;
-import java.util.UUID;
 
-import org.csstudio.dct.model.IContainer;
 import org.csstudio.dct.model.IElement;
-import org.csstudio.dct.model.IFolder;
-import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.IRecordContainer;
-import org.csstudio.dct.model.commands.AddRecordCommand;
-import org.csstudio.dct.model.commands.ChangeFieldValueCommand;
-import org.csstudio.dct.model.internal.RecordFactory;
 import org.csstudio.dct.ui.editor.copyandpaste.AbstractElementTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.ICopyAndPasteStrategy;
 import org.csstudio.dct.ui.editor.copyandpaste.InstanceTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.PrototypeTransfer;
 import org.csstudio.dct.ui.editor.copyandpaste.RecordTransfer;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 

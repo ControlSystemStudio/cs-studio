@@ -26,7 +26,7 @@ package org.csstudio.dct.ui.editor.highlighter;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;

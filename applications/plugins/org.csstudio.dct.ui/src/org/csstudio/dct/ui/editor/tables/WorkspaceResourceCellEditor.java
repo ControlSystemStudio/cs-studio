@@ -21,7 +21,8 @@
  */
 package org.csstudio.dct.ui.editor.tables;
 
-import org.csstudio.platform.ui.dialogs.ResourceSelectionDialog;
+
+import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;

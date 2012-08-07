@@ -26,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.csstudio.sds.internal.runmode.RunModeType;
 import org.csstudio.sds.model.DisplayModel;
@@ -37,9 +36,11 @@ import org.csstudio.sds.ui.internal.runmode.ShellRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.ViewRunModeBox;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IMemento;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -48,6 +49,7 @@ import org.eclipse.ui.IMemento;
  * @author Sven Wende
  */
 public final class RunModeService {
+    private static final Logger LOG = LoggerFactory.getLogger(RunModeService.class);
 
 	private static final String SEPARATOR = "°°°";
 
@@ -144,9 +146,7 @@ public final class RunModeService {
 					}
 				});
 			} catch (IllegalArgumentException e) {
-				CentralLogger.getInstance().info(
-						null,
-						"Cannot open run mode: " + path.toOSString()
+				LOG.info("Cannot open run mode: " + path.toOSString()
 								+ " does not exist.");
 				MessageDialog.openError(null, "Control System Studio",
 						"The display file was not found: " + path.toString());
@@ -161,7 +161,7 @@ public final class RunModeService {
 	 *            The {@link RunModeBoxInput}
 	 */
 	public void closeRunModeBox(final RunModeBoxInput modeBoxInput) {
-		CentralLogger.getInstance().debug(this, "Close RunModeBox: " + modeBoxInput.getFilePath());
+		LOG.debug("Close RunModeBox: " + modeBoxInput.getFilePath());
 		AbstractRunModeBox runModeBox = _activeBoxes.get(modeBoxInput);
 		runModeBox.dispose();
 		notifyOpenDisplayListener();
@@ -290,9 +290,7 @@ public final class RunModeService {
 					}
 				});
 			} catch (IllegalArgumentException e) {
-				CentralLogger.getInstance().info(
-						null,
-						"Cannot open run mode: " + path.toOSString()
+				LOG.info("Cannot open run mode: " + path.toOSString()
 								+ " does not exist.");
 				MessageDialog.openError(null, "Control System Studio",
 						"The display file was not found: " + path.toString());

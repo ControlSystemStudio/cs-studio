@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.dal.DynamicValueState;
+import org.csstudio.domain.common.LayoutUtil;
 import org.csstudio.platform.simpledal.ConnectionState;
-import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.ui.internal.dynamicswizard.SimpleChannelPage;
@@ -61,7 +62,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.csstudio.dal.DynamicValueState;
 
 /**
  * A wizard, which enables users to configure dynamic settings for a property.

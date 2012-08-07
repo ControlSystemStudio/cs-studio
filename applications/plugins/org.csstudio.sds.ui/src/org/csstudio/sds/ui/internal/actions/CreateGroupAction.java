@@ -23,7 +23,6 @@ package org.csstudio.sds.ui.internal.actions;
 
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.GroupingContainerModel;
@@ -33,6 +32,7 @@ import org.csstudio.sds.ui.internal.commands.AddWidgetCommand;
 import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
 import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
 import org.csstudio.sds.ui.internal.editor.WidgetCreationFactory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.GraphicalViewer;

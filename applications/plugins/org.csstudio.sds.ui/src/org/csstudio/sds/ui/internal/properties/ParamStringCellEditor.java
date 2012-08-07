@@ -26,11 +26,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.util.TextDnDUtil;
 import org.csstudio.sds.util.TooltipResolver;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;

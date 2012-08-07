@@ -23,9 +23,9 @@ package org.csstudio.sds.components.ui.internal.editparts;
 
 import static org.junit.Assert.assertTrue;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.model.BargraphModel;
 import org.csstudio.sds.components.ui.internal.figures.RefreshableBargraphFigure;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.RGB;
 import org.junit.Before;

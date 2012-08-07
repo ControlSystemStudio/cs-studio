@@ -23,7 +23,7 @@
 
 import java.text.NumberFormat;
 
-import org.csstudio.platform.ui.util.LayoutUtil;
+import org.csstudio.domain.common.LayoutUtil;
 import org.csstudio.sds.internal.statistics.MeasureCategoriesEnum;
 import org.csstudio.sds.internal.statistics.StatisticUtil;
 import org.eclipse.core.runtime.IProgressMonitor;

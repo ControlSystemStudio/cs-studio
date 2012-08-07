@@ -27,11 +27,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.internal.preferences.WidgetSelectionStringConverter;
 import org.csstudio.sds.model.WidgetModelFactoryService;
 import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;

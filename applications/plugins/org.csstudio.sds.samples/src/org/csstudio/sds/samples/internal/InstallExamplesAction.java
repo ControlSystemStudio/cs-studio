@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.samples.Activator;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -52,9 +51,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InstallExamplesAction extends Action implements ICheatSheetAction, IWorkbenchWindowActionDelegate {
 
+    private static final Logger LOG = LoggerFactory.getLogger(InstallExamplesAction.class);
+	
 	public void run(final String[] params, final ICheatSheetManager manager) {
 		run(null);
 	}
@@ -165,7 +168,7 @@ public class InstallExamplesAction extends Action implements ICheatSheetAction, 
 
 			}
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(null, e);
+			LOG.error(e.toString());
 		}
 	}
 

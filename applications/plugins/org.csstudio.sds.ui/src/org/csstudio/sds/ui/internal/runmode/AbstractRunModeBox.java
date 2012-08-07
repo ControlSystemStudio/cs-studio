@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.dal.CssApplicationContext;
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
@@ -42,7 +42,8 @@ import org.csstudio.sds.model.RuntimeContext;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
-import org.csstudio.sds.ui.internal.editor.ProcessVariableDragSourceListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariableDragSourceListener;
+import org.csstudio.sds.ui.internal.editor.dnd.ProcessVariablesDragSourceListener;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
 import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
 import org.csstudio.sds.ui.runmode.IDisplayLoadedCallback;
@@ -58,7 +59,8 @@ import org.eclipse.gef.tools.SelectionTool;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.csstudio.dal.simple.SimpleDALBroker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A box that manages a shell, which uses a GEF graphical viewer to display SDS
@@ -68,6 +70,8 @@ import org.csstudio.dal.simple.SimpleDALBroker;
  * @version $Revision: 1.30 $
  */
 public abstract class AbstractRunModeBox {
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractRunModeBox.class);
+	
 	private boolean _disposed;
 
 	/**
@@ -153,7 +157,7 @@ public abstract class AbstractRunModeBox {
 						
 						// .. we create a separate broker instance for each running display 
 						runtimeContext.setBroker(SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
-						CentralLogger.getInstance().info(this, "SimpleDALBroker instance created");
+						LOG.info("SimpleDALBroker instance created");
 						
 						_displayModel.setRuntimeContext(runtimeContext);
 
@@ -309,7 +313,7 @@ public abstract class AbstractRunModeBox {
 				SimpleDALBroker broker = context.getBroker();
 				broker.releaseAll();
 				context.setBroker(null);
-				CentralLogger.getInstance().info(this, "SimpleDALBroker instance released.");
+				LOG.info("SimpleDALBroker instance released.");
 				callback.displayClosed();
 			}
 
@@ -363,9 +367,11 @@ public abstract class AbstractRunModeBox {
 		editDomain.setDefaultTool(tool);
 		editDomain.addViewer(viewer);
 
-		// initialize drag support
-		viewer.addDragSourceListener(new DragSourceListener(viewer));
+		// initialize drag support (order matters!)
 		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+		viewer.addDragSourceListener(new ProcessVariablesDragSourceListener(viewer));
+//		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+//		viewer.addDragSourceListener(new TextTransferDragSourceListener(viewer));
 
 		return viewer;
 	}

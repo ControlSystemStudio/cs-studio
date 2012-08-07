@@ -24,11 +24,11 @@
 import java.util.HashMap;
 import java.util.Map;
 
-import org.csstudio.platform.ui.util.ImageUtil;
 import org.csstudio.sds.model.IOption;
 import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.ui.internal.properties.view.OptionComboBoxCellEditor;
 import org.csstudio.sds.ui.properties.PropertyDescriptor;
+import org.csstudio.ui.util.ImageUtil;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;

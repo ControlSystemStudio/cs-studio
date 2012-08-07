@@ -28,13 +28,14 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.eclipse.swt.dnd.ByteArrayTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TransferData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Transfer type implementation for widget models. This implementation uses the
@@ -45,6 +46,8 @@ import org.eclipse.swt.dnd.TransferData;
  * 
  */
 public final class WidgetModelTransfer extends ByteArrayTransfer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetModelTransfer.class);
 
 	/**
 	 * Type name for this transfer type.
@@ -112,13 +115,13 @@ public final class WidgetModelTransfer extends ByteArrayTransfer {
 				writer.write(nextByte);
 			}
 		} catch (IOException e) {
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug(e.toString());
 		}
 
 		try {
 			writer.flush();
 		} catch (IOException e) {
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug(e.toString());
 		}
 
 		byte[] bytes = bos.toByteArray();
@@ -129,7 +132,7 @@ public final class WidgetModelTransfer extends ByteArrayTransfer {
 			bos.close();
 			writer.close();
 		} catch (IOException e) {
-			CentralLogger.getInstance().debug(this, e);
+			LOG.debug(e.toString());
 		}
 
 		// store the byte array

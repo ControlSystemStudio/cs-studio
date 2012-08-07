@@ -1,5 +1,6 @@
 package org.csstudio.sds.ui.internal.connectionview;
 
+import org.csstudio.dal.simple.SimpleDALBroker;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.ui.runmode.IOpenDisplayListener;
 import org.csstudio.sds.ui.runmode.RunModeService;
@@ -12,7 +13,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.csstudio.dal.simple.SimpleDALBroker;
 
 public class ConnectionView extends ViewPart {
 

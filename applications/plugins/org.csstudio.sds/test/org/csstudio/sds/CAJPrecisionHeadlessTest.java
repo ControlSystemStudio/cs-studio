@@ -36,7 +36,6 @@ import org.csstudio.domain.desy.softioc.Caget;
 import org.csstudio.domain.desy.softioc.DBR;
 import org.csstudio.domain.desy.softioc.ISoftIocConfigurator;
 import org.csstudio.domain.desy.softioc.SoftIoc;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.internal.connection.BehaviorConnector;
@@ -307,9 +306,9 @@ public class CAJPrecisionHeadlessTest {
                 broker.registerListener(parameters, listener);
             }
         } catch (final InstantiationException e) {
-            CentralLogger.getInstance().error(this, e);
+//            CentralLogger.getInstance().error(this, e);
         } catch (final CommonException e) {
-            CentralLogger.getInstance().error(this, e);
+//            CentralLogger.getInstance().error(this, e);
         }
     }
 

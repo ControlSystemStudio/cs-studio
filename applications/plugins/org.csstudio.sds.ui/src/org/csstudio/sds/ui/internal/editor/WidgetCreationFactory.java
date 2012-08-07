@@ -21,167 +21,59 @@
  */
 package org.csstudio.sds.ui.internal.editor;
 
-import java.util.List;
-import java.util.Map;
-
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.eventhandling.EventType;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.sds.model.commands.SetPropertyCommand;
-import org.csstudio.sds.model.initializers.WidgetInitializationService;
-import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.gef.requests.CreationFactory;
-import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.Display;
 
 /**
- * The CreationFactory for the DropDownListener.
- *
- * @author Kai Meyer
+ * {@link CreationFactory} implementation for new widget types.
+ * 
+ * @author Kai Meyer, Sven Wende
  */
 public final class WidgetCreationFactory implements CreationFactory {
 
-	/**
-	 * The type of the widget.
-	 */
 	private String _widgetType = null;
 	private final KeyListenerAdapter _keyAdapter;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param widgetType
-	 *            The type of the widget
-	 */
 	public WidgetCreationFactory(final String widgetType) {
 		this(widgetType, null);
 	}
 
-	public WidgetCreationFactory(final String widgetType,
-			final KeyListenerAdapter keyAdapter) {
+	public WidgetCreationFactory(final String widgetType, final KeyListenerAdapter keyAdapter) {
 		_widgetType = widgetType;
 		_keyAdapter = keyAdapter;
 	}
 
-	/**
-	 * Sets the type of the widget.
-	 *
-	 * @param widgetType
-	 *            The type of the widget (not null)
-	 */
-	public void setWidgetType(final String widgetType) {
-		assert widgetType != null;
-		_widgetType = widgetType;
-	}
-
-	/**
-	 * Creates and returns a new WidgetModel and sets the initial aliases.
-	 *
-	 * @param initialPv
-	 *            The PV used for the aliases
-	 * @return The created Object
-	 */
-	public Object getNewObject(final IProcessVariableAddress initialPv) {
-		AbstractWidgetModel model = WidgetModelFactoryService.getInstance()
-				.getWidgetModel(_widgetType);
-
-		// .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
-		SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(model, EventType.ON_MANUAL_CHANGE);
-
-
-		if (_keyAdapter != null) {
-			List<Integer> pressedKeys = _keyAdapter.getPressedKeys();
-			if ((pressedKeys.size() != 1) || (pressedKeys.get(0) != 'b')) {
-				runInitializers(model);
-				setupInitialAliases(model, initialPv);
-			}
-		} else {
-			runInitializers(model);
-			setupInitialAliases(model, initialPv);
-		}
-
-
-		return model;
+	private boolean skipPreconfiguration() {
+		return _keyAdapter != null && _keyAdapter.getPressedKeys().size() == 1 && _keyAdapter.getPressedKeys().get(0) == 'b';
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object getNewObject() {
-		return getNewObject(null);
-	}
+		AbstractWidgetModel widgetModel = null;
 
-	/**
-	 * Calls the chosen initializer.
-	 *
-	 * @param model
-	 *            The {@link AbstractWidgetModel} to initialize
-	 */
-	private void runInitializers(final AbstractWidgetModel model) {
-		WidgetInitializationService.getInstance().initialize(model);
-	}
-
-	/**
-	 * Sets the initial aliases on the given {@link AbstractWidgetModel} with
-	 * the given PV.
-	 *
-	 * @param model
-	 *            The model, which aliases should be initialized
-	 * @param initialPv
-	 *            The {@link IProcessVariableAddress} to use for the aliases
-	 * @return The created alias-map
-	 */
-	private Map<String, String> setupInitialAliases(
-			final AbstractWidgetModel model,
-			final IProcessVariableAddress initialPv) {
-		Map<String, String> result = null;
-
-		Map<String, String> aliases = model.getAliases();
-
-		String pvFullName = "";
-		if (initialPv != null) {
-		    pvFullName = initialPv.getFullName();
-			if (aliases.isEmpty()) {
-				aliases.put("--", initialPv.getFullName());
-			} else {
-				aliases.put(aliases.keySet().toArray()[0].toString(), initialPv
-						.getFullName());
-			}
+		if (skipPreconfiguration()) {
+			widgetModel = WidgetCreationUtil.createWidgetHeadlessly(_widgetType, false);
+			SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(widgetModel, EventType.ON_MANUAL_CHANGE);
+		} else {
+			widgetModel = WidgetCreationUtil.createAndPreconfigureWidget(_widgetType, null);
 		}
 
-		InitializationDialog dialog = new InitializationDialog(Display
-				.getCurrent().getActiveShell(), model.getTypeID(), pvFullName);
-
-		if (dialog.open() == Window.OK) {
-			String behaviorId = dialog.getBehaviorId();
-			String pvName = dialog.getPvName();
-
-			CompoundCommand mainCommand = new CompoundCommand();
-			mainCommand.add(new SetPropertyCommand(model,
-					AbstractWidgetModel.PROP_PRIMARY_PV, pvName));
-			mainCommand.add(new SetPropertyCommand(model,
-					AbstractWidgetModel.PROP_BEHAVIOR, behaviorId));
-			if (!model.getAliases().isEmpty()) {
-				Map<String, String> finalAliases = model.getAliases();
-				String key = finalAliases.keySet().iterator().next();
-				finalAliases.put(key, pvName);
-				mainCommand.add(new SetPropertyCommand(model,
-						AbstractWidgetModel.PROP_ALIASES, finalAliases));
-			}
-			mainCommand.execute();
-		}
-
-		return result;
+		// Note: In case there is no widget (user may have cancelled the dialog)
+		// we have to return a dummy object to prevent the configuration dialog
+		// from popping up again.
+		return widgetModel != null ? widgetModel : new Object();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public Object getObjectType() {
-		return WidgetModelFactoryService.getInstance().getWidgetModelType(
-				_widgetType);
+		return WidgetModelFactoryService.getInstance().getWidgetModelType(_widgetType);
 	}
 
 }

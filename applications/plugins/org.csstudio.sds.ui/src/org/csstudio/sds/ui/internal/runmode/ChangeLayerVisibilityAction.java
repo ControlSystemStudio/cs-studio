@@ -21,11 +21,11 @@
  */
  package org.csstudio.sds.ui.internal.runmode;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.internal.model.LayerSupport;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.editparts.DisplayEditPart;
 import org.csstudio.sds.ui.internal.layers.LayerTreeViewer;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.action.Action;

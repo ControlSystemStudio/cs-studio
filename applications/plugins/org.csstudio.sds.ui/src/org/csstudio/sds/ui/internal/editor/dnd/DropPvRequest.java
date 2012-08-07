@@ -19,7 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.ui.internal.editor;
+package org.csstudio.sds.ui.internal.editor.dnd;
+
+import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.eclipse.draw2d.geometry.Point;
@@ -30,20 +32,21 @@ import org.eclipse.gef.requests.DropRequest;
  * 
  * @author Sven Wende, Kai Meyer
  */
-public final class DropPvRequest extends org.eclipse.gef.Request implements
-		DropRequest {
+public final class DropPvRequest extends org.eclipse.gef.Request implements DropRequest {
 	/**
 	 * The identifier of the type.
 	 */
 	public static final String REQ_DROP_PV = "REQ_DROP_PV";
+
 	/**
-	 * The location of the drop.
+	 * The drop location.
 	 */
 	private Point _location;
+
 	/**
-	 * The dropped ProcessVariable-Name.
+	 * The dropped process variables..
 	 */
-	private IProcessVariableAddress _pv;
+	private List<IProcessVariableAddress> _droppedProcessVariables;
 
 	/**
 	 * Constructor.
@@ -64,29 +67,30 @@ public final class DropPvRequest extends org.eclipse.gef.Request implements
 
 	/**
 	 * Returns the location of the drop.
-	 * @return Point
-	 * 			The location of the drop.
+	 * 
+	 * @return Point The location of the drop.
 	 */
 	public Point getLocation() {
 		return _location;
 	}
 
 	/**
-	 * Sets the name of the ProcessVariable.
-	 * @param pv
-	 * 			The name of the ProcessVariable
+	 * Sets the dropped process variables.
+	 * 
+	 * @param droppedProcessVariables
+	 *            the dropped process variables.
 	 */
-	public void setProcessVariableAddress(final IProcessVariableAddress pv) {
-		_pv = pv;
+	public void setDroppedProcessVariables(final List<IProcessVariableAddress> droppedProcessVariables) {
+		_droppedProcessVariables = droppedProcessVariables;
 	}
 
 	/**
-	 * Returns the Name of the ProcessVariable.
-	 * @return String
-	 * 			The name of the PV.
+	 * Returns the dropped process variables
+	 * 
+	 * @return String The name of the PV.
 	 */
-	public IProcessVariableAddress getProcessVariableAddress() {
-		return _pv;
+	public List<IProcessVariableAddress> getDroppedProcessVariables() {
+		return _droppedProcessVariables;
 	}
 
 }
