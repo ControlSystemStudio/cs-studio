@@ -39,6 +39,13 @@ public class PreferenceConstants
     public static final String DATABASE_USER = "databaseUser";
     public static final String DATABASE_PASSWORD = "databasePassword";
     
+    public static final String AMS_DATABASE_TYPE = "amsDatabaseType";
+    public static final String AMS_DATABASE_URL = "amsDatabaseUrl";
+    public static final String AMS_DATABASE_USER = "amsDatabaseUser";
+    public static final String AMS_DATABASE_PASSWORD = "amsDatabasePassword";
+
+    public static final String ENABLE_AMS_SERVLET = "enableAmsServlet";
+    
     public static final String DEFAULT_TOPIC_SET = "defaultTopicSet";
     
     public static final String HTML_SERVLET_ADDRESS = "htmlServletAddress";

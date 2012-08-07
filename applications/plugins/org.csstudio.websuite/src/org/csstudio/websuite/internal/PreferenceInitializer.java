@@ -53,6 +53,14 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.DATABASE_USER, "NONE");
         prefs.put(PreferenceConstants.DATABASE_PASSWORD, "NONE");
         
+        // AMS database settings
+        prefs.put(PreferenceConstants.AMS_DATABASE_TYPE, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_URL, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_USER, "");
+        prefs.put(PreferenceConstants.AMS_DATABASE_PASSWORD, "");
+
+        prefs.put(PreferenceConstants.ENABLE_AMS_SERVLET, "false");
+        
         prefs.put(PreferenceConstants.DEFAULT_TOPIC_SET, "ALARM");
         prefs.put(PreferenceConstants.HTML_SERVLET_ADDRESS, "/AlarmViewer");
         prefs.put(PreferenceConstants.ACTIVATE_HTML_SERVLET, "true");
