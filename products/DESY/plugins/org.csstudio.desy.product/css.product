@@ -69,7 +69,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
       <plugin id="org.csstudio.desy.product"/>
-      <plugin id="org.csstudio.platform" fragment=""/>
+      <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.jaasAuthentication"/>
       <plugin id="org.csstudio.platform.ldapAuthorization"/>
       <plugin id="org.csstudio.platform.ldapauthorization.ui" fragment=""/>
@@ -89,12 +89,12 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.csstudio.platform.libs.tine"/>
       <plugin id="org.csstudio.platform.libs.xmpp" fragment=""/>
       <plugin id="org.csstudio.platform.libs.xmpp.ui" fragment=""/>
-      <plugin id="org.csstudio.platform.ui" fragment=""/>
+      <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.jms.ui"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.platform.workspace" fragment=""/>
-      <plugin id="org.csstudio.startuphelper"/>
+      <plugin id="org.csstudio.startuphelper" fragment=""/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -181,6 +181,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <feature id="org.csstudio.desy.pv.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.development.feature" version="1.0.0.qualifier"/>
       <feature id="org.csstudio.desy.desytools.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.desy.sds.feature" version="1.0.0.qualifier"/>
    </features>
 
    <configurations>
@@ -196,5 +197,5 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.remotercp.service.preferences" autoStart="true" startLevel="0" />
       <plugin id="org.remotercp.service.provisioning" autoStart="true" startLevel="0" />
    </configurations>
-   
+
 </product>
