@@ -22,7 +22,6 @@
 package org.csstudio.sds.ui.internal.editor.dnd;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.dal.ui.dnd.rfc.ProcessVariableExchangeUtil;

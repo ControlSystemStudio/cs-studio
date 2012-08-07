@@ -28,12 +28,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.dal.DynamicValueState;
+import org.csstudio.domain.common.LayoutUtil;
 import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.ui.internal.dynamicswizard.SimpleChannelPage;
 import org.csstudio.sds.ui.properties.IPropertyDescriptor;
-import org.csstudio.sds.util.LayoutUtil;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.TitleAreaDialog;

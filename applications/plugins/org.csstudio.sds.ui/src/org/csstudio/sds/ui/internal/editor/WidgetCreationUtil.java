@@ -1,7 +1,6 @@
 package org.csstudio.sds.ui.internal.editor;
 
 import java.util.List;
-import java.util.Map;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.sds.SdsPlugin;

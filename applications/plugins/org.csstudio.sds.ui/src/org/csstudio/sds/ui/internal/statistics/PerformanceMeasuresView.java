@@ -23,9 +23,9 @@
 
 import java.text.NumberFormat;
 
+import org.csstudio.domain.common.LayoutUtil;
 import org.csstudio.sds.internal.statistics.MeasureCategoriesEnum;
 import org.csstudio.sds.internal.statistics.StatisticUtil;
-import org.csstudio.sds.util.LayoutUtil;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;

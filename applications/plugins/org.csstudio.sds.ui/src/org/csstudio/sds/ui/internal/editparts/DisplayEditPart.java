@@ -33,7 +33,6 @@ import org.eclipse.draw2d.MarginBorder;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.editpolicies.RootComponentEditPolicy;
-import org.eclipse.ui.internal.UIPlugin;
 
 /**
  * The EditPart implementation for synoptic display.
