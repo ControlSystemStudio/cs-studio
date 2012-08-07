@@ -23,7 +23,7 @@ package org.csstudio.platform.internal.simpledal.local;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
-import org.csstudio.desy.startuphelper.CSSPlatformInfo;
+//import org.csstudio.desy.startuphelper.CSSPlatformInfo;
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.slf4j.Logger;
