@@ -11,7 +11,7 @@ import org.csstudio.dct.PreferenceSettings;
 import org.csstudio.dct.ServiceExtension;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.nameresolution.IFieldFunction;
-import org.csstudio.platform.util.StringUtil;
+import org.csstudio.domain.common.strings.StringUtil;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.fieldassist.IContentProposal;
 
