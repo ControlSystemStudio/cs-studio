@@ -131,8 +131,8 @@ public class ImageProcessor implements IImageWorker {
                 
                 text.setText(dialog.getLogbookEntry().createXmlFromContent());
                 
-                DestinationPlugin.getDefault().setLogbookEntry(dialog.getLogbookEntry()
-                        .createNewInstanceFromContent());
+//                DestinationPlugin.getDefault().setLogbookEntry(dialog.getLogbookEntry()
+//                        .createNewInstanceFromContent());
                 
                 text.setHeader("MIME-Version", "1.0");
                 text.setHeader("Content-Type", text.getContentType());
@@ -213,52 +213,52 @@ public class ImageProcessor implements IImageWorker {
             }
             
             return bufferedImage;
-        } else {
-            RGB[] rgbs = palette.getRGBs();
-            
-            byte[] red = new byte[rgbs.length];
-            byte[] green = new byte[rgbs.length];
-            byte[] blue = new byte[rgbs.length];
-            
-            for (int i = 0; i < rgbs.length; i++) {
-                RGB rgb = rgbs[i];
-                
-                red[i] = (byte) rgb.red;
-                green[i] = (byte) rgb.green;
-                blue[i] = (byte) rgb.blue;
-            }
-            
-            if(data.transparentPixel != -1) {
-                colorModel = new IndexColorModel(data.depth,
-                                                 rgbs.length,
-                                                 red,
-                                                 green,
-                                                 blue,
-                                                 data.transparentPixel);
-            } else {
-                colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
-            }
-            
-            BufferedImage bufferedImage = new BufferedImage(colorModel,
-                                                            colorModel
-                                                                    .createCompatibleWritableRaster(data.width,
-                                                                                                    data.height),
-                                                            false,
-                                                            null);
-            
-            WritableRaster raster = bufferedImage.getRaster();
-            
-            int[] pixelArray = new int[1];
-            
-            for (int y = 0; y < data.height; y++) {
-                for (int x = 0; x < data.width; x++) {
-                    int pixel = data.getPixel(x, y);
-                    pixelArray[0] = pixel;
-                    raster.setPixel(x, y, pixelArray);
-                }
-            }
-            
-            return bufferedImage;
         }
+        
+        RGB[] rgbs = palette.getRGBs();
+        
+        byte[] red = new byte[rgbs.length];
+        byte[] green = new byte[rgbs.length];
+        byte[] blue = new byte[rgbs.length];
+        
+        for (int i = 0; i < rgbs.length; i++) {
+            RGB rgb = rgbs[i];
+            
+            red[i] = (byte) rgb.red;
+            green[i] = (byte) rgb.green;
+            blue[i] = (byte) rgb.blue;
+        }
+        
+        if(data.transparentPixel != -1) {
+            colorModel = new IndexColorModel(data.depth,
+                                             rgbs.length,
+                                             red,
+                                             green,
+                                             blue,
+                                             data.transparentPixel);
+        } else {
+            colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
+        }
+        
+        BufferedImage bufferedImage = new BufferedImage(colorModel,
+                                                        colorModel
+                                                                .createCompatibleWritableRaster(data.width,
+                                                                                                data.height),
+                                                        false,
+                                                        null);
+        
+        WritableRaster raster = bufferedImage.getRaster();
+        
+        int[] pixelArray = new int[1];
+        
+        for (int y = 0; y < data.height; y++) {
+            for (int x = 0; x < data.width; x++) {
+                int pixel = data.getPixel(x, y);
+                pixelArray[0] = pixel;
+                raster.setPixel(x, y, pixelArray);
+            }
+        }
+        
+        return bufferedImage;
     }
 }

@@ -40,8 +40,7 @@ public abstract class ComboHistoryHelper {
      *  @param combo    The ComboViewer
      *  @param max      Max list length
      */
-    public ComboHistoryHelper(IDialogSettings settings, String tag,
-                              ComboViewer combo, int max) {
+    public ComboHistoryHelper(IDialogSettings settings, String tag, ComboViewer combo, int max) {
         
     	this.settings = settings;
         this.tag = tag;
