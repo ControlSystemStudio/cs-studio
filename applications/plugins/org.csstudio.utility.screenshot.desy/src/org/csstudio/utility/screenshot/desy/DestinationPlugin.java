@@ -32,28 +32,25 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DestinationPlugin  extends AbstractCssUiPlugin
-{
-	/** The plug-in ID */
+public class DestinationPlugin  extends AbstractCssUiPlugin {
+	
+    /** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.utility.screenshot.desy";
 
 	/** The shared instance */
 	private static DestinationPlugin plugin;
 	
+	private static BundleContext bundleContext;
+	
     /** The workbench window */
     private IWorkbenchWindow window = null;
 
-    /** The data that will be sent to the logbook */
-    private LogbookEntry logbookEntry = null;
-    
     private final String NAME = "Logbook Sender";
     
-    private final String VERSION = " 0.1";
+    private final String VERSION = " 1.1";
     
 	/** The constructor */
-	public DestinationPlugin()
-    {
-		plugin = this;
+	public DestinationPlugin() {
 	}
 
 	/**
@@ -61,50 +58,38 @@ public class DestinationPlugin  extends AbstractCssUiPlugin
 	 *
 	 * @return the shared instance
 	 */
-	public static DestinationPlugin getDefault()
-    {
+	public static DestinationPlugin getDefault() {
 		return plugin;
 	}
 
+    public static BundleContext getBundleContext() {
+        return bundleContext;
+    }
+
     @Override
     protected void doStart(BundleContext context) throws Exception {
+        plugin = this;
+        bundleContext = context;
         IWorkbench workbench = PlatformUI.getWorkbench();
         window = workbench.getWorkbenchWindows()[0];
     }
 
     @Override
     protected void doStop(BundleContext context) throws Exception {
-    	//Can be empty
+        plugin = null;
+        bundleContext = null;
     }
 
     @Override
-    public String getPluginId()
-    {
+    public String getPluginId() {
         return PLUGIN_ID;
     }
 
-    public LogbookEntry getLogbookEntry()
-    {
-        return logbookEntry;
-    }
-
-    public void setLogbookEntry(LogbookEntry logbookEntry)
-    {
-        this.logbookEntry = logbookEntry;
-    }
-
-    public IWorkbenchWindow getWindow()
-    {
+    public IWorkbenchWindow getWindow() {
         return window;
     }
     
-    public String getNameAndVersion()
-    {
+    public String getNameAndVersion() {
         return NAME + VERSION;
-    }
-
-    public boolean isLogbookEntryAvailable()
-    {
-        return (logbookEntry != null);
     }
 }

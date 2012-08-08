@@ -28,6 +28,7 @@ import java.util.GregorianCalendar;
 import java.util.StringTokenizer;
 import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.LogbookEntry;
+import org.csstudio.utility.screenshot.desy.PropertyNames;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
 import org.csstudio.utility.screenshot.desy.preference.DestinationPreferenceConstants;
 import org.eclipse.core.runtime.Platform;
@@ -57,11 +58,16 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 
-public class LogbookSenderDialog extends Dialog implements SelectionListener
-{
+public class LogbookSenderDialog extends Dialog implements SelectionListener {
+    
     private GregorianCalendar cal;
+    
     private Shell parentShell;
+    
     private LogbookEntry logbookEntry = null;
+    
+    private LogbookEntryStorage storage;
+    
     private Button buttonSend = null;
     private Button buttonCancel = null;
     private Button btnClearLbEntry = null;
@@ -104,27 +110,22 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
     private final int INIT_WIDTH = DialogUnit.mapUnitX(432);
     private final int INIT_HEIGHT = DialogUnit.mapUnitY(310);
 
-    /**
-     * 
-     * @param w
-     */
-    
-    public LogbookSenderDialog(Shell shell)
-    {
+    public LogbookSenderDialog(Shell shell) {
+        
         super(shell);
         parentShell = shell;
+        storage = new LogbookEntryStorage();
+        
         setBlockOnOpen(true);
 
         IPreferencesService pref = Platform.getPreferencesService();
         String temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.LOGBOOK_NAMES, "NONE", null);
         StringTokenizer token = new StringTokenizer(temp, ";");
-        if(token.countTokens() > 0)
-        {
+        if(token.countTokens() > 0) {
             logbookList = new String[token.countTokens()];
             
             int count = 0;
-            while(token.hasMoreTokens())
-            {
+            while(token.hasMoreTokens()) {
                 logbookList[count++] = token.nextToken();
             }
         }
@@ -133,13 +134,10 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.GROUP_NAMES, "NONE", null);
         token = new StringTokenizer(temp, ";");
-        if(token.countTokens() > 0)
-        {
+        if(token.countTokens() > 0) {
             groupList = new String[token.countTokens()];
-            
             int count = 0;
-            while(token.hasMoreTokens())
-            {
+            while(token.hasMoreTokens()) {
                 groupList[count++] = token.nextToken();
             }
         }
@@ -147,10 +145,6 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         cal = new GregorianCalendar();
     }
 
-    /**
-     * 
-     */
-    
     @Override
 	protected void configureShell(Shell shell)
     {
@@ -159,25 +153,15 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         shell.setText(DestinationPlugin.getDefault().getNameAndVersion() + LogbookSenderMessages.getString("LogbookSenderDialog.DIALOG_TITLE"));
     }
 
-    /**
-     * 
-     */
-    
     @Override
-	protected void initializeBounds()
-    {
+	protected void initializeBounds() {
         Rectangle rect = parentShell.getBounds();        
-
         this.getShell().setBounds(rect.x + ((rect.width - INIT_WIDTH) / 2), rect.y + ((rect.height - INIT_HEIGHT) / 2), INIT_WIDTH, INIT_HEIGHT);
     }
 
-    /**
-     * 
-     */
-    
     @Override
-	protected Control createDialogArea(Composite parent)
-    {
+	protected Control createDialogArea(Composite parent) {
+        
         String temp = null;
         GridData gd = null;        
 
@@ -186,10 +170,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         parent.setLayout(layout);
 
-        if(DestinationPlugin.getDefault().isLogbookEntryAvailable())
-        {
-            logbookEntry = DestinationPlugin.getDefault().getLogbookEntry();
-        }
+        logbookEntry = storage.readLogbookEntry();
 
         // First row
         labelDummyRow1 = new Label(parent, SWT.SHADOW_NONE | SWT.LEFT);
@@ -247,11 +228,13 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;       
         cbLogbook.setLayoutData(gd);
-        if(logbookList != null)
-        {
+        if(logbookList != null) {
             cbLogbook.setItems(logbookList);
-            cbLogbook.select(0);
-            
+            if (logbookEntry.getLogbookName() != null) {
+                cbLogbook.select(cbLogbook.indexOf(logbookEntry.getLogbookName()));
+            } else {
+                cbLogbook.select(0);
+            }
             textIdentifyer.setText(createIdentifyer(cbLogbook.getItem(cbLogbook.getSelectionIndex())));
         }
         
@@ -281,7 +264,11 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         cbSeverity.add("INFO");
         cbSeverity.add("TODO");
         cbSeverity.add("WARN");
-        cbSeverity.select(cbSeverity.indexOf("NONE"));
+        if (logbookEntry.getLogbookProperty("LOGSEVERITY") != null) {
+            cbSeverity.select(cbSeverity.indexOf(logbookEntry.getLogbookProperty("LOGSEVERITY")));
+        } else {
+            cbSeverity.select(cbSeverity.indexOf("NONE"));
+        }
         gd = new GridData();
         gd.horizontalSpan = 2;
         gd.horizontalAlignment = SWT.FILL;
@@ -343,12 +330,9 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         textAuthor.setLayoutData(gd);
-        if(logbookEntry != null)
-        {
-            temp = logbookEntry.getLogbookProperty(LogbookEntry.PROPERTY_ACCOUNTNAME);
-            
-            if(temp != null)
-            {
+        if(logbookEntry != null) {
+            temp = logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_ACCOUNTNAME);
+            if(temp != null) {
                 textAuthor.setText(temp);
             }
         }
@@ -374,10 +358,13 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         cbGroup.setLayoutData(gd);
-        if(groupList != null)
-        {
+        if(groupList != null) {
             cbGroup.setItems(groupList);
-            cbGroup.select(cbGroup.indexOf("MKS-2"));            
+            if (logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_LOGGROUP) != null) {
+                cbGroup.select(cbGroup.indexOf(logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_LOGGROUP)));
+            } else {
+                cbGroup.select(cbGroup.indexOf("MKS-2"));
+            }
         }
         
         // Sixth row
@@ -395,12 +382,9 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         gd.horizontalAlignment = SWT.FILL;
         gd.grabExcessHorizontalSpace = true;
         textKeywordlist.setLayoutData(gd);
-        if(logbookEntry != null)
-        {
-            temp = logbookEntry.getLogbookProperty(LogbookEntry.PROPERTY_KEYWORDS);
-            
-            if(temp != null)
-            {
+        if(logbookEntry != null) {
+            temp = logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_KEYWORDS);
+            if(temp != null) {
                 textKeywordlist.setText(temp);
             }
         }
@@ -447,7 +431,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         textTitel.setLayoutData(gd);
         if(logbookEntry != null)
         {
-            temp = logbookEntry.getLogbookProperty(LogbookEntry.PROPERTY_TITLE);
+            temp = logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_TITLE);
             
             if(temp != null)
             {
@@ -475,7 +459,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         textText.setLayoutData(gd);
         if(logbookEntry != null)
         {
-            temp = logbookEntry.getLogbookProperty(LogbookEntry.PROPERTY_TEXT);
+            temp = logbookEntry.getLogbookProperty(PropertyNames.PROPERTY_TEXT);
             
             if(temp != null)
             {
@@ -524,62 +508,61 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         return parent;
     }
 
-    public LogbookEntry getLogbookEntry()
-    {
+    public LogbookEntry getLogbookEntry() {
         return logbookEntry;
     }
     
-    private void createLogbookEntry()
-    {
+    private void createLogbookEntry() {
+        
         String temp = null;
         
         logbookEntry = new LogbookEntry();
         
-        logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_IDENTIFYER, textIdentifyer.getText());
+        logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_IDENTIFYER, textIdentifyer.getText());
         
         SimpleDateFormat tempFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
-        logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_ENTRYDATE, tempFormat.format(cal.getTime()));
-        logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_EVENTFROM, tempFormat.format(cal.getTime()));
+        logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_ENTRYDATE, tempFormat.format(cal.getTime()));
+        logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_EVENTFROM, tempFormat.format(cal.getTime()));
         tempFormat = null;
         
-        logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_LOGSEVERITY, cbSeverity.getItem(cbSeverity.getSelectionIndex()));
+        logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_LOGSEVERITY, cbSeverity.getItem(cbSeverity.getSelectionIndex()));
 
         temp = textAuthor.getText().trim();
         if(temp.length() > 0)
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_ACCOUNTNAME, temp);
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_ACCOUNTNAME, temp);
         }
         else
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_ACCOUNTNAME, "NONE");
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_ACCOUNTNAME, "NONE");
         }
         
-        logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_LOGGROUP, cbGroup.getItem(cbGroup.getSelectionIndex()));
+        logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_LOGGROUP, cbGroup.getItem(cbGroup.getSelectionIndex()));
 
         temp = textKeywordlist.getText().trim();
         if(temp.length() > 0)
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_KEYWORDS, temp);
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_KEYWORDS, temp);
         }
         
         temp = textTitel.getText().trim();
         if(temp.length() > 0)
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_TITLE, temp);
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_TITLE, temp);
         }
         else
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_TITLE, "NONE");            
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_TITLE, "NONE");            
         }
         
         temp = textText.getText().trim();
         if(temp.length() > 0)
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_TEXT, temp);
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_TEXT, temp);
         }
         else
         {
-            logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_TEXT, "NONE");            
+            logbookEntry.setLogbookProperty(PropertyNames.PROPERTY_TEXT, "NONE");            
         }
         
         logbookEntry.setLogbookName(cbLogbook.getItem(cbLogbook.getSelectionIndex()));
@@ -627,32 +610,25 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         keywordHelper.addEntry(keyword);
     }
 
-    /**
-     * 
-     * @return
-     */
     public ComboHistoryHelper getKeywordHelper() {
     
     	return keywordHelper;
     }
     
-    public void widgetDefaultSelected(SelectionEvent event)
-    {
+    public void widgetDefaultSelected(SelectionEvent event) {
         widgetSelected(event);
     }
 
-    public void widgetSelected(SelectionEvent event)
-    {
-        if(event.widget instanceof Button)
-        {
+    public void widgetSelected(SelectionEvent event) {
+        if(event.widget instanceof Button) {
             Button source = (Button)event.widget;
             
-            if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_SEND")) == 0)
-            {
+            if(source
+                .getText()
+                .compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_SEND")) == 0) {
                 createLogbookEntry();
-                    
+                storage.storeLogbookEntry(logbookEntry);
                 this.setReturnCode(Window.OK);
-                                
                 this.close();
             }
             else if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_CANCEL")) == 0)
@@ -671,13 +647,9 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
                 textKeywordlist.setText("");
                 textText.setText("");
             }
-        }
-        else if(event.widget instanceof Combo)
-        {
-            Combo source = (Combo)event.widget;
-            
+        } else if(event.widget instanceof Combo) {
+            Combo source = (Combo) event.widget;
             String name = source.getItem(source.getSelectionIndex());
-            
             textIdentifyer.setText(createIdentifyer(name));
         }
     }
