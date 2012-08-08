@@ -239,7 +239,7 @@ $(pv_value)</tooltip>
       </axis_0_scale_font>
       <trace_2_point_size>4</trace_2_point_size>
       <trace_1_y_pv_value />
-      <axis_0_time_format>4</axis_0_time_format>
+      <axis_0_time_format>8</axis_0_time_format>
       <trace_1_plot_mode>0</trace_1_plot_mode>
       <axis_1_log_scale>false</axis_1_log_scale>
       <trace_1_point_style>1</trace_1_point_style>
@@ -1079,6 +1079,7 @@ $(pv_value)</tooltip>
       <read_only>true</read_only>
       <visible>true</visible>
       <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
       <show_units>true</show_units>
       <multiline_input>false</multiline_input>
       <wuid>6d4582ac:1389581a6f9:-7ab4</wuid>
@@ -1113,6 +1114,7 @@ $(pv_value)</tooltip>
       </font>
       <width>396</width>
       <border_style>0</border_style>
+      <confirm_message></confirm_message>
       <rules />
       <pv_value />
       <maximum>1.7976931348623157E308</maximum>
@@ -1132,6 +1134,7 @@ $(pv_value)</tooltip>
       <read_only>true</read_only>
       <visible>true</visible>
       <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
       <show_units>true</show_units>
       <multiline_input>false</multiline_input>
       <wuid>6d4582ac:1389581a6f9:-7ab3</wuid>
@@ -1166,6 +1169,7 @@ $(pv_value)</tooltip>
       </font>
       <width>396</width>
       <border_style>0</border_style>
+      <confirm_message></confirm_message>
       <rules />
       <pv_value />
       <maximum>1.7976931348623157E308</maximum>
@@ -1185,6 +1189,7 @@ $(pv_value)</tooltip>
       <read_only>true</read_only>
       <visible>true</visible>
       <minimum>-1.7976931348623157E308</minimum>
+      <next_focus>0</next_focus>
       <show_units>true</show_units>
       <multiline_input>false</multiline_input>
       <wuid>6d4582ac:1389581a6f9:-7ab1</wuid>
@@ -1219,6 +1224,7 @@ $(pv_value)</tooltip>
       </font>
       <width>202</width>
       <border_style>0</border_style>
+      <confirm_message></confirm_message>
       <rules />
       <pv_value />
       <maximum>1.7976931348623157E308</maximum>
