@@ -30,7 +30,7 @@ public class OpenDataBrowserActionModel extends AbstractWidgetActionModel {
 	@Override
 	protected void createProperties() {
 		ResourceProperty resource = new ResourceProperty("Config file", WidgetPropertyCategory.BEHAVIOR, new Path(""),
-				new String[] { "css-plt" });
+				new String[] { "css-plt", "plt" });
 		addProperty(PROP_RESOURCE, resource);
 		StringProperty description = new StringProperty("Description",
 				WidgetPropertyCategory.BEHAVIOR, "");
