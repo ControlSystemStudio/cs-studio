@@ -292,6 +292,5 @@ Export-Package: antlr,
  org.hibernate.util
 Require-Bundle: org.eclipse.equinox.preferences;bundle-version="3.2.300",
  org.eclipse.core.runtime,
- org.csstudio.platform;bundle-version="1.1.0",
  org.slf4j;bundle-version="1.6.1",
  org.slf4j-log4j12;bundle-version="1.6.1"
