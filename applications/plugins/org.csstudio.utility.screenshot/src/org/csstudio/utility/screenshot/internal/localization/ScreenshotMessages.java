@@ -40,16 +40,10 @@ public class ScreenshotMessages extends NLS {
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-	/*public static String ScreenshotPreferencePage_MAIL_ADDRESS_SENDER;
-
-	public static String ScreenshotPreferencePage_MAIL_SERVER;
-
-	public static String ScreenshotPreferencePage_LOGBOOK_NAMES;*/
-	
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, ScreenshotMessages.class);
-	}
+//	static {
+//		// initialize resource bundle
+//		NLS.initializeMessages(BUNDLE_NAME, ScreenshotMessages.class);
+//	}
 
 	/**
 	 * This constructor is private since this class only provides static
@@ -60,7 +54,6 @@ public class ScreenshotMessages extends NLS {
 	}
     
     public static String getString(String key) {
-        
     	try {
             return RESOURCE_BUNDLE.getString(key);
         } catch(MissingResourceException mre) {
@@ -69,11 +62,9 @@ public class ScreenshotMessages extends NLS {
     }
 
     public static String getString(String key, Object params[]) {
-        
     	if(params == null) {
             return getString(key);
         }
-        
         try {
             return MessageFormat.format(getString(key), params);
         } catch(Exception e) {
