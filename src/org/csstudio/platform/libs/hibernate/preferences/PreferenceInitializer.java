@@ -10,7 +10,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         IEclipsePreferences prefs = new DefaultScope()
-                .getNode(Activator.getDefault().getPluginId());
+                .getNode(Activator.PLUGIN_ID);
 
         prefs.put(PreferenceConstants.DDB_USER_NAME, "KRYKMAN");
         prefs.put(PreferenceConstants.DDB_PASSWORD, "KRYKMAN");

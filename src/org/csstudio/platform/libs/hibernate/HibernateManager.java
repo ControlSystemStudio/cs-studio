@@ -175,7 +175,7 @@ public final class HibernateManager {
     }
 
     private static void buildConifg() {
-        new InstanceScope().getNode(Activator.getDefault().getPluginId())
+        new InstanceScope().getNode(Activator.PLUGIN_ID)
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
 
                     @Override
@@ -186,7 +186,7 @@ public final class HibernateManager {
                 });
 
         IPreferencesService prefs = Platform.getPreferencesService();
-        String pluginId = Activator.getDefault().getPluginId();
+        String pluginId = Activator.PLUGIN_ID;
         _cfg = new AnnotationConfiguration();
         for (Class clazz : _classes) {
             _cfg.addAnnotatedClass(clazz);
