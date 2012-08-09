@@ -14,7 +14,7 @@ public class PvIntervalList {
 	
 	private double variance = 1;
 	
-	private List<Interval> _intervalList = new ArrayList<>();
+	private List<Interval> _intervalList = new ArrayList<Interval>();
 
 	private String _channelId = null;
 
@@ -73,7 +73,7 @@ public class PvIntervalList {
 	 * be detected as Pvs with gaps.
 	 */
 	public double getAverageIntervalWithoutMaxCount(Integer maxIntervalsToRemove) {
-		TreeSet<Integer> sampleCount = new TreeSet<>();
+		TreeSet<Integer> sampleCount = new TreeSet<Integer>();
 		for (Interval interval : _intervalList) {
 			sampleCount.add(interval.getSampleCount());
 		}

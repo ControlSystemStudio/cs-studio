@@ -15,7 +15,7 @@ import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 public class LogFileParser {
 	
 	public Map<String, PvIntervalList> readLogFile(String filePath) {
-		List<String> logContentByLines = new ArrayList<>();
+		List<String> logContentByLines = new ArrayList<String>();
 		try {
 			FileInputStream fstream = new FileInputStream(
 					filePath);
@@ -36,7 +36,7 @@ public class LogFileParser {
 			List<String> logContentByLines) {
 		TimeInstant start = null;
 		TimeInstant end = null;
-		Map<String, PvIntervalList> mapOfPvIntervals = new HashMap<>();
+		Map<String, PvIntervalList> mapOfPvIntervals = new HashMap<String, PvIntervalList>();
 		String[] strings;
 		for (String line : logContentByLines) {
 			if (line.contains("##")) {

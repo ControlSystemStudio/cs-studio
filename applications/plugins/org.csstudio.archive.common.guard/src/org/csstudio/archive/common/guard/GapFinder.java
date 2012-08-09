@@ -16,7 +16,7 @@ public class GapFinder {
 
 	private ConnectionHandler _connectionHandler;
 	private int rangeCount = 0;
-	List<PvIntervalList> _listOfPvIntervals = new ArrayList<>();
+	List<PvIntervalList> _listOfPvIntervals = new ArrayList<PvIntervalList>();
 
 	public GapFinder(ConnectionHandler connectionHandler) {
 		_connectionHandler = connectionHandler;
@@ -121,7 +121,7 @@ public class GapFinder {
 	}
 	
 	public void removeEmptyPvLists() {
-		List<PvIntervalList> intervalListsToRemove = new ArrayList<>();
+		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();
 		for (PvIntervalList pvIntervalList : _listOfPvIntervals) {
 			if (pvIntervalList.isAllIntervalsEmpty()) {
 				System.out.println("Remove Channel: "
@@ -134,7 +134,7 @@ public class GapFinder {
 	
 
 	public void removeSmallAvgPvLists(int threshold) {
-		List<PvIntervalList> intervalListsToRemove = new ArrayList<>();
+		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();
 		for (PvIntervalList pvIntervalList : _listOfPvIntervals) {
 			if (pvIntervalList.getAverageIntervalCount() < threshold) {
 				System.out.println("Small Avg, Remove Channel: "
@@ -147,7 +147,7 @@ public class GapFinder {
 	
 	public void removeSmallWithoutMaxAvgPvLists(int threshold,
 			int maxIntervalsToRemove) {
-		List<PvIntervalList> intervalListsToRemove = new ArrayList<>();
+		List<PvIntervalList> intervalListsToRemove = new ArrayList<PvIntervalList>();
 		for (PvIntervalList pvIntervalList : _listOfPvIntervals) {
 			double averageIntervalWithoutMaxCount = pvIntervalList
 					.getAverageIntervalWithoutMaxCount(maxIntervalsToRemove);
@@ -178,11 +178,11 @@ public class GapFinder {
 
 	private Map<TimeInstant, List<String>> prepareGapsMap(
 			List<PvIntervalList> listOfPvIntervals) {
-		Map<TimeInstant, List<String>> gaps = new HashMap<>();
+		Map<TimeInstant, List<String>> gaps = new HashMap<TimeInstant, List<String>>();
 		PvIntervalList intervalList = listOfPvIntervals.get(0);
 		if (intervalList != null) {
 			for (Interval interval : intervalList.getIntervalList()) {
-				List<String> list = new ArrayList<>();
+				List<String> list = new ArrayList<String>();
 				gaps.put(interval.getStart(), list);
 			}
 		}
