@@ -146,11 +146,10 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener {
     }
 
     @Override
-	protected void configureShell(Shell shell)
-    {
+	protected void configureShell(Shell shell) {
         super.configureShell(shell);
-        
-        shell.setText(DestinationPlugin.getDefault().getNameAndVersion() + LogbookSenderMessages.getString("LogbookSenderDialog.DIALOG_TITLE"));
+        shell.setText(DestinationPlugin.getDefault().getNameAndVersion()
+                      + LogbookSenderMessages.getString("LogbookSenderDialog.DIALOG_TITLE"));
     }
 
     @Override

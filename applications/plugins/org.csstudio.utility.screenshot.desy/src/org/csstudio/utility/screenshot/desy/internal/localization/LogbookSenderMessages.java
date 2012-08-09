@@ -34,10 +34,10 @@ public class LogbookSenderMessages extends NLS {
     private static final String BUNDLE_NAME = "org.csstudio.utility.screenshot.desy.internal.localization.messages";
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
-    static {
-        // initialize resource bundle
-        NLS.initializeMessages(BUNDLE_NAME, LogbookSenderMessages.class);
-    }
+//    static {
+//        // initialize resource bundle
+//        NLS.initializeMessages(BUNDLE_NAME, LogbookSenderMessages.class);
+//    }
 
     private LogbookSenderMessages() { }
     

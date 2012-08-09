@@ -97,7 +97,7 @@ public class LogbookEntryStorage {
                 entry.setLogbookProperty(key, prop.getProperty(key));
             }
         } catch (FileNotFoundException e) {
-            LOG.error("[*** FileNotFoundException ***]: {}", e.getMessage());
+            LOG.info("[*** FileNotFoundException ***]: The file does not exist yet, but will be created.");
             entry = new LogbookEntry();
         } catch (IOException e) {
             LOG.error("[*** IOException ***]: {}", e.getMessage());
