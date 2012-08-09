@@ -7,7 +7,6 @@ Bundle-Activator: org.csstudio.config.authorizeid.AuthorizeIdActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help,
- org.csstudio.platform,
  org.csstudio.utility.namespace.utility,
  org.csstudio.platform.ui,
  org.csstudio.utility.ldap.service;bundle-version="1.0.0",
