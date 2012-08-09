@@ -29,55 +29,39 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.csstudio.platform.model.pvs.ControlSystemEnum;
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.csstudio.platform.model.pvs.ValueType;
-import org.csstudio.platform.simpledal.ConnectionException;
-import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
-import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
+import org.csstudio.websuite.epics.IocRequester;
 
 /**
  * @author Markus Moeller
  *
  */
-public class IocViewServlet extends HttpServlet
-{
+public class IocViewServlet extends HttpServlet {
+    
     /** Generated serial version id */
     private static final long serialVersionUID = -3099724878599407478L;
     
-    /** */
-    private IProcessVariableConnectionService service;
+    private IocRequester iocReq;
     
-    /** */
-    private ProcessVariableAdressFactory pvFactory;
-
     @Override
-	public void init(ServletConfig config) throws ServletException
-    {
+	public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
-        // get a service instance (all applications using the same shared instance will share channels, too)
-        service = ProcessVariableConnectionServiceFactory.getDefault().getProcessVariableConnectionService();
-        
-        // get a factory for process variable addresses 
-        pvFactory = ProcessVariableAdressFactory.getInstance();
+        iocReq = new IocRequester();
     }
     
     @Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
         this.createPage(request, response);
     }
     
     @Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+	        throws ServletException, IOException {
         this.createPage(request, response);
     }
 
-    private void createPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
+    private void createPage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         StringBuilder page = null;
         String iocName = null;
         
@@ -98,28 +82,21 @@ public class IocViewServlet extends HttpServlet
         page.append("<table style=\"border-width:medium; border-style:double;\">\n");
         
         iocName = request.getParameter("ioc");
-        if(iocName == null)
-        {
+        if(iocName == null) {
             page.append("<tr>\n");
             page.append("<td colspan=\"2\"><font color=\"#ff0000\"><b>ERROR:</b> The URL does not contain the IOC name.</font></td>\n");
             page.append("</tr>\n");
-        }
-        else if(iocName.length() == 0)
-        {
+        } else if(iocName.length() == 0) {
             page.append("<tr>\n");
             page.append("<td colspan=\"2\"><font color=\"#ff0000\"><b>ERROR:</b> The URL does not contain the IOC name.</font></td>\n");
             page.append("</tr>\n");
-        }
-        else
-        {
+        } else {
             // Check the trailing and leading characters
-            if(iocName.startsWith("~"))
-            {
+            if(iocName.startsWith("~")) {
                 iocName = iocName.substring(1);
             }
             
-            if(iocName.endsWith("~"))
-            {
+            if(iocName.endsWith("~")) {
                 iocName = iocName.substring(0, iocName.length() - 1);
             }
             
@@ -128,6 +105,7 @@ public class IocViewServlet extends HttpServlet
             this.appendDescRow(page, iocName);
             this.appendBootTimeRow(page, iocName);
             this.appendIOCAliveRow(page, iocName);
+            this.appendIOCRedundantRow(page, iocName);
             this.appendButtonRow(request, iocName, page);
         }
 
@@ -138,26 +116,10 @@ public class IocViewServlet extends HttpServlet
         response.getOutputStream().flush();
     }
         
-    private void appendRufbereitschaftRow(StringBuilder page)
-    {
-        IProcessVariableAddress pv = null;
-        String value;
-        
-        pv = pvFactory.createProcessVariableAdress(ControlSystemEnum.EPICS.getPrefix() + "://Rufbereitschaft");
-
+    private void appendRufbereitschaftRow(StringBuilder page) {
         page.append("<p>\n");
         page.append("<div class=\"rufbereitschaft\">Rufbereitschaft hat: ");
-        
-        try
-        {
-            value = service.readValueSynchronously(pv, ValueType.STRING);
-        }
-        catch(ConnectionException ce)
-        {
-            value = "Not available";
-        }
-        
-        page.append(value + "</div><br>\n");
+        page.append(iocReq.askOnCallDuty() + "</div><br>\n");
     }
     
     private void appendIOCNameRow(StringBuilder page, String iocName)
@@ -167,106 +129,59 @@ public class IocViewServlet extends HttpServlet
         page.append("</tr>\n");
     }
 
-    private void appendIOCAliveRow(StringBuilder page, String iocName)
-    {
-        IProcessVariableAddress pv = null;
-        long value;
-        
-        pv = pvFactory.createProcessVariableAdress(ControlSystemEnum.EPICS.getPrefix() + "://" + iocName + ":alive");
-
+    private void appendIOCAliveRow(StringBuilder page, String iocName) {
         page.append("<tr>\n");
         page.append("<td><b>Alive:</b></td>\n");
-        
-        try
-        {
-            value = service.readValueSynchronously(pv, ValueType.LONG);
-        }
-        catch(ConnectionException ce)
-        {
-            value = 0;
-        }
-        catch(NullPointerException npe)
-        {
-            value = 0;
-        }
-        
-        if(value == 6)
-        {
+        if(iocReq.isIocAlive(iocName)) {
             page.append("<td align=\"left\"><img class=\"ledon\" src=\"/images/null.gif\"></td>\n");
-        }
-        else if(value == 8)
-        {
-            page.append("<td align=\"left\"><img class=\"ledoff\" src=\"/images/null.gif\"></td>\n");
-        }
-        else if(value == 0)
-        {
+        } else {
             page.append("<td align=\"left\"><img class=\"noioc\" src=\"/images/null.gif\"></td>\n");
         }
-        
         page.append("</tr>\n");
     }
     
-    private void appendDescRow(StringBuilder page, String iocName)
-    {
-        IProcessVariableAddress pv = null;
-        String value;
-        
-        pv = pvFactory.createProcessVariableAdress(ControlSystemEnum.EPICS.getPrefix() + "://" + iocName + ":applDesc_si");
+    private void appendIOCRedundantRow(StringBuilder page, String iocName) {
+        boolean stateA = iocReq.askFirstRedundantIoc(iocName);
+        if (!stateA) {
+            return;
+        }
+        boolean stateB = iocReq.askSecondRedundantIoc(iocName);
+        page.append("<tr>\n");
+        page.append("<td><b>Redundancy:</b></td>\n");
+        page.append("<td align=\"left\">");
+        if (stateA) {
+            page.append("IOC A&nbsp;&nbsp;<img class=\"ledon\" src=\"/images/null.gif\">&nbsp;&nbsp;&nbsp;&nbsp;");
+        } else {
+            page.append("IOC A&nbsp;&nbsp;<img class=\"noioc\" src=\"/images/null.gif\">&nbsp;&nbsp;&nbsp;&nbsp;");
+        }
+        if (stateB) {
+            page.append("IOC B&nbsp;&nbsp;<img class=\"redundant\" src=\"/images/null.gif\">");
+        } else {
+            page.append("IOC B&nbsp;&nbsp;<img class=\"noioc\" src=\"/images/null.gif\">");
+        }
+        page.append("</td>\n");
+        page.append("</tr>\n");
+    }
 
+    private void appendDescRow(StringBuilder page, String iocName) {
         page.append("<tr>\n");
         page.append("<td><b>Description:</b></td>\n");
-        
-        try
-        {
-            value = service.readValueSynchronously(pv, ValueType.STRING);
-            if(value == null)
-            {
-                value = "Not available";
-            }
-        }
-        catch(ConnectionException ce)
-        {
-            value = "Not available";
-        }
-        
-        page.append("<td>" + value + "</td>\n");
+        page.append("<td>" + iocReq.askIocDescription(iocName) + "</td>\n");
         page.append("</tr>\n");
     }
     
-    private void appendBootTimeRow(StringBuilder page, String iocName)
-    {
-        IProcessVariableAddress pv = null;
-        String value;
-        
-        pv = pvFactory.createProcessVariableAdress(ControlSystemEnum.EPICS.getPrefix() + "://" + iocName + ":starttime_si");
-
+    private void appendBootTimeRow(StringBuilder page, String iocName) {
         page.append("<tr>\n");
         page.append("<td><b>Boot Time:</b></td>\n");
-        
-        try
-        {
-            value = service.readValueSynchronously(pv, ValueType.STRING);
-            if(value == null)
-            {
-                value = "Not available";
-            }
-        }
-        catch(ConnectionException ce)
-        {
-            value = "Not available";
-        }
-        
-        page.append("<td>" + value + "</td>\n");
+        page.append("<td>" + iocReq.askIocBootTime(iocName) + "</td>\n");
         page.append("</tr>\n");
     }
     
-    private void appendLineRow(StringBuilder page)
-    {
+    private void appendLineRow(StringBuilder page) {
         page.append("<tr>\n<td colspan=\"2\"><hr></td>\n</tr>\n");
     }
     
-    private void appendButtonRow(HttpServletRequest request, String iocName, StringBuilder page)
-    {
+    private void appendButtonRow(HttpServletRequest request, String iocName, StringBuilder page) {
         appendLineRow(page);
         page.append("<tr>\n");
         page.append("<form action=\"" + request.getRequestURL().toString() + "?ioc=" + iocName + "\" method=\"post\">\n");
