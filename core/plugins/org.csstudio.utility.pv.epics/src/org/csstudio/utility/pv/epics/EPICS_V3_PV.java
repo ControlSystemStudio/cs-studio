@@ -558,7 +558,8 @@ public class EPICS_V3_PV extends PlatformObject
         final Channel channel = channel_ref.getChannel();
         if (new_value instanceof String)
         {
-            if (channel.getFieldType().isBYTE())
+            if (channel.getFieldType().isBYTE()  &&
+                channel.getElementCount() > 1)
             {
                 // Long string support: Write characters of string as DBF_CHAR array
                 final char[] chars = ((String) new_value).toCharArray();
