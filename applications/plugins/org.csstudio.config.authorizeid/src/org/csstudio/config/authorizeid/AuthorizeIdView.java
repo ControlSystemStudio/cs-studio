@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ServiceUnavailableException;
 
-import org.apache.log4j.Logger;
 import org.csstudio.auth.security.RegisteredAuthorizationId;
 import org.csstudio.auth.security.SecurityFacade;
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdGRManagement;
@@ -36,7 +35,6 @@ import org.csstudio.config.authorizeid.ldap.AuthorizationIdManagement;
 import org.csstudio.config.authorizeid.ldap.LdapAccess;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -59,13 +57,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.part.ViewPart;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tool to display and edit ldap content of authorization ID data
  * @author Rok Povsic / Jörg Penning
  */
 public class AuthorizeIdView extends ViewPart {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AuthorizeIdView.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthorizeIdView.class);
     
     public static final String ID = "org.csstudio.config.authorizeid";//$NON-NLS-1$
     

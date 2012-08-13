@@ -22,8 +22,6 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.apache.log4j.Logger;
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceException;
@@ -48,6 +46,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a modification of {@link InputDialog} class.
@@ -57,9 +57,7 @@ import org.eclipse.swt.widgets.Text;
  * @author Rok Povsic
  */
 public class CustomInputDialog extends Dialog {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(CustomInputDialog.class);
-
+    private static final Logger LOG = LoggerFactory.getLogger(CustomInputDialog.class);
 
     /**
      * The title of the dialog.
