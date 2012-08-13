@@ -149,11 +149,12 @@
            point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.csstudio.config.ioconfig.view.ShowIOConfig"
-            id="org.csstudio.utility.namespacesearch.newnamespacesearch"
+            id="org.csstudio.config.ioconfig.view.newioconfig"
             name="New IOConfig">
       </command>
       </extension>
-   <extension
+      
+<!--   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
@@ -169,5 +170,5 @@
                style="push"/>
       </actionSet>
    </extension>
-    
+    -->
 </plugin>
