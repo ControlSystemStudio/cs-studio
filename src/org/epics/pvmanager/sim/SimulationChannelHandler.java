@@ -62,6 +62,7 @@ class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T
         taskFuture.cancel(false);
         taskFuture = null;
         simulation.lastTime = null;
+        processConnection(null);
     }
 
     @Override
@@ -70,7 +71,7 @@ class SimulationChannelHandler<T> extends MultiplexedChannelHandler<Simulation<T
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean isConnected(Simulation<T> sim) {
         return taskFuture != null;
     }
 }

@@ -17,6 +17,7 @@ import org.epics.util.time.TimeInterval;
  *
  * @author carcassi
  */
+@Deprecated
 class TimedCacheCollector<T> extends Collector<T> {
 
     private final Deque<T> buffer = new ArrayDeque<T>();

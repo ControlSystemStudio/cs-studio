@@ -8,10 +8,13 @@
  */
 package org.epics.pvmanager.jca;
 
+import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.*;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
+import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.data.*;
 
 /**
@@ -80,6 +83,24 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
         };
 
     // DBR_TIME_String -> VString
+    final static JCATypeAdapter DBRByteToVString = new JCATypeAdapter(VString.class, DBR_TIME_Byte.TYPE, null, null) {
+
+            @Override
+            public int match(ValueCache<?> cache, Channel channel) {
+                if (!longStringPattern.matcher(channel.getName()).matches()) {
+                    return 0;
+                }
+                
+                return super.match(cache, channel);
+            }
+
+            @Override
+            public VString createValue(DBR value, DBR metadata, boolean disconnected) {
+                return new VStringFromDbr((DBR_TIME_Byte) value, disconnected);
+            }
+        };
+
+    // DBR_TIME_Enum -> VEnum
     final static JCATypeAdapter DBREnumToVEnum = new JCATypeAdapter(VEnum.class, DBR_TIME_Enum.TYPE, DBR_LABELS_Enum.TYPE, false) {
 
             @Override
@@ -109,6 +130,15 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
     // DBR_TIME_Byte -> VByteArray
     final static JCATypeAdapter DBRByteToVByteArray = new JCATypeAdapter(VByteArray.class, DBR_TIME_Byte.TYPE, DBR_CTRL_Double.TYPE, true) {
 
+            @Override
+            public int match(ValueCache<?> cache, Channel channel) {
+                if (longStringPattern.matcher(channel.getName()).matches()) {
+                    return 0;
+                }
+                
+                return super.match(cache, channel);
+            }
+        
             @Override
             public VByteArray createValue(DBR value, DBR metadata, boolean disconnected) {
                 return new VByteArrayFromDbr((DBR_TIME_Byte) value, (DBR_CTRL_Double) metadata, disconnected);
@@ -144,6 +174,8 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
 
     private static final Set<JCATypeAdapter> converters;
     
+    static Pattern longStringPattern = Pattern.compile(".+\\..*\\$.*");
+    
     static {
         Set<JCATypeAdapter> newFactories = new HashSet<JCATypeAdapter>();
         // Add all SCALARs
@@ -153,6 +185,7 @@ public class JCAVTypeAdapterSet implements JCATypeAdapterSet {
         newFactories.add(DBRShortToVInt);
         newFactories.add(DBRIntToVInt);
         newFactories.add(DBRStringToVString);
+        newFactories.add(DBRByteToVString);
         newFactories.add(DBREnumToVEnum);
 
         // Add all ARRAYs

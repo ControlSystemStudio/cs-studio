@@ -25,7 +25,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
     private final Class<?> typeClass;
     private final DBRType epicsValueType;
     private final DBRType epicsMetaType;
-    private final boolean array;
+    private final Boolean array;
 
     /**
      * Creates a new type adapter.
@@ -35,7 +35,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
      * @param epicsMetaType the epics type for the get at connection time; null if no metadata is needed
      * @param array true whether this will require an array type
      */
-    public JCATypeAdapter(Class<?> typeClass, DBRType epicsValueType, DBRType epicsMetaType, boolean array) {
+    public JCATypeAdapter(Class<?> typeClass, DBRType epicsValueType, DBRType epicsMetaType, Boolean array) {
         this.typeClass = typeClass;
         this.epicsValueType = epicsValueType;
         this.epicsMetaType = epicsMetaType;
@@ -54,11 +54,11 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
             return 0;
         
         // If processes array, but count is 1, no match
-        if (array && channel.getElementCount() == 1)
+        if (array != null &&array && channel.getElementCount() == 1)
             return 0;
         
         // If processes scalar, but the count is not 1, no match
-        if (!array && channel.getElementCount() != 1)
+        if (array != null && !array && channel.getElementCount() != 1)
             return 0;
         
         // Everything matches
@@ -90,7 +90,7 @@ public abstract class JCATypeAdapter implements DataSourceTypeAdapter<Channel, J
         if (message.getEvent() == null)
             return false;
         
-        Object value = createValue(message.getEvent().getDBR(), message.getMetadata(), !JCAChannelHandler.isConnected(channel));
+        Object value = createValue(message.getEvent().getDBR(), message.getMetadata(), !JCAChannelHandler.isChannelConnected(channel));
         cache.setValue(value);
         return true;
     }

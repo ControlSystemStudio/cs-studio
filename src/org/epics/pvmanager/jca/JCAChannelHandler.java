@@ -4,8 +4,10 @@
  */
 package org.epics.pvmanager.jca;
 
+import com.cosylab.epics.caj.CAJMonitor;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
+import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.*;
 import gov.aps.jca.event.ConnectionEvent;
 import gov.aps.jca.event.ConnectionListener;
@@ -182,6 +184,24 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
             channel.addMonitor(valueTypeFor(channel), countFor(channel), jcaDataSource.getMonitorMask(), monitorListener);
             needsMonitor = false;
         }
+        
+        // Setup metadata monitor if required
+        if (jcaDataSource.isDbePropertySupported() && metaType != null) {
+            channel.addMonitor(metaType, 1, Monitor.PROPERTY, new MonitorListener() {
+
+                @Override
+                public void monitorChanged(MonitorEvent ev) {
+                    synchronized(JCAChannelHandler.this) {
+                        // In case the metadata arrives after the monitor
+                        MonitorEvent event = null;
+                        if (getLastMessagePayload() != null) {
+                            event = getLastMessagePayload().getEvent();
+                        }
+                        processMessage(new JCAMessagePayload(ev.getDBR(), event));
+                    }
+                }
+            });
+        }
 
         // Flush the entire context (it's the best we can do)
         channel.getContext().flushIO();
@@ -243,6 +263,7 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
             throw new RuntimeException("JCA Disconnect fail", ex);
         } finally {
             channel = null;
+            processConnection(null);
         }
     }
 
@@ -257,13 +278,14 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
             callback.channelWritten(ex);
         }
     }
-
+    
     @Override
-    public boolean isConnected() {
-        return isConnected(channel);
+    protected boolean isConnected(Channel channel) {
+        return isChannelConnected(channel);
     }
     
-    static boolean isConnected(Channel channel) {
+    
+    static boolean isChannelConnected(Channel channel) {
         return channel != null && channel.getConnectionState() == Channel.ConnectionState.CONNECTED;
     }
 
@@ -306,6 +328,8 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
 
     protected DBRType valueTypeFor(Channel channel) {
         DBRType type = channel.getFieldType();
+        
+        // TODO: .RTYP should not request the time
         
         // For scalar numbers, only use Double or Int
         if (channel.getElementCount() == 1) {

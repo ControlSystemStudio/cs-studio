@@ -11,5 +11,10 @@ package org.epics.pvmanager.data;
  * 
  * @author carcassi
  */
-public interface VDouble extends Scalar<Double>, VNumber, VType {
+public interface VDouble extends Scalar, VNumber, VType {
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    Double getValue();
 }

@@ -116,13 +116,15 @@ public abstract class DataSource {
                 if (channelHandler == null)
                     throw new ReadFailException();
                 final ValueCache cache = entry.getValue();
+                final Collector<Boolean> connCollector = recipe.getConnectionCollector();
+                final ValueCache<Boolean> connCache = recipe.getConnectionCaches().get(channelName);
 
                 // Add monitor on other thread in case it triggers notifications
                 exec.execute(new Runnable() {
 
                     @Override
                     public void run() {
-                        channelHandler.addMonitor(collector, cache, recipe.getExceptionHandler());
+                        channelHandler.addMonitor(new ChannelHandlerReadSubscription(collector, cache, recipe.getExceptionHandler(), connCollector, connCache));
                     }
                 });
             }

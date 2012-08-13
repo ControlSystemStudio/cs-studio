@@ -40,7 +40,7 @@ class DelayedConnectionErrorChannel extends MultiplexedChannelHandler<Object, Ob
     }
 
     @Override
-    public boolean isConnected() {
+    public boolean isConnected(Object obj) {
         return false;
     }
     

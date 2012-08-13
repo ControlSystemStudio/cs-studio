@@ -42,10 +42,5 @@ class DelayedConnectionChannel extends MultiplexedChannelHandler<Object, Object>
             callback.channelWritten(ex);
         }
     }
-
-    @Override
-    public boolean isConnected() {
-        return getUsageCounter() != 0;
-    }
     
 }
