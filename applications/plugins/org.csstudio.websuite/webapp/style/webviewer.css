@@ -127,3 +127,12 @@ img.noioc
 	width:48px;
 	heigt:48px;
 }
+
+img.redundant
+{
+    color:black;
+    background-image:url(/images/redundant48.gif);
+    background-repeat:no-repeat;
+    width:48px;
+    heigt:48px;
+}
