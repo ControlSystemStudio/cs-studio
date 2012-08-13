@@ -23,7 +23,7 @@
          </command>
       </menuContribution>
 </extension>
-   <extension
+<!--   <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
             description="Global CSS menu actions"
@@ -40,7 +40,7 @@
                tooltip="AuthorizeId">
          </action>
       </actionSet>
-   </extension>
+   </extension> -->
    <extension
          point="org.eclipse.ui.views">
       <view

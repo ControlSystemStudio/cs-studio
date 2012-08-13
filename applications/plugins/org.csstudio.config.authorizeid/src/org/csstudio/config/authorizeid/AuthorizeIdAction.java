@@ -18,7 +18,7 @@ public class AuthorizeIdAction extends AbstractHandler {
         IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         IWorkbenchPage page = window.getActivePage();
         try {
-			page.showView(AuthorizeIdView.class.getName());
+			page.showView(AuthorizeIdView.ID);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
