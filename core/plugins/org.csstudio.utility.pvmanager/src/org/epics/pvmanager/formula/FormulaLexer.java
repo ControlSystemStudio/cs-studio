@@ -1,4 +1,4 @@
-// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2012-06-27 16:47:23
+// $ANTLR 3.4 org\\epics\\pvmanager\\formula\\Formula.g 2012-08-06 15:06:04
 
   package org.epics.pvmanager.formula;
 
@@ -197,8 +197,8 @@ public class FormulaLexer extends Lexer {
         try {
             int _type = ID;
             int _channel = DEFAULT_TOKEN_CHANNEL;
-            // org\\epics\\pvmanager\\formula\\Formula.g:68:5: ( ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )? ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '{' | '}' )* )
-            // org\\epics\\pvmanager\\formula\\Formula.g:68:7: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )? ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '{' | '}' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:68:5: ( ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )? ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )* )
+            // org\\epics\\pvmanager\\formula\\Formula.g:68:7: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )? ( '0' .. '9' )* ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
             {
             // org\\epics\\pvmanager\\formula\\Formula.g:68:7: ( ( 'a' .. 'z' | 'A' .. 'Z' )* ':' '/' '/' )?
             int alt2=2;
@@ -361,11 +361,13 @@ public class FormulaLexer extends Lexer {
             }
 
 
-            // org\\epics\\pvmanager\\formula\\Formula.g:68:80: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' | ':' | '{' | '}' )*
+            // org\\epics\\pvmanager\\formula\\Formula.g:68:80: ( 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '.' | '$' | '_' | ':' | '{' | '}' )*
             loop4:
             do {
                 int alt4=2;
                 switch ( input.LA(1) ) {
+                case '$':
+                case '.':
                 case '0':
                 case '1':
                 case '2':
@@ -443,7 +445,7 @@ public class FormulaLexer extends Lexer {
             	case 1 :
             	    // org\\epics\\pvmanager\\formula\\Formula.g:
             	    {
-            	    if ( (input.LA(1) >= '0' && input.LA(1) <= ':')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= '{')||input.LA(1)=='}' ) {
+            	    if ( input.LA(1)=='$'||input.LA(1)=='.'||(input.LA(1) >= '0' && input.LA(1) <= ':')||(input.LA(1) >= 'A' && input.LA(1) <= 'Z')||input.LA(1)=='_'||(input.LA(1) >= 'a' && input.LA(1) <= '{')||input.LA(1)=='}' ) {
             	        input.consume();
             	    }
             	    else {

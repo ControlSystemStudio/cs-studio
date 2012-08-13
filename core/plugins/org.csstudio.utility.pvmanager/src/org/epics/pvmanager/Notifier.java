@@ -20,6 +20,7 @@ class Notifier<T> {
 
     private final WeakReference<PVReaderImpl<T>> pvRef;
     private final Function<T> function;
+    private final Function<Boolean> connFunction;
     private final Executor notificationExecutor;
     private final ScheduledExecutorService scannerExecutor;
     private volatile PVRecipe pvRecipe;
@@ -38,9 +39,10 @@ class Notifier<T> {
      * @param function the function used to calculate new values
      * @param notificationExecutor the thread switching mechanism
      */
-    Notifier(PVReaderImpl<T> pv, Function<T> function, ScheduledExecutorService scannerExecutor, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
+    Notifier(PVReaderImpl<T> pv, Function<T> function, Function<Boolean> connFunction, ScheduledExecutorService scannerExecutor, Executor notificationExecutor, ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<PVReaderImpl<T>>(pv);
         this.function = function;
+        this.connFunction = connFunction;
         this.notificationExecutor = notificationExecutor;
         this.scannerExecutor = scannerExecutor;
         this.exceptionHandler = exceptionHandler;
@@ -70,6 +72,20 @@ class Notifier<T> {
         }
     }
     
+    /**
+     * Checks whether the pv is paused
+     * 
+     * @return true if paused
+     */
+    boolean isPaused() {
+        final PVReader<T> pv = pvRef.get();
+        if (pv == null || pv.isPaused()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
     private volatile boolean notificationInFlight = false;
     
     /**
@@ -94,6 +110,9 @@ class Notifier<T> {
             exceptionHandler.handleException(ex);
         }
         
+        // Calculate new connection
+        final boolean connected = connFunction.getValue();
+        
         // Prepare values to ship to the other thread.
         // The data will be shipped as part of the task,
         // which is properly synchronized by the executor
@@ -109,17 +128,19 @@ class Notifier<T> {
                     // Proceed with notification only if PVReader was not garbage
                     // collected
                     if (pv != null) {
-                    // XXX Are we sure that we should skip notifications if values are null?
+                        pv.setConnectd(connected);
+                        
+                        // XXX Are we sure that we should skip notifications if values are null?
                         if (finalCalculationSucceeded && finalValue != null) {
                             Notification<T> notification =
                                     NotificationSupport.notification(pv.getValue(), finalValue);
                             // Remember to notify anyway if an exception need to be notified
-                            if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify()) {
+                            if (notification.isNotificationNeeded() || pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
                                 pv.setValue(notification.getNewValue());
                             }
                         } else {
                             // Remember to notify anyway if an exception need to be notified
-                            if (pv.isLastExceptionToNotify()) {
+                            if (pv.isLastExceptionToNotify() || pv.isReadConnectionToNotify()) {
                                 pv.firePvValueChanged();
                             }
                         }
@@ -145,7 +166,10 @@ class Notifier<T> {
             @Override
             public void run() {
                 if (isActive()) {
-                    notifyPv();
+                    // If paused, simply skip without stopping the scan
+                    if (!isPaused()) {
+                        notifyPv();
+                    }
                 } else {
                     stopScan();
                 }
@@ -167,7 +191,12 @@ class Notifier<T> {
     }
     
     void stopScan() {
-        scanTaskHandle.cancel(false);
+        if (scanTaskHandle != null) {
+            scanTaskHandle.cancel(false);
+            scanTaskHandle = null;
+        } else {
+            throw new IllegalStateException("Scan was never started");
+        }
     }
 
 }

@@ -110,7 +110,8 @@ public class PVReaderConfiguration<T> extends CommonConfiguration {
             dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
         }
         Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-        Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, PVManager.getReadScannerExecutorService(), notificationExecutor, dataRecipe.getExceptionHandler());
+        Function<Boolean> connFunction = new LastValueAggregator<Boolean>(dataRecipe.getConnectionCollector());
+        Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, connFunction, PVManager.getReadScannerExecutorService(), notificationExecutor, dataRecipe.getExceptionHandler());
         notifier.startScan(rate);
         if (timeout != null) {
             if (timeoutMessage == null)

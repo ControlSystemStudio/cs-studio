@@ -11,5 +11,10 @@ package org.epics.pvmanager.data;
  * 
  * @author carcassi
  */
-public interface VInt extends Scalar<Integer>, VNumber, VType {
+public interface VInt extends Scalar, VNumber, VType {
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    Integer getValue();
 }

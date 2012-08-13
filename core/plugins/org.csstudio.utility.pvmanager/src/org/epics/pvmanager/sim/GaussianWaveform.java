@@ -50,7 +50,7 @@ public class GaussianWaveform extends SimFunction<VDoubleArray> {
 
     static void populateGaussian(double[] array, double stdDev) {
         for (int i = 0; i < array.length; i++) {
-            array[i] = gaussian(i, array.length / 2, stdDev);
+            array[i] = gaussian(i, array.length / 2.0, stdDev);
         }
     }
 

@@ -14,6 +14,7 @@ import org.epics.util.time.Timestamp;
  *
  * @author carcassi
  */
+@Deprecated
 class ConverterVDoubleFunction extends Function<VDouble> {
     
     private final Function<?> argument;

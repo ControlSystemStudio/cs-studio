@@ -13,7 +13,10 @@ import org.epics.util.time.Timestamp;
  *
  * @param <T> type for which to add time support
  * @author carcassi
+ * @deprecated generic type support is being removed: was too intrusive and little used.
+ * being replaced by used of generic function that expect T extends Time.
  */
+@Deprecated
 public abstract class TimeSupport<T> extends TypeSupport<T> {
 
     /**

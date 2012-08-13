@@ -24,6 +24,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     private static final Logger log = Logger.getLogger(MultiplexedChannelHandler.class.getName());
     private int readUsageCounter = 0;
     private int writeUsageCounter = 0;
+    private boolean connected = false;
     private MessagePayload lastMessage;
     private ConnectionPayload connectionPayload;
     private Map<Collector<?>, MonitorHandler> monitors = new ConcurrentHashMap<Collector<?>, MonitorHandler>();
@@ -31,15 +32,11 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
 
     private class MonitorHandler {
 
-        private final Collector<?> collector;
-        private final ValueCache<?> cache;
-        private final ExceptionHandler exceptionHandler;
+        private final ChannelHandlerReadSubscription subscription;
         private DataSourceTypeAdapter<ConnectionPayload, MessagePayload> typeAdapter;
 
-        public MonitorHandler(Collector<?> collector, ValueCache<?> cache, ExceptionHandler exceptionHandler) {
-            this.collector = collector;
-            this.cache = cache;
-            this.exceptionHandler = exceptionHandler;
+        public MonitorHandler(ChannelHandlerReadSubscription subscription) {
+            this.subscription = subscription;
         }
 
         public final void processValue(MessagePayload payload) {
@@ -47,13 +44,13 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
                 return;
             
             // Lock the collector and prepare the new value.
-            synchronized (collector) {
+            synchronized (subscription.getCollector()) {
                 try {
-                    if (typeAdapter.updateCache(cache, getConnectionPayload(), payload)) {
-                        collector.collect();
+                    if (typeAdapter.updateCache(subscription.getCache(), getConnectionPayload(), payload)) {
+                        subscription.getCollector().collect();
                     }
                 } catch (RuntimeException e) {
-                    exceptionHandler.handleException(e);
+                    subscription.getHandler().handleException(e);
                 }
             }
         }
@@ -63,9 +60,9 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
                 typeAdapter = null;
             } else {
                 try {
-                    typeAdapter = MultiplexedChannelHandler.this.findTypeAdapter(cache, getConnectionPayload());
+                    typeAdapter = MultiplexedChannelHandler.this.findTypeAdapter(subscription.getCache(), getConnectionPayload());
                 } catch(RuntimeException ex) {
-                    exceptionHandler.handleException(ex);
+                    subscription.getHandler().handleException(ex);
                 }
             }
         }
@@ -79,10 +76,19 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected synchronized final void reportExceptionToAllReadersAndWriters(Exception ex) {
         for (MonitorHandler monitor : monitors.values()) {
-            monitor.exceptionHandler.handleException(ex);
+            monitor.subscription.getHandler().handleException(ex);
         }
         for (ExceptionHandler exHandler : writeCaches.values()) {
             exHandler.handleException(ex);
+        }
+    }
+    
+    private void reportConnectionStatus(boolean connected) {
+        for (MonitorHandler monitor : monitors.values()) {
+            synchronized (monitor.subscription.getConnCollector()) {
+                monitor.subscription.getConnCache().setValue(connected);
+                monitor.subscription.getConnCollector().collect();
+            }
         }
     }
 
@@ -112,6 +118,7 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      */
     protected synchronized final void processConnection(ConnectionPayload connectionPayload) {
         this.connectionPayload = connectionPayload;
+        setConnected(isConnected(connectionPayload));
         
         for (MonitorHandler monitor : monitors.values()) {
             monitor.findTypeAdapter();
@@ -200,15 +207,13 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
      * Used by the data source to add a read request on the channel managed
      * by this handler.
      * 
-     * @param collector collector to be notified at each update
-     * @param cache cache to contain the new value
-     * @param handler to be notified in case of errors
+     * @param subscription the data required for a subscription
      */
     @Override
-    protected synchronized void addMonitor(Collector<?> collector, ValueCache<?> cache, final ExceptionHandler handler) {
+    protected synchronized void addMonitor(ChannelHandlerReadSubscription subscription) {
         readUsageCounter++;
-        MonitorHandler monitor = new MonitorHandler(collector, cache, handler);
-        monitors.put(collector, monitor);
+        MonitorHandler monitor = new MonitorHandler(subscription);
+        monitors.put(subscription.getCollector(), monitor);
         monitor.findTypeAdapter();
         guardedConnect();
         if (readUsageCounter > 1 && lastMessage != null) {
@@ -313,11 +318,33 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
     @Override
     protected abstract void write(Object newValue, ChannelWriteCallback callback);
 
+    private void setConnected(boolean connected) {
+        this.connected = connected;
+        reportConnectionStatus(connected);
+    }
+    
+    /**
+     * Determines from the payload whether the channel is connected or not.
+     * <p>
+     * By default, this uses the usage counter to determine whether it's
+     * connected or not. One should override this to use the actual
+     * connection payload to check whether the actual protocol connection
+     * has been established.
+     * 
+     * @param payload the connection payload
+     * @return true if connected
+     */
+    protected boolean isConnected(ConnectionPayload  payload) {
+        return getUsageCounter() > 0;
+    }
+    
     /**
      * Returns true if it is connected.
      * 
      * @return true if underlying channel is connected
      */
     @Override
-    public abstract boolean isConnected();
+    public synchronized final boolean isConnected() {
+        return connected;
+    }
 }

@@ -17,6 +17,8 @@ import com.cosylab.epics.caj.CAJContext;
 import gov.aps.jca.jni.JNIContext;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 /**
  * A data source that uses jca.
@@ -38,6 +40,7 @@ public class JCADataSource extends DataSource {
     private final Context ctxt;
     private final int monitorMask;
     private final boolean varArraySupported;
+    private final boolean dbePropertySupported;
     private final JCATypeSupport typeSupport;
 
     static final JCADataSource INSTANCE = new JCADataSource();
@@ -90,7 +93,7 @@ public class JCADataSource extends DataSource {
      * @param typeSupport type support to be used
      */
     public JCADataSource(Context jcaContext, int monitorMask, JCATypeSupport typeSupport) {
-        this(jcaContext, monitorMask, typeSupport, isVarArraySupported(jcaContext));
+        this(jcaContext, monitorMask, typeSupport, false, isVarArraySupported(jcaContext));
     }
     
     /**
@@ -101,13 +104,15 @@ public class JCADataSource extends DataSource {
      * @param jcaContext the context to be used
      * @param monitorMask Monitor.VALUE, ...
      * @param typeSupport type support to be used
+     * @param dbePropertySupported whether metadata monitors should be used
      * @param varArraySupported true if var array should be used 
      */
-    public JCADataSource(Context jcaContext, int monitorMask, JCATypeSupport typeSupport, boolean varArraySupported) {
+    public JCADataSource(Context jcaContext, int monitorMask, JCATypeSupport typeSupport, boolean dbePropertySupported, boolean varArraySupported) {
         super(true);
         this.ctxt = jcaContext;
         this.monitorMask = monitorMask;
         this.typeSupport = typeSupport;
+        this.dbePropertySupported = dbePropertySupported;
         this.varArraySupported = varArraySupported;
     }
 
@@ -133,6 +138,15 @@ public class JCADataSource extends DataSource {
      */
     public int getMonitorMask() {
         return monitorMask;
+    }
+
+    /**
+     * Whether the metadata monitor should be established.
+     * 
+     * @return true if using metadata monitors
+     */
+    public boolean isDbePropertySupported() {
+        return dbePropertySupported;
     }
 
     @Override
@@ -174,8 +188,17 @@ public class JCADataSource extends DataSource {
         if (context instanceof JNIContext) {
             try {
                 Class<?> jniClazz = Class.forName("gov.aps.jca.jni.JNI");
-                Method method = jniClazz.getDeclaredMethod("_ca_getRevision", new Class<?>[0]);
-                method.setAccessible(true);
+                final Method method = jniClazz.getDeclaredMethod("_ca_getRevision", new Class<?>[0]);
+                // The field is actually private, so we need to make it accessible
+                AccessController.doPrivileged(new PrivilegedAction<Object>() {
+
+                    @Override
+                    public Object run() {
+                        method.setAccessible(true);
+                        return null;
+                    }
+                    
+                });
                 Integer integer = (Integer) method.invoke(null, new Object[0]);
                 return (integer >= 13);
             } catch (ClassNotFoundException ex) {

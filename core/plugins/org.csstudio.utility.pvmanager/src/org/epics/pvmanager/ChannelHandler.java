@@ -74,11 +74,9 @@ public abstract class ChannelHandler {
      * Used by the data source to add a read request on the channel managed
      * by this handler.
      * 
-     * @param collector collector to be notified at each update
-     * @param cache cache to contain the new value
-     * @param handler to be notified in case of errors
+     * @param subscription the data required for a subscription
      */
-    protected abstract void addMonitor(Collector<?> collector, ValueCache<?> cache, final ExceptionHandler handler);
+    protected abstract void addMonitor(ChannelHandlerReadSubscription subscription);
 
     /**
      * Used by the data source to remove a read request.
