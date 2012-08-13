@@ -134,7 +134,7 @@ public class Timestamp implements Comparable<Timestamp> {
     /**
      * Defines the natural ordering for timestamp as forward in time.
      *
-     * @param o another object
+     * @param other another object
      * @return comparison result
      */
     @Override

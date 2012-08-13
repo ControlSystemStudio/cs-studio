@@ -86,4 +86,7 @@ public final class ArrayDouble extends ListDouble implements Serializable {
         return super.equals(obj);
     }
     
+    double[] wrappedArray() {
+        return array;
+    }
 }

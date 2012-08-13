@@ -87,4 +87,8 @@ public final class ArrayShort extends ListShort implements Serializable {
         
         return super.equals(obj);
     }    
+
+    short[] wrappedArray() {
+        return array;
+    }
 }

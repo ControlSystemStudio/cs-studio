@@ -85,4 +85,8 @@ public final class ArrayInt extends ListInt implements Serializable {
         
         return super.equals(obj);
     }    
+
+    int[] wrappedArray() {
+        return array;
+    }
 }

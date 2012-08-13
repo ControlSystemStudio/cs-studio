@@ -85,5 +85,9 @@ public final class ArrayByte extends ListByte implements Serializable {
         
         return super.equals(obj);
     }
+
+    byte[] wrappedArray() {
+        return array;
+    }
     
 }

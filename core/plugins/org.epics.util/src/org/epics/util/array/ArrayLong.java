@@ -85,4 +85,8 @@ public final class ArrayLong extends ListLong implements Serializable {
         
         return super.equals(obj);
     }    
+
+    long[] wrappedArray() {
+        return array;
+    }
 }

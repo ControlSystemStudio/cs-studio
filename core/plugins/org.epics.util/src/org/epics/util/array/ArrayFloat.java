@@ -86,4 +86,8 @@ public final class ArrayFloat extends ListFloat implements Serializable {
         
         return super.equals(obj);
     }    
+
+    float[] wrappedArray() {
+        return array;
+    }
 }
