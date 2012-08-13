@@ -8,6 +8,9 @@
  */
 package org.epics.graphene;
 
+import java.util.Iterator;
+import java.util.List;
+import org.epics.util.array.CollectionNumber;
 import org.epics.util.array.CollectionNumbers;
 import org.epics.util.array.IteratorNumber;
 import org.epics.util.array.ListNumber;
@@ -61,7 +64,7 @@ public class StatisticsUtil {
         
     }
     
-    public static Statistics statisticsOf(ListNumber data) {
+    public static Statistics statisticsOf(CollectionNumber data) {
         IteratorNumber iterator = data.iterator();
         if (!iterator.hasNext()) {
             return null;
@@ -69,8 +72,8 @@ public class StatisticsUtil {
         int count = data.size();
         double min = iterator.nextDouble();
         double max = min;
-        double total = 0;
-        double totalSquare = 0;
+        double total = min;
+        double totalSquare = min*min;
         
         while (iterator.hasNext()) {
             double value = iterator.nextDouble();
@@ -80,6 +83,39 @@ public class StatisticsUtil {
                 min = value;
             total += value;
             totalSquare += value*value;
+        }
+        
+        double average = total/count;
+        double stdDev = Math.sqrt(totalSquare / count - average * average);
+        
+        return new StatisticsImpl(count, min, max, average, stdDev);
+    }
+    
+    public static Statistics statisticsOf(List<Statistics> data) {
+        if (data.isEmpty())
+            return null;
+        
+        Iterator<Statistics> iterator = data.iterator();
+        if (!iterator.hasNext()) {
+            return null;
+        }
+        Statistics first = iterator.next();
+        
+        int count = first.getCount();
+        double min = first.getMinimum().doubleValue();
+        double max = first.getMinimum().doubleValue();
+        double total = first.getAverage() * first.getCount();
+        double totalSquare = first.getStdDev() * first.getStdDev() * first.getCount() + first.getAverage() * first.getAverage();
+        
+        while (iterator.hasNext()) {
+            Statistics stats = iterator.next();
+            if (stats.getMaximum().doubleValue() > max)
+                max = stats.getMaximum().doubleValue();
+            if (stats.getMinimum().doubleValue() < min)
+                min = stats.getMinimum().doubleValue();
+            total += stats.getAverage() * stats.getCount();
+            totalSquare += stats.getStdDev() * stats.getStdDev() * stats.getCount() + stats.getAverage() * stats.getAverage();
+            count += stats.getCount();
         }
         
         double average = total/count;

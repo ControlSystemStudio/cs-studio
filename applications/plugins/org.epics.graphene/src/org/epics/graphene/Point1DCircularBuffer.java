@@ -45,13 +45,13 @@ public class Point1DCircularBuffer implements Point1DDataset {
             buffer.addDouble(iteratorDouble.nextDouble());
         }
 
-        CollectionNumbers.MinMax minMax = CollectionNumbers.minMaxDouble(getValues());
-        if (minMax == null) {
+        Statistics stats = StatisticsUtil.statisticsOf(getValues());
+        if (stats == null) {
             minValue = Double.NaN;
             maxValue = Double.NaN;
         } else {
-            minValue = minMax.min.doubleValue();
-            maxValue = minMax.max.doubleValue();
+            minValue = stats.getMinimum().doubleValue();
+            maxValue = stats.getMaximum().doubleValue();
         }
     }
 }
