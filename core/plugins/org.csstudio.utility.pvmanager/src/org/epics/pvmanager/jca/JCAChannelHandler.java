@@ -153,8 +153,6 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
     }
 
     private void setup(Channel channel) throws CAException {
-        processConnection(channel);
-        
         DBRType metaType = metadataFor(channel);
 
         // If metadata is needed, get it
@@ -227,12 +225,11 @@ class JCAChannelHandler extends MultiplexedChannelHandler<Channel, JCAMessagePay
                         }
 
                         // Setup monitors on connection
+                        processConnection(channel);
                         if (ev.isConnected()) {
                             setup(channel);
-                            processMessage(getLastMessagePayload());
-                        } else {
-                            processMessage(getLastMessagePayload());
                         }
+                        
                     } catch (Exception ex) {
                         reportExceptionToAllReadersAndWriters(ex);
                     }
