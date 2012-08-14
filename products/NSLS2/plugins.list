@@ -6,6 +6,7 @@ javax.annotation
 javax.mail
 net.coobird.thumbnailator
 org.antlr.runtime
+org.apache.batik
 org.csstudio.alarm.beast
 org.csstudio.alarm.beast.annunciator
 org.csstudio.alarm.beast.msghist
