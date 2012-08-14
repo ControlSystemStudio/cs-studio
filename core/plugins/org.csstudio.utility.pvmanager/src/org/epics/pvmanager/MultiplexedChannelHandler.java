@@ -123,6 +123,10 @@ public abstract class MultiplexedChannelHandler<ConnectionPayload, MessagePayloa
         for (MonitorHandler monitor : monitors.values()) {
             monitor.findTypeAdapter();
         }
+        
+        if (lastMessage != null) {
+            processMessage(lastMessage);
+        }
     }
     
     private static DataSourceTypeAdapter<?, ?> defaultTypeAdapter = new DataSourceTypeAdapter<Object, Object>() {
