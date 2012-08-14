@@ -9,7 +9,7 @@ Bundle-Description: Simple diagnostic utility to connect to any channel
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.utility.pvmanager,
- org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0",
+ org.csstudio.utility.pvmanager.ui,
  org.csstudio.csdata;bundle-version="0.0.1",
  org.csstudio.ui.util;bundle-version="0.0.1",
  org.eclipse.ui.intro,
