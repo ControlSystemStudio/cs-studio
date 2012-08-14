@@ -4,6 +4,7 @@ edu.msu.nscl.olog.api
 gov.bnl.channelfinder.api
 javax.annotation
 net.coobird.thumbnailator
+org.antlr.runtime
 org.csstudio.alarm.beast
 org.csstudio.alarm.beast.annunciator
 org.csstudio.alarm.beast.msghist
@@ -122,5 +123,6 @@ org.csstudio.utility.pvmanager.graphene
 org.csstudio.utility.speech
 org.csstudio.workspace
 org.epics.graphene
+org.epics.util
 org.python
 org.slf4j.api
