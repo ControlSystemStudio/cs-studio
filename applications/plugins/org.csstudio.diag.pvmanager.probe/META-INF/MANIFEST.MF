@@ -8,7 +8,7 @@ Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.g
 Bundle-Description: Simple diagnostic utility to connect to any channel
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager;bundle-version="0.1.0",
+ org.csstudio.utility.pvmanager,
  org.csstudio.utility.pvmanager.ui;bundle-version="1.0.0",
  org.csstudio.csdata;bundle-version="0.0.1",
  org.csstudio.ui.util;bundle-version="0.0.1",
