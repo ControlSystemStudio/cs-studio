@@ -109,6 +109,7 @@ org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
 org.csstudio.workspace
+org.epics.util
 org.jdom
 org.joda.time
 org.python
