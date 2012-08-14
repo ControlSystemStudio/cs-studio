@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
+import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
@@ -83,6 +84,7 @@ public class PVManagerProbe extends ViewPart {
 	private Label statusField;
 	private ComboViewer pvNameField;
 	private ComboHistoryHelper pvNameHelper;
+	private ErrorBar errorBar;
 	private MeterWidget meter;
 	private Composite topBox;
 	private Composite bottomBox;
@@ -167,6 +169,8 @@ public class PVManagerProbe extends ViewPart {
 		gl_topBox = new GridLayout();
 		gl_topBox.numColumns = 3;
 		topBox.setLayout(gl_topBox);
+		
+		errorBar = new ErrorBar(parent, SWT.NONE);
 
 		Label label;
 		pvNameLabel = new Label(topBox, SWT.READ_ONLY);
@@ -591,8 +595,9 @@ public class PVManagerProbe extends ViewPart {
 		} else if (!(ex instanceof TimeoutException) || Messages.Probe_statusSearching.equals(statusField.getText())) {
 			// If it's an error always display message, but if it's
 			// a timeout display only if there was no previous message
-			statusField.setText(ex.getMessage());
+			statusField.setText("Error - " + ex.getClass().getName());
 		}
+		errorBar.setException(ex);
 	}
 
 	/**
