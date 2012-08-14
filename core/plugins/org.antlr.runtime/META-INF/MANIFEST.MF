@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Antlr-runtime
+Bundle-SymbolicName: org.antlr.runtime
+Bundle-Version: 3.4.0
+Export-Package: org.antlr.runtime,
+ org.antlr.runtime.debug,
+ org.antlr.runtime.misc,
+ org.antlr.runtime.tree
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

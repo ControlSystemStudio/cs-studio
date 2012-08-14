@@ -12,7 +12,7 @@ package org.epics.pvmanager;
  */
 public class WriteFailException extends RuntimeException {
 
-    public WriteFailException(String message) {
+    WriteFailException(String message) {
         super(message);
     }
     

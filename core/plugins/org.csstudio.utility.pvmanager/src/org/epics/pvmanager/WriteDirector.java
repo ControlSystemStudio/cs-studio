@@ -10,7 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
-import org.epics.pvmanager.util.TimeDuration;
+import org.epics.util.time.TimeDuration;
 
 /**
  * Orchestrates the different classes to perform writes.
@@ -49,7 +49,7 @@ class WriteDirector<T> {
         WriteTask newTask = new WriteTask(pvWriter, newValue);
         executor.execute(newTask);
         if (timeout != null) {
-            executor.schedule(newTask.timeout(), timeout.getNanoSec(), TimeUnit.NANOSECONDS);
+            executor.schedule(newTask.timeout(), timeout.toNanosLong(), TimeUnit.NANOSECONDS);
         }
     }
     

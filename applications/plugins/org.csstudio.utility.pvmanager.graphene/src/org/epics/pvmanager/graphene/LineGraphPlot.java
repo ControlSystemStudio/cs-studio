@@ -13,7 +13,7 @@ import org.epics.pvmanager.expression.DesiredRateExpressionList;
  *
  * @author carcassi
  */
-public class LineGraphPlot extends DesiredRateExpressionImpl<VImage> {
+public class LineGraphPlot extends DesiredRateExpressionImpl<Plot2DResult> {
 
     public LineGraphPlot(DesiredRateExpressionList<?> childExpressions, LineGraphFunction function, String defaultName) {
         super(childExpressions, function, defaultName);

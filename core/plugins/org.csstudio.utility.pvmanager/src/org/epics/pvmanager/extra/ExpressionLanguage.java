@@ -31,7 +31,7 @@ public class ExpressionLanguage {
     /**
      * Aggregates the sample at the scan rate and takes the average.
      * 
-     * @param doublePv the expression to take the average of; can't be null
+     * @param arrayPv the expression to take the average of; can't be null
      * @return an expression representing the average of the expression
      */
     public static WaterfallPlot waterfallPlotOf(SourceRateExpression<VDoubleArray> arrayPv) {
@@ -42,7 +42,7 @@ public class ExpressionLanguage {
     /**
      * Creates a waterfall plot from a series of scalar pvs.
      * 
-     * @param expressions the expression to take the average of; can't be null
+     * @param vDoubles the expression to take the average of; can't be null
      * @return an expression representing the average of the expression
      */
     public static WaterfallPlot waterfallPlotOf(SourceRateExpressionList<VDouble> vDoubles) {

@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Path2D;
 import java.awt.geom.Path2D.Double;
+import org.epics.util.array.ListNumber;
 
 /**
  *
@@ -20,6 +21,17 @@ public class LineGraphRenderer {
     private int width = 300;
     private int height = 200;
     private InterpolationScheme scheme = InterpolationScheme.NEAREST_NEIGHBOUR;
+    
+    private boolean rangeFromDataset = true;
+    private double startPlotX = java.lang.Double.MIN_VALUE;
+    private double endPlotX = java.lang.Double.MAX_VALUE;
+    private double startPlotY = java.lang.Double.MIN_VALUE;
+    private double endPlotY = java.lang.Double.MAX_VALUE;
+    
+    private double integratedMinX = java.lang.Double.MAX_VALUE;
+    private double integratedMinY = java.lang.Double.MAX_VALUE;
+    private double integratedMaxX = java.lang.Double.MIN_VALUE;
+    private double integratedMaxY = java.lang.Double.MIN_VALUE;
 
     public LineGraphRenderer(int width, int height) {
         this.width = width;
@@ -42,6 +54,38 @@ public class LineGraphRenderer {
         return scheme;
     }
 
+    public double getEndPlotX() {
+        return endPlotX;
+    }
+
+    public double getEndPlotY() {
+        return endPlotY;
+    }
+
+    public double getIntegratedMaxX() {
+        return integratedMaxX;
+    }
+
+    public double getIntegratedMaxY() {
+        return integratedMaxY;
+    }
+
+    public double getIntegratedMinX() {
+        return integratedMinX;
+    }
+
+    public double getIntegratedMinY() {
+        return integratedMinY;
+    }
+
+    public double getStartPlotX() {
+        return startPlotX;
+    }
+
+    public double getStartPlotY() {
+        return startPlotY;
+    }
+    
     public void update(LineGraphRendererUpdate update) {
         if (update.getImageHeight() != null) {
             height = update.getImageHeight();
@@ -52,14 +96,50 @@ public class LineGraphRenderer {
         if (update.getInterpolation() != null) {
             scheme = update.getInterpolation();
         }
+        if (update.isRangeFromDataset() != null) {
+            rangeFromDataset = update.isRangeFromDataset();
+        }
+        if (update.getStartX() != null) {
+            startPlotX = update.getStartX();
+        }
+        if (update.getStartY() != null) {
+            startPlotY = update.getStartY();
+        }
+        if (update.getEndX() != null) {
+            endPlotX = update.getEndX();
+        }
+        if (update.getEndY() != null) {
+            endPlotY = update.getEndY();
+        }
+        
     }
 
-    public void draw(Graphics2D g, OrderedDataset2D data) {
+    public void draw(Graphics2D g, Point2DDataset data) {
         int dataCount = data.getCount();
-        double startX = data.getXMinValue();
-        double startY = data.getYMinValue();
-        double endX = data.getXMaxValue();
-        double endY = data.getYMaxValue();
+        
+        // Retain the integrated min/max
+        integratedMinX = java.lang.Double.isNaN(data.getXMinValue()) ? integratedMinX : Math.min(integratedMinX, data.getXMinValue());
+        integratedMinY = java.lang.Double.isNaN(data.getYMinValue()) ? integratedMinY : Math.min(integratedMinY, data.getYMinValue());
+        integratedMaxX = java.lang.Double.isNaN(data.getXMaxValue()) ? integratedMaxX : Math.max(integratedMaxX, data.getXMaxValue());
+        integratedMaxY = java.lang.Double.isNaN(data.getYMaxValue()) ? integratedMaxY : Math.max(integratedMaxY, data.getYMaxValue());
+        
+        // Determine range of the plot.
+        // If no range is set, use the one from the dataset
+        double startXPlot;
+        double startYPlot;
+        double endXPlot;
+        double endYPlot;
+        if (rangeFromDataset) {
+            startXPlot = integratedMinX;
+            startYPlot = integratedMinY;
+            endXPlot = integratedMaxX;
+            endYPlot = integratedMaxY;
+        } else {
+            startXPlot = startPlotX;
+            startYPlot = startPlotY;
+            endXPlot = endPlotX;
+            endYPlot = endPlotY;
+        }
         int margin = 3;
 
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -68,8 +148,8 @@ public class LineGraphRenderer {
         g.setColor(Color.BLACK);
 
         // Compute axis
-        ValueAxis xAxis = ValueAxis.createAutoAxis(data.getXMinValue(), data.getXMaxValue(), Math.max(2, width / 60));
-        ValueAxis yAxis = ValueAxis.createAutoAxis(data.getYMinValue(), data.getYMaxValue(), Math.max(2, height / 60));
+        ValueAxis xAxis = ValueAxis.createAutoAxis(startXPlot, endXPlot, Math.max(2, width / 60));
+        ValueAxis yAxis = ValueAxis.createAutoAxis(startYPlot, endYPlot, Math.max(2, height / 60));
         HorizontalAxisRenderer xAxisRenderer = new HorizontalAxisRenderer(xAxis, margin, g);
         VerticalAxisRenderer yAxisRenderer = new VerticalAxisRenderer(yAxis, margin, g);
 
@@ -86,15 +166,17 @@ public class LineGraphRenderer {
         yAxisRenderer.draw(g, 0, yStartGraph, yEndGraph, height, xStartGraph);
 
 
-        double rangeX = endX - startX;
-        double rangeY = endY - startY;
+        double rangeX = endXPlot - startXPlot;
+        double rangeY = endYPlot - startYPlot;
 
         // Scale data
         double[] scaledX = new double[dataCount];
         double[] scaledY = new double[dataCount];
+        ListNumber xValues = data.getXValues();
+        ListNumber yValues = data.getYValues();
         for (int i = 0; i < scaledY.length; i++) {
-            scaledX[i] = xStartGraph + NumberUtil.scale(data.getXValue(i), startX, endX, plotWidth);
-            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(data.getYValue(i), startY, endY, plotHeight);
+            scaledX[i] = xStartGraph + NumberUtil.scale(xValues.getDouble(i), startXPlot, endXPlot, plotWidth);
+            scaledY[i] = height - xAxisRenderer.getAxisHeight() - NumberUtil.scale(yValues.getDouble(i), startYPlot, endYPlot, plotHeight);
         }
         
         // Draw reference lines
@@ -134,8 +216,13 @@ public class LineGraphRenderer {
         line.moveTo(scaledX[0], scaledY[0]);
         for (int i = 1; i < scaledY.length; i++) {
             double halfX = scaledX[i - 1] + (scaledX[i] - scaledX[i - 1]) / 2;
-            line.lineTo(halfX, scaledY[i - 1]);
-            line.lineTo(halfX, scaledY[i]);
+            if (!java.lang.Double.isNaN(scaledY[i-1])) {
+                line.lineTo(halfX, scaledY[i - 1]);
+                if (!java.lang.Double.isNaN(scaledY[i]))
+                    line.lineTo(halfX, scaledY[i]);
+            } else {
+                line.moveTo(halfX, scaledY[i]);
+            }
         }
         line.lineTo(scaledX[scaledX.length - 1], scaledY[scaledY.length - 1]);
         return line;

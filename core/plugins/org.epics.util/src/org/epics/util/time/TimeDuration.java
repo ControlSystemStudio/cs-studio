@@ -9,7 +9,7 @@ import java.text.DecimalFormat;
 /**
  * A duration of time (such as 3 seconds, 30 ms, 1 nanosec) at the nanosecond precision.
  * The duration is stored as 96 bits, 64 for seconds and 32 for nanoseconds within
- * the second. This makes the representation equivalent to the {@link TimeStamp} class.
+ * the second. This makes the representation equivalent to the {@link Timestamp} class.
  * <p>
  * This class can be used both to represent a span of time, or
  * as a relative timestamp (e.g. 3 seconds before or after a reference). As such,
@@ -17,7 +17,7 @@ import java.text.DecimalFormat;
  * is positive. For example, -1.5 seconds will be stored as -2 seconds and
  * 500,000,000 nanoseconds.
  * <p>
- * Note that while TimeStamp are usually created according to system clocks which
+ * Note that while Timestamp are usually created according to system clocks which
  * takes into account leap seconds, all the math operations on TimeStamps do
  * not take leap seconds into account.
  * <h3>JSR 310 compatibility</h3>
@@ -26,7 +26,7 @@ import java.text.DecimalFormat;
  * 
  * @author carcassi
  */
-public class TimeDuration {
+public class TimeDuration implements Comparable<TimeDuration> {
 
     private final long sec;
     private final int nanoSec;
@@ -38,6 +38,24 @@ public class TimeDuration {
             throw new IllegalArgumentException("Nanoseconds must be between 0 and 999,999,999. Was " + nanoSec);
         this.nanoSec = nanoSec;
         this.sec = sec;
+    }
+    
+    /**
+     * True if the duration is non-zero and positive.
+     * 
+     * @return true if positive
+     */
+    public boolean isPositive() {
+        return getSec() > 0 || (getSec() == 0 && getNanoSec() > 0);
+    }
+    
+    /**
+     * True if the duration is zero or positive.
+     * 
+     * @return true if non negative
+     */
+    public boolean isNegative() {
+        return getSec() < 0;
     }
 
     /**
@@ -231,6 +249,20 @@ public class TimeDuration {
     public TimeInterval before(Timestamp reference) {
         return TimeInterval.between(reference.minus(this), reference);
     }
+    
+    /**
+     * Returns the duration in nanoseconds. If the duration exceeds the
+     * range of a long, an exception is thrown.
+     * 
+     * @return the duration in nanoseconds
+     */
+    public long toNanosLong() {
+        if (Math.abs(getSec()) >= (Long.MAX_VALUE / NANOSEC_IN_SEC)) {
+            throw new ArithmeticException("Overflow: duration cannot be represented in nanoseconds as long");
+        }
+        
+        return getSec() * NANOSEC_IN_SEC + getNanoSec();
+    }
 
     private static final DecimalFormat format = new DecimalFormat("000000000");
 
@@ -267,6 +299,23 @@ public class TimeDuration {
         }
 
         return false;
+    }
+
+    @Override
+    public int compareTo(TimeDuration other) {
+	if (sec < other.sec) {
+            return -1;
+        } else if (sec == other.sec) {
+            if (nanoSec < other.nanoSec) {
+                return -1;
+            } else if (nanoSec == other.nanoSec) {
+                return 0;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
+        }
     }
 
 }

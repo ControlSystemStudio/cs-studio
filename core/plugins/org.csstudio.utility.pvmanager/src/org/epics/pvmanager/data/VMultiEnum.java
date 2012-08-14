@@ -8,6 +8,6 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VMultiEnum extends MultiScalar<VEnum>, Enum, Alarm, Time {
+public interface VMultiEnum extends MultiScalar<VEnum>, Enum, Alarm, Time, VType {
 
 }

@@ -43,7 +43,7 @@ public class DataRecipe {
         this.exceptionHandler = exceptionHandler;
     }
 
-    DataRecipe(ExceptionHandler exceptionHandler) {
+    public DataRecipe(ExceptionHandler exceptionHandler) {
         channelsPerCollector = Collections.emptyMap();
         this.exceptionHandler = exceptionHandler;
     }
@@ -112,6 +112,33 @@ public class DataRecipe {
      */
     public DataRecipe withExceptionHandler(ExceptionHandler handler) {
         return new DataRecipe(channelsPerCollector, handler);
+    }
+
+    synchronized Collector<Boolean> getConnectionCollector() {
+        if (connectionCollector == null) {
+            connectionCollector = new ConnectionCollector(getConnectionCaches());
+        }
+        return connectionCollector;
+    }
+    
+    private Collector<Boolean> connectionCollector;
+    private Map<String, ValueCache<Boolean>> connectionCaches;
+
+    synchronized Map<String, ValueCache<Boolean>> getConnectionCaches() {
+        // TODO do in constructor to avoid synch (and make final)
+        if (connectionCaches == null) {
+            Map<String, ValueCache<Boolean>> newCaches = new HashMap<String, ValueCache<Boolean>>();
+            for (Map.Entry<Collector<?>, Map<String, ValueCache>> collEntry : channelsPerCollector.entrySet()) {
+                for (Map.Entry<String, ValueCache> entry : collEntry.getValue().entrySet()) {
+                    String name = entry.getKey();
+                    ValueCache<Boolean> cache = new ValueCache<Boolean>(Boolean.class);
+                    cache.setValue(false);
+                    newCaches.put(name, cache);
+                }
+            }
+            connectionCaches = newCaches;
+        }
+        return connectionCaches;
     }
 
 }

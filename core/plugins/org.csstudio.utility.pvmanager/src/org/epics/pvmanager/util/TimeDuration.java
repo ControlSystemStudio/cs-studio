@@ -13,8 +13,10 @@ package org.epics.pvmanager.util;
  * takes into account leap seconds, all the math operations on TimeStamps do
  * not take leap seconds into account.
  * 
+ * @deprecated This class is being retired in favor of {@link org.epics.util.time.TimeDuration}
  * @author carcassi
  */
+@Deprecated
 public class TimeDuration {
 
     private long nanoSec;
@@ -185,4 +187,16 @@ public class TimeDuration {
         return false;
     }
 
+    public static TimeDuration durationOf(org.epics.util.time.TimeDuration duration) {
+        if (duration == null)
+            return null;
+        return nanos(duration.getSec() * 1000000000 + duration.getNanoSec());
+    }
+    
+    public static org.epics.util.time.TimeDuration asTimeDuration(TimeDuration duration) {
+        if (duration == null)
+            return null;
+        
+        return org.epics.util.time.TimeDuration.ofNanos(duration.getNanoSec());
+    }
 }

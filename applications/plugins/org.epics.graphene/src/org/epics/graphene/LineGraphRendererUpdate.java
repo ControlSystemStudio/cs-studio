@@ -14,6 +14,38 @@ public class LineGraphRendererUpdate {
     private Integer imageWidth;
     private InterpolationScheme interpolation;
     
+    private Double startX;
+    private Double endX;
+    private Double startY;
+    private Double endY;
+    
+    private Boolean rangeFromDataset;
+    
+    public LineGraphRendererUpdate startX(Double startX) {
+        this.startX = startX;
+        return this;
+    }
+    
+    public LineGraphRendererUpdate startY(Double startY) {
+        this.startY = startY;
+        return this;
+    }
+    
+    public LineGraphRendererUpdate endX(Double endX) {
+        this.endX = endX;
+        return this;
+    }
+    
+    public LineGraphRendererUpdate endY(Double endY) {
+        this.endY = endY;
+        return this;
+    }
+    
+    public LineGraphRendererUpdate rangeFromDataset(boolean rangeFromDataset) {
+        this.rangeFromDataset = rangeFromDataset;
+        return this;
+    }
+    
     public LineGraphRendererUpdate imageHeight(int height) {
         this.imageHeight = height;
         return this;
@@ -39,6 +71,26 @@ public class LineGraphRendererUpdate {
     
     public InterpolationScheme getInterpolation() {
         return interpolation;
+    }
+
+    public Double getStartX() {
+        return startX;
+    }
+
+    public Double getStartY() {
+        return startY;
+    }
+
+    public Double getEndX() {
+        return endX;
+    }
+
+    public Double getEndY() {
+        return endY;
+    }
+
+    public Boolean isRangeFromDataset() {
+        return rangeFromDataset;
     }
     
 }

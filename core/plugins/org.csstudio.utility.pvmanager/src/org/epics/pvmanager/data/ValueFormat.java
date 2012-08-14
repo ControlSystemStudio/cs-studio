@@ -45,10 +45,10 @@ public abstract class ValueFormat extends Format {
     /**
      * Formats an scalar.
      *
-     * @param array data object to format
+     * @param scalar data object to format
      * @return a String representation
      */
-    public String format(Scalar<?> scalar) {
+    public String format(Scalar scalar) {
         return format((Object) scalar);
     }
 
@@ -67,15 +67,17 @@ public abstract class ValueFormat extends Format {
      *
      * @param scalar data object to format
      * @param toAppendTo output buffer
+     * @param pos the field position
      * @return the output buffer
      */
-    protected abstract StringBuffer format(Scalar<?> scalar, StringBuffer toAppendTo, FieldPosition pos);
+    protected abstract StringBuffer format(Scalar scalar, StringBuffer toAppendTo, FieldPosition pos);
 
     /**
      * Formats an array.
      *
      * @param array data object to format
      * @param toAppendTo output buffer
+     * @param pos the field position
      * @return the output buffer
      */
     protected abstract StringBuffer format(Array<?> array, StringBuffer toAppendTo, FieldPosition pos);

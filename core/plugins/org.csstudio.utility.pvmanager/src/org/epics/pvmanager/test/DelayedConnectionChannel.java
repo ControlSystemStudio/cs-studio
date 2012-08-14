@@ -4,59 +4,43 @@
  */
 package org.epics.pvmanager.test;
 
-import org.epics.pvmanager.ChannelWriteCallback;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.ValueCache;
+import org.epics.pvmanager.*;
 
 /**
  * Implementation for channels of a {@link TestDataSource}.
  *
  * @author carcassi
  */
-class DelayedConnectionChannel extends ChannelHandler<Object> {
+class DelayedConnectionChannel extends MultiplexedChannelHandler<Object, Object> {
 
     DelayedConnectionChannel(String channelName) {
         super(channelName);
     }
 
     @Override
-    public void connect(ExceptionHandler handler) {
+    public void connect() {
         try {
             Thread.sleep(1000);
         } catch(Exception ex) {
         }
         
-        processValue("Initial value");
+        processConnection(new Object());
+        processMessage("Initial value");
     }
 
     @Override
-    public void disconnect(ExceptionHandler handler) {
-        // Nothing to be done
+    public void disconnect() {
+        processConnection(null);
     }
 
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         try {
-            processValue(newValue);
+            processMessage(newValue);
             callback.channelWritten(null);
         } catch (Exception ex) {
             callback.channelWritten(ex);
         }
-    }
-
-    @Override
-    public boolean updateCache(Object event, ValueCache<?> cache) {
-        Object oldValue = cache.getValue();
-        cache.setValue(event);
-        if ((event == oldValue) || (event != null && event.equals(oldValue)))
-            return false;
-        return true;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return getUsageCounter() != 0;
     }
     
 }
