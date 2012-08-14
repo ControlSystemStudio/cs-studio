@@ -3,8 +3,8 @@ package org.csstudio.config.ioconfig.editorparts;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
-import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.csstudio.config.ioconfig.model.AbstractNodeSharedImpl;
+import org.csstudio.config.ioconfig.model.NodeDBO;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;

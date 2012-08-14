@@ -15,22 +15,6 @@
             name="%view.name.tree"/>
    </extension>
    <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            description="Global CSS menu actions"
-            id="org.csstudio.config.ioconfig.view.actionSet"
-            label="CSS Action Set"
-            visible="true">
-         <action
-               class="org.csstudio.config.ioconfig.view.ShowIOConfig"
-               icon="icons/IOConfic.png"
-               id="org.csstudio.config.ioconfig.view.ShowIOConfig"
-               label="IO Config"
-               menubarPath="css/configuration/"
-               style="push"/>
-      </actionSet>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.csstudio.config.ioconfig.view.PerspectiveFactory"
@@ -147,5 +131,44 @@
             name="Call New Facility Editor">
       </command>
    </extension>
-
+      <extension
+           point="org.eclipse.ui.menus">    
+       <menuContribution
+            allPopups="false"
+            locationURI="menu:configuration">
+         <command
+               commandId="org.csstudio.config.ioconfig.view.newioconfig"
+               icon="icons/IOConfic.png"
+               label="IO Configurator"
+               style="push"
+               tooltip="IO Configurator">
+         </command>
+         </menuContribution>
+    </extension>
+          <extension
+           point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.config.ioconfig.view.ShowIOConfig"
+            id="org.csstudio.config.ioconfig.view.newioconfig"
+            name="New IOConfig">
+      </command>
+      </extension>
+      
+<!--   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.config.ioconfig.view.actionSet"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.config.ioconfig.view.ShowIOConfig"
+               icon="icons/IOConfic.png"
+               id="org.csstudio.config.ioconfig.view.ShowIOConfig"
+               label="IO Config"
+               menubarPath="css/configuration/"
+               style="push"/>
+      </actionSet>
+   </extension>
+    -->
 </plugin>

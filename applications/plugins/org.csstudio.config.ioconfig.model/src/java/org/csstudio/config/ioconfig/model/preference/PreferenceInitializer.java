@@ -16,7 +16,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     @Override
     public void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope()
-        .getNode(IOConfigActivator.getDefault().getPluginId());
+        .getNode(IOConfigActivator.PLUGIN_ID);
         
         prefs.put(PreferenceConstants.DDB_FACILITIES, "Geb. 54,Geb. 55,XMTS,FLASH");
         prefs.put(PreferenceConstants.DDB_LOGBOOK,

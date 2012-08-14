@@ -80,7 +80,7 @@
            point="org.eclipse.ui.menus">    
        <menuContribution
             allPopups="false"
-            locationURI="menu:configuration">
+            locationURI="menu:utility">
          <command
                commandId="org.csstudio.utility.namespacesearch.newnamespacesearch"
                icon="icons/LDAPLupe.gif"

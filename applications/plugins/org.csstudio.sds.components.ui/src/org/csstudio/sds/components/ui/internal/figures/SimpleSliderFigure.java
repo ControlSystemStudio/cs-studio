@@ -279,7 +279,7 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
             _scrollBar.setMinimum(_min);
             _scrollBar.setMaximum(_max + _sliderWide);
 
-            _currentValue = (int) (_originalVal * _scrollbarPrecision);
+            _currentValue = (int) Math.round(_originalVal * _scrollbarPrecision);
 
             int settedValue = _currentValue;
             // update scrollbar
