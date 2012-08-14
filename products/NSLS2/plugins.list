@@ -3,6 +3,7 @@ com.google.common
 edu.msu.nscl.olog.api
 gov.bnl.channelfinder.api
 javax.annotation
+javax.mail
 net.coobird.thumbnailator
 org.antlr.runtime
 org.csstudio.alarm.beast
